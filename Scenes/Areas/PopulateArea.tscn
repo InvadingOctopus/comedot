@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://du8utytoiqf1"]
+
+[ext_resource type="Script" path="res://Scenes/Areas/PopulateArea.gd" id="1_gyn4y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_waec2"]
+resource_local_to_scene = true
+size = Vector2(192, 64)
+
+[node name="PopulateArea" type="Area2D"]
+collision_layer = 512
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("1_gyn4y")
+metadata/_edit_group_ = true
+
+[node name="PopulateAreaShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(96, 32)
+shape = SubResource("RectangleShape2D_waec2")

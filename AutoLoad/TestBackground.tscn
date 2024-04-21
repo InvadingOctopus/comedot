@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://2r67te40csdi"]
+
+[ext_resource type="Texture2D" uid="uid://du4dc0o08pjpj" path="res://Assets/Images/Checkerboard32x32.png" id="1_108f4"]
+[ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="1_ngbrm"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7o40c"]
+texture = ExtResource("1_108f4")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_foxnh"]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_7o40c")
+
+[node name="TestBackground" type="Node2D"]
+
+[node name="Parallax2D1" type="Parallax2D" parent="."]
+modulate = Color(1, 0.5, 0.5, 1)
+scroll_scale = Vector2(0.5, 0.5)
+repeat_size = Vector2(256, 256)
+script = ExtResource("1_ngbrm")
+hueModifier = 0.1
+
+[node name="TileMap1Solid" type="TileMap" parent="Parallax2D1"]
+modulate = Color(0.5, 0.5, 0.5, 1)
+scale = Vector2(2, 2)
+tile_set = SubResource("TileSet_foxnh")
+format = 2
+layer_0/tile_data = PackedInt32Array(1, 1, 0, 3, 1, 0, 5, 1, 0, 65540, 1, 0, 65538, 1, 0, 65536, 1, 0, 131073, 1, 0, 196608, 1, 0, 131075, 1, 0, 131077, 1, 0, 196610, 1, 0, 196612, 1, 0, 262145, 1, 0, 262147, 1, 0, 262149, 1, 0, 327680, 1, 0, 327682, 1, 0, 327684, 1, 0, 393217, 1, 0, 458752, 1, 0, 458754, 1, 0, 393219, 1, 0, 458756, 1, 0, 393221, 1, 0, 65542, 1, 0, 7, 1, 0, 196614, 1, 0, 131079, 1, 0, 327686, 1, 0, 262151, 1, 0, 458758, 1, 0, 393223, 1, 0, 0, 1, 0, 131072, 1, 0, 65537, 1, 0, 196609, 1, 0, 2, 1, 0, 131074, 1, 0, 65539, 1, 0, 196611, 1, 0, 4, 1, 0, 131076, 1, 0, 65541, 1, 0, 196613, 1, 0, 6, 1, 0, 131078, 1, 0, 65543, 1, 0, 196615, 1, 0, 262144, 1, 0, 327681, 1, 0, 262146, 1, 0, 327683, 1, 0, 262148, 1, 0, 327685, 1, 0, 262150, 1, 0, 327687, 1, 0, 393216, 1, 0, 458753, 1, 0, 393218, 1, 0, 458755, 1, 0, 393220, 1, 0, 458757, 1, 0, 393222, 1, 0, 458759, 1, 0)
+
+[node name="Parallax2D2" type="Parallax2D" parent="."]
+modulate = Color(1, 0.5, 0.5, 1)
+repeat_size = Vector2(256, 256)
+script = ExtResource("1_ngbrm")
+
+[node name="TileMap2Checkered" type="TileMap" parent="Parallax2D2"]
+modulate = Color(0.75, 0.75, 0.75, 0.784314)
+scale = Vector2(2, 2)
+tile_set = SubResource("TileSet_foxnh")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 1, 0, 2, 1, 0, 65537, 1, 0, 131072, 1, 0, 131074, 1, 0, 196609, 1, 0, 65539, 1, 0, 4, 1, 0, 131076, 1, 0, 196611, 1, 0, 262144, 1, 0, 262146, 1, 0, 262148, 1, 0, 65541, 1, 0, 196613, 1, 0, 327681, 1, 0, 327683, 1, 0, 327685, 1, 0, 393216, 1, 0, 458753, 1, 0, 393218, 1, 0, 458755, 1, 0, 393220, 1, 0, 458757, 1, 0, 393222, 1, 0, 327687, 1, 0, 262150, 1, 0, 196615, 1, 0, 131078, 1, 0, 65543, 1, 0, 6, 1, 0, 458759, 1, 0)

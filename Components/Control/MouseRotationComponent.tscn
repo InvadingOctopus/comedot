@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://qn8n4bqswnlr"]
+
+[ext_resource type="Script" path="res://Components/Control/MouseRotationComponent.gd" id="1_76c2i"]
+
+[node name="MouseRotationComponent" type="Node" groups=["components"]]
+script = ExtResource("1_76c2i")
+metadata/_edit_group_ = true

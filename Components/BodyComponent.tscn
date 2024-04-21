@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2fii108c1a2h"]
+
+[ext_resource type="Script" path="res://Components/BodyComponent.gd" id="1_t76ki"]
+
+[node name="BodyComponent" type="Node" groups=["components"]]
+script = ExtResource("1_t76ki")

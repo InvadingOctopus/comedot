@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1ayxdi7fyaac"]
+
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_jlbp3"]
+[ext_resource type="Script" path="res://Components/Objects/PortalInteractionComponent.gd" id="2_qpgd0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vmnar"]
+resource_local_to_scene = true
+size = Vector2(48, 48)
+
+[node name="PortalInteractionComponent" instance=ExtResource("1_jlbp3")]
+script = ExtResource("2_qpgd0")
+
+[node name="InteractionShape" parent="." index="0"]
+shape = SubResource("RectangleShape2D_vmnar")

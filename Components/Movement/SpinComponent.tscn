@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://tom3x711yko8"]
+
+[ext_resource type="Script" path="res://Components/Movement/SpinComponent.gd" id="1_k46wd"]
+
+[node name="SpinComponent" type="Node" groups=["components"]]
+script = ExtResource("1_k46wd")

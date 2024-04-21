@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cryhkdcodtvsv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8fxxp"]
+resource_local_to_scene = true
+size = Vector2(32, 32)
+
+[node name="RectangleAreaTemplate" type="Area2D"]
+metadata/_edit_group_ = true
+
+[node name="AreaShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_8fxxp")

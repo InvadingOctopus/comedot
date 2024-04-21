@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=4 uid="uid://uup2ht3h4x4a"]
+
+[ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_j6ctt"]
+[ext_resource type="PackedScene" uid="uid://crrdteemafeyb" path="res://Templates/Scenes/PlatformMapTemplate.tscn" id="2_0to07"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Entities/Characters/PlayerEntityTemplate.tscn" id="3_o03rm"]
+
+[node name="PlatformSceneTemplate" type="Node2D"]
+
+[node name="HUDTemplate" parent="." instance=ExtResource("1_j6ctt")]
+
+[node name="PlatformMapTemplate" parent="." instance=ExtResource("2_0to07")]
+
+[node name="PlayerTemplate" parent="." instance=ExtResource("3_o03rm")]
+position = Vector2(208, 200)
+
+[editable path="PlayerTemplate"]

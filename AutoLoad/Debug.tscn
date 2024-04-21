@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://byku6wanllr5n"]
+
+[ext_resource type="Script" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
+
+[sub_resource type="SystemFont" id="SystemFont_jtaom"]
+font_names = PackedStringArray("Arial Black")
+
+[node name="Debug" type="CanvasLayer"]
+layer = 110
+script = ExtResource("1_rd14n")
+isVisible = true
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+top_level = true
+light_mask = 0
+texture_filter = 2
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 48.0
+theme_override_fonts/font = SubResource("SystemFont_jtaom")
+theme_override_font_sizes/font_size = 10

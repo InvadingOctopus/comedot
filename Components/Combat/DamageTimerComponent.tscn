@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmcvlfhqc0vbw"]
+
+[ext_resource type="Script" path="res://Components/Combat/DamageTimerComponent.gd" id="1_umsct"]
+
+[node name="DamageTimerComponent" type="Node" groups=["components"]]
+script = ExtResource("1_umsct")
+metadata/_edit_group_ = true
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="onTimerTimeout"]

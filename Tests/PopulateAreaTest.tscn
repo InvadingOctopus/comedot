@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=3 uid="uid://b03gxqrqupyqv"]
+
+[ext_resource type="Script" path="res://Scenes/Areas/PopulateArea.gd" id="1_1ktkj"]
+[ext_resource type="Texture2D" uid="uid://bermbxcx4kfb6" path="res://Assets/Images/Checkerboard16x16.png" id="3_xp3dq"]
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="4_7kaft"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="5_1lnua"]
+[ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="6_m7ekq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_42cay"]
+resource_local_to_scene = true
+size = Vector2(144, 144)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vn7lc"]
+texture = ExtResource("3_xp3dq")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_1aglk"]
+sources/0 = SubResource("TileSetAtlasSource_vn7lc")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(16, 16)
+
+[node name="PopulateArea" type="Area2D"]
+collision_layer = 512
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("1_1ktkj")
+sceneToCopy = ExtResource("6_m7ekq")
+numberOfCopies = 9
+initialOffset = Vector2(16, 16)
+horizontalSpacing = 64.0
+verticalSpacing = 64.0
+minimumVariation = Vector2(-2, -2)
+maximumVariation = Vector2(2, 2)
+addToGroup = &"trees"
+metadata/_edit_group_ = true
+
+[node name="PopulateAreaShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_42cay")
+
+[node name="TileMap" type="TileMap" parent="."]
+modulate = Color(0, 1, 1, 0.392157)
+z_index = -1
+tile_set = SubResource("TileSet_1aglk")
+format = 2
+layer_0/tile_data = PackedInt32Array(-262149, 0, 0, -196612, 0, 0, -131075, 0, 0, -65538, 0, 0, -1, 0, 0, 0, 0, 0, 65537, 0, 0, 131074, 0, 0, 196611, 0, 0, 262148, 0, 0, -131077, 0, 0, -65540, 0, 0, -3, 0, 0, 65534, 0, 0, 131071, 0, 0, 131072, 0, 0, 196609, 0, 0, 262146, 0, 0, 262144, 0, 0, 262143, 0, 0, 196606, 0, 0, 131069, 0, 0, 65532, 0, 0, -5, 0, 0, 131067, 0, 0, 196604, 0, 0, 262141, 0, 0, 327678, 0, 0, 327676, 0, 0, 262139, 0, 0, -262147, 0, 0, -196610, 0, 0, -131073, 0, 0, -131072, 0, 0, -65535, 0, 0, 2, 0, 0, 65539, 0, 0, 131076, 0, 0, -262145, 0, 0, -262144, 0, 0, -196607, 0, 0, -131070, 0, 0, -65533, 0, 0, 4, 0, 0, -327679, 0, 0, -262142, 0, 0, -196605, 0, 0, -131068, 0, 0, -262140, 0, 0, -327677, 0, 0)
+
+[node name="PlayerTemplate" type="CharacterBody2D" parent="." groups=["players"]]
+position = Vector2(0, -128)
+collision_layer = 6
+collision_mask = 3640
+script = ExtResource("4_7kaft")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerTemplate" groups=["players"]]
+texture = ExtResource("3_xp3dq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerTemplate"]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="Camera2D" type="Camera2D" parent="PlayerTemplate"]
+position_smoothing_enabled = true
+position_smoothing_speed = 100.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 10.0
+
+[node name="OverheadControlComponent" parent="PlayerTemplate" instance=ExtResource("5_1lnua")]
+
+[node name="TestSprite16" parent="." instance=ExtResource("6_m7ekq")]
+modulate = Color(1, 0.883333, 0, 0.666667)

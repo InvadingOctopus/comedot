@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=4 uid="uid://3ousmbcfyuac"]
+
+[ext_resource type="Script" path="res://Entities/Objects/BulletEntity.gd" id="1_iwt6f"]
+[ext_resource type="Texture2D" uid="uid://cv4naou1abd3n" path="res://Assets/Images/SF Symbols/arrowtriangle.right.fill.svg" id="2_i8p4m"]
+[ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_a2p0s"]
+[ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_7nv8l"]
+[ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_dmvfp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lt4cn"]
+resource_local_to_scene = true
+size = Vector2(8, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u74jj"]
+resource_local_to_scene = true
+size = Vector2(8, 8)
+
+[node name="Bullet" type="Area2D" groups=["entities"]]
+collision_layer = 1024
+collision_mask = 30
+script = ExtResource("1_iwt6f")
+metadata/_edit_group_ = true
+
+[node name="BulletSprite" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 0, 1)
+texture_filter = 2
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_i8p4m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lt4cn")
+
+[node name="LinearMotionComponent" parent="." instance=ExtResource("3_a2p0s")]
+shouldDeleteParentAtMaximumDistance = true
+maximumDistance = 100.0
+
+[node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_7nv8l")]
+
+[node name="VisibleOnScreenNotifier2D" parent="OffscreenRemovalComponent" index="0"]
+scale = Vector2(0.25, 0.25)
+
+[node name="DamageComponent" parent="." instance=ExtResource("5_dmvfp")]
+
+[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
+shape = SubResource("RectangleShape2D_u74jj")
+
+[connection signal="area_entered" from="." to="." method="onAreaEntered"]
+[connection signal="body_entered" from="." to="." method="onBodyEntered"]
+[connection signal="didCollideWithReceiver" from="DamageComponent" to="." method="onDamageComponent_didCollideWithReceiver"]
+
+[editable path="OffscreenRemovalComponent"]
+[editable path="DamageComponent"]

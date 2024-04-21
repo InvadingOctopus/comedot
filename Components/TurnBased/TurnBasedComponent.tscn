@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dixv8vyn8lsod"]
+
+[ext_resource type="Script" path="res://Components/TurnBased/TurnBasedComponent.gd" id="1_s5y5f"]
+
+[node name="TurnBasedComponent" type="Node" groups=["components", "turnBased"]]
+script = ExtResource("1_s5y5f")

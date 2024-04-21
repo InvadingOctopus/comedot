@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgp53lgh8n5p8"]
+
+[ext_resource type="Script" path="res://Components/Visual/OffscreenRemovalComponent.gd" id="1_eukg6"]
+
+[node name="OffscreenRemovalComponent" type="Node2D" groups=["components"]]
+script = ExtResource("1_eukg6")
+metadata/_edit_group_ = true
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+unique_name_in_owner = true
+rect = Rect2(-16, -16, 32, 32)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="onScreenExited"]

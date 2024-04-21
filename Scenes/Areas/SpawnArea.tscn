@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnj2tewb1jq0n"]
+
+[ext_resource type="Script" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_phir2"]
+resource_local_to_scene = true
+size = Vector2(192, 64)
+
+[node name="SpawnArea" type="Area2D"]
+collision_layer = 512
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("1_k8est")
+metadata/_edit_group_ = true
+
+[node name="SpawnAreaShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(96, 32)
+shape = SubResource("RectangleShape2D_phir2")
+
+[node name="SpawnTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="onSpawnTimer_timeout"]

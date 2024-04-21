@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnloy15xnmp4u"]
+
+[ext_resource type="Script" path="res://Temporary/AreaTest.gd" id="1_xp6u4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s8u3k"]
+size = Vector2(64, 32)
+
+[node name="AreaTestScene" type="Node2D"]
+script = ExtResource("1_xp6u4")
+
+[node name="OriginMarker" type="ReferenceRect" parent="."]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+border_color = Color(0, 1, 1, 1)
+editor_only = false
+metadata/_edit_lock_ = true
+
+[node name="Area" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(64, 64)
+
+[node name="AreaMarker" type="ReferenceRect" parent="Area"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+editor_only = false
+metadata/_edit_lock_ = true
+
+[node name="ShapeNode" type="CollisionShape2D" parent="Area"]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_s8u3k")
+
+[node name="ShapeNodeMarker" type="ReferenceRect" parent="Area/ShapeNode"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+border_color = Color(0, 1, 0, 0.784314)
+editor_only = false
+metadata/_edit_lock_ = true

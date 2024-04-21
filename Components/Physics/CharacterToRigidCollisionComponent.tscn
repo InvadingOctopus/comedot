@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyxwb73c1uv7v"]
+
+[ext_resource type="Script" path="res://Components/Physics/CharacterToRigidCollisionComponent.gd" id="1_vyfyf"]
+
+[node name="CharacterToRigidCollisionComponent" type="Node" groups=["components"]]
+script = ExtResource("1_vyfyf")

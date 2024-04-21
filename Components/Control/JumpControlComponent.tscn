@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bck0vjn8mg1aw"]
+
+[ext_resource type="Script" path="res://Components/Control/JumpControlComponent.gd" id="1_58ydu"]
+
+[node name="JumpControlComponent" type="Node" groups=["components"]]
+script = ExtResource("1_58ydu")
+metadata/_edit_group_ = true

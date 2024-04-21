@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://crrdteemafeyb"]
+
+[ext_resource type="Texture2D" uid="uid://du4dc0o08pjpj" path="res://Assets/Images/Checkerboard32x32.png" id="1_q4br6"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s4xlv"]
+texture = ExtResource("1_q4br6")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/modulate = Color(1, 1, 0.5, 1)
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[sub_resource type="TileSet" id="TileSet_r8l3d"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 16
+physics_layer_0/collision_mask = 0
+sources/0 = SubResource("TileSetAtlasSource_s4xlv")
+
+[node name="PlatformMapTemplate" type="TileMap"]
+tile_set = SubResource("TileSet_r8l3d")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0, 65536, 0, 0, 131072, 0, 0, 196608, 0, 0, 262144, 0, 0, 327680, 0, 0, 393216, 0, 0, 458752, 0, 0, 524288, 0, 0, 589824, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 0, 0, 7, 0, 0, 8, 0, 0, 9, 0, 0, 10, 0, 0, 524290, 0, 0, 393220, 0, 0, 262150, 0, 0, 393224, 0, 0, 524298, 0, 0, 655360, 0, 0, 655361, 0, 0, 655362, 0, 0, 655363, 0, 0, 655364, 0, 0, 655365, 0, 0, 655366, 0, 0, 655367, 0, 0, 655368, 0, 0, 655369, 0, 0, 655370, 0, 0, 655371, 0, 0, 655372, 0, 0, 589836, 0, 0, 524300, 0, 0, 458764, 0, 0, 393228, 0, 0, 327692, 0, 0, 262156, 0, 0, 196620, 0, 0, 131084, 0, 0, 65548, 0, 0, 12, 0, 0, 11, 0, 0)

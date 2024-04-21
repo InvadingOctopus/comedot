@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://igl5tam71pns"]
+
+[ext_resource type="Script" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dtk6b"]
+resource_local_to_scene = true
+size = Vector2(32, 32)
+
+[node name="ZoneComponent" type="Area2D" groups=["components"]]
+collision_layer = 0
+collision_mask = 512
+monitorable = false
+script = ExtResource("1_shr7o")
+
+[node name="ZoneDetectorShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dtk6b")
+
+[connection signal="area_entered" from="." to="." method="onAreaEntered"]
+[connection signal="area_exited" from="." to="." method="onAreaExited"]

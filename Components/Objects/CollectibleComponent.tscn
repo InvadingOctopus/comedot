@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3ufwns4q2thw"]
+
+[ext_resource type="Script" path="res://Components/Objects/CollectibleComponent.gd" id="1_356ao"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nufh5"]
+resource_local_to_scene = true
+size = Vector2(16, 16)
+
+[node name="CollectibleComponent" type="Area2D" groups=["collectibles", "components"]]
+collision_layer = 2048
+collision_mask = 2
+script = ExtResource("1_356ao")
+metadata/_edit_group_ = true
+
+[node name="CollectibleCollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nufh5")
+debug_color = Color(0.3, 1, 0.3, 0.392157)
+
+[connection signal="area_entered" from="." to="." method="onAreaEntered"]

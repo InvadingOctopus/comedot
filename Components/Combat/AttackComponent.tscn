@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://buch8s7f13w6x"]
+
+[ext_resource type="Script" path="res://Components/Combat/AttackComponent.gd" id="1_urvkf"]
+
+[node name="AttackComponent" type="Node" groups=["components"]]
+script = ExtResource("1_urvkf")
+metadata/_edit_group_ = true

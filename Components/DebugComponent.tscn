@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bifi5b0gcmh1v"]
+
+[ext_resource type="Script" path="res://Components/DebugComponent.gd" id="1_sj8xd"]
+
+[node name="DebugComponent" type="Node2D" groups=["components"]]
+texture_filter = 2
+script = ExtResource("1_sj8xd")
+metadata/_edit_group_ = true
+
+[node name="VelocityLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 8
+text = "Speed"

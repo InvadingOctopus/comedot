@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://b6c5d68ty35va"]
+
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
+[ext_resource type="Texture2D" uid="uid://bermbxcx4kfb6" path="res://Assets/Images/Checkerboard16x16.png" id="2_wfqpn"]
+[ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformControlComponent.tscn" id="3_qek6v"]
+[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="4_tsh3x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(16, 16)
+
+[node name="PlayerTemplate" type="CharacterBody2D" groups=["players"]]
+collision_layer = 6
+collision_mask = 3640
+script = ExtResource("1_gtqja")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
+texture = ExtResource("2_wfqpn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 100.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 10.0
+
+[node name="PlatformControlComponent" parent="." instance=ExtResource("3_qek6v")]
+
+[node name="JumpControlComponent" parent="." instance=ExtResource("4_tsh3x")]

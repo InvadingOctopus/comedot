@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtc44pjtvbcrn"]
+
+[ext_resource type="Script" path="res://Components/Data/StatModifierComponent.gd" id="1_ttyqa"]
+
+[node name="StatModifierComponent" type="Node" groups=["components"]]
+script = ExtResource("1_ttyqa")
+modifier = -1
+metadata/_edit_group_ = true
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="onTimerTimeout"]

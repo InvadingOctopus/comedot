@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdik3ejdf7c57"]
+
+[ext_resource type="Script" path="res://Components/Control/TurningControlComponent.gd" id="1_mk7um"]
+
+[node name="TurningControlComponent" type="Node" groups=["components"]]
+script = ExtResource("1_mk7um")
+metadata/_edit_group_ = true
