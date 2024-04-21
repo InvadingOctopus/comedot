@@ -7,8 +7,6 @@ texture = ExtResource("1_q4br6")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/modulate = Color(1, 1, 0.5, 1)
-0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSet" id="TileSet_r8l3d"]
