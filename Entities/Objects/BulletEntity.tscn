@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=4 uid="uid://3ousmbcfyuac"]
 
 [ext_resource type="Script" path="res://Entities/Objects/BulletEntity.gd" id="1_iwt6f"]
-[ext_resource type="Texture2D" uid="uid://cv4naou1abd3n" path="res://Assets/Images/SF Symbols/arrowtriangle.right.fill.svg" id="2_i8p4m"]
+[ext_resource type="Texture2D" uid="uid://cs0utush8q26" path="res://Assets/Images/SF Symbols/arrowtriangle.right.fill.svg" id="2_i8p4m"]
 [ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_a2p0s"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_7nv8l"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_dmvfp"]

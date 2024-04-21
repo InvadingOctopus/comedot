@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dusjndm5o8ehr"]
+[gd_scene load_steps=5 format=4 uid="uid://dusjndm5o8ehr"]
 
 [ext_resource type="Script" path="res://Components/Combat/GunComponent.gd" id="1_q51oq"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="2_dmw2s"]
-[ext_resource type="Texture2D" uid="uid://c8ab2wrf3sk5f" path="res://Assets/Images/SF Symbols/arrowtriangle.right.svg" id="3_s8fsf"]
+[ext_resource type="Texture2D" uid="uid://d20biaoblei1q" path="res://Assets/Images/SF Symbols/arrowtriangle.right.svg" id="3_s8fsf"]
 
 [sub_resource type="Resource" id="Resource_tr7v4"]
 resource_local_to_scene = true
