@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://2r67te40csdi"]
+[gd_scene load_steps=5 format=4 uid="uid://2r67te40csdi"]
 
-[ext_resource type="Texture2D" uid="uid://du4dc0o08pjpj" path="res://Assets/Images/Checkerboard32x32.png" id="1_108f4"]
+[ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/Checkerboard32x32.png" id="1_108f4"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="1_ngbrm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7o40c"]
@@ -30,6 +30,7 @@ layer_0/tile_data = PackedInt32Array(1, 1, 0, 3, 1, 0, 5, 1, 0, 65540, 1, 0, 655
 
 [node name="Parallax2D2" type="Parallax2D" parent="."]
 modulate = Color(1, 0.5, 0.5, 1)
+scroll_scale = Vector2(0.75, 0.75)
 repeat_size = Vector2(256, 256)
 script = ExtResource("1_ngbrm")
 
