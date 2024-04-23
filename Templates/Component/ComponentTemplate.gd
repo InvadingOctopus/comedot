@@ -1,6 +1,8 @@
 # meta-default: true
 
 ## Description
+## Requirements: [Does this component depend on other components? Or does it need the parent Entity to be a specific type of node?]
+
 
 class_name _CLASS_
 extends Component
