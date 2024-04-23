@@ -13,25 +13,32 @@ extends Node
 
 # NOTE: Classes containing a list of constants are named plural, so as to be more intuitive and not be confused with a more general type, i.e. "Actions" vs "Action".
 
+#region Settings
+## Paths to project settings
+## NOTE: This is not named "Settings" to avoid any confusion that they may be the actual properties; they're just paths to the values.
+class SettingsPaths:
+	const gravity		:= &"physics/2d/default_gravity"
+#endregion
+
 #region Groups
 class Groups:
-	const components   := &"components"
-	const entities     := &"entities"
+	const components	:= &"components"
+	const entities		:= &"entities"
 
-	const players      := &"players"
-	const enemies      := &"enemies"
-	const hazards      := &"hazards"
-	const collectibles := &"collectibles"
-	const interactions := &"interactions"
-	const zones        := &"zones"
+	const players		:= &"players"
+	const enemies		:= &"enemies"
+	const hazards		:= &"hazards"
+	const collectibles	:= &"collectibles"
+	const interactions	:= &"interactions"
+	const zones			:= &"zones"
 #endregion Input Actions
 
 #region Animations
 class Animations: ## Animation labels
-	const overlayFadeIn  := &"overlayFadeIn"
-	const overlayFadeOut := &"overlayFadeOut"
+	const overlayFadeIn		:= &"overlayFadeIn"
+	const overlayFadeOut	:= &"overlayFadeOut"
 
-	const blink := &"blink"
+	const blink				:= &"blink"
 #endregion
 
 #endregion

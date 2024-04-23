@@ -50,7 +50,7 @@ var currentState: State:
 var inputDirection: float
 var lastDirection:  float
 var wasOnFloor	 := false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
-var gravity		  = ProjectSettings.get_setting("physics/2d/default_gravity")
+var gravity:		float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
 #endregion
 
