@@ -1,4 +1,6 @@
-## Detects and executes actions when the [Area2D] of this component enters another [Area2D] belonging to the "zones" group.
+## Monitors an [Area2D] and performs actions when it enters or exits another [Area2D] belonging to the "Zones" group.
+## Keeps a list of overlapping zones.
+## Examples: A "home zone" which heals the player, or an area of fire or poison which causes damage.
 ## Recommended to be subclassed.
 
 class_name ZoneComponent
@@ -6,7 +8,12 @@ extends Component
 
 
 #region Parameters
+
+## The area which this component represents. If `null` then the component node itself is used if it is an [Area2D], otherwise the parent [Entity] node is used if that is an [Area2D]
+## NOTE: The area's signals are connected to this component automatically in [method _ready]
+## Default: `self` or `parentEntity.area`
 @export var areaOverride: Area2D
+
 @export var isEnabled := true
 #endregion
 
@@ -28,7 +35,19 @@ func _ready():
 	if not areaOverride:
 		areaOverride = self.get_node(".") as Area2D # HACK: TODO: Find better way to cast
 
-	self.updateCurrentZones()
+	# If we still have no area, check if the parent [Entity] has an area.
+
+	if not areaOverride:
+		areaOverride = parentEntity.getArea()
+
+	connectSignals()
+	updateCurrentZones()
+
+
+func connectSignals():
+	if not areaOverride: return
+	areaOverride.area_entered.connect(self.onAreaEntered)
+	areaOverride.area_exited.connect(self.onAreaExited)
 
 
 ## Returns: The number of overlapping [Area2D]s which belong to the "zones" group, and adds them to the [member currentZones] array.
@@ -56,7 +75,6 @@ func onAreaEntered(area: Area2D):
 		didUpdateZones.emit()
 
 	printDebug("onAreaEntered: " + str(area) + " | currentZones: " + str(currentZones.size()))
-
 	didEnterZone.emit(area)
 
 
@@ -70,7 +88,6 @@ func onAreaExited(area: Area2D):
 		didUpdateZones.emit()
 
 	printDebug("onAreaExited: " + str(area) + " | currentZones: " + str(currentZones.size()))
-
 	didExitZone.emit(area)
 
 
