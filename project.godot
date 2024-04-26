@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Go2DoT"
-run/main_scene="res://Templates/Scenes/OverheadSceneTemplate.tscn"
+run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=60
 config/icon="res://Assets/icon.svg"

@@ -25,10 +25,10 @@ extends BodyComponent
 
 @export_subgroup("Friction")
 @export var shouldApplyFrictionOnFloor: bool = true
-@export_range(1000.0, 2000.0, 100.0) var frictionOnFloor: float		= 1000.0
+@export_range(100.0, 2000.0, 100.0) var frictionOnFloor: float		= 1000.0
 
 @export var shouldApplyFrictionInAir: bool = true
-@export_range(1000.0, 2000.0, 100.0) var frictionInAir: float		= 200.0
+@export_range(100.0, 2000.0, 100.0) var frictionInAir: float		= 200.0
 
 #endregion
 
