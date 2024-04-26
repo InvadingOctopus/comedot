@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=4 uid="uid://b6c5d68ty35va"]
+[gd_scene load_steps=6 format=3 uid="uid://b6c5d68ty35va"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="2_wfqpn"]

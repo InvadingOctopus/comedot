@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=4 uid="uid://2r67te40csdi"]
+[gd_scene load_steps=5 format=3 uid="uid://2r67te40csdi"]
 
 [ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/Checkerboard32x32.png" id="1_108f4"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="1_ngbrm"]
