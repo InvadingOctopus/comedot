@@ -1,38 +1,34 @@
-[gd_scene load_steps=8 format=4 uid="uid://c6dvwxb6f4wkh"]
+[gd_scene load_steps=7 format=3 uid="uid://0uproxr5kcfg"]
 
-[ext_resource type="Script" path="res://Scripts/Scenes/SceneMain.gd" id="1_u7p3i"]
-[ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="2_4iukc"]
-[ext_resource type="PackedScene" uid="uid://bcyi6ua6yehf1" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_768sm"]
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="4_w8eks"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_xpr3r"]
-[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="5_nfbhk"]
+[ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_y25py"]
+[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_tvlfg"]
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_t2b5s"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_csoc0"]
+[ext_resource type="Script" path="res://Components/Control/OverheadControlComponent.gd" id="4_dlhu2"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xeh2"]
 size = Vector2(16, 16)
 
 [node name="OverheadSceneTemplate" type="Node2D"]
-script = ExtResource("1_u7p3i")
 
-[node name="HUDTemplate" parent="." instance=ExtResource("2_4iukc")]
+[node name="HUDTemplate" parent="." instance=ExtResource("1_y25py")]
 
-[node name="OverheadMapTemplate" parent="." instance=ExtResource("2_768sm")]
+[node name="OverheadMapTemplate" parent="." instance=ExtResource("2_tvlfg")]
 
 [node name="PlayerEntity" type="CharacterBody2D" parent="."]
-position = Vector2(224, 72)
+modulate = Color(0, 1, 0, 1)
+position = Vector2(272, 336)
 collision_layer = 6
-collision_mask = 62
-script = ExtResource("4_w8eks")
+collision_mask = 574
+script = ExtResource("3_t2b5s")
 
-[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity" groups=["players"]]
-texture = ExtResource("4_xpr3r")
+[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity"]
+texture = ExtResource("4_csoc0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
-shape = SubResource("RectangleShape2D_sg2kd")
+shape = SubResource("RectangleShape2D_3xeh2")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
-position_smoothing_enabled = true
-position_smoothing_speed = 100.0
-rotation_smoothing_enabled = true
-rotation_smoothing_speed = 10.0
 
-[node name="OverheadControlComponent" parent="PlayerEntity" instance=ExtResource("5_nfbhk")]
+[node name="OverheadControlComponent" type="Node" parent="PlayerEntity"]
+script = ExtResource("4_dlhu2")
