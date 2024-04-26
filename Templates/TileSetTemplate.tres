@@ -1,0 +1,15 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dinnvtrdv2ejn"]
+
+[ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/Checkerboard32x32.png" id="1_mxo8n"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mkx33"]
+texture = ExtResource("1_mxo8n")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[resource]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 16
+physics_layer_0/collision_mask = 0
+sources/3 = SubResource("TileSetAtlasSource_mkx33")
