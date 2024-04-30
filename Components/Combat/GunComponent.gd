@@ -94,7 +94,7 @@ func fire(ignoreCooldown: bool = false):
 
 	# Do we have a faction? If so, copy the FactionComponent to the new bullet.
 
-	var factionComponent: FactionComponent = parentEntity.findChildrenOfType(FactionComponent)[0]
+	var factionComponent: FactionComponent = self.findCoComponent(FactionComponent)
 
 	if factionComponent:
 		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
