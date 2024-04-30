@@ -55,6 +55,7 @@ func _physics_process(delta: float):
 
 	# DEBUG debugPrintInfo()
 
+
 func processWalkInput(delta: float):
 	# Get the input direction and handle the movement/deceleration.
 
