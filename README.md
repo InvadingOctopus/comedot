@@ -7,13 +7,13 @@
 
 ⭐️ It lets you do stuff like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
-![Rocks with Guns](https://i.imgur.com/wH84m23.gif)
+[![Rocks with Guns](https://i.imgur.com/wH84m23.gif)](https://i.imgur.com/wH84m23.gifv)
 
 ⭐️ One of the best benefits of "composition" is the ability to easily add and remove abilities/buffs/debuffs at runtime, like this example of swapping between platform movement and flying movement:
 
-![Swapping Control Components](https://i.imgur.com/IxxOXX6.gif)
+[![Swapping Control Components](https://i.imgur.com/IxxOXX6.gif)](https://i.imgur.com/IxxOXX6.gifv)
 
-_(if the images do not animate, click on them to go to the Imgur pages)_
+_(darn GitHub, if the images do not animate, click on them to go to the Imgur pages)_
 
 ## How To Use
 
