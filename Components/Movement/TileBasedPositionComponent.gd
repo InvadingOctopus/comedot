@@ -1,10 +1,14 @@
 ## Sets the position of the parent Entity to the position of a tile in an associated [TileMapLayer]
 ## Does NOT perform path-finding or any other validation logic except checking the TileMap bounds.
 
-
 class_name TileBasedPositionComponent
 extends Component
 
+# Implementation Plan:
+# * Store integer coordinates to remember which tile the entity is in.
+# * Every frame,
+# 	If the entity is not moving to another tile, snap the entity to the current tile's position, in case the TileMap is moving.
+# 	If the entity is moving to another tile, interpolate the entity's position towards the new tile.
 
 #region Parameters
 
@@ -14,6 +18,7 @@ extends Component
 @export var initialTileCoordinates: Vector2i
 
 ## The speed of moving between tiles.
+## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
 
 @export var isEnabled := true
@@ -78,6 +83,7 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 
 	# TODO: Validate TileMap bounds
 
+	willStartMovingToNewTile.emit(newDestinationTileCoordinates)
 	self.destinationTileCoordinates = newDestinationTileCoordinates
 	self.isMovingToNewTile = true
 
@@ -99,11 +105,15 @@ func cancelDestination():
 func _process(delta: float):
 	if not isEnabled: return
 
-	# Keep snapping to the current tile coordinates,
-	# to ensure alignment in case the TileMap node is moving.
+	#showDebugInfo()
 
-	moveTowardsDestinationTile(delta) # or snapEntityPositionToTile()
-	checkForArrival()
+	if isMovingToNewTile:
+		moveTowardsDestinationTile(delta)
+		checkForArrival()
+	else:
+		# If we are already at the destination, keep snapping to the current tile coordinates,
+		# to ensure alignment in case the TileMap node is moving.
+		snapEntityPositionToTile()
 
 
 func moveTowardsDestinationTile(delta: float):
@@ -112,15 +122,14 @@ func moveTowardsDestinationTile(delta: float):
 
 
 ## Instantly sets the entity's position to a tile's position.
-## If [param destinationOverride] is omitted then [member destinationTileCoordinates] is used.
-func snapEntityPositionToTile(destinationOverride: Vector2i = self.destinationTileCoordinates):
+## If [param destinationOverride] is omitted then [member currentTileCoordinates] is used.
+func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates):
 	if not isEnabled: return
-	var destination: Vector2i = destinationOverride if destinationOverride else self.destinationTileCoordinates
 
-	var destinationTileGlobalPosition: Vector2 = getTileGlobalPosition(destination)
+	var tileGlobalPosition: Vector2 = getTileGlobalPosition(tileCoordinates)
 
-	if parentEntity.global_position != destinationTileGlobalPosition:
-		parentEntity.global_position = destinationTileGlobalPosition
+	if parentEntity.global_position != tileGlobalPosition:
+		parentEntity.global_position = tileGlobalPosition
 
 
 func getTileGlobalPosition(tileCoordinates: Vector2i) -> Vector2:
@@ -135,7 +144,16 @@ func checkForArrival() -> bool:
 	if parentEntity.global_position == destinationTileGlobalPosition:
 		self.currentTileCoordinates = self.destinationTileCoordinates
 		self.isMovingToNewTile = false
+		didArriveAtNewTile.emit(currentTileCoordinates)
 		return true
 	else:
 		self.isMovingToNewTile = true
 		return false
+
+
+func showDebugInfo():
+	Debug.watchList.isMovingToNewTile = self.isMovingToNewTile
+	Debug.watchList.currentTile = self.currentTileCoordinates
+	Debug.watchList.destinationTile = self.destinationTileCoordinates
+	Debug.watchList.destinationPosition = self.getTileGlobalPosition(destinationTileCoordinates)
+	Debug.watchList.entityPosition = parentEntity.global_position
