@@ -47,16 +47,17 @@ script/templates_search_path="res://Templates"
 [file_customization]
 
 folder_colors={
-"res://Assets/": "pink",
-"res://AutoLoad/": "red",
+"res://Assets/": "purple",
+"res://AutoLoad/": "pink",
 "res://Components/": "blue",
 "res://Entities/": "green",
 "res://Games/": "orange",
-"res://Resources/": "purple",
+"res://Resources/": "red",
 "res://Scenes/": "yellow",
-"res://Scripts/": "purple",
+"res://Scripts/": "pink",
 "res://Templates/": "gray",
-"res://Temporary/": "gray"
+"res://Temporary/": "gray",
+"res://Tests/": "gray"
 }
 
 [global_group]
