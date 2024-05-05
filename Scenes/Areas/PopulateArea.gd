@@ -14,6 +14,9 @@ extends Area2D
 
 @export_range(0, 100, 1) var numberOfCopies: int = 10
 
+## A number will be appeneded to the end of this string.
+@export var namePrefix: String = "Clone"
+
 @export_group("Positioning")
 
 ## The position of the first node, offset from the top-left corner (0,0) of the area.
@@ -105,6 +108,8 @@ func populate():
 
 func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 	var newCopy: Node2D = sceneResource.instantiate()
+
+	newCopy.name = str(namePrefix, totalCopiesCreated)
 
 	# Set the position of the new copy,
 	# by "painting" the area left-to-right, starting from the top-left corner,
