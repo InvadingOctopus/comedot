@@ -1,6 +1,8 @@
 # Godoctopus Code & Framework Conventions
 
-* Follow the Swift API Design Guidelines as much as possible, because I come from Swift and it is super awesome: https://www.swift.org/documentation/api-design-guidelines/
+I come from Swift so I hate underscores and love camelCase. This framework follows the Swift API Design Guidelines unless when it's highly inconvenient within Godot:
+
+https://www.swift.org/documentation/api-design-guidelines/
 
 # Whitespace
 
