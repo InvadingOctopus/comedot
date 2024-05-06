@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Go2DoT"
+config/description="Invading Octopus's Component-based Framework for Godot 2D"
 run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=60
@@ -188,6 +189,7 @@ debugBreak={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.05, 0.05, 0.1, 1)
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
