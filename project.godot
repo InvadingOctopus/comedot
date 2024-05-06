@@ -17,6 +17,10 @@ config/features=PackedStringArray("4.3")
 run/max_fps=60
 config/icon="res://Assets/icon.svg"
 
+[audio]
+
+buses/default_bus_layout="res://Resources/DefaultAudioBusLayout.tres"
+
 [autoload]
 
 Global="*res://AutoLoad/Global.gd"
