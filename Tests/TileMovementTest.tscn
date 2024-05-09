@@ -1,0 +1,53 @@
+[gd_scene load_steps=11 format=3 uid="uid://dptnl2r7a6q1a"]
+
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_3qr72"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenny1Bit-Monochrome-Transparent-Packed.png" id="1_ua4yu"]
+[ext_resource type="Script" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
+[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Entities/Objects/BulletEntity.tscn" id="5_8jneb"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="5_87ms1"]
+[ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
+[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="7_f5htu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_esh4c"]
+size = Vector2(14, 12)
+
+[sub_resource type="Resource" id="Resource_wtn0n"]
+resource_local_to_scene = true
+script = ExtResource("5_87ms1")
+name = &"ammo"
+min = 0
+max = 100
+value = 100
+logChanges = false
+
+[node name="TileMovementTest" type="Node2D"]
+
+[node name="OverheadMapTemplate" parent="." instance=ExtResource("7_f5htu")]
+script = ExtResource("2_gqr1m")
+speed = 0.1
+
+[node name="TileMapLayer" parent="OverheadMapTemplate" index="0"]
+collision_enabled = false
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+script = ExtResource("1_3qr72")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("1_ua4yu")
+region_enabled = true
+region_rect = Rect2(480, 96, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("RectangleShape2D_esh4c")
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+
+[node name="TileBasedPositionComponent" parent="CharacterBody2D" node_paths=PackedStringArray("tileMap") instance=ExtResource("6_73iom")]
+tileMap = NodePath("../../OverheadMapTemplate/TileMapLayer")
+
+[node name="GunComponent" parent="CharacterBody2D" instance=ExtResource("4_6v6op")]
+bulletEntity = ExtResource("5_8jneb")
+ammo = SubResource("Resource_wtn0n")
+
+[editable path="OverheadMapTemplate"]
