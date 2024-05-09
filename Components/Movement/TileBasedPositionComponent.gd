@@ -102,7 +102,7 @@ func cancelDestination():
 	self.isMovingToNewTile = false
 
 
-func _process(delta: float):
+func _physics_process(delta: float):
 	if not isEnabled: return
 
 	#showDebugInfo()
