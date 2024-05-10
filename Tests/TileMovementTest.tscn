@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://dptnl2r7a6q1a"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_3qr72"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenny1Bit-Monochrome-Transparent-Packed.png" id="1_ua4yu"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="1_ua4yu"]
 [ext_resource type="Script" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Entities/Objects/BulletEntity.tscn" id="5_8jneb"]
