@@ -77,6 +77,10 @@ collectibles=""
 interactions=""
 turnBased=""
 
+[gui]
+
+theme/custom_font="res://Assets/Fonts/PixelOperator8.ttf"
+
 [input]
 
 moveUp={

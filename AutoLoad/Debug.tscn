@@ -1,9 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://byku6wanllr5n"]
 
 [ext_resource type="Script" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
-
-[sub_resource type="SystemFont" id="SystemFont_jtaom"]
-font_names = PackedStringArray("Arial Black")
+[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
 
 [node name="Debug" type="CanvasLayer"]
 layer = 110
@@ -19,5 +17,5 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 72.0
 offset_bottom = 48.0
-theme_override_fonts/font = SubResource("SystemFont_jtaom")
-theme_override_font_sizes/font_size = 10
+theme_override_fonts/font = ExtResource("2_6qwn4")
+theme_override_font_sizes/font_size = 8
