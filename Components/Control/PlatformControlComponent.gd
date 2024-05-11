@@ -9,26 +9,26 @@ extends BodyComponent
 #region Parameters
 
 @export_subgroup("Movement")
-@export_range(50.0,   1000.0, 50.0) var speedOnFloor: float 		= 100.0
-@export_range(0.0,    1000.0, 50.0) var speedInAir: float 			= 100.0
+@export_range(50.0,	1000.0, 5.0) var speedOnFloor: float 		= 100.0
+@export_range(0.0,	1000.0, 5.0) var speedInAir: float			= 100.0
 
  ## If `false`, then [member speed] is applied directly.
 @export var shouldApplyAccelerationOnFloor: bool = true
-@export_range(50.0,   1000.0, 50.0) var accelerationOnFloor: float	= 800.0
+@export_range(50.0,	1000.0, 5.0) var accelerationOnFloor: float	= 800.0
 
  ## If `false`, then [member speed] is applied directly.
 @export var shouldApplyAccelerationInAir: bool = true
-@export_range(50.0,   1000.0, 50.0) var accelerationInAir: float	= 400.0
+@export_range(50.0,	1000.0, 5.0) var accelerationInAir: float	= 400.0
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
-@export_range(0, 10.0, 0.1) var gravityScale: float					= 1.0
+@export_range(0.0,	10.0, 0.1) var gravityScale: float			= 1.0
 
 @export_subgroup("Friction")
 @export var shouldApplyFrictionOnFloor: bool = true
-@export_range(100.0, 2000.0, 100.0) var frictionOnFloor: float		= 1000.0
+@export_range(100.0, 2000.0, 5.0) var frictionOnFloor: float	= 1000.0
 
 @export var shouldApplyFrictionInAir: bool = true
-@export_range(100.0, 2000.0, 100.0) var frictionInAir: float		= 200.0
+@export_range(100.0, 2000.0, 5.0) var frictionInAir: float		= 200.0
 
 #endregion
 
