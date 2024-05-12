@@ -43,7 +43,7 @@ func _process(delta: float):
 	var body: CharacterBody2D = parentEntity.body
 
 	if flipWhenWalkingLeft:
-		animatedSprite.flip_h = true if signf(platformControlComponent.lastDirection) < 0.0 else false
+		animatedSprite.flip_h = true if signf(platformControlComponent.lastInputDirection) < 0.0 else false
 		# Debug.watchList.hDirection = platformControlComponent.lastDirection
 
 	if not idleAnimation.is_empty() \
