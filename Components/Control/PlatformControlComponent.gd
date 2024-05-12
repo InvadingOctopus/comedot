@@ -1,4 +1,4 @@
-## Handles horizontal movement and gravity/falling.
+## Handles horizontal movement and gravity/falling in a "platform" world.
 ## NOTE: Jumping is handled by [JumpControlComponent].
 
 class_name PlatformControlComponent
@@ -35,11 +35,12 @@ extends BodyComponent
 
 #region State
 
-enum State { idle, walk }
+enum State { idle, moveOnFloor, moveInAir }
 
 var states = {
-	State.idle: null,
-	State.walk: null
+	State.idle:			null,
+	State.moveOnFloor:	null,
+	State.moveInAir:	null,
 	}
 
 var currentState: State:
@@ -47,10 +48,15 @@ var currentState: State:
 		currentState = newValue
 		# Debug.printDebug(str(currentState))
 
-var inputDirection: float
-var lastDirection:  float
-var wasOnFloor	 := false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
 var gravity:		float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
+
+var inputDirection:	float
+var lastDirection:	float
+var isInputZero:	bool = true
+
+var isOnFloor:		bool ## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
+var wasOnFloor:		bool = false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
+var wasOnWall:		bool = false ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
 
 #endregion
 
@@ -66,45 +72,55 @@ func _ready() -> void:
 
 func _physics_process(delta: float):
 	processGravity(delta)
-	processWalkInput(delta)
 
-	wasOnFloor = body.is_on_floor()
+	# Cache frequently used properties
+	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
+
+	processInput()
+	#processAccelerationOnFloor(delta)
+	#processAccelerationInAir(delta)
+	processAllAcceleration(delta)
+	#processFrictionOnFloor(delta)
+	#processFrictionInAir(delta)
+	processAllFriction(delta)
+
+	self.wasOnFloor = isOnFloor
+	self.wasOnWall = body.is_on_wall() # NOTE: NOT `is_on_wall_only()`
+
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 
-
-func processWalkInput(delta):
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions defined in the Project Settings.
-	self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
-
-	if inputDirection:
-		if currentState == State.idle: currentState = State.walk
-
-		processAllAcceleration(delta)
-
-		lastDirection = inputDirection #= 0 if inputDirection == 1 else -PI / 2
-
-	else:
-		processAllFriction(delta) # Slow down if there is no input.
+	#debugInfo()
 
 
 func processGravity(delta: float):
 	# Vertical Slowdown
-	if not body.is_on_floor():
+	if not body.is_on_floor(): # NOTE: Cache [isOnFloor] after processing gravity.
 		body.velocity.y += (gravity * gravityScale) * delta
-
-	#if body.is_on_floor(): # Handled in JumpControlComponent
-		#currentNumberOfJumps = 0
 
 	if currentState != State.idle and is_zero_approx(body.velocity.x) and is_zero_approx(body.velocity.y):
 		currentState = State.idle
 
 
+func processInput():
+	# Get the input direction and handle the movement/deceleration.
+	self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+
+	# Cache properties that are accessed often to avoid repeated function calls on other objects.
+	self.isInputZero = is_zero_approx(inputDirection)
+
+	if not isInputZero:
+
+		if currentState == State.idle:
+			currentState = State.moveOnFloor if isOnFloor else State.moveInAir
+
+		lastDirection = inputDirection
+
+
 func processAllAcceleration(delta: float):
 	# Nothing to do if there is no player input.
-	if is_zero_approx(inputDirection): return
+	if isInputZero: return
 
-	if body.is_on_floor(): # Are we on the floor?
+	if isOnFloor: # Are we on the floor?
 		if shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
 			body.velocity.x = move_toward(body.velocity.x, speedOnFloor * inputDirection, accelerationOnFloor * delta)
 		else:
@@ -119,11 +135,11 @@ func processAllAcceleration(delta: float):
 func processAllFriction(delta: float):
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input.
-	if not is_zero_approx(inputDirection): return
+	if not isInputZero: return
 
-	if shouldApplyFrictionOnFloor and body.is_on_floor():
+	if shouldApplyFrictionOnFloor and isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionOnFloor * delta)
-	elif shouldApplyFrictionInAir and not body.is_on_floor():
+	elif shouldApplyFrictionInAir and not isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionInAir * delta)
 
 
@@ -132,19 +148,39 @@ func processAllFriction(delta: float):
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
 func processAccelerationOnFloor(delta: float):
-	if not is_zero_approx(inputDirection) and body.is_on_floor():
+	if shouldApplyAccelerationOnFloor and (not isInputZero) and isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, speedOnFloor * inputDirection, accelerationOnFloor * delta)
 
+
 func processAccelerationInAir(delta: float):
-	if not is_zero_approx(inputDirection) and not body.is_on_floor():
+	if shouldApplyAccelerationInAir and (not isInputZero) and (not isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, speedInAir * inputDirection, accelerationInAir * delta)
 
+
 func processFrictionOnFloor(delta: float):
-	if is_zero_approx(inputDirection) and body.is_on_floor():
+	# Friction on floor should only be applied if there is no input;
+	# otherwise the player would not be able to start moving in the first place!
+	if shouldApplyFrictionOnFloor and isInputZero and isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionOnFloor * delta)
 
+
 func processFrictionInAir(delta: float):
-	if is_zero_approx(inputDirection) and not body.is_on_floor():
+	if shouldApplyFrictionInAir and isInputZero and (not isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionInAir * delta)
 
 #endregion
+
+
+func debugInfo():
+	Debug.watchList.input		= inputDirection
+	Debug.watchList.velocity	= body.velocity
+	Debug.watchList.isOnFloor	= isOnFloor
+	Debug.watchList.wasOnFloor	= wasOnFloor
+	Debug.watchList.wasOnWall	= wasOnWall
+
+	if shouldApplyFrictionOnFloor and isInputZero and isOnFloor:
+		Debug.watchList.friction = "floor"
+	elif shouldApplyFrictionInAir and isInputZero and (not isOnFloor):
+		Debug.watchList.friction = "air"
+	else:
+		Debug.watchList.friction = "none"
