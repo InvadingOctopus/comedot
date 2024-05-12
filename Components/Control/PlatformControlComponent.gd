@@ -95,7 +95,7 @@ func _physics_process(delta: float):
 
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 
-	debugInfo()
+	#debugInfo()
 
 
 func processGravity(delta: float):
