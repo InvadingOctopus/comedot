@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Go2DoT"
+config/name="Godoctopus"
 config/description="Invading Octopus's Component-based Framework for Godot 2D"
 run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
