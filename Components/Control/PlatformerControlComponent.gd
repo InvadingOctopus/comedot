@@ -2,7 +2,7 @@
 ## NOTE: Gravity is handled by [GravityComponent]. Jumping is handled by [JumpControlComponent].
 ## Requirements: Entity with [CharacterBody2D]
 
-class_name PlatformControlComponent
+class_name PlatformerControlComponent
 extends BodyComponent
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ

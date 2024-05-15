@@ -1,5 +1,5 @@
 ## Handles jumps.
-## NOTE: Gravity and falling is handled by [PlatformControlComponent]
+## NOTE: Gravity and falling is handled by [PlatformerControlComponent]
 
 class_name JumpControlComponent
 extends BodyComponent

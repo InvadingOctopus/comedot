@@ -1,5 +1,5 @@
-## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [PlatformControlComponent]'s movement.
-## Requirements: AnimatedSprite2D, CharacterBody2D, PlatformControlComponent (preceding this)
+## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [PlatformerControlComponent]'s movement.
+## Requirements: AnimatedSprite2D, CharacterBody2D, PlatformerControlComponent (preceding this)
 
 
 class_name PlatformControlAnimationComponent
@@ -20,7 +20,7 @@ extends Component
 
 #region State
 var animatedSprite: AnimatedSprite2D
-var platformControlComponent: PlatformControlComponent
+var platformControlComponent: PlatformerControlComponent
 #endregion
 
 
@@ -31,7 +31,7 @@ var platformControlComponent: PlatformControlComponent
 
 func _ready():
 	self.animatedSprite = parentEntity.findFirstChildOfType(AnimatedSprite2D)
-	self.platformControlComponent = self.findCoComponent(PlatformControlComponent)
+	self.platformControlComponent = self.findCoComponent(PlatformerControlComponent)
 
 
 func _process(delta: float):
