@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://3ousmbcfyuac"]
+[gd_scene load_steps=8 format=3 uid="uid://3ousmbcfyuac"]
 
 [ext_resource type="Script" path="res://Entities/Objects/BulletEntity.gd" id="1_iwt6f"]
 [ext_resource type="Texture2D" uid="uid://cs0utush8q26" path="res://Assets/Images/SF Symbols/arrowtriangle.right.fill.svg" id="2_i8p4m"]
@@ -16,7 +16,7 @@ size = Vector2(8, 8)
 
 [node name="Bullet" type="Area2D" groups=["entities"]]
 collision_layer = 1024
-collision_mask = 30
+collision_mask = 24
 script = ExtResource("1_iwt6f")
 metadata/_edit_group_ = true
 
