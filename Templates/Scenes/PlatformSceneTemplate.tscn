@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dbwiosb1xulu5"]
+[gd_scene load_steps=9 format=3 uid="uid://dbwiosb1xulu5"]
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scenes/PlatformMapTemplate.tscn" id="2_atccb"]
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_mduvw"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_5pmqp"]
 [ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformControlComponent.tscn" id="5_1si6t"]
+[ext_resource type="PackedScene" uid="uid://b084t0dt3625" path="res://Components/Physics/GravityComponent.tscn" id="5_m8sxv"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="6_u0l22"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jfq8j"]
@@ -31,10 +32,12 @@ shape = SubResource("RectangleShape2D_jfq8j")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
 
+[node name="GravityComponent" parent="PlayerEntity" instance=ExtResource("5_m8sxv")]
+
 [node name="PlatformControlComponent" parent="PlayerEntity" instance=ExtResource("5_1si6t")]
 speedOnFloor = 200.0
-speedInAir = 150.0
 shouldApplyAccelerationOnFloor = false
+speedInAir = 150.0
 shouldApplyAccelerationInAir = false
 accelerationInAir = 800.0
 shouldApplyFrictionInAir = false

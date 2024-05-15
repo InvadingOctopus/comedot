@@ -1,5 +1,6 @@
-## Handles horizontal movement and gravity/falling in a "platform" world.
-## NOTE: Jumping is handled by [JumpControlComponent].
+## Handles horizontal movement in a "platform" world.
+## NOTE: Gravity is handled by [GravityComponent]. Jumping is handled by [JumpControlComponent].
+## Requirements: Entity with [CharacterBody2D]
 
 class_name PlatformControlComponent
 extends BodyComponent
@@ -7,6 +8,8 @@ extends BodyComponent
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
 #region Parameters
+
+@export var isEnabled: 									bool = true
 
 @export_subgroup("Movement on Floor")
 
@@ -22,7 +25,7 @@ extends BodyComponent
 
 @export_subgroup("Movement in Air")
 
-@export var shouldAllowMovementInputInAir:					bool  = true
+@export var shouldAllowMovementInputInAir:				bool  = true
 
 @export_range(0,   1000, 5) var speedInAir:				float = 100.0
 
@@ -30,11 +33,8 @@ extends BodyComponent
 @export var shouldApplyAccelerationInAir:				bool  = true
 @export_range(50,  1000, 5) var accelerationInAir:		float = 400.0
 
-@export var shouldApplyFrictionInAir:					bool  = true
-@export_range(0,   2000, 5) var frictionInAir:			float = 200.0
-
-## 1.0 is normal gravity as defined in Project Settings/Physics/2D
-@export_range(0,  10, 0.05) var gravityScale:			float = 1.0
+@export var shouldApplyFrictionInAir:					bool  = true ## Applies horizontal friction when not on a floor (not gravity).
+@export_range(0,   2000, 5) var frictionInAir:			float = 200.0 ## Applies horizontal friction when not on a floor (not gravity).
 
 #endregion
 
@@ -53,8 +53,6 @@ var currentState: State:
 	set(newValue):
 		currentState = newValue
 		# Debug.printDebug(str(currentState))
-
-var gravity:		float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
 var inputDirection:	float
 var lastInputDirection:	float
@@ -77,7 +75,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float):
-	processGravity(delta)
+	if not isEnabled: return
+
+	checkIdleState()
 
 	# Cache frequently used properties
 	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
@@ -98,16 +98,16 @@ func _physics_process(delta: float):
 	#debugInfo()
 
 
-func processGravity(delta: float):
-	# Vertical Slowdown
-	if not body.is_on_floor(): # NOTE: Cache [isOnFloor] after processing gravity.
-		body.velocity.y += (gravity * gravityScale) * delta
-
+func checkIdleState():
 	if currentState != State.idle and is_zero_approx(body.velocity.x) and is_zero_approx(body.velocity.y):
 		currentState = State.idle
 
 
+## Handled player input.
+## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processInput():
+	if not isEnabled: return
+
 	# Get the input direction and handle the movement/deceleration.
 	self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
 
@@ -126,6 +126,7 @@ func processInput():
 
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.
+## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processAllMovement(delta: float):
 	# Nothing to do if there is no player input.
 	if isInputZero: return
@@ -143,6 +144,7 @@ func processAllMovement(delta: float):
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
+## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processAllFriction(delta: float):
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input, OR

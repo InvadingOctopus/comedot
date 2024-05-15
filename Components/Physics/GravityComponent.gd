@@ -1,6 +1,5 @@
 ## Applies gravity to the parent entity's [CharacterBody2D] every frame.
-## Requirements: Entity with CharacterBody2D
-
+## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
 extends BodyComponent
