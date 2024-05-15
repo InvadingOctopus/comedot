@@ -2,7 +2,7 @@
 ## Requirements: AnimatedSprite2D, CharacterBody2D, PlatformerControlComponent (preceding this)
 
 
-class_name PlatformControlAnimationComponent
+class_name PlatformerAnimationComponent
 extends Component
 
 # TODO: A better name :)

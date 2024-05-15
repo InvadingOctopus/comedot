@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwxjqdxf2dqcr"]
+
+[ext_resource type="Script" path="res://Components/Visual/PlatformerAnimationComponent.gd" id="1_tcejl"]
+
+[node name="PlatformerAnimationComponent" type="Node" groups=["components"]]
+script = ExtResource("1_tcejl")
