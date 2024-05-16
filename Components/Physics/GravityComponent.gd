@@ -9,7 +9,7 @@ extends BodyComponent
 @export var isEnabled := true
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
-@export_range(0,  10, 0.05) var gravityScale: float = 1.0
+@export_range(-10, 10, 0.05) var gravityScale: float = 1.0
 #endregion
 
 
