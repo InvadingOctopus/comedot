@@ -1,4 +1,4 @@
-## Applies a set of movements relative to the entity's position.
+## Applies a set of movements relative to the a node's position (which may not be the entity).
 ## Uses a list of vectors which get "depleted" each frame.
 ## Requirements: Needs care when used together with other movement-manipulating components.
 
@@ -13,11 +13,13 @@ extends Component
 
 #region Parameters
 
+@export var nodeOverride: Node2D ## If `null` then the parentEntity is used.
+
 @export_range(0, 1000, 5) var speed: float = 50.0
 
 ## A list of vectors representing movement relative to the current position,
 ## such as "Go left 10 pixels" or "Go northwest 45 pixels".
-@export var vectors: Array[Vector2]
+@export var vectors: Array[Vector2] = [Vector2(32, 0), Vector2(-32, 0)]
 
 @export_range(0, 60, 0.1, "seconds") var initialDelay: float = 0.0 ## The delay between the first move. NOT repeated in subsequent loops.
 
@@ -31,6 +33,7 @@ extends Component
 
 
 #region State
+var node: Node2D
 var currentMoveIndex: int = 0
 var currentVector:	Vector2 ## A vector represeting the remaining amount of relative movement to apply.
 
@@ -56,6 +59,17 @@ func _ready():
 		self.hasNoMoreMoves = true
 		return
 
+	if self.nodeOverride:
+		self.node = self.nodeOverride
+	elif self.parentEntity:
+		self.node = self.parentEntity
+	elif self.get_parent():
+		self.node = self.get_parent()
+	else:
+		printError("No parent entity or node!")
+		self.isEnabled = false
+		return
+
 	if initialDelay > 0:
 		self.isInDelay = true # Prevent frame updates
 		await get_tree().create_timer(initialDelay).timeout
@@ -68,14 +82,14 @@ func _ready():
 func _physics_process(delta: float):
 	if (not isEnabled) or isInDelay or hasNoMoreMoves or self.currentVector.is_zero_approx(): return
 
-	# The entity's position after applying the current movement vector.
-	var entityDestination: Vector2 = parentEntity.position + self.currentVector
+	# The node's position after applying the current movement vector.
+	var entityDestination: Vector2 = node.position + self.currentVector
 
-	# The segment of the vector which will be applied to the entity during this frame.
-	var movementForThisFrame: Vector2 = parentEntity.position.move_toward(entityDestination, speed * delta) - parentEntity.position
+	# The segment of the vector which will be applied to the node during this frame.
+	var movementForThisFrame: Vector2 = node.position.move_toward(entityDestination, speed * delta) - node.position
 
 	# Apply movment
-	parentEntity.position += movementForThisFrame
+	node.position += movementForThisFrame
 
 	# Reduce the remaining vector
 	self.currentVector -= movementForThisFrame
