@@ -301,4 +301,10 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
 #region Miscellaneous Functions
 
+func isValidArrayIndex(array: Array, index: int) -> bool:
+	if array.size() > 0 and index >= 0 and index < array.size():
+		return true
+	else:
+		return false
+
 #endregion
