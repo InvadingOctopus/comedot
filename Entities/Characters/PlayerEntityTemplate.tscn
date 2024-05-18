@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6c5d68ty35va"]
+[gd_scene load_steps=5 format=3 uid="uid://b6c5d68ty35va"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="2_wfqpn"]
-[ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="3_qek6v"]
-[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="4_tsh3x"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="3_3awaj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 size = Vector2(16, 16)
@@ -26,6 +25,4 @@ position_smoothing_speed = 100.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
 
-[node name="PlatformerControlComponent" parent="." instance=ExtResource("3_qek6v")]
-
-[node name="JumpControlComponent" parent="." instance=ExtResource("4_tsh3x")]
+[node name="OverheadControlComponent" parent="." instance=ExtResource("3_3awaj")]
