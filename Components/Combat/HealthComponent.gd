@@ -26,7 +26,7 @@ signal healthDidMax
 
 
 func _ready():
-	health.connect("changed", onHealthChanged, CONNECT_PERSIST) # CAUTION: TBD: Should `CONNECT_PERSIST` be used?
+	health.changed.connect(onHealthChanged, CONNECT_PERSIST) # CAUTION: TBD: Should `CONNECT_PERSIST` be used?
 	%DebugIndicator.text = str(health.value)
 
 

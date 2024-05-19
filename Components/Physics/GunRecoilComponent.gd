@@ -15,7 +15,7 @@ func _ready():
 	var gunComponent = self.findCoComponent(GunComponent)
 	if not gunComponent:
 		printError("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?
-	gunComponent.connect("didFire", self.onGunComponentDidFire)
+	gunComponent.didFire.connect(self.onGunComponentDidFire)
 
 
 func onGunComponentDidFire(bullet: Entity):

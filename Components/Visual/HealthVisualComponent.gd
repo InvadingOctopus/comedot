@@ -18,8 +18,8 @@ func connectToHealthComponent():
 		printWarning("Cannot find a HealthComponent in parent Entity: " + self.parentEntity.logName)
 		return
 
-	healthComponent.connect("healthDidDecrease", self.onHealthComponent_healthChanged)
-	healthComponent.connect("healthDidIncrease", self.onHealthComponent_healthChanged)
+	healthComponent.healthDidDecrease.connect(self.onHealthComponent_healthChanged)
+	healthComponent.healthDidIncrease.connect(self.onHealthComponent_healthChanged)
 
 
 func onHealthComponent_healthChanged(difference: int):

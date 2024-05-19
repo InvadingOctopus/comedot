@@ -19,7 +19,7 @@ extends Control
 
 
 func _ready():
-	GameState.connect("HUDStatUpdated", self.onGameState_HUDStatUpdated)
+	GameState.HUDStatUpdated.connect(self.onGameState_HUDStatUpdated)
 
 
 func onGameState_HUDStatUpdated(stat: Stat):
