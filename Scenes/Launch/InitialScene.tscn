@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://ccj2qlixoldhp"]
 
 [ext_resource type="Script" path="res://Scenes/Launch/InitialScene.gd" id="1_m65xo"]
-[ext_resource type="PackedScene" uid="uid://b3s0htoyevjib" path="res://Games/Sodov/SodovScene.tscn" id="2_jc1js"]
+[ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformSceneTemplate.tscn" id="2_t8fly"]
 
 [node name="CoordinatorScene" type="Node2D"]
 position = Vector2(2.08165e-12, 2.08165e-12)
 script = ExtResource("1_m65xo")
-mainGameScene = ExtResource("2_jc1js")
+mainGameScene = ExtResource("2_t8fly")
 
 [node name="GameScenePlaceholder" type="Node2D" parent="."]
 unique_name_in_owner = true
