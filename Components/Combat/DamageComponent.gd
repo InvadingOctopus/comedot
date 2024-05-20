@@ -1,4 +1,5 @@
 ## Causes damage to a [DamageReceivingComponent] which then passes it on to a [HealthComponent].
+## Requirements: This component should be an [Area2D] node.
 
 class_name DamageComponent
 extends Component
@@ -24,10 +25,11 @@ extends Component
 #endregion
 
 
-signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent)
-
-
 #region State
+
+## Returns this component as an [Area2D] node.
+var area: Area2D:
+	get: return (self.get_node(".") as Area2D)
 
 ## A shortcut that returns the [FactionComponent] of the parent [Entity].
 var factionComponent: FactionComponent:
@@ -37,6 +39,11 @@ var factionComponent: FactionComponent:
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
 
+#endregion
+
+
+#region Signals
+signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent)
 #endregion
 
 
