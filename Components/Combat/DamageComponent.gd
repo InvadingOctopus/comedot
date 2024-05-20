@@ -119,7 +119,7 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 
 	# TBD: Why use `handleDamage` directly here?
 	# Let's pretend it's because of performance :')
-	damageReceivingComponent.handleFractionalDamage(damageForThisFrame, factionComponent.factions, self.friendlyFire)
+	damageReceivingComponent.handleFractionalDamage(self, damageForThisFrame, factionComponent.factions, self.friendlyFire)
 
 
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:

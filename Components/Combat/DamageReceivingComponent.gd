@@ -14,12 +14,12 @@ extends Component
 
 #region Signals
 
-signal didReceiveDamage(amount: int, attackerFactions: int)
+signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int)
 
 ## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
 signal didCollideWithDamage(damageComponent: DamageComponent)
 
-signal didAccumulateFractionalDamage(amount: float, attackerFactions: int)
+signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: float, attackerFactions: int)
 
 #endregion
 
@@ -94,10 +94,10 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 	if not isEnabled: return
 
 	if attackerFactionComponent:
-		self.handleDamage(damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
+		self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else:
 		printWarning("No FactionComponent provided with DamageComponent on attacker Entity: " + str(damageComponent.parentEntity))
-		self.handleDamage(damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
+		self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
 
 #endregion
 
@@ -120,7 +120,8 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 	return shouldReceiveDamage
 
 
-func handleDamage(damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false):
+## NOTE: [param damageComponent] may be `null` in case the caller is a [DamageTimerComponent]
+func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false):
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire):
 		return
 
@@ -129,12 +130,12 @@ func handleDamage(damageAmount: int, attackerFactions: int = 0, friendlyFire: bo
 		healthComponent.damage(damageAmount)
 
 	# CHECK: Should this signal be emitted regardless of health?
-	didReceiveDamage.emit(damageAmount, attackerFactions)
+	didReceiveDamage.emit(damageComponent, damageAmount, attackerFactions)
 
 
 ## Converts float damage values to a single integer damage value.
 ## Such as damage accumulated over time/per frame.
-func handleFractionalDamage(fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false):
+func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false):
 	# INFO: The convention is to keep all player-facing stats as integers,
 	# to eliminate any potential bugs or inconsistencies arising from floating point math inaccuracies.
 
@@ -148,7 +149,7 @@ func handleFractionalDamage(fractionalDamage: float, attackerFactions: int = 0, 
 	self.accumulatedFractionalDamage += fractionalDamage
 
 	# TBD: Is it be costly to emit this signal each frame? Should it be emitted regardless of health?
-	didAccumulateFractionalDamage.emit(fractionalDamage, attackerFactions)
+	didAccumulateFractionalDamage.emit(damageComponent, fractionalDamage, attackerFactions)
 
 	# Drain the damage
 
@@ -166,7 +167,7 @@ func handleFractionalDamage(fractionalDamage: float, attackerFactions: int = 0, 
 			healthComponent.damage(damageToApply)
 
 		# CHECK: Should this signal be emitted regardless of health?
-		didReceiveDamage.emit(damageToApply, attackerFactions)
+		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
 
 
 func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> bool:
