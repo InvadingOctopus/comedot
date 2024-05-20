@@ -1,15 +1,21 @@
 ## Pushes the entity back when a [DamageReceivingComponent] takes damage.
-## Requirements: [DamageReceivingComponent], [CharacterBody2D]
+## Requirements: [CharacterBody2D], [DamageReceivingComponent]
 
 class_name KnockbackOnHitComponent
 extends Component
 
 
 #region Parameters
-## The relative direction and magnitude of the knockback.
-## i.e. a negative X value means knock backwards. Positive X means knock forwards.
-@export var knockbackForce: Vector2 = Vector2(-100, -50)
+
+## The magnitude of the knockback. A scalar which multiplies the vector of the direction of the colliding [DamageComponent].
+@export_range(0, 1000, 5) var knockbackForce: float = 150.0
+
+## If `true` then the entity's existing velocity is set to 0 before applying the knockback.
+## This ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source.
+@export var shouldZeroCurrentVelocity := true
+
 @export var isEnabled := true
+
 #endregion
 
 
@@ -27,15 +33,16 @@ func connectCoComponents():
 	damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
 
 
-func onDamageReceivingComponent_didReceiveDamage(amount: int, attackerFactions: int):
-	# Invert the force based on the player's current direction
-	# TODO: Better way of handling direction
-	var sprite := parentEntity.findFirstChildOfType(AnimatedSprite2D)
+func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int):
+	if not isEnabled: return
 
-	if not sprite.flip_h:
-		knockbackForce.x = -knockbackForce.x
+	# Get the direction of the colliding damage source
+	var direction := parentEntity.global_position.direction_to(damageComponent.area.global_position)
 
-	# Apply force
+	# Should we ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source?
+	if shouldZeroCurrentVelocity:
+		parentEntity.body.velocity = Vector2.ZERO
 
-	parentEntity.body.velocity += knockbackForce
+	# Apply force in the opposite direction
+	parentEntity.body.velocity += -direction * knockbackForce
 	parentEntity.callOnceThisFrame(parentEntity.body.move_and_slide)
