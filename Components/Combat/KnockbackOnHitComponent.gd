@@ -10,6 +10,10 @@ extends Component
 ## The magnitude of the knockback. A scalar which multiplies the vector of the direction of the colliding [DamageComponent].
 @export_range(0, 1000, 5) var knockbackForce: float = 150.0
 
+## Any additional fixed vector to apply.
+## For example, a slight jump when receiving damage in a platform game.
+@export var additionalVector: Vector2 = Vector2.ZERO
+
 ## If `true` then the entity's existing velocity is set to 0 before applying the knockback.
 ## This ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source.
 @export var shouldZeroCurrentVelocity := true
@@ -37,12 +41,16 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 	if not isEnabled: return
 
 	# Get the direction of the colliding damage source
-	var direction := parentEntity.global_position.direction_to(damageComponent.area.global_position)
+	var damageDirection := parentEntity.global_position.direction_to(damageComponent.area.global_position)
 
 	# Should we ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source?
 	if shouldZeroCurrentVelocity:
 		parentEntity.body.velocity = Vector2.ZERO
 
 	# Apply force in the opposite direction
-	parentEntity.body.velocity += -direction * knockbackForce
+	parentEntity.body.velocity += -damageDirection * knockbackForce
+
+	# Any more? For example, a jump when taking damage in a platform game.
+	parentEntity.body.velocity += additionalVector
+
 	parentEntity.callOnceThisFrame(parentEntity.body.move_and_slide)
