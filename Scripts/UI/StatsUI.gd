@@ -2,7 +2,7 @@
 ## To use this, add [Label] child nodes and name them with this convention: "[Stat's name]Label"
 ## NOTE: The case should be exactly the same as the name of the [Stat] which should be displayed via that label!
 
-class_name HUD
+class_name StatsUI
 extends Control
 
 
