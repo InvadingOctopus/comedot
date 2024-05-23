@@ -34,8 +34,16 @@ func onGameState_HUDStatUpdated(stat: Stat):
 
 	if shouldPrefixValueWithStatName: prefix += " " + stat.name + " "
 
-	label.text = prefix + str(stat.value) + suffix
+	label.text = buildLabelText(prefix, stat, suffix)
 	animateLabel(label, stat.value, stat.previousValue)
+
+
+## Combines the prefix, value of the stat and the suffix.
+## May be customized by a subclass for game specific styles,
+## e.g.: drawing multiple hearts instead of a number to represent lives.
+func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
+	var labelText: String = str(prefix, stat.value, suffix)
+	return labelText
 
 
 ## Plays different animations on a label depending on how the [Stat]'s value changes.
