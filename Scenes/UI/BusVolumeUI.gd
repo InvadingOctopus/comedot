@@ -1,5 +1,6 @@
 ## Sets the volume of an audio bus in discrete steps.
 
+@tool
 #class_name BusVolumeUI
 extends Control
 
@@ -11,18 +12,21 @@ extends Control
 @export var busTitle: String = "V":
 	set(newValue):
 		busTitle = newValue
-		busLabel.text = busTitle
+		if busLabel: busLabel.text = busTitle
 
 #endregion
 
 
 #region State
+
+const maxSteps := 5
+
 @onready var busLabel: Label = %BusLabel
 @onready var volumeLabel: Label = %VolumeLabel
 
-var volumeInSteps: int = 3: ## 5 steps, where 0 = Mute, 5 = 0 db
+var volumeInSteps: int = 4: ## 5 steps, where 0 = Mute, 4 = 0 db
 	set(newValue):
-		volumeInSteps = newValue
+		volumeInSteps = clampi(newValue, 0, maxSteps)
 		volumeLabel.text = str(volumeInSteps)
 		setBusVolume()
 
@@ -36,21 +40,23 @@ func _ready() -> void:
 
 
 func getBusVolume() -> int:
-	# TODO: Implement
+	# TODO: Implement; Convert a range of decibles to discrete steps
 	return 0
 
 
 func setBusVolume():
 	var volumeInDb: float = 0
+	var labelColor := Color.WHITE
 
 	match self.volumeInSteps:
-		0: volumeInDb = -60
+		0: volumeInDb = -60; labelColor = Color.GRAY
 		1: volumeInDb = -24
 		2: volumeInDb = -12
 		3: volumeInDb = -6
-		4: volumeInDb = 0
-		5: volumeInDb = +6
+		4: volumeInDb =  0;  labelColor = Color.GREEN
+		5: volumeInDb = +6;  labelColor = Color.RED
 
+	volumeLabel.modulate = labelColor
 	AudioServer.set_bus_mute(busIndex, self.volumeInSteps <= 0)
 	AudioServer.set_bus_volume_db(busIndex, volumeInDb)
 
