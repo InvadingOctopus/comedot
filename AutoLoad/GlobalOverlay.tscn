@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" path="res://AutoLoad/GlobalOverlay.gd" id="1_ym7ug"]
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://Scenes/UI/PauseButton.tscn" id="2_e15vu"]
+[ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://Scenes/UI/PauseSettingsUI.tscn" id="3_sywc3"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
 length = 0.001
@@ -116,6 +117,11 @@ offset_top = 8.0
 offset_right = 44.0
 offset_bottom = 40.0
 scale = Vector2(0.5, 0.5)
+
+[node name="PauseSettingsUI" parent="." instance=ExtResource("3_sywc3")]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true

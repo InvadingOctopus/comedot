@@ -1,10 +1,13 @@
 ## The scene containing graphics which are overlaid on top of the actual game content at all times.
 ## Used for performing transition effects between scenes such as fade-in and fade-out.
 ## The [process_mode] is set to `PROCESS_MODE_ALWAYS` which ignored the [SceneTree.paused] flag in order to perform transition animations while the gameplay is paused.
+
+#class_name GlobalOverlay
 extends CanvasLayer
 
 
-@onready var animationPlayer = %AnimationPlayer
+@onready var animationPlayer := %AnimationPlayer
+@onready var pauseSettingsUI := %PauseSettingsUI
 
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
@@ -23,3 +26,5 @@ func fadeOut():
 	await animationPlayer.animation_finished
 
 
+func setPauseSettingsVisibility(visible: bool):
+	pauseSettingsUI.visible = visible

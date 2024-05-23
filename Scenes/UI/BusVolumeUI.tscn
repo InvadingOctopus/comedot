@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdj4v68mvmp1u"]
+
+[ext_resource type="Script" path="res://Scenes/UI/BusVolumeUI.gd" id="1_06fqj"]
+
+[node name="BusVolumeUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 88.0
+offset_bottom = 24.0
+script = ExtResource("1_06fqj")
+busIndex = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+offset_right = 88.0
+offset_bottom = 24.0
+
+[node name="BusLabel" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "V"
+
+[node name="DecreaseButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "«"
+
+[node name="VolumeLabel" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+
+[node name="IncreaseButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "»"
+
+[connection signal="pressed" from="HBoxContainer/DecreaseButton" to="." method="onDecreaseButton_pressed"]
+[connection signal="pressed" from="HBoxContainer/IncreaseButton" to="." method="onIncreaseButton_pressed"]
