@@ -6,6 +6,8 @@ class_name StatsUI
 extends Control
 
 
+#region Parameters
+
 @export var shouldPrefixValueWithStatName := false
 
 ## An optional dictionary of additional prefixes to write before the value of each [Stat].
@@ -17,13 +19,29 @@ extends Control
 ## The dictionary type should be [StringName:String], where the keys are the names of the stats, in the exact case.
 @export var suffixes = {}
 
+## A list of stats to display as soon as the Stats UI is ready,
+## without waiting for a signal about a change.
+@export var statsToUpdateOnReady: Array[Stat]
+
+#endregion
+
 
 func _ready():
+	updateInitialStats()
 	GameState.HUDStatUpdated.connect(self.onGameState_HUDStatUpdated)
 
 
-func onGameState_HUDStatUpdated(stat: Stat):
+func updateInitialStats():
+	if statsToUpdateOnReady.is_empty(): return
+	for stat in statsToUpdateOnReady:
+		updateStatLabel(stat, false)
 
+
+func onGameState_HUDStatUpdated(stat: Stat):
+	updateStatLabel(stat)
+
+
+func updateStatLabel(stat: Stat, animate: bool = true):
 	var label: Label = self.find_child(stat.name + "Label") as Label
 	if not label: return
 
@@ -35,7 +53,7 @@ func onGameState_HUDStatUpdated(stat: Stat):
 	if shouldPrefixValueWithStatName: prefix += " " + stat.name + " "
 
 	label.text = buildLabelText(prefix, stat, suffix)
-	animateLabel(label, stat.value, stat.previousValue)
+	if animate: animateLabel(label, stat.value, stat.previousValue)
 
 
 ## Combines the prefix, value of the stat and the suffix.
