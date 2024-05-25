@@ -1,4 +1,5 @@
 ## Receives damage from a [DamageComponent] and passes it on to the parent [Entity]'s [HealthComponent].
+## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D]
 
 class_name DamageReceivingComponent
 extends Component
@@ -8,7 +9,15 @@ extends Component
 #region Parameters
 @export var healthComponent:  HealthComponent
 @export var factionComponent: FactionComponent
-@export var isEnabled: bool = true
+
+@export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
+	set(newValue):
+		isEnabled = newValue
+		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
+		# e.g. after an [InvulnerabilityOnHitComponent] ends.
+		self.area.monitorable = newValue
+		self.area.monitoring  = newValue
+
 #endregion
 
 
@@ -25,6 +34,9 @@ signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: f
 
 
 #region State
+
+var area: Area2D:
+	get: return self.get_node(".") as Area2D # HACK: TODO: Find better way to cast
 
 ## To eliminate any possibility of bugs or inaccuracies arising from floating point math imprecision.
 var accumulatedFractionalDamage: float
