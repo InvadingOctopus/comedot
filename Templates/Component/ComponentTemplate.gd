@@ -8,19 +8,19 @@ extends Component
 
 
 #region Parameters
-@export_range(0.0, 10.0, 1.0) var speed: float
+@export_range(0.0, 10.0, 1.0) var speed: float ## Placeholder
 @export var isEnabled := true
 #endregion
 
 
 #region State
-var coComponent: Component:
+var coComponent: Component: ## Placeholder
 	get: return self.findCoComponent(Component)
 #endregion
 
 
 #region Signals
-signal didSomethingHappen
+signal didSomethingHappen ## Placeholder
 #endregion
 
 
