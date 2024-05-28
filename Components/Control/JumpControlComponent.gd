@@ -7,7 +7,7 @@ extends BodyComponent
 
 #region Parameters
 @export var isEnabled: bool = true
-@export var parameters: PlatformerControlParameters = PlatformerControlParameters.new()
+@export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
 #endregion
 
 
