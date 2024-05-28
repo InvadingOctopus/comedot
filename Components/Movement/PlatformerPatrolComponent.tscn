@@ -2,5 +2,21 @@
 
 [ext_resource type="Script" path="res://Components/Movement/PlatformerPatrolComponent.gd" id="1_w6gon"]
 
-[node name="PlatformerPatrolComponent" type="Node" groups=["components"]]
+[node name="PlatformerPatrolComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_w6gon")
+
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-32, 2.08165e-12)
+target_position = Vector2(2.08165e-12, 16)
+collision_mask = 16
+hit_from_inside = true
+collide_with_areas = true
+
+[node name="RayCastRight" type="RayCast2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(32, 2.08165e-12)
+target_position = Vector2(2.08165e-12, 16)
+collision_mask = 16
+hit_from_inside = true
+collide_with_areas = true
