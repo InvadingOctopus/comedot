@@ -35,8 +35,9 @@ extends Resource
 @export_subgroup("Jump")
 
 @export_range(0, 5, 1) var maxNumberOfJumps: int = 2
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity1stJump       := -350.0
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity1stJumpShort  := -175.0
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity2ndJump       := -300.0
+
+@export_range(-1000, -100, 5) var jumpVelocity1stJump:		float = -350.0 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
+@export_range(-1000, -100, 5) var jumpVelocity1stJumpShort:	float = -175.0 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
+@export_range(-1000, -100, 5) var jumpVelocity2ndJump:		float = -300.0 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
 
 #endregion
