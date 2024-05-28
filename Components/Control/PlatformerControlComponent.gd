@@ -28,9 +28,10 @@ var currentState: State:
 		currentState = newValue
 		# Debug.printDebug(str(currentState))
 
-var inputDirection:	float
-var lastInputDirection:	float
-var isInputZero:	bool = true
+var inputDirectionOverride:	float = 0 ## Overrides [member inputDirection] for example to allow control by AI agents. NOTE: Reset to 0 every frame.
+var inputDirection:			float
+var lastInputDirection:		float
+var isInputZero:			bool = true
 
 var isOnFloor:		bool ## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
 var wasOnFloor:		bool = false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
@@ -51,17 +52,14 @@ func _ready() -> void:
 func _physics_process(delta: float):
 	if not isEnabled: return
 
-	checkIdleState()
-
-	# Cache frequently used properties
-	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
-
 	processInput()
-	#processAccelerationOnFloor(delta)
-	#processAccelerationInAir(delta)
+	updateState()
+
+	#applyAccelerationOnFloor(delta)
+	#applyAccelerationInAir(delta)
 	processAllMovement(delta)
-	#processFrictionOnFloor(delta)
-	#processFrictionInAir(delta)
+	#applyFrictionOnFloor(delta)
+	#applyFrictionInAir(delta)
 	processAllFriction(delta)
 
 	self.wasOnFloor = isOnFloor
@@ -72,28 +70,39 @@ func _physics_process(delta: float):
 	#debugInfo()
 
 
-func checkIdleState():
+## NOTE: MUST be called AFTER [processInput]
+func updateState():
+	# DESIGN: Using `match` here may seem too cluttered and ambiguous
+
+	if currentState == State.idle and not isInputZero:
+		# CHECK: Should this be done in [processInput()] so that there is only one check for [isInputZero]?
+		currentState = State.moveOnFloor if isOnFloor else State.moveInAir
+
 	if currentState != State.idle and is_zero_approx(body.velocity.x) and is_zero_approx(body.velocity.y):
 		currentState = State.idle
 
+	# Cache frequently used properties
+	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
 
-## Handled player input.
+
+## Handles player input.
 ## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processInput():
 	if not isEnabled: return
 
 	# Get the input direction and handle the movement/deceleration.
-	self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+	if inputDirectionOverride:
+		self.inputDirection = inputDirectionOverride
+	else:
+		self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+
+	# Reset the override.
+	inputDirectionOverride = 0
 
 	# Cache properties that are accessed often to avoid repeated function calls on other objects.
 	self.isInputZero = is_zero_approx(inputDirection)
 
-	if not isInputZero:
-
-		if currentState == State.idle:
-			currentState = State.moveOnFloor if isOnFloor else State.moveInAir
-
-		lastInputDirection = inputDirection
+	if not isInputZero: lastInputDirection = inputDirection
 
 	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
