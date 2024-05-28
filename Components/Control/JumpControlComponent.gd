@@ -1,17 +1,13 @@
-## Handles jumps.
-## NOTE: Gravity and falling is handled by [PlatformerControlComponent]
+## Handles jumping.
+## Requirements: Entity with [CharacterBody2D], NOTE: Gravity and falling is handled by [GravityComponent]
 
 class_name JumpControlComponent
 extends BodyComponent
 
 
 #region Parameters
-
-#@export_subgroup("Jump")
-@export_range(0, 5, 1) var maxNumberOfJumps: int = 2
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity1stJump       := -350.0
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity1stJumpShort  := -175.0
-@export_range(-1000.0, -100.0, 50.0) var jumpVelocity2ndJump       := -300.0
+@export var isEnabled: bool = true
+@export var parameters: PlatformerControlParameters = PlatformerControlParameters.new()
 #endregion
 
 
@@ -39,41 +35,44 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent):
+	if not isEnabled: return
 	checkJumpInput()
 
 
 func checkJumpInput():
 	var shouldJump = false
+	if not isEnabled: return
 
 	# Initial or mid-air jump
 
 	if Input.is_action_just_pressed(GlobalInput.Actions.jump):
 		if currentNumberOfJumps == 0: shouldJump = body.is_on_floor()
-		else: shouldJump = currentNumberOfJumps < maxNumberOfJumps
+		else: shouldJump = currentNumberOfJumps < parameters.maxNumberOfJumps
 
 	if shouldJump:
 		if currentNumberOfJumps == 0:
-			body.velocity.y = jumpVelocity1stJump
+			body.velocity.y = parameters.jumpVelocity1stJump
 		else:
-			body.velocity.y = jumpVelocity2ndJump
+			body.velocity.y = parameters.jumpVelocity2ndJump
 
 		currentNumberOfJumps += 1
 		currentState = State.jump
 
 	# Short initial jump
 
-	if Input.is_action_just_released(GlobalInput.Actions.jump) and body.velocity.y < jumpVelocity1stJumpShort:
-		body.velocity.y = jumpVelocity1stJumpShort
+	if Input.is_action_just_released(GlobalInput.Actions.jump) and body.velocity.y < parameters.jumpVelocity1stJumpShort:
+		body.velocity.y = parameters.jumpVelocity1stJumpShort
 
 
 func _physics_process(delta: float):
-	processGravity(delta)
+	checkState()
+	if not isEnabled: return
 	#checkJumpInput(delta)
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 
 
-func processGravity(delta):
-	# NOTE: Falling down is handled by [PlatformMovementComponent]
+func checkState():
+	# NOTE: Falling down is handled by [GravityComponent]
 	# so the player can still fall without a jumping ability :)
 
 	if body.is_on_floor():

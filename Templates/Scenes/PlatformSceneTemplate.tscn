@@ -35,11 +35,5 @@ shape = SubResource("RectangleShape2D_jfq8j")
 [node name="GravityComponent" parent="PlayerEntity" instance=ExtResource("5_m8sxv")]
 
 [node name="PlatformerControlComponent" parent="PlayerEntity" instance=ExtResource("5_1si6t")]
-speedOnFloor = 200.0
-shouldApplyAccelerationOnFloor = false
-speedInAir = 150.0
-shouldApplyAccelerationInAir = false
-accelerationInAir = 800.0
-shouldApplyFrictionInAir = false
 
 [node name="JumpControlComponent" parent="PlayerEntity" instance=ExtResource("6_u0l22")]

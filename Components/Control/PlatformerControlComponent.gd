@@ -8,34 +8,8 @@ extends BodyComponent
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
 #region Parameters
-
-@export var isEnabled: 									bool = true
-
-@export_subgroup("Movement on Floor")
-
-@export_range(50,  1000, 5) var speedOnFloor:			float = 100
-
-## If `false`, then [member speed] is applied directly.
-@export var shouldApplyAccelerationOnFloor:				bool  = true
-@export_range(50,  1000, 5) var accelerationOnFloor:	float = 800
-
-@export var shouldApplyFrictionOnFloor:					bool  = true
-@export_range(100, 2000, 5) var frictionOnFloor:		float = 1000
-
-
-@export_subgroup("Movement in Air")
-
-@export var shouldAllowMovementInputInAir:				bool  = true
-
-@export_range(0,   1000, 5) var speedInAir:				float = 100.0
-
-## If `false`, then [member speed] is applied directly.
-@export var shouldApplyAccelerationInAir:				bool  = true
-@export_range(50,  1000, 5) var accelerationInAir:		float = 400.0
-
-@export var shouldApplyFrictionInAir:					bool  = true ## Applies horizontal friction when not on a floor (not gravity).
-@export_range(0,   2000, 5) var frictionInAir:			float = 200.0 ## Applies horizontal friction when not on a floor (not gravity).
-
+@export var isEnabled: bool = true
+@export var parameters: PlatformerControlParameters = PlatformerControlParameters.new()
 #endregion
 
 
@@ -132,15 +106,15 @@ func processAllMovement(delta: float):
 	if isInputZero: return
 
 	if isOnFloor: # Are we on the floor?
-		if shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
-			body.velocity.x = move_toward(body.velocity.x, speedOnFloor * inputDirection, accelerationOnFloor * delta)
+		if parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
+			body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 		else:
-			body.velocity.x = inputDirection * speedOnFloor
-	elif shouldAllowMovementInputInAir: # Are we in the air and are movement changes allowed in air?
-		if shouldApplyAccelerationInAir: # Apply the speed gradually or instantly?
-			body.velocity.x = move_toward(body.velocity.x, speedInAir * inputDirection, accelerationInAir * delta)
+			body.velocity.x = inputDirection * parameters.speedOnFloor
+	elif parameters.shouldAllowMovementInputInAir: # Are we in the air and are movement changes allowed in air?
+		if parameters.shouldApplyAccelerationInAir: # Apply the speed gradually or instantly?
+			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 		else:
-			body.velocity.x = inputDirection * speedInAir
+			body.velocity.x = inputDirection * parameters.speedInAir
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
@@ -150,10 +124,10 @@ func processAllFriction(delta: float):
 	# only apply friction to slow down when there is no player input, OR
 	# NOTE: If movement is not allowed in air, then apply air friction regardless of player input.
 
-	if isOnFloor and shouldApplyFrictionOnFloor and isInputZero:
-		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionOnFloor * delta)
-	elif (not isOnFloor) and shouldApplyFrictionInAir and (isInputZero or not shouldAllowMovementInputInAir):
-		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionInAir * delta)
+	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
+		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
+	elif (not isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
+		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
 
 #region Standalone Functions
@@ -163,13 +137,13 @@ func processAllFriction(delta: float):
 ## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; this flag should be checked by caller.
 func applyAccelerationOnFloor(delta: float):
 	if (not isInputZero) and isOnFloor:
-		body.velocity.x = move_toward(body.velocity.x, speedOnFloor * inputDirection, accelerationOnFloor * delta)
+		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 
 
 ## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; this flag should be checked by caller.
 func applyAccelerationInAir(delta: float):
 	if (not isInputZero) and (not isOnFloor):
-		body.velocity.x = move_toward(body.velocity.x, speedInAir * inputDirection, accelerationInAir * delta)
+		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 
 
 ## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; this flag should be checked by caller.
@@ -177,14 +151,14 @@ func applyFrictionOnFloor(delta: float):
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
 	if isInputZero and isOnFloor:
-		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionOnFloor * delta)
+		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
 ## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; this flag should be checked by caller.
 func applyFrictionInAir(delta: float):
 	# If movement is not allowed in air, then apply air friction regardless of player input.
-	if (isInputZero or not shouldAllowMovementInputInAir) and (not isOnFloor):
-		body.velocity.x = move_toward(body.velocity.x, 0.0, frictionInAir * delta)
+	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not isOnFloor):
+		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
 #endregion
 
@@ -196,9 +170,9 @@ func debugInfo():
 	Debug.watchList.wasOnFloor	= wasOnFloor
 	Debug.watchList.wasOnWall	= wasOnWall
 	# Friction?
-	if isOnFloor and shouldApplyFrictionOnFloor and isInputZero:
+	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		Debug.watchList.friction = "floor"
-	elif (not isOnFloor) and shouldApplyFrictionInAir and (isInputZero or not shouldAllowMovementInputInAir):
+	elif (not isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
 		Debug.watchList.friction = "air"
 	else:
 		Debug.watchList.friction = "none"
