@@ -1,5 +1,5 @@
 #@tool
-@icon("res://Assets/Images/SF Symbols/puzzlepiece.extension.fill.svg")
+@icon("res://Assets/Icons/component.svg")
 
 class_name Component
 extends Node
