@@ -1,34 +1,61 @@
 ## Makes the entity move horizontally back and forth on a "floor" platform.
-## Requirements: [PlatformerControlComponent] AFTER this
+## Requirements: BEFORE [PlatformerControlComponent], After [CornerCollisionComponent]
 
 class_name PlatformerPatrolComponent
 extends Component
 
 # PLAN:
 # If we are not on the floor, do nothing.
-#
+# ?
 
 #region Parameters
-@export var isEnabled: bool = true
-@export_range(0, 10, 0.1, "seconds") var turningDelay: float
-@export_range(0, 10, 0.1, "pixels")  var floorDetectionGap: float = 0 ## The distance around the edges of the sprite for detecing the floor.
+
+## Not implemented yet
+@export_range(0, 10, 0.1, "seconds") var turningDelay: float # TODO: Implement
+
+@export_range(0, 16, 1, "pixels") var detectionGap: float = 0 ## The distance around the edges of the sprite for detecing the floor and walls.
+
 @export var randomizeInitialDirection: bool = false ## If `false`, move in the current direction of the sprite.
+
+@export var isEnabled: bool = true
+
 #endregion
 
 
 #region State
-@onready var rayCastLeft:  RayCast2D = %RayCastLeft
-@onready var rayCastRight: RayCast2D = %RayCastRight
+
+var isFloorOnLeft:	bool
+var isFloorOnRight:	bool
+var isWallOnLeft:	bool
+var isWallOnRight:	bool
 
 var patrolDirection: float:
 	set(newValue):
-		if newValue != patrolDirection: previousPatrolDirection = patrolDirection
-		patrolDirection = newValue
-		didTurn.emit()
+		# Update and emit signal only if we have a new direction
+		if not is_equal_approx(newValue, patrolDirection):
+			previousPatrolDirection = patrolDirection
+			patrolDirection = newValue
+			didTurn.emit()
 
 var previousPatrolDirection: float
 
-var platformerControlComponent: PlatformerControlComponent
+var sprite: Sprite2D:
+	get:
+		if not sprite: sprite = parentEntity.findFirstChildOfType(Sprite2D) # TODO: Check that this also picks up [AnimatedSprite2D]
+		return sprite
+
+var cornerCollisionComponent: CornerCollisionComponent:
+	get:
+		# Search for the co-component only once and save it for future access.
+		if not cornerCollisionComponent: cornerCollisionComponent = findCoComponent(CornerCollisionComponent)
+		return cornerCollisionComponent
+
+var platformerControlComponent: PlatformerControlComponent:
+	get:
+		# Search for the co-component only once and save it for future access.
+		if not platformerControlComponent: platformerControlComponent = findCoComponent(PlatformerControlComponent)
+		return platformerControlComponent
+
 #endregion
 
 
@@ -38,37 +65,45 @@ signal didTurn ## Emitted after the entity has turned around at the end of a pla
 
 
 func _ready():
-	setRayCastPositions()
 	setInitialDirection()
 
 
-func setRayCastPositions():
-	var sprite: Sprite2D = parentEntity.findFirstChildOfType(Sprite2D)
-	if not sprite: return
-
-	var spriteRect: Rect2 = sprite.get_rect()
-	rayCastLeft.position.x	= spriteRect.position.x - floorDetectionGap
-	rayCastRight.position.x	= spriteRect.end.x + floorDetectionGap
-
-	rayCastLeft.position.y	= spriteRect.end.y
-	rayCastRight.position.y	= spriteRect.end.y
-
-
 func setInitialDirection():
-	self.patrolDirection = 1 # TODO: PLACESHOLDER
+	if randomizeInitialDirection:
+		self.patrolDirection = [-1.0, 1.0].pick_random()
+	else:
+		# Use the [PlatformerControlComponent]'s previous direction, otherwise right.
+		if not is_zero_approx(platformerControlComponent.lastInputDirection):
+			self.patrolDirection = platformerControlComponent.lastInputDirection
+		else:
+			self.patrolDirection = Vector2.RIGHT.x
 
 
 func _physics_process(delta: float):
-	if not isEnabled: return
+	if (not isEnabled) or (not self.platformerControlComponent): return
 
-	if not self.platformerControlComponent:
-		self.platformerControlComponent = findCoComponent(PlatformerControlComponent)
-
+	updateCollisionFlags() # TBD: Should the raycasts be updated before or after movement?
 	updatePatrolDirection()
 	platformerControlComponent.inputDirectionOverride = processPatrol(delta)
 
-	#Debug.watchList.patrolDirection	= self.patrolDirection
-	#Debug.watchList.velocity		= body.velocity
+	#Debug.watchList.patrolDirection = self.patrolDirection
+	#Debug.watchList.velocity = body.velocity
+
+
+func resetCollisionFlags():
+	isFloorOnLeft	= false
+	isFloorOnRight	= false
+	isWallOnLeft	= false
+	isWallOnRight	= false
+
+
+func updateCollisionFlags():
+	if not cornerCollisionComponent: return
+	isFloorOnLeft	= cornerCollisionComponent.areaSWCollisionCount >= 1
+	isFloorOnRight	= cornerCollisionComponent.areaSECollisionCount >= 1
+	isWallOnLeft	= cornerCollisionComponent.areaNWCollisionCount >= 1 # TODO: Verify
+	isWallOnRight	= cornerCollisionComponent.areaNECollisionCount >= 1 # TODO: Verify
+	#debugInfo()
 
 
 ## Returns: inputDirectionOverride
@@ -89,40 +124,57 @@ func processPatrol(delta: float) -> float:
 ## Switches the patrol direction when the floor ends.
 func updatePatrolDirection():
 
-	var isFloorOnLeft  := rayCastLeft.is_colliding()
-	var isFloorOnRight := rayCastRight.is_colliding()
+	var newPatrolDirection: float = patrolDirection # Start as equal for comparison later.
 
-	#Debug.watchList.isFloorOnLeft  = isFloorOnLeft
-	#Debug.watchList.isFloorOnRight = isFloorOnRight
+	var isLeftBlocked		:= (not isFloorOnLeft)  or isWallOnLeft
+	var isRightBlocked		:= (not isFloorOnRight) or isWallOnRight
 
-	# Is there no floor in ANY direction?
+	# Scenario 1.0: If there is no floor in ANY direction, or if there are walls on both sides,
+	# then stay put.
 
-	if (not isFloorOnLeft) and (not isFloorOnRight):
-		patrolDirection = 0
-		return
+	if isLeftBlocked and isRightBlocked:
+		newPatrolDirection = 0
 
-	# Does the floor end in the direction we are currently patrolling?
+	elif is_zero_approx(patrolDirection):
 
-	var isPatrollingLeft  := patrolDirection < 0
-	var isPatrollingRight := patrolDirection > 0
-
-	if isPatrollingLeft and (isFloorOnRight and not isFloorOnLeft):
-		patrolDirection = Vector2.RIGHT.x
-	elif isPatrollingRight and (isFloorOnLeft and not isFloorOnRight):
-		patrolDirection = Vector2.LEFT.x
-
-	# If we are not patrolling in any direction,
-
-	if is_zero_approx(patrolDirection):
+		# Scenario 2.0: If we are not patrolling in any direction,
+		# Use the previous patrol direction, if any
 
 		if not is_zero_approx(previousPatrolDirection):
-			# Use the previous patrol direction, if any
-			patrolDirection = previousPatrolDirection
+			newPatrolDirection = previousPatrolDirection
 		else:
-			# Else check the floor on the right then on the left
-			if isFloorOnRight:
-				patrolDirection = Vector2.RIGHT.x
-			elif isFloorOnLeft:
-				patrolDirection = Vector2.LEFT.x
+			# 2.1: Else check if right is open then check the left.
+			if not isRightBlocked:  newPatrolDirection = Vector2.RIGHT.x
+			elif not isLeftBlocked: newPatrolDirection = Vector2.LEFT.x
 
-			# TODO: Randomize
+			# TODO: Randomize?
+
+	elif not is_zero_approx(patrolDirection):
+		# Scenario 3.0: Does the floor end, or did we hit a wall, in the direction we are currently patrolling?
+
+		var isPatrollingLeft	:= patrolDirection < 0
+		var isPatrollingRight	:= patrolDirection > 0
+
+		if isPatrollingLeft and isLeftBlocked:
+			newPatrolDirection = Vector2.RIGHT.x
+		elif isPatrollingRight and isRightBlocked:
+			newPatrolDirection = Vector2.LEFT.x
+
+	# If there is a turning delay, then stop movement,
+	# and change the direction after the delay.
+
+	if (not is_zero_approx(turningDelay)) and (not is_equal_approx(newPatrolDirection, patrolDirection)):
+		patrolDirection = 0
+		# TODO: Implement
+		return
+
+	patrolDirection = newPatrolDirection
+
+	# Signal will be emitted by property setter
+
+
+func debugInfo():
+	Debug.watchList.isFloorOnLeft	= isFloorOnLeft
+	Debug.watchList.isFloorOnRight	= isFloorOnRight
+	Debug.watchList.isWallOnLeft	= isWallOnLeft
+	Debug.watchList.isWallOnRight	= isWallOnRight
