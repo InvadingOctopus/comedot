@@ -140,4 +140,3 @@ func removeSiblingComponentsOfSameType() -> int:
 	return removalCount
 
 #endregion
-
