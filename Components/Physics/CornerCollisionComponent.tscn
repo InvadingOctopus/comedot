@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://Components/Physics/CornerCollisionComponent.gd" id="1_ou10c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7x1ra"]
-resource_local_to_scene = true
 size = Vector2(2, 2)
 
 [node name="CornerCollisionComponent" type="Node2D" groups=["components"]]
