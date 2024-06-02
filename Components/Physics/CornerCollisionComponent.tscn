@@ -6,7 +6,7 @@
 resource_local_to_scene = true
 size = Vector2(2, 2)
 
-[node name="CornerCollisionComponent" type="Node2D"]
+[node name="CornerCollisionComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_ou10c")
 metadata/_edit_group_ = true
 
