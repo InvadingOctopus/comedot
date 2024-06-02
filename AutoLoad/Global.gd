@@ -20,6 +20,7 @@ class SettingsPaths:
 	const gravity		:= &"physics/2d/default_gravity"
 #endregion
 
+
 #region Groups
 class Groups:
 	const components	:= &"components"
@@ -33,6 +34,7 @@ class Groups:
 	const zones			:= &"zones"
 #endregion Input Actions
 
+
 #region Animations
 class Animations: ## Animation labels
 	const overlayFadeIn		:= &"overlayFadeIn"
@@ -40,6 +42,18 @@ class Animations: ## Animation labels
 
 	const blink				:= &"blink"
 #endregion
+
+
+class CompassDirections: ## A list of unit vectors representing 8 compass directions.
+	const none		:= Vector2i.ZERO
+	const northWest	:= Vector2i(-1, -1)
+	const north		:= Vector2i.UP
+	const northEast	:= Vector2i(1, -1)
+	const east		:= Vector2i.RIGHT
+	const southEast	:= Vector2i(1, 1)
+	const south		:= Vector2i.DOWN
+	const southWest	:= Vector2i(-1, 1)
+	const west		:= Vector2i.LEFT
 
 #endregion
 
@@ -288,6 +302,24 @@ func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 
 
 #region Visual Functions
+
+func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
+	var position	:= rectangle.position
+	var center		:= rectangle.get_center()
+	var end			:= rectangle.end
+
+	match compassDirection:
+		CompassDirections.northWest:	return Vector2(position.x, position.y)
+		CompassDirections.north:		return Vector2(center.x, position.y)
+		CompassDirections.northEast:	return Vector2(end.x, position.y)
+		CompassDirections.east:			return Vector2(end.x, center.y)
+		CompassDirections.southEast:	return Vector2(end.x, end.y)
+		CompassDirections.south:		return Vector2(center.x, end.y)
+		CompassDirections.southWest:	return Vector2(position.x, end.y)
+		CompassDirections.west:			return Vector2(position.x, center.y)
+
+		_: return Vector2.ZERO
+
 
 func addRandomDistance(position: Vector2, \
 minimumDistance: Vector2, maximumDistance: Vector2, \

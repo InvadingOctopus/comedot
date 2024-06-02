@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3 uid="uid://ylultcpjxp6"]
+
+[ext_resource type="Script" path="res://Components/Physics/CornerCollisionComponent.gd" id="1_ou10c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7x1ra"]
+resource_local_to_scene = true
+size = Vector2(2, 2)
+
+[node name="CornerCollisionComponent" type="Node2D"]
+script = ExtResource("1_ou10c")
+metadata/_edit_group_ = true
+
+[node name="Areas" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="AreaNW" type="Area2D" parent="Areas"]
+unique_name_in_owner = true
+position = Vector2(-16, -16)
+collision_layer = 0
+collision_mask = 16
+input_pickable = false
+
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNW"]
+shape = SubResource("RectangleShape2D_7x1ra")
+debug_color = Color(0.5, 0.5, 0, 0.5)
+
+[node name="AreaNE" type="Area2D" parent="Areas"]
+unique_name_in_owner = true
+position = Vector2(16, -16)
+collision_layer = 0
+collision_mask = 16
+input_pickable = false
+
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNE"]
+shape = SubResource("RectangleShape2D_7x1ra")
+debug_color = Color(0.5, 0.5, 0, 0.5)
+
+[node name="AreaSE" type="Area2D" parent="Areas"]
+unique_name_in_owner = true
+position = Vector2(16, 16)
+collision_layer = 0
+collision_mask = 16
+input_pickable = false
+
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSE"]
+shape = SubResource("RectangleShape2D_7x1ra")
+debug_color = Color(0.5, 0.5, 0, 0.5)
+
+[node name="AreaSW" type="Area2D" parent="Areas"]
+unique_name_in_owner = true
+position = Vector2(-16, 16)
+collision_layer = 0
+collision_mask = 16
+input_pickable = false
+
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSW"]
+shape = SubResource("RectangleShape2D_7x1ra")
+debug_color = Color(0.5, 0.5, 0, 0.5)
+
+[connection signal="area_entered" from="Areas/AreaNW" to="." method="onAreaEntered"]
+[connection signal="area_exited" from="Areas/AreaNW" to="." method="onAreaExited"]
+[connection signal="body_entered" from="Areas/AreaNW" to="." method="onBodyEntered"]
+[connection signal="body_exited" from="Areas/AreaNW" to="." method="onBodyExited"]
+[connection signal="area_entered" from="Areas/AreaNE" to="." method="onAreaEntered"]
+[connection signal="area_exited" from="Areas/AreaNE" to="." method="onAreaExited"]
+[connection signal="body_entered" from="Areas/AreaNE" to="." method="onBodyEntered"]
+[connection signal="body_exited" from="Areas/AreaNE" to="." method="onBodyExited"]
+[connection signal="area_entered" from="Areas/AreaSE" to="." method="onAreaEntered"]
+[connection signal="area_exited" from="Areas/AreaSE" to="." method="onAreaExited"]
+[connection signal="body_entered" from="Areas/AreaSE" to="." method="onBodyEntered"]
+[connection signal="body_exited" from="Areas/AreaSE" to="." method="onBodyExited"]
+[connection signal="area_entered" from="Areas/AreaSW" to="." method="onAreaEntered"]
+[connection signal="area_exited" from="Areas/AreaSW" to="." method="onAreaExited"]
+[connection signal="body_entered" from="Areas/AreaSW" to="." method="onBodyEntered"]
+[connection signal="body_exited" from="Areas/AreaSW" to="." method="onBodyExited"]
