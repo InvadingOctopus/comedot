@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://Components/DebugComponent.gd" id="1_sj8xd"]
 
 [node name="DebugComponent" type="Node2D" groups=["components"]]
-texture_filter = 2
 script = ExtResource("1_sj8xd")
 metadata/_edit_group_ = true
 
