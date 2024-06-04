@@ -104,7 +104,7 @@ func setNextMove():
 
 	if delayBetweenMoves > 0:
 		self.isInDelay = true # Prevent frame updates
-		await get_tree().create_timer(delayBetweenMoves).timeout
+		await get_tree().create_timer(delayBetweenMoves).timeout # TODO: BUG: Is this causing inconsistency?
 		self.isInDelay = false
 
 	currentMoveIndex += 1

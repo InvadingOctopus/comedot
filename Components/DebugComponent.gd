@@ -1,3 +1,5 @@
+## A prototype for a component which displays debugging information about the entity and sibling components.
+
 class_name DebugComponent
 extends Component
 
