@@ -1,15 +1,16 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=9 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" path="res://AutoLoad/GlobalOverlay.gd" id="1_ym7ug"]
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://Scenes/UI/PauseButton.tscn" id="2_e15vu"]
 [ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://Scenes/UI/PauseSettingsUI.tscn" id="3_sywc3"]
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="4_fcwiq"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GlobalOverlayRect:modulate")
+tracks/0/path = NodePath("ForegroundOverlay/GlobalOverlayRect:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -21,7 +22,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GlobalOverlayRect:visible")
+tracks/1/path = NodePath("ForegroundOverlay/GlobalOverlayRect:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -37,7 +38,7 @@ length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GlobalOverlayRect:modulate")
+tracks/0/path = NodePath("ForegroundOverlay/GlobalOverlayRect:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -49,7 +50,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GlobalOverlayRect:visible")
+tracks/1/path = NodePath("ForegroundOverlay/GlobalOverlayRect:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -65,7 +66,7 @@ length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GlobalOverlayRect:modulate")
+tracks/0/path = NodePath("ForegroundOverlay/GlobalOverlayRect:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -77,7 +78,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GlobalOverlayRect:visible")
+tracks/1/path = NodePath("ForegroundOverlay/GlobalOverlayRect:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -94,12 +95,14 @@ _data = {
 "overlayFadeOut": SubResource("Animation_7c1si")
 }
 
-[node name="GlobalOverlay" type="CanvasLayer"]
+[node name="GlobalOverlay" type="Node"]
 process_mode = 3
-layer = 100
 script = ExtResource("1_ym7ug")
 
-[node name="GlobalOverlayRect" type="ColorRect" parent="."]
+[node name="ForegroundOverlay" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="GlobalOverlayRect" type="ColorRect" parent="ForegroundOverlay"]
 visible = false
 modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
@@ -110,7 +113,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.5, 0, 1, 0.501961)
 
-[node name="PauseButton" parent="." instance=ExtResource("2_e15vu")]
+[node name="PauseButton" parent="ForegroundOverlay" instance=ExtResource("2_e15vu")]
 visible = false
 offset_left = 8.0
 offset_top = 8.0
@@ -118,7 +121,7 @@ offset_right = 44.0
 offset_bottom = 40.0
 scale = Vector2(0.5, 0.5)
 
-[node name="PauseSettingsUI" parent="." instance=ExtResource("3_sywc3")]
+[node name="PauseSettingsUI" parent="ForegroundOverlay" instance=ExtResource("3_sywc3")]
 unique_name_in_owner = true
 process_mode = 3
 visible = false
@@ -129,3 +132,6 @@ libraries = {
 "": SubResource("AnimationLibrary_k1gpf")
 }
 autoplay = "overlayFadeOut"
+
+[node name="TestBackground" parent="." instance=ExtResource("4_fcwiq")]
+unique_name_in_owner = true
