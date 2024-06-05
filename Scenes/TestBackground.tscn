@@ -4,6 +4,8 @@
 [ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="3_dtutw"]
 
 [node name="TestBackground" type="Node2D"]
+z_index = -200
+z_as_relative = false
 
 [node name="Parallax2D1" type="Parallax2D" parent="."]
 modulate = Color(1, 0.5, 0.5, 1)

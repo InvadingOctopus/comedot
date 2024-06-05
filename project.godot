@@ -26,7 +26,6 @@ buses/default_bus_layout="res://Resources/DefaultAudioBusLayout.tres"
 Global="*res://AutoLoad/Global.gd"
 GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
-TestBackground="res://AutoLoad/TestBackground.tscn"
 GlobalOverlay="*res://AutoLoad/GlobalOverlay.tscn"
 Debug="*res://AutoLoad/Debug.tscn"
 
