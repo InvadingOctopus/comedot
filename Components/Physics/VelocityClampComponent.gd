@@ -1,0 +1,45 @@
+## Sets a maximum and minimum limit for the entity's [member CharacterBody2D.velocity].
+## Useful for clamping a character's velocity when there are multiple components affecting movement.
+## Requirements: [CharacterBody2D], AFTER control components
+
+class_name VelocityClampComponent
+extends BodyComponent
+
+# TODO: Fix minimum velocity. Currently can only have positive values and travel right/down.
+
+#region Parameters
+@export_range(0, 5000, 5) var maximumVelocityX: float ## Ignored if <= 0
+@export_range(0, 5000, 5) var maximumVelocityY: float ## Ignored if <= 0
+@export_range(0, 5000, 5) var minimumVelocityX: float ## Ignored if <= 0. NOTE: Will result in constant movement to the right.
+@export_range(0, 5000, 5) var minimumVelocityY: float ## Ignored if <= 0. NOTE: Will result in constant movement downwards.
+@export var isEnabled := true
+#endregion
+
+
+func _physics_process(delta: float):
+	if not isEnabled: return
+
+	# Cache to reduce the number of property checks and function calls
+
+	var velocity: Vector2 = body.velocity
+	var absoluteVelocityX: float = absf(velocity.x)
+	var absoluteVelocityY: float = absf(velocity.y)
+	 # NOTE: Use the signs of the original velocity, because "absoluteVelocity" will already be unsigned!
+	var signX: float = signf(velocity.x)
+	var signY: float = signf(velocity.y)
+
+	# Clamps only apply if > 0
+
+	if maximumVelocityX > 0 and absoluteVelocityX > maximumVelocityX:
+		body.velocity.x = maximumVelocityX * signX
+
+	if minimumVelocityX > 0 and absoluteVelocityX < minimumVelocityX:
+		body.velocity.x = minimumVelocityX * signX
+
+	if maximumVelocityY > 0 and absoluteVelocityY > maximumVelocityY:
+		body.velocity.y = maximumVelocityY * signY
+
+	if minimumVelocityY > 0 and absoluteVelocityY < minimumVelocityY:
+		body.velocity.y = minimumVelocityY * signY
+
+	Debug.watchList.velocity = body.velocity

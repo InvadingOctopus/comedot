@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://p5rky5eeo16b"]
+
+[ext_resource type="Script" path="res://Components/Physics/VelocityClampComponent.gd" id="1_e135t"]
+
+[node name="VelocityClampComponent" type="Node" groups=["components"]]
+script = ExtResource("1_e135t")
