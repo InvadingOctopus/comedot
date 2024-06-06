@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_tvlfg"]
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_t2b5s"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_csoc0"]
-[ext_resource type="Script" path="res://Components/Control/OverheadControlComponent.gd" id="4_dlhu2"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="5_dor35"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3xeh2"]
 size = Vector2(16, 16)
@@ -30,5 +30,4 @@ shape = SubResource("RectangleShape2D_3xeh2")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
 
-[node name="OverheadControlComponent" type="Node" parent="PlayerEntity"]
-script = ExtResource("4_dlhu2")
+[node name="OverheadControlComponent" parent="PlayerEntity" instance=ExtResource("5_dor35")]
