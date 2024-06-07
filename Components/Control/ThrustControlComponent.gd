@@ -35,7 +35,7 @@ func _ready():
 
 func _physics_process(delta: float):
 	if not isEnabled: return
-	var input: float = playerInputComponent.verticalInput
+	var input: float = playerInputComponent.thrustInput
 
 	if not is_zero_approx(input): # Apply thrust
 		var direction: Vector2 = Vector2.from_angle(body.rotation) # No need for [.normalized()]

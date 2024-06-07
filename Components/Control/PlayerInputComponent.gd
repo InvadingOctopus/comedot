@@ -17,7 +17,9 @@ var lastInputDirection:	Vector2
 
 var horizontalInput:	float
 var verticalInput:		float
-var turnInput:			float ## For the Right Joystick, may be identical to [member horizontalInput]
+
+var turnInput:			float ## For the Right Joystick. May be identical to [member horizontalInput]
+var thrustInput:		float ## For the Right Joystick. May be identical to [member verticalInput]
 #endregion
 
 
@@ -36,9 +38,12 @@ func _process(delta: float):
 	if not isEnabled: return
 
 	self.inputDirection		= Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
+
 	self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 	self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+
 	self.turnInput			= Input.get_axis(GlobalInput.Actions.turnLeft, GlobalInput.Actions.turnRight)
+	self.thrustInput		= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
 	if inputDirection: lastInputDirection = inputDirection
 
