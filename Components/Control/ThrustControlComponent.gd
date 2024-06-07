@@ -1,0 +1,49 @@
+## Applies thrust or braking to the entity's [CharacterBody2D] when the player uses the up or down controls.
+## May be combined with the [TurningControlComponent] to provide spaceship or tank-like controls, similar to Asteroids.
+## Requirements: [CharacterBody2D], [PlayerInputComponent]
+
+class_name ThrustControlComponent
+extends BodyComponent
+
+# TODO: Add braking
+# TODO: Add support for `shouldResetVelocityOnCollision` similar to [OverheadControlComponent]
+
+#region Parameters
+@export_range(0, 1000, 5.0) var thrust:		float = 100
+@export_range(0, 1000, 5.0) var friction:	float = 50
+@export var isEnabled: bool = true
+#endregion
+
+
+#region State
+var playerInputComponent: PlayerInputComponent:
+	get:
+		if not playerInputComponent:
+			playerInputComponent = self.findCoComponent(PlayerInputComponent)
+		return playerInputComponent
+#endregion
+
+
+func _ready():
+	# Set the entity's [CharacterBody2D] motion mode to Floating.
+	if parentEntity.body:
+		printLog("parentEntity.body.motion_mode → Floating")
+		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	else:
+		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+
+
+func _physics_process(delta: float):
+	if not isEnabled: return
+	var input: float = playerInputComponent.verticalInput
+
+	if not is_zero_approx(input): # Apply thrust
+		var direction: Vector2 = Vector2.from_angle(body.rotation) # No need for [.normalized()]
+		body.velocity += direction * thrust * delta
+		Debug.watchList.direction = direction
+	else: # Apply friction
+		body.velocity = body.velocity.move_toward(Vector2.ZERO, friction * delta)
+
+	parentEntity.callOnceThisFrame(body.move_and_slide)
+
+	#Debug.watchList.velocity = body.velocity
