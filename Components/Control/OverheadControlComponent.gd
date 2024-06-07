@@ -19,6 +19,7 @@ var lastVelocity		:= Vector2.ZERO
 
 
 func _ready():
+	# Set the entity's [CharacterBody2D] motion mode to Floating.
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Floating")
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING

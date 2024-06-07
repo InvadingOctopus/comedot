@@ -5,8 +5,9 @@ class_name PlatformerPatrolComponent
 extends Component
 
 # PLAN:
-# If we are not on the floor, do nothing.
-# ?
+# * If we are not on the floor, do nothing.
+# * Check for floor and walls at the left and right corners and edges.
+# * Reverse patrol direction when there is no more room to move in the current direction.
 
 #region Parameters
 

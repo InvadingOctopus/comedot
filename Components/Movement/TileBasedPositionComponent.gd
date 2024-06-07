@@ -4,7 +4,7 @@
 class_name TileBasedPositionComponent
 extends Component
 
-# Implementation Plan:
+# PLAN:
 # * Store integer coordinates to remember which tile the entity is in.
 # * Every frame,
 # 	If the entity is not moving to another tile, snap the entity to the current tile's position, in case the TileMap is moving.
