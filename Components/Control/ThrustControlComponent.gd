@@ -1,5 +1,6 @@
 ## Applies thrust or braking to the entity's [CharacterBody2D] when the player uses the up or down controls.
 ## May be combined with the [TurningControlComponent] to provide spaceship or tank-like controls, similar to Asteroids.
+## Use [VelocityClampComponent] to limit the speed.
 ## Requirements: [CharacterBody2D], [PlayerInputComponent]
 
 class_name ThrustControlComponent
