@@ -16,6 +16,7 @@ layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+mouse_filter = 2
 
 [node name="TopPanelMarginContainer" type="MarginContainer" parent="Control"]
 layout_mode = 1
@@ -23,6 +24,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 25.0
 grow_horizontal = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 64
 theme_override_constants/margin_top = -8
 theme_override_constants/margin_right = 64
@@ -30,6 +32,7 @@ theme_override_constants/margin_bottom = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="Control/TopPanelMarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_57mah")
 
 [node name="LabelGridMarginContainer" type="MarginContainer" parent="Control/TopPanelMarginContainer/PanelContainer"]
