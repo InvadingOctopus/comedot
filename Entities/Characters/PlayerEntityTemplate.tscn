@@ -14,6 +14,7 @@ script = ExtResource("1_gtqja")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
+modulate = Color(0, 1, 0.5, 1)
 texture = ExtResource("2_wfqpn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
