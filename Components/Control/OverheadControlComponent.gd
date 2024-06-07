@@ -5,7 +5,7 @@ extends BodyComponent
 
 
 #region Parameters
-@export var isEnabled: bool = true
+@export var isEnabled:  bool = true
 @export var parameters: OverheadMovementParameters = OverheadMovementParameters.new()
 #endregion
 
