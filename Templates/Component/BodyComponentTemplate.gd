@@ -14,7 +14,7 @@ extends Component
 ## If `null` then it will be acquired from the parent [Entity] on [method _enter_tree()]
 @export var body: CharacterBody2D
 
-@export var isEnabled := true
+@export var isEnabled: bool = true
 
 #endregion
 
