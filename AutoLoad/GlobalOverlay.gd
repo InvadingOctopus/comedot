@@ -7,8 +7,9 @@
 extends Node
 
 
-@onready var animationPlayer := %AnimationPlayer
-@onready var pauseSettingsUI := %PauseSettingsUI
+@onready var animationPlayer	:= %AnimationPlayer
+@onready var pauseSettingsUI	:= %PauseSettingsUI
+@onready var testBackground		:= %TestBackground
 
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
