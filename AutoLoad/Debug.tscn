@@ -1,21 +1,51 @@
-[gd_scene load_steps=3 format=3 uid="uid://byku6wanllr5n"]
+[gd_scene load_steps=5 format=3 uid="uid://byku6wanllr5n"]
 
 [ext_resource type="Script" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_rssih"]
+font = ExtResource("2_6qwn4")
+font_size = 8
+font_color = Color(1, 1, 0, 1)
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tt6b4"]
+font_size = 8
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Debug" type="CanvasLayer"]
 layer = 110
 script = ExtResource("1_rd14n")
-isVisible = true
+showDebugLabels = true
 
-[node name="Label" type="Label" parent="."]
+[node name="Labels" type="Node2D" parent="."]
 unique_name_in_owner = true
 top_level = true
-light_mask = 0
-texture_filter = 2
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 72.0
-offset_bottom = 48.0
-theme_override_fonts/font = ExtResource("2_6qwn4")
+position = Vector2(8, 8)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Labels"]
+offset_right = 84.0
+offset_bottom = 32.0
+
+[node name="WarningLabel" type="Label" parent="Labels/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Warning"
+label_settings = SubResource("LabelSettings_rssih")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Labels/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_font_sizes/font_size = 8
+text = "General Label"
+metadata/_edit_use_anchors_ = true
+
+[node name="WatchListLabel" type="Label" parent="Labels/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Watchlist"
+label_settings = SubResource("LabelSettings_tt6b4")
+metadata/_edit_use_anchors_ = true

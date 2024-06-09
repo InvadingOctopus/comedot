@@ -9,14 +9,29 @@ const shouldPrintDebugLogs: bool = true
 #endregion
 
 
-@export var isVisible: bool = false:
-	set(newValue):
-		isVisible = newValue
-		if %Label: %Label.visible = isVisible
+#region Parameters
 
+## Sets the visibility of the debug information overlay text.
+## NOTE: Does not affect the visibility of the framework warning label.
+@export var showDebugLabels: bool = false:
+	set(newValue):
+		showDebugLabels = newValue
+		setLabelVisibility()
 
 ## A dictionary of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
 @export var watchList = {}
+
+#endregion
+
+
+#region State
+
+@onready var labels:			Node  = %Labels
+@onready var label:				Label = %Label
+@onready var warningLabel:		Label = %WarningLabel
+@onready var watchListLabel:	Label = %WatchListLabel
+
+#endregion
 
 
 #region Logging
@@ -68,18 +83,41 @@ func updateLastFrameLogged():
 
 
 func _ready():
-	%Label.visible = self.isVisible
+	resetLabels()
+	setLabelVisibility()
+	performFrameworkChecks()
+
+
+func resetLabels():
+	label.text = ""
+	warningLabel.text = ""
+	watchListLabel.text = ""
+
+
+func setLabelVisibility():
+	# NOTE: The warning label must always be visible
+	if label: label.visible = self.showDebugLabels
+	if watchListLabel: watchListLabel.visible = self.showDebugLabels
+
+
+func performFrameworkChecks():
+	var warnings: PackedStringArray
+
+	if not Global.hasStartScript:
+		warnings.append("! Start.gd script not executed\nAttach to root node of main scene")
+
+	warningLabel.text = "\n".join(warnings)
 
 
 func _process(delta: float):
-	if not isVisible: return
+	if not showDebugLabels: return
 
 	var text := ""
 
 	for value: Variant in watchList:
 		text += str(value) + ": " + str(watchList[value]) + "\n"
 
-	%Label.text = text
+	watchListLabel.text = text
 
 
 func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0):

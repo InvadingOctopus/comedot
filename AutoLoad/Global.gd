@@ -6,6 +6,9 @@ extends Node
 
 #region Flags
 
+## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
+var hasStartScript: bool = false
+
 #endregion
 
 
