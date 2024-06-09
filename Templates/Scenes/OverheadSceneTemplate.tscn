@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://0uproxr5kcfg"]
+[gd_scene load_steps=8 format=3 uid="uid://0uproxr5kcfg"]
 
+[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_y4xpu"]
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_y25py"]
 [ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_tvlfg"]
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_t2b5s"]
@@ -10,6 +11,7 @@
 size = Vector2(16, 16)
 
 [node name="OverheadSceneTemplate" type="Node2D"]
+script = ExtResource("1_y4xpu")
 
 [node name="HUDTemplate" parent="." instance=ExtResource("1_y25py")]
 
