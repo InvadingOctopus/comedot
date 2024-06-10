@@ -15,7 +15,7 @@ config/description="Invading Octopus's Component-based Framework for Godot 2D"
 run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=60
-config/icon="res://Assets/icon.svg"
+config/icon="res://Assets/Godoctopus.svg"
 
 [audio]
 
