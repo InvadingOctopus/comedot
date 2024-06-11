@@ -9,9 +9,27 @@ extends Node
 #region Framework Settings
 
 @export_category("Godoctopus")
-@export_group("Framework Flags")
 
-@export var showTestBackground: bool = true
+@export_group("Debugging Flags")
+
+## Sets the visibility of "debug"-level messages in the log.
+## NOTE: Does NOT affect normal logging.
+@export var printDebugLogs: bool = true:
+	set(newValue):
+		printDebugLogs = newValue
+		Debug.printDebugLogs = newValue
+
+## Sets the visibility of the debug information overlay text.
+## NOTE: Does NOT affect the visibility of the framework warning label.
+@export var showDebugLabels: bool = true:
+	set(newValue):
+		showDebugLabels = newValue
+		Debug.showDebugLabels = newValue
+
+@export var showTestBackground: bool = true:
+	set(newValue):
+		showTestBackground = newValue
+		if GlobalOverlay.testBackground: GlobalOverlay.testBackground.visible = newValue
 
 #endregion
 
@@ -24,4 +42,6 @@ func _ready() -> void:
 
 
 func applyGlobalFlags():
-	GlobalOverlay.testBackground.visible = showTestBackground
+	GlobalOverlay.testBackground.visible = self.showTestBackground
+	Debug.printDebugLogs  = self.printDebugLogs
+	Debug.showDebugLabels = self.showDebugLabels
