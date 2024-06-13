@@ -14,8 +14,13 @@ extends Component
 
 
 #region State
+
 var coComponent: Component: ## Placeholder
-	get: return self.findCoComponent(Component)
+	get:
+		# Cache the first matching sibling component for future access. Remove this assignment to always dynamically find a component at runtime. 
+		if not coComponent: coComponent = self.findCoComponent(Component)
+		return coComponent
+		
 #endregion
 
 
