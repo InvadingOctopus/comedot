@@ -104,7 +104,7 @@ func updateCollisionFlags():
 	isFloorOnRight	= cornerCollisionComponent.areaSECollisionCount >= 1
 	isWallOnLeft	= cornerCollisionComponent.areaNWCollisionCount >= 1 # TODO: Verify
 	isWallOnRight	= cornerCollisionComponent.areaNECollisionCount >= 1 # TODO: Verify
-	#debugInfo()
+	#showDebugInfo()
 
 
 ## Returns: inputDirectionOverride
@@ -174,7 +174,7 @@ func updatePatrolDirection():
 	# Signal will be emitted by property setter
 
 
-func debugInfo():
+func showDebugInfo():
 	Debug.watchList.isFloorOnLeft	= isFloorOnLeft
 	Debug.watchList.isFloorOnRight	= isFloorOnRight
 	Debug.watchList.isWallOnLeft	= isWallOnLeft

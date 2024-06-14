@@ -109,7 +109,7 @@ func updateFlags():
 	isCollidingOnRight	= (areaNECollisionCount >= 1) or (areaSECollisionCount >= 1)
 	isCollidingOnTop	= (areaNWCollisionCount >= 1) or (areaNECollisionCount >= 1)
 	isCollidingOnBottom	= (areaSWCollisionCount >= 1) or (areaSECollisionCount >= 1)
-	#debugInfo()
+	#showDebugInfo()
 
 
 func updateCollisionCount():
@@ -119,7 +119,7 @@ func updateCollisionCount():
 	areaSWCollisionCount = areaSW.get_overlapping_areas().size() + areaSW.get_overlapping_bodies().size()
 
 
-func debugInfo():
+func showDebugInfo():
 	Debug.watchList.NW = areaNWCollisionCount
 	Debug.watchList.NE = areaNECollisionCount
 	Debug.watchList.SE = areaSECollisionCount

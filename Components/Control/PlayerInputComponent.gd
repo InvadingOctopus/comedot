@@ -49,10 +49,10 @@ func _process(delta: float):
 
 	# TODO: CHECK: Does this work for joystick input?
 
-	#debugInfo()
+	#showDebugInfo()
 
 
-func debugInfo():
+func showDebugInfo():
 	Debug.watchList.inputDirection		= inputDirection
 	Debug.watchList.lastInputDirection	= lastInputDirection
 	Debug.watchList.verticalInput		= verticalInput

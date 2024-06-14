@@ -67,7 +67,7 @@ func _physics_process(delta: float):
 
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 
-	#debugInfo()
+	#showDebugInfo()
 
 
 ## NOTE: MUST be called AFTER [processInput]
@@ -172,7 +172,7 @@ func applyFrictionInAir(delta: float):
 #endregion
 
 
-func debugInfo():
+func showDebugInfo():
 	Debug.watchList.input		= inputDirection
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.isOnFloor	= isOnFloor

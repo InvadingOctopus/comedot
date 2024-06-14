@@ -40,7 +40,7 @@ func _physics_process(delta: float):
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
 
-	#debugInfo()
+	#showDebugInfo()
 
 
 func processWalkInput(delta: float):
@@ -111,7 +111,7 @@ func applyThrust(delta: float):
 	Debug.watchList.x = body.velocity.x
 
 
-func debugInfo():
+func showDebugInfo():
 	Debug.watchList.velocity = body.velocity
 	Debug.watchList.wallNormal = body.get_wall_normal()
 	Debug.watchList.lastMotion = body.get_last_motion()
