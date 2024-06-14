@@ -6,6 +6,7 @@ class_name VelocityClampComponent
 extends BodyComponent
 
 # TODO: Fix minimum velocity. Currently can only have positive values and travel right/down.
+# TODO: Correct for diagonal movement; should not reach the same max velocity as movement on only 1 axis.
 
 #region Parameters
 @export_range(0, 5000, 5) var maximumVelocityX: float ## Ignored if <= 0
