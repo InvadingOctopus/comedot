@@ -45,7 +45,7 @@ func processWalkInput(delta: float):
 
 	self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 
-	if inputDirection: lastInputDirection = inputDirection
+	if not inputDirection.is_zero_approx(): lastInputDirection = inputDirection
 
 	if parameters.shouldApplyAcceleration:
 		body.velocity = body.velocity.move_toward(inputDirection * parameters.speed, parameters.acceleration * delta)
@@ -84,16 +84,12 @@ func processWalkInput(delta: float):
 		#if currentState == State.idle: currentState = State.walk
 		lastDirection = body.velocity.normalized()
 
-	#Debug.watchList.lastInputDirection = lastInputDirection
-	#Debug.watchList.lastDirection = lastDirection
-
-
-## NOTE: Not implemented
-func processFriction(delta: float):
-	pass
-
 
 func showDebugInfo():
-	Debug.watchList.velocity = body.velocity
-	Debug.watchList.wallNormal = body.get_wall_normal()
-	Debug.watchList.lastMotion = body.get_last_motion()
+	Debug.watchList.velocity		= body.velocity
+	Debug.watchList.lastVelocity	= lastVelocity
+	Debug.watchList.wallNormal		= body.get_wall_normal()
+	Debug.watchList.lastMotion		= body.get_last_motion()
+	Debug.watchList.lastInput		= lastInputDirection
+	Debug.watchList.lastDirection	= lastDirection
+	
