@@ -36,7 +36,7 @@ func _physics_process(delta: float):
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body])
 
-	# DEBUG debugPrintInfo()
+	#debugInfo()
 
 
 ## Get the input direction and handle the movement/deceleration.
@@ -93,7 +93,7 @@ func processFriction(delta: float):
 	pass
 
 
-func debugPrintInfo():
+func debugInfo():
 	Debug.watchList.velocity = body.velocity
 	Debug.watchList.wallNormal = body.get_wall_normal()
 	Debug.watchList.lastMotion = body.get_last_motion()
