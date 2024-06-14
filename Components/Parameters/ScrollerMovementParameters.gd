@@ -25,6 +25,4 @@ extends Resource
 @export var shouldApplyFriction:				bool  = true
 @export_range(10, 2000, 5) var friction:		float = 1000
 
-@export var shouldResetVelocityOnCollision:		bool  = true
-
 #endregion

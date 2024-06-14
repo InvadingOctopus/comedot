@@ -39,7 +39,7 @@ func _physics_process(delta: float):
 	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
-	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body])
+	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
 
 	#showDebugInfo()
 
