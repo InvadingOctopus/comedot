@@ -1,13 +1,10 @@
-## A prototype for a component which displays debugging information about the entity and sibling components.
+## Displays debugging information about the entity and other sibling components.
 
 class_name DebugComponent
-extends Component
-
-
-func _ready():
-	parentEntity.getBody()
+extends BodyComponent
 
 
 func _physics_process(delta: float):
-	if parentEntity.body:
-		%VelocityLabel.text = str(parentEntity.body.velocity)
+	%PositionLabel.text = str("@:", parentEntity.position, "\n@G:", parentEntity.global_position)
+	%VelocityLabel.text = str("V:", body.velocity)
+	
