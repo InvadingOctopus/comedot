@@ -10,13 +10,13 @@ config_version=5
 
 [application]
 
-config/name="Godoctopus"
+config/name="Comedot"
 config/description="Invading Octopus's Component-based Framework for Godot 2D"
 run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=60
 boot_splash/bg_color=Color(0.15, 0.15, 0.25, 1)
-config/icon="res://Assets/Godoctopus.svg"
+config/icon="res://Assets/Comedot.svg"
 
 [audio]
 

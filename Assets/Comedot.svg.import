@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://58vdfn8j7ql3"
-path="res://.godot/imported/Godoctopus.svg-868e39590abad7bf4e2acdfac5ea4006.ctex"
+path="res://.godot/imported/Comedot.svg-738bef6637de8ecb0feaa88a822de6b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Godoctopus.svg"
-dest_files=["res://.godot/imported/Godoctopus.svg-868e39590abad7bf4e2acdfac5ea4006.ctex"]
+source_file="res://Assets/Comedot.svg"
+dest_files=["res://.godot/imported/Comedot.svg-738bef6637de8ecb0feaa88a822de6b6.ctex"]
 
 [params]
 

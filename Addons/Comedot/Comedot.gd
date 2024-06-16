@@ -1,12 +1,12 @@
-## Godoctopus Plugin Prototype
+## Comedot Plugin Prototype
 
 @tool
 extends EditorPlugin
 
 
 #region Constants
-const entityTypeName	:= &"Godoctopus Entity"
-const componentTypeName	:= &"Godoctopus Component"
+const entityTypeName	:= &"Comedot Entity"
+const componentTypeName	:= &"Comedot Component"
 #endregion
 
 

@@ -1,4 +1,4 @@
-# Godoctopus
+# Comedot
 
 **Component-based framework and project template for 2D games in the Godot engine**
 

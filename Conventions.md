@@ -1,4 +1,4 @@
-# Godoctopus Code & Framework Conventions
+# Comedot Code & Framework Conventions
 
 I come from Swift so I hate underscores and love camelCase. This framework follows the Swift API Design Guidelines unless when it's highly inconvenient within Godot:
 
