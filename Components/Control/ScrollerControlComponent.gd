@@ -5,8 +5,8 @@
 class_name ScrollerControlComponent
 extends BodyComponent
 
+# TODO: Deceleration when letting go of input
 # TODO: Camera "spring"
-# TODO: Verify, specially diagonal movement.
 
 
 #region Parameters
@@ -26,13 +26,17 @@ var inputDirection		:= Vector2.ZERO
 var lastInputDirection	:= Vector2.ZERO
 var lastDirection		:= Vector2.ZERO ## Normalized
 var lastVelocity		:= Vector2.ZERO
+
 #endregion
 
 
 func _ready():
 	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Floating")
+		printLog("parentEntity.body.motion_mode → Floating & parentEntity.body.wall_min_slide_angle → 0")
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+		# NOTE: Allow the ship or vehicle to slide laterally against orthogonal walls.
+		# This may be the behavior most convenient and expected for the player.
+		parentEntity.body.wall_min_slide_angle = 0
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
@@ -40,9 +44,9 @@ func _ready():
 func _physics_process(delta: float):
 	if not isEnabled: return
 	
-	processWalkInput(delta)
-	applyThrust(delta)
-	maintainMinimumSpeed(delta)
+	processInput(delta)
+	#applyDefaultVelocity(delta) # TBD: Is a separate function useful?
+	clampVelocity(delta)
 	
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 	lastVelocity = body.velocity # TBD: Should this come last?
@@ -53,17 +57,18 @@ func _physics_process(delta: float):
 	#showDebugInfo()
 
 
-func processWalkInput(delta: float):
+func processInput(delta: float):
 	if not isEnabled: return
+	
 	# Get the input direction and handle the movement/deceleration.
-
+		
 	self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		
 	if not inputDirection.is_zero_approx(): lastInputDirection = inputDirection
-
+		
 	# Calculate separate velocities for X and Y
-	var inputVelocity := Vector2(inputDirection.x * parameters.maximumHorizontalSpeed, inputDirection.y * parameters.maximumVerticalSpeed)
-
+	var inputVelocity := Vector2(inputDirection.x * parameters.horizontalSpeed, inputDirection.y * parameters.verticalSpeed)
+	
 	# TBD: Is setting the vector once as a whole the exact same effect as setting the 2 axes separately?
 	if parameters.shouldApplyAcceleration:
 		body.velocity = body.velocity.move_toward(inputVelocity, parameters.acceleration * delta)
@@ -73,7 +78,7 @@ func processWalkInput(delta: float):
 		body.velocity = inputVelocity
 		#body.velocity.x = inputDirection * parameters.maximumHorizontalSpeed
 		#body.velocity.y = inputDirection * parameters.maximumVerticalSpeed
-
+	
 	# Friction?
 	
 	if parameters.shouldApplyFriction:
@@ -83,7 +88,17 @@ func processWalkInput(delta: float):
 
 		if is_zero_approx(inputDirection.y):
 			body.velocity.y = move_toward(body.velocity.y, 0.0, parameters.friction * delta)
-
+	
+	# Apply a constant velocity for the scrolling game
+	# TBD: Should this be applied here or in applyDefaultVelocity()?
+	# CHECK: Is this the correct way? Seems to work right in all cases tested so far.
+	
+	if is_zero_approx(inputDirection.x):
+		body.velocity.x = parameters.horizontalVelocityDefault
+		
+	if is_zero_approx(inputDirection.y):
+		body.velocity.y = parameters.verticalVelocityDefault
+		
 	# Disable friction by maintaining velcoty fron the previous frame?
 
 	if parameters.shouldMaintainPreviousVelocity and not inputDirection:
@@ -96,7 +111,8 @@ func processWalkInput(delta: float):
 		lastDirection = body.velocity.normalized()
 
 
-func applyThrust(delta: float):
+func applyDefaultVelocity(delta: float):
+	# TBD: Is this necessary as separate function or should this be done in processInput()?
 	if not isEnabled: return
 	
 	# Apply the constant thrust for an axis if there is no player input on that axis.
@@ -105,25 +121,23 @@ func applyThrust(delta: float):
 	# NOTE: Do NOT apply acceleration here. [move_toward()] applies very slowly because of `delta`.
 	
 	if is_zero_approx(inputDirection.x) \
-	and not is_zero_approx(parameters.horizontalThrust) \
-	and abs(body.velocity.x) < abs(parameters.horizontalThrust):
-		body.velocity.x = parameters.horizontalThrust
+	and not is_zero_approx(parameters.horizontalVelocityDefault) \
+	and abs(body.velocity.x) < abs(parameters.horizontalVelocityDefault):
+		body.velocity.x = parameters.horizontalVelocityDefault
 	
 	if is_zero_approx(inputDirection.y) \
-	and not is_zero_approx(parameters.verticalThrust) \
-	and abs(body.velocity.y) < abs(parameters.verticalThrust):
-		body.velocity.y = parameters.verticalThrust
+	and not is_zero_approx(parameters.verticalVelocityDefault) \
+	and abs(body.velocity.y) < abs(parameters.verticalVelocityDefault):
+		body.velocity.y = parameters.verticalVelocityDefault
 		
 	
-func maintainMinimumSpeed(delta: float):
+func clampVelocity(delta: float):
+	# TODO: Better performance by using cached vectors?
 	# NOTE: Do NOT apply acceleration here. [move_toward()] applies very slowly because of `delta`.
 	
-	if abs(body.velocity.x) < abs(parameters.minimumHorizontalSpeed):	
-		body.velocity.x = parameters.minimumHorizontalSpeed * signf(body.velocity.x)
-		
-	if abs(body.velocity.y) < abs(parameters.minimumVerticalSpeed):	
-		body.velocity.y = parameters.minimumVerticalSpeed * signf(body.velocity.y)
-		
+	body.velocity.x = clampf(body.velocity.x, parameters.horizontalVelocityMin, parameters.horizontalVelocityMax)
+	body.velocity.y = clampf(body.velocity.y, parameters.verticalVelocityMin, parameters.verticalVelocityMax)
+	
 
 func showDebugInfo():
 	Debug.watchList.velocity		= body.velocity
