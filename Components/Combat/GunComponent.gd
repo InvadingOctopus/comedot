@@ -146,6 +146,6 @@ func createNewBullet() -> Entity:
 
 	newBullet.global_position = %BulletEmissionLocation.global_position
 	newBullet.global_rotation = %BulletEmissionLocation.global_rotation
-	newBullet.top_level = true
+	newBullet.z_index   = %BulletEmissionLocation.z_index
+	newBullet.top_level = %BulletEmissionLocation.top_level
 	return newBullet
-
