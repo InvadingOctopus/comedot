@@ -16,7 +16,6 @@ metadata/_edit_group_ = true
 
 [node name="SpawnAreaShape" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(96, 32)
 shape = SubResource("RectangleShape2D_phir2")
 
 [node name="SpawnTimer" type="Timer" parent="."]
