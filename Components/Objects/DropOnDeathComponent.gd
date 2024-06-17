@@ -16,7 +16,7 @@ extends Component
 ## If `null`, the parent node of the parent [Entity] will be used]
 @export var parentOverrideForSpawnedNode: Node2D
 
-@export var isEnabled := true
+@export var isEnabled: bool = true
 
 #endregion
 
@@ -51,7 +51,7 @@ func _ready():
 
 func onHealthComponent_healthDidZero():
 	# TBD: No need to spawn a "drop" if the parent entity doesn't "die" (get removed upon zero health) right?
-	if not healthComponent.shouldRemoveParentOnZero: return
+	if not isEnabled or not healthComponent.shouldRemoveParentOnZero: return
 
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
 	# and add the offset.
@@ -59,5 +59,3 @@ func onHealthComponent_healthDidZero():
 
 	var spawnedNode := Global.addSceneInstance(nodeToSpawnOnDeath, parentForSpawnedNode, position)
 	didDrop.emit(spawnedNode)
-
-
