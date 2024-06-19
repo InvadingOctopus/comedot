@@ -31,6 +31,9 @@ _(darn GitHub, if the images do not animate, click on them to go to the Imgur pa
 2. Add `Component` child nodes to the entity. A component is a Node/Node2D/Area2D etc. with a script which extends the `Component` class.
 3. Modify component parameters in the editor's inspector.
 
+> [!TIP]
+> 📜 **Read [HowTo.md](HowTo.md) to see how to do common tasks** like player movement and combat.
+
 💬 For more details, bug Syntaks.io on Discord.
 
 ----
