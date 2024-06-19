@@ -22,18 +22,20 @@ class Actions: ## Input event labels
 	const fire			:= &"fire"
 	const interact		:= &"interact"
 
+	const pause			:= &"pause"
+	const quickSave		:= &"quickSave"
+	const quickLoad		:= &"quickLoad"
+	const debugBreak	:= &"debugBreak"
+	
 	const windowResizeTo1080		:= &"windowResizeTo1080"
 	const windowResizeTo720			:= &"windowResizeTo720"
 	const windowToggleAlwaysOnTop	:= &"windowToggleAlwaysOnTop"
-
-	const pause			:= &"pause"
-	const debugBreak	:= &"debugBreak"
 
 #endregion
 
 
 ## Global keyboard shortcuts
-func _input(_event: InputEvent):
+func _input(event: InputEvent):
 
 	# Game
 
@@ -58,6 +60,13 @@ func _input(_event: InputEvent):
 		Debug.showTemporaryLabel(&"Window Size", "1920 x 1080")
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
+	# Save & Load
+	
+	if event.is_action_released(GlobalInput.Actions.quickLoad):
+		Global.loadGame()
+	elif event.is_action_released(GlobalInput.Actions.quickSave):
+		Global.saveGame()
+	
 	# Debugging
 
 	if Input.is_action_just_released(Actions.debugBreak):

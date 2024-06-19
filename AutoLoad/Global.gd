@@ -4,10 +4,12 @@
 extends Node
 
 
-#region Flags
+#region Project-Specific Flags & Settings
 
 ## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
 var hasStartScript: bool = false
+
+var saveFilePath: StringName = &"user://ComedotSaveGame.scn"
 
 #endregion
 
@@ -181,6 +183,31 @@ func removeAllChildren(parent: Node) -> int:
 		removalCount += 1
 
 	return removalCount
+
+#endregion
+
+
+#region Save & Load
+
+## A very rudimentary implementation of saving the entire game state.
+## @experimental
+func saveGame():
+	# TODO: Implement properly :(
+	# BUG: Does not save all state of all nodes
+	Debug.printLog("Saving state → " + Global.saveFilePath)
+	var packedSceneToSave := PackedScene.new()
+	packedSceneToSave.pack(get_tree().get_current_scene())
+	ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
+
+
+## A very rudimentary implementation of loading the entire game state.
+## @experimental
+func loadGame():
+	# TODO: Implement properly :(
+	# BUG: Does not restore all state of all nodes
+	Debug.printLog("Loading state ← " + Global.saveFilePath)
+	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
+	get_tree().change_scene_to_packed(packedSceneLoaded)
 
 #endregion
 
