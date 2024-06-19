@@ -30,6 +30,8 @@ https://www.swift.org/documentation/api-design-guidelines/
 	- Functions should read like a verb/action.
 	- Booleans should start with `is`, `has`, `should` etc. This may make autocompletion easier by listing all booleans.
 
+* Text names/IDs such as for node groups, input actions and animations should be camelCase, to match the convention of enums: `GlobalInput.Actions.yeet = &"yeet"`
+
 # Signals
 
 * Signals should be named in this form: [object/category][event]
