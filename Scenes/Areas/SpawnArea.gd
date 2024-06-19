@@ -68,6 +68,7 @@ func spawn():
 			newSpawn.add_to_group(addToGroup, true)
 
 		parent.add_child(newSpawn)
+		newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 		didSpawn.emit(newSpawn, parent)
 	else:
 		return

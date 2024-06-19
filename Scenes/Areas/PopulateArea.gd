@@ -181,11 +181,12 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 			newCopy.add_to_group(addToGroup, true)
 
 		parent.add_child(newCopy)
+		newCopy.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 		#didCopy.emit(newCopy, parent)
 		previousCopy = newCopy
 		totalCopiesCreated += 1
 		Debug.printDebug("totalCopiesCreated: " + str(totalCopiesCreated))
-		print()
+		
 		return newCopy
 	else:
 		return null

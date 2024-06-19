@@ -95,6 +95,7 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 	var newChild := scene.instantiate()
 	newChild.position = position
 	parent.add_child(newChild)
+	newChild.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 	return newChild
 
 
@@ -168,6 +169,7 @@ func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> boo
 
 	parentNode.add_child(newChild)
 	parentNode.move_child(newChild, previousChildIndex)
+	newChild.owner = parentNode # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 	return true
 
