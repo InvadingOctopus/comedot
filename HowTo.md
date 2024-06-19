@@ -11,15 +11,19 @@
 3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` etc and set them up.
 4. Remember to set the Physics Collision Layer to `players` and set the Mask to `terrain` at least.
 
+* 💡 You can use a template like `/Templates/Entities/PlayerEntityTemplate.tscn`
+
 ### Add Player Control and Movement
 
-1. Instantiate Child Scene
+1. Select the Player Entity.
 
-2. Add one of the components from `/Components/Control/` as children of the Entity node, like `OverheadControlComponent`
+2. Choose `Instantiate Child Scene` from the context menu.
 
-* Read the documentation in the script for each component to see how to use them.
+3. Add components from `/Components/Control/` as children of the Entity node, like `OverheadControlComponent`
 
-* ❕ If you add the `PlatformerControlComponent` then you must also add the `JumpControlComponent` and `/Components/Physics/GravityComponent`
+* 💡 Read the documentation comments in the scripts of each component to see how to use it.
+
+* ❕ If you add the `PlatformerControlComponent` then you should also add the `JumpControlComponent` and `/Components/Physics/GravityComponent`
 
 ## Add Combat
 
@@ -31,9 +35,9 @@
 
 * For monsters, add a `DamageComponent` to hurt the player on contact.
 
-* 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
-
 * ❕ Remember to set the correct Physics Collision Layers and Masks for everything, otherwise they will not register collisions with each other.
+
+* 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
 
 ----
 
