@@ -1,0 +1,48 @@
+[gd_scene load_steps=9 format=3 uid="uid://5lmeyrtksngw"]
+
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_eybf8"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="2_stfcg"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="3_q2npt"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="4_1se31"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="5_7e1iu"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="6_urskl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(16, 16)
+
+[sub_resource type="Resource" id="Resource_f1god"]
+resource_local_to_scene = true
+script = ExtResource("5_7e1iu")
+name = &"playerHealth"
+min = 0
+max = 10
+value = 10
+logChanges = true
+
+[node name="PlayerEntity" type="CharacterBody2D" groups=["players"]]
+collision_layer = 6
+collision_mask = 3640
+script = ExtResource("1_eybf8")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
+modulate = Color(0, 1, 0.5, 1)
+texture = ExtResource("2_stfcg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 100.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 10.0
+
+[node name="OverheadControlComponent" parent="." instance=ExtResource("3_q2npt")]
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_1se31")]
+health = SubResource("Resource_f1god")
+
+[node name="DamageReceivingComponent" parent="." instance=ExtResource("6_urskl")]
+collision_layer = 4
+collision_mask = 40
