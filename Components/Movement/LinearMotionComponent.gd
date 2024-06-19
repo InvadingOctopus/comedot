@@ -1,37 +1,39 @@
+## Moves the entity in a straight line in the direction of the entity's rotation.
+
 class_name LinearMotionComponent
 extends Component
 
 
 #region Parameters
 
-@export_range(50.0, 1000.0, 50.0)  var initialSpeed: float = 150.0
-@export_range(50.0, 1000.0, 50.0)  var maximumSpeed: float = 800.0
+ ## NOTE: This is not called `inPaused` because that might imply it's not being processed every frame.
+@export var isMoving:							bool = true
+
+@export_range(-1000, 1000, 5) var initialSpeed:	float = 150
+@export_range(-1000, 1000, 5) var maximumSpeed:	float = 800
 
 @export var applyAcceleration := true
-@export_range(50.0, 1000.0, 50.0)  var acceleration: float = 800.0
+@export_range(-1000, 1000, 5) var acceleration:	float = 800
 
-@export var isMoving := true # NOTE: This is not called `inPaused` because that might imply it's not being processed every frame.
-@export var shouldStopAtMaximumDistance := false
-@export var shouldDeleteParentAtMaximumDistance := false
-
-@export_range(50.0, 1000.0, 50.0)  var maximumDistance: float = 200.0
+@export var shouldStopAtMaximumDistance:		 bool = false
+@export var shouldDeleteParentAtMaximumDistance: bool = false
+@export_range(50, 1000, 5) var maximumDistance: float = 200
 
 #endregion
 
 
 #region State
-
 var speed:            float = initialSpeed
 var distanceTraveled: float = 0
-
 #endregion
 
 
+#region signals
 signal didReachMaximumDistance
+#endregion
 
 
 func _physics_process(delta: float):
-
 	if not isMoving: return
 
 	# Check the maximum distance limit before moving any further.
