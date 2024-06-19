@@ -17,8 +17,9 @@ extends Component
 ## Number of seconds after shooting before another bullet can be emitted.
 @export_range(0.1, 10.0, 0.1, "suffix:seconds") var cooldown: float = 3:
 	get:
-		return %CooldownTimer.wait_time
+		return %CooldownTimer.wait_time if %CooldownTimer else cooldown
 	set(newValue):
+		cooldown = newValue
 		if %CooldownTimer:
 			%CooldownTimer.wait_time = newValue
 

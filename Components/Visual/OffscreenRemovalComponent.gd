@@ -5,8 +5,14 @@ extends Component
 
 @export var rectangle: Rect2:
 	get: return %VisibleOnScreenNotifier2D.rect
-	set(newValue): %VisibleOnScreenNotifier2D.rect = newValue
+	set(newValue):
+		rectangle = newValue
+		if %VisibleOnScreenNotifier2D: %VisibleOnScreenNotifier2D.rect = rectangle
 
 
+func _ready():
+	%VisibleOnScreenNotifier2D.rect = rectangle
+	
+	
 func onScreenExited() -> void:
 	self.parentEntity.queue_free()
