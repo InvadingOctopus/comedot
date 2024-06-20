@@ -100,23 +100,25 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 
 
 func transitionToScene(nextScene: PackedScene):
-	get_tree().paused = true
+	var sceneTree := get_tree()
+	sceneTree.paused = true
 	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
 
-	get_tree().change_scene_to_packed(nextScene)
+	sceneTree.change_scene_to_packed(nextScene)
 
 	await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
-	get_tree().paused = false
+	sceneTree.paused = false
 
 
 ## Sets [member SceneTree.paused] and returns the resulting paused status.
 func setPause(paused: bool) -> bool:
-	get_tree().paused = paused
+	var sceneTree := get_tree()
+	sceneTree.paused = paused
 
-	if get_tree().paused: GlobalOverlay.fadeIn()
+	if sceneTree.paused: GlobalOverlay.fadeIn()
 	else: GlobalOverlay.fadeOut()
 
-	var isTreePaused := get_tree().paused # Cache? :')
+	var isTreePaused := sceneTree.paused # Cache? :')
 	GlobalOverlay.setPauseSettingsVisibility(isTreePaused)
 	return isTreePaused
 
