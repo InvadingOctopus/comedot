@@ -196,7 +196,10 @@ func removeAllChildren(parent: Node) -> int:
 func saveGame():
 	# TODO: Implement properly :(
 	# BUG: Does not save all state of all nodes
+	Debug.showTemporaryLabel(&"Game State", "Save")
 	Debug.printLog("Saving state → " + Global.saveFilePath)
+	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison 
+	
 	var packedSceneToSave := PackedScene.new()
 	packedSceneToSave.pack(get_tree().get_current_scene())
 	ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
@@ -207,9 +210,12 @@ func saveGame():
 func loadGame():
 	# TODO: Implement properly :(
 	# BUG: Does not restore all state of all nodes
+	Debug.showTemporaryLabel(&"Game State", "Load")
 	Debug.printLog("Loading state ← " + Global.saveFilePath)
+	
 	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
 	get_tree().change_scene_to_packed(packedSceneLoaded)
+	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison 
 
 
 ## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
