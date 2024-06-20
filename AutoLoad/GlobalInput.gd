@@ -23,6 +23,7 @@ class Actions: ## Input event labels
 	const interact		:= &"interact"
 
 	const pause			:= &"pause"
+	const screenshot	:= &"screenshot"
 	const quickSave		:= &"quickSave"
 	const quickLoad		:= &"quickLoad"
 	const debugBreak	:= &"debugBreak"
@@ -36,7 +37,8 @@ class Actions: ## Input event labels
 
 ## Global keyboard shortcuts
 func _input(event: InputEvent):
-
+	# TBD: Should we check `event` or [Input]?
+	
 	# Game
 
 	if Input.is_action_just_released(Actions.pause):
@@ -61,6 +63,9 @@ func _input(event: InputEvent):
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	# Save & Load
+	
+	if event.is_action_released(GlobalInput.Actions.screenshot):
+		Global.screenshot()
 	
 	if event.is_action_released(GlobalInput.Actions.quickLoad):
 		Global.loadGame()

@@ -211,6 +211,23 @@ func loadGame():
 	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
 	get_tree().change_scene_to_packed(packedSceneLoaded)
 
+
+## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
+## @experimental
+func screenshot(titleSuffix: String = ""):
+	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
+	var date := Time.get_date_string_from_system().replace(".","-") 
+	var time := Time.get_time_string_from_system().replace(":","-")
+
+	var screenshotPath := "user://" + "Comedot Screenshot " + date + " " + time
+	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
+	screenshotPath += ".jpeg"
+	var screenshotImage := get_viewport().get_texture().get_image() # Capture what the player sees
+	
+	screenshotImage.save_jpg(screenshotPath)
+	Debug.showTemporaryLabel(&"Screenshot", time + " " + titleSuffix)
+	
+	
 #endregion
 
 
