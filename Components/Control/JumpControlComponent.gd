@@ -4,6 +4,7 @@
 class_name JumpControlComponent
 extends BodyComponent
 
+# TODO: Allow jumps when falling down from walking over an edge
 
 #region Parameters
 @export var isEnabled: bool = true
