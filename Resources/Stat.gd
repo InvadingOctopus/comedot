@@ -12,6 +12,7 @@ extends Resource
 			Debug.printWarning("Rejected attempt to set name to empty string")
 			return
 		name = newValue
+		self.resource_name = name
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 @export var min:    int = 0:
