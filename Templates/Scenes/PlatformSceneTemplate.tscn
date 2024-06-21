@@ -1,16 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://dbwiosb1xulu5"]
+[gd_scene load_steps=9 format=3 uid="uid://dbwiosb1xulu5"]
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_qx6d3"]
 [ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scenes/PlatformMapTemplate.tscn" id="2_atccb"]
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_mduvw"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_5pmqp"]
-[ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="5_1si6t"]
-[ext_resource type="PackedScene" uid="uid://b084t0dt3625" path="res://Components/Physics/GravityComponent.tscn" id="5_m8sxv"]
-[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="6_u0l22"]
+[ext_resource type="Script" path="res://Entities/Entity.gd" id="5_i7cro"]
+[ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="6_a2frt"]
+[ext_resource type="PackedScene" uid="uid://b3lo3k8h0xl33" path="res://Templates/Entities/PlayerEntityTemplateForPlatformer.tscn" id="9_7qieo"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jfq8j"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
+resource_local_to_scene = true
+size = Vector2(18, 18)
 
 [node name="PlatformSceneTemplate" type="Node2D"]
 script = ExtResource("1_qx6d3")
@@ -19,23 +21,31 @@ script = ExtResource("1_qx6d3")
 
 [node name="PlatformMapTemplate" parent="." instance=ExtResource("2_atccb")]
 
-[node name="PlayerEntity" type="CharacterBody2D" parent="." groups=["entities", "players"]]
-position = Vector2(240, 88)
-collision_layer = 6
-collision_mask = 574
-script = ExtResource("3_mduvw")
+[node name="HazardEntity" type="RigidBody2D" parent="."]
+position = Vector2(240, 312)
+collision_layer = 32
+collision_mask = 0
+gravity_scale = 1.66533e-16
+script = ExtResource("5_i7cro")
 
-[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity"]
-modulate = Color(0, 1, 0, 1)
-texture = ExtResource("4_5pmqp")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardEntity"]
+shape = SubResource("RectangleShape2D_dpspd")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
-shape = SubResource("RectangleShape2D_jfq8j")
+[node name="ColorRect" type="ColorRect" parent="HazardEntity"]
+offset_left = -9.0
+offset_top = -9.0
+offset_right = 9.0
+offset_bottom = 9.0
+color = Color(1, 0, 0, 1)
 
-[node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
+[node name="DamageComponent" parent="HazardEntity" instance=ExtResource("6_a2frt")]
+collision_layer = 32
+collision_mask = 6
 
-[node name="GravityComponent" parent="PlayerEntity" instance=ExtResource("5_m8sxv")]
+[node name="DamageCollisionShape" parent="HazardEntity/DamageComponent" index="0"]
+shape = SubResource("RectangleShape2D_7wvwn")
 
-[node name="PlatformerControlComponent" parent="PlayerEntity" instance=ExtResource("5_1si6t")]
+[node name="PlayerEntity" parent="." instance=ExtResource("9_7qieo")]
+position = Vector2(240, 64)
 
-[node name="JumpControlComponent" parent="PlayerEntity" instance=ExtResource("6_u0l22")]
+[editable path="HazardEntity/DamageComponent"]
