@@ -7,13 +7,13 @@
 
 ⭐️ It lets you do stuff like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
-[![Rocks with Guns](https://i.imgur.com/wH84m23.gif)](https://i.imgur.com/wH84m23.gifv)
+https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
 ⭐️ A "[composition][composition-over-inheritance]" architecture helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
 
-[![Swapping Control Components](https://i.imgur.com/IxxOXX6.gif)](https://i.imgur.com/IxxOXX6.gifv)
+https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
-_(darn GitHub, if the images do not animate, click on them to go to the Imgur pages)_
+_(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping-components])_
 
 ## How To Use
 
@@ -65,6 +65,6 @@ _(darn GitHub, if the images do not animate, click on them to go to the Imgur pa
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 [swift-api-guidelines]: https://swift.org/documentation/api-design-guidelines/
 
-[rocks-with-guns]: https://i.imgur.com/wH84m23.gif "Rocks with Guns"
-[swapping-components]: https://i.imgur.com/IxxOXX6.gif "Swapping Control Components"
+[rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
+[swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [components-tree]: https://i.imgur.com/WW2grLs.png "Example Components Tree for a Player Entity"
