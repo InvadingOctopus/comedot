@@ -12,8 +12,9 @@ size = Vector2(16, 16)
 
 [sub_resource type="Resource" id="Resource_f1god"]
 resource_local_to_scene = true
+resource_name = "health"
 script = ExtResource("5_7e1iu")
-name = &"playerHealth"
+name = &"health"
 min = 0
 max = 10
 value = 10
