@@ -1,14 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://0uproxr5kcfg"]
+[gd_scene load_steps=5 format=3 uid="uid://0uproxr5kcfg"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_y4xpu"]
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_y25py"]
 [ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_tvlfg"]
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_t2b5s"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_csoc0"]
-[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="5_dor35"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xeh2"]
-size = Vector2(16, 16)
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="4_iqxhu"]
 
 [node name="OverheadSceneTemplate" type="Node2D"]
 script = ExtResource("1_y4xpu")
@@ -17,19 +12,5 @@ script = ExtResource("1_y4xpu")
 
 [node name="OverheadMapTemplate" parent="." instance=ExtResource("2_tvlfg")]
 
-[node name="PlayerEntity" type="CharacterBody2D" parent="."]
-modulate = Color(0, 1, 0, 1)
+[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("4_iqxhu")]
 position = Vector2(272, 336)
-collision_layer = 6
-collision_mask = 574
-script = ExtResource("3_t2b5s")
-
-[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity"]
-texture = ExtResource("4_csoc0")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
-shape = SubResource("RectangleShape2D_3xeh2")
-
-[node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
-
-[node name="OverheadControlComponent" parent="PlayerEntity" instance=ExtResource("5_dor35")]
