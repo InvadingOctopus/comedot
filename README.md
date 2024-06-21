@@ -15,6 +15,8 @@
 
 _(darn GitHub, if the images do not animate, click on them to go to the Imgur pages)_
 
+_(You can see some of what's being made with this framework at [syntaks.itch.io](https://syntaks.itch.io))_
+
 ## How To Use
 
 🚀 **For a quick glance:** See one of the scenes in the `/Templates/Scenes` folder.
