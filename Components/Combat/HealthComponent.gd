@@ -59,4 +59,3 @@ func heal(healAmount: int) -> int:
 		healthDidMax.emit()
 
 	return health.value
-

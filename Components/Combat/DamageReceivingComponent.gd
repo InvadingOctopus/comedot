@@ -191,4 +191,3 @@ func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> b
 
 	self.parentEntity.add_child(damageTimerComponent)
 	return true
-

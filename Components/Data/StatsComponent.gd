@@ -24,6 +24,3 @@ func getStatValue(statName: StringName) -> int:
 	var stat = self.findStat(statName)
 	if not stat: return 0
 	else: return stat.value
-
-
-

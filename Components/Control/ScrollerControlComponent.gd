@@ -10,7 +10,7 @@ extends BodyComponent
 
 
 #region Parameters
-@export var isEnabled: bool = true
+@export var isEnabled:  bool = true
 @export var parameters: ScrollerMovementParameters = ScrollerMovementParameters.new()
 #endregion
 
