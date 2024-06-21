@@ -40,7 +40,6 @@ layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
 
 [node name="LabelGridContainer" type="GridContainer" parent="Control/TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer"]
 layout_mode = 2
@@ -48,17 +47,21 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 columns = 2
 script = ExtResource("1_yk82h")
+prefixes = {
+"health": "HP:",
+"score": "SCORE:"
+}
 
 [node name="healthLabel" type="Label" parent="Control/TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "HP 99"
+text = "HP:10"
 vertical_alignment = 1
 
 [node name="scoreLabel" type="Label" parent="Control/TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Score 1337
+text = "SCORE:1337
 "
 horizontal_alignment = 2
 vertical_alignment = 1
