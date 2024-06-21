@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scenes/PlatformMapTemplate.tscn" id="2_atccb"]
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="5_i7cro"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="6_a2frt"]
-[ext_resource type="PackedScene" uid="uid://b3lo3k8h0xl33" path="res://Templates/Entities/PlayerEntityTemplateForPlatformer.tscn" id="9_7qieo"]
+[ext_resource type="PackedScene" uid="uid://b3lo3k8h0xl33" path="res://Templates/Entities/PlayerEntityTemplate-Platformer.tscn" id="9_7qieo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
@@ -45,7 +45,7 @@ collision_mask = 6
 [node name="DamageCollisionShape" parent="HazardEntity/DamageComponent" index="0"]
 shape = SubResource("RectangleShape2D_7wvwn")
 
-[node name="PlayerEntity" parent="." instance=ExtResource("9_7qieo")]
+[node name="PlayerEntityTemplate-Platformer" parent="." instance=ExtResource("9_7qieo")]
 position = Vector2(240, 64)
 
 [editable path="HazardEntity/DamageComponent"]

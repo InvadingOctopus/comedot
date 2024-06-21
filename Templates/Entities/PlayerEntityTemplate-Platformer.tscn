@@ -188,7 +188,7 @@ jumpVelocity1stJump = -350.0
 jumpVelocity1stJumpShort = -175.0
 jumpVelocity2ndJump = -300.0
 
-[node name="PlayerEntity" type="CharacterBody2D" groups=["players"]]
+[node name="PlayerEntityTemplate-Platformer" type="CharacterBody2D" groups=["players"]]
 z_index = 10
 collision_layer = 6
 collision_mask = 3640
