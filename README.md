@@ -9,7 +9,7 @@
 
 [![Rocks with Guns](https://i.imgur.com/wH84m23.gif)](https://i.imgur.com/wH84m23.gifv)
 
-⭐️ One of the best benefits of "[composition][composition-over-inheritance]" is the ability to easily change abilities/buffs/debuffs at runtime. There is no need to maintain complex `if/else` pyramids in a "master" script; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
+⭐️ A "[composition][composition-over-inheritance]" architecture helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
 
 [![Swapping Control Components](https://i.imgur.com/IxxOXX6.gif)](https://i.imgur.com/IxxOXX6.gifv)
 
@@ -18,7 +18,7 @@ _(darn GitHub, if the images do not animate, click on them to go to the Imgur pa
 ## How To Use
 
 > [!IMPORTANT]
-> **Godot 4.3 is required**.
+> **Godot 4.3 is required**. Embrace the Future ✨
 
 🚀 **For a quick glance:** See one of the scenes in the `/Templates/Scenes` folder.
 
