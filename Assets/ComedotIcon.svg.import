@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://58vdfn8j7ql3"
-path="res://.godot/imported/Comedot.svg-738bef6637de8ecb0feaa88a822de6b6.ctex"
+uid="uid://cho8a7g5rtjnd"
+path="res://.godot/imported/ComedotIcon.svg-e36a7058cefd26a580bf97e51a115481.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Comedot.svg"
-dest_files=["res://.godot/imported/Comedot.svg-738bef6637de8ecb0feaa88a822de6b6.ctex"]
+source_file="res://Assets/ComedotIcon.svg"
+dest_files=["res://.godot/imported/ComedotIcon.svg-e36a7058cefd26a580bf97e51a115481.ctex"]
 
 [params]
 
