@@ -2,6 +2,8 @@
 
 **Component-based framework and project template for 2D games in the Godot engine**
 
+![Godot+Comedot Logo][logo]
+
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own awesome games][itch] while learning Godot and GDScript as I go. Shit will break quickly and no backwards compatibility is guaranteed.
 
@@ -68,3 +70,5 @@ _(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping
 [rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [components-tree]: https://i.imgur.com/WW2grLs.png "Example Components Tree for a Player Entity"
+
+[logo]: /Assets/ComedotLogo.png "Godot+Comedot Logo"
