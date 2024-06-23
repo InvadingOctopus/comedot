@@ -29,11 +29,15 @@ _(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping
 
 ⚙️ **To use this framework for your own games:**
 
-1. Clone this repository (make a local copy of this entire Godot project)
-2. Make a subfolder for your game in the `/Games/` folder (say `/Games/EldenRing2D/`)
+1. Clone this repository (make a local copy of this entire Godot project).
+2. Create a new git branch for your game (say `game-of-the-year-2069`) **in your local repository**.
 3. Drag-and-drop nodes from the `/Entities/` and `/Components/` folders to build your scenes.
 	1. Some components have sub-children, like a `GunComponent`'s pivot point. To modify them, select the component node in the Scene Tree and enable "Editable Children".
 	2. The `/Scripts/` folder can be used for any node even if it does not inherit from the `Entity` class.
+
+> [!TIP]
+> * Try the existing `game-lab` branch as an example to experiment in.  
+> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your game-specific files and keep them separate from the framework to avoid accidental overwriting.
 
 🧩 Whenever your game needs an object or "actor" which has to react to events, such as a player or enemy character, or is made up of "behaviors" which could be reused for other objects:
 1. Create a new `Entity` scene or node (a Node2D/CharacterBody2D/Area2D/etc/ with the `Entity.gd` script attached)
