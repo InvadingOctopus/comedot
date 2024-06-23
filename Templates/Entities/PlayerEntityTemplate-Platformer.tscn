@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://b3lo3k8h0xl33"]
+[gd_scene load_steps=31 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_f3ne5"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_rphdn"]
@@ -169,14 +169,13 @@ logChanges = false
 resource_local_to_scene = true
 size = Vector2(12, 12)
 
-[sub_resource type="Resource" id="Resource_fdv6h"]
-resource_name = "playerMovementParameters"
+[sub_resource type="Resource" id="Resource_i7x77"]
 script = ExtResource("15_pkk5w")
 speedOnFloor = 150.0
 shouldApplyAccelerationOnFloor = true
 accelerationOnFloor = 800.0
 shouldApplyFrictionOnFloor = true
-frictionOnFloor = 1500.0
+frictionOnFloor = 2000.0
 shouldAllowMovementInputInAir = true
 speedInAir = 100.0
 shouldApplyAccelerationInAir = true
@@ -260,10 +259,10 @@ wait_time = 1.2
 [node name="GravityComponent" parent="." instance=ExtResource("4_xsb14")]
 
 [node name="PlatformerControlComponent" parent="." instance=ExtResource("4_1g12t")]
-parameters = SubResource("Resource_fdv6h")
+parameters = SubResource("Resource_i7x77")
 
 [node name="JumpControlComponent" parent="." instance=ExtResource("5_j400i")]
-parameters = SubResource("Resource_fdv6h")
+parameters = SubResource("Resource_i7x77")
 
 [node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
 
