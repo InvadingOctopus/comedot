@@ -1,0 +1,154 @@
+[gd_scene load_steps=25 format=3 uid="uid://b2u7yw0l6rh8i"]
+
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_k2mv1"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_60idy"]
+[ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_6b41x"]
+[ext_resource type="Script" path="res://Scripts/Visual/Camera.gd" id="3_eoepv"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="3_v376b"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="4_1o4sy"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="4_3yrlh"]
+[ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="9_4nfh8"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="9_l4khf"]
+[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="11_ld5af"]
+[ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_yf7mt"]
+[ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="12_3q85r"]
+[ext_resource type="PackedScene" uid="uid://qkcschxa5my1" path="res://Components/Control/InteractionControlComponent.tscn" id="16_xb1rb"]
+[ext_resource type="PackedScene" uid="uid://b084t0dt3625" path="res://Components/Physics/GravityComponent.tscn" id="20_jwf63"]
+[ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="20_kq7n4"]
+[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="21_12vp0"]
+[ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="22_rlnt2"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fnf16"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xjxg3"]
+radius = 8.0
+
+[sub_resource type="Resource" id="Resource_a7by2"]
+resource_local_to_scene = true
+resource_name = "health"
+script = ExtResource("4_1o4sy")
+name = &"health"
+min = 0
+max = 10
+value = 10
+logChanges = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0642d"]
+resource_local_to_scene = true
+size = Vector2(16, 16)
+
+[sub_resource type="Resource" id="Resource_8bctb"]
+resource_local_to_scene = true
+resource_name = "ammo"
+script = ExtResource("4_1o4sy")
+name = &"ammo"
+min = 0
+max = 100
+value = 100
+logChanges = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5rihq"]
+resource_local_to_scene = true
+size = Vector2(18, 18)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cvaff"]
+resource_local_to_scene = true
+radius = 16.0
+
+[node name="PlayerEntity" type="CharacterBody2D" groups=["entities", "players"]]
+collision_layer = 6
+collision_mask = 30
+floor_constant_speed = true
+platform_on_leave = 2
+script = ExtResource("1_k2mv1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fnf16")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_xjxg3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -1000
+limit_top = -1000
+limit_right = 1000
+limit_bottom = 1000
+limit_smoothed = true
+position_smoothing_speed = 10.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 10.0
+script = ExtResource("3_eoepv")
+
+[node name="StatsComponent" parent="." instance=ExtResource("3_6b41x")]
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_3yrlh")]
+health = SubResource("Resource_a7by2")
+shouldRemoveParentOnZero = true
+
+[node name="GravityComponent" parent="." instance=ExtResource("20_jwf63")]
+
+[node name="PlatformerControlComponent" parent="." instance=ExtResource("22_rlnt2")]
+
+[node name="JumpControlComponent" parent="." instance=ExtResource("21_12vp0")]
+
+[node name="PlatformerAnimationComponent" parent="." instance=ExtResource("9_4nfh8")]
+
+[node name="FactionComponent" parent="." instance=ExtResource("2_60idy")]
+factions = 6
+
+[node name="DamageReceivingComponent" parent="." instance=ExtResource("3_v376b")]
+collision_layer = 4
+collision_mask = 8
+
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+shape = SubResource("RectangleShape2D_0642d")
+
+[node name="InvulnerabilityOnHitComponent" parent="." instance=ExtResource("20_kq7n4")]
+
+[node name="GunComponent" parent="." instance=ExtResource("9_l4khf")]
+visible = false
+ammo = SubResource("Resource_8bctb")
+isEnabled = false
+
+[node name="GunSprite" parent="GunComponent/Pivot" index="0"]
+position = Vector2(16, 0)
+
+[node name="GunRecoilComponent" parent="." instance=ExtResource("11_yf7mt")]
+
+[node name="MouseRotationComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("11_ld5af")]
+nodeToRotate = NodePath("../GunComponent")
+rotationSpeed = 10.0
+
+[node name="CollectorComponent" parent="." instance=ExtResource("12_3q85r")]
+
+[node name="CollectorCollisionShape" parent="CollectorComponent" index="0"]
+shape = SubResource("RectangleShape2D_5rihq")
+
+[node name="InteractionControlComponent" parent="." node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("16_xb1rb")]
+interactionIndicator = NodePath("InteractionIndicator")
+
+[node name="InteractionControlShape" parent="InteractionControlComponent" index="0"]
+shape = SubResource("CircleShape2D_cvaff")
+
+[node name="InteractionIndicator" type="Label" parent="InteractionControlComponent"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -43.0
+offset_right = 30.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "􀝱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[editable path="DamageReceivingComponent"]
+[editable path="InvulnerabilityOnHitComponent"]
+[editable path="GunComponent"]
+[editable path="CollectorComponent"]
+[editable path="InteractionControlComponent"]

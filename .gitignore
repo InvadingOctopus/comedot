@@ -15,6 +15,6 @@ data_*/
 mono_crash.*.json
 
 # Game-specific experiments
-Lab/*
+# Lab/*
 
 .DS_Store
