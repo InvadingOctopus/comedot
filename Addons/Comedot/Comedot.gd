@@ -21,12 +21,12 @@ func _exit_tree() -> void:
 func addCustomTypes():
 	# Entity
 	const entityScript	:= preload("res://Entities/Entity.gd")
-	const entityIcon	:= preload("res://Assets/Icons/entity.svg")
+	const entityIcon	:= preload("res://Assets/Icons/Entity.svg")
 	add_custom_type(entityTypeName, "Node2D", entityScript, entityIcon)
 
 	# Component
 	const componentScript	:= preload("res://Components/Component.gd")
-	const componentIcon		:= preload("res://Assets/Icons/component.svg")
+	const componentIcon		:= preload("res://Assets/Icons/Component.svg")
 	add_custom_type(componentTypeName, "Node", componentScript, componentIcon)
 
 

@@ -16,9 +16,9 @@ run/main_scene="res://Templates/Scenes/PlatformSceneTemplate.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=60
 boot_splash/bg_color=Color(0.15, 0.15, 0.25, 1)
-boot_splash/image="res://Assets/ComedotLogo.png"
+boot_splash/image="res://Assets/Logos/Comedot.png"
 boot_splash/fullsize=false
-config/icon="res://Assets/ComedotIcon.svg"
+config/icon="res://Assets/Icons/Comedot.svg"
 
 [audio]
 

@@ -1,7 +1,7 @@
 ## Apply this class to a `Node2D` to designate that node as an Entity which can hold `Component` nodes.
 ## Although this class may be attached to ANY DESCENDANT of Node2D (such as a CharacterBody2D) it is better to use specific subclasses of Entity for those cases such as `Entity`.
 
-@icon("res://Assets/Icons/entity.svg")
+@icon("res://Assets/Icons/Entity.svg")
 
 class_name Entity
 extends Node2D

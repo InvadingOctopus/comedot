@@ -1,5 +1,5 @@
 #@tool
-@icon("res://Assets/Icons/component.svg")
+@icon("res://Assets/Icons/Component.svg")
 
 class_name Component
 extends Node
