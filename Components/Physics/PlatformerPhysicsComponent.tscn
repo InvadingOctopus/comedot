@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv4nl55gi16vx"]
+
+[ext_resource type="Script" path="res://Components/Physics/PlatformerPhysicsComponent.gd" id="1_pktxb"]
+
+[node name="PlatformerPhysicsComponent" type="Node" groups=["components"]]
+script = ExtResource("1_pktxb")
+
+[node name="CoyoteJumpTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
