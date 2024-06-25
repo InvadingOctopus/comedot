@@ -115,10 +115,12 @@ func getParentEntity() -> Entity:
 	return parent
 
 
-func findCoComponent(type: Variant) -> Component: # TODO: Pass types only
-	var foundComponent = parentEntity.findFirstChildOfType(type)
+func findCoComponent(type: Script) -> Component:
+	# CHECK: Is [Script] the correct type to accept as argument?
+	var typeName: StringName = type.get_global_name()
+	var foundComponent: Component = parentEntity.components.get(typeName)
 	if not foundComponent:
-		printWarning("Cannot find " + str(type) + " in parent Entity: " + parentEntity.logName)
+		printWarning("Cannot find " + typeName + " in parent Entity: " + parentEntity.logName)
 
 	return foundComponent
 

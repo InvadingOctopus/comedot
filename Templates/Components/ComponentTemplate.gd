@@ -17,7 +17,7 @@ extends Component
 
 var coComponent: Component: ## Placeholder
 	get:
-		# Cache the first matching sibling component for future access. Remove this assignment to always dynamically find a component at runtime. 
+		# WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
 		if not coComponent: coComponent = self.findCoComponent(Component)
 		return coComponent
 		

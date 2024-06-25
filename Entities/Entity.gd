@@ -4,7 +4,7 @@
 @icon("res://Assets/Icons/Entity.svg")
 
 class_name Entity
-extends Node2D
+extends Node2D # An "entity" would always have a visual presence, so it cannot be just a [Node].
 
 
 #region Parameters
@@ -26,6 +26,11 @@ extends Node2D
 
 
 #region State
+## A dictionary of StringName:Component where the key is the `class_name` of each component.
+## Updated by the [signal Node.child_entered_tree] signal.
+## Used by components to quickly find other sibling components, without a dynamic search at runtime.
+var components := {}
+
 ## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
 var functionsAlreadyCalledOnceThisFrame := {}
 #endregion
@@ -67,14 +72,22 @@ func printError(message: String = ""):
 #region Life Cycle
 
 # Called when the node enters the scene tree for the first time.
-func _enter_tree(): # CHECK: Should it be `_ready()`?
+func _enter_tree():
+	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
+	# so signals like `child_entered_tree` will be missed for the initial components.
 	self.add_to_group(Global.Groups.entities, true)
 	printLog("􀈅 [b]_enter_tree() parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
+	connectSignals()
 
-
+	
+func connectSignals():
+	self.child_entered_tree.connect(childEnteredTree)
+	
+	
 func _process(delta: float):
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
+	# TBD: Assess performance impact 
 	functionsAlreadyCalledOnceThisFrame.clear()
 
 
@@ -93,6 +106,24 @@ func _exit_tree():
 
 #region Child Nodes & Components
 
+func childEnteredTree(node: Node):
+	# Herd components into the [components] dictionary.
+	var newComponent: Component = node as Component
+	if not newComponent: return
+	registerComponent(newComponent)
+
+
+func registerComponent(newComponent: Component):
+	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
+	
+	# Do we already have a component of the same type?
+	var existingComponent: Component = self.components.get(componentType)
+	if existingComponent:
+		printLog(str("Replacing: ", existingComponent, " → ", newComponent))
+	
+	self.components[componentType] = newComponent
+	
+	
 func getComponents() -> Array[Component]:
 	# This duplicates most code from `getChildrenOfType` because of ensuring strong typing.
 	var childrenNodes: Array[Node] = self.get_children()
