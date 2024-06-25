@@ -27,7 +27,7 @@ extends Node2D
 
 #region State
 ## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
-var functionsAlreadyCalledOnceThisFrame = {}
+var functionsAlreadyCalledOnceThisFrame := {}
 #endregion
 
 
@@ -75,7 +75,7 @@ func _enter_tree(): # CHECK: Should it be `_ready()`?
 func _process(delta: float):
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
-	functionsAlreadyCalledOnceThisFrame = {}
+	functionsAlreadyCalledOnceThisFrame.clear()
 
 
 ## May be called by a child component such as a [HealthComponent] when this parent [Entity] is supposed to be removed from the scene.

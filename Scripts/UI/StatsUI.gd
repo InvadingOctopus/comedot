@@ -13,11 +13,11 @@ extends Control
 ## An optional dictionary of additional prefixes to write before the value of each [Stat].
 ## The dictionary type should be [StringName:String], where the keys are the names of the stats, in the exact case.
 ## If [member shouldPrefixValueWithStatName] is `true`, the name will be added after the custom prefix.
-@export var prefixes = {}
+@export var prefixes := {}
 
 ## An optional dictionary of suffixes to write after the value of each [Stat].
 ## The dictionary type should be [StringName:String], where the keys are the names of the stats, in the exact case.
-@export var suffixes = {}
+@export var suffixes := {}
 
 ## A list of stats to display as soon as the Stats UI is ready,
 ## without waiting for a signal about a change.
