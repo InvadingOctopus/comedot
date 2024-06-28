@@ -29,6 +29,11 @@ signal didSomethingHappen ## Placeholder
 #endregion
 
 
+## Returns a list of required component types that this component depends on.
+func getRequiredcomponents() -> Array[Script]:
+	return []
+
+
 func _ready():
 	pass # Any code needed to configure and prepare the component.
 

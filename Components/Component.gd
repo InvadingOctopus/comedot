@@ -54,15 +54,6 @@ func printError(message: String = ""):
 
 #region Life Cycle
 
-func _get_configuration_warnings() -> PackedStringArray:
-	var warnings: PackedStringArray = []
-
-	if not is_instance_of(self.get_parent(), Entity):
-		warnings.append("Component nodes should be added to a parent which inherits from the Entity class.")
-
-	return warnings
-
-
 # Called when the node enters the scene tree for the first time.
 func _enter_tree():
 	self.add_to_group(Global.Groups.components, true)
@@ -74,6 +65,41 @@ func _enter_tree():
 		printLog("􀈅 [b]_enter_tree() parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
 	else:
 		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
+	
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: PackedStringArray = []
+
+	if not is_instance_of(self.get_parent(), Entity):
+		warnings.append("Component nodes should be added to a parent which inherits from the Entity class.")
+
+	if not checkRequiredComponents():
+		warnings.append("This component is missing a required co-component. Check the getRequiredComponents() method.")
+		
+	return warnings
+
+
+## Returns: A list of other component types which this component depends on.
+## Must be overridden by subclasses.
+func getRequiredComponents() -> Array[Script]:
+	# This is needed to be a method because properties cannot be overridden :')
+	return []
+
+
+func checkRequiredComponents() -> bool:
+	if not parentEntity or parentEntity.components.keys().is_empty(): return true # Nothing to do if there are no other components!
+	
+	var haveAllRequirements: bool = true # Start true then make it false if there is any missing requirement.
+	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
+	if requiredComponentTypes.is_empty(): return false
+	
+	for requirement in requiredComponentTypes:
+		# DEBUG: printDebug(str(requirement))
+		if not parentEntity.components.keys().has(requirement):
+			printWarning(str("? Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
+			haveAllRequirements = false
+		
+	return haveAllRequirements
 
 
 ## Calls [method queue_free()] on itself if the parent entity approves. Returns `true` if removed.
