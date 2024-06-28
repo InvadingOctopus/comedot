@@ -1,10 +1,12 @@
-## Provides player input to a [PlatformerPhysicsControlComponent]
+## Provides player control input to a [PlatformerPhysicsControlComponent].
 ## Requirements: ABOVE [PlatformerPhysicsControlComponent]
+## @experimental
 
 class_name PlatformerPhysicsControlComponent
 extends Component
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
+
 
 #region Parameters
 @export var isEnabled: bool = true
@@ -28,7 +30,7 @@ var platformerPhysicsComponent: PlatformerPhysicsComponent:
 
 func _input(event: InputEvent):
 	if not isEnabled: return
-	checkJumpInput()
+	if event.is_action(GlobalInput.Actions.jump): processJumpInput()
 
 
 func _physics_process(delta: float):
@@ -60,9 +62,10 @@ func processInput():
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 	
 
-func checkJumpInput():
+func processJumpInput():
 	# Jump
-	platformerPhysicsComponent.jumpInput = Input.is_action_just_pressed(GlobalInput.Actions.jump)
+	platformerPhysicsComponent.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
+	#platformerPhysicsComponent.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
 
 func copyInputToPhysicsComponent():
