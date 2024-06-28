@@ -4,6 +4,7 @@
 #class_name FlipToMatchSprite
 extends Node2D
 
+# TODO: PERFORMANCE: Update only when the flip property changes; not every frame!
 # TODO: Vertical flipping
 # TODO: How to best support both [Sprite2D] & [AnimatedSprite2D]? They're not related by inheritance...
 
