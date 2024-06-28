@@ -1,11 +1,18 @@
-#@tool
+## A node which represents a distinct behavior or property of a game character or object.
+## A parent node made up of component child nodes is an [Entity]. 
+## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
+## Components may directly modify the parent entity or interact with other sibling components, such as a [DamageReceivingComponent] modifying a [HealthComponent].
+
+#@tool # Tool is not useful because it's not inherited :(
 @icon("res://Assets/Icons/Component.svg")
 
 class_name Component
 extends Node
 
 
+#region Core Properties
 var parentEntity: Entity
+#endregion
 
 
 #region Logging
