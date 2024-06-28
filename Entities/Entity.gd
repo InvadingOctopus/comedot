@@ -1,6 +1,7 @@
 ## Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
 ## Provides methods for managing components and other common tasks.
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
+## NOTE: For certain specific cases such as [CharacterBody2D], use specific subclasses of Entity such as [BodyEntity].
 
 @icon("res://Assets/Icons/Entity.svg")
 

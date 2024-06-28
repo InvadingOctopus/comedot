@@ -23,8 +23,3 @@ func _enter_tree():
 	if self.body == null and parentEntity != null:
 			self.body = parentEntity.getBody()
 	skipFirstWarning = false
-
-
-
-
-
