@@ -1,5 +1,6 @@
-## Apply this class to a `Node2D` to designate that node as an Entity which can hold `Component` nodes.
-## Although this class may be attached to ANY DESCENDANT of Node2D (such as a CharacterBody2D) it is better to use specific subclasses of Entity for those cases such as `Entity`.
+## Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
+## Provides methods for managing components and other common tasks.
+## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
 
 @icon("res://Assets/Icons/Entity.svg")
 
