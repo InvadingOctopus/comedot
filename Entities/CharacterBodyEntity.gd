@@ -25,8 +25,10 @@ extends Entity
 
 func _ready() -> void:
 	self.body = self.get_node(^".") as CharacterBody2D
+	if not body:
+		printError("CharacterBodyEntity script not attached to a CharacterBody2D node!")
 
-	
+
 func _physics_process(delta: float) -> void:
 	if self.components.is_empty(): return
 	
