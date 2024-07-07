@@ -5,8 +5,41 @@
 ## @experimental
 
 class_name PhysicsComponentBase
-extends BodyComponent
+extends Component
 
+
+#region Parameters
+
+## If `null` then it will be acquired from the parent [Entity] on [method _enter_tree()]
+@export var body: CharacterBody2D:
+	get:
+		if body == null and not skipFirstWarning:
+			printWarning("body is null! Call parentEntity.getBody() to find and remember the Entity's CharacterBody2D")
+		return body
+
+#endregion
+
+
+#region State
+## This avoids the superfluous warning when checking the [member body] for the first time in [method _enter_tree()].
+var skipFirstWarning := true
+#endregion
+
+
+# Called whenever the node enters the scene tree.
+func _enter_tree():
+	super._enter_tree()
+	
+	if self.body == null and parentEntity != null:
+		self.body = parentEntity.getBody()
+	
+	if not body:
+		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
+
+	skipFirstWarning = false
+
+
+#region Abstract Methods to Override
 
 ## Called before [method CharacterBody2D.move_and_slide]
 ## Must be overridden by subclasses.
@@ -18,3 +51,5 @@ func processPhysicsBeforeMove(delta: float) -> void:
 ## Must be overridden by subclasses.
 func processPhysicsAfterMove(delta: float) -> void:
 	pass
+
+#endregion
