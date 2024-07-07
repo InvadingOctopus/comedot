@@ -1,5 +1,5 @@
 ## An entity which is also a [CharacterBody2D] and uses subclasses of [PhysicsComponentBase] to manipulate the physics body.
-## Splits the [method Node._physics_process] method into 2 methods: [method PhysicsComponentBase.processPhysicsBeforeMove] and [method PhysicsComponentBase.processPhysicsAfterMove].
+## Splits the [method Node._physics_process] method into 2 methods: [method PhysicsComponentBase.processBodyBeforeMove] and [method PhysicsComponentBase.processBodyAfterMove].
 ## These methods are called on each [PhysicsComponentBase] before and after the entity calls [method CharacterBodt2D.move_and_slide] (a function which must be called ONLY ONCE PER FRAME).
 ## This allows multiple components to coalescee and synchronize their physics updates.
 ## @experimental
@@ -44,9 +44,9 @@ func _physics_process(delta: float) -> void:
 	for key: StringName in self.components.keys():
 		physicsComponent = self.components[key] as PhysicsComponentBase
 		if physicsComponent:
-			# DEBUG: printDebug(str(physicsComponent, ".processPhysicsBeforeMove()"))
+			# DEBUG: printDebug(str(physicsComponent, ".processBodyBeforeMove()"))
 			
-			physicsComponent.processPhysicsBeforeMove(delta)
+			physicsComponent.processBodyBeforeMove(delta)
 		# physicsComponent = null # Dhould be nulled by prior assignment
 			
 	# DEBUG: printDebug("move_and_slide")
@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 	for key: StringName in self.components.keys():
 		physicsComponent = self.components[key] as PhysicsComponentBase
 		if physicsComponent:
-			# DEBUG: printDebug(str(physicsComponent, ".processPhysicsAfterMove()"))
+			# DEBUG: printDebug(str(physicsComponent, ".processBodyAfterMove()"))
 			
-			physicsComponent.processPhysicsAfterMove(delta)
+			physicsComponent.processBodyAfterMove(delta)
 		# physicsComponent = null # Dhould be nulled by prior assignment
