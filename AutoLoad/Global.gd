@@ -7,9 +7,11 @@ extends Node
 #region Project-Specific Flags & Settings
 
 ## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
-var hasStartScript: bool = false
+var hasStartScript:		bool = false
 
-var saveFilePath: StringName = &"user://ComedotSaveGame.scn"
+var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
+
+var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
 
 #endregion
 

@@ -64,7 +64,7 @@ func printWarning(message: String = "", objectName: String = "", _objectColor: S
 	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
 
 
-## NOTE: In release builds, displays an OS alert which blocks engine execution.
+## NOTE: In release builds, if [member Global.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
 func printError(message: String = "", objectName: String = "", _objectColor: String = ""):
 	updateLastFrameLogged()
 	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
@@ -74,7 +74,7 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 	#print_rich("[indent]❗️ [color=red]" + objectName + " " + message + "[/color]")
 	
 	# WARNING: Crash on error if not developing in the editor.
-	if not OS.is_debug_build():
+	if Global.shouldAlertOnError and not OS.is_debug_build():
 		OS.alert(message, "Framework Error")
 
 
