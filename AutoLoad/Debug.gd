@@ -64,13 +64,18 @@ func printWarning(message: String = "", objectName: String = "", _objectColor: S
 	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
 
 
+## NOTE: In release builds, displays an OS alert which blocks engine execution.
 func printError(message: String = "", objectName: String = "", _objectColor: String = ""):
 	updateLastFrameLogged()
 	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
 	push_error(plainText)
 	printerr(plainText)
-	# Don't pring a duplicate line to reduce clutter.
+	# Don't print a duplicate line, to reduce clutter.
 	#print_rich("[indent]❗️ [color=red]" + objectName + " " + message + "[/color]")
+	
+	# WARNING: Crash on error if not developing in the editor.
+	if not OS.is_debug_build():
+		OS.alert(message, "Framework Error")
 
 
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
