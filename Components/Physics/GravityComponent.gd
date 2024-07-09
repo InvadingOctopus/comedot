@@ -2,7 +2,7 @@
 ## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
-extends BodyComponent
+extends PhysicsComponentBase
 
 
 #region Parameters
@@ -10,11 +10,12 @@ extends BodyComponent
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
 @export_range(-10, 10, 0.05) var gravityScale: float = 1.0
+
+var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 #endregion
 
 
 #region State
-var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 #endregion
 
 
@@ -26,10 +27,10 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func _physics_process(delta: float):
+func processBodyBeforeMove(delta: float):
 	if not isEnabled: return
 	processGravity(delta)
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	#parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
 
 
 func processGravity(delta: float):
