@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_y4xpu"]
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_y25py"]
-[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="2_tvlfg"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="4_iqxhu"]
+[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scene/OverheadMapTemplate.tscn" id="2_tvlfg"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entity/PlayerEntityTemplate-OverheadBasic.tscn" id="4_iqxhu"]
 
 [node name="OverheadSceneTemplate" type="Node2D"]
 script = ExtResource("1_y4xpu")

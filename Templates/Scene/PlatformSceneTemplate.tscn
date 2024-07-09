@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_qx6d3"]
-[ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scenes/PlatformMapTemplate.tscn" id="2_atccb"]
+[ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scene/PlatformMapTemplate.tscn" id="2_atccb"]
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="5_i7cro"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="6_a2frt"]
-[ext_resource type="PackedScene" uid="uid://83osop4fb38w" path="res://Templates/Entities/PlayerEntityTemplate-Platformer.tscn" id="6_wcbjl"]
+[ext_resource type="PackedScene" uid="uid://83osop4fb38w" path="res://Templates/Entity/PlayerEntityTemplate-Platformer.tscn" id="6_wcbjl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)

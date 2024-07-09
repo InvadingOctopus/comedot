@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Entities/Objects/BulletEntity.tscn" id="5_8jneb"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="5_87ms1"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
-[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="7_f5htu"]
+[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scene/OverheadMapTemplate.tscn" id="7_f5htu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_esh4c"]
 size = Vector2(14, 12)
