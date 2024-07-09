@@ -59,7 +59,7 @@ extends Resource
 ## Named after Wile E. Coyote from Road Runner :>
 @export_range(0, 10, 0.1, "seconds") var coyoteJumpTimer:	float = 0.1
 
-@export var allowWallJump:									bool  = false
+@export var allowWallJump:									bool  = true
 
 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
 @export_range(-1000, -10, 5) var wallJumpVelocity:			float = -300
