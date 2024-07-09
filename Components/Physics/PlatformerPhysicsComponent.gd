@@ -36,7 +36,7 @@ enum State { idle, moveOnFloor, moveInAir }
 var states = {
 	State.idle:			null,
 	State.moveOnFloor:	null,
-	State.moveInAir:		null,
+	State.moveInAir:	null,
 	# State.jumping:	null, # TBD
 	# State.falling:	null, # TBD
 	}
@@ -113,7 +113,7 @@ func _ready() -> void:
 	# Set the initial timers
 	
 	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
-	wallJumpTimer.wait_time = parameters.wallJumpTimer
+	wallJumpTimer.wait_time   = parameters.wallJumpTimer
 
 
 #region Update Cycle
