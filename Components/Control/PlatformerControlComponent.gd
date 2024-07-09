@@ -3,7 +3,7 @@
 ## Requirements: Entity with [CharacterBody2D]
 
 class_name PlatformerControlComponent
-extends BodyComponent
+extends PhysicsComponentBase
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
@@ -33,7 +33,10 @@ var inputDirection:			float
 var lastInputDirection:		float
 var isInputZero:			bool = true
 
-var isOnFloor:		bool ## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
+## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
+## WARNING: May no longer be true after calling [method CharacterBody2D.move_and_slide]
+var isOnFloor:		bool 
+
 var wasOnFloor:		bool = false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
 var wasOnWall:		bool = false ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
 
@@ -49,7 +52,7 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func _physics_process(delta: float):
+func processBodyBeforeMove(delta: float):
 	if not isEnabled: return
 
 	processInput()
@@ -62,11 +65,11 @@ func _physics_process(delta: float):
 	#applyFrictionInAir(delta)
 	processAllFriction(delta)
 
-	self.wasOnFloor = isOnFloor
-	self.wasOnWall = body.is_on_wall() # NOTE: NOT `is_on_wall_only()`
-
-	parentEntity.callOnceThisFrame(body.move_and_slide)
-
+	self.wasOnFloor = body.is_on_floor()
+	self.wasOnWall  = body.is_on_wall() # NOTE: NOT `is_on_wall_only()`
+	
+	#parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
+	
 	#showDebugInfo()
 
 
@@ -104,7 +107,7 @@ func processInput():
 
 	if not isInputZero: lastInputDirection = inputDirection
 
-	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
+	# NOTE: DESIGN: Accept input in air even if [member PlatformerMovementParameters.shouldAllowMovementInputInAir] is `false`,
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 
 
