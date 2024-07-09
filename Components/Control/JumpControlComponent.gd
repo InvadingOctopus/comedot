@@ -1,17 +1,16 @@
-## Handles jumping.
-## Requirements: Entity with [CharacterBody2D], NOTE: Gravity and falling is handled by [GravityComponent]
+## Handles jumping. Applies velocity when the player provides jump control input.
+## Requirements: Entity with [CharacterBody2D], NOTE: Gravity is handled by [GravityComponent], and friction in air is handled by [PlatformerControlComponent]
 
 class_name JumpControlComponent
 extends PhysicsComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TODO: Allow jumps when falling down from walking over an edge
 # TODO: Reduce duplication of flags like `isOnFloor` etc.
 
 
 #region Parameters
 @export var isEnabled:  bool = true
-@export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
+@export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
 #endregion
 
 

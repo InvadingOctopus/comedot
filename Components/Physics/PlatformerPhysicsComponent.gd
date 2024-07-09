@@ -25,6 +25,7 @@ extends BodyComponent
 			self.isInputZero = true
 		
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
+@export var jumpParameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
 
 #endregion
 
@@ -112,8 +113,8 @@ func _ready() -> void:
 		
 	# Set the initial timers
 	
-	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
-	wallJumpTimer.wait_time   = parameters.wallJumpTimer
+	coyoteJumpTimer.wait_time = jumpParameters.coyoteJumpTimer
+	wallJumpTimer.wait_time   = jumpParameters.wallJumpTimer
 
 
 #region Update Cycle
@@ -154,13 +155,13 @@ func _physics_process(delta: float):
 	if wasOnWall: 
 		previousWallNormal = body.get_wall_normal()
 		wallJumpTimer.stop() # TBD: Is this needed?
-		wallJumpTimer.wait_time = parameters.wallJumpTimer
+		wallJumpTimer.wait_time = jumpParameters.wallJumpTimer
 	
 	# Move Your Body ♪	
 	parentEntity.callOnceThisFrame(body.move_and_slide)
 	
 	# Perform updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
-	wallJumpTimer.wait_time = parameters.wallJumpTimer
+	wallJumpTimer.wait_time = jumpParameters.wallJumpTimer
 	updateCoyoteJumpState()
 	updateWallJumpState()
 	
@@ -190,7 +191,7 @@ func updateStateBeforeMovement():
 			# DEBUG: printDebug("currentNumberOfJumps = 0")
 			currentNumberOfJumps = 0
 			coyoteJumpTimer.stop()
-			coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
+			coyoteJumpTimer.wait_time = jumpParameters.coyoteJumpTimer
 
 
 ## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
@@ -270,7 +271,7 @@ func processWallJump():
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if  not isEnabled \
-		or not parameters.allowWallJump \
+		or not jumpParameters.allowWallJump \
 		or (not body.is_on_wall_only() \
 			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
 				return 
@@ -281,14 +282,14 @@ func processWallJump():
 	var wallNormal: Vector2 = self.previousWallNormal
 		
 	if self.jumpInputJustPressed:
-		body.velocity.x = wallNormal.x * parameters.wallJumpVelocityX
-		body.velocity.y = parameters.wallJumpVelocity
+		body.velocity.x = wallNormal.x * jumpParameters.wallJumpVelocityX
+		body.velocity.y = jumpParameters.wallJumpVelocity
 		didWallJump = true
 
 
 func processJump():
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
-	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
+	if not isEnabled or jumpParameters.maxNumberOfJumps <= 0: return
 	
 	var shouldJump: bool = false
 
@@ -296,14 +297,14 @@ func processJump():
 
 	if self.jumpInputJustPressed:
 		if currentNumberOfJumps <= 0: shouldJump = isOnFloor or not is_zero_approx(coyoteJumpTimer.time_left)
-		else: shouldJump = (currentNumberOfJumps < parameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
+		else: shouldJump = (currentNumberOfJumps < jumpParameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
 		# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
 
 	if shouldJump:
 		if currentNumberOfJumps <= 0:
-			body.velocity.y = parameters.jumpVelocity1stJump
+			body.velocity.y = jumpParameters.jumpVelocity1stJump
 		else:
-			body.velocity.y = parameters.jumpVelocity2ndJump
+			body.velocity.y = jumpParameters.jumpVelocity2ndJump
 		coyoteJumpTimer.stop() # The "coyote" jump grace period is no longer needed after we jump
 
 		currentNumberOfJumps += 1
@@ -313,8 +314,8 @@ func processJump():
 
 	if self.jumpInputJustReleased \
 		and not isOnFloor \
-		and body.velocity.y < parameters.jumpVelocity1stJumpShort:
-			body.velocity.y = parameters.jumpVelocity1stJumpShort
+		and body.velocity.y < jumpParameters.jumpVelocity1stJumpShort:
+			body.velocity.y = jumpParameters.jumpVelocity1stJumpShort
 
 
 ## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
