@@ -5,3 +5,11 @@
 [node name="JumpControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_58ydu")
 metadata/_edit_group_ = true
+
+[node name="CoyoteJumpTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="WallJumpTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
