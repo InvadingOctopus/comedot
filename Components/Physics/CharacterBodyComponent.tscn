@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dn7cpj4u7w1jy"]
+
+[ext_resource type="Script" path="res://Components/Physics/CharacterBodyComponent.gd" id="1_kuxy2"]
+
+[node name="CharacterBodyComponent" type="Node" groups=["components"]]
+script = ExtResource("1_kuxy2")
