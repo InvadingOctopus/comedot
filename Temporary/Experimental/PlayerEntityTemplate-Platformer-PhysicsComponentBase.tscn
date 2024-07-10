@@ -1,0 +1,249 @@
+[gd_scene load_steps=29 format=3 uid="uid://n52ge0tg5xw8"]
+
+[ext_resource type="Script" path="res://Temporary/Experimental/CharacterBodyEntity.gd" id="1_ipekq"]
+[ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_rphdn"]
+[ext_resource type="Script" path="res://Scripts/Visual/Camera.gd" id="3_3u7hd"]
+[ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_tfsgh"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="5_1y43j"]
+[ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="6_30kxi"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_nsuj0"]
+[ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="8_dmqtc"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="9_g0ayb"]
+[ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
+[ext_resource type="PackedScene" uid="uid://b084t0dt3625" path="res://Components/Physics/GravityComponent.tscn" id="11_kbaac"]
+[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="12_4b1vu"]
+[ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="13_2teto"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ipbe0"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(352, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yh00g"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(288, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_88gu6"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(336, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpw1d"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(288, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7huhn"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(304, 144, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h6emq"]
+atlas = ExtResource("2_rphdn")
+region = Rect2(320, 144, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8iy51"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ipbe0")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yh00g")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_88gu6")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpw1d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7huhn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h6emq")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 12.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(12, 12)
+
+[sub_resource type="Animation" id="Animation_oq27a"]
+resource_name = "RESET"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_gjyar"]
+resource_name = "blink"
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false, true, false, true, false, true, false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(100, 0, 0, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2co05"]
+_data = {
+"RESET": SubResource("Animation_oq27a"),
+"invulnerabilityOnHit": SubResource("Animation_gjyar")
+}
+
+[sub_resource type="Resource" id="Resource_cei4g"]
+resource_name = "health"
+script = ExtResource("9_g0ayb")
+name = &"health"
+min = 0
+max = 10
+value = 10
+logChanges = true
+
+[sub_resource type="Resource" id="Resource_kl6l5"]
+resource_name = "score"
+script = ExtResource("9_g0ayb")
+name = &"score"
+min = 0
+max = 10000000
+value = 1337
+logChanges = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_75hpp"]
+resource_local_to_scene = true
+size = Vector2(12, 12)
+
+[node name="PlayerEntityTemplate-Platformer" type="CharacterBody2D" groups=["players"]]
+z_index = 10
+collision_layer = 6
+collision_mask = 3640
+floor_constant_speed = true
+platform_on_leave = 2
+script = ExtResource("1_ipekq")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_8iy51")
+animation = &"walk"
+autoplay = "idle"
+
+[node name="SpriteOutlineRect" type="ColorRect" parent="AnimatedSprite2D"]
+z_index = -1
+offset_left = -5.0
+offset_top = -2.0
+offset_right = 5.0
+offset_bottom = 7.0
+color = Color(0, 0, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_2co05")
+}
+autoplay = "RESET"
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+process_mode = 3
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 10.0
+script = ExtResource("3_3u7hd")
+
+[node name="StatsComponent" parent="." instance=ExtResource("4_gnvya")]
+stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_kl6l5")])
+
+[node name="FactionComponent" parent="." instance=ExtResource("4_tfsgh")]
+factions = 2
+
+[node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
+health = SubResource("Resource_cei4g")
+shouldRemoveParentOnZero = true
+
+[node name="DamageReceivingComponent" parent="." instance=ExtResource("7_nsuj0")]
+collision_layer = 4
+collision_mask = 40
+
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_75hpp")
+
+[node name="KnockbackOnHitComponent" parent="." instance=ExtResource("11_8q3fk")]
+knockbackForce = 50.0
+additionalVector = Vector2(2.08165e-12, -50)
+
+[node name="InvulnerabilityOnHitComponent" parent="." instance=ExtResource("8_dmqtc")]
+
+[node name="InvulnerabilityTimer" parent="InvulnerabilityOnHitComponent" index="0"]
+wait_time = 1.2
+
+[node name="GravityComponent" parent="." instance=ExtResource("11_kbaac")]
+
+[node name="JumpControlComponent" parent="." instance=ExtResource("12_4b1vu")]
+
+[node name="PlatformerControlComponent" parent="." instance=ExtResource("13_2teto")]
+
+[node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
+
+[editable path="DamageReceivingComponent"]
+[editable path="InvulnerabilityOnHitComponent"]
