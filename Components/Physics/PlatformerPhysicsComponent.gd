@@ -1,17 +1,13 @@
-## Handles the physics for horizontal walking, jumping and gravity for the entity's [CharacterBody2D] in a "platform" world.
+## Handles the physics for walking, gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
+## This allows player characters as well as monsters to share the same movement logic.
 ## NOTE: Does NOT handle player input. Control is provided by [PlatformerPhysicsControlComponent] and AI components etc.
-## Unifies [PlatformerControlComponent], [JumpControlComponent], [GravityComponent]
-## Requirements: Entity with [CharacterBody2D], BELOW [PlatformerPhysicsControlComponent]
+## Requirements: Entity with [CharacterBody2D], AFTER [PlatformerPhysicsControlComponent]
 ## @experimental
 
 class_name PlatformerPhysicsComponent
-extends BodyComponent
+extends CharacterBodyComponent
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TODO: Implement variable jump height based on how long the input is pressed.
-# TODO: Option for dis/allowing multi-jumping after wall-jumping.
-# TODO: Update timers when paremeters change
-# TODO: Maximum limit for wall jumps
 
 
 #region Parameters
@@ -25,7 +21,6 @@ extends BodyComponent
 			self.isInputZero = true
 		
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
-@export var jumpParameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
 
 #endregion
 
@@ -47,59 +42,12 @@ var currentState: State:
 		currentState = newValue
 		# DEBUG: printDebug(str(currentState))
 
-## The "grace period" while the player can still jump after just having walking off a platform floor.
-## May improve the feel of control in some games.
-@onready var coyoteJumpTimer:	Timer = $CoyoteJumpTimer
-
-## The peroid while the player can "wall jump" after just having moved away from a wall.
-@onready var wallJumpTimer:		Timer = $WallJumpTimer
-
 var inputDirection:			float
 var lastInputDirection:		float
 var isInputZero:			bool = true
 
-var jumpInput:				bool:
-	set(newValue):
-		if jumpInput == newValue: return # NOTE: Don't trigger other flags' setters if there is no actual change!
-		var oldValue: bool = jumpInput
-		jumpInput = newValue
-		# The "just pressed" & "just released" toggles are needed for "short" jumping etc.
-		jumpInputJustPressed  = (newValue and not oldValue)
-		jumpInputJustReleased = (not newValue and oldValue)
-		
-var jumpInputJustPressed:	bool
-	# DEBUG: 
-	#set(newValue):
-		#if jumpInputJustPressed == newValue: return
-		#jumpInputJustPressed = newValue
-		#printDebug("jumpInputJustPressed → " + str(jumpInputJustPressed))
-		
-var jumpInputJustReleased:	bool
-	# DEBUG: 
-	#set(newValue):
-		#if jumpInputJustReleased == newValue: return
-		#jumpInputJustReleased = newValue
-		#printDebug("jumpInputJustReleased → " + str(jumpInputJustReleased))
-
-## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
-## WARNING: Must be cached AFTER [method processGravity]. May no longer be true after calling [method CharacterBody2D.move_and_slide]
-var isOnFloor:		bool 
-
-var wasOnFloor:		bool ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
-
-var wasOnWall:		bool ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
-var didWallJump:	bool ## Did we just perform a "wall jump"? 
-var previousWallNormal: Vector2 ## The direction of the wall we were in contact with.
-
 var gravity:		float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
-var currentNumberOfJumps: int
-	# DEBUG:
-	#set(newValue):
-		#if currentNumberOfJumps != newValue:
-			#currentNumberOfJumps = newValue	
-			#printDebug("currentNumberOfJumps → " + str(currentNumberOfJumps))
-		
 #endregion
 
 
@@ -110,11 +58,6 @@ func _ready() -> void:
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
-		
-	# Set the initial timers
-	
-	coyoteJumpTimer.wait_time = jumpParameters.coyoteJumpTimer
-	wallJumpTimer.wait_time   = jumpParameters.wallJumpTimer
 
 
 #region Update Cycle
@@ -134,11 +77,6 @@ func _physics_process(delta: float):
 	# Let's fall from wherever we were in the previous frame, before we do anything else.
 	processGravity(delta)
 	
-	# Jump the Jump 
-	# TBD: Jump before Walk?
-	processWallJump()
-	processJump()
-	
 	# Walk the Walk
 	
 	#applyAccelerationOnFloor(delta)
@@ -147,24 +85,11 @@ func _physics_process(delta: float):
 	#applyFrictionOnFloor(delta)
 	#applyFrictionInAir(delta)
 	processAllFriction(delta)
-
-	# Update the flags which reflect the state BEFORE the position is updated by [CharacterBody2D.move_and_slide].
-	
-	self.wasOnFloor = isOnFloor
-	self.wasOnWall  = body.is_on_wall() # NOTE: NOT `is_on_wall_only()` CHECK: Why?
-	if wasOnWall: 
-		previousWallNormal = body.get_wall_normal()
-		wallJumpTimer.stop() # TBD: Is this needed?
-		wallJumpTimer.wait_time = jumpParameters.wallJumpTimer
 	
 	# Move Your Body ♪	
-	parentEntity.callOnceThisFrame(body.move_and_slide)
-	
-	# Perform updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
-	wallJumpTimer.wait_time = jumpParameters.wallJumpTimer
-	updateCoyoteJumpState()
-	updateWallJumpState()
-	
+	self.shouldMoveThisFrame = true
+	super._physics_process(delta)
+		
 	# DEBUG:  showDebugInfo()
 	
 	# Clear the input so it doesn't carry on over to the next frame.
@@ -185,14 +110,6 @@ func updateStateBeforeMovement():
 	# Cache frequently used properties
 	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
 	
-	# Jump
-	
-	if isOnFloor and currentNumberOfJumps != 0: # NOTE: It may be more efficient to check `currentNumberOfJumps` instead of writing these values every frame?
-			# DEBUG: printDebug("currentNumberOfJumps = 0")
-			currentNumberOfJumps = 0
-			coyoteJumpTimer.stop()
-			coyoteJumpTimer.wait_time = jumpParameters.coyoteJumpTimer
-
 
 ## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
 ## Affected by [member isEnabled].
@@ -217,8 +134,6 @@ func clearInput():
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
 	#jumpInput = false # NOTE: Let the control components reset the `jumpInput`
 	# The justPressed/justReleased flags should be reset here because they represent a state for only 1 frame
-	jumpInputJustPressed  = false
-	jumpInputJustReleased = false
 
 
 func processGravity(delta: float):
@@ -264,90 +179,6 @@ func processAllFriction(delta: float):
 #endregion
 
 
-#region Jumping
-
-
-func processWallJump():
-	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
-	if  not isEnabled \
-		or not jumpParameters.allowWallJump \
-		or (not body.is_on_wall_only() \
-			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
-				return 
-	
-	# NOTE: The current flow of conditions ensures that `wallNormal` will always = `previousWallNormal`,
-	# but let's keep the code as was presented in Heartbeast's tutorial.
-	
-	var wallNormal: Vector2 = self.previousWallNormal
-		
-	if self.jumpInputJustPressed:
-		body.velocity.x = wallNormal.x * jumpParameters.wallJumpVelocityX
-		body.velocity.y = jumpParameters.wallJumpVelocity
-		didWallJump = true
-
-
-func processJump():
-	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
-	if not isEnabled or jumpParameters.maxNumberOfJumps <= 0: return
-	
-	var shouldJump: bool = false
-
-	# Initial or mid-air jump
-
-	if self.jumpInputJustPressed:
-		if currentNumberOfJumps <= 0: shouldJump = isOnFloor or not is_zero_approx(coyoteJumpTimer.time_left)
-		else: shouldJump = (currentNumberOfJumps < jumpParameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
-		# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
-
-	if shouldJump:
-		if currentNumberOfJumps <= 0:
-			body.velocity.y = jumpParameters.jumpVelocity1stJump
-		else:
-			body.velocity.y = jumpParameters.jumpVelocity2ndJump
-		coyoteJumpTimer.stop() # The "coyote" jump grace period is no longer needed after we jump
-
-		currentNumberOfJumps += 1
-		currentState = State.moveInAir # TBD: Should this be a `jump` state?
-
-	# Shorten the initial jump if we are jumping
-
-	if self.jumpInputJustReleased \
-		and not isOnFloor \
-		and body.velocity.y < jumpParameters.jumpVelocity1stJumpShort:
-			body.velocity.y = jumpParameters.jumpVelocity1stJumpShort
-
-
-## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
-## May improve the feel of control in some games.
-func updateCoyoteJumpState():
-	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
-	if not isEnabled: return
-	
-	var didWalkOffFloor: bool = wasOnFloor \
-		and not body.is_on_floor() \
-		and body.velocity.y >= 0 # Are we falling?
-	
-	if didWalkOffFloor: coyoteJumpTimer.start() # beep beep!
-
-
-func updateWallJumpState():
-	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
-	if not isEnabled: return	
-	
-	# TODO: just_wall_jumped = false
-	
-	var didLeaveWall: bool = wasOnWall \
-		and not body.is_on_wall()
-	
-	if didLeaveWall: wallJumpTimer.start()
-
-
-#endregion
-
-
 #region Standalone Functions
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
@@ -382,17 +213,8 @@ func applyFrictionInAir(delta: float):
 
 
 func showDebugInfo():	
-	Debug.watchList.state		= currentState
-	Debug.watchList.input		= inputDirection
-	Debug.watchList.velocity	= body.velocity
-	Debug.watchList.isOnFloor	= isOnFloor
-	Debug.watchList.wasOnFloor	= wasOnFloor
-	Debug.watchList.wasOnWall	= wasOnWall
-	Debug.watchList.wallNormal	= previousWallNormal
-	Debug.watchList.wallTimer	= wallJumpTimer.time_left
-	Debug.watchList.coyoteTimer	= coyoteJumpTimer.time_left
-	Debug.watchList.jumpInput	= jumpInput
-	Debug.watchList.jumps		= currentNumberOfJumps
+	Debug.watchList.state = currentState
+	Debug.watchList.input = inputDirection
 	
 	# Friction?
 	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
