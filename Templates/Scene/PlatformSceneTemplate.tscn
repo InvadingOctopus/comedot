@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dbwiosb1xulu5"]
+[gd_scene load_steps=10 format=3 uid="uid://dbwiosb1xulu5"]
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_qx6d3"]
 [ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scene/PlatformMapTemplate.tscn" id="2_atccb"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="5_dh7m2"]
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="5_i7cro"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="6_a2frt"]
 [ext_resource type="PackedScene" uid="uid://83osop4fb38w" path="res://Templates/Entity/PlayerEntityTemplate-Platformer.tscn" id="6_wcbjl"]
@@ -37,6 +38,8 @@ offset_top = -9.0
 offset_right = 9.0
 offset_bottom = 9.0
 color = Color(1, 0, 0, 1)
+
+[node name="FactionComponent" parent="HazardEntity" instance=ExtResource("5_dh7m2")]
 
 [node name="DamageComponent" parent="HazardEntity" instance=ExtResource("6_a2frt")]
 collision_layer = 32
