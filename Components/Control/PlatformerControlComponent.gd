@@ -3,7 +3,7 @@
 ## Requirements: Entity with [CharacterBody2D]
 
 class_name PlatformerControlComponent
-extends PhysicsComponentBase
+extends CharacterBodyManipulatingComponentBase
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
@@ -33,13 +33,6 @@ var inputDirection:			float
 var lastInputDirection:		float
 var isInputZero:			bool = true
 
-## The cached state of [method CharacterBody2D.is_on_floor] for the current frame.
-## WARNING: May no longer be true after calling [method CharacterBody2D.move_and_slide]
-var isOnFloor:		bool 
-
-var wasOnFloor:		bool = false ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
-var wasOnWall:		bool = false ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
-
 #endregion
 
 
@@ -52,7 +45,8 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func processBodyBeforeMove(delta: float):
+func _physics_process(delta: float) -> void:
+	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
 
 	processInput()
@@ -64,11 +58,8 @@ func processBodyBeforeMove(delta: float):
 	#applyFrictionOnFloor(delta)
 	#applyFrictionInAir(delta)
 	processAllFriction(delta)
-
-	self.wasOnFloor = body.is_on_floor()
-	self.wasOnWall  = body.is_on_wall() # NOTE: NOT `is_on_wall_only()`
 	
-	#parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
+	characterBodyComponent.queueMoveAndSlide() #parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
 	
 	#showDebugInfo()
 
@@ -79,13 +70,10 @@ func updateState():
 
 	if currentState == State.idle and not isInputZero:
 		# CHECK: Should this be done in [processInput()] so that there is only one check for [isInputZero]?
-		currentState = State.moveOnFloor if isOnFloor else State.moveInAir
+		currentState = State.moveOnFloor if characterBodyComponent.isOnFloor else State.moveInAir
 
 	if currentState != State.idle and is_zero_approx(body.velocity.x) and is_zero_approx(body.velocity.y):
 		currentState = State.idle
-
-	# Cache frequently used properties
-	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
 
 
 ## Handles player input.
@@ -117,7 +105,7 @@ func processAllMovement(delta: float):
 	# Nothing to do if there is no player input.
 	if isInputZero: return
 
-	if isOnFloor: # Are we on the floor?
+	if characterBodyComponent.isOnFloor: # Are we on the floor?
 		if parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
 			body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 		else:
@@ -136,9 +124,9 @@ func processAllFriction(delta: float):
 	# only apply friction to slow down when there is no player input, OR
 	# NOTE: If movement is not allowed in air, then apply air friction regardless of player input.
 
-	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
+	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
-	elif (not isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
+	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
 		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
 
@@ -148,13 +136,13 @@ func processAllFriction(delta: float):
 
 ## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; this flag should be checked by caller.
 func applyAccelerationOnFloor(delta: float):
-	if (not isInputZero) and isOnFloor:
+	if (not isInputZero) and characterBodyComponent.isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 
 
 ## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; this flag should be checked by caller.
 func applyAccelerationInAir(delta: float):
-	if (not isInputZero) and (not isOnFloor):
+	if (not isInputZero) and (not characterBodyComponent.isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 
 
@@ -162,29 +150,26 @@ func applyAccelerationInAir(delta: float):
 func applyFrictionOnFloor(delta: float):
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
-	if isInputZero and isOnFloor:
+	if isInputZero and characterBodyComponent.isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
 ## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; this flag should be checked by caller.
 func applyFrictionInAir(delta: float):
 	# If movement is not allowed in air, then apply air friction regardless of player input.
-	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not isOnFloor):
+	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not characterBodyComponent.isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
 #endregion
 
 
 func showDebugInfo():
-	Debug.watchList.input		= inputDirection
-	Debug.watchList.velocity	= body.velocity
-	Debug.watchList.isOnFloor	= isOnFloor
-	Debug.watchList.wasOnFloor	= wasOnFloor
-	Debug.watchList.wasOnWall	= wasOnWall
+	Debug.watchList.input = inputDirection
+
 	# Friction?
-	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
+	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		Debug.watchList.friction = "floor"
-	elif (not isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
+	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
 		Debug.watchList.friction = "air"
 	else:
 		Debug.watchList.friction = "none"

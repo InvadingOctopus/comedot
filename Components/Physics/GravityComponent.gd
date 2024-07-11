@@ -2,7 +2,7 @@
 ## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
-extends PhysicsComponentBase
+extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
@@ -19,6 +19,10 @@ var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 #endregion
 
 
+func getRequiredComponents() -> Array[Script]:
+	return [CharacterBodyComponent]
+
+
 func _ready() -> void:
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Grounded")
@@ -27,13 +31,14 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func processBodyBeforeMove(delta: float):
+func _physics_process(delta: float) -> void:
+	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
 	processGravity(delta)
-	#parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
+	characterBodyComponent.queueMoveAndSlide()
 
 
 func processGravity(delta: float):
 	# Vertical Slowdown
-	if not body.is_on_floor(): # NOTE: Cache [isOnFloor] after processing gravity.
+	if not characterBodyComponent.isOnFloor:
 		body.velocity.y += (gravity * gravityScale) * delta
