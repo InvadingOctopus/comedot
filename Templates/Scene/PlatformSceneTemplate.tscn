@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dbwiosb1xulu5"]
+[gd_scene load_steps=13 format=3 uid="uid://dbwiosb1xulu5"]
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_qx6d3"]
@@ -7,13 +7,16 @@
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="5_i7cro"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="6_a2frt"]
 [ext_resource type="PackedScene" uid="uid://83osop4fb38w" path="res://Templates/Entity/PlayerEntityTemplate-Platformer.tscn" id="6_wcbjl"]
+[ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="7_0y7s5"]
+[ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="7_demn2"]
+[ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="8_6b50m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
 resource_local_to_scene = true
-size = Vector2(18, 18)
+size = Vector2(16, 17)
 
 [node name="PlatformSceneTemplate" type="Node2D"]
 script = ExtResource("1_qx6d3")
@@ -22,33 +25,42 @@ script = ExtResource("1_qx6d3")
 
 [node name="PlatformMapTemplate" parent="." instance=ExtResource("2_atccb")]
 
-[node name="HazardEntity" type="RigidBody2D" parent="."]
-position = Vector2(240, 312)
-collision_layer = 32
-collision_mask = 0
-gravity_scale = 1.66533e-16
+[node name="MonsterEntity" type="CharacterBody2D" parent="."]
+position = Vector2(240, 176)
+collision_layer = 8
+collision_mask = 16
 script = ExtResource("5_i7cro")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardEntity"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MonsterEntity"]
 shape = SubResource("RectangleShape2D_dpspd")
 
-[node name="ColorRect" type="ColorRect" parent="HazardEntity"]
-offset_left = -9.0
-offset_top = -9.0
-offset_right = 9.0
-offset_bottom = 9.0
+[node name="ColorRect" type="ColorRect" parent="MonsterEntity"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
 color = Color(1, 0, 0, 1)
 
-[node name="FactionComponent" parent="HazardEntity" instance=ExtResource("5_dh7m2")]
+[node name="FactionComponent" parent="MonsterEntity" instance=ExtResource("5_dh7m2")]
+factions = 8
 
-[node name="DamageComponent" parent="HazardEntity" instance=ExtResource("6_a2frt")]
+[node name="DamageComponent" parent="MonsterEntity" instance=ExtResource("6_a2frt")]
 collision_layer = 32
 collision_mask = 6
 
-[node name="DamageCollisionShape" parent="HazardEntity/DamageComponent" index="0"]
+[node name="DamageCollisionShape" parent="MonsterEntity/DamageComponent" index="0"]
+position = Vector2(2.08165e-12, 2.08165e-12)
 shape = SubResource("RectangleShape2D_7wvwn")
+
+[node name="CornerCollisionComponent" parent="MonsterEntity" instance=ExtResource("7_demn2")]
+
+[node name="PlatformerPatrolComponent" parent="MonsterEntity" instance=ExtResource("7_0y7s5")]
+detectionGap = 2.0
+randomizeInitialDirection = true
+
+[node name="PlatformerPhysicsComponent" parent="MonsterEntity" instance=ExtResource("8_6b50m")]
 
 [node name="PlayerEntityTemplate-Platformer" parent="." instance=ExtResource("6_wcbjl")]
 position = Vector2(240, 80)
 
-[editable path="HazardEntity/DamageComponent"]
+[editable path="MonsterEntity/DamageComponent"]
