@@ -53,6 +53,14 @@ func _enter_tree() -> void:
 		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
 
 
+func _ready() -> void:
+	cacheBodyFlags() # Cache the initial state of body flags.
+
+
+func cacheBodyFlags():
+	self.isOnFloor = body.is_on_floor()
+
+
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	
