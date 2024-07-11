@@ -39,6 +39,8 @@ func _ready():
 		parentEntity.body.wall_min_slide_angle = 0
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+	
+	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 
 
 func _physics_process(delta: float):
@@ -49,6 +51,9 @@ func _physics_process(delta: float):
 	clampVelocity(delta)
 	
 	characterBodyComponent.queueMoveAndSlide()
+
+
+func characterBodyComponent_didMove():
 	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
@@ -140,9 +145,6 @@ func clampVelocity(delta: float):
 	
 
 func showDebugInfo():
-	Debug.watchList.velocity		= body.velocity
 	Debug.watchList.lastVelocity	= lastVelocity
-	Debug.watchList.lastMotion		= body.get_last_motion()
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection
-	#Debug.watchList.wallNormal		= body.get_wall_normal()
