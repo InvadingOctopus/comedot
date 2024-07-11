@@ -27,7 +27,7 @@ extends Resource
 ## Set to `0` to disable coyote jumping.
 ## This may provide a better feel of control in some games.
 ## Named after Wile E. Coyote from Road Runner :>
-@export_range(0, 10, 0.1, "seconds") var coyoteJumpTimer:	float = 0.1
+@export_range(0, 10, 0.1, "seconds") var coyoteJumpTimer:	float = 0.15
 
 @export_subgroup("Wall Jump")
 
@@ -37,9 +37,9 @@ extends Resource
 @export_range(-1000, -10, 5) var wallJumpVelocity:			float = -300
 
 ## The force with which the player bounces away horizontally from the wall during a wall jump.
-@export_range(-1000, -10, 5) var wallJumpVelocityX:		float = 150
+@export_range(-1000, -10, 5) var wallJumpVelocityX:			float = 150
 
 ## The "grace period" for allowing the player to jump just after leaving a wall.
-@export_range(0, 10, 0.1, "seconds") var wallJumpTimer:	float = 0.1
+@export_range(0, 10, 0.1, "seconds") var wallJumpTimer:		float = 0.1
 
 #endregion
