@@ -96,6 +96,8 @@ func updateStateAfterMove():
 
 func showDebugInfo():
 	Debug.watchList.velocity	= body.velocity
+	#Debug.watchList.lastVelocity= lastVelocity
+	Debug.watchList.lastMotion	= body.get_last_motion()
 	Debug.watchList.isOnFloor	= isOnFloor
 	Debug.watchList.wasOnFloor	= wasOnFloor
 	Debug.watchList.wasOnWall	= wasOnWall
