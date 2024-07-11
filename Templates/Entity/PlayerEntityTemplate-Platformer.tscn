@@ -230,7 +230,7 @@ position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_75hpp")
 
 [node name="KnockbackOnHitComponent" parent="." instance=ExtResource("11_8q3fk")]
-knockbackForce = 50.0
+knockbackForce = 100.0
 additionalVector = Vector2(2.08165e-12, -50)
 
 [node name="InvulnerabilityOnHitComponent" parent="." instance=ExtResource("8_dmqtc")]
