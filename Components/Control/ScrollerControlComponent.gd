@@ -25,7 +25,7 @@ var camera: Camera2D:
 var inputDirection		:= Vector2.ZERO
 var lastInputDirection	:= Vector2.ZERO
 var lastDirection		:= Vector2.ZERO ## Normalized
-var lastVelocity		:= Vector2.ZERO
+#var lastVelocity		:= Vector2.ZERO
 
 #endregion
 
@@ -54,7 +54,7 @@ func _physics_process(delta: float):
 
 
 func characterBodyComponent_didMove():
-	lastVelocity = body.velocity # TBD: Should this come last?
+	# lastVelocity = body.velocity # Handled by CharacterBodyComponent
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
@@ -107,7 +107,7 @@ func processInput(delta: float):
 	# Disable friction by maintaining velcoty fron the previous frame?
 
 	if parameters.shouldMaintainPreviousVelocity and not inputDirection:
-		body.velocity = lastVelocity
+		body.velocity = characterBodyComponent.previousVelocity
 
 	# Last direction
 
@@ -145,6 +145,5 @@ func clampVelocity(delta: float):
 	
 
 func showDebugInfo():
-	Debug.watchList.lastVelocity	= lastVelocity
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection

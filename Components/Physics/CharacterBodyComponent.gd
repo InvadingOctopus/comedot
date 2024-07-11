@@ -27,7 +27,8 @@ var wasOnFloor:		bool ## Was the body on the floor before the last [method Chara
 var wasOnWall:		bool ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
 var wasOnCeiling:	bool ## Was the body on a ceiling before the last [method CharacterBody2D.move_and_slide]?
 
-var previousWallNormal: Vector2 ## The direction of the wall we were in contact with.
+var previousVelocity:	Vector2
+var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with.
 
 ## This avoids the superfluous warning when checking the [member body] for the first time in [method _enter_tree()].
 var skipFirstWarning:		bool = true
@@ -84,6 +85,8 @@ func updateStateBeforeMove():
 	self.wasOnWall		= body.is_on_wall()
 	self.wasOnCeiling	= body.is_on_ceiling()
 	
+	self.previousVelocity = body.velocity
+	
 	if wasOnWall: 
 		self.previousWallNormal = body.get_wall_normal()
 
@@ -96,7 +99,7 @@ func updateStateAfterMove():
 
 func showDebugInfo():
 	Debug.watchList.velocity	= body.velocity
-	#Debug.watchList.lastVelocity= lastVelocity
+	Debug.watchList.lastVelocity= previousVelocity
 	Debug.watchList.lastMotion	= body.get_last_motion()
 	Debug.watchList.isOnFloor	= isOnFloor
 	Debug.watchList.wasOnFloor	= wasOnFloor
