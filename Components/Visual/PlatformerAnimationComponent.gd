@@ -69,5 +69,3 @@ func _process(delta: float):
 		# Debug.watchList.vDirection = verticalDirection
 
 	animatedSprite.play(animationToPlay)
-
-
