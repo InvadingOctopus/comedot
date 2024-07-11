@@ -19,28 +19,34 @@ extends Component
 
 
 #region State
-var animatedSprite: AnimatedSprite2D
-var platformControlComponent: PlatformerControlComponent
+var animatedSprite:				AnimatedSprite2D
+var characterBodyComponent:		CharacterBodyComponent
+var body:						CharacterBody2D
+var platformControlComponent:	PlatformerControlComponent
 #endregion
 
 
 #region Signals
-
 #endregion
 
 
-func _ready():
-	self.animatedSprite = parentEntity.findFirstChildOfType(AnimatedSprite2D)
-	self.platformControlComponent = self.findCoComponent(PlatformerControlComponent)
+func getRequiredComponents() -> Array[Script]:
+	return [CharacterBodyComponent, PlatformerControlComponent]
 
 
-func _process(delta: float):
+func _ready() -> void:
+	self.animatedSprite				= parentEntity.findFirstChildOfType(AnimatedSprite2D)
+	self.characterBodyComponent		= findCoComponent(CharacterBodyComponent)
+	self.body						= characterBodyComponent.body
+	self.platformControlComponent	= findCoComponent(PlatformerControlComponent)
+
+
+func _process(delta: float) -> void:
 	if not isEnabled : return
 
 	# INFO: Animations are checked in order of priority: "walk" overrides "idle"
 
 	var animationToPlay: StringName
-	var body: CharacterBody2D = parentEntity.body
 
 	if flipWhenWalkingLeft:
 		animatedSprite.flip_h = true if signf(platformControlComponent.lastInputDirection) < 0.0 else false
@@ -56,7 +62,7 @@ func _process(delta: float):
 
 	# Debug.watchList.onFloor = body.is_on_floor()
 
-	if not body.is_on_floor():
+	if not characterBodyComponent.isOnFloor:
 		var verticalDirection: float = signf(body.velocity.y)
 
 		if not jumpAnimation.is_empty() \
