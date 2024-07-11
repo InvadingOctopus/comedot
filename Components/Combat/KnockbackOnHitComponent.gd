@@ -2,7 +2,7 @@
 ## Requirements: [CharacterBody2D], [DamageReceivingComponent]
 
 class_name KnockbackOnHitComponent
-extends Component
+extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
@@ -53,4 +53,4 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 	# Any more? For example, a jump when taking damage in a platform game.
 	parentEntity.body.velocity += additionalVector
 
-	parentEntity.callOnceThisFrame(parentEntity.body.move_and_slide)
+	characterBodyComponent.queueMoveAndSlide()

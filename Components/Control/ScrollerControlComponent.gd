@@ -3,7 +3,7 @@
 ## Requirements: [Characterbody2D], [Camera2D] optional
 
 class_name ScrollerControlComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 # TODO: Deceleration when letting go of input
 # TODO: Camera "spring"
@@ -48,7 +48,7 @@ func _physics_process(delta: float):
 	#applyDefaultVelocity(delta) # TBD: Is a separate function useful?
 	clampVelocity(delta)
 	
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	characterBodyComponent.queueMoveAndSlide()
 	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.

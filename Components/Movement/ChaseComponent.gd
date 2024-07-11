@@ -1,7 +1,7 @@
 ## Moves the parent entity to chase after another [Node2D].
 
 class_name ChaseComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 # TODO: Implement friction slowdown
 # TBD:  Manipulate existing Control components?
@@ -36,4 +36,4 @@ func _physics_process(delta: float):
 	else:
 		self.body.velocity = direction * speed
 
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	characterBodyComponent.queueMoveAndSlide()

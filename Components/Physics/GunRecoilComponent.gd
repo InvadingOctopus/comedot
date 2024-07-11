@@ -1,6 +1,6 @@
 ## Applies a knockback to the [CharacterBody2D] of the parent [Entity] when a [GunComponent] fires a bullet.
 class_name GunRecoilComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 
 # TODO: Beter physics
@@ -34,5 +34,5 @@ func onGunComponentDidFire(bullet: Entity):
 	# Knock the parent entity's body back in the opposite direction.
 
 	forceVector = forceVector * -1
-	self.body.velocity += forceVector * knockbackForce
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	body.velocity += forceVector * knockbackForce
+	characterBodyComponent.queueMoveAndSlide()

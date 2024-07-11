@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 	#applyFrictionInAir(delta)
 	processAllFriction(delta)
 	
-	characterBodyComponent.queueMoveAndSlide() #parentEntity.callOnceThisFrame(body.move_and_slide) # Will be called by PhysicsComponentBase
+	characterBodyComponent.queueMoveAndSlide()
 	
 	#showDebugInfo()
 

@@ -4,7 +4,7 @@
 ## Requirements: [CharacterBody2D]
 
 class_name AsteroidsControlComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
@@ -35,7 +35,7 @@ func _ready():
 func _physics_process(delta: float):
 	if not isEnabled: return
 	processInput(delta)
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	characterBodyComponent.queueMoveAndSlide()
 	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.

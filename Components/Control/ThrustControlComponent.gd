@@ -4,7 +4,7 @@
 ## Requirements: [CharacterBody2D], [PlayerInputComponent]
 
 class_name ThrustControlComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 # TODO: Add braking
 # TODO: Add support for `shouldResetVelocityOnCollision` similar to [OverheadControlComponent]
@@ -45,6 +45,6 @@ func _physics_process(delta: float):
 	else: # Apply friction
 		body.velocity = body.velocity.move_toward(Vector2.ZERO, friction * delta)
 
-	parentEntity.callOnceThisFrame(body.move_and_slide)
+	characterBodyComponent.queueMoveAndSlide()
 
 	#Debug.watchList.velocity = body.velocity
