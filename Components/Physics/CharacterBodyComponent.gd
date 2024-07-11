@@ -6,8 +6,6 @@
 class_name CharacterBodyComponent
 extends Component
 
-# TODO: Call move_and_slide() and update flags only when requested by other components?
-
 
 #region Parameters
 
@@ -22,6 +20,8 @@ extends Component
 
 
 #region State
+
+var isOnFloor:		bool ## Did the body collide with the floor after [method CharacterBody2D.move_and_slide]? (may be cached since the previous frame).
 
 var wasOnFloor:		bool ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
 var wasOnWall:		bool ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
@@ -63,6 +63,8 @@ func _physics_process(delta: float) -> void:
 		
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
 		didMove.emit()
+	
+	# DEBUG: showDebugInfo()
 
 
 func queueMoveAndSlide():
@@ -79,4 +81,13 @@ func updateStateBeforeMove():
 
 
 func updateStateAfterMove():
-	pass
+	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
+	# so it makes sense to cache it after the move.
+	self.isOnFloor = body.is_on_floor()
+
+
+func showDebugInfo():
+	Debug.watchList.velocity	= body.velocity
+	Debug.watchList.isOnFloor	= isOnFloor
+	Debug.watchList.wasOnFloor	= wasOnFloor
+	Debug.watchList.wasOnWall	= wasOnWall
