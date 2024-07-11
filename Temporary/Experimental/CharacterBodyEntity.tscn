@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://dyburvcwvxwnj"]
 
-[ext_resource type="Script" path="res://Entities/CharacterBodyEntity.gd" id="1_c24an"]
+[ext_resource type="Script" path="res://Temporary/Experimental/CharacterBodyEntity.gd" id="1_srjf8"]
 
 [node name="CharacterBodyEntity" type="CharacterBody2D" groups=["entities"]]
-script = ExtResource("1_c24an")
+script = ExtResource("1_srjf8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
