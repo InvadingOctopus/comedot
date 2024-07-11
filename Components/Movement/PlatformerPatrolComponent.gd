@@ -1,8 +1,8 @@
 ## Makes the entity move horizontally back and forth on a "floor" platform.
-## Requirements: BEFORE [PlatformerControlComponent], After [CornerCollisionComponent]
+## Requirements: BEFORE [PlatformerPhysicsComponent], After [CornerCollisionComponent]
 
 class_name PlatformerPatrolComponent
-extends Component
+extends CharacterBodyManipulatingComponentBase
 
 # PLAN:
 # * If we are not on the floor, do nothing.
@@ -51,11 +51,11 @@ var cornerCollisionComponent: CornerCollisionComponent:
 		if not cornerCollisionComponent: cornerCollisionComponent = findCoComponent(CornerCollisionComponent)
 		return cornerCollisionComponent
 
-var platformerControlComponent: PlatformerControlComponent:
+var platformerPhysicsComponent: PlatformerPhysicsComponent:
 	get:
 		# Search for the co-component only once and save it for future access.
-		if not platformerControlComponent: platformerControlComponent = findCoComponent(PlatformerControlComponent)
-		return platformerControlComponent
+		if not platformerPhysicsComponent: platformerPhysicsComponent = findCoComponent(PlatformerPhysicsComponent)
+		return platformerPhysicsComponent
 
 #endregion
 
@@ -63,6 +63,10 @@ var platformerControlComponent: PlatformerControlComponent:
 #region Signals
 signal didTurn ## Emitted after the entity has turned around at the end of a platform.
 #endregion
+
+
+func getRequiredComponents() -> Array[Script]:
+	return [CornerCollisionComponent, PlatformerPhysicsComponent]
 
 
 func _ready():
@@ -74,18 +78,18 @@ func setInitialDirection():
 		self.patrolDirection = [-1.0, 1.0].pick_random()
 	else:
 		# Use the [PlatformerControlComponent]'s previous direction, otherwise right.
-		if not is_zero_approx(platformerControlComponent.lastInputDirection):
-			self.patrolDirection = platformerControlComponent.lastInputDirection
+		if not is_zero_approx(platformerPhysicsComponent.lastInputDirection):
+			self.patrolDirection = platformerPhysicsComponent.lastInputDirection
 		else:
 			self.patrolDirection = Vector2.RIGHT.x
 
 
 func _physics_process(delta: float):
-	if (not isEnabled) or (not self.platformerControlComponent): return
+	if (not isEnabled) or (not self.platformerPhysicsComponent): return
 
 	updateCollisionFlags() # TBD: Should the raycasts be updated before or after movement?
 	updatePatrolDirection()
-	platformerControlComponent.inputDirectionOverride = processPatrol(delta)
+	platformerPhysicsComponent.inputDirection = processPatrol(delta)
 
 	#Debug.watchList.patrolDirection = self.patrolDirection
 	#Debug.watchList.velocity = body.velocity
@@ -114,7 +118,7 @@ func processPatrol(delta: float) -> float:
 	var inputDirectionOverride: float = 0
 
 	# Do nothing if not on floor
-	if (not isEnabled) or (not platformerControlComponent.body.is_on_floor()): return 0
+	if (not isEnabled) or (not platformerPhysicsComponent.body.is_on_floor()): return 0
 
 	# Aoply the patrol direction
 	inputDirectionOverride = patrolDirection
