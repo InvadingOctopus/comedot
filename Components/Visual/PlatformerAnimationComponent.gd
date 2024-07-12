@@ -36,7 +36,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	self.animatedSprite				= parentEntity.findFirstChildOfType(AnimatedSprite2D)
-	self.characterBodyComponent		= findCoComponent(CharacterBodyComponent)
+	self.characterBodyComponent		= parentEntity.findFirstChildOfType(CharacterBodyComponent)
 	self.body						= characterBodyComponent.body
 	self.platformControlComponent	= findCoComponent(PlatformerControlComponent)
 

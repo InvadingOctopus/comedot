@@ -151,6 +151,7 @@ func findChildrenOfType(type) -> Array: # TODO: Return type?
 	return childrenFiltered
 
 
+## NOTE: Also returns any subclasses which inherit from the specified [param type].
 func findFirstChildOfType(type) -> Node:
 	var result = Global.findFirstChildOfType(self, type)
 	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
