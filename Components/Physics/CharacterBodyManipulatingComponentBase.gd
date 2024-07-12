@@ -27,6 +27,10 @@ var body: CharacterBody2D:
 #endregion
 
 
+func getRequiredComponents() -> Array[Script]:
+	return [CharacterBodyComponent]
+
+
 # Called whenever the node enters the scene tree.
 func ready():
 	#super._enter_tree()

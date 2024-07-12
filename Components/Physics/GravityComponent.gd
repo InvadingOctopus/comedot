@@ -20,10 +20,6 @@ var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 #endregion
 
 
-func getRequiredComponents() -> Array[Script]:
-	return [CharacterBodyComponent]
-
-
 func _ready() -> void:
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Grounded")
