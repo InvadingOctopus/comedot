@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=29 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_rphdn"]
@@ -11,10 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="8_dmqtc"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="9_g0ayb"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
-[ext_resource type="PackedScene" uid="uid://b084t0dt3625" path="res://Components/Physics/GravityComponent.tscn" id="11_kbaac"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="12_4b1vu"]
 [ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="13_2teto"]
-[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="14_e17xo"]
+[ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="14_usisr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ipbe0"]
 atlas = ExtResource("2_rphdn")
@@ -238,13 +237,11 @@ additionalVector = Vector2(2.08165e-12, -50)
 [node name="InvulnerabilityTimer" parent="InvulnerabilityOnHitComponent" index="0"]
 wait_time = 1.2
 
-[node name="GravityComponent" parent="." instance=ExtResource("11_kbaac")]
-
 [node name="JumpControlComponent" parent="." instance=ExtResource("12_4b1vu")]
 
 [node name="PlatformerControlComponent" parent="." instance=ExtResource("13_2teto")]
 
-[node name="CharacterBodyComponent" parent="." instance=ExtResource("14_e17xo")]
+[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
 
 [node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
 

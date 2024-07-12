@@ -16,7 +16,7 @@ size = Vector2(16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
 resource_local_to_scene = true
-size = Vector2(16, 17)
+size = Vector2(18, 18)
 
 [node name="PlatformSceneTemplate" type="Node2D"]
 script = ExtResource("1_qx6d3")
