@@ -67,7 +67,7 @@ func _physics_process(delta: float) -> void:
 	
 	if self.shouldMoveThisFrame:
 		updateStateBeforeMove()
-		body.move_and_slide()
+		parentEntity.callOnceThisFrame(body.move_and_slide)
 		updateStateAfterMove()
 		
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
