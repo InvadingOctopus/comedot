@@ -73,6 +73,6 @@ _(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping
 
 [rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
-[components-tree]: https://i.imgur.com/WW2grLs.png "Example Components Tree for a Player Entity"
+[components-tree]: https://i.imgur.com/FL9gd98.png "Example Components Tree for a Player Entity"
 
 [logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
