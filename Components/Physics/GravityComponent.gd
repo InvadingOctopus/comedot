@@ -1,4 +1,5 @@
 ## Applies gravity to the parent entity's [CharacterBody2D] every frame.
+## WARNING: Do NOT use in conjuction with [PlatformerPhysicsComponent], as that component also processes gravity.
 ## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
