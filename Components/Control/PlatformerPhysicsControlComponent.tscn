@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cchxdfneshraq"]
-
-[ext_resource type="Script" path="res://Components/Control/PlatformerPhysicsControlComponent.gd" id="1_2yyux"]
-
-[node name="PlatformerPhysicsControlComponent" type="Node" groups=["components"]]
-script = ExtResource("1_2yyux")
