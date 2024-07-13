@@ -84,6 +84,7 @@ func _enter_tree():
 	
 func connectSignals():
 	self.child_entered_tree.connect(childEnteredTree)
+	self.child_exiting_tree.connect(childExitingTree)
 	
 	
 func _process(delta: float):
@@ -106,13 +107,12 @@ func _exit_tree():
 #endregion
 
 
-#region Child Nodes & Components
+#region Components & Child Nodes
 
 func childEnteredTree(node: Node):
 	# Herd components into the [components] dictionary.
-	var newComponent: Component = node as Component
-	if not newComponent: return
-	registerComponent(newComponent)
+	if is_instance_of(node, Component):
+		registerComponent(node as Component)
 
 
 func registerComponent(newComponent: Component):
@@ -123,10 +123,38 @@ func registerComponent(newComponent: Component):
 	if existingComponent:
 		printLog(str("Replacing: ", existingComponent, " → ", newComponent))
 	
+	newComponent.parentEntity = self # TBD: Is this useful?
 	self.components[componentType] = newComponent
 	
+	# DEBUG: printDebug(str(componentType, " ← ", newComponent))
+
+
+func childExitingTree(node: Node):
+	# Remove components from the [components] dictionary.
+	if is_instance_of(node, Component):
+		unregisterComponent(node as Component)
+
+
+func unregisterComponent(componentToRemove: Component):
+	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 	
-func getComponents() -> Array[Component]:
+	# Does the dictionary have a component of the same type?
+	var existingComponent: Component = self.components.get(componentType)
+	
+	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
+	
+	if existingComponent == componentToRemove:
+		printLog(str("Unregistering ", existingComponent))
+		self.components.erase(componentType)
+	else:
+		printError(str("Component of type ", componentType, " already in dictionary: ", existingComponent, " but not the same as componentToRemove: ", componentToRemove))
+		# NOTE: TBD: This is a weird situation which should not happen, so it must be considered an error.
+
+
+## Searches all child nodes and returns an array of all nodes which inherit from [Component].
+## NOTE: Does NOT include children of children.
+## WARNING: This may be slow. Use the [member Entity.components] dictionary instead.
+func findChildrenComponents() -> Array[Component]:
 	# This duplicates most code from `getChildrenOfType` because of ensuring strong typing.
 	var childrenNodes: Array[Node] = self.get_children()
 	var childrenComponents: Array[Component] = []
@@ -139,6 +167,25 @@ func getComponents() -> Array[Component]:
 	return childrenComponents
 
 
+## Checks the [member Entity.components] dictionary after converting the [param type] to a [StringName] key.
+## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
+func getComponent(type: Script) -> Component:
+	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
+	var typeName: StringName = type.get_global_name()
+	var foundComponent: Component = self.components.get(typeName)
+	return foundComponent
+
+
+## Checks all components in the [member Entity.components] dictionary and returns the first matching component which inherits from the specified [param type].
+## NOTE: Slower than [method Entity.getComponent]
+func findFirstComponentSublcass(type: Script) -> Component:
+	for component in self.components.values():
+		if is_instance_of(component, type):
+			return component
+	return null
+
+
+## NOTE: Does NOT search children of children.
 func findChildrenOfType(type) -> Array: # TODO: Return type?
 	var children: Array[Node] = self.get_children()
 	var childrenFiltered = []
@@ -152,6 +199,7 @@ func findChildrenOfType(type) -> Array: # TODO: Return type?
 
 
 ## NOTE: Also returns any subclasses which inherit from the specified [param type].
+## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type) -> Node:
 	var result = Global.findFirstChildOfType(self, type)
 	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
@@ -247,7 +295,7 @@ func callOnceThisFrame(function: Callable, arguments: Array = []):
 
 
 func displayLabel(text: String, animation: StringName = Global.Animations.blink):
-	var labelComponent: LabelComponent = self.findFirstChildOfType(LabelComponent)
+	var labelComponent: LabelComponent = self.findFirstComponentSublcass(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)
 
