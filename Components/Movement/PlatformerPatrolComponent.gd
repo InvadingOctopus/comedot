@@ -48,13 +48,13 @@ var sprite: Sprite2D:
 var cornerCollisionComponent: CornerCollisionComponent:
 	get:
 		# Search for the co-component only once and save it for future access.
-		if not cornerCollisionComponent: cornerCollisionComponent = findCoComponent(CornerCollisionComponent)
+		if not cornerCollisionComponent: cornerCollisionComponent = getCoComponent(CornerCollisionComponent)
 		return cornerCollisionComponent
 
 var platformerPhysicsComponent: PlatformerPhysicsComponent:
 	get:
 		# Search for the co-component only once and save it for future access.
-		if not platformerPhysicsComponent: platformerPhysicsComponent = findCoComponent(PlatformerPhysicsComponent)
+		if not platformerPhysicsComponent: platformerPhysicsComponent = getCoComponent(PlatformerPhysicsComponent)
 		return platformerPhysicsComponent
 
 #endregion

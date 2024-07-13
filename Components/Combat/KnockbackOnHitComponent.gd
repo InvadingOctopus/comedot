@@ -25,7 +25,7 @@ extends CharacterBodyManipulatingComponentBase
 
 #region State
 var damageReceivingComponent: DamageReceivingComponent:
-	get: return self.findCoComponent(DamageReceivingComponent)
+	get: return self.getCoComponent(DamageReceivingComponent)
 #endregion
 
 

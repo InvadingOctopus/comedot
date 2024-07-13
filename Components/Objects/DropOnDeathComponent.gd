@@ -29,7 +29,7 @@ signal didDrop(node: Node2D)
 #region State
 
 var healthComponent: HealthComponent:
-	get: return self.findCoComponent(HealthComponent)
+	get: return self.getCoComponent(HealthComponent)
 
 var parentForSpawnedNode: Node2D:
 	get:

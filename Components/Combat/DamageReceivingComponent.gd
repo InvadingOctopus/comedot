@@ -52,10 +52,10 @@ func _ready():
 	# Is there a HealthComponent and FactionComponent? If not, try to find them from the Entity. In any case, we will still emit a `didReceiveDamage` signal.
 
 	if not healthComponent:
-		healthComponent = self.findCoComponent(HealthComponent)
+		healthComponent = self.getCoComponent(HealthComponent)
 
 	if not factionComponent:
-		factionComponent = self.findCoComponent(FactionComponent)
+		factionComponent = self.getCoComponent(FactionComponent)
 
 
 #region Collisions

@@ -18,7 +18,7 @@ extends Component
 var coComponent: Component: ## Placeholder
 	get:
 		# WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
-		if not coComponent: coComponent = self.findCoComponent(Component)
+		if not coComponent: coComponent = self.getCoComponent(Component)
 		return coComponent
 		
 #endregion

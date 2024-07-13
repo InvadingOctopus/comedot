@@ -12,7 +12,7 @@ extends CharacterBodyManipulatingComponentBase
 
 
 func _ready():
-	var gunComponent = self.findCoComponent(GunComponent)
+	var gunComponent = self.getCoComponent(GunComponent)
 	if not gunComponent:
 		printError("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?
 	gunComponent.didFire.connect(self.onGunComponentDidFire)
@@ -22,7 +22,7 @@ func onGunComponentDidFire(bullet: Entity):
 
 	# TODO: Option to apply dynamic knockback based on the bullet's velocity.
 
-	#var bulletLinearMotionComponent: LinearMotionComponent = bullet.findFirstChildOfType(LinearMotionComponent)
+	#var bulletLinearMotionComponent: LinearMotionComponent = bullet.getComponent(LinearMotionComponent)
 
 	#if not bulletLinearMotionComponent:
 		#printWarning("Bullet entity cannot find a LinearMotionComponent: " + str(bullet))

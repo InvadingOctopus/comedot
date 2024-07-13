@@ -72,7 +72,7 @@ var currentNumberOfJumps: int
 
 var platformerControlComponent: PlatformerControlComponent:
 	get:
-		if not platformerControlComponent: platformerControlComponent = findCoComponent(PlatformerControlComponent)	
+		if not platformerControlComponent: platformerControlComponent = getCoComponent(PlatformerControlComponent)	
 		return platformerControlComponent
 		
 #endregion

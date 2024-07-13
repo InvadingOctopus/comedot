@@ -21,7 +21,7 @@ extends Component
 
 #region State
 var coComponent: Component:
-	get: return self.findCoComponent(Component)
+	get: return self.getCoComponent(Component)
 #endregion
 
 

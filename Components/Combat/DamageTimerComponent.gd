@@ -16,7 +16,7 @@ extends Component
 
 func _ready():
 	if not damageReceivingComponent:
-		damageReceivingComponent = findCoComponent(DamageReceivingComponent)
+		damageReceivingComponent = getCoComponent(DamageReceivingComponent)
 
 
 func onTimerTimeout() -> void:

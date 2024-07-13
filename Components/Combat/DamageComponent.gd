@@ -34,7 +34,7 @@ var area: Area2D:
 ## A shortcut that returns the [FactionComponent] of the parent [Entity].
 var factionComponent: FactionComponent:
 	# TBD: Export as parameter?
-	get: return findCoComponent(FactionComponent)
+	get: return getCoComponent(FactionComponent)
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]

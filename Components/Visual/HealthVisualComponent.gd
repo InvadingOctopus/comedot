@@ -13,7 +13,7 @@ func _ready():
 
 
 func connectToHealthComponent():
-	self.healthComponent = findCoComponent(HealthComponent)
+	self.healthComponent = getCoComponent(HealthComponent)
 	if not healthComponent:
 		printWarning("Cannot find a HealthComponent in parent Entity: " + self.parentEntity.logName)
 		return

@@ -149,14 +149,14 @@ func getParentEntity() -> Entity:
 
 
 ## Searches the [member parentEntity.components] dictionary after converting the [param type] to a [StringName].
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstChildOfType] instead.
-func findCoComponent(type: Script) -> Component:
+## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
+func getCoComponent(type: Script) -> Component:
 	# CHECK: Is [Script] the correct type to accept as argument?
+	# Duplicates code from `Entity.getComponent()` to improve performance?
 	var typeName: StringName = type.get_global_name()
 	var foundComponent: Component = parentEntity.components.get(typeName)
 	if not foundComponent:
 		printWarning("Cannot find " + typeName + " in parent Entity: " + parentEntity.logName)
-
 	return foundComponent
 
 

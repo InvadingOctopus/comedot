@@ -20,7 +20,7 @@ extends CharacterBodyManipulatingComponentBase
 var playerInputComponent: PlayerInputComponent:
 	get:
 		if not playerInputComponent:
-			playerInputComponent = self.findCoComponent(PlayerInputComponent)
+			playerInputComponent = self.getCoComponent(PlayerInputComponent)
 		return playerInputComponent
 #endregion
 

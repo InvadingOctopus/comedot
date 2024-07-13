@@ -15,8 +15,8 @@ extends Component
 
 var characterBodyComponent: CharacterBodyComponent:
 	get:
-		# NOTE: Use [findFirstChildOfType()] instead of [findCoComponent()] so that subclasses of [CharacterBodyComponent] may be used.
-		if not characterBodyComponent: characterBodyComponent = parentEntity.findFirstChildOfType(CharacterBodyComponent)
+		# NOTE: Use [findFirstChildOfType()] instead of [getCoComponent()] so that subclasses of [CharacterBodyComponent] may be used.
+		if not characterBodyComponent: characterBodyComponent = parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
 		return characterBodyComponent
 
 var body: CharacterBody2D:

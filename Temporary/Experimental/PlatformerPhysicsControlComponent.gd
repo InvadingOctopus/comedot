@@ -22,7 +22,7 @@ var isInputZero:			bool = true
 
 var platformerPhysicsComponent: PlatformerPhysicsComponent:
 	get:
-		if not platformerPhysicsComponent: platformerPhysicsComponent = findCoComponent(PlatformerPhysicsComponent)
+		if not platformerPhysicsComponent: platformerPhysicsComponent = getCoComponent(PlatformerPhysicsComponent)
 		return platformerPhysicsComponent
 
 #endregion
