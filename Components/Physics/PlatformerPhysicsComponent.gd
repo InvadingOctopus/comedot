@@ -90,7 +90,7 @@ func _physics_process(delta: float):
 	self.shouldMoveThisFrame = true
 	super._physics_process(delta)
 		
-	# DEBUG:  showDebugInfo()
+	# DEBUG: showDebugInfo()
 	
 	# Clear the input so it doesn't carry on over to the next frame.
 	clearInput()
@@ -212,7 +212,8 @@ func applyFrictionInAir(delta: float):
 #endregion
 
 
-func showDebugInfo():	
+func showDebugInfo():
+	super.showDebugInfo()
 	Debug.watchList.state = currentState
 	Debug.watchList.input = inputDirection
 	
