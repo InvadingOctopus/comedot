@@ -221,7 +221,7 @@ func addNewComponent(type: Script) -> Component:
 
 	# Load and instantiate the component scene.
 
-	return Global.addSceneCopy(scenePath, self)
+	return Global.loadSceneAndAddInstance(scenePath, self)
 
 
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
