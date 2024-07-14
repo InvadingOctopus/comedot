@@ -42,13 +42,13 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not isEnabled : return
+	if not isEnabled: return
 
 	# INFO: Animations are checked in order of priority: "walk" overrides "idle"
 
 	var animationToPlay: StringName
 
-	if flipWhenWalkingLeft:
+	if flipWhenWalkingLeft and platformControlComponent:
 		animatedSprite.flip_h = true if signf(platformControlComponent.lastInputDirection) < 0.0 else false
 		# Debug.watchList.hDirection = platformControlComponent.lastDirection
 
