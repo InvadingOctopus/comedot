@@ -4,9 +4,11 @@
 class_name InteractionControlComponent
 extends CooldownComponent
 
+# TODO: Update indicator only on collision events.
+
 
 #region Parameters
-@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent]] is within the range of an [InteractionComponent].
+@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 @export var isEnabled := true
 #endregion
 
@@ -45,11 +47,9 @@ func onArea_exited(area: Area2D) -> void:
 
 
 func _process(delta: float): # TBD: Should this be in the physics loop?
-	if not isEnabled or not haveInteracionsInRange:
-		interactionIndicator.visible = false
-		return
-
-	interactionIndicator.visible = true
+	# TODO: Update indicator only on collision events.
+	if interactionIndicator: 
+		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
 
 func _input(event: InputEvent):
@@ -77,11 +77,11 @@ func interact():
 
 func startCooldown():
 	super.startCooldown()
-	interactionIndicator.modulate = Color(Color.WHITE, 0.1)
+	if interactionIndicator: interactionIndicator.modulate = Color(Color.WHITE, 0.1)
 
 
 func finishCooldown():
 	super.finishCooldown()
-	interactionIndicator.modulate = Color.WHITE
+	if interactionIndicator: interactionIndicator.modulate = Color.WHITE
 
 #endregion
