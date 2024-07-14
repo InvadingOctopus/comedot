@@ -34,10 +34,10 @@ extends Resource
 @export var allowWallJump:									bool  = true
 
 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
-@export_range(-1000, -10, 5) var wallJumpVelocity:			float = -300
+@export_range(-1000, -10, 5)	var wallJumpVelocity:			float = -300
 
 ## The force with which the player bounces away horizontally from the wall during a wall jump.
-@export_range(-1000, -10, 5) var wallJumpVelocityX:			float = 150
+@export_range(10, 1000, 5)	var wallJumpVelocityX:			float = 150
 
 ## The "grace period" for allowing the player to jump just after leaving a wall.
 @export_range(0, 10, 0.1, "seconds") var wallJumpTimer:		float = 0.1
