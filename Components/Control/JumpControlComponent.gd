@@ -199,6 +199,7 @@ func processWallJump():
 	
 	if  not isEnabled \
 		or not parameters.allowWallJump \
+		or currentNumberOfJumps >= parameters.maxNumberOfJumps \
 		or (not body.is_on_wall_only() \
 			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
 				return 
