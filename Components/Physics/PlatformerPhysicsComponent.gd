@@ -19,8 +19,10 @@ extends CharacterBodyComponent
 			# Reset other flags only once
 			self.inputDirection = 0
 			self.isInputZero = true
-		
+
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
+
+@export var shouldShowDebugInfo: bool = false
 
 #endregion
 
@@ -90,7 +92,8 @@ func _physics_process(delta: float):
 	self.shouldMoveThisFrame = true
 	super._physics_process(delta)
 		
-	# DEBUG: showDebugInfo()
+	# DEBUG: 
+	if shouldShowDebugInfo: showDebugInfo()
 	
 	# Clear the input so it doesn't carry on over to the next frame.
 	clearInput()
@@ -213,6 +216,7 @@ func applyFrictionInAir(delta: float):
 
 
 func showDebugInfo():
+	if not shouldShowDebugInfo: return
 	super.showDebugInfo()
 	Debug.watchList.state = currentState
 	Debug.watchList.input = inputDirection
