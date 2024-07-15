@@ -28,6 +28,8 @@ extends Node2D
 @export var gridColor:	Color = Color(0.0, 0.0, 0.0, 0.5)
 @export var headColor:	Color = Color(0.5, 0.5, 0.5, 0.5) ## The color of the vertical "head" or "tracker" line.
 
+@export var isEnabled:	bool = true
+
 #endregion
 
 #region State
@@ -64,6 +66,7 @@ func resizeArrays():
 
 
 func _draw() -> void:
+	if not isEnabled: return
 	draw_multiline(gridLines,  gridColor, gridwidth, false)
 	
 	# Draw the "head" line
@@ -73,6 +76,7 @@ func _draw() -> void:
 
 
 func _process(delta: float) -> void:
+	if not isEnabled: return
 	recordMonitoredVariable()
 	
 	# DEBUG:
