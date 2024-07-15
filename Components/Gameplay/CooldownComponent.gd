@@ -9,7 +9,7 @@ class_name CooldownComponent
 extends Component
 
 
-@onready var cooldownTimer := $CooldownTimer
+@onready var cooldownTimer: Timer = $CooldownTimer
 
 
 #region Parameters
@@ -36,11 +36,11 @@ signal didFinishCooldown
 
 #region Cooldown
 
-func startCooldown():
-	printDebug("startCooldown()")
+func startCooldown(overrideTime: float = self.cooldown):
+	printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime))
 	hasCooldownCompleted = false
-	cooldownTimer.wait_time = self.cooldown
-	cooldownTimer.start()
+	cooldownTimer.wait_time = overrideTime	
+	cooldownTimer.start(overrideTime)
 	didStartCooldown.emit()
 
 

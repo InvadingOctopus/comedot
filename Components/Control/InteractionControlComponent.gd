@@ -102,8 +102,8 @@ func interact():
 
 #region Cooldown
 
-func startCooldown():
-	super.startCooldown()
+func startCooldown(overrideTime: float = self.cooldown):
+	super.startCooldown(overrideTime)
 	# Reduce the alpha
 	if interactionIndicator: interactionIndicator.modulate.a = 0.1
 
