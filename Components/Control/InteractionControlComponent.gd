@@ -1,5 +1,6 @@
 ## Allows the player to interact with an [InteractionComponent].
-## "Interactions" are similar to "Collectibles". The difference is that an interaction occurs on a button input instead of automatically on a collision.
+## "Interactions" are similar to "Collectibles"; the difference is that an interaction occurs on a button input instead of automatically on a collision.
+## Requirements: The component node must be an [Area2D]
 
 class_name InteractionControlComponent
 extends CooldownComponent
@@ -8,8 +9,32 @@ extends CooldownComponent
 
 
 #region Parameters
+
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
-@export var isEnabled := true
+
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		if selfAsArea:
+			selfAsArea.monitorable = isEnabled
+			selfAsArea.monitoring  = isEnabled
+			updateIndicator()
+			
+#endregion
+
+
+#region State
+
+var interactionsInRange: Array[InteractionComponent]
+
+var haveInteracionsInRange: bool:
+	get: return self.interactionsInRange.size() >= 1
+
+var selfAsArea: Area2D:
+	get:
+		if not selfAsArea: selfAsArea = self.get_node(".") as Area2D
+		return selfAsArea
+
 #endregion
 
 
@@ -20,10 +45,11 @@ signal willBeginInteraction   (entity: Entity, interactionComponent: Interaction
 #endregion
 
 
-var interactionsInRange: Array[InteractionComponent]
-
-var haveInteracionsInRange: bool:
-	get: return self.interactionsInRange.size() >= 1
+func _ready() -> void:
+	# Set the initial state of the indicator
+	if interactionIndicator:
+		interactionIndicator.visible = false
+		updateIndicator()
 
 
 func onArea_entered(area: Area2D) -> void:
@@ -33,6 +59,7 @@ func onArea_entered(area: Area2D) -> void:
 	Debug.printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
 
 	self.interactionsInRange.append(interactionComponent)
+	updateIndicator()
 	didEnterInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
 
@@ -43,11 +70,11 @@ func onArea_exited(area: Area2D) -> void:
 	Debug.printDebug(self.logName + " onArea_exited: " + str(interactionComponent))
 
 	self.interactionsInRange.erase(interactionComponent)
+	updateIndicator()
 	didExitInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
 
-func _process(delta: float): # TBD: Should this be in the physics loop?
-	# TODO: Update indicator only on collision events.
+func updateIndicator() -> void:
 	if interactionIndicator: 
 		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
@@ -77,11 +104,13 @@ func interact():
 
 func startCooldown():
 	super.startCooldown()
-	if interactionIndicator: interactionIndicator.modulate = Color(Color.WHITE, 0.1)
+	# Reduce the alpha
+	if interactionIndicator: interactionIndicator.modulate.a = 0.1
 
 
 func finishCooldown():
 	super.finishCooldown()
-	if interactionIndicator: interactionIndicator.modulate = Color.WHITE
+	# Restore the alpha
+	if interactionIndicator: interactionIndicator.modulate.a = 1.0
 
 #endregion

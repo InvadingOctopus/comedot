@@ -5,6 +5,7 @@ extends Component
 
 
 #region Parameters
+
 @export var interactionIndicator: Node ## A node or control to display when this [InteractionComponent] is within the range of an [InteractionControlComponent].
 
 ## An optional short label, name or phrase for the interaction to display in the UI.
@@ -13,13 +14,29 @@ extends Component
 	set(newValue):
 		if newValue != label:
 			label = newValue
-			setLabel()
+			updateLabel()
 
 ## An optional detailed description of the interaction to display in the UI.
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
 @export var description: String
 
-@export var isEnabled := true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		if selfAsArea:
+			selfAsArea.monitorable = isEnabled
+			selfAsArea.monitoring  = isEnabled
+		
+#endregion
+
+
+#region State
+
+var selfAsArea: Area2D:
+	get:
+		if not selfAsArea: selfAsArea = self.get_node(".") as Area2D
+		return selfAsArea
+		
 #endregion
 
 
@@ -32,9 +49,10 @@ signal didDenyInteraction(interactorEntity: Entity)
 
 
 func _ready():
+	# Set the initial state of the indicator
 	if interactionIndicator:
 		interactionIndicator.visible = false
-		setLabel()
+		updateLabel()
 
 
 func onArea_entered(area: Area2D) -> void:
@@ -43,7 +61,7 @@ func onArea_entered(area: Area2D) -> void:
 
 	# Display the indicators and labels, if any.
 	if interactionIndicator:
-		setLabel()
+		updateLabel()
 		interactionIndicator.visible = true
 
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
@@ -78,7 +96,7 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 
 ## If the [interactionIndicator] is a [Label], display our [label] parameter.
-func setLabel():
+func updateLabel():
 	# TBD: Should this be optional?
 	if (not self.label.is_empty()) and interactionIndicator is Label:
 		interactionIndicator.text = self.label
