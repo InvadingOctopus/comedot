@@ -16,12 +16,9 @@ extends Component
 
 ## Number of seconds after shooting before another bullet can be emitted.
 @export_range(0.1, 10.0, 0.1, "suffix:seconds") var cooldown: float = 3:
-	get:
-		return %CooldownTimer.wait_time if %CooldownTimer else cooldown
 	set(newValue):
 		cooldown = newValue
-		if %CooldownTimer:
-			%CooldownTimer.wait_time = newValue
+		if cooldownTimer: cooldownTimer.wait_time = newValue
 
 #endregion
 
@@ -42,6 +39,7 @@ signal didFinishCooldown
 func startCooldown():
 	printDebug("startCooldown()")
 	hasCooldownCompleted = false
+	cooldownTimer.wait_time = self.cooldown
 	cooldownTimer.start()
 	didStartCooldown.emit()
 
