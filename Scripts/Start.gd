@@ -12,6 +12,12 @@ extends Node
 
 @export_group("Debugging Flags")
 
+## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
+@export var showDebugWindow: bool = true:
+	set(newValue):
+		showDebugWindow = newValue
+		if Debug.window: Debug.window.visible = newValue
+
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
 @export var printDebugLogs: bool = true:
@@ -43,5 +49,6 @@ func _ready() -> void:
 
 func applyGlobalFlags():
 	GlobalOverlay.testBackground.visible = self.showTestBackground
-	Debug.printDebugLogs  = self.printDebugLogs
-	Debug.showDebugLabels = self.showDebugLabels
+	Debug.window.visible		= self.showDebugWindow if OS.is_debug_build() else false
+	Debug.printDebugLogs		= self.printDebugLogs
+	Debug.showDebugLabels	= self.showDebugLabels

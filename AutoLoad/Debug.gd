@@ -2,7 +2,7 @@
 ## Displays a list of variables updated per frame. To watch a variable, add it to the `watchList` property
 
 #class_name Debug
-extends CanvasLayer
+extends Node
 
 
 #region Parameters
@@ -26,9 +26,10 @@ extends CanvasLayer
 
 #region State
 
+@onready var window:			Window = %DebugWindow
 @onready var labels:			Node  = %Labels
-@onready var label:				Label = %Label
-@onready var warningLabel:		Label = %WarningLabel
+@onready var label:			Label = %Label
+@onready var warningLabel:	Label = %WarningLabel
 @onready var watchListLabel:	Label = %WatchListLabel
 
 #endregion
@@ -91,6 +92,8 @@ func _ready():
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
+	if not OS.is_debug_build():
+		window.visible = false
 
 
 func resetLabels():
