@@ -18,6 +18,32 @@ outline_color = Color(0, 0, 0, 1)
 [node name="Debug" type="Node"]
 script = ExtResource("1_rd14n")
 
+[node name="Canvas" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="Labels" type="Node2D" parent="Canvas"]
+unique_name_in_owner = true
+top_level = true
+position = Vector2(8, 8)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Canvas/Labels"]
+offset_right = 84.0
+offset_bottom = 32.0
+
+[node name="WarningLabel" type="Label" parent="Canvas/Labels/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Warning"
+label_settings = SubResource("LabelSettings_rssih")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Canvas/Labels/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "General Label"
+metadata/_edit_use_anchors_ = true
+
 [node name="DebugWindow" type="Window" parent="."]
 unique_name_in_owner = true
 process_mode = 3
@@ -45,27 +71,12 @@ content_scale_factor = 3.0
 layer = 110
 
 [node name="Labels" type="Node2D" parent="DebugWindow/Canvas"]
-unique_name_in_owner = true
 top_level = true
 position = Vector2(8, 8)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DebugWindow/Canvas/Labels"]
 offset_right = 84.0
 offset_bottom = 32.0
-
-[node name="WarningLabel" type="Label" parent="DebugWindow/Canvas/Labels/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Warning"
-label_settings = SubResource("LabelSettings_rssih")
-metadata/_edit_use_anchors_ = true
-
-[node name="Label" type="Label" parent="DebugWindow/Canvas/Labels/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 8
-text = "General Label"
-metadata/_edit_use_anchors_ = true
 
 [node name="WatchListLabel" type="Label" parent="DebugWindow/Canvas/Labels/VBoxContainer"]
 unique_name_in_owner = true

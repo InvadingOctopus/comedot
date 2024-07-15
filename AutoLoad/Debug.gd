@@ -134,3 +134,24 @@ func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0):
 	# Create a temporary timer to remove the key
 	await get_tree().create_timer(duration, false, false, true).timeout
 	watchList.erase(key)
+
+
+## Creates a new window with a [Chart] to graph the specified node's property.
+## Returns: The new chart
+func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> Chart:
+	var newChartWindow: Window = preload("res://Scenes/UI/ChartWindow.tscn").instantiate()
+	var newChart: Chart = Global.findFirstChildOfType(newChartWindow, Chart)
+	
+	newChart.nodeToMonitor = nodeToMonitor
+	newChart.propertyToMonitor = propertyToMonitor
+	
+	newChartWindow.title = str(get_node(nodeToMonitor), propertyToMonitor)
+	newChartWindow.close_requested.connect(newChartWindow.queue_free) # TODO: Verify
+	
+	# Center the Y axis in the window
+	newChartWindow.size.x = newChart.maxHistorySize * newChartWindow.content_scale_factor	
+	newChart.position.y = 100 # TODO: Remove hardcoding
+	
+	self.add_child(newChartWindow)
+	
+	return newChart

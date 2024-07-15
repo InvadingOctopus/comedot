@@ -25,7 +25,7 @@ extends Node2D
 @export_range(0.1, 2.0, 0.05) var valueScale: float = 1.0 
 
 @export var lineColor:	Color = Color(0.5, 1.0, 0.5, 0.5)
-@export var gridColor:	Color = Color(0.0, 0.0, 0.0, 0.5)
+@export var gridColor:	Color = Color(0.0, 0.25, 0.25, 0.5)
 @export var headColor:	Color = Color(0.5, 0.5, 0.5, 0.5) ## The color of the vertical "head" or "tracker" line.
 
 @export var isEnabled:	bool = true
