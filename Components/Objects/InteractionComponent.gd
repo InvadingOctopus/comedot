@@ -100,6 +100,8 @@ func updateLabel():
 	# TBD: Should this be optional?
 	if (not self.label.is_empty()) and interactionIndicator is Label:
 		interactionIndicator.text = self.label
+		# Also apply the color 
+		interactionIndicator.modulate = self.modulate
 
 
 #region Virtual Methods
