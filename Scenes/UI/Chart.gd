@@ -20,6 +20,8 @@ extends Node2D
 		maxHistorySize = newValue
 		resizeArrays()
 		
+## The height of the Y axis on EACH side, positive and negative.
+const verticalHeight: float = 100 # TODO: Remove hardcoding
 
 # Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis.
 @export_range(0.1, 2.0, 0.05) var valueScale: float = 1.0 
@@ -128,8 +130,8 @@ func createLine(index: int) -> void:
 func createGridLines():
 	# TBD: Export these as paramteres?
 	
-	var gridMinY:	float = -100
-	var gridMaxY:	float = 100
+	var gridMinY:	float = -verticalHeight
+	var gridMaxY:	float = verticalHeight
 	
 	var gridStepX:	float = 10
 	var gridStepY:	float = 10

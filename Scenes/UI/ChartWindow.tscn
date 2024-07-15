@@ -8,6 +8,7 @@ handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
+position = Vector2i(0, 36)
 size = Vector2i(300, 600)
 wrap_controls = true
 transient = true
@@ -15,7 +16,7 @@ unfocusable = true
 content_scale_mode = 2
 content_scale_aspect = 1
 content_scale_stretch = 1
-content_scale_factor = 3.0
+content_scale_factor = 2.0
 
 [node name="Chart" parent="." instance=ExtResource("1_g7onf")]
 unique_name_in_owner = true

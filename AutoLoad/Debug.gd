@@ -148,9 +148,11 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 	newChartWindow.title = str(get_node(nodeToMonitor), propertyToMonitor)
 	newChartWindow.close_requested.connect(newChartWindow.queue_free) # TODO: Verify
 	
-	# Center the Y axis in the window
+	# Resize the window and center the chart
+	
 	newChartWindow.size.x = newChart.maxHistorySize * newChartWindow.content_scale_factor	
-	newChart.position.y = 100 # TODO: Remove hardcoding
+	newChartWindow.size.y = (newChart.verticalHeight * 2) * newChartWindow.content_scale_factor # NOTE: Twice the height for both sides of the Y axis
+	newChart.position.y = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
 	
 	self.add_child(newChartWindow)
 	
