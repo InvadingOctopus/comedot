@@ -32,6 +32,8 @@ extends Node
 @onready var warningLabel:	Label = %WarningLabel
 @onready var watchListLabel:	Label = %WatchListLabel
 
+var previousChartWindowInitialPosition: Vector2i
+
 #endregion
 
 
@@ -154,6 +156,10 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 	newChartWindow.size.y = (newChart.verticalHeight * 2) * newChartWindow.content_scale_factor # NOTE: Twice the height for both sides of the Y axis
 	newChart.position.y = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
 	
-	self.add_child(newChartWindow)
+	# Shift each window so they don't all overlap
 	
+	newChartWindow.position = previousChartWindowInitialPosition + Vector2i(newChartWindow.size.x, 0)
+	previousChartWindowInitialPosition = newChartWindow.position
+	
+	self.add_child(newChartWindow)
 	return newChart

@@ -23,8 +23,8 @@ extends Node2D
 ## The height of the Y axis on EACH side, positive and negative.
 const verticalHeight: float = 100 # TODO: Remove hardcoding
 
-# Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis.
-@export_range(0.1, 2.0, 0.05) var valueScale: float = 1.0 
+# Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis, to better fit the screen.
+@export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5 
 
 @export var lineColor:	Color = Color(0.5, 1.0, 0.5, 0.5)
 @export var gridColor:	Color = Color(0.0, 0.25, 0.25, 0.5)

@@ -4,9 +4,6 @@
 
 [node name="Chart" type="Node2D"]
 script = ExtResource("1_ktel2")
-nodeToMonitor = NodePath("../../PlayerEntity/PlatformerPhysicsComponent")
-propertyToMonitor = NodePath(".")
-valueScale = 0.2
 
 [node name="Label" type="Label" parent="."]
 offset_right = 34.0
