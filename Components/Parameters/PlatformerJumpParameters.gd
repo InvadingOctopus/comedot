@@ -23,10 +23,12 @@ extends Resource
 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
 @export_range(-1000, -10, 5) var jumpVelocity2ndJump:		float = -300
 
-## The "grace period" for allowing the player to jump just after walking off a platform floor.
-## Set to `0` to disable coyote jumping.
+## Allows a "grace period" to let the player to jump just after walking off a platform floor.
 ## This may provide a better feel of control in some games.
 ## Named after Wile E. Coyote from Road Runner :>
+@export var allowCoyoteJump:									bool  = true
+
+## The "grace period" for allowing the player to jump just after walking off a platform floor.
 @export_range(0, 10, 0.1, "seconds") var coyoteJumpTimer:	float = 0.15
 
 @export_subgroup("Wall Jump")

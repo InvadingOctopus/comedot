@@ -125,7 +125,6 @@ func characterBodyComponent_didMove() -> void:
 	
 	if characterBodyComponent.wasOnWall: # NOTE: NOT `is_on_wall_only()` CHECK: FORGOT: Why? 
 		wallJumpTimer.stop() # TBD: Is this needed?
-		wallJumpTimer.wait_time = parameters.wallJumpTimer
 	
 	updateCoyoteJumpState()
 	updateWallJumpState()
@@ -141,11 +140,12 @@ func processJump() -> void:
 	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
 	
 	var shouldJump: bool = false
+	var canCoyoteJump: bool = parameters.allowCoyoteJump and not is_zero_approx(coyoteJumpTimer.time_left)
 	
 	# Initial or mid-air jump
 
 	if self.jumpInputJustPressed:
-		if currentNumberOfJumps <= 0: shouldJump = characterBodyComponent.isOnFloor or not is_zero_approx(coyoteJumpTimer.time_left)
+		if currentNumberOfJumps <= 0: shouldJump = characterBodyComponent.isOnFloor or canCoyoteJump
 		else: shouldJump = (currentNumberOfJumps < parameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
 		# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
 
@@ -172,13 +172,15 @@ func processJump() -> void:
 func updateCoyoteJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
-	if not isEnabled: return
+	if not isEnabled or not parameters.allowCoyoteJump: return
 	
 	var didWalkOffFloor: bool = characterBodyComponent.wasOnFloor \
 		and not body.is_on_floor() \
 		and body.velocity.y >= 0 # Are we falling?
 	
-	if didWalkOffFloor: coyoteJumpTimer.start() # beep beep!
+	if didWalkOffFloor:
+		coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
+		coyoteJumpTimer.start() # beep beep!
 
 
 ## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
@@ -191,7 +193,6 @@ func updateStateBeforeMovement() -> void:
 			# DEBUG: printDebug("currentNumberOfJumps = 0")
 			currentNumberOfJumps = 0
 			coyoteJumpTimer.stop()
-			coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
 
 
 #region Wall Jumping
@@ -220,14 +221,16 @@ func processWallJump() -> void:
 func updateWallJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
-	if not isEnabled: return	
+	if not isEnabled or not parameters.allowWallJump: return	
 	
 	# TODO: just_wall_jumped = false
 	
 	var didLeaveWall: bool = characterBodyComponent.wasOnWall \
 		and not body.is_on_wall()
 	
-	if didLeaveWall: wallJumpTimer.start()
+	if didLeaveWall:
+		wallJumpTimer.wait_time = parameters.wallJumpTimer
+		wallJumpTimer.start()
 
 #endregion
 
