@@ -74,7 +74,7 @@ func processBodyBeforeMove(delta: float):
 
 
 ## NOTE: MUST be called AFTER [processInput]
-func updateState():
+func updateState() -> void:
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	if currentState == State.idle and not isInputZero:
@@ -90,7 +90,7 @@ func updateState():
 
 ## Handles player input.
 ## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
-func processInput():
+func processInput() -> void:
 	if not isEnabled: return
 
 	# Get the input direction and handle the movement/deceleration.
@@ -175,7 +175,7 @@ func applyFrictionInAir(delta: float):
 #endregion
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.input		= inputDirection
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.isOnFloor	= isOnFloor

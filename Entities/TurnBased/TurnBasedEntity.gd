@@ -34,7 +34,7 @@ signal didEndTurn
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnBeginSignals():
+func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	self.currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn]
 	willBeginTurn.emit()
@@ -43,7 +43,7 @@ func processTurnBeginSignals():
 
 
 ## Any "pre-turn" activity that happens BEFORE the main activity, such as animations or messages.
-func processTurnBegin():
+func processTurnBegin() -> void:
 	for turnBasedComponent in findTurnBasedComponents():
 		turnBasedComponent.processTurnBeginSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
@@ -51,7 +51,7 @@ func processTurnBegin():
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnUpdateSignals():
+func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	willUpdateTurn.emit()
 	self.processTurnUpdate()
@@ -59,15 +59,15 @@ func processTurnUpdateSignals():
 
 
 ## The actual actions which occur every turn, such as movement or combat.
-func processTurnUpdate():
-	for turnBasedComponent in findTurnBasedComponents():
+func processTurnUpdate() -> void:
+	for turnBasedComponent in findTurnBasedComponents() -> void:
 		turnBasedComponent.processTurnUpdateSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
 
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnEndSignals():
+func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	willEndTurn.emit()
 	self.processTurnEnd()
@@ -76,12 +76,11 @@ func processTurnEndSignals():
 
 
 ## Any "post-turn" activity that happens BEFORE the main activity, such as animations or messages.
-func processTurnEnd():
-	for turnBasedComponent in findTurnBasedComponents():
+func processTurnEnd() -> void:
+	for turnBasedComponent in findTurnBasedComponents() -> void:
 		turnBasedComponent.processTurnEndSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
 
 
 func findTurnBasedComponents() -> Array[TurnBasedComponent]:
 	return self.findChildrenOfType(TurnBasedComponent)
-

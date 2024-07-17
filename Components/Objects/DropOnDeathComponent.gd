@@ -41,7 +41,7 @@ var parentForSpawnedNode: Node2D:
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if not healthComponent:
 		printError("Missing HealthComponent")
 		return
@@ -49,7 +49,7 @@ func _ready():
 	healthComponent.healthDidZero.connect(self.onHealthComponent_healthDidZero)
 
 
-func onHealthComponent_healthDidZero():
+func onHealthComponent_healthDidZero() -> void:
 	# TBD: No need to spawn a "drop" if the parent entity doesn't "die" (get removed upon zero health) right?
 	if not isEnabled or not healthComponent.shouldRemoveParentOnZero: return
 

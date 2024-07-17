@@ -32,11 +32,11 @@ signal didSpawn(newSpawn: Node2D, parent: Node2D)
 @onready var spawnAreaShapeNode: CollisionShape2D = %SpawnAreaShape
 
 
-func onSpawnTimer_timeout():
+func onSpawnTimer_timeout() -> void:
 	spawn()
 
 
-func spawn():
+func spawn() -> void:
 
 	if not isEnabled: return
 

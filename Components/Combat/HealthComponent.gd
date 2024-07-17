@@ -25,13 +25,13 @@ signal healthDidMax
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	health.changed.connect(onHealthChanged, CONNECT_PERSIST) # CAUTION: TBD: Should `CONNECT_PERSIST` be used?
 	%DebugIndicator.text = str(health.value)
 
 
-func onHealthChanged():
-		var difference: int = health.previousChange # A decrease should appear as a negative difference
+func onHealthChanged() -> void:
+		var _difference: int = health.previousChange # A decrease should appear as a negative difference
 
 		if health.value < health.previousValue: healthDidDecrease.emit(health.previousChange)  # TBD: Should this be a negative number?
 		if health.value > health.previousValue: healthDidIncrease.emit(health.previousChange)

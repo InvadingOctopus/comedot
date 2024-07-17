@@ -44,14 +44,14 @@ func startCooldown(overrideTime: float = self.cooldown):
 	didStartCooldown.emit()
 
 
-func finishCooldown():
+func finishCooldown() -> void:
 	printDebug("finishCooldown()")
 	cooldownTimer.stop()
 	hasCooldownCompleted = true
 	didFinishCooldown.emit()
 
 
-func onCooldownTimer_timeout():
+func onCooldownTimer_timeout() -> void:
 	printDebug("onCooldownTimer_timeout()")
 	finishCooldown()
 

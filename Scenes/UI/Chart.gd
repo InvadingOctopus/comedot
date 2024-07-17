@@ -62,7 +62,7 @@ func _ready() -> void:
 	label.label_settings.font_color = Color(0.0, 1.0, 1.0, 0.5)
 
 
-func resizeArrays():
+func resizeArrays() -> void:
 	monitoredVariableHistory.resize(maxHistorySize)
 	valueLines.resize(maxHistorySize * 2) # Each line needs 2 vectors
 
@@ -77,7 +77,7 @@ func _draw() -> void:
 	draw_multiline(valueLines, lineColor, lineWidth, false)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not isEnabled: return
 	recordMonitoredVariable()
 	
@@ -110,7 +110,7 @@ func recordMonitoredVariable() -> void:
 func createLine(index: int) -> void:
 	# NOTE: Each line needs 2 vectors.
 	
-	var currentLineIndex: int = currentHistoryIndex * 2
+	var currentLineIndex: int = index * 2
 	
 	# DEBUG:Debug.printLog(str("currentLineIndex: ", currentLineIndex))
 	
@@ -127,22 +127,22 @@ func createLine(index: int) -> void:
 	# Debug.printLog(str("Vector ", currentLineIndex+1, ": ", valueLines[currentLineIndex+1]))
 
 
-func createGridLines():
+func createGridLines() -> void:
 	# TBD: Export these as paramteres?
 	
 	var gridMinY:	float = -verticalHeight
 	var gridMaxY:	float = verticalHeight
 	
-	var gridStepX:	float = 10
-	var gridStepY:	float = 10
+	var gridStepX:	int = 10
+	var gridStepY:	int = 10
 	
 	headLineStart.y	= gridMinY
 	headLineEnd.y	= gridMaxY
 	
 	# PERFORMANCE: Calculate and set the total size before appending each line.
 	
-	var numberOfGridLinesX: int = maxHistorySize / gridStepX
-	var numberOfGridLinesY: int = (gridMaxY - gridMinY) / gridStepY
+	var numberOfGridLinesX: int = int(maxHistorySize / gridStepX)
+	var numberOfGridLinesY: int = int((gridMaxY - gridMinY) / gridStepY)
 	
 	# TODO: Verify calculation
 	#gridLines.resize((numberOfGridLinesX * numberOfGridLinesY) * 2) # Each line needs 2 vectors.
@@ -186,5 +186,5 @@ func createGridLines():
 		end.y	+= gridStepY
 
 
-func updateLabel():
+func updateLabel() -> void:
 	label.text = str(propertyToMonitor)

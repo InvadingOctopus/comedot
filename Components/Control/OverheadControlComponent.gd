@@ -18,7 +18,7 @@ var lastVelocity		:= Vector2.ZERO
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	# Set the entity's [CharacterBody2D] motion mode to Floating.
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Floating")
@@ -85,7 +85,7 @@ func processWalkInput(delta: float):
 		lastDirection = body.velocity.normalized()
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.velocity		= body.velocity
 	Debug.watchList.lastVelocity	= lastVelocity
 	Debug.watchList.wallNormal		= body.get_wall_normal()

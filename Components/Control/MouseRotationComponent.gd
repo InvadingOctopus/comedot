@@ -17,7 +17,7 @@ extends Component
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if not nodeToRotate:
 		nodeToRotate = self.parentEntity
 

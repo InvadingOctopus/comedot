@@ -32,7 +32,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 # Called whenever the node enters the scene tree.
-func ready():
+func ready() -> void:
 	#super._enter_tree()
 	
 	if not self.characterBodyComponent:

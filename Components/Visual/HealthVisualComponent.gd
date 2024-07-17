@@ -8,11 +8,11 @@ extends Component
 @export var healthComponent: HealthComponent
 
 
-func _ready():
+func _ready() -> void:
 	if not healthComponent: connectToHealthComponent()
 
 
-func connectToHealthComponent():
+func connectToHealthComponent() -> void:
 	self.healthComponent = getCoComponent(HealthComponent)
 	if not healthComponent:
 		printWarning("Cannot find a HealthComponent in parent Entity: " + self.parentEntity.logName)

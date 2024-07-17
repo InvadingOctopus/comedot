@@ -29,15 +29,15 @@ var damageReceivingComponent: DamageReceivingComponent:
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	connectCoComponents()
 
 
-func connectCoComponents():
+func connectCoComponents() -> void:
 	damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
 
 
-func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int):
+func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, _amount: int, _attackerFactions: int) -> void:
 	if not isEnabled: return
 
 	# Get the direction of the colliding damage source

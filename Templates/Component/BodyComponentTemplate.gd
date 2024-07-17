@@ -31,13 +31,13 @@ signal didSomethingHappen
 
 
 # Called whenever the node enters the scene tree.
-func _enter_tree():
+func _enter_tree() -> void:
 	super._enter_tree()
 	if parentEntity != null and self.body == null:
 			self.body = parentEntity.getBody()
 
 
-func _ready():
+func _ready() -> void:
 	pass # Any code needed to configure and prepare the component.
 
 

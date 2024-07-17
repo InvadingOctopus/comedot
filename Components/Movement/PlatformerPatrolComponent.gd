@@ -69,11 +69,11 @@ func getRequiredComponents() -> Array[Script]:
 	return [CornerCollisionComponent, PlatformerPhysicsComponent]
 
 
-func _ready():
+func _ready() -> void:
 	setInitialDirection()
 
 
-func setInitialDirection():
+func setInitialDirection() -> void:
 	if randomizeInitialDirection:
 		self.patrolDirection = [-1.0, 1.0].pick_random()
 	else:
@@ -84,7 +84,7 @@ func setInitialDirection():
 			self.patrolDirection = Vector2.RIGHT.x
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if (not isEnabled) or (not self.platformerPhysicsComponent): return
 
 	updateCollisionFlags() # TBD: Should the raycasts be updated before or after movement?
@@ -95,14 +95,14 @@ func _physics_process(delta: float):
 	#Debug.watchList.velocity = body.velocity
 
 
-func resetCollisionFlags():
+func resetCollisionFlags() -> void:
 	isFloorOnLeft	= false
 	isFloorOnRight	= false
 	isWallOnLeft	= false
 	isWallOnRight	= false
 
 
-func updateCollisionFlags():
+func updateCollisionFlags() -> void:
 	if not cornerCollisionComponent: return
 	isFloorOnLeft	= cornerCollisionComponent.areaSWCollisionCount >= 1
 	isFloorOnRight	= cornerCollisionComponent.areaSECollisionCount >= 1
@@ -112,7 +112,7 @@ func updateCollisionFlags():
 
 
 ## Returns: inputDirectionOverride
-func processPatrol(delta: float) -> float:
+func processPatrol(_delta: float) -> float:
 	if not isEnabled: return 0
 
 	var inputDirectionOverride: float = 0
@@ -127,7 +127,7 @@ func processPatrol(delta: float) -> float:
 
 
 ## Switches the patrol direction when the floor ends.
-func updatePatrolDirection():
+func updatePatrolDirection() -> void:
 
 	var newPatrolDirection: float = patrolDirection # Start as equal for comparison later.
 
@@ -178,7 +178,7 @@ func updatePatrolDirection():
 	# Signal will be emitted by property setter
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.isFloorOnLeft	= isFloorOnLeft
 	Debug.watchList.isFloorOnRight	= isFloorOnRight
 	Debug.watchList.isWallOnLeft	= isWallOnLeft

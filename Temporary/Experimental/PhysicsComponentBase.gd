@@ -27,7 +27,7 @@ var skipFirstWarning := true
 
 
 # Called whenever the node enters the scene tree.
-func _enter_tree():
+func _enter_tree() -> void:
 	super._enter_tree()
 	
 	if self.body == null and parentEntity != null:

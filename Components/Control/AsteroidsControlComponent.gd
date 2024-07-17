@@ -24,7 +24,7 @@ var lastVelocity:		Vector2
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Floating")
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -106,7 +106,7 @@ func processFriction(delta: float):
 	pass
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.velocity = body.velocity
 	Debug.watchList.wallNormal = body.get_wall_normal()
 	Debug.watchList.lastMotion = body.get_last_motion()

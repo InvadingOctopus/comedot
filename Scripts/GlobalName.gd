@@ -6,6 +6,6 @@ extends Node
 
 # TBD: Should we use `_ready()` or `_enter_tree()`?
 
-func _ready():
+func _ready() -> void:
 	var camelCaseName: StringName = self.name.to_camel_case() # O_O I CANT BELEIVE GODOT HAS THIS!
 	GameState.globalData[camelCaseName] = self

@@ -23,6 +23,6 @@ func onBodyEntered(body: Node2D) -> void:
 	if not body.owner == self: onCollide()
 
 
-func onCollide():
+func onCollide() -> void:
 	if removeOnAnyCollision:
 		self.requestRemoval()

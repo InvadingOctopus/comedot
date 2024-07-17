@@ -41,7 +41,7 @@ func _physics_process(delta: float):
 
 ## Handles player input.
 ## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
-func processInput():
+func processInput() -> void:
 	if not isEnabled: return
 
 	# Get the input direction and handle the movement/deceleration.
@@ -62,13 +62,13 @@ func processInput():
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 	
 
-func processJumpInput():
+func processJumpInput() -> void:
 	# Jump
 	platformerPhysicsComponent.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
 	#platformerPhysicsComponent.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
 
-func copyInputToPhysicsComponent():
+func copyInputToPhysicsComponent() -> void:
 	# TBD: Check performance impact vs setting directly 
 	# TBD: Should this only be called after input events?
 	platformerPhysicsComponent.inputDirection		= self.inputDirection

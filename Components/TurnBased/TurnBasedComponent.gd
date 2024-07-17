@@ -36,7 +36,7 @@ signal didEndTurn
 
 ## Called by the [TurnBasedEntity].
 ## NOTE: Do NOT override in subclass.
-func processTurnBeginSignals():
+func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	self.currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn]
 	willBeginTurn.emit()
@@ -46,7 +46,7 @@ func processTurnBeginSignals():
 
 ## Called by the [TurnBasedEntity].
 ## NOTE: Do NOT override in subclass.
-func processTurnUpdateSignals():
+func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	willUpdateTurn.emit()
 	self.processTurnUpdate()
@@ -55,7 +55,7 @@ func processTurnUpdateSignals():
 
 ## Called by the [TurnBasedEntity].
 ## NOTE: Do NOT override in subclass.
-func processTurnEndSignals():
+func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	willEndTurn.emit()
 	self.processTurnEnd()
@@ -67,19 +67,19 @@ func processTurnEndSignals():
 
 ## Any "pre-turn" activity that happens BEFORE the main activity, such as animations or messages.
 ## Abstract; Must be overridden by subclasses.
-func processTurnBegin():
+func processTurnBegin() -> void:
 	pass
 
 
 ## The actual actions which occur every turn, such as movement or combat.
 ## Abstract; Must be overridden by subclasses.
-func processTurnUpdate():
+func processTurnUpdate() -> void:
 	pass
 
 
 ## Any "post-turn" activity that happens BEFORE the main activity, such as animations or messages.
 ## Abstract; Must be overridden by subclasses.
-func processTurnEnd():
+func processTurnEnd() -> void:
 	pass
 
 #endregion

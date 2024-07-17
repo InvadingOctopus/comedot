@@ -25,7 +25,7 @@ signal playersChanged
 signal playerAdded(player: PlayerEntity)
 signal playerRemoved(player: PlayerEntity)
 
-signal HUDStatUpdated(stat: Stat)
+signal HUDStatUpdated(stat: Stat) ## Emitted by other objects as a "signal bus"
 
 #endregion
 

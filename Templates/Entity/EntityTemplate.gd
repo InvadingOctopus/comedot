@@ -15,7 +15,7 @@ extends Entity
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	pass # Any code needed to configure and prepare the entity.
 
 

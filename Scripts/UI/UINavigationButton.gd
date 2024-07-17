@@ -12,7 +12,7 @@ extends Button
 ## If `null`, then the first parent or grandparent of type [UINavigationContainer] is used.
 @export var parentOverride: UINavigationContainer
 
-func onPressed():
+func onPressed() -> void:
 	Debug.printDebug(str(self, " onPressed(): navigationDestination: ", navigationDestination))
 	if not navigationDestination: return
 

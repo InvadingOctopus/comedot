@@ -26,31 +26,31 @@ extends Control
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	updateInitialStats()
 	GameState.HUDStatUpdated.connect(self.onGameState_HUDStatUpdated)
 
 
-func updateInitialStats():
+func updateInitialStats() -> void:
 	if statsToUpdateOnReady.is_empty(): return
 	for stat in statsToUpdateOnReady:
 		updateStatLabel(stat, false)
 
 
-func onGameState_HUDStatUpdated(stat: Stat):
+func onGameState_HUDStatUpdated(stat: Stat) -> void:
 	updateStatLabel(stat)
 
 
-func updateStatLabel(stat: Stat, animate: bool = true):
+func updateStatLabel(stat: Stat, animate: bool = true) -> void:
 	var label: Label = self.find_child(stat.name + "Label") as Label
 	if not label: return
 
-	var name = stat.name
+	var statName: StringName = stat.name # Cache
 
-	var prefix: String = self.prefixes.get(name, "")
-	var suffix: String = self.suffixes.get(name, "")
+	var prefix: String = self.prefixes.get(statName, "")
+	var suffix: String = self.suffixes.get(statName, "")
 
-	if shouldPrefixValueWithStatName: prefix += " " + stat.name + " "
+	if shouldPrefixValueWithStatName: prefix += " " + statName + " "
 
 	label.text = buildLabelText(prefix, stat, suffix)
 	if animate: animateLabel(label, stat.value, stat.previousValue)
@@ -66,7 +66,7 @@ func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
 
 ## Plays different animations on a label depending on how the [Stat]'s value changes.
 ## May be overridden in a subclass.
-func animateLabel(label: Label, value, previousValue): # Values not typed so we could use [float].
+func animateLabel(label: Label, value, previousValue) -> void: # NOTE: Values not typed so we could use [float].
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
 
@@ -74,7 +74,7 @@ func animateLabel(label: Label, value, previousValue): # Values not typed so we 
 	elif  value < previousValue: color = Color.RED
 	else: return
 
-	var defaultColor = Color.WHITE # TODO: CHECK: A better way to reset a property.
+	var defaultColor: Color = Color.WHITE # TODO: CHECK: A better way to reset a property.
 
 	var tween: Tween = get_tree().create_tween()
 	tween.set_trans(Tween.TRANS_BOUNCE)

@@ -172,7 +172,7 @@ func _physics_process(delta: float):
 
 
 ## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
-func updateStateBeforeMovement():
+func updateStateBeforeMovement() -> void:
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	if currentState == State.idle and not isInputZero:
@@ -196,7 +196,7 @@ func updateStateBeforeMovement():
 
 ## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
 ## Affected by [member isEnabled].
-func processInput():
+func processInput() -> void:
 	# TBD: Should be guarded by [isEnabled] or should the flags etc. always be updated?
 	if not isEnabled: return
 
@@ -213,7 +213,7 @@ func processInput():
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 
 
-func clearInput():
+func clearInput() -> void:
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
 	#jumpInput = false # NOTE: Let the control components reset the `jumpInput`
 	# The justPressed/justReleased flags should be reset here because they represent a state for only 1 frame
@@ -267,7 +267,7 @@ func processAllFriction(delta: float):
 #region Jumping
 
 
-func processWallJump():
+func processWallJump() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if  not isEnabled \
@@ -287,7 +287,7 @@ func processWallJump():
 		didWallJump = true
 
 
-func processJump():
+func processJump() -> void:
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
 	if not isEnabled or jumpParameters.maxNumberOfJumps <= 0: return
 	
@@ -320,7 +320,7 @@ func processJump():
 
 ## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
 ## May improve the feel of control in some games.
-func updateCoyoteJumpState():
+func updateCoyoteJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if not isEnabled: return
@@ -332,7 +332,7 @@ func updateCoyoteJumpState():
 	if didWalkOffFloor: coyoteJumpTimer.start() # beep beep!
 
 
-func updateWallJumpState():
+func updateWallJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if not isEnabled: return	
@@ -381,7 +381,7 @@ func applyFrictionInAir(delta: float):
 #endregion
 
 
-func showDebugInfo():	
+func showDebugInfo() -> void:	
 	Debug.watchList.state		= currentState
 	Debug.watchList.input		= inputDirection
 	Debug.watchList.velocity	= body.velocity

@@ -25,7 +25,7 @@ var playerInputComponent: PlayerInputComponent:
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	# Set the entity's [CharacterBody2D] motion mode to Floating.
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Floating")

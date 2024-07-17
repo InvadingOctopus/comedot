@@ -44,7 +44,7 @@ func getBusVolume() -> int:
 	return 0
 
 
-func setBusVolume():
+func setBusVolume() -> void:
 	var volumeInDb: float = 0
 	var labelColor := Color.WHITE
 

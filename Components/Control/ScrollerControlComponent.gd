@@ -30,7 +30,7 @@ var lastDirection		:= Vector2.ZERO ## Normalized
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Floating & parentEntity.body.wall_min_slide_angle → 0")
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -53,7 +53,7 @@ func _physics_process(delta: float):
 	characterBodyComponent.queueMoveAndSlide()
 
 
-func characterBodyComponent_didMove():
+func characterBodyComponent_didMove() -> void:
 	# lastVelocity = body.velocity # Handled by CharacterBodyComponent
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
@@ -144,6 +144,6 @@ func clampVelocity(delta: float):
 	body.velocity.y = clampf(body.velocity.y, parameters.verticalVelocityMin, parameters.verticalVelocityMax)
 	
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection

@@ -47,7 +47,7 @@ func _ready() -> void:
 	applyGlobalFlags()
 
 
-func applyGlobalFlags():
+func applyGlobalFlags() -> void:
 	GlobalOverlay.testBackground.visible = self.showTestBackground
 	Debug.window.visible		= self.showDebugWindow if OS.is_debug_build() else false
 	Debug.printDebugLogs		= self.printDebugLogs

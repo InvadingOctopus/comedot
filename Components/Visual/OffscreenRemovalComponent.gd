@@ -10,7 +10,7 @@ extends Component
 		if %VisibleOnScreenNotifier2D: %VisibleOnScreenNotifier2D.rect = rectangle
 
 
-func _ready():
+func _ready() -> void:
 	%VisibleOnScreenNotifier2D.rect = rectangle
 	
 	

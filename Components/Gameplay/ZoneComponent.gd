@@ -31,7 +31,7 @@ var currentZones: Array[Area2D]
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if not areaOverride:
 		areaOverride = self.get_node(".") as Area2D # HACK: TODO: Find better way to cast
 
@@ -44,7 +44,7 @@ func _ready():
 	updateCurrentZones()
 
 
-func connectSignals():
+func connectSignals() -> void:
 	if not areaOverride: return
 	areaOverride.area_entered.connect(self.onAreaEntered)
 	areaOverride.area_exited.connect(self.onAreaExited)

@@ -85,7 +85,7 @@ func _input(event: InputEvent):
 	if Input.is_action_just_pressed("interact"): interact()
 
 
-func interact():
+func interact() -> void:
 	# NOTE: TBD: If there are multiple interactions within range,
 	# should they all be processed withing a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
@@ -104,7 +104,7 @@ func interact():
 	# DEBUG: showDebugInfo()
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	var watchName: StringName  = str(self, ":Timer")
 	Debug.watchList[watchName] = self.cooldownTimer.time_left
 
@@ -117,7 +117,7 @@ func startCooldown(overrideTime: float = self.cooldown):
 	if interactionIndicator: interactionIndicator.modulate.a = 0.1
 
 
-func finishCooldown():
+func finishCooldown() -> void:
 	super.finishCooldown()
 	# Restore the alpha
 	if interactionIndicator: interactionIndicator.modulate.a = 1.0

@@ -51,16 +51,16 @@ var isCollidingOnBottom:	bool
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	setAreaPositions()
 
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float) -> void:
 	pass
 
 
 ## Places the [Area2D]s at the corners of the entity's [Sprite2D]
-func setAreaPositions():
+func setAreaPositions() -> void:
 	if not sprite: return # TBD: Should we reset the raycass to a default position if there is no sprite?
 	var spriteRect: Rect2 = sprite.get_rect()
 
@@ -75,7 +75,7 @@ func setAreaPositions():
 	#Debug.watchList.areaSW = areaSW.position
 
 
-func setCollisionEnabled(enabled: bool):
+func setCollisionEnabled(enabled: bool) -> void:
 	if not areasContainer: return
 	for area: Area2D in areasContainer.get_children():
 		#if is_instance_of(area, Area2D):
@@ -87,23 +87,23 @@ func setCollisionEnabled(enabled: bool):
 	else: areasContainer.process_mode = Node.PROCESS_MODE_INHERIT
 
 
-func onAreaEntered(area: Area2D) -> void:
+func onAreaEntered(_area: Area2D) -> void:
 	updateFlags()
 
 
-func onAreaExited(area: Area2D) -> void:
+func onAreaExited(_area: Area2D) -> void:
 	updateFlags()
 
 
-func onBodyEntered(body: Node2D) -> void:
+func onBodyEntered(_body: Node2D) -> void:
 	updateFlags()
 
 
-func onBodyExited(body: Node2D) -> void:
+func onBodyExited(_body: Node2D) -> void:
 	updateFlags()
 
 
-func updateFlags():
+func updateFlags() -> void:
 	updateCollisionCount()
 	isCollidingOnLeft	= (areaNWCollisionCount >= 1) or (areaSWCollisionCount >= 1)
 	isCollidingOnRight	= (areaNECollisionCount >= 1) or (areaSECollisionCount >= 1)
@@ -112,14 +112,14 @@ func updateFlags():
 	#showDebugInfo()
 
 
-func updateCollisionCount():
+func updateCollisionCount() -> void:
 	areaNWCollisionCount = areaNW.get_overlapping_areas().size() + areaNW.get_overlapping_bodies().size()
 	areaNECollisionCount = areaNE.get_overlapping_areas().size() + areaNE.get_overlapping_bodies().size()
 	areaSECollisionCount = areaSE.get_overlapping_areas().size() + areaSE.get_overlapping_bodies().size()
 	areaSWCollisionCount = areaSW.get_overlapping_areas().size() + areaSW.get_overlapping_bodies().size()
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.NW = areaNWCollisionCount
 	Debug.watchList.NE = areaNECollisionCount
 	Debug.watchList.SE = areaSECollisionCount

@@ -41,13 +41,13 @@ var previousChartWindowInitialPosition: Vector2i
 
 var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
 
-func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = ""):
+func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
 
 
 ## Prints a faded message to reduce apparent visual clutter.
-func printDebug(message: String = "", objectName: String = "", _objectColor: String = ""):
+func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	if Debug.printDebugLogs:
 		# Do not print frames on a separate line to reduce less clutter.
 		#updateLastFrameLogged()
@@ -57,18 +57,18 @@ func printDebug(message: String = "", objectName: String = "", _objectColor: Str
 
 ## Prints the message in bold and a bright color, with empty lines on each side.
 ## For finding important messages quickly in the debug console.
-func printHighlight(message: String = "", objectName: String = "", _objectColor: String = ""):
+func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	print_rich("\n[indent]􀢒 [b][color=white]" + objectName + " " + message + "[/color][/b]\n")
 
 
-func printWarning(message: String = "", objectName: String = "", _objectColor: String = ""):
+func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	push_warning("Frame " + str(lastFrameLogged) + " ⚠️ " + objectName + " " + message)
 	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
 
 
 ## NOTE: In release builds, if [member Global.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
-func printError(message: String = "", objectName: String = "", _objectColor: String = ""):
+func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
 	push_error(plainText)
@@ -82,7 +82,7 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 
 
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
-func updateLastFrameLogged():
+func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
 		print("\n[right][b][u]Frame " + str(lastFrameLogged) + "[/u][/b]")
@@ -90,7 +90,7 @@ func updateLastFrameLogged():
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
@@ -98,19 +98,19 @@ func _ready():
 		window.visible = false
 
 
-func resetLabels():
+func resetLabels() -> void:
 	label.text = ""
 	warningLabel.text = ""
 	watchListLabel.text = ""
 
 
-func setLabelVisibility():
+func setLabelVisibility() -> void:
 	# NOTE: The warning label must always be visible
 	if label: label.visible = self.showDebugLabels
 	if watchListLabel: watchListLabel.visible = self.showDebugLabels
 
 
-func performFrameworkChecks():
+func performFrameworkChecks() -> void:
 	var warnings: PackedStringArray
 
 	if not Global.hasStartScript:
@@ -119,7 +119,7 @@ func performFrameworkChecks():
 	warningLabel.text = "\n".join(warnings)
 
 
-func _process(delta: float):
+func _process(_delta: float) -> void:
 	if not showDebugLabels: return
 
 	var text := ""
@@ -130,7 +130,7 @@ func _process(delta: float):
 	watchListLabel.text = text
 
 
-func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0):
+func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> void:
 	watchList[key] = text
 
 	# Create a temporary timer to remove the key
@@ -152,8 +152,8 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 	
 	# Resize the window and center the chart
 	
-	newChartWindow.size.x = newChart.maxHistorySize * newChartWindow.content_scale_factor	
-	newChartWindow.size.y = (newChart.verticalHeight * 2) * newChartWindow.content_scale_factor # NOTE: Twice the height for both sides of the Y axis
+	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor)
+	newChartWindow.size.y = int((newChart.verticalHeight * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height for both sides of the Y axis
 	newChart.position.y = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
 	
 	# Shift each window so they don't all overlap

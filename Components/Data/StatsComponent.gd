@@ -21,6 +21,6 @@ func findStat(nameToSearch: StringName) -> Stat:
 
 ## Returns the value of the matching [Stat] found in [member stats], otherwise a `0` if no match is found.
 func getStatValue(statName: StringName) -> int:
-	var stat = self.findStat(statName)
+	var stat: Stat = self.findStat(statName)
 	if not stat: return 0
 	else: return stat.value

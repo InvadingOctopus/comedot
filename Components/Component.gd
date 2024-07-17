@@ -30,22 +30,22 @@ var logFullName: String:
 	get: return "􀥭 " + str(self) + ":" + self.get_script().get_global_name()
 
 
-func printLog(message: String = "", objectName: String = self.logName):
+func printLog(message: String = "", objectName: String = self.logName) -> void:
 	if not isLoggingEnabled: return
 	Debug.printLog(message, "lightBlue", objectName, "cyan")
 
 
-func printDebug(message: String = ""):
+func printDebug(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printDebug(message, logName, "cyan")
 
 
-func printWarning(message: String = ""):
+func printWarning(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printWarning(message, logFullName, "cyan")
 
 
-func printError(message: String = ""):
+func printError(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printError(message, logFullName, "cyan")
 
@@ -55,7 +55,7 @@ func printError(message: String = ""):
 #region Life Cycle
 
 # Called when the node enters the scene tree for the first time.
-func _enter_tree():
+func _enter_tree() -> void:
 	self.add_to_group(Global.Groups.components, true)
 
 	self.parentEntity = self.getParentEntity()
@@ -114,14 +114,14 @@ func requestRemovalOfParentEntity() -> bool:
 	return parentEntity.requestRemoval()
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	# Since components may be freed without being children of an Entity:
 	var entityName: String = parentEntity.logName if parentEntity else "null"
 	printLog("􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
 	self.parentEntity = null
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
 			# NOTE: Cannot print [parentEntity] here because it will always be `null` (?)

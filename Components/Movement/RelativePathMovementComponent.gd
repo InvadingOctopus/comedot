@@ -48,7 +48,7 @@ signal didFinishMove
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if vectors.size() < 1:
 		printWarning("No vectors in list")
 		self.hasNoMoreMoves = true
@@ -100,7 +100,7 @@ func _physics_process(delta: float):
 		setNextMove()
 
 
-func setNextMove():
+func setNextMove() -> void:
 
 	if delayBetweenMoves > 0:
 		self.isInDelay = true # Prevent frame updates

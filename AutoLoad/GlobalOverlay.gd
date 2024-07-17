@@ -13,13 +13,13 @@ extends Node
 
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
-func fadeIn():
+func fadeIn() -> void:
 	animationPlayer.play(Global.Animations.overlayFadeIn)
 	await animationPlayer.animation_finished
 
 
 ## Fades out the global overlay, which may be a solid black rectangle, effectively fading IN the actual game content.
-func fadeOut():
+func fadeOut() -> void:
 	# Playing the fade-in animation backwards allows for smoother-looking blending from the current values,
 	# in case the fade-out happens during the previous fade-in.
 	# TODO: CHECK: Is the visibility still set correctly afterwards?
@@ -28,5 +28,5 @@ func fadeOut():
 	await animationPlayer.animation_finished
 
 
-func setPauseSettingsVisibility(visible: bool):
+func setPauseSettingsVisibility(visible: bool) -> void:
 	pauseSettingsUI.visible = visible

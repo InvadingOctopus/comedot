@@ -36,7 +36,7 @@ class Actions: ## Input event labels
 
 
 ## Global keyboard shortcuts
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
 	
 	# Game

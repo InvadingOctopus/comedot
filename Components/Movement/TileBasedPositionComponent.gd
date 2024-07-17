@@ -42,7 +42,7 @@ signal didArriveAtNewTile(newDestination: Vector2i)
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if not tileMap: printError("tileMap not specified!")
 	self.destinationTileCoordinates = initialTileCoordinates
 	snapEntityPositionToTile()
@@ -91,7 +91,7 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 
 
 ## Cancels the current move.
-func cancelDestination():
+func cancelDestination() -> void:
 	# Were we on the way to a different destination tile?
 	if isMovingToNewTile:
 		# Then snap back to the current tile coordinates.
@@ -151,7 +151,7 @@ func checkForArrival() -> bool:
 		return false
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.isMovingToNewTile = self.isMovingToNewTile
 	Debug.watchList.currentTile = self.currentTileCoordinates
 	Debug.watchList.destinationTile = self.destinationTileCoordinates

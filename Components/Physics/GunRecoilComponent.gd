@@ -11,7 +11,7 @@ extends CharacterBodyManipulatingComponentBase
 @export_range(0, 1000, 50.0) var knockbackForce: float = 150.0
 
 
-func _ready():
+func _ready() -> void:
 	var gunComponent = self.getCoComponent(GunComponent)
 	if not gunComponent:
 		printError("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?

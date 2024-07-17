@@ -14,7 +14,7 @@ extends Component
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	if not damageReceivingComponent:
 		damageReceivingComponent = getCoComponent(DamageReceivingComponent)
 

@@ -28,7 +28,7 @@ signal didEndTurn
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnBeginSignals():
+func processTurnBeginSignals() -> void:
 	self.currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn]
 	willBeginTurn.emit()
 	self.processTurnBegin()
@@ -36,7 +36,7 @@ func processTurnBeginSignals():
 
 
 ## Any "pre-turn" activity that happens BEFORE the main activity, such as animations or messages.
-func processTurnBegin():
+func processTurnBegin() -> void:
 	for turnBasedEntity in findTurnBasedEntities():
 		turnBasedEntity.processTurnBeginSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
@@ -44,14 +44,14 @@ func processTurnBegin():
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnUpdateSignals():
+func processTurnUpdateSignals() -> void:
 	willUpdateTurn.emit()
 	self.processTurnUpdate()
 	didUpdateTurn.emit()
 
 
 ## The actual actions which occur every turn, such as movement or combat.
-func processTurnUpdate():
+func processTurnUpdate() -> void:
 	for turnBasedEntity in findTurnBasedEntities():
 		turnBasedEntity.processTurnUpdateSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
@@ -59,7 +59,7 @@ func processTurnUpdate():
 
 ## Called by the [TurnBasedCoordinator].
 ## NOTE: Do NOT override in subclass.
-func processTurnEndSignals():
+func processTurnEndSignals() -> void:
 	willEndTurn.emit()
 	self.processTurnEnd()
 	turnsProcessed += 1 # NOTE: Must be incremented AFTER [processTurnEnd] but BEFORE [didEndTurn]
@@ -67,7 +67,7 @@ func processTurnEndSignals():
 
 
 ## Any "post-turn" activity that happens BEFORE the main activity, such as animations or messages.
-func processTurnEnd():
+func processTurnEnd() -> void:
 	for turnBasedEntity in findTurnBasedEntities():
 		turnBasedEntity.processTurnEndSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]

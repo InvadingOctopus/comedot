@@ -85,7 +85,7 @@ func getDamageReceivingComponent(area: Area2D) -> DamageReceivingComponent:
 #endregion
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if is_zero_approx(damagePerSecond): return
 
 	## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
@@ -100,7 +100,7 @@ func _physics_process(delta: float):
 		causeFrameDamage(damageReceivingComponent, damageForThisFrame)
 
 
-func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent):
+func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
 	# The signal is emitted in [onAreaEntered]
@@ -113,7 +113,7 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent):
 	damageReceivingComponent.processCollision(self, factionComponent)
 
 
-func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float):
+func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
 	# TBD: Should there be a signal emitted every frame??

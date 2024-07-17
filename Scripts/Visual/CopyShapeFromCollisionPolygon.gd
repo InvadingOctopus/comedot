@@ -5,7 +5,7 @@ extends Polygon2D
 @export var collisionPolygon: CollisionPolygon2D
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	# Try to find a sibling named "CollisionPolygon2D" (the default Godot name)
 	if collisionPolygon == null:
 		collisionPolygon = get_node("../CollisionPolygon2D")

@@ -9,22 +9,22 @@ extends Component
 
 @onready var label: Label = %Label
 
-func _ready():
+func _ready() -> void:
 	# Just in case we left it visible in the editor.
 	label.visible = false
 
 
-func display(text: String, animation: StringName = Global.Animations.blink):
+func display(text: String, animation: StringName = Global.Animations.blink) -> void:
 	label.text = text
 	playAnimation(animation)
 
 
-func blink(text: String):
+func blink(text: String) -> void:
 	label.text = text
 	playAnimation("blink")
 
 
-func playAnimation(animationName: StringName):
+func playAnimation(animationName: StringName) -> void:
 	%AnimationPlayer.stop()
 	label.visible = true # Just in case
 	%AnimationPlayer.play(animationName)

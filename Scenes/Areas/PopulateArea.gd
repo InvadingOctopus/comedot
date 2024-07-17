@@ -79,11 +79,11 @@ var totalCopiesCreated: int
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	populate()
 
 
-func populate():
+func populate() -> void:
 
 	if not sceneToCopy:
 		Debug.printError("No sceneToCopy", str(self))
@@ -194,7 +194,7 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 
 ## Deletes all the child nodes which match the [member sceneToCopy]
 ## and resets the [member totalCopiesCreated] counter.
-func clearAllNodes():
+func clearAllNodes() -> void:
 	var sceneResource := load(sceneToCopy.resource_path)
 	# TBD: Do we need an instance to compare against?
 

@@ -52,7 +52,7 @@ func _process(delta: float):
 	#showDebugInfo()
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.inputDirection		= inputDirection
 	Debug.watchList.lastInputDirection	= lastInputDirection
 	Debug.watchList.verticalInput		= verticalInput

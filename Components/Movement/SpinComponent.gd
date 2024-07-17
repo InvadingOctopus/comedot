@@ -12,7 +12,7 @@ extends Component
 var parent: Node2D
 
 
-func _ready():
+func _ready() -> void:
 	self.parent = get_parent()
 
 

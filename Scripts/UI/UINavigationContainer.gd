@@ -10,7 +10,7 @@ var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	resetHistory()
 
 
@@ -57,11 +57,11 @@ func displayNavigationDestination(newDestination: String) -> bool:
 		return false
 
 
-func onBackButton_pressed():
+func onBackButton_pressed() -> void:
 	goBack()
 
 
-func goBack():
+func goBack() -> void:
 	# Have to have at least 2 nodes to be able to go back in history.
 	if navigationHistory.size() <= 1: return
 

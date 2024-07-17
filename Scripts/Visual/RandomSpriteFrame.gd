@@ -8,9 +8,9 @@ var totalFrames: int:
 	get: return self.hframes * self.vframes
 
 
-func _ready():
+func _ready() -> void:
 	setRandomFrame()
 
 
-func setRandomFrame():
+func setRandomFrame() -> void:
 	self.frame = randi_range(0, self.totalFrames)

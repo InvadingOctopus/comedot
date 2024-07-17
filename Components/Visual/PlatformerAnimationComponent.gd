@@ -41,7 +41,7 @@ func _ready() -> void:
 	self.platformControlComponent	= getCoComponent(PlatformerControlComponent)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not isEnabled: return
 
 	# INFO: Animations are checked in order of priority: "walk" overrides "idle"

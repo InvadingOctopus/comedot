@@ -47,7 +47,7 @@ var damageComponentsInContact: Array[DamageComponent]
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 
 	# Is there a HealthComponent and FactionComponent? If not, try to find them from the Entity. In any case, we will still emit a `didReceiveDamage` signal.
 
@@ -61,7 +61,7 @@ func _ready():
 #region Collisions
 
 
-func onAreaEntered(area: Area2D):
+func onAreaEntered(area: Area2D) -> void:
 	if not isEnabled: return
 
 	var damageComponent := getDamageComponent(area)
@@ -102,7 +102,7 @@ func getDamageComponent(area: Area2D) -> DamageComponent:
 
 
 ## This function may be called by a colliding [DamageComponent].
-func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent):
+func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> void:
 	if not isEnabled: return
 
 	if attackerFactionComponent:
@@ -126,14 +126,14 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 	if friendlyFire or not self.factionComponent:
 		shouldReceiveDamage = true
 	else:
-		var myFactions = self.factionComponent.factions
+		var myFactions: int = self.factionComponent.factions
 		shouldReceiveDamage = not (myFactions & attackerFactions) # Bitwise AND means any matching bits at all.
 
 	return shouldReceiveDamage
 
 
 ## NOTE: [param damageComponent] may be `null` in case the caller is a [DamageTimerComponent]
-func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false):
+func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire):
 		return
 
@@ -147,7 +147,7 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 
 ## Converts float damage values to a single integer damage value.
 ## Such as damage accumulated over time/per frame.
-func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false):
+func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
 	# INFO: The convention is to keep all player-facing stats as integers,
 	# to eliminate any potential bugs or inconsistencies arising from floating point math inaccuracies.
 

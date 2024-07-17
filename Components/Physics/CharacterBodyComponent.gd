@@ -58,11 +58,11 @@ func _ready() -> void:
 	cacheBodyFlags() # Cache the initial state of body flags.
 
 
-func cacheBodyFlags():
+func cacheBodyFlags() -> void:
 	self.isOnFloor = body.is_on_floor()
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	
 	if self.shouldMoveThisFrame:
@@ -76,11 +76,11 @@ func _physics_process(delta: float) -> void:
 	# DEBUG: showDebugInfo()
 
 
-func queueMoveAndSlide():
+func queueMoveAndSlide() -> void:
 	self.shouldMoveThisFrame = true
 
 
-func updateStateBeforeMove():
+func updateStateBeforeMove() -> void:
 	self.wasOnFloor		= body.is_on_floor()
 	self.wasOnWall		= body.is_on_wall()
 	self.wasOnCeiling	= body.is_on_ceiling()
@@ -91,13 +91,13 @@ func updateStateBeforeMove():
 		self.previousWallNormal = body.get_wall_normal()
 
 
-func updateStateAfterMove():
+func updateStateAfterMove() -> void:
 	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
 	# so it makes sense to cache it after the move.
 	self.isOnFloor = body.is_on_floor()
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.lastVelocity= previousVelocity
 	Debug.watchList.lastMotion	= body.get_last_motion()

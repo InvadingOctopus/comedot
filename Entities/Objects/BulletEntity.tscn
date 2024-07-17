@@ -18,6 +18,9 @@ size = Vector2(8, 8)
 collision_layer = 1024
 collision_mask = 24
 script = ExtResource("1_iwt6f")
+removeOnAnyCollision = null
+removeOnCollisionWithDamageReceiver = null
+isLoggingEnabled = null
 metadata/_edit_group_ = true
 
 [node name="BulletSprite" type="Sprite2D" parent="."]

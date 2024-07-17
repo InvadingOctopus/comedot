@@ -38,23 +38,23 @@ func displaySubscene(scene: PackedScene) -> Node2D:
 	return newSceneInstance
 
 
-func clearScenePlaceholder():
+func clearScenePlaceholder() -> void:
 	Global.removeAllChildren(gameScenePlaceholder)
 
 #endregion
 
-func _ready():
+func _ready() -> void:
 	await startLogoScene()
 	startMainScene()
 
 
-func startLogoScene():
+func startLogoScene() -> void:
 	willStartLogoScene.emit()
 	pass
 	didEndLogoScene.emit()
 
 
-func startMainScene():
+func startMainScene() -> void:
 	willStartMainScene.emit()
 	displaySubscene(mainGameScene)
 

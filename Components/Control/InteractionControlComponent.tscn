@@ -10,6 +10,8 @@ radius = 16.0
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_3nqhk")
+isEnabled = null
+cooldown = null
 metadata/_edit_group_ = true
 
 [node name="InteractionControlShape" type="CollisionShape2D" parent="."]

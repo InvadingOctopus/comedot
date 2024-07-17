@@ -10,7 +10,7 @@ extends BodyComponent
 
 
 func _physics_process(delta: float):
-	for collisionIndex in body.get_slide_collision_count():
+	for collisionIndex in body.get_slide_collision_count() -> void:
 		var collision: KinematicCollision2D = body.get_slide_collision(collisionIndex)
 		if collision.get_collider() is RigidBody2D:
 			collision.get_collider().apply_central_impulse(-collision.get_normal() * pushingForce)

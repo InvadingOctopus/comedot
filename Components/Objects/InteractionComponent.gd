@@ -48,7 +48,7 @@ signal didDenyInteraction(interactorEntity: Entity)
 #region endregion
 
 
-func _ready():
+func _ready() -> void:
 	# Set the initial state of the indicator
 	if interactionIndicator:
 		interactionIndicator.visible = false
@@ -96,7 +96,7 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 
 ## If the [interactionIndicator] is a [Label], display our [label] parameter.
-func updateLabel():
+func updateLabel() -> void:
 	# TBD: Should this be optional?
 	if (not self.label.is_empty()) and interactionIndicator is Label:
 		interactionIndicator.text = self.label
@@ -114,7 +114,7 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 
 
 ## Must be overriden by a subclass to execute the actual interaction script.
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent):
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
 	pass
 
 #endregion

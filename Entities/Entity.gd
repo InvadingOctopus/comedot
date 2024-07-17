@@ -49,22 +49,22 @@ var logFullName: String:
 	get: return "􀕽 " + str(self) + ":" + self.get_script().get_global_name()
 
 
-func printLog(message: String = "", objectName: String = self.logName):
+func printLog(message: String = "", objectName: String = self.logName) -> void:
 	if not isLoggingEnabled: return
 	Debug.printLog(message, "lightGreen", objectName, "green")
 
 
-func printDebug(message: String = ""):
+func printDebug(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printDebug(message, logName, "green")
 
 
-func printWarning(message: String = ""):
+func printWarning(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printWarning(message, logFullName, "green")
 
 
-func printError(message: String = ""):
+func printError(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printError(message, logFullName, "green")
 
@@ -74,7 +74,7 @@ func printError(message: String = ""):
 #region Life Cycle
 
 # Called when the node enters the scene tree for the first time.
-func _enter_tree():
+func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
 	self.add_to_group(Global.Groups.entities, true)
@@ -82,12 +82,12 @@ func _enter_tree():
 	connectSignals()
 
 	
-func connectSignals():
+func connectSignals() -> void:
 	self.child_entered_tree.connect(childEnteredTree)
 	self.child_exiting_tree.connect(childExitingTree)
 	
 	
-func _process(delta: float):
+func _process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
 	# TBD: Assess performance impact 
@@ -101,7 +101,7 @@ func requestRemoval() -> bool:
 	return true
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	printLog("􀈃 _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
 
 #endregion
@@ -109,13 +109,13 @@ func _exit_tree():
 
 #region Components & Child Nodes
 
-func childEnteredTree(node: Node):
+func childEnteredTree(node: Node) -> void:
 	# Herd components into the [components] dictionary.
 	if is_instance_of(node, Component):
 		registerComponent(node as Component)
 
 
-func registerComponent(newComponent: Component):
+func registerComponent(newComponent: Component) -> void:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 	
 	# Do we already have a component of the same type?
@@ -129,13 +129,13 @@ func registerComponent(newComponent: Component):
 	# DEBUG: printDebug(str(componentType, " ← ", newComponent))
 
 
-func childExitingTree(node: Node):
+func childExitingTree(node: Node) -> void:
 	# Remove components from the [components] dictionary.
 	if is_instance_of(node, Component):
 		unregisterComponent(node as Component)
 
 
-func unregisterComponent(componentToRemove: Component):
+func unregisterComponent(componentToRemove: Component) -> void:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 	
 	# Does the dictionary have a component of the same type?
@@ -159,7 +159,7 @@ func findChildrenComponents() -> Array[Component]:
 	var childrenNodes: Array[Node] = self.get_children()
 	var childrenComponents: Array[Component] = []
 
-	var filter = func isComponent(node: Node) -> bool:
+	var filter := func isComponent(node: Node) -> bool:
 		return is_instance_of(node, Component)
 
 	childrenComponents.assign(childrenNodes.filter(filter))
@@ -179,18 +179,18 @@ func getComponent(type: Script) -> Component:
 ## Checks all components in the [member Entity.components] dictionary and returns the first matching component which inherits from the specified [param type].
 ## NOTE: Slower than [method Entity.getComponent]
 func findFirstComponentSublcass(type: Script) -> Component:
-	for component in self.components.values():
+	for component: Component in self.components.values():
 		if is_instance_of(component, type):
 			return component
 	return null
 
 
 ## NOTE: Does NOT search children of children.
-func findChildrenOfType(type) -> Array: # TODO: Return type?
+func findChildrenOfType(type: Variant) -> Array[Node]: # TODO: Return type?
 	var children: Array[Node] = self.get_children()
-	var childrenFiltered = []
+	var childrenFiltered: Array[Node] = []
 
-	var filter = func matchesType(node: Node) -> bool:
+	var filter := func matchesType(node: Node) -> bool:
 		return is_instance_of(node, type)
 
 	childrenFiltered.assign(children.filter(filter))
@@ -200,8 +200,8 @@ func findChildrenOfType(type) -> Array: # TODO: Return type?
 
 ## NOTE: Also returns any subclasses which inherit from the specified [param type].
 ## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
-func findFirstChildOfType(type) -> Node:
-	var result = Global.findFirstChildOfType(self, type)
+func findFirstChildOfType(type: Variant) -> Node:
+	var result: Node = Global.findFirstChildOfType(self, type)
 	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
 	return result
 
@@ -232,10 +232,10 @@ func addSceneCopy(path: String) -> Node:
 
 ## Removes all child nodes of the specified type and frees (deletes) them if [param free] is `true`.
 ## Returns: The number of children that were removed (0 means none were found).
-func removeChildrenOfType(type, free: bool = true) -> int: # TODO: Return type?
-	var childrenToRemove = self.findChildrenOfType(type)
+func removeChildrenOfType(type: Variant, free: bool = true) -> int: # TODO: Return type?
+	var childrenToRemove: Array[Node] = self.findChildrenOfType(type)
 	var childrenRemoved := 0
-	for child in childrenToRemove:
+	for child: Node in childrenToRemove:
 		self.remove_child(child)
 		if free: child.queue_free()
 		childrenRemoved += 1
@@ -285,7 +285,7 @@ func getArea() -> Area2D:
 ## Used to call any function only once during a single frame, such as [method CharacterBody2D.move_and_slide] on the [Entity]'s [CharacterBody2D].
 ## This ensures that multiple components which interact with the same node do not perform excessive updates, such as a [PlatformerControlComponent[ and a [JumpControlComponent].
 ## The `Callable` is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, which is cleared during each [method _physics_process] of this entity.
-func callOnceThisFrame(function: Callable, arguments: Array = []):
+func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 	# Has the function already been called this frame?
 	if not functionsAlreadyCalledOnceThisFrame.has(str(function)):
 		# DEBUG: printDebug("callOnceThisFrame(" + str(function) + ")")
@@ -294,13 +294,13 @@ func callOnceThisFrame(function: Callable, arguments: Array = []):
 		function.callv(arguments)
 
 
-func displayLabel(text: String, animation: StringName = Global.Animations.blink):
+func displayLabel(text: String, animation: StringName = Global.Animations.blink) -> void:
 	var labelComponent: LabelComponent = self.findFirstComponentSublcass(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
 			printLog("􀆄 PreDelete")

@@ -101,7 +101,7 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 	return newChild
 
 
-func transitionToScene(nextScene: PackedScene):
+func transitionToScene(nextScene: PackedScene) -> void:
 	var sceneTree := get_tree()
 	sceneTree.paused = true
 	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
@@ -136,7 +136,7 @@ func togglePause() -> bool:
 
 #region Node Management
 
-func findFirstChildOfType(parentNode: Node, type) -> Node:
+func findFirstChildOfType(parentNode: Node, type: Variant) -> Node:
 	var children: Array[Node] = parentNode.get_children()
 	for child in children:
 		if is_instance_of(child, type): return child # break
@@ -145,7 +145,7 @@ func findFirstChildOfType(parentNode: Node, type) -> Node:
 
 
 ## Searches up the tree until a matching parent or grandparent is found.
-func findFirstParentOfType(childNode: Node, type) -> Node:
+func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 	var parent: Node = childNode.get_parent() # parentOrGrandparent
 
 	# If parent is null or not the matching type, get the grandparent (parent's parent) and keep searching up the tree.
@@ -168,7 +168,7 @@ func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> boo
 		Debug.printWarning("replaceChild(): newChild already in another parent: " + str(newChild, " in ", newChildCurrentParent))
 		return false
 
-	var previousChildIndex = childToReplace.get_index() # The original index
+	var previousChildIndex: int = childToReplace.get_index() # The original index
 	parentNode.remove_child(childToReplace)
 
 	parentNode.add_child(newChild)
@@ -197,7 +197,7 @@ func removeAllChildren(parent: Node) -> int:
 
 ## A very rudimentary implementation of saving the entire game state.
 ## @experimental
-func saveGame():
+func saveGame() -> void:
 	# TODO: Implement properly :(
 	# BUG:  Does not save all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
@@ -209,18 +209,18 @@ func saveGame():
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
 	
-	await Global.screenshot("Save") # DEBUG: Take a screenshop for comparison 
+	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison 
 	
 	var packedSceneToSave := PackedScene.new()
-	await packedSceneToSave.pack(sceneTree.get_current_scene())
-	await ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
+	packedSceneToSave.pack(sceneTree.get_current_scene())
+	ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
 
 	sceneTree.paused = false
 	
 
 ## A very rudimentary implementation of loading the entire game state.
 ## @experimental
-func loadGame():
+func loadGame() -> void:
 	# TODO: Implement properly :(
 	# BUG:  Does not restore all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
@@ -232,16 +232,16 @@ func loadGame():
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
 	
-	var packedSceneLoaded := await ResourceLoader.load(Global.saveFilePath)
+	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
 	
 	sceneTree.paused = false
-	await sceneTree.change_scene_to_packed(packedSceneLoaded)
-	await Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
+	sceneTree.change_scene_to_packed(packedSceneLoaded)
+	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
 	
 
 ## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
 ## @experimental
-func screenshot(titleSuffix: String = ""):
+func screenshot(titleSuffix: String = "") -> void:
 	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
 	# TBD: Is the `await` necessary?
 	var date := Time.get_date_string_from_system().replace(".","-") 
@@ -251,8 +251,8 @@ func screenshot(titleSuffix: String = ""):
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"
 	
-	var screenshotImage := await get_viewport().get_texture().get_image() # Capture what the player sees
-	await screenshotImage.save_jpg(screenshotPath) 
+	var screenshotImage := get_viewport().get_texture().get_image() # Capture what the player sees
+	screenshotImage.save_jpg(screenshotPath) 
 	
 	Debug.showTemporaryLabel(&"Screenshot", time + " " + titleSuffix)
 	
@@ -308,7 +308,7 @@ func getShapeBoundsInArea(area: Area2D) -> Rect2:
 
 	# Make local copies of the frequently used stuff.
 
-	var shapeNodePositionInArea := shapeNode.position
+	var _shapeNodePositionInArea := shapeNode.position
 	var shape: Shape2D = shapeNode.shape
 
 	# The bounding rectangle of the shape. NOTE: In the coordinates of the CollisionShape2D node!
@@ -371,7 +371,7 @@ func getRandomPositionInArea(area: Area2D) -> Vector2:
 ## This prevents the "glue effect" where if the player keeps inputting a direction while the character is pushed against a wall,
 ## it will take a noticeable delay to move in the other direction while the velocity gradually changes from the wall's direction to away from the wall.
 func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
-	var lastMotion = body.get_last_motion()
+	var lastMotion: Vector2 = body.get_last_motion()
 	if abs(lastMotion.x) < 0.1: body.velocity.x = 0
 	if abs(lastMotion.y) < 0.1: body.velocity.y = 0
 	return lastMotion

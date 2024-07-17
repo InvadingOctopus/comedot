@@ -26,7 +26,7 @@ extends CharacterBodyManipulatingComponentBase
 
 enum State { idle, jump }
 
-var states = {
+var states := {
 	State.idle: null,
 	State.jump: null
 	}
@@ -89,23 +89,23 @@ func _ready() -> void:
 	wallJumpTimer.wait_time = parameters.wallJumpTimer
 
 
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if not isEnabled: return
 	if event.is_action(GlobalInput.Actions.jump): processJumpInput()
 
 
-func processJumpInput():
+func processJumpInput() -> void:
 	# Jump
 	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
 	#platformerPhysicsComponent.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
 
-func clearInput():
+func clearInput() -> void:
 	jumpInputJustPressed  = false
 	jumpInputJustReleased = false
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
 	
@@ -136,7 +136,7 @@ func characterBodyComponent_didMove() -> void:
 	clearInput()
 
 
-func processJump():
+func processJump() -> void:
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
 	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
 	
@@ -169,7 +169,7 @@ func processJump():
 
 ## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
 ## May improve the feel of control in some games.
-func updateCoyoteJumpState():
+func updateCoyoteJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if not isEnabled: return
@@ -182,7 +182,7 @@ func updateCoyoteJumpState():
 
 
 ## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
-func updateStateBeforeMovement():
+func updateStateBeforeMovement() -> void:
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	# Jump
@@ -196,7 +196,7 @@ func updateStateBeforeMovement():
 
 #region Wall Jumping
 
-func processWallJump():
+func processWallJump() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if  not isEnabled \
@@ -217,7 +217,7 @@ func processWallJump():
 		didWallJump = true
 
 
-func updateWallJumpState():
+func updateWallJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	
 	if not isEnabled: return	
@@ -232,7 +232,7 @@ func updateWallJumpState():
 #endregion
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.state		= currentState
 	Debug.watchList.wallTimer	= wallJumpTimer.time_left

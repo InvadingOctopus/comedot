@@ -9,11 +9,11 @@ extends Camera2D
 			clampToBoundary()
 
 
-func _ready():
+func _ready() -> void:
 	if boundary: clampToBoundary()
 
 
-func clampToBoundary():
+func clampToBoundary() -> void:
 	if not boundary: return
 
 	var rect: Rect2 = Global.getShapeGlobalBounds(boundary)
@@ -21,17 +21,17 @@ func clampToBoundary():
 	if not rect:
 		Debug.printWarning("Cannot get a Rect2 from Area2D: " + str(boundary), str(self))
 
-	self.limit_left   = rect.position.x
-	self.limit_right  = rect.end.x
-	self.limit_top	  = rect.position.y
-	self.limit_bottom = rect.end.y
+	self.limit_left   = int(rect.position.x)
+	self.limit_right  = int(rect.end.x)
+	self.limit_top	  = int(rect.position.y)
+	self.limit_bottom = int(rect.end.y)
 
 
 #func _process(delta):
 	#printDebug()
 
 
-func printDebug():
+func printDebug() -> void:
 	Debug.watchList.boundary		= self.boundary.position
 	Debug.watchList.limit_left  	= limit_left
 	Debug.watchList.limit_right 	= limit_right

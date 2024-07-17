@@ -34,7 +34,7 @@ func getRequiredcomponents() -> Array[Script]:
 	return []
 
 
-func _ready():
+func _ready() -> void:
 	pass # Any code needed to configure and prepare the component.
 
 

@@ -18,7 +18,7 @@ func _exit_tree() -> void:
 	removeCustomTypes()
 
 
-func addCustomTypes():
+func addCustomTypes() -> void:
 	# Entity
 	const entityScript	:= preload("res://Entities/Entity.gd")
 	const entityIcon	:= preload("res://Assets/Icons/Entity.svg")
@@ -30,6 +30,6 @@ func addCustomTypes():
 	add_custom_type(componentTypeName, "Node", componentScript, componentIcon)
 
 
-func removeCustomTypes():
+func removeCustomTypes() -> void:
 	remove_custom_type(entityTypeName)
 	remove_custom_type(componentTypeName)

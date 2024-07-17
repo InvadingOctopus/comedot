@@ -31,7 +31,7 @@ extends CharacterBodyComponent
 
 enum State { idle, moveOnFloor, moveInAir }
 
-var states = {
+var states := {
 	State.idle:			null,
 	State.moveOnFloor:	null,
 	State.moveInAir:	null,
@@ -64,7 +64,7 @@ func _ready() -> void:
 
 #region Update Cycle
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	# NOTE: The order of processing is as per Heartbeast's tutorial.
 	
@@ -100,7 +100,7 @@ func _physics_process(delta: float):
 
 
 ## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
-func updateStateBeforeMovement():
+func updateStateBeforeMovement() -> void:
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	if currentState == State.idle and not isInputZero:
@@ -116,7 +116,7 @@ func updateStateBeforeMovement():
 
 ## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
 ## Affected by [member isEnabled].
-func processInput():
+func processInput() -> void:
 	# TBD: Should be guarded by [isEnabled] or should the flags etc. always be updated?
 	if not isEnabled: return
 
@@ -133,13 +133,13 @@ func processInput():
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 
 
-func clearInput():
+func clearInput() -> void:
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
 	#jumpInput = false # NOTE: Let the control components reset the `jumpInput`
 	# The justPressed/justReleased flags should be reset here because they represent a state for only 1 frame
 
 
-func processGravity(delta: float):
+func processGravity(delta: float) -> void:
 	# Vertical Slowdown
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale) * delta
@@ -151,7 +151,7 @@ func processGravity(delta: float):
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
-func processHorizontalMovement(delta: float):
+func processHorizontalMovement(delta: float) -> void:
 	# Nothing to do if there is no player input.
 	if isInputZero: return
 
@@ -169,7 +169,7 @@ func processHorizontalMovement(delta: float):
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
-func processAllFriction(delta: float):
+func processAllFriction(delta: float) -> void:
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input, OR
 	# NOTE: If movement is not allowed in air, then apply air friction regardless of player input.
@@ -187,19 +187,19 @@ func processAllFriction(delta: float):
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 
 ## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; this flag should be checked by caller.
-func applyAccelerationOnFloor(delta: float):
+func applyAccelerationOnFloor(delta: float) -> void:
 	if (not isInputZero) and isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 
 
 ## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; this flag should be checked by caller.
-func applyAccelerationInAir(delta: float):
+func applyAccelerationInAir(delta: float) -> void:
 	if (not isInputZero) and (not isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 
 
 ## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; this flag should be checked by caller.
-func applyFrictionOnFloor(delta: float):
+func applyFrictionOnFloor(delta: float) -> void:
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
 	if isInputZero and isOnFloor:
@@ -207,7 +207,7 @@ func applyFrictionOnFloor(delta: float):
 
 
 ## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; this flag should be checked by caller.
-func applyFrictionInAir(delta: float):
+func applyFrictionInAir(delta: float) -> void:
 	# If movement is not allowed in air, then apply air friction regardless of player input.
 	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
@@ -215,7 +215,7 @@ func applyFrictionInAir(delta: float):
 #endregion
 
 
-func showDebugInfo():
+func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	super.showDebugInfo()
 	Debug.watchList.state = currentState

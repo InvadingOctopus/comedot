@@ -51,7 +51,7 @@ var alpha:		float
 #endregion
 
 
-func _ready():
+func _ready() -> void:
 	## WARNING: The [member CanvasItem.Modulate] property of the node MUST be set in the Godot Editor, otherwise this script will not be able to get the initial HSV components!
 	## NOTE: DESIGN: Why not provide initial values within this script? Because then it may not match what we see in the Godot Editor.
 
