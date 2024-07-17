@@ -11,6 +11,7 @@ extends CharacterBodyManipulatingComponentBase
 #region Parameters
 @export var isEnabled:  bool = true
 @export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
@@ -129,7 +130,8 @@ func characterBodyComponent_didMove() -> void:
 	updateCoyoteJumpState()
 	updateWallJumpState()
 
-	# DEBUG: showDebugInfo()
+	# DEBUG: 
+	if shouldShowDebugInfo: showDebugInfo()
 	
 	clearInput()
 
@@ -230,7 +232,8 @@ func updateWallJumpState():
 #endregion
 
 
-func showDebugInfo():	
+func showDebugInfo():
+	if not shouldShowDebugInfo: return
 	Debug.watchList.state		= currentState
 	Debug.watchList.wallTimer	= wallJumpTimer.time_left
 	Debug.watchList.coyoteTimer	= coyoteJumpTimer.time_left
