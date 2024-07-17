@@ -60,7 +60,6 @@ position = Vector2i(100, 100)
 size = Vector2i(720, 800)
 wrap_controls = true
 transient = true
-always_on_top = true
 unfocusable = true
 content_scale_mode = 1
 content_scale_aspect = 1
