@@ -10,7 +10,7 @@ extends Resource
 
 @export_subgroup("Jump")
 
-@export_range(0, 5, 1) var maxNumberOfJumps:				int = 2
+@export_range(0, 10, 1) var maxNumberOfJumps:				int = 2
 
 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
 @export_range(-1000, -10, 5) var jumpVelocity1stJump:		float = -350 
