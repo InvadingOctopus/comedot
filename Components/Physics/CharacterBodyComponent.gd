@@ -16,6 +16,13 @@ extends Component
 			printWarning("body is null! Call parentEntity.getBody() to find and remember the Entity's CharacterBody2D")
 		return body
 
+## Removes any leftover "ghost" velocity when the net motion is zero. 
+## Enable to avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
+## Applied after [method CharacterBody2D.move_and_slide]
+@export var shouldResetVelocityIfZeroMotion: bool = false
+		
+@export var shouldShowDebugInfo: bool = false
+
 #endregion
 
 
@@ -67,13 +74,15 @@ func _physics_process(_delta: float) -> void:
 	
 	if self.shouldMoveThisFrame:
 		updateStateBeforeMove()
+		# DEBUG: printDebug("parentEntity.callOnceThisFrame(body.move_and_slide)")
 		parentEntity.callOnceThisFrame(body.move_and_slide)
 		updateStateAfterMove()
 		
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
 		didMove.emit()
 	
-	# DEBUG: showDebugInfo()
+	# DEBUG: 
+	if shouldShowDebugInfo: showDebugInfo()
 
 
 func queueMoveAndSlide() -> void:
@@ -95,12 +104,18 @@ func updateStateAfterMove() -> void:
 	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
 	# so it makes sense to cache it after the move.
 	self.isOnFloor = body.is_on_floor()
+	
+	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
+	if self.shouldResetVelocityIfZeroMotion:
+		parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) 
 
 
 func showDebugInfo() -> void:
+	if not shouldShowDebugInfo: return
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.lastVelocity= previousVelocity
 	Debug.watchList.lastMotion	= body.get_last_motion()
 	Debug.watchList.isOnFloor	= isOnFloor
 	Debug.watchList.wasOnFloor	= wasOnFloor
 	Debug.watchList.wasOnWall	= wasOnWall
+	Debug.watchList.wallNormal	= body.get_wall_normal()
