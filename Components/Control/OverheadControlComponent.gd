@@ -7,6 +7,7 @@ extends CharacterBodyManipulatingComponentBase
 #region Parameters
 @export var isEnabled:  bool = true
 @export var parameters: OverheadMovementParameters = OverheadMovementParameters.new()
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
@@ -14,7 +15,6 @@ extends CharacterBodyManipulatingComponentBase
 var inputDirection		:= Vector2.ZERO
 var lastInputDirection	:= Vector2.ZERO
 var lastDirection		:= Vector2.ZERO ## Normalized
-var lastVelocity		:= Vector2.ZERO
 #endregion
 
 
@@ -25,22 +25,25 @@ func _ready() -> void:
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+	
+	characterBodyComponent.shouldResetVelocityIfZeroMotion = true
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
+	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
 	processWalkInput(delta)
 	characterBodyComponent.queueMoveAndSlide()
-	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
-	parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
+	# parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
 
-	#showDebugInfo()
+	# DEBUG:
+	if shouldShowDebugInfo: showDebugInfo()
 
 
 ## Get the input direction and handle the movement/deceleration.
-func processWalkInput(delta: float):
+func processWalkInput(delta: float) -> void:
 	if not isEnabled: return
 
 	self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
@@ -51,7 +54,7 @@ func processWalkInput(delta: float):
 		body.velocity = body.velocity.move_toward(inputDirection * parameters.speed, parameters.acceleration * delta)
 	else:
 		body.velocity = inputDirection * parameters.speed
-
+	
 	# TODO: Compare setting vector components separately vs together
 
 	# Friction?
@@ -67,7 +70,7 @@ func processWalkInput(delta: float):
 	# Disable friction by maintaining velcoty fron the previous frame?
 
 	if parameters.shouldMaintainPreviousVelocity and not inputDirection:
-		body.velocity = lastVelocity
+		body.velocity = characterBodyComponent.previousVelocity
 
 	# Minimum velocity?
 
@@ -86,10 +89,6 @@ func processWalkInput(delta: float):
 
 
 func showDebugInfo() -> void:
-	Debug.watchList.velocity		= body.velocity
-	Debug.watchList.lastVelocity	= lastVelocity
-	Debug.watchList.wallNormal		= body.get_wall_normal()
-	Debug.watchList.lastMotion		= body.get_last_motion()
+	if not shouldShowDebugInfo: return
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection
-	

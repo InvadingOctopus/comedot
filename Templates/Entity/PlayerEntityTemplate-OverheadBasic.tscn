@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6c5d68ty35va"]
+[gd_scene load_steps=6 format=3 uid="uid://b6c5d68ty35va"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="2_wfqpn"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="3_3awaj"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="4_4iijy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 size = Vector2(16, 16)
@@ -27,3 +28,5 @@ rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
 
 [node name="OverheadControlComponent" parent="." instance=ExtResource("3_3awaj")]
+
+[node name="CharacterBodyComponent" parent="." instance=ExtResource("4_4iijy")]
