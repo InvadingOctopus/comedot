@@ -6,3 +6,4 @@
 [node name="ModalInteractionComponent" instance=ExtResource("1_67fj5")]
 process_mode = 3
 script = ExtResource("2_wyebb")
+modalView = null

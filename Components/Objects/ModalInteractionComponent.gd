@@ -6,7 +6,13 @@ extends InteractionComponent
 
 
 #region Parameters
-@export var uiToDisplay: ModalUI
+## The scene to display when this interaction occurs. 
+@export var modalView: PackedScene
+#endregion
+
+
+#region State
+var currentModalView: ModalView
 #endregion
 
 
@@ -17,5 +23,28 @@ signal didSomethingHappen ## Placeholder
 
 ## NOTE: Subclasses MUST call `super.performInteraction(...)`
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
-	parentEntity.pause
-	pass
+	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+
+	var sceneTree: SceneTree = self.get_tree()
+	var modalView: ModalView = modalView.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
+	
+	self.process_mode = Node.PROCESS_MODE_ALWAYS
+	modalView.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	sceneTree.paused = true
+	sceneTree.current_scene.add_child(modalView)
+	modalView.owner = sceneTree.current_scene # INFO: Necessary for persistence to a [PackedScene] for save/load.
+	modalView.didFinish.connect(self.modalView_didFinish)
+	
+	self.currentModalView = modalView
+
+
+func modalView_didFinish(result: Variant) -> void:
+	printDebug(str("modalView_didFinish(): ", result))
+	
+	var sceneTree: SceneTree = self.get_tree()
+	
+	sceneTree.current_scene.remove_child(currentModalView)
+	currentModalView.queue_free()
+	
+	sceneTree.paused = false
