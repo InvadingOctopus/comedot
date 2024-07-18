@@ -2,16 +2,12 @@
 
 [ext_resource type="Script" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
+[ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="3_fh55r"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rssih"]
 font = ExtResource("2_6qwn4")
 font_size = 8
 font_color = Color(1, 1, 0, 1)
-outline_size = 1
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_tt6b4"]
-font_size = 8
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
 
@@ -81,5 +77,5 @@ offset_bottom = 32.0
 unique_name_in_owner = true
 layout_mode = 2
 text = "Watchlist"
-label_settings = SubResource("LabelSettings_tt6b4")
+label_settings = ExtResource("3_fh55r")
 metadata/_edit_use_anchors_ = true
