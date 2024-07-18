@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://iihqhgqj4bdy"]
+
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_kfts1"]
+[ext_resource type="Script" path="res://Components/Gameplay/TextInteractionComponent.gd" id="2_fi5i1"]
+[ext_resource type="LabelSettings" uid="uid://bumadvcbjs8he" path="res://Assets/Themes/Label/TextInteractionComponent.tres" id="3_g83xl"]
+
+[node name="TextInteractionComponent" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("1_kfts1")]
+script = ExtResource("2_fi5i1")
+textStrings = Array[String](["String1", "String2", "String3"])
+textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 0, 1)])
+interactionIndicator = NodePath("Label")
+
+[node name="Label" type="Label" parent="." index="1"]
+offset_left = -64.0
+offset_top = -40.0
+offset_right = 64.0
+offset_bottom = -24.0
+text = "Hi"
+label_settings = ExtResource("3_g83xl")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
