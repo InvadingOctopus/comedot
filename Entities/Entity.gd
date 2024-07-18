@@ -186,7 +186,7 @@ func findFirstComponentSublcass(type: Script) -> Component:
 
 
 ## NOTE: Does NOT search children of children.
-func findChildrenOfType(type: Variant) -> Array[Node]: # TODO: Return type?
+func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
 	var children: Array[Node] = self.get_children()
 	var childrenFiltered: Array[Node] = []
 
