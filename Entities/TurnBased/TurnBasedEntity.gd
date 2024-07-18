@@ -60,7 +60,7 @@ func processTurnUpdateSignals() -> void:
 
 ## The actual actions which occur every turn, such as movement or combat.
 func processTurnUpdate() -> void:
-	for turnBasedComponent in findTurnBasedComponents() -> void:
+	for turnBasedComponent in findTurnBasedComponents():
 		turnBasedComponent.processTurnUpdateSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
 
@@ -77,7 +77,7 @@ func processTurnEndSignals() -> void:
 
 ## Any "post-turn" activity that happens BEFORE the main activity, such as animations or messages.
 func processTurnEnd() -> void:
-	for turnBasedComponent in findTurnBasedComponents() -> void:
+	for turnBasedComponent in findTurnBasedComponents():
 		turnBasedComponent.processTurnEndSignals()
 		# DESIGN: turnBasedComponent.isEnabled is checked in [TurnBasedComponent]
 
