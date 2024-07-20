@@ -6,8 +6,14 @@ extends InteractionComponent
 
 
 #region Parameters
+
 ## The scene to display when this interaction occurs. 
-@export var modalView: PackedScene
+@export var modalScene: PackedScene
+
+@export var setViewGlobalPositionToEntity: bool = false
+
+@export var viewPositionOffset: Vector2
+
 #endregion
 
 
@@ -26,10 +32,18 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 
 	var sceneTree: SceneTree = self.get_tree()
-	var modalView: ModalView = modalView.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
+	var modalView: ModalView = modalScene.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
 	
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	modalView.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# Set the position if the view can be positioned
+	var positionableView: Node2D = (modalView.get_node(^".") as Node2D)
+	if positionableView:
+		if setViewGlobalPositionToEntity: positionableView.global_position = parentEntity.global_position
+		positionableView.position += viewPositionOffset
+	
+	# Pause the gameplay and display the view
 	
 	sceneTree.paused = true
 	sceneTree.current_scene.add_child(modalView)
