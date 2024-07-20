@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=3 uid="uid://db6o10wvdikaq"]
+
+[ext_resource type="Script" path="res://Scenes/UI/ModalView.gd" id="1_auuvl"]
+[ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/Checkerboard32x32.png" id="2_mu8qp"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entity/PlayerEntityTemplate-OverheadBasic.tscn" id="2_nml0c"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_basq6"]
+normal = Vector2(2.08165e-12, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_xwedx"]
+normal = Vector2(1, 2.08165e-12)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_mhnbp"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_mga7i"]
+normal = Vector2(-1, 2.08165e-12)
+
+[sub_resource type="InputEventAction" id="InputEventAction_pccfh"]
+action = &"ui_cancel"
+
+[sub_resource type="Shortcut" id="Shortcut_l4wdt"]
+events = [SubResource("InputEventAction_pccfh")]
+
+[node name="ModalSceneTest" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_auuvl")
+
+[node name="BoundsArea" type="StaticBody2D" parent="."]
+collision_layer = 2147483664
+collision_mask = 0
+
+[node name="CollisionShapeTop" type="CollisionShape2D" parent="BoundsArea"]
+shape = SubResource("WorldBoundaryShape2D_basq6")
+
+[node name="CollisionShapeLeft" type="CollisionShape2D" parent="BoundsArea"]
+shape = SubResource("WorldBoundaryShape2D_xwedx")
+
+[node name="CollisionShapeBottom" type="CollisionShape2D" parent="BoundsArea"]
+position = Vector2(192, 136)
+shape = SubResource("WorldBoundaryShape2D_mhnbp")
+
+[node name="CollisionShapeRight" type="CollisionShape2D" parent="BoundsArea"]
+position = Vector2(192, 136)
+shape = SubResource("WorldBoundaryShape2D_mga7i")
+
+[node name="BackgroundTextureRect" type="TextureRect" parent="."]
+process_mode = 3
+modulate = Color(1, 0, 1, 0.501961)
+offset_right = 192.0
+offset_bottom = 136.0
+texture = ExtResource("2_mu8qp")
+stretch_mode = 1
+
+[node name="CloseButton" type="Button" parent="."]
+process_mode = 3
+z_index = 100
+offset_left = 144.0
+offset_top = 112.0
+offset_right = 187.0
+offset_bottom = 128.0
+mouse_default_cursor_shape = 2
+shortcut = SubResource("Shortcut_l4wdt")
+text = "CLOSE"
+
+[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_nml0c")]
+position = Vector2(32, 32)
+collision_mask = 2147483648
+
+[connection signal="pressed" from="CloseButton" to="." method="close"]
