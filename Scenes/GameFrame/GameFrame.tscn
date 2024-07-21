@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=11 format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
 [ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scene/PlatformSceneTemplate.tscn" id="2_agfhx"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://Scenes/GameFrame/MainMenuButtons.tscn" id="3_27uyb"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
+[ext_resource type="Texture2D" uid="uid://dcdkweiett0gs" path="res://Assets/Logos/Comedot.png" id="7_x8oq1"]
 
 [sub_resource type="Environment" id="Environment_ljcfk"]
 background_mode = 3
@@ -42,6 +43,13 @@ shadow_filter_smooth = 4.0
 texture = ExtResource("3_r7qai")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Logo" type="Sprite2D" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0.5)
+texture_filter = 4
+position = Vector2(144, 96)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_x8oq1")
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
 anchors_preset = 15
