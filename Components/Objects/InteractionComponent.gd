@@ -110,11 +110,13 @@ func updateLabel() -> void:
 ## Default: `true`
 func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	# CHECK: Maybe a better name? :p
+	printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	return isEnabled
 
 
 ## Must be overriden by a subclass to execute the actual interaction script.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	pass
 
 #endregion
