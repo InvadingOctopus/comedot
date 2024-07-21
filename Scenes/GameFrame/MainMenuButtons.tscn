@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://mwsrn6l4gw51"]
+
+[ext_resource type="Script" path="res://Scenes/GameFrame/MainMenuButtons.gd" id="1_7ifjj"]
+[ext_resource type="Script" path="res://Scripts/UI/UINavigationButton.gd" id="2_phlj7"]
+
+[node name="MainMenuButtons" type="VBoxContainer"]
+auto_translate_mode = 1
+script = ExtResource("1_7ifjj")
+
+[node name="StartButton" type="Button" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Start"
+
+[node name="OptionsButton" type="Button" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Options"
+script = ExtResource("2_phlj7")
+navigationDestination = "res://Scenes/GameFrame/OptionsUI.tscn"
+
+[node name="QuitButton" type="Button" parent="."]
+auto_translate_mode = 1
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="StartButton" to="." method="onStartButton_pressed"]
+[connection signal="pressed" from="StartButton" to="StartButton" method="onPressed"]
+[connection signal="pressed" from="OptionsButton" to="OptionsButton" method="onPressed"]
+[connection signal="pressed" from="QuitButton" to="." method="onQuitButton_pressed"]
+[connection signal="pressed" from="QuitButton" to="QuitButton" method="onPressed"]
