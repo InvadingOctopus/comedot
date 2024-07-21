@@ -69,7 +69,12 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 
 func instantiateSceneFromPath(resourcePath: String) -> Node:
 	var scene: PackedScene = load(resourcePath) as PackedScene
-	return scene.instantiate()
+	
+	if is_instance_valid(scene):
+		return scene.instantiate()
+	else:
+		Debug.printWarning(str("Cannot instantiateSceneFromPath(): ", resourcePath))
+		return null
 
 
 ## Returns the path for a scene from a class type.
