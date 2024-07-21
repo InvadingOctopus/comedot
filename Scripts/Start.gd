@@ -10,6 +10,18 @@ extends Node
 
 @export_category("Comedot")
 
+#region Main Menu
+@export_group("Main Menu")
+
+## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
+@export var mainGameScene: PackedScene:
+	set(newValue):
+		mainGameScene = newValue
+		Global.mainGameScene = newValue
+
+#endregion
+
+#region Debugging Flags
 @export_group("Debugging Flags")
 
 ## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
@@ -40,6 +52,9 @@ extends Node
 #endregion
 
 
+#endregion
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Global.hasStartScript = true
@@ -49,6 +64,8 @@ func _ready() -> void:
 
 func applyGlobalFlags() -> void:
 	GlobalOverlay.testBackground.visible = self.showTestBackground
-	Debug.window.visible		= self.showDebugWindow if OS.is_debug_build() else false
-	Debug.printDebugLogs		= self.printDebugLogs
+	Debug.window.visible	= self.showDebugWindow if OS.is_debug_build() else false
+	Debug.printDebugLogs	= self.printDebugLogs
 	Debug.showDebugLabels	= self.showDebugLabels
+	
+	Global.mainGameScene	= self.mainGameScene

@@ -9,6 +9,9 @@ extends Node
 ## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
 var hasStartScript:		bool = false
 
+## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
+var mainGameScene:		PackedScene
+	
 var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
 
 var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
