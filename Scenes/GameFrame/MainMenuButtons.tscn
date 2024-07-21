@@ -10,19 +10,19 @@ script = ExtResource("1_7ifjj")
 [node name="StartButton" type="Button" parent="."]
 auto_translate_mode = 1
 layout_mode = 2
-text = "Start"
+text = "START"
 
 [node name="OptionsButton" type="Button" parent="."]
 auto_translate_mode = 1
 layout_mode = 2
-text = "Options"
+text = "OPTIONS"
 script = ExtResource("2_phlj7")
 navigationDestination = "res://Scenes/GameFrame/OptionsUI.tscn"
 
 [node name="QuitButton" type="Button" parent="."]
 auto_translate_mode = 1
 layout_mode = 2
-text = "Quit"
+text = "QUIT"
 
 [connection signal="pressed" from="StartButton" to="." method="onStartButton_pressed"]
 [connection signal="pressed" from="StartButton" to="StartButton" method="onPressed"]
