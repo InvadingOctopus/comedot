@@ -20,7 +20,7 @@ max = 10
 value = 10
 logChanges = true
 
-[node name="PlayerEntityTemplate-Combat" type="CharacterBody2D" groups=["players"]]
+[node name="PlayerEntityTemplate-Combat" type="CharacterBody2D" groups=["entities", "players"]]
 collision_layer = 6
 collision_mask = 3640
 script = ExtResource("1_eybf8")

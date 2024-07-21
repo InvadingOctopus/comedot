@@ -3,8 +3,9 @@
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_hd7sx"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="2_8xwm5"]
 
-[node name="SpriteEntityTemplate" type="Node2D"]
+[node name="SpriteEntityTemplate" type="Node2D" groups=["entities"]]
 script = ExtResource("1_hd7sx")
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_8xwm5")
