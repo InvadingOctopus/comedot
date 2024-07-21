@@ -6,4 +6,6 @@
 [node name="ModalInteractionComponent" instance=ExtResource("1_67fj5")]
 process_mode = 3
 script = ExtResource("2_wyebb")
-modalView = null
+modalScene = null
+setViewGlobalPositionToEntity = false
+viewPositionOffset = Vector2(0, 0)

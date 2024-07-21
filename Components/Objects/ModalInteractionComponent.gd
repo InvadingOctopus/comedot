@@ -30,7 +30,11 @@ signal didSomethingHappen ## Placeholder
 ## NOTE: Subclasses MUST call `super.performInteraction(...)`
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
-
+	
+	if not modalScene:
+		printWarning("No modalView")
+		return
+		
 	var sceneTree: SceneTree = self.get_tree()
 	var modalView: ModalView = modalScene.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
 	
