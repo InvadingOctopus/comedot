@@ -3,15 +3,28 @@
 class_name UINavigationContainer
 extends Container
 
-
 # TODO: More flexibility and reliability?
 
+
+#region Parameters
+@export var backButton: Button ## The "Back" button to show and hide depending on the navigation history.
+@export var shouldShowDebugInfo: bool = false
+#endregion
+
+
+#region State
 var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
+#endregion
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	resetHistory()
+	connectBackButton()
+
+
+func connectBackButton() -> void:
+	backButton.pressed.connect(self.onBackButton_pressed)
 
 
 ## Clears the [member navigationHistory] array and re-adds the first child as the first member.
@@ -22,11 +35,17 @@ func resetHistory() -> Control:
 	var firstChild: Control = self.findFirstChildControl()
 	if firstChild: addNodeToHistory(firstChild.scene_file_path)
 
+	updateBackButton()
+	showDebugInfo()
 	return firstChild
 
 
-func addNodeToHistory(path: String):
+## Returns: The new size of the history array.
+func addNodeToHistory(path: String) -> int:
 	navigationHistory.append(path)
+	updateBackButton()
+	showDebugInfo()
+	return navigationHistory.size()
 
 
 func findFirstChildControl() -> Control:
@@ -43,18 +62,24 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 	else:
 		self.add_child(newControl)
 		return true
-
+	
+	showDebugInfo()
 	return false
 
 
 func displayNavigationDestination(newDestination: String) -> bool:
 	var newDestinationScene: Node = Global.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
-
+	var result: bool
+	
 	if self.replaceFirstChildControl(newDestinationScene):
 		navigationHistory.append(newDestination)
-		return true
+		result = true
 	else:
-		return false
+		result = false
+	
+	updateBackButton()
+	showDebugInfo()
+	return result
 
 
 func onBackButton_pressed() -> void:
@@ -75,12 +100,13 @@ func goBack() -> void:
 	self.displayNavigationDestination(previousDestination)
 
 
-# DEBUG
-
-#func _process(delta: float):
-	#Debug.watchList.firstChild = self.findFirstChildControl()
-	#Debug.watchList.navigationHistory = "\n⬆ ".join(self.navigationHistory)
-
+func updateBackButton() -> void:
+	if not is_instance_valid(backButton): return
+	# Show the button if there is more than 1 node in the history.
+	backButton.visible = navigationHistory.size() > 1
 
 
-
+func showDebugInfo() -> void:
+	if not shouldShowDebugInfo: return
+	Debug.watchList.firstChild = self.findFirstChildControl()
+	Debug.watchList.navigationHistory = "\n⬆ ".join(self.navigationHistory)
