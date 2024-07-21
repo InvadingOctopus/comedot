@@ -26,9 +26,9 @@ const verticalHeight: float = 100 # TODO: Remove hardcoding
 # Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis, to better fit the screen.
 @export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5 
 
-@export var lineColor:	Color = Color(0.5, 1.0, 0.5, 0.5)
+@export var lineColor:	Color = Color(0.5, 1.0,  0.5,  0.5)
 @export var gridColor:	Color = Color(0.0, 0.25, 0.25, 0.5)
-@export var headColor:	Color = Color(0.5, 0.5, 0.5, 0.5) ## The color of the vertical "head" or "tracker" line.
+@export var headColor:	Color = Color(0.5, 0.5,  0.75, 0.25) ## The color of the vertical "head" or "tracker" line.
 
 @export var isEnabled:	bool = true
 
@@ -36,8 +36,15 @@ const verticalHeight: float = 100 # TODO: Remove hardcoding
 
 #region State
 
+@onready var nameLabel: Label = %NameLabel
+@onready var maxLabel:  Label = %MaxLabel
+@onready var minLabel:  Label = %MinLabel
+
 var monitoredVariableHistory:	Array[float]
-var currentHistoryIndex:			int = 0
+var currentHistoryIndex:		int = 0
+
+var minRecordedValue:	float
+var maxRecordedValue:	float
 
 var valueLines:		PackedVector2Array
 var gridLines:		PackedVector2Array
@@ -46,9 +53,7 @@ var lineWidth:		float = 1.0
 var gridwidth:		float = 1.0 # NOTE: Grid lines may not be visible at smaller scales on a Nearest texture mapping.
 
 var headLineStart:	Vector2
-var headLineEnd:		Vector2
-
-@onready var label: Label = $Label
+var headLineEnd:	Vector2
 
 #endregion
 
@@ -56,10 +61,7 @@ var headLineEnd:		Vector2
 func _ready() -> void:
 	resizeArrays()
 	createGridLines()
-	updateLabel()
-	label.label_settings = LabelSettings.new()
-	label.label_settings.font_size  = 8
-	label.label_settings.font_color = Color(0.0, 1.0, 1.0, 0.5)
+	updateNameLabel()
 
 
 func resizeArrays() -> void:
@@ -80,6 +82,7 @@ func _draw() -> void:
 func _process(_delta: float) -> void:
 	if not isEnabled: return
 	recordMonitoredVariable()
+	updateMinMaxLabels()
 	
 	# DEBUG:
 	# Debug.watchList.historyIndex = currentHistoryIndex
@@ -95,13 +98,19 @@ func recordMonitoredVariable() -> void:
 	var value: float = node.get_indexed(propertyToMonitor)
 	
 	monitoredVariableHistory[currentHistoryIndex] = value * valueScale
-
+	
+	# Record the minimum and maximum values
+	if value < minRecordedValue: minRecordedValue = value
+	if value > maxRecordedValue: maxRecordedValue = value
+	
 	# DEBUG:
 	# Debug.printLog(str("velocity: ", platformerPhysicsComponent.body.velocity.y))
 	# Debug.printLog(str("currentHistoryIndex: ", currentHistoryIndex))
 	
+	# Add a line
 	createLine(currentHistoryIndex) # NOTE: Update BEFORE incrementing `currentHistoryIndex`
 	
+	# Increment or wrap-around the index
 	currentHistoryIndex += 1
 	if currentHistoryIndex >= maxHistorySize:
 		currentHistoryIndex = 0
@@ -186,5 +195,10 @@ func createGridLines() -> void:
 		end.y	+= gridStepY
 
 
-func updateLabel() -> void:
-	label.text = str(propertyToMonitor)
+func updateNameLabel() -> void:
+	nameLabel.text = str(propertyToMonitor)
+
+
+func updateMinMaxLabels() -> void:
+	minLabel.text = str("MIN: ", minRecordedValue)
+	maxLabel.text = str("MAX: ", maxRecordedValue)

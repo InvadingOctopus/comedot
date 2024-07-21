@@ -1,12 +1,43 @@
-[gd_scene load_steps=2 format=3 uid="uid://c70acig5l5xjx"]
+[gd_scene load_steps=3 format=3 uid="uid://c70acig5l5xjx"]
 
 [ext_resource type="Script" path="res://Scenes/UI/Chart.gd" id="1_ktel2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7qj2e"]
+font_size = 8
+font_color = Color(0, 1, 0.5, 0.5)
 
 [node name="Chart" type="Node2D"]
 script = ExtResource("1_ktel2")
 
-[node name="Label" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
 offset_right = 34.0
 offset_bottom = 8.0
 text = "Chart"
+label_settings = SubResource("LabelSettings_7qj2e")
 vertical_alignment = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MaxLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+text = "MAX: "
+vertical_alignment = 2
+
+[node name="MinLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "MIN: "
