@@ -87,7 +87,7 @@ turnBased=""
 
 [gui]
 
-theme/custom="res://Assets/Themes/Default.tres"
+theme/custom="res://Assets/Themes/Comedot Default.tres"
 theme/custom_font="res://Assets/Fonts/PixelOperator8.ttf"
 theme/default_font_antialiasing=0
 theme/default_font_hinting=0

@@ -1,0 +1,19 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://16iw8px1vot0"]
+
+[ext_resource type="StyleBox" uid="uid://cn0nasortgjdq" path="res://Assets/Themes/Button/Comedot Default/Disabled StyleBox.tres" id="1_c7sdf"]
+[ext_resource type="StyleBox" uid="uid://bximlchqiv3qx" path="res://Assets/Themes/Button/Comedot Default/Normal StyleBox.tres" id="1_yj4d2"]
+[ext_resource type="StyleBox" uid="uid://bwrhi2fmnpqdb" path="res://Assets/Themes/Button/Comedot Default/Focus StyleBox.tres" id="2_0r7n7"]
+[ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_qfpu2"]
+[ext_resource type="StyleBox" uid="uid://b8wetmvjllfi1" path="res://Assets/Themes/Button/Comedot Default/Hover StyleBox.tres" id="3_febwk"]
+[ext_resource type="StyleBox" uid="uid://byccvy8tvkt2w" path="res://Assets/Themes/Button/Comedot Default/Pressed StyleBox.tres" id="5_5dpge"]
+
+[resource]
+default_font = ExtResource("2_qfpu2")
+default_font_size = 8
+Button/constants/outline_size = 2
+Button/styles/disabled = ExtResource("1_c7sdf")
+Button/styles/focus = ExtResource("2_0r7n7")
+Button/styles/hover = ExtResource("3_febwk")
+Button/styles/hover_pressed = ExtResource("5_5dpge")
+Button/styles/normal = ExtResource("1_yj4d2")
+Button/styles/pressed = ExtResource("5_5dpge")
