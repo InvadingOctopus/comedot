@@ -26,7 +26,9 @@ class Actions: ## Input event labels
 	const screenshot	:= &"screenshot"
 	const quickSave		:= &"quickSave"
 	const quickLoad		:= &"quickLoad"
+	
 	const debugBreak	:= &"debugBreak"
+	const debugWindow	:= &"debugWindow"
 	
 	const windowResizeTo1080		:= &"windowResizeTo1080"
 	const windowResizeTo720			:= &"windowResizeTo720"
@@ -39,6 +41,14 @@ class Actions: ## Input event labels
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
 	
+	# Debugging, before any other actions are handled.
+
+	if Input.is_action_just_released(Actions.debugBreak):
+		Debug.printDebug("Debug Breakpoint Input Received")
+		assert(false, "Debug Breakpoint Input Received")
+	elif Input.is_action_just_released(Actions.debugWindow):
+		Debug.toggleDebugWindow()
+
 	# Game
 
 	if Input.is_action_just_released(Actions.pause):
@@ -71,9 +81,3 @@ func _input(event: InputEvent) -> void:
 		Global.loadGame()
 	elif event.is_action_released(GlobalInput.Actions.quickSave):
 		Global.saveGame()
-	
-	# Debugging
-
-	if Input.is_action_just_released(Actions.debugBreak):
-		Debug.printDebug("Debug Breakpoint Input Received")
-		assert(false, "Debug Breakpoint Input Received")

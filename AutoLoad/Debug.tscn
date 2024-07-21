@@ -79,3 +79,5 @@ layout_mode = 2
 text = "Watchlist"
 label_settings = ExtResource("3_fh55r")
 metadata/_edit_use_anchors_ = true
+
+[connection signal="close_requested" from="DebugWindow" to="DebugWindow" method="hide"]

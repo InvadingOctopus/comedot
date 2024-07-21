@@ -120,9 +120,9 @@ func performFrameworkChecks() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not showDebugLabels: return
+	if not showDebugLabels or not is_instance_valid(window) or not window.visible: return
 
-	var text := ""
+	var text: String = ""
 
 	for value: Variant in watchList:
 		text += str(value) + ": " + str(watchList[value]) + "\n"
@@ -136,6 +136,20 @@ func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) ->
 	# Create a temporary timer to remove the key
 	await get_tree().create_timer(duration, false, false, true).timeout
 	watchList.erase(key)
+
+
+## Returns: The resulting state of the debug window's visibility.
+func toggleDebugWindow() -> bool:
+	var isDebugWindowShown: bool
+	
+	if is_instance_valid(window):
+		window.visible = not window.visible
+		isDebugWindowShown = window.visible
+	else:
+		isDebugWindowShown = false
+		# TODO: Recreate the window
+ 
+	return isDebugWindowShown
 
 
 ## Creates a new window with a [Chart] to graph the specified node's property.
