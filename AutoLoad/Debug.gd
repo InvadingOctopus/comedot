@@ -121,7 +121,7 @@ func performFrameworkChecks() -> void:
 
 func _process(_delta: float) -> void:
 	if not showDebugLabels or not is_instance_valid(window) or not window.visible: return
-
+	
 	var text: String = ""
 
 	for value: Variant in watchList:

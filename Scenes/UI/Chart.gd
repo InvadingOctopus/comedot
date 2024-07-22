@@ -94,7 +94,7 @@ func _process(_delta: float) -> void:
 
 
 func recordMonitoredVariable() -> void:
-	var node: Node = get_node(nodeToMonitor)
+	var node:  Node  = self.get_node(nodeToMonitor)
 	var value: float = node.get_indexed(propertyToMonitor)
 	
 	monitoredVariableHistory[currentHistoryIndex] = value * valueScale
