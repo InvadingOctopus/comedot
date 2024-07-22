@@ -14,16 +14,12 @@ script = ExtResource("1_sj8xd")
 metadata/_edit_group_ = true
 
 [node name="Labels" type="VBoxContainer" parent="."]
+z_index = 10
 offset_right = 35.0
 offset_bottom = 8.0
 theme = SubResource("Theme_8onww")
 
-[node name="PositionLabel" type="Label" parent="Labels"]
+[node name="DebugLabel" type="Label" parent="Labels"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Position"
-
-[node name="VelocityLabel" type="Label" parent="Labels"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Velocity"
+text = "DebugLabel"
