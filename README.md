@@ -4,8 +4,10 @@
 
 ![Godot+Comedot Logo][logo]
 
+The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-em-ups, or turn-based strategy) where you build a game by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or system, even when combining 2D scenes within a 3D game!
+
 > [!IMPORTANT]
-> This is still mostly a private personal project; it's what I'm using to make [my own awesome games][itch] while learning Godot and GDScript as I go. Shit will break quickly and no backwards compatibility is guaranteed.
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. THe API may change quickly and no backwards compatibility is guaranteed.
 
 ⭐️ It lets you do stuff like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
@@ -22,9 +24,9 @@ _(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping
 > [!IMPORTANT]
 > **Godot 4.3 is required**. Embrace the Future ✨
 
-🚀 **For a quick glance:** See one of the scenes in the `/Templates/Scenes` folder.
+🚀 **For a quick glance:** See one of the scenes in the `/Templates/Scene/` folder.
 
-🌳 An example of what a player entity's scene tree looks like:  
+🌳 An example of what a player entity's node tree looks like:  
 ![components-tree]
 
 ⚙️ **To use this framework for your own games:**
@@ -37,10 +39,10 @@ _(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping
 
 > [!TIP]
 > * Try the existing `game-lab` branch as an example to experiment in.  
-> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your game-specific files and keep them separate from the framework to avoid accidental overwriting.
+> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your game-specific files separately from the framework and avoid accidental conflicts.
 
-🧩 Whenever your game needs an object or "actor" which has to react to events, such as a player or enemy character, or is made up of "behaviors" which could be reused for other objects:
-1. Create a new `Entity` scene or node (a Node2D/CharacterBody2D/Area2D/etc/ with the `Entity.gd` script attached)
+🧩 Whenever your game needs an "actor" which has to react to events, such as a player or enemy character, or an object with "behaviors" which could be reused for other objects, like interactive items:
+1. Create a new `Entity` scene or node (a Node2D/CharacterBody2D/Area2D/etc. with the `Entity.gd` script attached)
 2. Add `Component` child nodes to the entity. A component is a Node/Node2D/Area2D/etc. with a script which extends the `Component` class.
 3. Modify component parameters in the editor's inspector.
 
