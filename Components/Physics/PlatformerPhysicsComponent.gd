@@ -171,11 +171,17 @@ func processAllFriction(delta: float) -> void:
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input, OR
 	# NOTE: If movement is not allowed in air, then apply air friction regardless of player input.
-
-	if isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
-		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
-	elif (not isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
-		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
+	
+	if isOnFloor and isInputZero:
+		if parameters.shouldStopInstantlyOnFloor:
+			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
+		elif parameters.shouldApplyFrictionOnFloor: 
+			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
+	elif (not isOnFloor) and (isInputZero or not parameters.shouldAllowMovementInputInAir):
+		if parameters.shouldStopInstantlyInAir:
+			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
+		elif parameters.shouldApplyFrictionInAir: 
+			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
 #endregion
 
@@ -201,14 +207,22 @@ func applyFrictionOnFloor(delta: float) -> void:
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
 	if isInputZero and isOnFloor:
-		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
+		if parameters.shouldStopInstantlyOnFloor:
+			# TBD: Ensure that the body can be moved by other forces?
+			body.velocity.x = 0
+		elif parameters.shouldApplyFrictionOnFloor: 
+			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
 ## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; this flag should be checked by caller.
 func applyFrictionInAir(delta: float) -> void:
 	# If movement is not allowed in air, then apply air friction regardless of player input.
 	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not isOnFloor):
-		body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
+		if parameters.shouldStopInstantlyInAir:
+			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
+		elif parameters.shouldApplyFrictionInAir: 
+			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
+		
 
 #endregion
 

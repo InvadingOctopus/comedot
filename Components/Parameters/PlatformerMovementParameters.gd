@@ -14,15 +14,19 @@ extends Resource
 @export var shouldApplyAccelerationOnFloor:			bool  = true
 @export_range(0, 1000, 5) var accelerationOnFloor:	float = 800
 
+## Should the horizontal velocity reset to 0 as soon as there is no input?
+@export var shouldStopInstantlyOnFloor:				bool  = true
+
+## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionOnFloor:				bool  = true
 @export_range(5, 5000, 5) var frictionOnFloor:		float = 1000
-
 
 @export_subgroup("Movement in Air")
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
 @export_range(-10, 10, 0.05) var gravityScale:		float = 1
 
+## Allow changes in the horizontal velocity while in air?
 @export var shouldAllowMovementInputInAir:			bool  = true
 
 @export_range(0, 1000, 5) var speedInAir:			float = 100
@@ -31,6 +35,11 @@ extends Resource
 @export var shouldApplyAccelerationInAir:			bool  = true
 @export_range(0, 1000, 5) var accelerationInAir:	float = 400
 
+## Should the horizontal velocity reset to 0 as soon as there is no input?
+## WARNING: If this is `true` while [member shouldAllowMovementInputInAir] is `false` then there will be NO horizontal movement in air; only straight vertical jumps.
+@export var shouldStopInstantlyInAir:				bool  = true
+
+## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionInAir:				bool  = true ## Applies horizontal friction when not on a floor (not gravity).
 @export_range(0, 5000, 5) var frictionInAir:		float = 200 ## Applies horizontal friction when not on a floor (not gravity).
 
