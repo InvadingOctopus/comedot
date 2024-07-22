@@ -9,7 +9,7 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. THe API may change quickly and no backwards compatibility is guaranteed.
 
-⭐️ It lets you do stuff like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
+⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
@@ -17,7 +17,7 @@ https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
-_(if the videos don't display, view on imgur: [1][rocks-with-guns], [2][swapping-components])_
+_(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swapping-components]
 
 ## How To Use
 
