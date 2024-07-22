@@ -6,7 +6,9 @@ extends Component
 
 #region Parameters
 
-@export var interactionIndicator: Node ## A node or control to display when this [InteractionComponent] is within the range of an [InteractionControlComponent].
+@export var interactionIndicator: Node ## A node or control to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
+
+@export var alwaysShowIndicator: bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
 
 ## An optional short label, name or phrase for the interaction to display in the UI.
 ## Example: "Open Door" or "Chop Tree".
@@ -51,7 +53,7 @@ signal didDenyInteraction(interactorEntity: Entity)
 func _ready() -> void:
 	# Set the initial state of the indicator
 	if interactionIndicator:
-		interactionIndicator.visible = false
+		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
 		updateLabel()
 
 
@@ -72,7 +74,7 @@ func onArea_exited(area: Area2D) -> void:
 	if not interactionControlComponent: return
 
 	# Hide the indicators and labels.
-	if interactionIndicator:
+	if interactionIndicator and not alwaysShowIndicator:
 		interactionIndicator.visible = false
 
 	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)

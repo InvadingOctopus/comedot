@@ -32,6 +32,11 @@ func _ready() -> void:
 
 
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+	displayNextText()
+
+
+## This function may be called by a [Timer] or other scripts to automate the text display.
+func displayNextText() -> void:
 	incrementIndices()
 	applyTextFromArray()
 	updateLabel()
