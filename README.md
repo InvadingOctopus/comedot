@@ -13,7 +13,7 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
-⭐️ A "[composition][composition-over-inheritance]" architecture helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
+⭐️ A [composition architecture][composition-over-inheritance] helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
