@@ -4,7 +4,7 @@
 
 ![Godot+Comedot Logo][logo]
 
-The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-em-ups, or turn-based strategy) where you build a game by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or system, even when combining 2D scenes within a 3D game!
+The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-em-ups, or turn-based strategy) where you build a game by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or programming style, even when combining 2D scenes within a 3D game!
 
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. THe API may change quickly and no backwards compatibility is guaranteed.
