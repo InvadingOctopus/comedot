@@ -112,7 +112,7 @@ func clearInput() -> void:
 	jumpInputJustReleased = false
 
 
-func _physics_process(delta: float) -> void:
+func processBodyBeforeMove(_delta: float) -> void:
 	if not isEnabled: return
 	
 	updateStateBeforeMovement()
@@ -128,11 +128,9 @@ func _physics_process(delta: float) -> void:
 		previousWallNormal = body.get_wall_normal()
 		wallJumpTimer.stop() # TBD: Is this needed?
 		wallJumpTimer.wait_time = parameters.wallJumpTimer
-	
-	characterBodyComponent.queueMoveAndSlide()
 
 
-func characterBodyComponent_didMove() -> void:
+func processBodyAfterMove(_delta: float) -> void:
 	#updateState()
 	
 	# Perform updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
