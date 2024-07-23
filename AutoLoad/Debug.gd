@@ -26,7 +26,7 @@ extends Node
 
 #region State
 
-@onready var window:			Window = %DebugWindow
+@onready var debugWindow:	Window = %DebugWindow
 @onready var labels:			Node  = %Labels
 @onready var label:			Label = %Label
 @onready var warningLabel:	Label = %WarningLabel
@@ -91,17 +91,27 @@ func updateLastFrameLogged() -> void:
 
 
 func _ready() -> void:
+	initializeDebugWindow()
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
-	if not OS.is_debug_build():
-		window.visible = false
+	displayInitializationMessage()
+
+
+func initializeDebugWindow() -> void:
+	debugWindow.visible = OS.is_debug_build()
+	
+	# Position the Debug Window to the right of the main window
+	# TBD: Support for Right-To-Left locales?
+	var mainWindow: Window = self.get_window()
+	debugWindow.position = mainWindow.position
+	debugWindow.position.x += mainWindow.size.x + 50
 
 
 func resetLabels() -> void:
-	label.text = ""
-	warningLabel.text = ""
-	watchListLabel.text = ""
+	label.text			= ""
+	warningLabel.text	= ""
+	watchListLabel.text	= ""
 
 
 func setLabelVisibility() -> void:
@@ -119,8 +129,19 @@ func performFrameworkChecks() -> void:
 	warningLabel.text = "\n".join(warnings)
 
 
+func displayInitializationMessage() -> void:
+	# TODO: Get input keys/buttons dynamically
+	var message: String = str("Debug.displayInitializationMessage():\n\
+	F12: Toggle Debug Window\n\
+	See Input Map for more shortcuts")
+	
+	print(str("Comdedot\n", message))
+	
+	self.showTemporaryLabel(Global.frameworkTitle, message)
+
+
 func _process(_delta: float) -> void:
-	if not showDebugLabels or not is_instance_valid(window) or not window.visible: return
+	if not showDebugLabels or not is_instance_valid(debugWindow) or not debugWindow.visible: return
 	
 	var text: String = ""
 
@@ -142,9 +163,9 @@ func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) ->
 func toggleDebugWindow() -> bool:
 	var isDebugWindowShown: bool
 	
-	if is_instance_valid(window):
-		window.visible = not window.visible
-		isDebugWindowShown = window.visible
+	if is_instance_valid(debugWindow):
+		debugWindow.visible = not debugWindow.visible
+		isDebugWindowShown  = debugWindow.visible
 	else:
 		isDebugWindowShown = false
 		# TODO: Recreate the window
