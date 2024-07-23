@@ -1,31 +1,38 @@
 # AutoLoad
-## Global game-specific state and "event bus" available to all scenes and nodes at all times.
-## May be used as the state of the overal "environment" (like settings and a network lobby) and also the state of each "run".
+## Global game-specific state and "signal/event bus" available to all scenes and nodes at all times.
+## May be used to store the "system environment" (like player preferences such as buttons and volume etc.) and also the state of each game "campaign", such as the difficulty level and character class etc.
 
 extends Node
 
 
-## The list of active players.
-## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
-var players: Array[PlayerEntity] = []
+#region Game State
 
 ## A dictionary of values that may be accessed and modified by multiple nodes and the scripts in the scene tree.
 ## [StringName] is the optimal type to use for keys.
 @export var globalData := {}
+
+## The list of active players.
+## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
+var players: Array[PlayerEntity] = []
 
 ## A dictionary of stats and values to display in the HUD UI.
 ## Changes to the dictionary emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
 ## [StringName] is the optimal type to use for keys.
 @export var hudStats := {}
 
+#endregion
+
 
 #region Signals
-
 signal playersChanged
 signal playerAdded(player: PlayerEntity)
 signal playerRemoved(player: PlayerEntity)
+#endregion
 
-signal HUDStatUpdated(stat: Stat) ## Emitted by other objects as a "signal bus"
+#region Signal Event Bus
+## These signals may be emitted by any object and connected to any object at any time, usually via scripts.
+
+signal HUDStatUpdated(stat: Stat)
 
 #endregion
 
