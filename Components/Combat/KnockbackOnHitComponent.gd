@@ -1,6 +1,6 @@
 ## Pushes the entity back when a [DamageReceivingComponent] takes damage.
 ## WARNING: The knockback may not be applied if [member PlatformerMovementParameters.shouldStopInstantlyOnFloor] or [member PlatformerMovementParameters.shouldStopInstantlyInAir] is `true`.
-## Requirements: [CharacterBody2D], [DamageReceivingComponent]
+## Requirements: [CharacterBodyComponent], [DamageReceivingComponent], AFTER [PlatformerPhysicsComponent]
 
 class_name KnockbackOnHitComponent
 extends CharacterBodyManipulatingComponentBase
@@ -31,6 +31,10 @@ var damageReceivingComponent: DamageReceivingComponent:
 #endregion
 
 
+func getRequiredComponents() -> Array[Script]:
+	return super.getRequiredComponents() + [DamageReceivingComponent]
+
+
 func _ready() -> void:
 	connectCoComponents()
 
@@ -49,9 +53,8 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 	if shouldZeroCurrentVelocity:
 		body.velocity = Vector2.ZERO
 
-	# FIXME: BUG: The knockback force is not being applied consistently; 
-	# even though the velocity is changed here, the body does not move the expected distance.
-	# CAUSE: `PlatformerPhysicsComponent.processAllFriction()` if `PlatformerMovementParameters.shouldStopInstantly…` is true
+	# WARNING: The knockback force may not be applied consistently
+	# because of `PlatformerPhysicsComponent.processAllFriction()` if `PlatformerMovementParameters.shouldStopInstantly…` is true.
 	
 	# Apply force in the opposite direction
 	body.velocity += -damageDirection * knockbackForce

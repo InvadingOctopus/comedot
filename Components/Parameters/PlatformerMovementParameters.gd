@@ -15,6 +15,7 @@ extends Resource
 @export_range(0, 1000, 5) var accelerationOnFloor:	float = 800
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
+## WARNING: If this is `true` then velocity changes from other components such as [KnockbackOnHitComponent] may be cancelled.
 @export var shouldStopInstantlyOnFloor:				bool  = false
 
 ## Should the horizontal velocity gradually slow down when there is no input?
@@ -33,14 +34,15 @@ extends Resource
 
 ## If `false`, then [member speed] is applied directly.
 @export var shouldApplyAccelerationInAir:			bool  = true
-@export_range(0, 1000, 5) var accelerationInAir:	float = 400
+@export_range(0, 1000, 5) var accelerationInAir:		float = 400
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
 ## WARNING: If this is `true` while [member shouldAllowMovementInputInAir] is `false` then there will be NO horizontal movement in air; only straight vertical jumps.
-@export var shouldStopInstantlyInAir:				bool  = false
+## WARNING: If this is `true` then velocity changes from other components such as [KnockbackOnHitComponent] may be cancelled.
+@export var shouldStopInstantlyInAir:				bool  = false 
 
 ## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionInAir:				bool  = true ## Applies horizontal friction when not on a floor (not gravity).
-@export_range(0, 5000, 5) var frictionInAir:		float = 200 ## Applies horizontal friction when not on a floor (not gravity).
+@export_range(0, 5000, 5) var frictionInAir:			float = 200 ## Applies horizontal friction when not on a floor (not gravity).
 
 #endregion
