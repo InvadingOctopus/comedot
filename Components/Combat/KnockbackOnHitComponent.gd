@@ -1,4 +1,5 @@
 ## Pushes the entity back when a [DamageReceivingComponent] takes damage.
+## WARNING: The knockback may not be applied if [member PlatformerMovementParameters.shouldStopInstantlyOnFloor] or [member PlatformerMovementParameters.shouldStopInstantlyInAir] is `true`.
 ## Requirements: [CharacterBody2D], [DamageReceivingComponent]
 
 class_name KnockbackOnHitComponent
@@ -16,9 +17,10 @@ extends CharacterBodyManipulatingComponentBase
 
 ## If `true` then the entity's existing velocity is set to 0 before applying the knockback.
 ## This ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source.
-@export var shouldZeroCurrentVelocity := true
+@export var shouldZeroCurrentVelocity: bool = true
 
-@export var isEnabled := true
+@export var isEnabled: bool = true
+@export var shouldShowDebugInfo: bool = false
 
 #endregion
 
@@ -45,12 +47,18 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 
 	# Should we ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source?
 	if shouldZeroCurrentVelocity:
-		parentEntity.body.velocity = Vector2.ZERO
+		body.velocity = Vector2.ZERO
 
+	# FIXME: BUG: The knockback force is not being applied consistently; 
+	# even though the velocity is changed here, the body does not move the expected distance.
+	# CAUSE: `PlatformerPhysicsComponent.processAllFriction()` if `PlatformerMovementParameters.shouldStopInstantly…` is true
+	
 	# Apply force in the opposite direction
-	parentEntity.body.velocity += -damageDirection * knockbackForce
-
+	body.velocity += -damageDirection * knockbackForce
+	
 	# Any more? For example, a jump when taking damage in a platform game.
-	parentEntity.body.velocity += additionalVector
-
+	body.velocity += additionalVector
+	
+	if shouldShowDebugInfo: printLog(str("-damageDirection: ", -damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", body.velocity: ", body.velocity))
+	
 	characterBodyComponent.queueMoveAndSlide()
