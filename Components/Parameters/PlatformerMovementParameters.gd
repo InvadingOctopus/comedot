@@ -15,7 +15,7 @@ extends Resource
 @export_range(0, 1000, 5) var accelerationOnFloor:	float = 800
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
-@export var shouldStopInstantlyOnFloor:				bool  = true
+@export var shouldStopInstantlyOnFloor:				bool  = false
 
 ## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionOnFloor:				bool  = true
@@ -37,7 +37,7 @@ extends Resource
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
 ## WARNING: If this is `true` while [member shouldAllowMovementInputInAir] is `false` then there will be NO horizontal movement in air; only straight vertical jumps.
-@export var shouldStopInstantlyInAir:				bool  = true
+@export var shouldStopInstantlyInAir:				bool  = false
 
 ## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionInAir:				bool  = true ## Applies horizontal friction when not on a floor (not gravity).
