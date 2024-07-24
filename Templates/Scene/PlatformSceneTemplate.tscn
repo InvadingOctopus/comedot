@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dbwiosb1xulu5"]
+[gd_scene load_steps=14 format=3 uid="uid://dbwiosb1xulu5"]
 
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="1_6txl6"]
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_qx6d3"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="7_0y7s5"]
 [ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="7_demn2"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="8_6b50m"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="10_vrya5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
@@ -59,6 +60,8 @@ detectionGap = 2.0
 randomizeInitialDirection = true
 
 [node name="PlatformerPhysicsComponent" parent="MonsterEntity" instance=ExtResource("8_6b50m")]
+
+[node name="CharacterBodyComponent" parent="MonsterEntity" instance=ExtResource("10_vrya5")]
 
 [node name="PlayerEntityTemplate-Platformer" parent="." instance=ExtResource("6_wcbjl")]
 position = Vector2(240, 80)
