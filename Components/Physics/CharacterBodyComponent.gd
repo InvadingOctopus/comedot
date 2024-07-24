@@ -46,7 +46,7 @@ var shouldMoveThisFrame:	bool = false
 
 
 #region Signals
-signal didMove ## Emitted after [method CharacterBody2D.move_and_slide]
+signal didMove(delta: float) ## Emitted after [method CharacterBody2D.move_and_slide]
 #endregion
 
 
@@ -85,7 +85,7 @@ func _physics_process(delta: float) -> void:
 		updateStateAfterMove(delta)
 		
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
-		didMove.emit()
+		didMove.emit(delta)
 	
 	if shouldShowDebugInfo: showDebugInfo()
 
