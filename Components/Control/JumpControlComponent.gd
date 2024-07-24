@@ -117,7 +117,7 @@ func _physics_process(_delta: float) -> void:
 	characterBodyComponent.queueMoveAndSlide()
 
 
-func characterBodyComponent_didMove() -> void:
+func characterBodyComponent_didMove(delta: float) -> void:
 	# DEBUG: printLog("characterBodyComponent_didMove()")
 	#updateState()
 	
