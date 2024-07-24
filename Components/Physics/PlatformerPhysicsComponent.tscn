@@ -4,11 +4,3 @@
 
 [node name="PlatformerPhysicsComponent" type="Node" groups=["components"]]
 script = ExtResource("1_pktxb")
-
-[node name="CoyoteJumpTimer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
-
-[node name="WallJumpTimer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
