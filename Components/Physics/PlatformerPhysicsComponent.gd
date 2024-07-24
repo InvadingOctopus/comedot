@@ -42,11 +42,11 @@ var currentState: State:
 		currentState = newValue
 		# DEBUG: printDebug(str(currentState))
 
-var inputDirection:			float
-var lastInputDirection:		float
+var inputDirection:		float
+var lastInputDirection:	float
 var isInputZero:			bool = true
 
-var gravity:		float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
+var gravity:	 float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
 #endregion
 
@@ -63,54 +63,41 @@ func _ready() -> void:
 #region Update Cycle
 
 func _physics_process(delta: float) -> void:
+	if not isEnabled: return
+	
+	# Force movement in the [CharacterBodyComponent] superclass because this subclass always performs its processing like gravity and friction.
+	self.shouldMoveThisFrame = true
+	super._physics_process(delta)
+
+
+func updateStateBeforeMove(delta: float) -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	# NOTE: The order of processing is as per Heartbeast's tutorial.
 	
-	if not isEnabled: return
+	# Perform [CharacterBodyComponent]'s updates before anything else.
+	super.updateStateBeforeMove(delta)
 	
 	# Sanitize the control input and prepare flags etc. for use by other functions.
 	processInput()
 	
-	# Update flags and other state
-	updateStateBeforeMovement()
+	# NOTE: `currentState` MUST be updated BEFORE `CharacterBody2D.move_and_slide(])` and AFTER `processInput()`
+	# DESIGN: Using `match` here may seem too cluttered and ambiguous
+	
+	if currentState == State.idle and not isInputZero:
+		# CHECK: Should this be done in `processInput()` so that there is only one check for [isInputZero]?
+		currentState = State.moveOnFloor if isOnFloor else State.moveInAir
+	
+	if currentState != State.idle and body.velocity.is_zero_approx():
+		currentState = State.idle
 	
 	# Let's fall from wherever we were in the previous frame, before we do anything else.
 	processGravity(delta)
 	
 	# Walk the Walk
 	
-	#applyAccelerationOnFloor(delta)
-	#applyAccelerationInAir(delta)
-	processHorizontalMovement(delta)
-	#applyFrictionOnFloor(delta)
-	#applyFrictionInAir(delta)
-	processAllFriction(delta)
-	
-	# Move Your Body ♪	
-	self.shouldMoveThisFrame = true
-	super._physics_process(delta)
-		
-	# DEBUG: 
-	if shouldShowDebugInfo: showDebugInfo()
-	
-	# Clear the input so it doesn't carry on over to the next frame.
-	clearInput()
+	processHorizontalMovement(delta) # = applyAccelerationOnFloor(delta) & applyAccelerationInAir(delta)
+	processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
 
-
-## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
-func updateStateBeforeMovement() -> void:
-	# DESIGN: Using `match` here may seem too cluttered and ambiguous
-
-	if currentState == State.idle and not isInputZero:
-		# CHECK: Should this be done in `processInput()` so that there is only one check for [isInputZero]?
-		currentState = State.moveOnFloor if isOnFloor else State.moveInAir
-
-	if currentState != State.idle and body.velocity.is_zero_approx():
-		currentState = State.idle
-
-	# Cache frequently used properties
-	self.isOnFloor = body.is_on_floor() # This should be cached after processing gravity.
-	
 
 ## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
 ## Affected by [member isEnabled].
@@ -131,21 +118,33 @@ func processInput() -> void:
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 
 
+func updateStateAfterMove(delta: float) -> void:
+	# Perform [CharacterBodyComponent]'s updates before anything else.
+	super.updateStateAfterMove(delta)
+	
+	if shouldShowDebugInfo: showDebugInfo()
+	
+	# Clear the input so it doesn't carry on over to the next frame.
+	clearInput()
+
+
 func clearInput() -> void:
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
 	#jumpInput = false # NOTE: Let the control components reset the `jumpInput`
 	# The justPressed/justReleased flags should be reset here because they represent a state for only 1 frame
 
+#endregion
+
+
+#region Platformer Physics
 
 func processGravity(delta: float) -> void:
 	# Vertical Slowdown
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale) * delta
+	
+	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
 
-#endregion
-
-
-#region Horizontal Movement & Friction
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
@@ -163,6 +162,8 @@ func processHorizontalMovement(delta: float) -> void:
 			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 		else:
 			body.velocity.x = inputDirection * parameters.speedInAir
+	
+	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
@@ -182,6 +183,8 @@ func processAllFriction(delta: float) -> void:
 			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
 		elif parameters.shouldApplyFrictionInAir: 
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
+	
+	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("body.velocity after processAllFriction(): ", body.velocity))
 
 #endregion
 
