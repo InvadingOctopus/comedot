@@ -69,27 +69,29 @@ func cacheBodyFlags() -> void:
 	self.isOnFloor = body.is_on_floor()
 
 
-func _physics_process(_delta: float) -> void:
-	# DEBUG: printLog("_physics_process()")
-	
-	if self.shouldMoveThisFrame:
-		updateStateBeforeMove()
-		# DEBUG: printDebug("parentEntity.callOnceThisFrame(body.move_and_slide)")
-		parentEntity.callOnceThisFrame(body.move_and_slide)
-		updateStateAfterMove()
-		
-		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
-		didMove.emit()
-	
-	# DEBUG: 
-	if shouldShowDebugInfo: showDebugInfo()
-
-
 func queueMoveAndSlide() -> void:
 	self.shouldMoveThisFrame = true
 
 
-func updateStateBeforeMove() -> void:
+## NOTE: If a subclass overrides this function, it MUST call super.
+func _physics_process(delta: float) -> void:
+	# DEBUG: printLog(str("_physics_process() delta: ", delta))
+	
+	if self.shouldMoveThisFrame:
+		updateStateBeforeMove(delta)
+		if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
+		
+		parentEntity.callOnceThisFrame(body.move_and_slide)
+		updateStateAfterMove(delta)
+		
+		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
+		didMove.emit()
+	
+	if shouldShowDebugInfo: showDebugInfo()
+
+
+## NOTE: If a subclass overrides this function, it MUST call super.
+func updateStateBeforeMove(delta: float) -> void:
 	self.wasOnFloor		= body.is_on_floor()
 	self.wasOnWall		= body.is_on_wall()
 	self.wasOnCeiling	= body.is_on_ceiling()
@@ -100,7 +102,8 @@ func updateStateBeforeMove() -> void:
 		self.previousWallNormal = body.get_wall_normal()
 
 
-func updateStateAfterMove() -> void:
+## NOTE: If a subclass overrides this function, it MUST call super.
+func updateStateAfterMove(delta: float) -> void:
 	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
 	# so it makes sense to cache it after the move.
 	self.isOnFloor = body.is_on_floor()
@@ -108,6 +111,8 @@ func updateStateAfterMove() -> void:
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	if self.shouldResetVelocityIfZeroMotion:
 		parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) 
+	
+	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 
 
 func showDebugInfo() -> void:
