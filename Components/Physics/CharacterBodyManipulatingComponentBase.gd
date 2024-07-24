@@ -16,7 +16,10 @@ extends Component
 var characterBodyComponent: CharacterBodyComponent:
 	get:
 		# NOTE: Use [findFirstChildOfType()] instead of [getCoComponent()] so that subclasses of [CharacterBodyComponent] may be used.
-		if not characterBodyComponent: characterBodyComponent = parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
+		if not characterBodyComponent: 
+			characterBodyComponent = parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
+			if not characterBodyComponent: # If we STILL don't have it, raise a ruckus.
+				printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
 		return characterBodyComponent
 
 var body: CharacterBody2D:
@@ -29,11 +32,3 @@ var body: CharacterBody2D:
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent]
-
-
-# Called whenever the node enters the scene tree.
-func ready() -> void:
-	#super._enter_tree()
-	
-	if not self.characterBodyComponent:
-		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
