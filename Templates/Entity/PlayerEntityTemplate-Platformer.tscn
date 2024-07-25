@@ -1,17 +1,20 @@
-[gd_scene load_steps=30 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=33 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_rphdn"]
 [ext_resource type="Script" path="res://Scripts/Visual/Camera.gd" id="3_3u7hd"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
-[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_tfsgh"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="5_1y43j"]
 [ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="6_30kxi"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_nsuj0"]
 [ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="8_dmqtc"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="9_g0ayb"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="10_7jquu"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
+[ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
+[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entity/BulletEntityTemplate.tscn" id="11_xrd1n"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="12_4b1vu"]
+[ext_resource type="Script" path="res://Scripts/Visual/MatchSpriteFlip.gd" id="12_n5pr4"]
 [ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="13_2teto"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="14_usisr"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="14_xsv3n"]
@@ -81,9 +84,6 @@ animations = [{
 "speed": 12.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
-size = Vector2(12, 12)
-
 [sub_resource type="Animation" id="Animation_oq27a"]
 resource_name = "RESET"
 step = 0.05
@@ -147,6 +147,9 @@ _data = {
 "invulnerabilityOnHit": SubResource("Animation_gjyar")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(12, 12)
+
 [sub_resource type="Resource" id="Resource_cei4g"]
 resource_name = "health"
 script = ExtResource("9_g0ayb")
@@ -165,9 +168,14 @@ max = 10000000
 value = 1337
 logChanges = false
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_75hpp"]
-resource_local_to_scene = true
-size = Vector2(12, 12)
+[sub_resource type="Resource" id="Resource_puhqw"]
+resource_name = "ammo"
+script = ExtResource("9_g0ayb")
+name = &"ammo"
+min = 0
+max = 100
+value = 100
+logChanges = false
 
 [node name="PlayerEntityTemplate-Platformer" type="CharacterBody2D" groups=["entities", "players"]]
 z_index = 10
@@ -183,25 +191,16 @@ sprite_frames = SubResource("SpriteFrames_8iy51")
 animation = &"walk"
 autoplay = "idle"
 
-[node name="SpriteOutlineRect" type="ColorRect" parent="AnimatedSprite2D"]
-z_index = -1
-offset_left = -5.0
-offset_top = -2.0
-offset_right = 5.0
-offset_bottom = 7.0
-color = Color(0, 0, 0, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_sg2kd")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
+root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_2co05")
 }
 autoplay = "RESET"
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 process_mode = 3
@@ -212,10 +211,7 @@ rotation_smoothing_speed = 10.0
 script = ExtResource("3_3u7hd")
 
 [node name="StatsComponent" parent="." instance=ExtResource("4_gnvya")]
-stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_kl6l5")])
-
-[node name="FactionComponent" parent="." instance=ExtResource("4_tfsgh")]
-factions = 2
+stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_kl6l5"), SubResource("Resource_puhqw")])
 
 [node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
 health = SubResource("Resource_cei4g")
@@ -225,28 +221,35 @@ shouldRemoveParentOnZero = true
 collision_layer = 4
 collision_mask = 40
 
-[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
-position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_75hpp")
-
-[node name="InvulnerabilityOnHitComponent" parent="." instance=ExtResource("8_dmqtc")]
-
-[node name="InvulnerabilityTimer" parent="InvulnerabilityOnHitComponent" index="0"]
-wait_time = 1.2
-
-[node name="JumpControlComponent" parent="." instance=ExtResource("12_4b1vu")]
-
-[node name="PlatformerControlComponent" parent="." instance=ExtResource("13_2teto")]
-
-[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
+[node name="InvulnerabilityOnHitComponent" parent="." node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
+animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
 
 [node name="KnockbackOnHitComponent" parent="." instance=ExtResource("11_8q3fk")]
 knockbackForce = 200.0
 additionalVector = Vector2(2.08165e-12, -100)
 
+[node name="GunComponent" parent="." instance=ExtResource("10_7jquu")]
+bulletEntity = ExtResource("11_xrd1n")
+ammo = SubResource("Resource_puhqw")
+cooldown = 1.0
+
+[node name="Pivot" parent="GunComponent" index="0" node_paths=PackedStringArray("spriteToMatch")]
+script = ExtResource("12_n5pr4")
+spriteToMatch = NodePath("../../AnimatedSprite2D")
+
+[node name="GunSprite" parent="GunComponent/Pivot" index="0"]
+visible = false
+
+[node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
+
+[node name="PlatformerControlComponent" parent="." instance=ExtResource("13_2teto")]
+
+[node name="JumpControlComponent" parent="." instance=ExtResource("12_4b1vu")]
+
+[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
+
 [node name="CharacterBodyComponent" parent="." instance=ExtResource("14_xsv3n")]
 
 [node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
 
-[editable path="DamageReceivingComponent"]
-[editable path="InvulnerabilityOnHitComponent"]
+[editable path="GunComponent"]
