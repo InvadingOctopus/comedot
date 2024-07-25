@@ -21,7 +21,8 @@ extends Component
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
 
-@export var isEnabled := true
+@export var isEnabled: bool = true
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
@@ -44,11 +45,11 @@ signal didArriveAtNewTile(newDestination: Vector2i)
 
 func _ready() -> void:
 	if not tileMap: printError("tileMap not specified!")
-	self.destinationTileCoordinates = initialTileCoordinates
+	self.currentTileCoordinates = initialTileCoordinates
 	snapEntityPositionToTile()
 
 
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	# TODO: Improve
 
 	# Don't accept input if already moving to a new tile.
@@ -61,7 +62,7 @@ func _input(event: InputEvent):
 	processMovementInput(Vector2i(inputVector))
 
 
-func processMovementInput(inputVector: Vector2i):
+func processMovementInput(inputVector: Vector2i) -> void:
 	# TODO: Check for TileMap bounds.
 	# Don't accept input if already moving to a new tile.
 	if (not isEnabled) or self.isMovingToNewTile: return
@@ -102,10 +103,10 @@ func cancelDestination() -> void:
 	self.isMovingToNewTile = false
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 
-	#showDebugInfo()
+	if shouldShowDebugInfo: showDebugInfo()
 
 	if isMovingToNewTile:
 		moveTowardsDestinationTile(delta)
@@ -116,31 +117,25 @@ func _physics_process(delta: float):
 		snapEntityPositionToTile()
 
 
-func moveTowardsDestinationTile(delta: float):
-	var destinationTileGlobalPosition: Vector2 = getTileGlobalPosition(self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
+func moveTowardsDestinationTile(delta: float) -> void:
+	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
 
 
 ## Instantly sets the entity's position to a tile's position.
 ## If [param destinationOverride] is omitted then [member currentTileCoordinates] is used.
-func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates):
+func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates) -> void:
 	if not isEnabled: return
 
-	var tileGlobalPosition: Vector2 = getTileGlobalPosition(tileCoordinates)
+	var tileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, tileCoordinates)
 
 	if parentEntity.global_position != tileGlobalPosition:
 		parentEntity.global_position = tileGlobalPosition
 
 
-func getTileGlobalPosition(tileCoordinates: Vector2i) -> Vector2:
-	var tilePosition: Vector2 = tileMap.map_to_local(tileCoordinates)
-	var tileGlobalPosition: Vector2 = tileMap.to_global(tilePosition)
-	return tileGlobalPosition
-
-
 ## Are we there yet?
 func checkForArrival() -> bool:
-	var destinationTileGlobalPosition: Vector2 = getTileGlobalPosition(self.destinationTileCoordinates)
+	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
 	if parentEntity.global_position == destinationTileGlobalPosition:
 		self.currentTileCoordinates = self.destinationTileCoordinates
 		self.isMovingToNewTile = false
@@ -152,8 +147,9 @@ func checkForArrival() -> bool:
 
 
 func showDebugInfo() -> void:
-	Debug.watchList.isMovingToNewTile = self.isMovingToNewTile
-	Debug.watchList.currentTile = self.currentTileCoordinates
-	Debug.watchList.destinationTile = self.destinationTileCoordinates
-	Debug.watchList.destinationPosition = self.getTileGlobalPosition(destinationTileCoordinates)
-	Debug.watchList.entityPosition = parentEntity.global_position
+	if not shouldShowDebugInfo: return
+	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
+	Debug.watchList.currentTile			= currentTileCoordinates
+	Debug.watchList.destinationTile		= destinationTileCoordinates
+	Debug.watchList.destinationPosition	= Global.getTileGlobalPosition(tileMap, destinationTileCoordinates)
+	Debug.watchList.entityPosition		= parentEntity.global_position

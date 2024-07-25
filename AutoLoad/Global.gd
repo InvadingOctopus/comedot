@@ -443,6 +443,13 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
 	return randomizedPosition
 
+
+func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> Vector2:
+	var tilePosition: Vector2 = tileMap.map_to_local(tileCoordinates)
+	var tileGlobalPosition: Vector2 = tileMap.to_global(tilePosition)
+	return tileGlobalPosition
+
+
 #endregion
 
 
