@@ -1,0 +1,61 @@
+[gd_scene load_steps=9 format=4 uid="uid://dkm5w4ukgrpgf"]
+
+[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_x8hsg"]
+[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_plb0j"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_mkbvj"]
+[ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36c63"]
+texture = ExtResource("4_mkbvj")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3hkm5"]
+texture = ExtResource("4_mkbvj")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_usjrl"]
+physics_layer_0/collision_layer = 16
+physics_layer_0/collision_mask = 0
+sources/2 = SubResource("TileSetAtlasSource_36c63")
+sources/3 = SubResource("TileSetAtlasSource_3hkm5")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(16, 16)
+
+[node name="TurnBasedTest" type="Node2D"]
+script = ExtResource("1_x8hsg")
+
+[node name="BackgroundTileMap" type="TileMapLayer" parent="."]
+modulate = Color(0.5, 1, 1, 0.5)
+position = Vector2(-16, -16)
+tile_map_data = PackedByteArray("AAABAAEAAwAAAAAAAAADAAEAAwAAAAAAAAACAAIAAwAAAAAAAAABAAMAAwAAAAAAAAABAAUAAwAAAAAAAAACAAQAAwAAAAAAAAADAAMAAwAAAAAAAAAEAAIAAwAAAAAAAAAFAAEAAwAAAAAAAAAHAAEAAwAAAAAAAAAGAAIAAwAAAAAAAAAFAAMAAwAAAAAAAAAEAAQAAwAAAAAAAAADAAUAAwAAAAAAAAACAAYAAwAAAAAAAAABAAcAAwAAAAAAAAABAAkAAwAAAAAAAAACAAgAAwAAAAAAAAADAAcAAwAAAAAAAAAEAAYAAwAAAAAAAAAFAAUAAwAAAAAAAAAGAAQAAwAAAAAAAAAHAAMAAwAAAAAAAAAIAAIAAwAAAAAAAAAJAAEAAwAAAAAAAAALAAEAAwAAAAAAAAAKAAIAAwAAAAAAAAAJAAMAAwAAAAAAAAAIAAQAAwAAAAAAAAAHAAUAAwAAAAAAAAAGAAYAAwAAAAAAAAAFAAcAAwAAAAAAAAAEAAgAAwAAAAAAAAADAAkAAwAAAAAAAAACAAoAAwAAAAAAAAABAAsAAwAAAAAAAAADAAsAAwAAAAAAAAAEAAoAAwAAAAAAAAAFAAkAAwAAAAAAAAAGAAgAAwAAAAAAAAAHAAcAAwAAAAAAAAAIAAYAAwAAAAAAAAAJAAUAAwAAAAAAAAAKAAQAAwAAAAAAAAALAAMAAwAAAAAAAAALAAUAAwAAAAAAAAAKAAYAAwAAAAAAAAAJAAcAAwAAAAAAAAAIAAgAAwAAAAAAAAAHAAkAAwAAAAAAAAAGAAoAAwAAAAAAAAAFAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAIAAoAAwAAAAAAAAAJAAkAAwAAAAAAAAAKAAgAAwAAAAAAAAALAAcAAwAAAAAAAAALAAkAAwAAAAAAAAAKAAoAAwAAAAAAAAAJAAsAAwAAAAAAAAALAAsAAwAAAAAAAAA=")
+tile_set = SubResource("TileSet_usjrl")
+
+[node name="TerrainTileMap" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAD/////AgAAAAAAAAD//wAAAgAAAAAAAAD//wEAAgAAAAAAAAD//wIAAgAAAAAAAAD//wMAAgAAAAAAAAD//wQAAgAAAAAAAAAAAP//AgAAAAAAAAABAP//AgAAAAAAAAACAP//AgAAAAAAAAADAP//AgAAAAAAAAAEAP//AgAAAAAAAAAFAP//AgAAAAAAAAAGAP//AgAAAAAAAAAHAP//AgAAAAAAAAAIAP//AgAAAAAAAAAJAP//AgAAAAAAAAAKAP//AgAAAAAAAAALAP//AgAAAAAAAAALAAAAAgAAAAAAAAALAAEAAgAAAAAAAAALAAIAAgAAAAAAAAALAAMAAgAAAAAAAAALAAQAAgAAAAAAAAALAAUAAgAAAAAAAAALAAYAAgAAAAAAAAALAAcAAgAAAAAAAAALAAgAAgAAAAAAAAALAAkAAgAAAAAAAAALAAoAAgAAAAAAAAALAAsAAgAAAAAAAAAKAAsAAgAAAAAAAAAJAAsAAgAAAAAAAAAIAAsAAgAAAAAAAAAHAAsAAgAAAAAAAAAGAAsAAgAAAAAAAAAFAAsAAgAAAAAAAAAEAAsAAgAAAAAAAAADAAsAAgAAAAAAAAACAAsAAgAAAAAAAAABAAsAAgAAAAAAAAAAAAsAAgAAAAAAAAD//wsAAgAAAAAAAAD//woAAgAAAAAAAAD//wkAAgAAAAAAAAD//wgAAgAAAAAAAAD//wcAAgAAAAAAAAD//wYAAgAAAAAAAAD//wUAAgAAAAAAAAA=")
+tile_set = SubResource("TileSet_usjrl")
+
+[node name="TileBasedEntity" type="RigidBody2D" parent="." groups=["entities", "players"]]
+position = Vector2(88, 88)
+collision_layer = 2
+collision_mask = 16
+gravity_scale = 1.66533e-16
+script = ExtResource("3_plb0j")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TileBasedEntity" groups=["players"]]
+modulate = Color(0, 1, 0, 1)
+texture = ExtResource("4_mkbvj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileBasedEntity"]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="TileBasedPositionComponent" parent="TileBasedEntity" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
+tileMap = NodePath("../../BackgroundTileMap")
+initialTileCoordinates = Vector2i(2, 2)
+shouldShowDebugInfo = true
+
+[node name="Camera2D" type="Camera2D" parent="TileBasedEntity"]
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true
