@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3 uid="uid://h3pbo0mlj4je"]
+
+[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_5a21o"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
+[ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_gepur"]
+[ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="3_1r4r1"]
+[ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="4_pvycy"]
+[ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="5_c8kjw"]
+[ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="6_w2yd5"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="7_aroie"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
+resource_local_to_scene = true
+size = Vector2(18, 18)
+
+[node name="MonsterEntity" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 16
+script = ExtResource("1_5a21o")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.5, 0, 1)
+texture = ExtResource("2_gepur")
+region_enabled = true
+region_rect = Rect2(448, 96, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dpspd")
+
+[node name="FactionComponent" parent="." instance=ExtResource("2_a5njj")]
+factions = 8
+
+[node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
+collision_layer = 32
+collision_mask = 6
+
+[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
+position = Vector2(2.08165e-12, 2.08165e-12)
+shape = SubResource("RectangleShape2D_7wvwn")
+
+[node name="CornerCollisionComponent" parent="." instance=ExtResource("4_pvycy")]
+
+[node name="PlatformerPatrolComponent" parent="." instance=ExtResource("5_c8kjw")]
+detectionGap = 2.0
+randomizeInitialDirection = true
+
+[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("6_w2yd5")]
+
+[node name="CharacterBodyComponent" parent="." instance=ExtResource("7_aroie")]
+
+[editable path="DamageComponent"]
