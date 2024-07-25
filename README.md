@@ -13,7 +13,7 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
-⭐️ A [composition architecture][composition-over-inheritance] helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style movement and flying movement:
+⭐️ The [composition architecture][composition-over-inheritance] helps you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer-style control and flying "top-down" movement:
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
@@ -24,10 +24,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 > [!IMPORTANT]
 > **Godot 4.3 is required**. Embrace the Future ✨
 
-🚀 **For a quick glance:** See one of the scenes in the `/Templates/Scene/` folder.
-
-🌳 An example of what a player entity's node tree looks like:  
-![components-tree]
+🚀 **For a quick glance:** See the `/Templates/Scene/` folder.
 
 ⚙️ **To use this framework for your own games:**
 
@@ -35,16 +32,20 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 2. Create a new git branch for your game (say `game-of-the-year-2069`) **in your local repository**.
 3. Drag-and-drop nodes from the `/Entities/` and `/Components/` folders to build your scenes.
 	1. Some components have sub-children, like a `GunComponent`'s pivot point. To modify them, select the component node in the Scene Tree and enable "Editable Children".
-	2. The `/Scripts/` folder can be used for any node even if it does not inherit from the `Entity` class.
+	2. The `/Scripts/` folder may be used for any node even if it does not inherit from the `Entity` class.
 
 > [!TIP]
-> * Try the existing `game-lab` branch as an example to experiment in.  
-> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your game-specific files separately from the framework and avoid accidental conflicts.
+> * Try the `game-lab` branch to experiment in.  
+> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your own files separately from the framework and avoid accidental conflicts.
 
-🧩 Whenever your game needs an "actor" which has to react to events, such as a player or enemy character, or an object with "behaviors" which could be reused for other objects, like interactive items:
-1. Create a new `Entity` scene or node (a Node2D/CharacterBody2D/Area2D/etc. with the `Entity.gd` script attached)
-2. Add `Component` child nodes to the entity. A component is a Node/Node2D/Area2D/etc. with a script which extends the `Component` class.
+🌳 An example of what a player entity's node tree looks like:  
+![components-tree]
+
+🧩 Whenever your game needs an "actor" which has to react to events, like the player character or a monster, or an object with "behaviors" which could be reused for other objects, like interactive items or powerups:
+1. Create a new `Entity` node (a Node2D/CharacterBody2D/Area2D/etc. with the `Entity.gd` script attached)
+2. Add `Component` child nodes to the entity. A component is also a Node/Node2D/Area2D/etc. with a script which extends the `Component` class.
 3. Modify component parameters in the editor's inspector.
+4. Save the configured entity as a standalone scene to quickly create copies of it anywhere.
 
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do common tasks** like player movement and combat.
