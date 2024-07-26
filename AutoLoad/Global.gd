@@ -44,6 +44,8 @@ class Groups:
 	const collectibles	:= &"collectibles"
 	const interactions	:= &"interactions"
 	const zones			:= &"zones"
+	
+	const turnBased		:= &"turnBased"
 #endregion Input Actions
 
 
