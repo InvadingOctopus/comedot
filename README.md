@@ -36,7 +36,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 
 > [!TIP]
 > * Try the `game-lab` branch to experiment in.  
-> * Create subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your own files separately from the framework and avoid accidental conflicts.
+> * Make subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your own files separately from the framework and avoid accidental conflicts.
 
 🌳 _An example of a player entity's node tree:_  
 ![components-tree]
