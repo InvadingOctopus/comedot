@@ -135,7 +135,7 @@ func displayInitializationMessage() -> void:
 	F12: Toggle Debug Window\n\
 	See Input Map for more shortcuts")
 	
-	print(str("Comdedot\n", message))
+	print_rich(str("[color=white][b]Comdedot\n", message))
 	
 	self.showTemporaryLabel(Global.frameworkTitle, message)
 
