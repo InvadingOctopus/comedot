@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://wfkhubc60w2e"]
+
+[ext_resource type="Script" path="res://AutoLoad/TurnBasedCoordinator.gd" id="1_5qbkx"]
+
+[node name="TurnBasedCoordinator" type="Node2D" groups=["turnBased"]]
+script = ExtResource("1_5qbkx")
+metadata/_edit_group_ = true
+
+[node name="StateTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[node name="EntityTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[connection signal="timeout" from="StateTimer" to="." method="onStateTimer_timeout"]
+[connection signal="timeout" from="EntityTimer" to="." method="onEntityTimer_timeout"]
