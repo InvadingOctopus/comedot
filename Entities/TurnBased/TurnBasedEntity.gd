@@ -23,7 +23,7 @@ extends Entity # + TurnBasedObjectBase
 
 #region State
 
-var turnBasedComponents: Array[TurnBasedComponent]
+@export_storage var turnBasedComponents: Array[TurnBasedComponent]
 
 ## Returns: [TurnBasedCoordinator.currentTurn]
 var currentTurn: int:
@@ -43,7 +43,7 @@ var turnsProcessed: int:
 #endregion
 
 
-#region Signals
+#region Signals 
 signal willBeginTurn
 signal didBeginTurn
 
