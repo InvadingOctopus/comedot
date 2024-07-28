@@ -1,12 +1,16 @@
 ## Base class for all turn-based components.
-## Each turn, the parent [TurnBasedEntity] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods in order.
+## Each turn, the parent [TurnBasedEntity] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods on each of its component in order.
 ## NOTE: These methods MUST be overridden by subclasses to perform the game-specific actions every turn.
+##
+## NOTE: The begin/update/end methods are NOT executed at once for a single component:
+## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ... 
+## THEN all components perform "Update" phase, and so on.
 
 class_name TurnBasedComponent
 extends Component # + TurnBasedObjectBase
 
-## NOTE: DESIGN: This class is almost identical to [TurnBasedEntity] and there is a lot of code duplication
-## because classes can't have multiple inheritance; it would need to extend both [Component] and [TurnBased] :')
+# NOTE: DESIGN: This class is almost identical to [TurnBasedEntity] and there is a lot of code duplication
+# because classes can't have multiple inheritance; it would need to extend both [Component] and [TurnBased] :')
 
 
 #region Parameters
@@ -17,30 +21,21 @@ extends Component # + TurnBasedObjectBase
 
 #region State
 
-## The number of the current turn (first turn is 1). 
-## Incremented BEFORE the [willBeginTurn] signal and the [processTurnBegin] method.
+## Returns: [TurnBasedCoordinator.currentTurn]
 var currentTurn: int:
-	set(newValue):
-		if currentTurn == newValue: return
-		if shouldShowDebugInfo: printDebug(str("currentTurn: ", currentTurn, " → ", newValue))
-		currentTurn = newValue
-
-
-var currentTurnState: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.currentTurnState: # TBD
-	set(newValue):
-		if currentTurnState == newValue: return
-		if shouldShowDebugInfo: printDebug(str("currentTurnState: ", currentTurnState, " → ", newValue))
-		currentTurnState = newValue
-
-
-## The total count of turns that have been processed. 
-## Incremented BEFORE the [didEndTurn] signal but AFTER the [processTurnEnd] method.
+	get: return TurnBasedCoordinator.currentTurn # TBD: Should it forward to TurnBasedEntity?  
+	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	
+## Returns: [TurnBasedCoordinator.currentTurnState]
+var currentTurnState: TurnBasedCoordinator.TurnBasedState:
+	get: return TurnBasedCoordinator.currentTurnState # TBD: Should it forward to TurnBasedEntity?
+	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	
+## Returns: [TurnBasedCoordinator.turnsProcessed]
 var turnsProcessed: int:
-	set(newValue):
-		if turnsProcessed == newValue: return
-		if shouldShowDebugInfo: printDebug(str("turnsProcessed: ", turnsProcessed, " → ", newValue))
-		turnsProcessed = newValue
-
+	get: return TurnBasedCoordinator.turnsProcessed # TBD: Should it forward to TurnBasedEntity?
+	set(newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	
 #endregion
 
 
@@ -61,55 +56,45 @@ func _enter_tree() -> void:
 	self.add_to_group(Global.Groups.turnBased, true)
 
 
-#region Turn Update Signals
+#region Turn State Cycle
 
-## Called by the parent [TurnBasedEntity] and calls [processTurnBegin].
+## Called by the parent [TurnBasedEntity] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1))
-	
-	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
-	currentTurnState = TurnBasedCoordinator.TurnBasedState.turnBegin
-	
+	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))	
 	willBeginTurn.emit()
 	self.processTurnBegin()
 	didBeginTurn.emit()
 
 
-## Called by the parent [TurnBasedEntity] and calls [processTurnUpdate].
+## Called by the parent [TurnBasedEntity] and calls [method processTurnUpdate].
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
-	
-	currentTurnState = TurnBasedCoordinator.TurnBasedState.turnUpdate
-	
+	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))	
 	willUpdateTurn.emit()
 	self.processTurnUpdate()
 	didUpdateTurn.emit()
 
 
-## Called by the parent [TurnBasedEntity] and calls [processTurnEnd].
+## Called by the parent [TurnBasedEntity] and calls [method processTurnEnd].
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
-	
-	currentTurnState = TurnBasedCoordinator.TurnBasedState.turnEnd
-	
 	willEndTurn.emit()
 	self.processTurnEnd()
-	
-	turnsProcessed += 1 # NOTE: Must be incremented AFTER [processTurnEnd] but BEFORE [didEndTurn]
 	didEndTurn.emit()
 
 #endregion
 
 
-#region Abstract Turn Update Methods
+#region Abstract Turn Process Methods
 
-## Any "pre-turn" activity that happens BEFORE the main activity, such as animations, messages or any other preparation.
+# NOTE: These methids MUST be overridden by subclasses to perform the actual game-specific actions.
+
+## Any "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
 ## Abstract; Must be overridden by subclasses.
 func processTurnBegin() -> void:
 	pass
@@ -121,7 +106,7 @@ func processTurnUpdate() -> void:
 	pass
 
 
-## Any "post-turn" activity that happens AFTER the main activity, such as animations, log messages, or cleanup.
+## Any "post-turn" activity that happens AFTER the main activity, such as animations, damage-over-time effects, log messages, or cleanup.
 ## Abstract; Must be overridden by subclasses.
 func processTurnEnd() -> void:
 	pass
