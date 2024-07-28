@@ -44,6 +44,8 @@ var turnsProcessed: int:
 
 
 #region Signals 
+# See [TurnBasedCoordinator] comments for explanation of signals.
+
 signal willBeginTurn
 signal didBeginTurn
 
