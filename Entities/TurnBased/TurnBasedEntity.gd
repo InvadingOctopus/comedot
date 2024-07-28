@@ -28,7 +28,7 @@ var turnBasedComponents: Array[TurnBasedComponent]
 ## Returns: [TurnBasedCoordinator.currentTurn]
 var currentTurn: int:
 	get: return TurnBasedCoordinator.currentTurn
-	set(newValue): printWarning("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [TurnBasedCoordinator.currentTurnState]
 var currentTurnState: TurnBasedCoordinator.TurnBasedState:
@@ -65,7 +65,7 @@ func _exit_tree() -> void:
 	TurnBasedCoordinator.turnBasedEntities.erase(self)
 
 
-#region Turn Update Cycle
+#region Turn State Cycle
 
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
@@ -105,10 +105,10 @@ func processTurnEndSignals() -> void:
 	self.processTurnEnd()
 	didEndTurn.emit()
 
-#endregion Turn Update Cycle
+#endregion
 
 
-#endregion Component Update Cycle
+#endregion Component Process Cycle
 
 ## Calls [method TurnBasedComponent.processTurnBeginSignals] on all child components.
 func processTurnBegin() -> void:
