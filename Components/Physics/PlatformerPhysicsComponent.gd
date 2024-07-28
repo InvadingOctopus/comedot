@@ -1,7 +1,7 @@
-## Handles the physics for walking, gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
+## Handles the physics for gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
 ## This allows player characters as well as monsters to share the same movement logic.
-## NOTE: Does NOT handle player input. Control is provided by [PlatformerPhysicsControlComponent] and AI components etc.
-## Requirements: Entity with [CharacterBody2D], AFTER [PlatformerPhysicsControlComponent]
+## NOTE: Does NOT handle player input. Control is provided by [PlatformerControlComponent], [PlatformerJumpComponent] and AI components etc.
+## Requirements: Entity with [CharacterBody2D], AFTER [PlatformerControlComponent] and other physics modifying components.
 
 class_name PlatformerPhysicsComponent
 extends CharacterBodyManipulatingComponentBase
