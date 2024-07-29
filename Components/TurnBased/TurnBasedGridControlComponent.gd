@@ -33,16 +33,15 @@ func _input(event: InputEvent) -> void:
 	if not event.is_action_type(): return
 	if shouldShowDebugInfo: printLog(str(parentEntity.logName, " ", event))
 	
-	if event.is_action(GlobalInput.Actions.moveLeft) \
-	or event.is_action(GlobalInput.Actions.moveRight) \
-	or event.is_action(GlobalInput.Actions.moveUp) \
-	or event.is_action(GlobalInput.Actions.moveDown):
+	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
+	or event.is_action_pressed(GlobalInput.Actions.moveRight) \
+	or event.is_action_pressed(GlobalInput.Actions.moveUp) \
+	or event.is_action_pressed(GlobalInput.Actions.moveDown):
 	
 		self.inputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		
-		if not inputVector.is_zero_approx():
-			if TurnBasedCoordinator.currentTurnState == TurnBasedCoordinator.TurnBasedState.turnBegin:
-				TurnBasedCoordinator.startTurnStateCycle()
+		if not inputVector.is_zero_approx() and TurnBasedCoordinator.isReadyToStartTurn:
+			TurnBasedCoordinator.startTurnStateCycle()
 
 
 func processTurnBegin() -> void:
