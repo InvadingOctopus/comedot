@@ -108,6 +108,12 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		turnsProcessed = newValue
 		showDebugInfo()
 
+## Returns: `true` if the [member currentTurnState] is [constant TurnBasedState.turnBegin] and neither [member stateTimer] nor [member entityTimer] is running.
+var isReadyToStartTurn: bool:
+	get: return self.currentTurnState == TurnBasedState.turnBegin \
+			and is_zero_approx(stateTimer.time_left) \
+			and is_zero_approx(entityTimer.time_left)
+
 @export_storage var functionToCallOnStateTimer:  Callable ## @experimental
 @export_storage var functionToCallOnEntityTimer: Callable ## @experimental
 
@@ -167,12 +173,12 @@ func startTurnStateCycle() -> void:
 		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when currentTurnState != turnBegin", "", str(self))
 		return
 	
-	if not is_zero_approx(entityTimer.time_left):
-		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when entityTimer.time_left != 0", "", str(self))
-		return
-	
 	if not is_zero_approx(stateTimer.time_left):
 		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when stateTimer.time_left != 0", "", str(self))
+		return
+	
+	if not is_zero_approx(entityTimer.time_left):
+		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when entityTimer.time_left != 0", "", str(self))
 		return
 	
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
