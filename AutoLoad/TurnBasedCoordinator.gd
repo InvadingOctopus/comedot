@@ -21,9 +21,9 @@ extends Node # + TurnBasedObjectBase
 # * Each Entity must then call the same order on all its child components.
 # * After the `turnEnd` phase, the Coordinator must increment the turn counter and return to the `turnBegin` phase again, BUT it must NOT be executed until the game receives the control input to play the next turn.
 
-# TODO: Support for multiple TurnBasedCoordinators in the same scene, e.g. to support multiplayer games.
-# TODO: Implement delay between entities
+# TODO: Verify Entity-side animation delays etc.
 # TODO: A cleaner, simplified, reliable implementation? :')
+# TODO: Support for multiple TurnBasedCoordinators in the same scene, e.g. to support multiplayer games.
 
 
 #region Constants
@@ -108,8 +108,8 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		turnsProcessed = newValue
 		showDebugInfo()
 
-@export_storage var functionToCallOnStateTimer:  Callable
-@export_storage var functionToCallOnEntityTimer: Callable
+@export_storage var functionToCallOnStateTimer:  Callable ## @experimental
+@export_storage var functionToCallOnEntityTimer: Callable ## @experimental
 
 #endregion
 
@@ -133,11 +133,25 @@ signal didEndTurn
 
 
 func _ready() -> void:
-	if shouldShowDebugInfo: Debug.printLog("_ready()", "WHITE", str(self))
+	if shouldShowDebugInfo: Debug.printLog("_ready()", "white", str(self))
 	currentTurnState = TurnBasedState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates
+	clearTimerFunctions()
 	showDebugInfo()
+	
+	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
+
+
+## @experimental
+func clearTimerFunctions():
+	functionToCallOnStateTimer  = dummyTimerFunction
+	functionToCallOnEntityTimer = dummyTimerFunction
+
+
+## @experimental
+func dummyTimerFunction() -> void:
+	return
 
 
 #region Coordinator State Cycle
@@ -145,6 +159,7 @@ func _ready() -> void:
 ## The beginning of processing 1 full turn and its 3 states/phases.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnStateCycle() -> void:
+	if shouldShowDebugInfo: Debug.printLog(str("startTurnStateCycle() currentTurn: ", currentTurn), "white", str(self))
 	
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 	
@@ -152,52 +167,43 @@ func startTurnStateCycle() -> void:
 		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when currentTurnState != turnBegin", "", str(self))
 		return
 	
+	if not is_zero_approx(entityTimer.time_left):
+		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when entityTimer.time_left != 0", "", str(self))
+		return
+	
 	if not is_zero_approx(stateTimer.time_left):
 		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when stateTimer.time_left != 0", "", str(self))
 		return
 	
-	# TBD: Should the time be reset here? How to handle game pauses during the timer?
+	# TBD: Should timers be reset here? How to handle game pauses during the timer?
 	
-	clearTimerFunctions()
 	cycleStatesUntilNextTurn()
-
-
-func clearTimerFunctions():
-	functionToCallOnStateTimer  = func(): pass
-	functionToCallOnEntityTimer = func(): pass
 
 
 ## Cycles through all the [TurnBasedState]s until the next turn's [TurnBasedState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
 	# TODO: A less complex/ambiguous implementation 
-	
 	if shouldShowDebugInfo: Debug.printLog("cycleStatesUntilNextTurn()", "", str(self))
 	
-	if self.currentTurnState < TurnBasedState.turnEnd:
-		
-		self.processState()
-			
-		# Start the State Update Timer to add a customizable delay between states
-		# NOTE: The delay must occur BEFORE the currentTurnState is incremented	
-		functionToCallOnStateTimer = func():
-			incrementState()
-			cycleStatesUntilNextTurn()
+	# If we're already at `turnBegin`, advance the state once.
+	if self.currentTurnState == TurnBasedState.turnBegin:
+		await self.processState()
 		stateTimer.start()
-	
-	elif self.currentTurnState == TurnBasedState.turnEnd:
+		await stateTimer.timeout
+		self.incrementState()
 		
-		# The last phase before going back to `turnBegin` 
-			# BUT DO NOT call this method again; the next turn must wait for a call to `startTurnStateCycle()`
-			self.processState()
-			functionToCallOnStateTimer = func():
-				incrementState()
-			stateTimer.start()
+	# Cycle through the states until we're at `turnBegin` again
+	while self.currentTurnState != TurnBasedState.turnBegin:
+		await self.processState()
+		stateTimer.start()
+		await stateTimer.timeout
+		self.incrementState()
 
 
 func onStateTimer_timeout() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer), "", str(self))
 	functionToCallOnStateTimer.call()
-	#functionToCallOnStateTimer = func(): return
+	functionToCallOnStateTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
@@ -205,9 +211,10 @@ func processState() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", currentTurnState), "", str(self))
 	
 	match currentTurnState:
-		TurnBasedState.turnBegin:	processTurnBeginSignals()
-		TurnBasedState.turnUpdate:	processTurnUpdateSignals()
-		TurnBasedState.turnEnd:		processTurnEndSignals()
+		# `await` for Entity delays & animations etc.
+		TurnBasedState.turnBegin:	await processTurnBeginSignals()
+		TurnBasedState.turnUpdate:	await processTurnUpdateSignals()
+		TurnBasedState.turnEnd:		await processTurnEndSignals()
 		_:							Debug.printError("Invalid State!", "", str(self)) # TBD: Should this be an Error or Warning?
 
 
@@ -236,8 +243,10 @@ func processTurnBeginSignals() -> void:
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
 	currentTurnState = TurnBasedState.turnBegin
 	
+	self.set_process(true) # TBD: Enable the `_process` method so it can perform per-frame updates and display the debug info.
+	
 	willBeginTurn.emit()
-	self.processTurnBegin()
+	await self.processTurnBegin() # `await` for Entity delays & animations etc.
 	didBeginTurn.emit()
 
 
@@ -249,7 +258,7 @@ func processTurnUpdateSignals() -> void:
 	currentTurnState = TurnBasedState.turnUpdate
 	
 	willUpdateTurn.emit()
-	self.processTurnUpdate()
+	await self.processTurnUpdate() # `await` for Entity delays & animations etc.
 	didUpdateTurn.emit()
 
 
@@ -261,8 +270,10 @@ func processTurnEndSignals() -> void:
 	currentTurnState = TurnBasedState.turnEnd
 	
 	willEndTurn.emit()
-	self.processTurnEnd()
+	await self.processTurnEnd() # `await` for Entity delays & animations etc.
 	
+	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates anymore.
+		
 	turnsProcessed += 1 # NOTE: Must be incremented AFTER [processTurnEnd] but BEFORE [didEndTurn]
 	didEndTurn.emit()
 
@@ -274,25 +285,33 @@ func processTurnEndSignals() -> void:
 func onEntityTimer_timeout() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer), "", str(self))
 	functionToCallOnEntityTimer.call()
-	functionToCallOnEntityTimer = func(): pass
+	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
+
+ # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
-		turnBasedEntity.processTurnBeginSignals()
+		await turnBasedEntity.processTurnBeginSignals()
+		entityTimer.start()
+		await entityTimer.timeout
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
-		turnBasedEntity.processTurnUpdateSignals()
+		await turnBasedEntity.processTurnUpdateSignals()
+		entityTimer.start()
+		await entityTimer.timeout
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
-		turnBasedEntity.processTurnEndSignals()
+		await turnBasedEntity.processTurnEndSignals()
+		entityTimer.start()
+		await entityTimer.timeout
 
 #endregion
 
@@ -322,8 +341,14 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 #endregion
 
 
+func _process(delta: float) -> void: # DEBUG
+	showDebugInfo()
+
+
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.turnsProcessed	= turnsProcessed
 	Debug.watchList.currentTurn		= currentTurn
 	Debug.watchList.currentTurnState= currentTurnState
+	Debug.watchList.stateTimer		= stateTimer.time_left
+	Debug.watchList.entityTimer		= entityTimer.time_left
