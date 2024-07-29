@@ -188,15 +188,17 @@ func cycleStatesUntilNextTurn() -> void:
 	# If we're already at `turnBegin`, advance the state once.
 	if self.currentTurnState == TurnBasedState.turnBegin:
 		await self.processState()
-		stateTimer.start()
-		await stateTimer.timeout
+		if not is_zero_approx(delayBetweenStates): 
+			stateTimer.start()
+			await stateTimer.timeout
 		self.incrementState()
 		
 	# Cycle through the states until we're at `turnBegin` again
 	while self.currentTurnState != TurnBasedState.turnBegin:
 		await self.processState()
-		stateTimer.start()
-		await stateTimer.timeout
+		if not is_zero_approx(delayBetweenStates): 
+			stateTimer.start()
+			await stateTimer.timeout
 		self.incrementState()
 
 
@@ -294,24 +296,27 @@ func onEntityTimer_timeout() -> void:
 func processTurnBegin() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
 		await turnBasedEntity.processTurnBeginSignals()
-		entityTimer.start()
-		await entityTimer.timeout
+		if not is_zero_approx(delayBetweenEntities): 
+			entityTimer.start()
+			await entityTimer.timeout
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
 		await turnBasedEntity.processTurnUpdateSignals()
-		entityTimer.start()
-		await entityTimer.timeout
+		if not is_zero_approx(delayBetweenEntities): 
+			entityTimer.start()
+			await entityTimer.timeout
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
 		await turnBasedEntity.processTurnEndSignals()
-		entityTimer.start()
-		await entityTimer.timeout
+		if not is_zero_approx(delayBetweenEntities): 
+			entityTimer.start()
+			await entityTimer.timeout
 
 #endregion
 
