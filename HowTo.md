@@ -7,11 +7,14 @@
 ## Make a Player Entity
 
 1. Create a `CharacterBody2D` node.
-2. Attach the `/Entities/Characters/PlayerEntity.gd` script.
-3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` etc and set them up.
-4. Remember to set the Physics Collision Layer to `players` and set the Mask to `terrain` at least.
 
-* 💡 You can use a template like `/Templates/Entities/PlayerEntityTemplate.tscn`
+2. Attach the `/Entities/Characters/PlayerEntity.gd` script.
+
+3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` and set them up.
+
+4. Set the Body's Physics Collision Layer to `players` and the Mask to `terrain`. Add other categories as needed.
+
+* 💡 Try one of the templates in `/Templates/Entity/`
 
 ### Add Player Control and Movement
 
@@ -19,11 +22,13 @@
 
 2. Choose `Instantiate Child Scene` from the context menu.
 
-3. Add components from `/Components/Control/` as children of the Entity node, like `OverheadControlComponent`
+3. Add components from `/Components/Control/` as children of the Entity node, such as `OverheadControlComponent.tscn`.
 
-* 💡 Read the documentation comments in the scripts of each component to see how to use it.
+4. Add `/Components/Physics/CharacterBodyComponent.tscn` as the last component in the Entity's tree. This component takes the velocity updates from other components and applies them to the `CharacterBody2D`.
 
-* ❕ If you add the `PlatformerControlComponent` then you should also add the `JumpControlComponent` and `/Components/Physics/GravityComponent`
+* 📖 Read the documentation comments in the scripts of each component to see how to use it.
+
+* ❕ If you use the `PlatformerPhysicsComponent` then you must also add the `PlatformerControlComponent` and `JumpControlComponent`.
 
 ## Add Combat
 
@@ -35,7 +40,7 @@
 
 * For monsters, add a `DamageComponent` to hurt the player on contact.
 
-* ❕ Remember to set the correct Physics Collision Layers and Masks for everything, otherwise they will not register collisions with each other.
+* ❕ Remember to set the correct Physics Collision Layers and Masks for all bodies, otherwise they will not be able to detect collisions with each other.
 
 * 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
 
