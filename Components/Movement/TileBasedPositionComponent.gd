@@ -102,9 +102,7 @@ func cancelDestination() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not isEnabled: return
-
-	if shouldShowDebugInfo: showDebugInfo()
-
+	
 	if isMovingToNewTile:
 		moveTowardsDestinationTile(delta)
 		checkForArrival()
@@ -113,6 +111,7 @@ func _physics_process(delta: float) -> void:
 		# to ensure alignment in case the TileMap node is moving.
 		snapEntityPositionToTile()
 
+	if shouldShowDebugInfo: showDebugInfo()
 
 func moveTowardsDestinationTile(delta: float) -> void:
 	# TODO: Handle physics collisions
