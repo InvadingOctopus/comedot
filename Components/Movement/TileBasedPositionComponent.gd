@@ -1,5 +1,5 @@
-## Sets the position of the parent Entity to the position of a tile in an associated [TileMapLayer]
-## Does NOT perform path-finding or any other validation logic except checking the TileMap bounds.
+## Sets the position of the parent Entity to the position of a tile in an associated [TileMapLayer].
+## Does NOT receive player control input, or perform path-finding or any other validation logic except checking the tile map bounds.
 
 class_name TileBasedPositionComponent
 extends Component
@@ -10,9 +10,11 @@ extends Component
 # 	If the entity is not moving to another tile, snap the entity to the current tile's position, in case the TileMap is moving.
 # 	If the entity is moving to another tile, interpolate the entity's position towards the new tile.
 
-#region Parameters
+# TODO: Handle physics collisions
+# TODO: Optional choice between animating or snapping to initial coordinates
 
-# TODO: Optional choice between animating or snapping to initial coordinates.
+
+#region Parameters
 
 @export var tileMap: TileMapLayer
 @export var initialTileCoordinates: Vector2i
@@ -23,17 +25,23 @@ extends Component
 
 @export var isEnabled: bool = true
 @export var shouldShowDebugInfo: bool = false
+
 #endregion
 
 
 #region State
 
+# TODO: TBD: @export_storage
+
 var currentTileCoordinates: Vector2i
 var destinationTileCoordinates: Vector2i
 
-# var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the TIleMap may move between frames.
+# var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the [TIleMapLayer] may move between frames.
+
+var inputVector: Vector2i
 
 var isMovingToNewTile: bool = false
+
 #endregion
 
 
@@ -49,24 +57,13 @@ func _ready() -> void:
 	snapEntityPositionToTile()
 
 
-func _input(event: InputEvent) -> void:
-	# TODO: Improve
-
-	# Don't accept input if already moving to a new tile.
-
-	if (not isEnabled) or self.isMovingToNewTile or (not event.is_action_type()): return
-
-	# NOTE: DESIGN: We don't want only "input released" events; movement must begin as soon as a button is pressed.
-
-	var inputVector: Vector2 = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
-	processMovementInput(Vector2i(inputVector))
-
-
-func processMovementInput(inputVector: Vector2i) -> void:
+## This method must be called by a control component upon receiving player input.
+## EXAMPLE: `inputVector = Vector2i(Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown))`
+func processMovementInput(inputVectorOverride: Vector2i = self.inputVector) -> void:
 	# TODO: Check for TileMap bounds.
 	# Don't accept input if already moving to a new tile.
 	if (not isEnabled) or self.isMovingToNewTile: return
-	setDestinationTileCoordinates(self.currentTileCoordinates + Vector2i(inputVector))
+	setDestinationTileCoordinates(self.currentTileCoordinates + inputVectorOverride)
 
 
 ## Returns: `false if the new destination coordinates are not valid within the TileMap bounds.
@@ -118,6 +115,7 @@ func _physics_process(delta: float) -> void:
 
 
 func moveTowardsDestinationTile(delta: float) -> void:
+	# TODO: Handle physics collisions
 	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
 
@@ -148,8 +146,8 @@ func checkForArrival() -> bool:
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
-	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
+	Debug.watchList.entityPosition		= parentEntity.global_position
 	Debug.watchList.currentTile			= currentTileCoordinates
+	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
 	Debug.watchList.destinationTile		= destinationTileCoordinates
 	Debug.watchList.destinationPosition	= Global.getTileGlobalPosition(tileMap, destinationTileCoordinates)
-	Debug.watchList.entityPosition		= parentEntity.global_position
