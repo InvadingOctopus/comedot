@@ -49,8 +49,8 @@ signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent
 
 #region Collisions
 
-func onAreaEntered(area: Area2D) -> void:
-	var damageReceivingComponent := getDamageReceivingComponent(area)
+func onAreaEntered(areaEntered: Area2D) -> void:
+	var damageReceivingComponent := getDamageReceivingComponent(areaEntered)
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:
@@ -62,18 +62,18 @@ func onAreaEntered(area: Area2D) -> void:
 			applyDamageTimerComponent(damageReceivingComponent)
 
 
-func onAreaExited(area: Area2D) -> void:
+func onAreaExited(areaExited: Area2D) -> void:
 	# No need to cast the area's type, just remove it from the array.
-	damageReceivingComponentsInContact.erase(area)
+	damageReceivingComponentsInContact.erase(areaExited)
 
 
 ## Casts an [Area2D] as a [DamageReceivingComponent].
-func getDamageReceivingComponent(area: Area2D) -> DamageReceivingComponent:
-	var damageReceivingComponent: DamageReceivingComponent = area.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
+func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingComponent:
+	var damageReceivingComponent: DamageReceivingComponent = componentArea.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
 
 	if not damageReceivingComponent:
 		## NOTE: This warning may help to set collision masks properly.
-		printDebug("Cannot cast area as DamageReceivingComponent: " + str(area) + " | Check collision masks")
+		printDebug("Cannot cast area as DamageReceivingComponent: " + str(componentArea) + " | Check collision masks")
 		return null
 
 	# Is it our own entity?
