@@ -1,0 +1,143 @@
+[gd_scene load_steps=8 format=3 uid="uid://b8evr41o1p0ea"]
+
+[ext_resource type="Script" path="res://Tests/TurnBasedTestComponent.gd" id="1_du0w2"]
+[ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_f63ty"]
+[ext_resource type="Script" path="res://Scripts/Visual/Spin.gd" id="3_1q1wu"]
+[ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="3_omtpf"]
+
+[sub_resource type="Animation" id="Animation_hti3u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WaitSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WaitSprite:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WaitSprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_3arox"]
+resource_name = "turnBegin"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WaitSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -32)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("WaitSprite:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WaitSprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2f1wb"]
+_data = {
+"RESET": SubResource("Animation_hti3u"),
+"turnBegin": SubResource("Animation_3arox")
+}
+
+[node name="TurnBasedTestComponent" type="Node2D" groups=["components", "turnBased"]]
+script = ExtResource("1_du0w2")
+metadata/_edit_group_ = true
+
+[node name="WaitSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_f63ty")
+region_enabled = true
+region_rect = Rect2(656, 192, 16, 16)
+
+[node name="WaitLabel" type="Label" parent="WaitSprite"]
+unique_name_in_owner = true
+offset_left = 8.0
+offset_top = -8.0
+offset_right = 120.0
+offset_bottom = 8.0
+text = "WAITTIME"
+label_settings = ExtResource("3_omtpf")
+vertical_alignment = 1
+
+[node name="ReadyStateSprite" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(2, 2)
+texture = ExtResource("2_f63ty")
+region_enabled = true
+region_rect = Rect2(464, 224, 16, 16)
+script = ExtResource("3_1q1wu")
+
+[node name="MovingStateSprite" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 0, 1)
+show_behind_parent = true
+scale = Vector2(2, 2)
+texture = ExtResource("2_f63ty")
+region_enabled = true
+region_rect = Rect2(304, 336, 16, 16)
+
+[node name="EndStateSprite" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(2, 2)
+texture = ExtResource("2_f63ty")
+region_enabled = true
+region_rect = Rect2(480, 176, 16, 16)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_2f1wb")
+}
+
+[node name="Timer" type="Timer" parent="."]
