@@ -69,6 +69,8 @@ func _exit_tree() -> void:
 
 #region Turn State Cycle
 
+# `await` on `self.processTurn…` ensures animations and any other delays are properly processed in order.
+
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
@@ -78,7 +80,8 @@ func processTurnBeginSignals() -> void:
 		TextBubble.create(self, str("turnBegin ", currentTurn))
 		
 	willBeginTurn.emit()
-	self.processTurnBegin()
+	await self.processTurnBegin()
+	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
 
@@ -91,7 +94,8 @@ func processTurnUpdateSignals() -> void:
 		TextBubble.create(self, str("turnUpdate ", currentTurn))
 		
 	willUpdateTurn.emit()
-	self.processTurnUpdate()
+	await self.processTurnUpdate()
+	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
 
@@ -104,7 +108,8 @@ func processTurnEndSignals() -> void:
 		TextBubble.create(self, str("turnEnd ", currentTurn))
 		
 	willEndTurn.emit()
-	self.processTurnEnd()
+	await self.processTurnEnd()
+	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
 #endregion

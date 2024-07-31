@@ -60,13 +60,16 @@ func _enter_tree() -> void:
 
 #region Turn State Cycle
 
+# `await` on `self.processTurn…` ensures animations and any other delays are properly processed in order.
+
 ## Called by the parent [TurnBasedEntity] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))	
 	willBeginTurn.emit()
-	self.processTurnBegin()
+	await self.processTurnBegin()
+	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
 
@@ -76,7 +79,8 @@ func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))	
 	willUpdateTurn.emit()
-	self.processTurnUpdate()
+	await self.processTurnUpdate()
+	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
 
@@ -86,7 +90,8 @@ func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
 	willEndTurn.emit()
-	self.processTurnEnd()
+	await self.processTurnEnd()
+	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
 #endregion
