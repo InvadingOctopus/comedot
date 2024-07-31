@@ -156,8 +156,24 @@ func getStateName(state: TurnBasedState = self.currentTurnState) -> StringName:
 		return &"invalid"
 
 
+#region Coordinator Management
+
 ## @experimental
-func clearTimerFunctions():
+func pause() -> void:
+	# TODO: Implement more reliable pause/unpause
+	stateTimer.paused  = true
+	entityTimer.paused = true
+
+
+## @experimental
+func unpause() -> void:
+	# TODO: Implement more reliable pause/unpause
+	stateTimer.paused  = false
+	entityTimer.paused = false
+
+
+## @experimental
+func clearTimerFunctions() -> void:
 	functionToCallOnStateTimer  = dummyTimerFunction
 	functionToCallOnEntityTimer = dummyTimerFunction
 
@@ -165,6 +181,8 @@ func clearTimerFunctions():
 ## @experimental
 func dummyTimerFunction() -> void:
 	return
+
+#endregion
 
 
 #region Coordinator State Cycle
