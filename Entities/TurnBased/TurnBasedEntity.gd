@@ -112,25 +112,28 @@ func processTurnEndSignals() -> void:
 
 #endregion Component Process Cycle
 
+# NOTE: Use `await` to allow any visual components to perform animations etc.
+
+
 ## Calls [method TurnBasedComponent.processTurnBeginSignals] on all child components.
 func processTurnBegin() -> void:
 	if not self.isEnabled: return
 	for turnBasedComponent in self.turnBasedComponents:
-		turnBasedComponent.processTurnBeginSignals()
+		await turnBasedComponent.processTurnBeginSignals()
 
 
 ## Calls [method TurnBasedComponent.processTurnUpdateSignals] on all child components.
 func processTurnUpdate() -> void:
 	if not self.isEnabled: return
 	for turnBasedComponent in self.turnBasedComponents:
-		turnBasedComponent.processTurnUpdateSignals()
+		await turnBasedComponent.processTurnUpdateSignals()
 
 
 ## Calls [method TurnBasedComponent.processTurnEndSignals] on all child components.
 func processTurnEnd() -> void:
 	if not self.isEnabled: return
 	for turnBasedComponent in self.turnBasedComponents:
-		turnBasedComponent.processTurnEndSignals()
+		await turnBasedComponent.processTurnEndSignals()
 
 #endregion
 
