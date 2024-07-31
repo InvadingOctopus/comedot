@@ -1,9 +1,14 @@
-[gd_scene load_steps=9 format=4 uid="uid://dkm5w4ukgrpgf"]
+[gd_scene load_steps=20 format=4 uid="uid://dkm5w4ukgrpgf"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_x8hsg"]
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="3_plb0j"]
+[ext_resource type="Script" path="res://Tests/TurnBasedTestUIEntity.gd" id="3_orv1y"]
+[ext_resource type="Script" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
+[ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedGridControlComponent.tscn" id="4_3bh2s"]
+[ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Packed.png" id="4_k2j6v"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_mkbvj"]
+[ext_resource type="PackedScene" uid="uid://b8evr41o1p0ea" path="res://Tests/TurnBasedTestComponent.tscn" id="5_253pd"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
+[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36c63"]
 texture = ExtResource("4_mkbvj")
@@ -15,10 +20,136 @@ texture = ExtResource("4_mkbvj")
 0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_usjrl"]
-physics_layer_0/collision_layer = 16
+physics_layer_0/collision_layer = 0
 physics_layer_0/collision_mask = 0
 sources/2 = SubResource("TileSetAtlasSource_36c63")
 sources/3 = SubResource("TileSetAtlasSource_3hkm5")
+
+[sub_resource type="LabelSettings" id="LabelSettings_vvp6u"]
+font = ExtResource("9_tlr5a")
+font_color = Color(0, 1, 0, 1)
+outline_size = 10
+outline_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5kxpx"]
+font = ExtResource("9_tlr5a")
+font_color = Color(1, 1, 0, 1)
+outline_size = 10
+outline_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_y0qcc"]
+font = ExtResource("9_tlr5a")
+font_color = Color(1, 0, 0, 1)
+outline_size = 10
+outline_color = Color(0, 0, 0, 0.5)
+
+[sub_resource type="Animation" id="Animation_ivwxp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MarginContainer:theme_override_constants/margin_left")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-100]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_tyb1r"]
+resource_name = "showBeginLabel"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(8, 8), Vector2(8, 8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MarginContainer:theme_override_constants/margin_left")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [-100, 8]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MarginContainer/VBoxContainer/BeginLabel:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fujdc"]
+_data = {
+"RESET": SubResource("Animation_ivwxp"),
+"showBeginLabel": SubResource("Animation_tyb1r")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 size = Vector2(16, 16)
@@ -36,26 +167,143 @@ tile_set = SubResource("TileSet_usjrl")
 tile_map_data = PackedByteArray("AAD/////AgAAAAAAAAD//wAAAgAAAAAAAAD//wEAAgAAAAAAAAD//wIAAgAAAAAAAAD//wMAAgAAAAAAAAD//wQAAgAAAAAAAAAAAP//AgAAAAAAAAABAP//AgAAAAAAAAACAP//AgAAAAAAAAADAP//AgAAAAAAAAAEAP//AgAAAAAAAAAFAP//AgAAAAAAAAAGAP//AgAAAAAAAAAHAP//AgAAAAAAAAAIAP//AgAAAAAAAAAJAP//AgAAAAAAAAAKAP//AgAAAAAAAAALAP//AgAAAAAAAAALAAAAAgAAAAAAAAALAAEAAgAAAAAAAAALAAIAAgAAAAAAAAALAAMAAgAAAAAAAAALAAQAAgAAAAAAAAALAAUAAgAAAAAAAAALAAYAAgAAAAAAAAALAAcAAgAAAAAAAAALAAgAAgAAAAAAAAALAAkAAgAAAAAAAAALAAoAAgAAAAAAAAALAAsAAgAAAAAAAAAKAAsAAgAAAAAAAAAJAAsAAgAAAAAAAAAIAAsAAgAAAAAAAAAHAAsAAgAAAAAAAAAGAAsAAgAAAAAAAAAFAAsAAgAAAAAAAAAEAAsAAgAAAAAAAAADAAsAAgAAAAAAAAACAAsAAgAAAAAAAAABAAsAAgAAAAAAAAAAAAsAAgAAAAAAAAD//wsAAgAAAAAAAAD//woAAgAAAAAAAAD//wkAAgAAAAAAAAD//wgAAgAAAAAAAAD//wcAAgAAAAAAAAD//wYAAgAAAAAAAAD//wUAAgAAAAAAAAA=")
 tile_set = SubResource("TileSet_usjrl")
 
-[node name="TileBasedEntity" type="RigidBody2D" parent="." groups=["entities", "players"]]
+[node name="TurnBasedUIEntity" type="Node2D" parent="."]
+script = ExtResource("3_orv1y")
+
+[node name="TurnBasedUI" type="CanvasLayer" parent="TurnBasedUIEntity"]
+layer = 90
+
+[node name="MarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI"]
+offset_right = 67.0
+offset_bottom = 32.0
+theme_override_constants/margin_left = -100
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnBasedUIEntity/TurnBasedUI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BeginLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+text = "TURN START"
+label_settings = SubResource("LabelSettings_vvp6u")
+
+[node name="UpdateLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "MOVE"
+label_settings = SubResource("LabelSettings_5kxpx")
+
+[node name="EndLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "SHUTDOWN"
+label_settings = SubResource("LabelSettings_y0qcc")
+
+[node name="CenterContainer" type="CenterContainer" parent="TurnBasedUIEntity/TurnBasedUI"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 67.0
+grow_vertical = 2
+
+[node name="BottomCenterContainer" type="CenterContainer" parent="TurnBasedUIEntity/TurnBasedUI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="NextTurnButton" type="Button" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "»TURN»"
+
+[node name="UITimer" type="Timer" parent="TurnBasedUIEntity/TurnBasedUI"]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="UIAnimationPlayer" type="AnimationPlayer" parent="TurnBasedUIEntity/TurnBasedUI"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_fujdc")
+}
+
+[node name="TurnBasedEntity1" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
 position = Vector2(88, 88)
 collision_layer = 2
 collision_mask = 16
 gravity_scale = 1.66533e-16
-script = ExtResource("3_plb0j")
+script = ExtResource("3_udncs")
+shouldShowDebugInfo = true
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="TileBasedEntity" groups=["players"]]
-modulate = Color(0, 1, 0, 1)
-texture = ExtResource("4_mkbvj")
+[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity1" groups=["players"]]
+texture = ExtResource("4_k2j6v")
+region_enabled = true
+region_rect = Rect2(560, 288, 16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TileBasedEntity"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity1"]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="TileBasedPositionComponent" parent="TileBasedEntity" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
-tileMap = NodePath("../../BackgroundTileMap")
-initialTileCoordinates = Vector2i(2, 2)
-shouldShowDebugInfo = true
-
-[node name="Camera2D" type="Camera2D" parent="TileBasedEntity"]
+[node name="Camera2D" type="Camera2D" parent="TurnBasedEntity1"]
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
+
+[node name="TurnBasedTestComponent" parent="TurnBasedEntity1" instance=ExtResource("5_253pd")]
+shouldShowDebugInfo = true
+
+[node name="TurnBasedGridControlComponent" parent="TurnBasedEntity1" instance=ExtResource("4_3bh2s")]
+randomMovement = true
+shouldShowDebugInfo = true
+
+[node name="TileBasedPositionComponent" parent="TurnBasedEntity1" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
+tileMap = NodePath("../../BackgroundTileMap")
+initialTileCoordinates = Vector2i(6, 6)
+speed = 50.0
+
+[node name="TurnBasedEntity2" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
+position = Vector2(136, 120)
+collision_layer = 2
+collision_mask = 16
+gravity_scale = 1.66533e-16
+script = ExtResource("3_udncs")
+shouldShowDebugInfo = true
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity2" groups=["players"]]
+texture = ExtResource("4_k2j6v")
+region_enabled = true
+region_rect = Rect2(576, 288, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity2"]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="TurnBasedTestComponent" parent="TurnBasedEntity2" instance=ExtResource("5_253pd")]
+shouldShowDebugInfo = true
+
+[node name="TurnBasedGridControlComponent" parent="TurnBasedEntity2" instance=ExtResource("4_3bh2s")]
+randomMovement = true
+shouldShowDebugInfo = true
+
+[node name="TileBasedPositionComponent" parent="TurnBasedEntity2" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
+tileMap = NodePath("../../BackgroundTileMap")
+initialTileCoordinates = Vector2i(6, 9)
+speed = 50.0
+
+[connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]
