@@ -27,68 +27,18 @@ extends Node
 #region State
 
 @onready var debugWindow:	Window = %DebugWindow
-@onready var labels:			Node  = %Labels
+@onready var labels:		Node  = %Labels
 @onready var label:			Label = %Label
 @onready var warningLabel:	Label = %WarningLabel
-@onready var watchListLabel:	Label = %WatchListLabel
+@onready var watchListLabel:Label = %WatchListLabel
 
 var previousChartWindowInitialPosition: Vector2i
-
-#endregion
-
-
-#region Logging
-
 var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
 
-func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
-	updateLastFrameLogged()
-	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
-
-
-## Prints a faded message to reduce apparent visual clutter.
-func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	if Debug.printDebugLogs:
-		# Do not print frames on a separate line to reduce less clutter.
-		#updateLastFrameLogged()
-		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # Not useful because it will always say it was called from this Debug script.
-		print_rich("[right][color=dimgray]F" + str(Engine.get_frames_drawn()) + " " + objectName + " " + message + "[/color]")
-
-
-## Prints the message in bold and a bright color, with empty lines on each side.
-## For finding important messages quickly in the debug console.
-func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	print_rich("\n[indent]􀢒 [b][color=white]" + objectName + " " + message + "[/color][/b]\n")
-
-
-func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	updateLastFrameLogged()
-	push_warning("Frame " + str(lastFrameLogged) + " ⚠️ " + objectName + " " + message)
-	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
-
-
-## NOTE: In release builds, if [member Global.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
-func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	updateLastFrameLogged()
-	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
-	push_error(plainText)
-	printerr(plainText)
-	# Don't print a duplicate line, to reduce clutter.
-	#print_rich("[indent]❗️ [color=red]" + objectName + " " + message + "[/color]")
-	
-	# WARNING: Crash on error if not developing in the editor.
-	if Global.shouldAlertOnError and not OS.is_debug_build():
-		OS.alert(message, "Framework Error")
-
-
-## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
-func updateLastFrameLogged() -> void:
-	if not lastFrameLogged == Engine.get_frames_drawn():
-		lastFrameLogged = Engine.get_frames_drawn()
-		print("\n[right][b][u]Frame " + str(lastFrameLogged) + "[/u][/b]")
-
 #endregion
 
+
+#region Initialization
 
 func _ready() -> void:
 	initializeDebugWindow()
@@ -139,6 +89,10 @@ func displayInitializationMessage() -> void:
 	
 	self.showTemporaryLabel(Global.frameworkTitle, message)
 
+#endregion
+
+
+#region Runtime
 
 func _process(_delta: float) -> void:
 	if not showDebugLabels or not is_instance_valid(debugWindow) or not debugWindow.visible: return
@@ -158,6 +112,10 @@ func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) ->
 	await get_tree().create_timer(duration, false, false, true).timeout
 	watchList.erase(key)
 
+#endregion
+
+
+#region Windows 
 
 ## Returns: The resulting state of the debug window's visibility.
 func toggleDebugWindow() -> bool:
@@ -198,3 +156,56 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 	
 	self.add_child(newChartWindow)
 	return newChart
+
+#endregion
+
+
+#region Logging
+
+func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
+	updateLastFrameLogged()
+	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
+
+
+## Prints a faded message to reduce apparent visual clutter.
+func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+	if Debug.printDebugLogs:
+		# Do not print frames on a separate line to reduce less clutter.
+		#updateLastFrameLogged()
+		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # Not useful because it will always say it was called from this Debug script.
+		print_rich("[right][color=dimgray]F" + str(Engine.get_frames_drawn()) + " " + objectName + " " + message + "[/color]")
+
+
+## Prints the message in bold and a bright color, with empty lines on each side.
+## For finding important messages quickly in the debug console.
+func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+	print_rich("\n[indent]􀢒 [b][color=white]" + objectName + " " + message + "[/color][/b]\n")
+
+
+func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+	updateLastFrameLogged()
+	push_warning("Frame " + str(lastFrameLogged) + " ⚠️ " + objectName + " " + message)
+	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
+
+
+## NOTE: In release builds, if [member Global.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
+func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+	updateLastFrameLogged()
+	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
+	push_error(plainText)
+	printerr(plainText)
+	# Don't print a duplicate line, to reduce clutter.
+	#print_rich("[indent]❗️ [color=red]" + objectName + " " + message + "[/color]")
+	
+	# WARNING: Crash on error if not developing in the editor.
+	if Global.shouldAlertOnError and not OS.is_debug_build():
+		OS.alert(message, "Framework Error")
+
+
+## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
+func updateLastFrameLogged() -> void:
+	if not lastFrameLogged == Engine.get_frames_drawn():
+		lastFrameLogged = Engine.get_frames_drawn()
+		print("\n[right][b][u]Frame " + str(lastFrameLogged) + "[/u][/b]")
+
+#endregion
