@@ -315,39 +315,44 @@ func processTurnEndSignals() -> void:
 
 #region Entity Update Cycle
 
+func waitForEntityTimer() -> void:
+	if not is_zero_approx(delayBetweenEntities): 
+		entityTimer.start()
+		await entityTimer.timeout
+
+
 func onEntityTimer_timeout() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer), "", str(self))
 	functionToCallOnEntityTimer.call()
 	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
 
- # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
+# NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
+# NOTE: Do NOT `await turnBasedEntity.did…` signals, because they are emitted within `turnBasedEntity.process…`, before the following `await`
+
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
+		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnBeginSignals()
-		if not is_zero_approx(delayBetweenEntities): 
-			entityTimer.start()
-			await entityTimer.timeout
+		await waitForEntityTimer()
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
+		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnUpdateSignals()
-		if not is_zero_approx(delayBetweenEntities): 
-			entityTimer.start()
-			await entityTimer.timeout
+		await waitForEntityTimer()
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
 	for turnBasedEntity in self.turnBasedEntities:
+		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnEndSignals()
-		if not is_zero_approx(delayBetweenEntities): 
-			entityTimer.start()
-			await entityTimer.timeout
+		await waitForEntityTimer()
 
 #endregion
 
