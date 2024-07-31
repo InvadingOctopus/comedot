@@ -206,6 +206,6 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
-		print("\n[right][b][u]Frame " + str(lastFrameLogged) + "[/u][/b]")
+		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
 
 #endregion
