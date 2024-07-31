@@ -4,7 +4,7 @@ A project template and framework for making 2D games by adding components to ent
 
 This is a work in progress. For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
-ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and change the IDs for textures etc. Close and reopen the project. You may need to manually update the "/Templates/TileSetTemplate.tres" tileset to re-add the textures.
+ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and change the IDs for textures etc. Close and reopen the project. You may need to manually update the "/Templates/TileSetTemplate.tres" tileset to re-add the texture: "/Assets/Images/Checkerboard32x32.png" (but do not automatically recreate the tiles).
 
 ----
 
@@ -12,7 +12,7 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Commit URL:		c85e0efb505e03e2ffe80df9cacac0bb9cd323a1
+Commit URL:		b69269a66fbc2e74a4be370a7182eff58fce9db4
 Godot Vesion:	4.3
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
