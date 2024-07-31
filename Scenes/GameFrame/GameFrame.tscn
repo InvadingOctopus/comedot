@@ -70,6 +70,3 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "← Back"
-
-[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/BackButton" to="CanvasLayer/CenterContainer" method="onBackButton_pressed"]
-[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/BackButton" to="CanvasLayer/CenterContainer/VBoxContainer" method="onBackButton_pressed"]
