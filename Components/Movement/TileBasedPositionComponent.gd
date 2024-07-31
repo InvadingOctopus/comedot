@@ -1,5 +1,6 @@
 ## Sets the position of the parent Entity to the position of a tile in an associated [TileMapLayer].
-## Does NOT receive player control input, or perform path-finding or any other validation logic except checking the tile map bounds.
+## Does NOT receive player control input, or perform path-finding or any other validation logic
+## except checking the tile map bounds and tile collision.
 
 class_name TileBasedPositionComponent
 extends Component
@@ -75,17 +76,39 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	# Is the new destination the same as the current tile? i.e. was the previous move cancelled?
 	if newDestinationTileCoordinates == self.currentTileCoordinates:
 		cancelDestination()
-		return true # Done!
+		return true # NOTE: Return true because arriving at the specified coordinates should be considered a success, even if already there. :)
 
-	# Do we have a new destination?
-
-	# TODO: Validate TileMap bounds
-
+	# Validate the new destination?
+	
+	if not validateCoordinates(newDestinationTileCoordinates):
+		return false
+	
+	# Move Your Body ♪
+	
 	willStartMovingToNewTile.emit(newDestinationTileCoordinates)
 	self.destinationTileCoordinates = newDestinationTileCoordinates
 	self.isMovingToNewTile = true
 
 	return true
+
+
+## Ensures that the specified coordinates are within the [TileMapLayer]'s bounds
+## and also calls [method checkCollision].
+## May be overridden by subclasses to perform additional checks.
+## NOTE: Subclasses MUST call super to perform basic validation.
+func validateCoordinates(coordinates: Vector2i) -> bool:
+	# NOTE: HACK: The current implementation of the Global method always returns `true`. 
+	return \
+		Global.checkTileMapBounds(tileMap, coordinates) \
+		and self.checkCollision(coordinates)
+
+
+## Performs collision detection against the parent Entity's body.
+## If there is no collision then the tile may be moved into.
+## May be overridden by subclasses to perform different checks, like testing custom data on a tile.
+func checkCollision(coordinates: Vector2i) -> bool:
+	# NOTE: HACK: The current implementation of the Global method always returns `true`. 
+	return Global.checkTileCollision(tileMap, parentEntity.body, coordinates)
 
 
 ## Cancels the current move.
