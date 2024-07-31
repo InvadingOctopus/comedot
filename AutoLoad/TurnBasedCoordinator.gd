@@ -1,6 +1,6 @@
 ## Manages turn-based gameplay and updates [TurnBasedEntity]s.
 ## Each turn has 3 phases: Begin, Update, End.
-## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurnStateCycle].
+## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurnProcess].
 ##
 ## During each phase, the corresponding Begin/Update/End methods are called on all turn-based entities in order:
 ## The entities then call the corresponding methods on each of their [TurnBasedComponent]s.
@@ -162,23 +162,23 @@ func dummyTimerFunction() -> void:
 
 #region Coordinator State Cycle
 
-## The beginning of processing 1 full turn and its 3 states/phases.
+## The beginning of processing 1 full turn and its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
-func startTurnStateCycle() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("startTurnStateCycle() currentTurn: ", currentTurn), "white", str(self))
+func startTurnProcess() -> void:
+	if shouldShowDebugInfo: Debug.printLog(str("startTurnProcess() currentTurn: ", currentTurn), "white", str(self))
 	
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 	
 	if self.currentTurnState != TurnBasedState.turnBegin:
-		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when currentTurnState != turnBegin", "", str(self))
+		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when currentTurnState != turnBegin", "", str(self))
 		return
 	
 	if not is_zero_approx(stateTimer.time_left):
-		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when stateTimer.time_left != 0", "", str(self))
+		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when stateTimer.time_left != 0", "", str(self))
 		return
 	
 	if not is_zero_approx(entityTimer.time_left):
-		if shouldShowDebugInfo: Debug.printWarning("startTurnStateCycle() called when entityTimer.time_left != 0", "", str(self))
+		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when entityTimer.time_left != 0", "", str(self))
 		return
 	
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
