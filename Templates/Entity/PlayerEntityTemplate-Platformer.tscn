@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=34 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_rphdn"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="5_1y43j"]
 [ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="6_30kxi"]
+[ext_resource type="Script" path="res://Components/Combat/FactionComponent.gd" id="7_e6qml"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_nsuj0"]
 [ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="8_dmqtc"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="9_g0ayb"]
@@ -216,6 +217,10 @@ stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResourc
 [node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
 health = SubResource("Resource_cei4g")
 shouldRemoveParentOnZero = true
+
+[node name="FactionComponent" type="Node" parent="."]
+script = ExtResource("7_e6qml")
+factions = 2
 
 [node name="DamageReceivingComponent" parent="." instance=ExtResource("7_nsuj0")]
 collision_layer = 4
