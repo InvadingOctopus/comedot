@@ -149,6 +149,13 @@ func _ready() -> void:
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
 
 
+func getStateName(state: TurnBasedState = self.currentTurnState) -> StringName:
+	if state >= TurnBasedState.turnBegin and state <= TurnBasedState.turnEnd:
+		return [&"begin", &"update", &"end"][state]
+	else:
+		return &"invalid"
+
+
 ## @experimental
 func clearTimerFunctions():
 	functionToCallOnStateTimer  = dummyTimerFunction
