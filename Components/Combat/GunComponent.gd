@@ -48,7 +48,7 @@ var wasFireActionJustPressed := false
 #region
 
 
-func _unhandled_input(event: InputEvent):
+func _unhandled_input(_event: InputEvent) -> void:
 	# NOTE: Using [_unhandled_input] allows UI buttons etc. to trap mouse clicks
 	# without causing the gun to fire, which looks janky.
 
@@ -62,7 +62,7 @@ func _unhandled_input(event: InputEvent):
 	isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
 
 
-func _process(delta: float):
+func _process(_delta: float) -> void:
 	# NOTE: Input actions are handled in [_unhandled_input]
 	# to allow UI buttons etc. to handle mouse clicks,
 	# because it looks janky if the gun fires when the player clicks on an unrelated UI button.
@@ -78,7 +78,7 @@ func _process(delta: float):
 		wasFireActionJustPressed = false
 
 
-func fire(ignoreCooldown: bool = false):
+func fire(ignoreCooldown: bool = false) -> void:
 
 	if not isEnabled: return
 	if not hasCooldownCompleted and not ignoreCooldown: return

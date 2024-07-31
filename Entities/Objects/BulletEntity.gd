@@ -10,17 +10,17 @@ extends Entity
 @export var removeOnCollisionWithDamageReceiver := true
 
 
-func onDamageComponent_didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent) -> void:
+func onDamageComponent_didCollideWithReceiver(_damageReceivingComponent: DamageReceivingComponent) -> void:
 	if removeOnCollisionWithDamageReceiver:
 		self.requestRemoval()
 
 
-func onAreaEntered(area: Area2D) -> void:
-	if not area.owner == self: onCollide()
+func onAreaEntered(areaEntered: Area2D) -> void:
+	if not areaEntered.owner == self: onCollide()
 
 
-func onBodyEntered(body: Node2D) -> void:
-	if not body.owner == self: onCollide()
+func onBodyEntered(bodyEntered: Node2D) -> void:
+	if not bodyEntered.owner == self: onCollide()
 
 
 func onCollide() -> void:

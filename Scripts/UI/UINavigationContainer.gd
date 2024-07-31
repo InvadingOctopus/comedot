@@ -94,7 +94,7 @@ func goBack() -> void:
 	navigationHistory.pop_back()
 
 	# Pop again to get the previous node
-	var previousDestination = navigationHistory.pop_back()
+	var previousDestination: String = navigationHistory.pop_back()
 	# It will be appended to [navigationHistory] again in [displayNavigationDestination()]
 
 	self.displayNavigationDestination(previousDestination)

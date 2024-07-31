@@ -61,10 +61,10 @@ func _ready() -> void:
 #region Collisions
 
 
-func onAreaEntered(area: Area2D) -> void:
+func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled: return
 
-	var damageComponent := getDamageComponent(area)
+	var damageComponent := getDamageComponent(areaEntered)
 
 	# If the Area2D is not a DamageComponent, there's nothing to do.
 	if damageComponent:
@@ -74,11 +74,11 @@ func onAreaEntered(area: Area2D) -> void:
 	# processCollision(damageComponent, null) # NOTE: Damage-causing area collision is initiated by the [DamageComponent] script.
 
 
-func onAreaExited(area: Area2D) -> void:
+func onAreaExited(areaExited: Area2D) -> void:
 	if not isEnabled: return
 
 	# No need to cast the area's type, just remove it from the array.
-	damageComponentsInContact.erase(area)
+	damageComponentsInContact.erase(areaExited)
 
 	# Reset the accumulatedFractionalDamage if there is no source of damage in contact.
 	if damageComponentsInContact.size() <= 0:
@@ -86,12 +86,12 @@ func onAreaExited(area: Area2D) -> void:
 
 
 ## Casts an [Area2D] as a [DamageComponent].
-func getDamageComponent(area: Area2D) -> DamageComponent:
-	var damageComponent: DamageComponent = area.get_node(".") as DamageComponent # HACK: TODO: Find better way to cast
+func getDamageComponent(componentArea: Area2D) -> DamageComponent:
+	var damageComponent: DamageComponent = componentArea.get_node(".") as DamageComponent # HACK: TODO: Find better way to cast
 
 	if not damageComponent:
 		## NOTE: This warning may help to set collision masks properly.
-		printDebug("Cannot cast area as DamageComponent: " + str(area) + " | Check collision masks")
+		printDebug("Cannot cast area as DamageComponent: " + str(componentArea) + " | Check collision masks")
 		return null
 
 	# Is it our own entity?

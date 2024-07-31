@@ -382,7 +382,7 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 #endregion
 
 
-func _process(delta: float) -> void: # DEBUG
+func _process(_delta: float) -> void: # DEBUG
 	showDebugInfo()
 
 

@@ -8,10 +8,10 @@ extends Label
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
 
 
-static func create(parentNode: Node2D, text: String) -> TextBubble:
+static func create(parentNode: Node2D, bubbleText: String) -> TextBubble:
 	var scenePath := Global.getScenePathFromClass(TextBubble)
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
-	newBubble.text = text
+	newBubble.text = bubbleText
 	parentNode.add_child(newBubble)
 	newBubble.owner = parentNode
 	return newBubble

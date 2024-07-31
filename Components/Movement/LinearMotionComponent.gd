@@ -33,7 +33,7 @@ signal didReachMaximumDistance
 #endregion
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isMoving: return
 
 	# Check the maximum distance limit before moving any further.
@@ -47,7 +47,7 @@ func _physics_process(delta: float):
 			return
 
 	# Get the current direction
-	var direction = Vector2.RIGHT.rotated(parentEntity.rotation)
+	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation)
 
 	# Accelerate
 

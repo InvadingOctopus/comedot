@@ -26,7 +26,7 @@ extends Node2D
 #endregion
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# TODO: flip_v
 	# TODO: A more accurate and reliable implementation
 	if not isEnabled or not spriteToMatch: return

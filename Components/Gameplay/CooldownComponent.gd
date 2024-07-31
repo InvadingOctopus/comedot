@@ -36,7 +36,7 @@ signal didFinishCooldown
 
 #region Cooldown
 
-func startCooldown(overrideTime: float = self.cooldown):
+func startCooldown(overrideTime: float = self.cooldown) -> void:
 	printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime))
 	hasCooldownCompleted = false
 	cooldownTimer.wait_time = overrideTime	

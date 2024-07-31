@@ -417,14 +417,14 @@ func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
 ## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
 ## @experimental
-func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
+func checkTileMapBounds(_tileMap: TileMapLayer, _coordinates: Vector2i) -> bool:
 	return true # HACK: TODO: Implement
 
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
 ## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
 ## @experimental
-func checkTileCollision(tileMap: TileMapLayer, body: PhysicsBody2D, coordinates: Vector2i) -> bool:
+func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
 	# If the TileMap or its collisions are disabled, then the tile is always available.
 	if not tileMap.enabled or not tileMap.collision_enabled: return true
 	

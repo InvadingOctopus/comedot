@@ -91,7 +91,7 @@ func _physics_process(delta: float) -> void:
 
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
-func updateStateBeforeMove(delta: float) -> void:
+func updateStateBeforeMove(_delta: float) -> void:
 	self.wasOnFloor		= body.is_on_floor()
 	self.wasOnWall		= body.is_on_wall()
 	self.wasOnCeiling	= body.is_on_ceiling()
@@ -103,7 +103,7 @@ func updateStateBeforeMove(delta: float) -> void:
 
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
-func updateStateAfterMove(delta: float) -> void:
+func updateStateAfterMove(_delta: float) -> void:
 	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
 	# so it makes sense to cache it after the move.
 	self.isOnFloor = body.is_on_floor()

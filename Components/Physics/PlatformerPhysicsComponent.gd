@@ -116,7 +116,7 @@ func processInput() -> void:
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
 
 
-func characterBodyComponent_didMove(delta: float) -> void:
+func characterBodyComponent_didMove(_delta: float) -> void:
 	if shouldShowDebugInfo: showDebugInfo()
 	
 	# Clear the input so it doesn't carry on over to the next frame.
