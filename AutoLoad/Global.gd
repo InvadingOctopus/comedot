@@ -487,4 +487,15 @@ func isValidArrayIndex(array: Array, index: int) -> bool:
 	else:
 		return false
 
+
+## Stops a [Timer] and emits its [signal Timer.timeout] signal.
+## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
+## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
+func skipTimer(timer: Timer) -> float:
+	# WARNING: This may not be accurate because the Timer is still running until the `stop()` call.
+	var leftoverTime: float = timer.time_left 
+	timer.stop()
+	timer.timeout.emit()
+	return leftoverTime
+
 #endregion
