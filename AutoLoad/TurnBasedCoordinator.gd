@@ -193,7 +193,7 @@ func startTurnProcess() -> void:
 	cycleStatesUntilNextTurn()
 
 
-## Cycles through all the [TurnBasedState]s until the next turn's [TurnBasedState.turnBegin].
+## Cycles through all the [enum TurnBasedState]s until the next turn's [constant TurnBasedState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
 	# TODO: A less complex/ambiguous implementation 
 	if shouldShowDebugInfo: Debug.printLog("cycleStatesUntilNextTurn()", "", str(self))
