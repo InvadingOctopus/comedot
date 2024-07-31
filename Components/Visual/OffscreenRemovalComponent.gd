@@ -3,15 +3,18 @@
 class_name OffscreenRemovalComponent
 extends Component
 
+
 @export var rectangle: Rect2:
-	get: return %VisibleOnScreenNotifier2D.rect
+	get: return onScreenNotifier.rect
 	set(newValue):
 		rectangle = newValue
-		if %VisibleOnScreenNotifier2D: %VisibleOnScreenNotifier2D.rect = rectangle
+		if onScreenNotifier: onScreenNotifier.rect = rectangle
+
+@onready var onScreenNotifier: VisibleOnScreenNotifier2D = %OnScreenNotifier
 
 
 func _ready() -> void:
-	%VisibleOnScreenNotifier2D.rect = rectangle
+	onScreenNotifier.rect = self.rectangle
 	
 	
 func onScreenExited() -> void:

@@ -7,8 +7,8 @@ script = ExtResource("1_eukg6")
 rectangle = Rect2(-16, -16, 32, 32)
 metadata/_edit_group_ = true
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+[node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
 unique_name_in_owner = true
 rect = Rect2(-16, -16, 32, 32)
 
-[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="onScreenExited"]
+[connection signal="screen_exited" from="OnScreenNotifier" to="." method="onScreenExited"]
