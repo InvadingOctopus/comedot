@@ -472,6 +472,13 @@ func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> 
 #endregion
 
 
+#region Maths Functions
+
+## INFO: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
+
+#endregion
+
+
 #region Miscellaneous Functions
 
 func isValidArrayIndex(array: Array, index: int) -> bool:
