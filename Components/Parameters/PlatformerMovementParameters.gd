@@ -12,7 +12,7 @@ extends Resource
 
 ## If `false`, then [member speed] is applied directly.
 @export var shouldApplyAccelerationOnFloor:			bool  = true
-@export_range(0, 1000, 5) var accelerationOnFloor:	float = 800
+@export_range(0, 5000, 5) var accelerationOnFloor:	float = 800
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
 ## WARNING: If this is `true` then velocity changes from other components such as [KnockbackOnHitComponent] may be cancelled.
