@@ -104,14 +104,14 @@ func checkRequiredComponents() -> bool:
 
 ## Calls [method queue_free()] on itself if the parent entity approves. Returns `true` if removed.
 ## May be overridden in subclasses to check additional conditions and logic.
-func requestRemoval() -> bool:
+func requestDeletion() -> bool:
 	# TODO: Ask the parent entity for approval?
 	self.queue_free()
 	return true
 
 
-func requestRemovalOfParentEntity() -> bool:
-	return parentEntity.requestRemoval()
+func requestDeletionOfParentEntity() -> bool:
+	return parentEntity.requestDeletion()
 
 
 func _exit_tree() -> void:
@@ -171,7 +171,7 @@ func removeSiblingComponentsOfSameType() -> int:
 		if sibling == self: continue
 
 		if is_instance_of(sibling, self.get_script().get_global_name()):
-			sibling.requestRemoval()
+			sibling.requestDeletion()
 			removalCount += 1
 
 	return removalCount

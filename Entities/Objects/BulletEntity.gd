@@ -12,7 +12,7 @@ extends Entity
 
 func onDamageComponent_didCollideWithReceiver(_damageReceivingComponent: DamageReceivingComponent) -> void:
 	if removeOnCollisionWithDamageReceiver:
-		self.requestRemoval()
+		self.requestDeletion()
 
 
 func onAreaEntered(areaEntered: Area2D) -> void:
@@ -25,4 +25,4 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 
 func onCollide() -> void:
 	if removeOnAnyCollision:
-		self.requestRemoval()
+		self.requestDeletion()

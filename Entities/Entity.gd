@@ -96,7 +96,7 @@ func _process(_delta: float) -> void:
 
 ## May be called by a child component such as a [HealthComponent] when this parent [Entity] is supposed to be removed from the scene.
 ## May be overridden in subclasses to check additional conditions and logic.
-func requestRemoval() -> bool:
+func requestDeletion() -> bool:
 	self.queue_free()
 	return true
 
@@ -232,12 +232,12 @@ func addSceneCopy(path: String) -> Node:
 
 ## Removes all child nodes of the specified type and frees (deletes) them if [param free] is `true`.
 ## Returns: The number of children that were removed (0 means none were found).
-func removeChildrenOfType(type: Variant, free: bool = true) -> int: # TODO: Return type?
+func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO: Return type?
 	var childrenToRemove: Array[Node] = self.findChildrenOfType(type)
 	var childrenRemoved := 0
 	for child: Node in childrenToRemove:
 		self.remove_child(child)
-		if free: child.queue_free()
+		if shouldFree: child.queue_free()
 		childrenRemoved += 1
 
 	printLog("removeChildrenOfType(" + str(type) + "): " + str(childrenRemoved))

@@ -63,7 +63,7 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 
 	if checkRemovalConditions():
 		willBeFreed.emit()
-		self.requestRemovalOfParentEntity()
+		self.requestDeletionOfParentEntity()
 
 	return isCollectionApproved
 
