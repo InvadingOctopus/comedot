@@ -81,7 +81,10 @@ var platformerControlComponent: PlatformerControlComponent:
 
 func _ready() -> void:
 	self.currentState = State.idle
-	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
+	if characterBodyComponent: 
+		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
+	else:
+		printWarning("Missing CharacterBodyComponent")
 	
 	# Set the initial timers
 	

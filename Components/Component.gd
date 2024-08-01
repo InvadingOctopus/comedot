@@ -105,7 +105,11 @@ func checkRequiredComponents() -> bool:
 ## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
 ## Components that are only removed but not freed may be re-added to any entity,
 func removeFromEntity(shouldFree: bool = true) -> void:
-	parentEntity.remove_child(self)
+	if parentEntity and parentEntity == self.get_parent():
+		parentEntity.remove_child(self)
+	else:
+		# TBD: Display a warning or would it be redundant if the component is already removed?
+		pass # DEBUG: printWarning(str("Cannot removeFromEntity: ", parentEntity))
 	if shouldFree: self.queue_free()
 
 

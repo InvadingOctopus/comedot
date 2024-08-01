@@ -53,13 +53,12 @@ var gravity:	 float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
 func _ready() -> void:
 	self.currentState = State.idle
-	if characterBodyComponent.body:
+	if characterBodyComponent and characterBodyComponent.body:
 		printLog("characterBodyComponent..body.motion_mode → Grounded")
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
-		
-	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 
 
 #region Update Cycle
