@@ -51,6 +51,8 @@ extends Area2D
 ## This may be a slower process than choosing a random position within a simple rectangle.
 # @export var shouldVerifyWithinArea := false # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
 
+@export var shouldShowDebugInfo: bool = false
+
 #endregion
 
 
@@ -97,10 +99,12 @@ func populate() -> void:
 	# NOTE: A position of (0,0) may be top-left in the [Area2D] but at center of the [CollisionShape2D]'s shape.
 	# So we have to adjust the first copy's position so that (0,0) is at the top-left of the SHAPE.
 
-	Debug.printDebug("shapeBounds: " + str(shapeBounds))
-	Debug.printDebug("initialOffset: " + str(initialOffset))
 	initialOffset += shapeBounds.position # NOTE: But if this is done in createNewCopy() then it will be cumulatively reapplied to each copy!
-	Debug.printDebug("initialOffset: " + str(initialOffset))
+	
+	if shouldShowDebugInfo:
+		Debug.printDebug(str("shapeBounds: ", shapeBounds, \
+			"\ninitialOffset: ", initialOffset, \
+			"\ninitialOffset: ", initialOffset))
 
 	for c in numberOfCopies:
 		createNewCopy(sceneResource, parent)
@@ -119,53 +123,53 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 	# First, is this the first copy?
 	# var isFirstNode: bool = totalCopiesCreated <= 0
 
-	Debug.printDebug("createNewCopy(): totalCopiesCreated: " + str(totalCopiesCreated))
+	if shouldShowDebugInfo: Debug.printDebug(str("createNewCopy(): totalCopiesCreated: ", totalCopiesCreated))
 
 	if totalCopiesCreated <= 0:
 		previousUnmodifiedPosition = Vector2.ZERO
 		newCopy.position = initialOffset
-		Debug.printDebug("Initial: newCopy.position: " + str(initialOffset))
+		if shouldShowDebugInfo: Debug.printDebug(str("Initial: newCopy.position: ", initialOffset))
 	else:
 		# If not the first copy, get the previous copy's position.
 		newCopy.position = previousUnmodifiedPosition # Copy the position so that we get both X & Y before applying adjustments.
-		Debug.printDebug("previousPosition: " + str(previousUnmodifiedPosition))
+		if shouldShowDebugInfo: Debug.printDebug(str("previousPosition: ", previousUnmodifiedPosition))
 
 		# Apply horizontal spacing between the previous copy and the next copy
 		newCopy.position.x += horizontalSpacing
-		Debug.printDebug("Spacing: newCopy.position: " + str(newCopy.position))
+		if shouldShowDebugInfo: Debug.printDebug(str("Spacing: newCopy.position: ", newCopy.position))
 
 		# If we exceeded the area's width, then go down a "row"
 
 		if newCopy.position.x > self.shapeBounds.end.x:
-			Debug.printDebug("newCopy.position.x > shapeBounds.end.x")
-			# Reset the horizontal position to line up with the initial offset
+			if shouldShowDebugInfo: Debug.printDebug("newCopy.position.x > shapeBounds.end.x")
 			newCopy.position.x = initialOffset.x
-			Debug.printDebug("New Row X Reset: newCopy.position: " + str(newCopy.position))
+			# Reset the horizontal position to line up with the initial offset
+			if shouldShowDebugInfo: Debug.printDebug(str("New Row X Reset: newCopy.position: ", newCopy.position))
 			newCopy.position.y += verticalSpacing
-			Debug.printDebug("New Row Y Spacing: newCopy.position: " + str(newCopy.position))
+			if shouldShowDebugInfo: Debug.printDebug(str("New Row Y Spacing: newCopy.position: ", newCopy.position))
 
 	# Store the final position before any randomization or clamping,
 	# so the next copy can be spaced according to the expected grid pattern.
 
 	previousUnmodifiedPosition = newCopy.position
-	Debug.printDebug("previousUnmodifiedPosition: " + str(previousUnmodifiedPosition))
+	if shouldShowDebugInfo: Debug.printDebug(str("previousUnmodifiedPosition: ", previousUnmodifiedPosition))
 
 	# Apply the random "jitter" or "jiggle" offset to each copy
 
 	var randomX: float = randf_range(minimumVariation.x, maximumVariation.x)
 	var randomY: float = randf_range(minimumVariation.y, maximumVariation.y)
-	Debug.printDebug("Random Variation: " + str(randomX, ", ", randomY))
+	if shouldShowDebugInfo: Debug.printDebug(str("Random Variation: ", randomX, ", ", randomY))
 
 	newCopy.position.x += randomX
 	newCopy.position.y += randomY
-	Debug.printDebug("Random Variation: newCopy.position: " + str(newCopy.position))
+	if shouldShowDebugInfo: Debug.printDebug(str("Random Variation: newCopy.position: ", newCopy.position))
 
 	# Clamp the copy within the shape's bounds, if that option is chosen.
 
 	if shouldClampToShapeBounds:
 		newCopy.position.x = clampf(newCopy.position.x, self.shapeBounds.position.x, self.shapeBounds.end.x)
 		newCopy.position.y = clampf(newCopy.position.y, self.shapeBounds.position.y, self.shapeBounds.end.y)
-		Debug.printDebug("Clamp: newCopy.position: " + str(newCopy.position))
+		if shouldShowDebugInfo: Debug.printDebug(str("Clamp: newCopy.position: ", newCopy.position))
 
 	# Convert the copy's position to the parent's space.
 	# TBD: Verify
@@ -185,7 +189,7 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 		#didCopy.emit(newCopy, parent)
 		previousCopy = newCopy
 		totalCopiesCreated += 1
-		Debug.printDebug("totalCopiesCreated: " + str(totalCopiesCreated))
+		if shouldShowDebugInfo: Debug.printDebug(str("totalCopiesCreated: ", totalCopiesCreated))
 		
 		return newCopy
 	else:
