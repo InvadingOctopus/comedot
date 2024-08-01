@@ -35,7 +35,7 @@ maximumDistance = 100.0
 
 [node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_ogryl")]
 
-[node name="VisibleOnScreenNotifier2D" parent="OffscreenRemovalComponent" index="0"]
+[node name="OnScreenNotifier" parent="OffscreenRemovalComponent" index="0"]
 scale = Vector2(0.25, 0.25)
 
 [node name="DamageComponent" parent="." instance=ExtResource("5_qww6u")]
