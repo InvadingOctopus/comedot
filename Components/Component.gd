@@ -102,6 +102,13 @@ func checkRequiredComponents() -> bool:
 	return haveAllRequirements
 
 
+## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
+## Components that are only removed but not freed may be re-added to any entity,
+func removeFromEntity(shouldFree: bool = true) -> void:
+	parentEntity.remove_child(self)
+	if shouldFree: self.queue_free()
+
+
 ## Calls [method queue_free()] on itself if the parent entity approves. Returns `true` if removed.
 ## May be overridden in subclasses to check additional conditions and logic.
 func requestDeletion() -> bool:
