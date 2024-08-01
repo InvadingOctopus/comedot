@@ -1,10 +1,10 @@
 # Comedot - How To Do Basic Stuff
 
-## Your Main Game Scene
+## 🏠 Your Main Game Scene
 
 * Must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and flags etc.
 
-## Make a Player Entity
+## 👤 Make a Player Entity
 
 1. Create a `CharacterBody2D` node.
 
@@ -30,7 +30,7 @@
 
 * ❕ If you use the `PlatformerPhysicsComponent` then you must also add the `PlatformerControlComponent` and `JumpControlComponent`.
 
-## Add Combat
+## ⚔️ Add Combat
 
 1. Add a `FactionComponent` and set the Faction to either `players` or `enemies`
 
@@ -43,6 +43,30 @@
 * ❕ Remember to set the correct Physics Collision Layers and Masks for all bodies, otherwise they will not be able to detect collisions with each other.
 
 * 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
+
+## 🧩 Create New Components
+
+❕ Components are the core of the Comedot framework. Whenever you need to add a new kind of *behavior* to your game, e.g. the player needs to climb a wall or do a dash, a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, you must create a new Component:
+
+1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **Root Type** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **Root Type** should be `Node`.
+
+2. Select the root node of your component scene and add it to the `components` group. This makes it easier to manage multiple components. If the Scene is a `Node2D` then also enable `Group Selected Nodes` in the Scene Editor Toolbar. This makes it easier to move your component along with its children in the Entity's scene.
+
+3. Right-click the root node » Attach Script. Type `Component` in **Inherits** and choose one of the base components in **Template**.
+
+## ♟️ Make a Turn-Based Game
+
+1. Go to Project Settings » Globals. Make sure the `TurnBasedCoordinator` Autoload is enabled.
+
+2. In your scene, add a `TurnBasedEntity`.
+
+3. Create new components which extend `TurnBasedComponents`.
+
+4. Connect player input or a UI control such as a "Next Turn" button to the `TurnBasedCoordinator.startTurnProcess()` function.
+
+5. Each turn, all turn-based objects cycle through the following functions: `processTurnBegin()` → `processTurnUpdate()` → `processTurnEnd()`
+
+	Your turn-based components may implement any of those methods and connect to each other's signals to build your gameplay.
 
 ----
 
