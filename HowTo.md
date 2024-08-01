@@ -1,17 +1,17 @@
 # Comedot - How To Do Basic Stuff
 
-* 🏠 [Setup Your Main Game Scene](#your-main-game-scene)
-* 👤 [Make a Player Entity](#make-a-player-entity)
-* 🕹️ [Add Player Control](#add-player-control-and-movement)
-* ⚔️ [Mortal Comebat](#add-combat)
-* 🧩 [Create New Components](#create-new-components)
-* ♟️ [Make a Turn-Based Game](#make-a-turn-based-game)
+* 🏠 [Setup Your Main Game Scene](#-your-main-game-scene)
+* 👤 [Make a Player Entity](#-make-a-player-entity)
+* 🕹️ [Add Player Control](#%EF%B8%8F-add-player-control-and-movement)
+* ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
+* 🧩 [Create New Components](#-create-new-components)
+* 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
 
-## Your Main Game Scene
+## 🏠 Your Main Game Scene
 
 ❗️ Must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and flags etc.
 
-## Make a Player Entity
+## 👤 Make a Player Entity
 
 1. Create a `CharacterBody2D` node.
 
@@ -23,7 +23,7 @@
 
 * 💡 Try one of the templates in `/Templates/Entity/`
 
-### Add Player Control and Movement
+### 🕹️ Add Player Control and Movement
 
 1. Select the Player Entity.
 
@@ -37,7 +37,7 @@
 
 * ❕ If you use the `PlatformerPhysicsComponent` then you must also add the `PlatformerControlComponent` and `JumpControlComponent`.
 
-## Add Combat
+## ⚔️ Add Combat
 
 1. Add a `FactionComponent` and set the Faction to either `players` or `enemies`
 
@@ -51,7 +51,7 @@
 
 * 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
 
-## Create New Components
+## 🧩 Create New Components
 
 ❕ Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall or do a dash, a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets — you must make a new Component:
 
@@ -61,7 +61,7 @@
 
 3. Right-click the root node » Attach Script. Type `Component` in **Inherits** and choose one of the base components in **Template**.
 
-## Make a Turn-Based Game
+## 🎲 Make a Turn-Based Game
 
 1. Go to Project Settings » Globals. Make sure the `TurnBasedCoordinator` Autoload is enabled.
 
