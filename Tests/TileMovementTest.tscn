@@ -14,6 +14,7 @@ size = Vector2(14, 12)
 
 [sub_resource type="Resource" id="Resource_wtn0n"]
 resource_local_to_scene = true
+resource_name = "ammo"
 script = ExtResource("5_87ms1")
 name = &"ammo"
 min = 0
