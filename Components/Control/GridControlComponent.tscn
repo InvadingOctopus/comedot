@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://1g4ypd7jsctc"]
+
+[ext_resource type="Script" path="res://Components/Control/GridControlComponent.gd" id="1_lmkju"]
+
+[node name="GridControlComponent" type="Node2D" groups=["components"]]
+script = ExtResource("1_lmkju")
