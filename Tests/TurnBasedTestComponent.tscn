@@ -141,3 +141,4 @@ libraries = {
 }
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
