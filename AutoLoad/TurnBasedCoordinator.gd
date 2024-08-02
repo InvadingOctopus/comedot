@@ -108,9 +108,13 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		turnsProcessed = newValue
 		showDebugInfo()
 
-## Returns: `true` if the [member currentTurnState] is [constant TurnBasedState.turnBegin] and neither [member stateTimer] nor [member entityTimer] is running.
+## This flag helps decide [member isReadyToStartTurn], because some the Coordiantor may be `await`ing on an Entities while still in the `turnBegin` state.
+@export_storage var isProcessingEntities: bool
+
+## Returns: `true` if the [member currentTurnState] is [constant TurnBasedState.turnBegin], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
 var isReadyToStartTurn: bool:
 	get: return self.currentTurnState == TurnBasedState.turnBegin \
+			and not isProcessingEntities \
 			and is_zero_approx(stateTimer.time_left) \
 			and is_zero_approx(entityTimer.time_left)
 
@@ -194,16 +198,8 @@ func startTurnProcess() -> void:
 	
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 	
-	if self.currentTurnState != TurnBasedState.turnBegin:
-		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when currentTurnState != turnBegin", "", str(self))
-		return
-	
-	if not is_zero_approx(stateTimer.time_left):
-		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when stateTimer.time_left != 0", "", str(self))
-		return
-	
-	if not is_zero_approx(entityTimer.time_left):
-		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when entityTimer.time_left != 0", "", str(self))
+	if not self.isReadyToStartTurn:
+		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when not isReadyToStartTurn", "", str(self))
 		return
 	
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
@@ -330,29 +326,38 @@ func onEntityTimer_timeout() -> void:
 # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
 # NOTE: Do NOT `await turnBasedEntity.did…` signals, because they are emitted within `turnBasedEntity.process…`, before the following `await`
 
+# NOTE: The `isProcessingEntities` flag affects the `isReadyToStartTurn` flag, 
+# because some the Coordiantor may be `await`ing on an Entities while still in the `turnBegin` state.
+# TBD: Should `isProcessingEntities` be set at a higher scope to ensure no "leaks"? e.g. starting multiple turns.
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
+	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
 		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnBeginSignals()
 		await waitForEntityTimer()
+	self.isProcessingEntities = false
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
+	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
 		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnUpdateSignals()
 		await waitForEntityTimer()
+	self.isProcessingEntities = false
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
+	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
 		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, str(self))
 		await turnBasedEntity.processTurnEndSignals()
 		await waitForEntityTimer()
+	self.isProcessingEntities = false
 
 #endregion
 
