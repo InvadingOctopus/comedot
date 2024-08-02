@@ -269,7 +269,6 @@ rotation_smoothing_enabled = true
 shouldShowDebugInfo = true
 
 [node name="TurnBasedGridControlComponent" parent="TurnBasedEntity1" instance=ExtResource("4_3bh2s")]
-randomMovement = true
 shouldShowDebugInfo = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity1" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]

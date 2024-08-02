@@ -5,6 +5,11 @@ class_name TurnBasedTestUIEntity
 extends TurnBasedEntity
 
 
+func _enter_tree() -> void:
+	TurnBasedCoordinator.shouldShowDebugInfo = true
+	super._enter_tree()
+
+
 func _ready() -> void:
 	connectSignals()
 
