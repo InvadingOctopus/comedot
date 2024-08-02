@@ -21,16 +21,16 @@ var tileBasedPositionComponent: TileBasedPositionComponent:
 		if not tileBasedPositionComponent: tileBasedPositionComponent = self.getCoComponent(TileBasedPositionComponent)
 		return tileBasedPositionComponent
 
-var inputVector: Vector2:
+var recentInputVector: Vector2i:
 	set(newValue):
-		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " inputVector: ", inputVector, " → ", newValue))
-		inputVector = newValue
+		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " recentInputVector: ", recentInputVector, " → ", newValue))
+		recentInputVector = newValue
 
 #endregion
 
 
 func _input(event: InputEvent) -> void:
-	if not event.is_action_type(): return
+	if not isEnabled or not event.is_action_type(): return
 	
 	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
 	or event.is_action_pressed(GlobalInput.Actions.moveRight) \
@@ -39,9 +39,9 @@ func _input(event: InputEvent) -> void:
 		
 		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " ", event))
 		
-		self.inputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
+		self.recentInputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		
-		if not inputVector.is_zero_approx() and TurnBasedCoordinator.isReadyToStartTurn:
+		if not is_zero_approx(recentInputVector.length()) and TurnBasedCoordinator.isReadyToStartTurn:
 			TurnBasedCoordinator.startTurnProcess()
 
 
@@ -50,19 +50,21 @@ func processTurnBegin() -> void:
 
 
 func processTurnUpdate() -> void:
-	if randomMovement:
-		self.inputVector = Vector2i([-1, 1].pick_random(), [-1, 1].pick_random())
+	# if not isEnabled: return # Done in superclass
 	
-	tileBasedPositionComponent.inputVector = Vector2i(self.inputVector)
+	if randomMovement:
+		self.recentInputVector = Vector2i([-1, 1].pick_random(), [-1, 1].pick_random())
+	
+	tileBasedPositionComponent.inputVector = Vector2i(self.recentInputVector)
 	tileBasedPositionComponent.processMovementInput()
 	showDebugInfo()
 
 
 func processTurnEnd() -> void:
-	self.inputVector = Vector2.ZERO
+	self.recentInputVector = Vector2.ZERO
 	showDebugInfo()
 
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
-	Debug.watchList.inputVector = inputVector
+	Debug.watchList.inputVector = recentInputVector
