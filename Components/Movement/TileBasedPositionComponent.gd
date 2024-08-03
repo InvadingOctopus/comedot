@@ -85,13 +85,16 @@ func _ready() -> void:
 	# Get the entity's starting coordinates
 	updateCurrentTileCoordinates()
 	
-	destinationTileCoordinates = initialDestinationCoordinates
+	# NOTE: Directly setting `destinationTileCoordinates = initialDestinationCoordinates` beforehand prevents the movement
+	# because the functions check for a change between coordinates.
 	
 	if shouldSnapToInitialDestination:
-		snapEntityPositionToTile(destinationTileCoordinates)
+		snapEntityPositionToTile(initialDestinationCoordinates)
 	else: 
-		setDestinationTileCoordinates(destinationTileCoordinates)
+		setDestinationTileCoordinates(initialDestinationCoordinates)
 
+	
+	
 	if shouldShowDebugInfo:
 		self.willStartMovingToNewTile.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewTile.connect(self.onDidArriveAtNewTile)
