@@ -37,7 +37,7 @@ func _ready() -> void:
 	pass # Any code needed to configure and prepare the component.
 
 
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if not isEnabled: return
 	pass # Handle one-shot input events such as jumping or firing.
 
