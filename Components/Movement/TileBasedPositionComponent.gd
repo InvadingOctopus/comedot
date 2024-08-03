@@ -2,6 +2,7 @@
 ## Does NOT receive player control input, or perform path-finding or any other validation logic
 ## except checking the tile map bounds and tile collision.
 ## NOTE: To provide player input, use [TileBasedControlComponent].
+## Requirements: [TileMapLayerWithCustomCellData]
 
 class_name TileBasedPositionComponent
 extends Component
@@ -83,6 +84,9 @@ signal didArriveAtNewTile(newDestination: Vector2i)
 func _ready() -> void:
 	if not tileMap: printError("tileMap not specified!")
 	
+	if not tileMap is TileMapLayerWithCustomCellData:
+		printWarning(str("tileMap is not TileMapLayerWithCustomCellData: ", tileMap))
+	
 	# Get the entity's starting coordinates
 	updateCurrentTileCoordinates()
 	
@@ -94,7 +98,6 @@ func _ready() -> void:
 	else: 
 		setDestinationTileCoordinates(initialDestinationCoordinates)
 
-	
 	
 	if shouldShowDebugInfo:
 		self.willStartMovingToNewTile.connect(self.onWillStartMovingToNewTile)
