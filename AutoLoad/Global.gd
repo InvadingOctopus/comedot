@@ -503,15 +503,20 @@ func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vect
 
 	# Then check the TILE data
 	
-	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
+	# NOTE: DESIGN: Missing values should be considered as `true` to assist with quick prototyping
+	# TODO: Check all this in a more elegant way
+	
+	var tileData: 	TileData = tileMap.get_cell_tile_data(coordinates)
+	var isWalkable:	Variant
+	var isBlocked:	Variant
 	
 	if tileData:
-		isTileVacant = tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
-			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
-	else:
-		# If there is no data, assume the tile is always vacant.
-		isTileVacant = true
-
+		isWalkable = tileData.get_custom_data(Global.TileMapCustomData.isWalkable)
+		isBlocked  = tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
+	
+	# If there is no data, assume the tile is always vacant.
+	isTileVacant = (isWalkable or isWalkable == null) and (not isBlocked or isWalkable == null)
+	
 	return isTileVacant and isCellVacant
 
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
