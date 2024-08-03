@@ -463,35 +463,61 @@ func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> 
 	return tileGlobalPosition
 
 
-func setTileData(tileMap: TileMapLayer, coordinates: Vector2i, layerName: StringName, value: Variant) -> void:
-	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
-	if tileData: tileData.set_custom_data(layerName, value)
+## Sets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
+## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer.]
+## DESIGN: This is a separate function on top of [TileMapLayerWithCustomCellData] because it may redirect to a native Godot feature in the future.
+func setCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName, value: Variant) -> void:
+	tileMap.setCellData(coordinates, key, value)
 
 
-func setTileOccupancy(tileMap: TileMapLayer, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
-	Global.setTileData(tileMap, coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
-	Global.setTileData(tileMap, coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
+## Gets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
+## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer.]
+## DESIGN: This is a separate function on top of [TileMapLayerWithCustomCellData] because it may redirect to a native Godot feature in the future.
+func getCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName) -> Variant:
+	return tileMap.getCellData(coordinates, key)
+
+
+func setTileOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
+	tileMap.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
+	tileMap.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
 
 
 ## Checks if the specified tile is vacant by examining the custom tile data for flags such as [const Global.TileMapCustomData.isWalkable].
-func checkTileVacancy(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
+func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i) -> bool:
+	var isTileVacant: bool = false 
+	var isCellVacant: bool = false 
+	
+	# First check the CELL data because it's quicker
+	
+	var cellData: Variant = tileMap.getCellData(coordinates, Global.TileMapCustomData.isOccupied)
+	
+	if cellData is bool:
+		isCellVacant = not cellData
+		# TBD: Check `occupant`?
+	else:
+		# If there is no data, assume the cell is always unoccupied.
+		isCellVacant = true
+	
+	# If there is an occupant, no need to check the Tile data, just scram
+	if not isCellVacant: return false
+
+	# Then check the TILE data
+	
 	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
 	
 	if tileData:
-		return tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
-			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked) \
-			and not tileData.get_custom_data(Global.TileMapCustomData.isOccupied)
-			# TBD: Check `occupant`?
+		isTileVacant = tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
+			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
 	else:
 		# If there is no data, assume the tile is always vacant.
-		return true
+		isTileVacant = true
 
+	return isTileVacant and isCellVacant
 
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
-## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
-## @experimental
-func checkTileMapBounds(_tileMap: TileMapLayer, _coordinates: Vector2i) -> bool:
-	return true # HACK: TODO: Implement
+func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
+	var mapRect: Rect2i = tileMap.get_used_rect()
+	return mapRect.has_point(coordinates)
 
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
