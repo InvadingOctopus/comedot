@@ -11,7 +11,7 @@ extends Component
 @export var isEnabled:				bool = true
 @export var shouldAllowDiagonals:	bool = false
 @export var shouldMoveContinuously:	bool = true
-@export var shouldShowDebugInfo:	bool = true
+@export var shouldShowDebugInfo:	bool = false
 #endregion
 
 
