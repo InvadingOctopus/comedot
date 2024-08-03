@@ -4,3 +4,9 @@
 
 [node name="GridControlComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_lmkju")
+
+[node name="Timer" type="Timer" parent="."]
+editor_description = "The delay between each move or \"step\".
+"
+wait_time = 0.1
+one_shot = true
