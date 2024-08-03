@@ -40,6 +40,12 @@ var destinationTileCoordinates: Vector2i
 # var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the [TIleMapLayer] may move between frames.
 
 var inputVector: Vector2i
+	#set(newValue): # NOTE: This causes "flicker" between 0 and the other value, when reseting the `inputVector`, so just set it manually
+		#if newValue != inputVector:
+			#previousInputVector = inputVector
+			#inputVector = newValue
+
+var previousInputVector: Vector2i
 
 var isMovingToNewTile: bool = false
 
@@ -136,6 +142,7 @@ func _physics_process(delta: float) -> void:
 
 	if shouldShowDebugInfo: showDebugInfo()
 
+
 func moveTowardsDestinationTile(delta: float) -> void:
 	# TODO: Handle physics collisions
 	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
@@ -160,6 +167,8 @@ func checkForArrival() -> bool:
 		self.currentTileCoordinates = self.destinationTileCoordinates
 		self.isMovingToNewTile = false
 		didArriveAtNewTile.emit(currentTileCoordinates)
+		previousInputVector = inputVector
+		inputVector = Vector2i.ZERO
 		return true
 	else:
 		self.isMovingToNewTile = true
@@ -170,6 +179,8 @@ func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.entityPosition		= parentEntity.global_position
 	Debug.watchList.currentTile			= currentTileCoordinates
+	Debug.watchList.vector				= inputVector
+	Debug.watchList.previousVector		= previousInputVector
 	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
 	Debug.watchList.destinationTile		= destinationTileCoordinates
 	Debug.watchList.destinationPosition	= Global.getTileGlobalPosition(tileMap, destinationTileCoordinates)
