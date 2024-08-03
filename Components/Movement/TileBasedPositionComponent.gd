@@ -12,8 +12,8 @@ extends Component
 # 	If the entity is not moving to another tile, snap the entity to the current tile's position, in case the TileMap is moving.
 # 	If the entity is moving to another tile, interpolate the entity's position towards the new tile.
 
-# TODO: Handle physics collisions
 # TODO: Optional choice between animating or snapping to initial coordinates
+# TODO: Get initial tile coordinates from parent Entity's node position
 
 
 #region Parameters
@@ -24,6 +24,9 @@ extends Component
 ## The speed of moving between tiles.
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
+
+## A [Sprite2D] or any other [Node2D] to temporarily display at the destination tile while moving, such as a square cursor etc.
+@export var visualIndicator: Node2D
 
 @export var isEnabled: bool = true
 @export var shouldShowDebugInfo: bool = false
@@ -48,7 +51,11 @@ var inputVector: Vector2i
 
 var previousInputVector: Vector2i
 
-var isMovingToNewTile: bool = false
+var isMovingToNewTile: bool = false:
+	set(newValue):
+		if newValue != isMovingToNewTile:
+			isMovingToNewTile = newValue
+			updateIndicator()
 
 #endregion
 
@@ -95,7 +102,7 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	willStartMovingToNewTile.emit(newDestinationTileCoordinates)
 	self.destinationTileCoordinates = newDestinationTileCoordinates
 	self.isMovingToNewTile = true
-
+	
 	return true
 
 
@@ -107,15 +114,24 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 	# NOTE: HACK: The current implementation of the Global method always returns `true`. 
 	return \
 		Global.checkTileMapBounds(tileMap, coordinates) \
-		and self.checkCollision(coordinates)
+		and self.checkTileVacancy(coordinates)
 
 
-## Performs collision detection against the parent Entity's body.
-## If there is no collision then the tile may be moved into.
-## May be overridden by subclasses to perform different checks, like testing custom data on a tile.
-func checkCollision(coordinates: Vector2i) -> bool:
-	# NOTE: HACK: The current implementation of the Global method always returns `true`. 
-	return Global.checkTileCollision(tileMap, parentEntity.body, coordinates)
+## Checks if the tile may be moved into.
+## May be overridden by subclasses to perform different checks, 
+## such as testing custom data on a tile, like [const Global.TileMapCustomData.isWalkable],
+## or performing a more rigorous physics collision detection.
+func checkTileVacancy(coordinates: Vector2i) -> bool:
+	# UNUSED: Global.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
+
+	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
+	
+	if tileData:
+		return tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
+			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
+	
+	# If there is no data, assume the tile is always vacant.
+	return true
 
 
 ## Cancels the current move.
@@ -128,7 +144,7 @@ func cancelDestination() -> void:
 
 	self.destinationTileCoordinates = self.currentTileCoordinates
 	self.isMovingToNewTile = false
-
+	
 
 func _physics_process(delta: float) -> void:
 	if not isEnabled: return
@@ -174,6 +190,12 @@ func checkForArrival() -> bool:
 	else:
 		self.isMovingToNewTile = true
 		return false
+
+
+func updateIndicator() -> void:
+	if not visualIndicator: return
+	visualIndicator.global_position = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
+	visualIndicator.visible = isMovingToNewTile
 
 
 func showDebugInfo() -> void:

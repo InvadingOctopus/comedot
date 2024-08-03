@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://bdmibnkkrpfhv"]
+[gd_scene load_steps=3 format=3 uid="uid://bdmibnkkrpfhv"]
 
 [ext_resource type="Script" path="res://Components/Movement/TileBasedPositionComponent.gd" id="1_3h2nr"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_3a7at"]
 
-[node name="TileBasedPositionComponent" type="Node" groups=["components"]]
+[node name="TileBasedPositionComponent" type="Node" node_paths=PackedStringArray("visualIndicator") groups=["components"]]
 script = ExtResource("1_3h2nr")
+visualIndicator = NodePath("MovementIndicator")
+
+[node name="MovementIndicator" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 0, 0.75)
+z_index = 10
+texture = ExtResource("2_3a7at")
+region_enabled = true
+region_rect = Rect2(464, 224, 16, 16)
