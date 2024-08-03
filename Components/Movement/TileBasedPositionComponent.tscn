@@ -3,9 +3,8 @@
 [ext_resource type="Script" path="res://Components/Movement/TileBasedPositionComponent.gd" id="1_3h2nr"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_3a7at"]
 
-[node name="TileBasedPositionComponent" type="Node" node_paths=PackedStringArray("visualIndicator") groups=["components"]]
+[node name="TileBasedPositionComponent" type="Node" groups=["components"]]
 script = ExtResource("1_3h2nr")
-visualIndicator = NodePath("MovementIndicator")
 
 [node name="MovementIndicator" type="Sprite2D" parent="."]
 visible = false

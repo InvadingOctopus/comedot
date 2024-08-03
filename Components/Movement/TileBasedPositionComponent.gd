@@ -17,7 +17,7 @@ extends Component
 
 #region Parameters
 
-@export var tileMap: TileMapLayer
+@export var tileMap: TileMapLayerWithCustomCellData
 @export var initialDestinationCoordinates: Vector2i
 
 ## If `false`, the entity will be instantly positioned at the initial destination, otherwise it may be animated from where it was before this component is executed if `shouldMoveInstantly` is false.
@@ -30,6 +30,7 @@ extends Component
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
 
 ## A [Sprite2D] or any other [Node2D] to temporarily display at the destination tile while moving, such as a square cursor etc.
+## NOTE: An example cursor is provided in the component scene but not enabled by default. Enable `Editable Children` to use it.
 @export var visualIndicator: Node2D
 
 @export var isEnabled: bool = true
@@ -100,9 +101,11 @@ func _ready() -> void:
 		self.didArriveAtNewTile.connect(self.onDidArriveAtNewTile)
 
 
-## Set the tile coordinates corresponding to the parent Entity's [member Node2D.global_position].
+## Set the tile coordinates corresponding to the parent Entity's [member Node2D.global_position]
+## and set the cell's occupancy.
 func updateCurrentTileCoordinates() -> Vector2i:
 	self.currentTileCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
+	Global.setTileOccupancy(tileMap, currentTileCoordinates, true, parentEntity)
 	return currentTileCoordinates 
 
 
@@ -167,12 +170,14 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 ## Ensures that the specified coordinates are within the [TileMapLayer]'s bounds
 ## and also calls [method checkCollision].
 ## May be overridden by subclasses to perform additional checks.
-## NOTE: Subclasses MUST call super to perform basic validation.
+## NOTE: Subclasses MUST call super to perform common validation.
 func validateCoordinates(coordinates: Vector2i) -> bool:
-	# NOTE: HACK: The current implementation of the Global method always returns `true`. 
-	return \
-		Global.checkTileMapBounds(tileMap, coordinates) \
-		and self.checkTileVacancy(coordinates)
+	var isValidBounds: bool = Global.checkTileMapBounds(tileMap, coordinates)
+	var isTileVacant: bool = self.checkTileVacancy(coordinates)
+	
+	if shouldShowDebugInfo: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
+		
+	return isValidBounds and isTileVacant
 
 
 ## Checks if the tile may be moved into.
@@ -181,7 +186,7 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 ## or performing a more rigorous physics collision detection.
 func checkTileVacancy(coordinates: Vector2i) -> bool:
 	# UNUSED: Global.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
-	return Global.checkTileVacancy(tileMap, coordinates)
+	return Global.checkTileVacancy(tileMap, coordinates) 
 
 
 ## Cancels the current move.
