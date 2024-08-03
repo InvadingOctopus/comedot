@@ -12,16 +12,20 @@ extends Component
 # 	If the entity is not moving to another tile, snap the entity to the current tile's position, in case the TileMap is moving.
 # 	If the entity is moving to another tile, interpolate the entity's position towards the new tile.
 
-# TODO: Optional choice between animating or snapping to initial coordinates
-# TODO: Get initial tile coordinates from parent Entity's node position
+# TODO: Set occupancy of each tile along the way in _process()
 
 
 #region Parameters
 
 @export var tileMap: TileMapLayer
-@export var initialTileCoordinates: Vector2i
+@export var initialDestinationCoordinates: Vector2i
 
-## The speed of moving between tiles.
+## If `false`, the entity will be instantly positioned at the initial destination, otherwise it may be animated from where it was before this component is executed if `shouldMoveInstantly` is false.
+@export var shouldSnapToInitialDestination: bool = true
+
+@export var shouldMoveInstantly: bool = false
+
+## The speed of moving between tiles. Ignored if [member shouldMoveInstantly].
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
 
@@ -38,8 +42,17 @@ extends Component
 
 # TODO: TBD: @export_storage
 
-var currentTileCoordinates: Vector2i
-var destinationTileCoordinates: Vector2i
+var currentTileCoordinates: Vector2i:
+	set(newValue):
+		if newValue != currentTileCoordinates:
+			if shouldShowDebugInfo: printDebug(str("currentTileCoordinates: ", currentTileCoordinates, " → ", newValue))
+			currentTileCoordinates = newValue
+
+var destinationTileCoordinates: Vector2i:
+	set(newValue):
+		if newValue != destinationTileCoordinates:
+			if shouldShowDebugInfo: printDebug(str("destinationTileCoordinates: ", destinationTileCoordinates, " → ", newValue))
+			destinationTileCoordinates = newValue
 
 # var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the [TIleMapLayer] may move between frames.
 
@@ -68,8 +81,39 @@ signal didArriveAtNewTile(newDestination: Vector2i)
 
 func _ready() -> void:
 	if not tileMap: printError("tileMap not specified!")
-	self.currentTileCoordinates = initialTileCoordinates
-	snapEntityPositionToTile()
+	
+	# Get the entity's starting coordinates
+	updateCurrentTileCoordinates()
+	
+	destinationTileCoordinates = initialDestinationCoordinates
+	
+	if shouldSnapToInitialDestination:
+		snapEntityPositionToTile(destinationTileCoordinates)
+	else: 
+		setDestinationTileCoordinates(destinationTileCoordinates)
+
+	if shouldShowDebugInfo:
+		self.willStartMovingToNewTile.connect(self.onWillStartMovingToNewTile)
+		self.didArriveAtNewTile.connect(self.onDidArriveAtNewTile)
+
+
+## Set the tile coordinates corresponding to the parent Entity's [member Node2D.global_position].
+func updateCurrentTileCoordinates() -> Vector2i:
+	self.currentTileCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
+	return currentTileCoordinates 
+
+
+## Instantly sets the entity's position to a tile's position.
+## If [param destinationOverride] is omitted then [member currentTileCoordinates] is used.
+func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates) -> void:
+	if not isEnabled: return
+
+	var tileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, tileCoordinates)
+
+	if parentEntity.global_position != tileGlobalPosition:
+		parentEntity.global_position = tileGlobalPosition
+	
+	self.currentTileCoordinates = tileCoordinates
 
 
 ## This method must be called by a control component upon receiving player input.
@@ -103,6 +147,17 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	self.destinationTileCoordinates = newDestinationTileCoordinates
 	self.isMovingToNewTile = true
 	
+	# Vacate the current (to-be previous) tile
+	Global.setTileOccupancy(tileMap, currentTileCoordinates, false, null)
+	
+	# TODO: Occupy each tile along the way in _process()
+	Global.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
+	
+	# Should we teleport?
+	
+	if shouldMoveInstantly:
+		snapEntityPositionToTile(destinationTileCoordinates)
+	
 	return true
 
 
@@ -123,15 +178,7 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 ## or performing a more rigorous physics collision detection.
 func checkTileVacancy(coordinates: Vector2i) -> bool:
 	# UNUSED: Global.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
-
-	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
-	
-	if tileData:
-		return tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
-			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
-	
-	# If there is no data, assume the tile is always vacant.
-	return true
+	return Global.checkTileVacancy(tileMap, coordinates)
 
 
 ## Cancels the current move.
@@ -166,17 +213,6 @@ func moveTowardsDestinationTile(delta: float) -> void:
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
 
 
-## Instantly sets the entity's position to a tile's position.
-## If [param destinationOverride] is omitted then [member currentTileCoordinates] is used.
-func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates) -> void:
-	if not isEnabled: return
-
-	var tileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, tileCoordinates)
-
-	if parentEntity.global_position != tileGlobalPosition:
-		parentEntity.global_position = tileGlobalPosition
-
-
 ## Are we there yet?
 func checkForArrival() -> bool:
 	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
@@ -207,3 +243,11 @@ func showDebugInfo() -> void:
 	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
 	Debug.watchList.destinationTile		= destinationTileCoordinates
 	Debug.watchList.destinationPosition	= Global.getTileGlobalPosition(tileMap, destinationTileCoordinates)
+
+
+func onWillStartMovingToNewTile(newDestination: Vector2i) -> void:
+	if showDebugInfo: printDebug(str("onWillStartMovingToNewTile(): ", newDestination))
+
+
+func onDidArriveAtNewTile(newDestination: Vector2i) -> void:
+	if showDebugInfo: printDebug(str("onDidArriveAtNewTile(): ", newDestination))

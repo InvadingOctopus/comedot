@@ -13,4 +13,4 @@ modulate = Color(1, 1, 0, 0.75)
 z_index = 10
 texture = ExtResource("2_3a7at")
 region_enabled = true
-region_rect = Rect2(464, 224, 16, 16)
+region_rect = Rect2(576, 192, 16, 16)
