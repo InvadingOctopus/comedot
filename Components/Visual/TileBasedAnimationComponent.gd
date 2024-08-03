@@ -45,7 +45,9 @@ func onTileBasedPositionComponent_willStartMovingToNewTile(newDestination: Vecto
 	animatedSprite.play(walkAnimation)
 	
 	if flipWhenWalkingLeft:
-		animatedSprite.flip_h = tileBasedPositionComponent.inputVector.x < 0
+		# Maintain the flip when moving vertically only
+		animatedSprite.flip_h = (tileBasedPositionComponent.inputVector.x < 0) \
+			or (animatedSprite.flip_h and not tileBasedPositionComponent.inputVector.x > 0)
 
 
 func onTileBasedPositionComponent_didArriveAtNewTile(newDestination: Vector2i) -> void:
