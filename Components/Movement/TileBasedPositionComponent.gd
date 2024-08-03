@@ -19,6 +19,7 @@ extends Component
 #region Parameters
 
 @export var tileMap: TileMapLayerWithCustomCellData
+@export var setInitialCoordinatesFromEntityPosition: bool = false
 @export var initialDestinationCoordinates: Vector2i
 
 ## If `false`, the entity will be instantly positioned at the initial destination, otherwise it may be animated from where it was before this component is executed if `shouldMoveInstantly` is false.
@@ -29,6 +30,10 @@ extends Component
 ## The speed of moving between tiles. Ignored if [member shouldMoveInstantly].
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
 @export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
+
+## Should the Cell be marked as [const Global.TileMapCustomData.isOccupied] by the parent Entity?
+## Set to `false` to disable occupancy; useful for visual-only entities such as mouse cursors and other UI/effects.
+@export var shouldOccupyCell: bool = true
 
 ## A [Sprite2D] or any other [Node2D] to temporarily display at the destination tile while moving, such as a square cursor etc.
 ## NOTE: An example cursor is provided in the component scene but not enabled by default. Enable `Editable Children` to use it.
@@ -90,15 +95,19 @@ func _ready() -> void:
 	# Get the entity's starting coordinates
 	updateCurrentTileCoordinates()
 	
+	if setInitialCoordinatesFromEntityPosition:
+		initialDestinationCoordinates = currentTileCoordinates
+	
+	# Even if we `setInitialCoordinatesFromEntityPosition`, snap the entity to the center of the cell
+	
 	# NOTE: Directly setting `destinationTileCoordinates = initialDestinationCoordinates` beforehand prevents the movement
 	# because the functions check for a change between coordinates.
-	
+
 	if shouldSnapToInitialDestination:
 		snapEntityPositionToTile(initialDestinationCoordinates)
 	else: 
 		setDestinationTileCoordinates(initialDestinationCoordinates)
 
-	
 	if shouldShowDebugInfo:
 		self.willStartMovingToNewTile.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewTile.connect(self.onDidArriveAtNewTile)
@@ -108,7 +117,7 @@ func _ready() -> void:
 ## and set the cell's occupancy.
 func updateCurrentTileCoordinates() -> Vector2i:
 	self.currentTileCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
-	Global.setTileOccupancy(tileMap, currentTileCoordinates, true, parentEntity)
+	if shouldOccupyCell: Global.setTileOccupancy(tileMap, currentTileCoordinates, true, parentEntity)
 	return currentTileCoordinates 
 
 
@@ -157,10 +166,11 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	self.isMovingToNewTile = true
 	
 	# Vacate the current (to-be previous) tile
+	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
 	Global.setTileOccupancy(tileMap, currentTileCoordinates, false, null)
 	
 	# TODO: Occupy each tile along the way in _process()
-	Global.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
+	if shouldOccupyCell: Global.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
 	
 	# Should we teleport?
 	
