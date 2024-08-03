@@ -2,7 +2,7 @@
 ## Requirements: [TileBasedPositionComponent]
 ## @experimental
 
-class_name TurnBasedGridControlComponent
+class_name TurnBasedTileBasedControlComponent
 extends TurnBasedComponent
 
 # TODO: Check for collisions?

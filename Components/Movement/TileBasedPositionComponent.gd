@@ -1,6 +1,7 @@
 ## Sets the position of the parent Entity to the position of a tile in an associated [TileMapLayer].
 ## Does NOT receive player control input, or perform path-finding or any other validation logic
 ## except checking the tile map bounds and tile collision.
+## NOTE: To provide player input, use [TileBasedControlComponent].
 
 class_name TileBasedPositionComponent
 extends Component

@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_fnve7"]
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entity/BulletEntityTemplate.tscn" id="5_8jneb"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="5_87ms1"]
-[ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/GridControlComponent.tscn" id="5_kihht"]
+[ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="5_kihht"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
 [ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scene/OverheadMapTemplate.tscn" id="7_f5htu"]
 
@@ -45,7 +45,7 @@ shape = SubResource("RectangleShape2D_esh4c")
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 
-[node name="GridControlComponent" parent="CharacterBody2D" instance=ExtResource("5_kihht")]
+[node name="TileBasedControlComponent" parent="CharacterBody2D" instance=ExtResource("5_kihht")]
 
 [node name="TileBasedPositionComponent" parent="CharacterBody2D" node_paths=PackedStringArray("tileMap") instance=ExtResource("6_73iom")]
 tileMap = NodePath("../../OverheadMapTemplate/TileMapLayer")

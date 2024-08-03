@@ -1,7 +1,7 @@
 ## Provides player input to a [TileBasedPositionComponent].
 ## Requirements: [TileBasedPositionComponent]
 
-class_name GridControlComponent
+class_name TileBasedControlComponent
 extends Component
 
 # TODO: Allow movement on input `is_just_released`
