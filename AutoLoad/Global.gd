@@ -71,9 +71,11 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 
 
 class TileMapCustomData: ## A list of names for the custom data types that [TileMapLayer] Tile Sets may set on tiles.
-	const isWalkable:= &"isWalkable"
-	const isBlocked	:= &"isBlocked"
-
+	const isWalkable	:= &"isWalkable"	## Tile is vacant
+	const isBlocked		:= &"isBlocked"		## Impassable terrain or object
+	
+	const isOccupied	:= &"isOccupied"	## Is occupied by a character
+	const occupant		:= &"occupant"		## The entity occupying the tile
 #endregion
 
 
@@ -418,23 +420,6 @@ func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 	if abs(lastMotion.y) < 0.1: body.velocity.y = 0
 	return lastMotion
 
-
-## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
-## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
-## @experimental
-func checkTileMapBounds(_tileMap: TileMapLayer, _coordinates: Vector2i) -> bool:
-	return true # HACK: TODO: Implement
-
-
-## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
-## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
-## @experimental
-func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
-	# If the TileMap or its collisions are disabled, then the tile is always available.
-	if not tileMap.enabled or not tileMap.collision_enabled: return true
-	
-	return true # HACK: TODO: Implement
-
 #endregion
 
 
@@ -467,12 +452,56 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
 	return randomizedPosition
 
+#endregion
+
+
+#region Tile Map Functions
 
 func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> Vector2:
 	var tilePosition: Vector2 = tileMap.map_to_local(tileCoordinates)
 	var tileGlobalPosition: Vector2 = tileMap.to_global(tilePosition)
 	return tileGlobalPosition
 
+
+func setTileData(tileMap: TileMapLayer, coordinates: Vector2i, layerName: StringName, value: Variant) -> void:
+	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
+	if tileData: tileData.set_custom_data(layerName, value)
+
+
+func setTileOccupancy(tileMap: TileMapLayer, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
+	Global.setTileData(tileMap, coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
+	Global.setTileData(tileMap, coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
+
+
+## Checks if the specified tile is vacant by examining the custom tile data for flags such as [const Global.TileMapCustomData.isWalkable].
+func checkTileVacancy(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
+	var tileData: TileData = tileMap.get_cell_tile_data(coordinates)
+	
+	if tileData:
+		return tileData.get_custom_data(Global.TileMapCustomData.isWalkable) \
+			and not tileData.get_custom_data(Global.TileMapCustomData.isBlocked) \
+			and not tileData.get_custom_data(Global.TileMapCustomData.isOccupied)
+			# TBD: Check `occupant`?
+	else:
+		# If there is no data, assume the tile is always vacant.
+		return true
+
+
+## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
+## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
+## @experimental
+func checkTileMapBounds(_tileMap: TileMapLayer, _coordinates: Vector2i) -> bool:
+	return true # HACK: TODO: Implement
+
+
+## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
+## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
+## @experimental
+func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
+	# If the TileMap or its collisions are disabled, then the tile is always available.
+	if not tileMap.enabled or not tileMap.collision_enabled: return true
+	
+	return true # HACK: TODO: Implement
 
 #endregion
 
