@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Components/Control/TileBasedControlComponent.gd" id="1_lmkju"]
 
-[node name="TileBasedControlComponent" type="Node2D" groups=["components"]]
+[node name="TileBasedControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_lmkju")
 
 [node name="Timer" type="Timer" parent="."]
