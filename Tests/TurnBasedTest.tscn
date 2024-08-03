@@ -273,7 +273,7 @@ shouldShowDebugInfo = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity1" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
-initialTileCoordinates = Vector2i(6, 6)
+initialDestinationCoordinates = Vector2i(6, 6)
 speed = 50.0
 
 [node name="TurnBasedEntity2" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
@@ -302,7 +302,7 @@ shouldShowDebugInfo = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity2" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
-initialTileCoordinates = Vector2i(6, 9)
+initialDestinationCoordinates = Vector2i(6, 9)
 speed = 50.0
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]
