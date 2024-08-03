@@ -1,4 +1,6 @@
-## Stores the entity's health and manages destruction etc. For applying damage and handling factions, use the [DamageReceivingComponent].
+## Stores the entity's health and manages destruction etc. 
+## For applying damage and handling factions, use the [DamageReceivingComponent].
+## NOTE: If you use a [StatsComponent] then you must share the same [Stat] Resource for health between both components.
 
 class_name HealthComponent
 extends Component
