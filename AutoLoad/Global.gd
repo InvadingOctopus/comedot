@@ -69,6 +69,11 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 	const southWest	:= Vector2i(-1, 1)
 	const west		:= Vector2i.LEFT
 
+
+class TileMapCustomData: ## A list of names for the custom data types that [TileMapLayer] Tile Sets may set on tiles.
+	const isWalkable:= &"isWalkable"
+	const isBlocked	:= &"isBlocked"
+
 #endregion
 
 
