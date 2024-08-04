@@ -8,13 +8,11 @@ extends TileMapLayer
 
 
 #region Parameters & State
-
 ## A Dictionary of Dictionaries. { CellCoordinates : {Key : Value} }
-## Each (x, y) [Vector2i] coordinate key contains a Dictionary of {[StringName]: [Variant]}.
-var dataDictionary := { Vector2i(0 ,0): {&"key": 0} }
+## Each (x,y) [Vector2i] coordinate key contains a Dictionary of {[StringName]: [Variant]}.
+var dataDictionary := { Vector2i(0,0): {&"key": 0} }
 
 @export var shouldShowDebugInfo: bool = false
-
 #endregion
 
 
