@@ -39,7 +39,7 @@ func _ready() -> void:
 	tileBasedPositionComponent.didArriveAtNewTile.connect(onTileBasedPositionComponent_didArriveAtNewTile)
 
 
-func onTileBasedPositionComponent_willStartMovingToNewTile(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_willStartMovingToNewTile(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
 	
 	animatedSprite.play(walkAnimation)
@@ -50,7 +50,7 @@ func onTileBasedPositionComponent_willStartMovingToNewTile(newDestination: Vecto
 			or (animatedSprite.flip_h and not tileBasedPositionComponent.inputVector.x > 0)
 
 
-func onTileBasedPositionComponent_didArriveAtNewTile(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_didArriveAtNewTile(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
 	
 	animatedSprite.play(idleAnimation)

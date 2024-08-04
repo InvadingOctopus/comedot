@@ -15,14 +15,14 @@ extends Resource
 		self.resource_name = name
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
-@export var min:    int = 0:
+@export var min:    int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		min     = newValue
 		if  min > max: max = min
 		value   = clamp(value,   min, max)
 
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
-@export var max:    int = 10:
+@export var max:    int = 10: # IGNORE Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		max     = newValue
 		if  max < min: min = max

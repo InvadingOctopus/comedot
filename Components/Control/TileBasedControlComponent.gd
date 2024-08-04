@@ -47,7 +47,7 @@ func _input(event: InputEvent) -> void:
 			GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		
 		if shouldAllowDiagonals:
-			self.recentInputVector = Vector2i(signf(inputVectorFloat.x), signf(inputVectorFloat.y))
+			self.recentInputVector = Vector2i(signf(inputVectorFloat.x), signf(inputVectorFloat.y)) # IGNORE Godot Warning; float to int conversion is obvious.
 		else: # Fractional axis values will get zeroed in the conversion to integers
 			self.recentInputVector = Vector2i(inputVectorFloat)	
 			
@@ -57,7 +57,7 @@ func _input(event: InputEvent) -> void:
 		
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not isEnabled or not shouldMoveContinuously: return	
 	
 	move()

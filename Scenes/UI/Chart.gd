@@ -151,7 +151,7 @@ func createGridLines() -> void:
 	
 	# PERFORMANCE: Calculate and set the total size before appending each line.
 	
-	var numberOfGridLinesX: int = int(maxHistorySize / gridStepX)
+	var numberOfGridLinesX: int = maxHistorySize / gridStepX
 	var numberOfGridLinesY: int = int((gridMaxY - gridMinY) / gridStepY)
 	
 	# TODO: Verify calculation

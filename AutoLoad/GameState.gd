@@ -32,7 +32,7 @@ signal playerRemoved(player: PlayerEntity)
 #region Signal Event Bus
 ## These signals may be emitted by any object and connected to any object at any time, usually via scripts.
 
-signal HUDStatUpdated(stat: Stat)
+signal HUDStatUpdated(stat: Stat) # IGNORE Godot Warning; this signal is used by other classes.
 
 #endregion
 

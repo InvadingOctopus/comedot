@@ -253,7 +253,7 @@ func processState() -> void:
 func incrementState() -> TurnBasedState:
 	if shouldShowDebugInfo: Debug.printLog("incrementState()", "", str(self))
 	if currentTurnState < TurnBasedState.turnEnd:
-		currentTurnState += 1
+		currentTurnState += 1 # IGNORE Godot Warning; How else to increment an enum?
 	elif currentTurnState >= TurnBasedState.turnEnd:
 		stateTimer.stop()
 		currentTurnState = TurnBasedState.turnBegin
