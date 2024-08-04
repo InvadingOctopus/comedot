@@ -10,14 +10,14 @@ extends Control
 
 @export var shouldPrefixValueWithStatName := false
 
-## An optional dictionary of additional prefixes to write before the value of each [Stat].
-## The dictionary type should be [StringName:String], where the keys are the names of the stats, in the exact case.
+## An optional dictionary of additional prefixes to write in the [Label] before the value of each [Stat].
+## The dictionary types should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
 ## If [member shouldPrefixValueWithStatName] is `true`, the name will be added after the custom prefix.
-@export var prefixes := {}
+@export var prefixes := {&"health": "HP:"}
 
-## An optional dictionary of suffixes to write after the value of each [Stat].
-## The dictionary type should be [StringName:String], where the keys are the names of the stats, in the exact case.
-@export var suffixes := {}
+## An optional dictionary of suffixes to write in the [Label] after the value of each [Stat].
+## The dictionary type should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
+@export var suffixes := {&"health": "♡"}
 
 ## A list of stats to display as soon as the Stats UI is ready,
 ## without waiting for a signal about a change.
@@ -66,7 +66,7 @@ func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
 
 ## Plays different animations on a label depending on how the [Stat]'s value changes.
 ## May be overridden in a subclass.
-func animateLabel(label: Label, value, previousValue) -> void: # NOTE: Values not typed so we could use [float].
+func animateLabel(label: Label, value, previousValue) -> void: # NOTE: IGNORE Godot Warning; Values not typed so we can use [float].
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
 
