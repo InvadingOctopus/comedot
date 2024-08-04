@@ -1,10 +1,12 @@
-# meta-default: true
+# meta-name: Body Manipulating Component
+# meta-description: A [Component] which manipulates a [CharacterBody2D], which may be the parent [Entity] itself.
+
+# NOTE: This does NOT necessarily mean that this component HAS a body or must BE a body.
 
 ## Description
-## Requirements: [Does this component depend on other components? Or does it need the parent Entity to be a specific type of node?]
 
 class_name _CLASS_
-extends Component
+extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
@@ -34,10 +36,11 @@ var coComponent: Component: ## Placeholder
 
 ## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
-	return []
+	return [] 
 
 
 func _ready() -> void:
+	characterBodyComponent.didMove.connect(self.onCharacterBodyComponent_didMove)
 	pass # Placeholder: Add any code needed to configure and prepare the component.
 
 
@@ -49,3 +52,9 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if not isEnabled: return
 	pass # Placeholder: Perform any per-frame updates and handle continuous input such as moving or turning.
+
+
+## Performs updates that depend on the state and flags of the [CharacterBody2D] AFTER [method CharacterBody2D.move_and_slide].
+func onCharacterBodyComponent_didMove() -> void:
+	if not isEnabled: return
+	pass # Placeholder: Add your code here.
