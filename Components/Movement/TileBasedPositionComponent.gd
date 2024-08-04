@@ -122,6 +122,8 @@ func updateCurrentTileCoordinates() -> Vector2i:
 
 
 ## Instantly sets the entity's position to a tile's position.
+## NOTE: Does NOT validate coordinates or check the cell's vacancy etc. 
+## TIP: May be useful for UI elements like cursors etc.
 ## If [param destinationOverride] is omitted then [member currentTileCoordinates] is used.
 func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates) -> void:
 	if not isEnabled: return

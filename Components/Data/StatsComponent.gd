@@ -1,9 +1,10 @@
 ## Stores an array of [Stat]s such as health and ammo for an [Entity].
+## TIP: Use the `Scripts/UI/StatsUI.gd` script to automatically display and update these values in a HUD during runtime.
 class_name StatsComponent
 extends Component
 
 
-@export var statNames: Array[StringName]
+@export var statNames: Array[StringName] # TBD: What is this used for? lol
 @export var stats: Array[Stat]
 
 
