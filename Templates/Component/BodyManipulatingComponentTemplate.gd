@@ -1,22 +1,22 @@
 # meta-name: Body Manipulating Component
 # meta-description: A [Component] which manipulates a [CharacterBody2D], which may be the parent [Entity] itself.
 
-# NOTE: This does NOT necessarily mean that this component HAS a body or must BE a body.
-
 ## Description
 
 class_name _CLASS_
 extends CharacterBodyManipulatingComponentBase
 
+# Manipulates an [CharacterBody2D]. NOTE: This does NOT necessarily mean that this component HAS a body or must BE a body.
+
 
 #region Parameters
-@export_range(0.0, 10.0, 1.0) var speed: float ## Placeholder
+@export_range(0.0, 100.0, 10.0) var speed: float ## Placeholder
 @export var isEnabled: bool = true
 #endregion
 
 
 #region State
-var placeholder: int ## Placeholder
+var property: int ## Placeholder
 #endregion
 
 
@@ -26,17 +26,18 @@ signal didSomethingHappen ## Placeholder
 
 
 #region Dependencies
+
 var coComponent: Component: ## Placeholder
 	get:
 		# WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
 		if not coComponent: coComponent = self.getCoComponent(Component)
 		return coComponent
-#endregion
-
 
 ## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
-	return [] 
+	return []
+	
+#endregion
 
 
 func _ready() -> void:
@@ -49,9 +50,9 @@ func _input(event: InputEvent) -> void:
 	pass # Placeholder: Handle one-shot input events such as jumping or firing.
 
 
-func _process(delta: float) -> void:
+func _process(delta: float) -> void: # NOTE: If you need to process movement or collisions, use `_physics_process()`
 	if not isEnabled: return
-	pass # Placeholder: Perform any per-frame updates and handle continuous input such as moving or turning.
+	pass # Placeholder: Perform any per-frame updates.
 
 
 ## Performs updates that depend on the state and flags of the [CharacterBody2D] AFTER [method CharacterBody2D.move_and_slide].

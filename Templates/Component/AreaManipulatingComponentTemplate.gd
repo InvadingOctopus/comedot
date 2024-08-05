@@ -1,12 +1,12 @@
 # meta-name: Area Manipulating Component
 # meta-description: A [Component] which manipulates an [Area2D], which may be the parent [Entity] itself.
 
-# NOTE: This does NOT necessarily mean that this component HAS an area or must BE an area.
-
 ## Description
 
 class_name _CLASS_
 extends Component
+
+# Manipulates an [Area2D]. NOTE: This does NOT necessarily mean that this component HAS an area or must BE an area.
 
 
 #region Parameters
@@ -18,7 +18,7 @@ extends Component
 
 
 #region State
-var placeholder: int ## Placeholder
+var property: int ## Placeholder
 #endregion
 
 
@@ -28,17 +28,18 @@ signal didSomethingHappen ## Placeholder
 
 
 #region Dependencies
+
 var coComponent: Component: ## Placeholder
 	get:
 		# WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
 		if not coComponent: coComponent = self.getCoComponent(Component)
 		return coComponent
-#endregion
-
 
 ## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
-	return [] 
+	return []
+	
+#endregion
 
 
 # Called whenever the component enters the scene tree.
@@ -60,9 +61,9 @@ func _input(event: InputEvent) -> void:
 	pass # Placeholder: Handle one-shot input events such as jumping or firing.
 
 
-func _process(delta: float) -> void:
+func _process(delta: float) -> void: # NOTE: If you need to process movement or collisions, use `_physics_process()`
 	if not isEnabled: return
-	pass # Placeholder: Perform any per-frame updates and handle continuous input such as moving or turning.
+	pass # Placeholder: Perform any per-frame updates.
 
  
 ## Called when the [param enteredArea] enters this component's associated [member area]. Requires [member Area2D.monitoring] to be set to [constant true].
