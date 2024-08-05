@@ -275,6 +275,7 @@ shouldShowDebugInfo = true
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(6, 6)
 speed = 50.0
+shouldShowDebugInfo = true
 
 [node name="TurnBasedEntity2" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
 position = Vector2(136, 120)
@@ -304,5 +305,6 @@ shouldShowDebugInfo = true
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(6, 9)
 speed = 50.0
+shouldShowDebugInfo = true
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]
