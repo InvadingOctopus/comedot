@@ -21,7 +21,6 @@ extends CharacterBodyManipulatingComponentBase
 
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
 
-@export var shouldShowDebugInfo: bool = false
 #endregion
 
 

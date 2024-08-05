@@ -22,7 +22,10 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 @export var area: Area2D
 
 ## If `false`, suppresses log messages from this entity and its child [Component]s.
-@export var isLoggingEnabled := true
+@export var isLoggingEnabled:		bool = true
+
+## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
+@export var shouldShowDebugInfo:	bool = false
 
 #endregion
 
@@ -55,7 +58,7 @@ func printLog(message: String = "", objectName: String = self.logName) -> void:
 
 
 func printDebug(message: String = "") -> void:
-	if not isLoggingEnabled: return
+	if not isLoggingEnabled or not shouldShowDebugInfo: return
 	Debug.printDebug(message, logName, "green")
 
 

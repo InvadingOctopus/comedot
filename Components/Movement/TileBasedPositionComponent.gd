@@ -40,7 +40,6 @@ extends Component
 @export var visualIndicator: Node2D
 
 @export var isEnabled: bool = true
-@export var shouldShowDebugInfo: bool = false
 
 #endregion
 

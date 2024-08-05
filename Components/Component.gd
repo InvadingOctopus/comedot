@@ -15,43 +15,6 @@ var parentEntity: Entity
 #endregion
 
 
-#region Logging
-
-var isLoggingEnabled: bool:
-	get:
-		if parentEntity: return parentEntity.isLoggingEnabled
-		else: return true
-
-var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
-	get: return "􀥭 " + self.name
-
-## A more detailed name including the node name, instance, and the script's `class_name`.
-var logFullName: String:
-	get: return "􀥭 " + str(self) + ":" + self.get_script().get_global_name()
-
-
-func printLog(message: String = "", objectName: String = self.logName) -> void:
-	if not isLoggingEnabled: return
-	Debug.printLog(message, "lightBlue", objectName, "cyan")
-
-
-func printDebug(message: String = "") -> void:
-	if not isLoggingEnabled: return
-	Debug.printDebug(message, logName, "cyan")
-
-
-func printWarning(message: String = "") -> void:
-	if not isLoggingEnabled: return
-	Debug.printWarning(message, logFullName, "cyan")
-
-
-func printError(message: String = "") -> void:
-	if not isLoggingEnabled: return
-	Debug.printError(message, logFullName, "cyan")
-
-#endregion
-
-
 #region Life Cycle
 
 # Called when the node enters the scene tree for the first time.
@@ -142,6 +105,7 @@ func _notification(what: int) -> void:
 
 
 #region Family
+# Join the serpent king!
 
 ## Search for a parent node which is of type [Entity].
 func getParentEntity() -> Entity:
@@ -186,5 +150,46 @@ func removeSiblingComponentsOfSameType() -> int:
 			removalCount += 1
 
 	return removalCount
+
+#endregion
+
+
+#region Logging
+
+## Enables more detailed debugging information for this component, such as verbose log messages, visual indicators, the [member Debug.watchList] live property labels, or chart windows etc.
+## NOTE: Subclasses may add their own information or may not respect this flag.
+@export var shouldShowDebugInfo: bool = false
+
+var isLoggingEnabled: bool:
+	get:
+		if parentEntity: return parentEntity.isLoggingEnabled
+		else: return true
+
+var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
+	get: return "􀥭 " + self.name
+
+## A more detailed name including the node name, instance, and the script's `class_name`.
+var logFullName: String:
+	get: return "􀥭 " + str(self) + ":" + self.get_script().get_global_name()
+
+
+func printLog(message: String = "", objectName: String = self.logName) -> void:
+	if not isLoggingEnabled: return
+	Debug.printLog(message, "lightBlue", objectName, "cyan")
+
+
+func printDebug(message: String = "") -> void:
+	if not isLoggingEnabled or not shouldShowDebugInfo: return
+	Debug.printDebug(message, logName, "cyan")
+
+
+func printWarning(message: String = "") -> void:
+	if not isLoggingEnabled: return
+	Debug.printWarning(message, logFullName, "cyan")
+
+
+func printError(message: String = "") -> void:
+	if not isLoggingEnabled: return
+	Debug.printError(message, logFullName, "cyan")
 
 #endregion

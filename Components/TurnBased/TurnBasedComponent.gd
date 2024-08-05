@@ -15,7 +15,6 @@ extends Component # + TurnBasedObjectBase
 
 #region Parameters
 @export var isEnabled: bool = true
-@export var shouldShowDebugInfo: bool = false
 #endregion
 
 

@@ -7,7 +7,6 @@ extends CharacterBodyManipulatingComponentBase
 #region Parameters
 @export var isEnabled:  bool = true
 @export var parameters: OverheadMovementParameters = OverheadMovementParameters.new()
-@export var shouldShowDebugInfo: bool = false
 #endregion
 
 

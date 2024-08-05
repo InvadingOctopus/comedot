@@ -20,8 +20,6 @@ extends Component
 ## Enable to avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 ## Applied after [method CharacterBody2D.move_and_slide]
 @export var shouldResetVelocityIfZeroMotion: bool = true
-		
-@export var shouldShowDebugInfo: bool = false
 
 #endregion
 

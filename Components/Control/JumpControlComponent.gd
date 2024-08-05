@@ -11,7 +11,6 @@ extends CharacterBodyManipulatingComponentBase
 #region Parameters
 @export var isEnabled:  bool = true
 @export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
-@export var shouldShowDebugInfo: bool = false
 #endregion
 
 

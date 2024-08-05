@@ -20,7 +20,6 @@ extends CharacterBodyManipulatingComponentBase
 @export var shouldZeroCurrentVelocity: bool = true
 
 @export var isEnabled: bool = true
-@export var shouldShowDebugInfo: bool = false
 
 #endregion
 
