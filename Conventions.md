@@ -60,3 +60,6 @@ func onGunComponent_ammoDepleted()
 func onHealthChanged()
 func onTimeout() # in a script on a Timer node
 ```
+# Git Workflow
+
+* TBD: The `develop` branch should be merged into `main` only on a weekend, I guess?
