@@ -9,7 +9,7 @@ extends Node
 
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
-@export var printDebugLogs: bool = true # TBD: Should this be a constant to improve performance?
+@export var shouldPrintDebugLogs: bool = true # TBD: Should this be a constant to improve performance?
 
 ## Sets the visibility of the debug information overlay text.
 ## NOTE: Does NOT affect the visibility of the framework warning label.
@@ -169,7 +169,7 @@ func printLog(message: String = "", messageColor: String = "", objectName: Strin
 
 ## Prints a faded message to reduce apparent visual clutter.
 func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	if Debug.printDebugLogs:
+	if Debug.shouldPrintDebugLogs:
 		# Do not print frames on a separate line to reduce less clutter.
 		#updateLastFrameLogged()
 		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # Not useful because it will always say it was called from this Debug script.
@@ -202,10 +202,10 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 		OS.alert(message, "Framework Error")
 
 
-## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member printDebugLogs].
+## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs].
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
 	# TODO: Optional charting? :)
-	if printDebugLogs and previousValue != newValue:
+	if shouldPrintDebugLogs and previousValue != newValue:
 		var string: String = str(previousValue, " → ", newValue)
 		printLog(string, "dimgray", variableName, "gray") if not logAsDebug else printDebug(string)
 		return string

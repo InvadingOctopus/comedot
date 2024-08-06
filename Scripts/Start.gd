@@ -32,10 +32,10 @@ extends Node
 
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
-@export var printDebugLogs: bool = true:
+@export var shouldPrintDebugLogs: bool = true:
 	set(newValue):
-		printDebugLogs = newValue
-		Debug.printDebugLogs = newValue
+		shouldPrintDebugLogs = newValue
+		Debug.shouldPrintDebugLogs = newValue
 
 ## Sets the visibility of the debug information overlay text.
 ## NOTE: Does NOT affect the visibility of the framework warning label.
@@ -65,7 +65,7 @@ func _ready() -> void:
 func applyGlobalFlags() -> void:
 	GlobalOverlay.testBackground.visible = self.showTestBackground
 	Debug.debugWindow.visible = self.showDebugWindow if OS.is_debug_build() else false
-	Debug.printDebugLogs  = self.printDebugLogs
+	Debug.shouldPrintDebugLogs  = self.shouldPrintDebugLogs
 	Debug.showDebugLabels = self.showDebugLabels
 	
 	Global.mainGameScene	= self.mainGameScene
