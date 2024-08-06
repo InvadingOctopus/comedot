@@ -1,13 +1,13 @@
 # Comedot
 
-**Component-based framework and project template for 2D games in the Godot engine**
+**Component-based framework and project template for [Godot][godot]**
 
 ![Godot+Comedot Logo][logo]
 
-The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-em-ups, or turn-based strategy) where you build a game by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or programming style, even when combining 2D scenes within a 3D game!
+The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-em-ups, or turn-based strategy) where you build scenes by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or programming style, even when combining 2D scenes within a 3D game!
 
 > [!IMPORTANT]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change quickly and no backwards compatibility is guaranteed.
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and no backwards compatibility is guaranteed.
 
 ⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
@@ -35,7 +35,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 	2. The `/Scripts/` folder may be used for any node even if it does not inherit from the `Entity` class.
 
 > [!TIP]
-> * Make subfolders for your game in the existing folder structure like `/Assets/YourGame/` and `/Scenes/YourGame/` to organize your own files separately from the framework and avoid accidental conflicts.
+> * Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
 
 🌳 _An example of a player entity's node tree:_  
 ![components-tree]
@@ -69,6 +69,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 [thanks]:		Thanks.md
 [todo]:			ToDo.md
 
+[godot]: https://github.com/godotengine/godot "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 [swift-api-guidelines]: https://swift.org/documentation/api-design-guidelines/
