@@ -74,7 +74,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 @export_storage var currentTurn: int:
 	set(newValue):
 		if currentTurn == newValue: return
-		if shouldShowDebugInfo: Debug.printDebug(str("currentTurn: ", currentTurn, " → ", newValue), str(self))
+		printChange("currentTurn", currentTurn, newValue)
 		
 		# Warnings for abnormal behavior
 		if newValue < currentTurn: Debug.printWarning("currentTurn decrementing!", "", str(self))
@@ -86,7 +86,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 @export_storage var currentTurnState: TurnBasedState = TurnBasedState.turnInvalid: # TBD
 	set(newValue):
 		if currentTurnState == newValue: return
-		if shouldShowDebugInfo: Debug.printDebug(str("currentTurnState: ", currentTurnState, " → ", newValue), str(self))
+		printChange("currentTurnState", currentTurnState, newValue)
 		
 		# Warnings for abnormal behavior
 		if newValue > currentTurnState + 1: Debug.printWarning("currentTurnState incrementing by more than 1!", "", str(self))
@@ -99,7 +99,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 @export_storage var turnsProcessed: int:
 	set(newValue):
 		if turnsProcessed == newValue: return
-		if shouldShowDebugInfo: Debug.printDebug(str("turnsProcessed: ", turnsProcessed, " → ", newValue), str(self))
+		printChange("turnsProcessed", turnsProcessed, newValue)
 		
 		# Warnings for abnormal behavior
 		if newValue < turnsProcessed: Debug.printWarning("turnsProcessed decrementing!", "", str(self))
@@ -389,6 +389,10 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 
 func _process(_delta: float) -> void: # DEBUG
 	showDebugInfo()
+
+
+func printChange(variableName: String, previousValue: Variant, newValue: Variant) -> void:
+	if shouldShowDebugInfo: Debug.printChange(str("[color=white]", self, " [color=gray]", variableName), previousValue, newValue)
 
 
 func showDebugInfo() -> void:

@@ -51,13 +51,13 @@ extends Component
 var currentTileCoordinates: Vector2i:
 	set(newValue):
 		if newValue != currentTileCoordinates:
-			if shouldShowDebugInfo: printDebug(str("currentTileCoordinates: ", currentTileCoordinates, " → ", newValue))
+			printChange("currentTileCoordinates", currentTileCoordinates, newValue)
 			currentTileCoordinates = newValue
 
 var destinationTileCoordinates: Vector2i:
 	set(newValue):
 		if newValue != destinationTileCoordinates:
-			if shouldShowDebugInfo: printDebug(str("destinationTileCoordinates: ", destinationTileCoordinates, " → ", newValue))
+			printChange("destinationTileCoordinates", destinationTileCoordinates, newValue)
 			destinationTileCoordinates = newValue
 
 # var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the [TIleMapLayer] may move between frames.

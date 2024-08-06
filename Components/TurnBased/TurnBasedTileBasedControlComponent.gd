@@ -23,7 +23,7 @@ var tileBasedPositionComponent: TileBasedPositionComponent:
 
 var recentInputVector: Vector2i:
 	set(newValue):
-		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " recentInputVector: ", recentInputVector, " → ", newValue))
+		printChange(parentEntity.logName + " recentInputVector", recentInputVector, newValue)
 		recentInputVector = newValue
 
 #endregion

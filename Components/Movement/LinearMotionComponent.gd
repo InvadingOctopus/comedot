@@ -68,7 +68,7 @@ func _physics_process(delta: float) -> void:
 			# Then just cross the remaining gap, no more.
 			var remainingDistance: float = maximumDistance - distanceTraveled
 			# DEBUG: printDebug("projectedDistance: " + str(projectedDistance) + " > maximumDistance: " + str(maximumDistance))
-			# DEBUG: printDebug("offset: " + str(offset) + " → " + str(direction * remainingDistance))
+			# DEBUG: printChange("offset", offset, str(direction * remainingDistance))
 			offset = direction * remainingDistance
 
 	# Move
