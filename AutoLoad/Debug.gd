@@ -162,13 +162,13 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 
 #region Logging
 
-static func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
+func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
 
 
 ## Prints a faded message to reduce apparent visual clutter.
-static func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	if Debug.printDebugLogs:
 		# Do not print frames on a separate line to reduce less clutter.
 		#updateLastFrameLogged()
@@ -178,18 +178,18 @@ static func printDebug(message: String = "", objectName: String = "", _objectCol
 
 ## Prints the message in bold and a bright color, with empty lines on each side.
 ## For finding important messages quickly in the debug console.
-static func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	print_rich("\n[indent]􀢒 [b][color=white]" + objectName + " " + message + "[/color][/b]\n")
 
 
-static func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	push_warning("Frame " + str(lastFrameLogged) + " ⚠️ " + objectName + " " + message)
 	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
 
 
 ## NOTE: In release builds, if [member Global.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
-static func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
+func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
 	push_error(plainText)
@@ -203,7 +203,7 @@ static func printError(message: String = "", objectName: String = "", _objectCol
 
 
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
-static func updateLastFrameLogged() -> void:
+func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
 		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
