@@ -41,39 +41,6 @@ var functionsAlreadyCalledOnceThisFrame := {}
 #endregion
 
 
-#region Logging
-
-var logName: String: # Static assignment would set the property before the `name` is set.
-	# Entities just need to show their name as they're almost always the same type/eclass.
-	get: return "􀕽 " + self.name
-
-## A more detailed name including the node name, instance, and the script's `class_name`.
-var logFullName: String:
-	get: return "􀕽 " + str(self) + ":" + self.get_script().get_global_name()
-
-
-func printLog(message: String = "", objectName: String = self.logName) -> void:
-	if not isLoggingEnabled: return
-	Debug.printLog(message, "lightGreen", objectName, "green")
-
-
-func printDebug(message: String = "") -> void:
-	if not isLoggingEnabled or not shouldShowDebugInfo: return
-	Debug.printDebug(message, logName, "green")
-
-
-func printWarning(message: String = "") -> void:
-	if not isLoggingEnabled: return
-	Debug.printWarning(message, logFullName, "green")
-
-
-func printError(message: String = "") -> void:
-	if not isLoggingEnabled: return
-	Debug.printError(message, logFullName, "green")
-
-#endregion
-
-
 #region Life Cycle
 
 # Called when the node enters the scene tree for the first time.
@@ -307,3 +274,43 @@ func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
 			printLog("􀆄 PreDelete")
+
+
+#region Logging
+
+var logName: String: # Static assignment would set the property before the `name` is set.
+	# Entities just need to show their name as they're almost always the same type/eclass.
+	get: return "􀕽 " + self.name
+
+## A more detailed name including the node name, instance, and the script's `class_name`.
+var logFullName: String:
+	get: return "􀕽 " + str(self) + ":" + self.get_script().get_global_name()
+
+
+func printLog(message: String = "", objectName: String = self.logName) -> void:
+	if not isLoggingEnabled: return
+	Debug.printLog(message, "lightGreen", objectName, "green")
+
+
+func printDebug(message: String = "") -> void:
+	if not isLoggingEnabled or not shouldShowDebugInfo: return
+	Debug.printDebug(message, logName, "green")
+
+
+func printWarning(message: String = "") -> void:
+	if not isLoggingEnabled: return
+	Debug.printWarning(message, logFullName, "green")
+
+
+func printError(message: String = "") -> void:
+	if not isLoggingEnabled: return
+	Debug.printError(message, logFullName, "green")
+
+
+## Logs an entry showing a variable's previous and new values, IF there is a change and [member shouldShowDebugInfo].
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> void:
+	if shouldShowDebugInfo and previousValue != newValue:
+		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
+		printLog("[color=gray]" + string) if not logAsDebug else printDebug(string)
+
+#endregion

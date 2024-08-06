@@ -202,6 +202,17 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 		OS.alert(message, "Framework Error")
 
 
+## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member printDebugLogs].
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
+	# TODO: Optional charting? :)
+	if printDebugLogs and previousValue != newValue:
+		var string: String = str(previousValue, " → ", newValue)
+		printLog(string, "dimgray", variableName, "gray") if not logAsDebug else printDebug(string)
+		return string
+	else:
+		return ""
+
+
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
 func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():

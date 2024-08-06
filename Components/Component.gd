@@ -192,4 +192,11 @@ func printError(message: String = "") -> void:
 	if not isLoggingEnabled: return
 	Debug.printError(message, logFullName, "cyan")
 
+
+## Logs an entry showing a variable's previous and new values, IF there is a change and [member shouldShowDebugInfo].
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> void:
+	if shouldShowDebugInfo and previousValue != newValue:
+		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
+		printLog("[color=gray]" + string) if not logAsDebug else printDebug(string)
+
 #endregion
