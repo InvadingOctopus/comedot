@@ -10,7 +10,7 @@ extends TileMapLayer
 #region Parameters & State
 ## A Dictionary of Dictionaries. { CellCoordinates : {Key : Value} }
 ## Each (x,y) [Vector2i] coordinate key contains a Dictionary of {[StringName]: [Variant]}.
-var dataDictionary := { Vector2i(0,0): {&"key": 0} }
+@export var dataDictionary := { Vector2i(0,0): {&"key": 0} }
 
 @export var shouldShowDebugInfo: bool = false
 #endregion
@@ -25,6 +25,7 @@ func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void
 	var cellData: Variant = dataDictionary.get_or_add(coordinates, {}) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
 	
 	cellData[key] = value
+
 
 func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 	var cellData: Variant = dataDictionary.get(coordinates) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
