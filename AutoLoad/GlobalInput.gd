@@ -86,7 +86,7 @@ func _input(event: InputEvent) -> void:
 #region Helper Functions
 
 ## Returns: `true` if [method Input.is_action_just_pressed] or [method Input.is_action_just_released].
-func hasActionTransitioned(action: StringName) -> bool:
+static func hasActionTransitioned(action: StringName) -> bool:
 	return Input.is_action_just_pressed(action) \
 		or Input.is_action_just_released(action)
 		

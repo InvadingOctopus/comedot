@@ -81,7 +81,7 @@ class TileMapCustomData: ## A list of names for the custom data types that [Tile
 
 #region Scene Management
 
-func instantiateSceneFromPath(resourcePath: String) -> Node:
+static func instantiateSceneFromPath(resourcePath: String) -> Node:
 	var scene: PackedScene = load(resourcePath) as PackedScene
 	
 	if is_instance_valid(scene):
@@ -95,7 +95,7 @@ func instantiateSceneFromPath(resourcePath: String) -> Node:
 ## Convenient for getting the scene for a component.
 ## e.g. [JumpControlComponent] returns "res://Components/Control/JumpControlComponent.tscn"
 ## WARNING: This assumes that the scene's name is the same as the `class_name`
-func getScenePathFromClass(type: Script) -> String:
+static func getScenePathFromClass(type: Script) -> String:
 	# var className   := type.get_global_name()
 	var scriptPath	:= type.resource_path
 	var scenePath 	:= scriptPath.replace(".gd", ".tscn")
@@ -105,14 +105,14 @@ func getScenePathFromClass(type: Script) -> String:
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
 ## Shortcut for [load] and [method PackedScene.instantiate].
 ## Returns: The new instance of the scene.
-func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var scene: PackedScene = load(path)
 	return addSceneInstance(scene, parent, position)
 
 
 ## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
 ## Returns: The new copy of the scene.
-func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var newChild := scene.instantiate()
 	newChild.position = position
 	parent.add_child(newChild)
@@ -120,8 +120,8 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 	return newChild
 
 
-func transitionToScene(nextScene: PackedScene) -> void:
-	var sceneTree := get_tree()
+func transitionToScene(nextScene: PackedScene) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+	var sceneTree: SceneTree = self.get_tree()
 	sceneTree.paused = true
 	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
 
@@ -132,8 +132,8 @@ func transitionToScene(nextScene: PackedScene) -> void:
 
 
 ## Sets [member SceneTree.paused] and returns the resulting paused status.
-func setPause(paused: bool) -> bool:
-	var sceneTree := get_tree()
+func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
+	var sceneTree: SceneTree = self.get_tree()
 	sceneTree.paused = paused
 
 	if sceneTree.paused: GlobalOverlay.fadeIn()
@@ -145,9 +145,9 @@ func setPause(paused: bool) -> bool:
 
 
 ## Toggles [member SceneTree.paused] and returns the resulting paused status.
-func togglePause() -> bool:
+func togglePause() -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
 	# TBD: Should this be more efficient instead of so many function calls?
-	return setPause(not get_tree().paused)
+	return setPause(not self.get_tree().paused)
 
 #endregion
 
@@ -155,7 +155,7 @@ func togglePause() -> bool:
 
 #region Node Management
 
-func findFirstChildOfType(parentNode: Node, type: Variant) -> Node:
+static func findFirstChildOfType(parentNode: Node, type: Variant) -> Node:
 	var children: Array[Node] = parentNode.get_children()
 	for child in children:
 		if is_instance_of(child, type): return child # break
@@ -164,7 +164,7 @@ func findFirstChildOfType(parentNode: Node, type: Variant) -> Node:
 
 
 ## Searches up the tree until a matching parent or grandparent is found.
-func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
+static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 	var parent: Node = childNode.get_parent() # parentOrGrandparent
 
 	# If parent is null or not the matching type, get the grandparent (parent's parent) and keep searching up the tree.
@@ -177,7 +177,7 @@ func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 ## Replaces a child node with another node at the same index (order).
 ## NOTE: The child and its sub-children are NOT deleted. To delete a child, use [method Node.queue_free].
 ## Returns: `true` if [param childToReplace] was found and replaced.
-func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> bool:
+static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> bool:
 	if childToReplace.get_parent() != parentNode: return false
 
 	# Is the new child already in another parent?
@@ -199,7 +199,7 @@ func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> boo
 
 ## Removes each child from the [parameter parent] then calls [method Node.queue_free] on the child.
 ## Returns: The number of removed children.
-func removeAllChildren(parent: Node) -> int:
+static func removeAllChildren(parent: Node) -> int:
 	var removalCount: int = 0
 
 	for child in parent.get_children():
@@ -211,7 +211,7 @@ func removeAllChildren(parent: Node) -> int:
 
 
 ## Convert a path from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
-func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:	
+static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:	
 	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
 	var propertyPath: String = str(":", relativePath.get_concatenated_subnames())
 	var absolutePathIncludingProperty: NodePath = NodePath(str(absoluteNodePath, propertyPath))
@@ -225,7 +225,7 @@ func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: 
 	return absolutePathIncludingProperty
 
 
-func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
+static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 	var nodePath: NodePath
 	var propertyPath: NodePath
 	
@@ -241,7 +241,7 @@ func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 
 ## A very rudimentary implementation of saving the entire game state.
 ## @experimental
-func saveGame() -> void:
+func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mode`
 	# TODO: Implement properly :(
 	# BUG:  Does not save all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
@@ -264,7 +264,7 @@ func saveGame() -> void:
 
 ## A very rudimentary implementation of loading the entire game state.
 ## @experimental
-func loadGame() -> void:
+func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mode`
 	# TODO: Implement properly :(
 	# BUG:  Does not restore all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
@@ -285,7 +285,7 @@ func loadGame() -> void:
 
 ## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
 ## @experimental
-func screenshot(titleSuffix: String = "") -> void:
+func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` because of `self.get_viewport()`
 	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
 	# TBD: Is the `await` necessary?
 	var date := Time.get_date_string_from_system().replace(".","-") 
@@ -295,7 +295,7 @@ func screenshot(titleSuffix: String = "") -> void:
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"
 	
-	var screenshotImage := get_viewport().get_texture().get_image() # Capture what the player sees
+	var screenshotImage := self.get_viewport().get_texture().get_image() # Capture what the player sees
 	screenshotImage.save_jpg(screenshotPath) 
 	
 	Debug.showTemporaryLabel(&"Screenshot", time + " " + titleSuffix)
@@ -310,7 +310,7 @@ func screenshot(titleSuffix: String = "") -> void:
 ## NOTE: The rectangle is in the coordinates of the [CollisionShape2D].
 ## Works best with areas with a single rectangle shape.
 ## Returns: On failure: a rectangle with size -1
-func getShapeBounds(area: Area2D) -> Rect2:
+static func getShapeBounds(area: Area2D) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
 	# Find a CollisionShape2D child.
@@ -331,7 +331,7 @@ func getShapeBounds(area: Area2D) -> Rect2:
 ## NOTE: The rectangle is in the coordinates of the [Area2D].
 ## Works best with areas with a single rectangle shape.
 ## Returns: On failure: a rectangle with size -1
-func getShapeBoundsInArea(area: Area2D) -> Rect2:
+static func getShapeBoundsInArea(area: Area2D) -> Rect2:
 	# TODO: More accuracy within all sorts of shapes
 	# TODO: Find a more elegant and efficient way :')
 	# HACK: Sigh @ Godot for making this so hard...
@@ -375,13 +375,13 @@ func getShapeBoundsInArea(area: Area2D) -> Rect2:
 	return shapeBoundsInArea
 
 
-func getShapeGlobalBounds(area: Area2D) -> Rect2:
+static func getShapeGlobalBounds(area: Area2D) -> Rect2:
 	var shapeGlobalBounds := getShapeBoundsInArea(area)
 	shapeGlobalBounds.position = area.to_global(shapeGlobalBounds.position)
 	return shapeGlobalBounds
 
 
-func getRandomPositionInArea(area: Area2D) -> Vector2:
+static func getRandomPositionInArea(area: Area2D) -> Vector2:
 
 	var areaBounds := getShapeBoundsInArea(area)
 
@@ -414,7 +414,7 @@ func getRandomPositionInArea(area: Area2D) -> Vector2:
 ## Sets the X and/or Y components of [member CharacterBody2D.velocity] to 0 if the [method CharacterBody2D.get_last_motion()] is 0 in the respective axes.
 ## This prevents the "glue effect" where if the player keeps inputting a direction while the character is pushed against a wall,
 ## it will take a noticeable delay to move in the other direction while the velocity gradually changes from the wall's direction to away from the wall.
-func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
+static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 	var lastMotion: Vector2 = body.get_last_motion()
 	if abs(lastMotion.x) < 0.1: body.velocity.x = 0
 	if abs(lastMotion.y) < 0.1: body.velocity.y = 0
@@ -425,7 +425,7 @@ func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 
 #region Visual Functions
 
-func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
+static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
 	var position	:= rectangle.position
 	var center		:= rectangle.get_center()
 	var end			:= rectangle.end
@@ -443,7 +443,7 @@ func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
 		_: return Vector2.ZERO
 
 
-func addRandomDistance(position: Vector2, \
+static func addRandomDistance(position: Vector2, \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
@@ -457,7 +457,7 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
 #region Tile Map Functions
 
-func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> Vector2:
+static func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> Vector2:
 	var tilePosition: Vector2 = tileMap.map_to_local(tileCoordinates)
 	var tileGlobalPosition: Vector2 = tileMap.to_global(tilePosition)
 	return tileGlobalPosition
@@ -466,24 +466,24 @@ func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> 
 ## Sets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
 ## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer.]
 ## DESIGN: This is a separate function on top of [TileMapLayerWithCustomCellData] because it may redirect to a native Godot feature in the future.
-func setCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName, value: Variant) -> void:
+static func setCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName, value: Variant) -> void:
 	tileMap.setCellData(coordinates, key, value)
 
 
 ## Gets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
 ## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer.]
 ## DESIGN: This is a separate function on top of [TileMapLayerWithCustomCellData] because it may redirect to a native Godot feature in the future.
-func getCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName) -> Variant:
+static func getCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, key: StringName) -> Variant:
 	return tileMap.getCellData(coordinates, key)
 
 
-func setTileOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
+static func setTileOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
 	tileMap.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
 	tileMap.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
 
 
 ## Checks if the specified tile is vacant by examining the custom tile data for flags such as [const Global.TileMapCustomData.isWalkable].
-func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i) -> bool:
+static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i) -> bool:
 	var isTileVacant: bool = false 
 	var isCellVacant: bool = false 
 	
@@ -526,7 +526,7 @@ func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vect
 
 
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
-func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
+static func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
 	var mapRect: Rect2i = tileMap.get_used_rect()
 	return mapRect.has_point(coordinates)
 
@@ -534,7 +534,7 @@ func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> bool:
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
 ## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
 ## @experimental
-func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
+static func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
 	# If the TileMap or its collisions are disabled, then the tile is always available.
 	if not tileMap.enabled or not tileMap.collision_enabled: return true
 	
@@ -552,7 +552,7 @@ func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinate
 
 #region Miscellaneous Functions
 
-func isValidArrayIndex(array: Array, index: int) -> bool:
+static func isValidArrayIndex(array: Array, index: int) -> bool:
 	if array.size() > 0 and index >= 0 and index < array.size():
 		return true
 	else:
@@ -562,7 +562,7 @@ func isValidArrayIndex(array: Array, index: int) -> bool:
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
 ## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
-func skipTimer(timer: Timer) -> float:
+static func skipTimer(timer: Timer) -> float:
 	# WARNING: This may not be accurate because the Timer is still running until the `stop()` call.
 	var leftoverTime: float = timer.time_left 
 	timer.stop()
