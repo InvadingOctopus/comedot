@@ -13,9 +13,6 @@ outline_color = Color(0, 0, 0, 1)
 
 [node name="Debug" type="Node"]
 script = ExtResource("1_rd14n")
-printDebugLogs = null
-showDebugLabels = null
-watchList = null
 
 [node name="Canvas" type="CanvasLayer" parent="."]
 layer = 110
