@@ -54,7 +54,7 @@ func applyTextFromArray(indexOverride: int = self.currentTextIndex) -> void:
 
 
 func incrementIndices() -> void:
-	# TBD: Should this be a `Global.incrementAndWrapArrayIndex()` or would that be slower? :)
+	# TBD: Should this be a `Tools.incrementAndWrapArrayIndex()` or would that be slower? :)
 	currentTextIndex += 1
 	if currentTextIndex >= textStrings.size():
 		currentTextIndex = 0

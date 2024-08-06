@@ -39,7 +39,7 @@ func displaySubscene(scene: PackedScene) -> Node2D:
 
 
 func clearScenePlaceholder() -> void:
-	Global.removeAllChildren(gameScenePlaceholder)
+	Tools.removeAllChildren(gameScenePlaceholder)
 
 #endregion
 

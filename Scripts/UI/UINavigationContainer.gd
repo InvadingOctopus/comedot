@@ -49,14 +49,14 @@ func addNodeToHistory(path: String) -> int:
 
 
 func findFirstChildControl() -> Control:
-	return Global.findFirstChildOfType(self, Control)
+	return Tools.findFirstChildOfType(self, Control)
 
 
 func replaceFirstChildControl(newControl: Control) -> bool:
 	var childToReplace: Control = self.findFirstChildControl()
 
 	if childToReplace:
-		if Global.replaceChild(self, childToReplace, newControl):
+		if Tools.replaceChild(self, childToReplace, newControl):
 			childToReplace.queue_free() # NOTE: Important, as [remove_child()] does not delete the child.
 			return true
 	else:
@@ -68,7 +68,7 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 
 
 func displayNavigationDestination(newDestination: String) -> bool:
-	var newDestinationScene: Node = Global.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
+	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
 	var result: bool
 	
 	if self.replaceFirstChildControl(newDestinationScene):

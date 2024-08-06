@@ -57,5 +57,5 @@ func onHealthComponent_healthDidZero() -> void:
 	# and add the offset.
 	var position: Vector2 = parentForSpawnedNode.to_local(parentEntity.global_position) + positionOffset
 
-	var spawnedNode := Global.addSceneInstance(nodeToSpawnOnDeath, parentForSpawnedNode, position)
+	var spawnedNode := Tools.addSceneInstance(nodeToSpawnOnDeath, parentForSpawnedNode, position)
 	didDrop.emit(spawnedNode)

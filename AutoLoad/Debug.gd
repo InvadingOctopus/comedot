@@ -135,7 +135,7 @@ func toggleDebugWindow() -> bool:
 ## Returns: The new chart
 func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> Chart:
 	var newChartWindow: Window = preload("res://Scenes/UI/ChartWindow.tscn").instantiate()
-	var newChart: Chart = Global.findFirstChildOfType(newChartWindow, Chart)
+	var newChart: Chart = Tools.findFirstChildOfType(newChartWindow, Chart)
 	
 	newChart.nodeToMonitor = nodeToMonitor
 	newChart.propertyToMonitor = propertyToMonitor

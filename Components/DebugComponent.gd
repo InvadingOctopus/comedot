@@ -28,7 +28,7 @@ func convertPathsToAbsolute(relativePaths: Array[NodePath]) -> Array[NodePath]:
 	var absolutePaths:	Array[NodePath]
 	
 	for relativePath: NodePath in relativePaths:
-		absolutePath = Global.convertRelativePathToAbsolute(self, relativePath)
+		absolutePath = Tools.convertRelativePathToAbsolute(self, relativePath)
 		absolutePaths.append(absolutePath)
 	
 	return absolutePaths
@@ -38,7 +38,7 @@ func createCharts() -> void:
 	var nodeAndPropertyPaths: Array[NodePath]
 	
 	for path: NodePath in propertiesToChartAbsolutePaths:
-		nodeAndPropertyPaths = Global.splitPathIntoNodeAndProperty(path)
+		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
 		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1])
 
@@ -54,7 +54,7 @@ func updateLabel() -> void:
 	var labelText: String
 	
 	for path: NodePath in propertiesToWatchAbsolutePaths:
-		nodeAndPropertyPaths = Global.splitPathIntoNodeAndProperty(path)
+		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
 		nodeToWatch = self.get_node(nodeAndPropertyPaths[0]) # TBD: Should it be `self` or the SceneTree root?
 		labelText += str(nodeAndPropertyPaths[1].get_subname(nodeAndPropertyPaths[1].get_subname_count() - 1), ": ", nodeToWatch.get_indexed(nodeAndPropertyPaths[1]), "\n")

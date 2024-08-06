@@ -9,7 +9,7 @@ extends Label
 
 
 static func create(parentNode: Node2D, bubbleText: String) -> TextBubble:
-	var scenePath := Global.getScenePathFromClass(TextBubble)
+	var scenePath := Tools.getScenePathFromClass(TextBubble)
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
 	newBubble.text = bubbleText
 	parentNode.add_child(newBubble)

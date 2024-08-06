@@ -94,7 +94,7 @@ func populate() -> void:
 	var sceneResource := load(sceneToCopy.resource_path)
 	var parent: Node2D = parentOverride if parentOverride else self
 
-	self.shapeBounds = Global.getShapeBoundsInArea(self)
+	self.shapeBounds = Tools.getShapeBoundsInArea(self)
 
 	# NOTE: A position of (0,0) may be top-left in the [Area2D] but at center of the [CollisionShape2D]'s shape.
 	# So we have to adjust the first copy's position so that (0,0) is at the top-left of the SHAPE.

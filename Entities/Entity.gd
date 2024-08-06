@@ -204,7 +204,7 @@ func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
 ## NOTE: Also returns any subclasses which inherit from the specified [param type].
 ## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant) -> Node:
-	var result: Node = Global.findFirstChildOfType(self, type)
+	var result: Node = Tools.findFirstChildOfType(self, type)
 	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
 	return result
 
@@ -220,17 +220,17 @@ func addNewComponent(type: Script) -> Component:
 
 	# First, construct the scene name from the script's name.
 
-	var scenePath: String = Global.getScenePathFromClass(type)
+	var scenePath: String = Tools.getScenePathFromClass(type)
 
 	# Load and instantiate the component scene.
 
-	return Global.loadSceneAndAddInstance(scenePath, self)
+	return Tools.loadSceneAndAddInstance(scenePath, self)
 
 
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
 ## Shortcut for [load] and [method PackedScene.instantiate].
 func addSceneCopy(path: String) -> Node:
-	return Global.addSceneCopy(path, self)
+	return Tools.loadSceneAndAddInstance(path, self)
 
 
 ## Removes all child nodes of the specified type and frees (deletes) them if [param free] is `true`.

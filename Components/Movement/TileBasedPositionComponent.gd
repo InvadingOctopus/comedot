@@ -116,7 +116,7 @@ func _ready() -> void:
 ## and set the cell's occupancy.
 func updateCurrentTileCoordinates() -> Vector2i:
 	self.currentTileCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
-	if shouldOccupyCell: Global.setTileOccupancy(tileMap, currentTileCoordinates, true, parentEntity)
+	if shouldOccupyCell: Tools.setTileOccupancy(tileMap, currentTileCoordinates, true, parentEntity)
 	return currentTileCoordinates 
 
 
@@ -127,7 +127,7 @@ func updateCurrentTileCoordinates() -> Vector2i:
 func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentTileCoordinates) -> void:
 	if not isEnabled: return
 
-	var tileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, tileCoordinates)
+	var tileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, tileCoordinates)
 
 	if parentEntity.global_position != tileGlobalPosition:
 		parentEntity.global_position = tileGlobalPosition
@@ -168,10 +168,10 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	
 	# Vacate the current (to-be previous) tile
 	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
-	Global.setTileOccupancy(tileMap, currentTileCoordinates, false, null)
+	Tools.setTileOccupancy(tileMap, currentTileCoordinates, false, null)
 	
 	# TODO: Occupy each tile along the way in _process()
-	if shouldOccupyCell: Global.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
+	if shouldOccupyCell: Tools.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
 	
 	# Should we teleport?
 	
@@ -186,7 +186,7 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 ## May be overridden by subclasses to perform additional checks.
 ## NOTE: Subclasses MUST call super to perform common validation.
 func validateCoordinates(coordinates: Vector2i) -> bool:
-	var isValidBounds: bool = Global.checkTileMapBounds(tileMap, coordinates)
+	var isValidBounds: bool = Tools.checkTileMapBounds(tileMap, coordinates)
 	var isTileVacant:  bool = self.checkTileVacancy(coordinates)
 	
 	if shouldShowDebugInfo: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
@@ -200,8 +200,8 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 ## and custom data on a cell, e.g. [const Global.TileMapCustomData.isOccupied],
 ## or performing a more rigorous physics collision detection.
 func checkTileVacancy(coordinates: Vector2i) -> bool:
-	# UNUSED: Global.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
-	return Global.checkTileVacancy(tileMap, coordinates) 
+	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
+	return Tools.checkTileVacancy(tileMap, coordinates) 
 
 
 ## Cancels the current move.
@@ -232,13 +232,13 @@ func _physics_process(delta: float) -> void:
 
 func moveTowardsDestinationTile(delta: float) -> void:
 	# TODO: Handle physics collisions
-	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
+	var destinationTileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, self.destinationTileCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
 
 
 ## Are we there yet?
 func checkForArrival() -> bool:
-	var destinationTileGlobalPosition: Vector2 = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
+	var destinationTileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
 	if parentEntity.global_position == destinationTileGlobalPosition:
 		self.currentTileCoordinates = self.destinationTileCoordinates
 		self.isMovingToNewTile = false
@@ -253,7 +253,7 @@ func checkForArrival() -> bool:
 
 func updateIndicator() -> void:
 	if not visualIndicator: return
-	visualIndicator.global_position = Global.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
+	visualIndicator.global_position = Tools.getTileGlobalPosition(tileMap, self.destinationTileCoordinates)
 	visualIndicator.visible = isMovingToNewTile
 
 
@@ -265,7 +265,7 @@ func showDebugInfo() -> void:
 	Debug.watchList.previousVector		= previousInputVector
 	Debug.watchList.isMovingToNewTile	= isMovingToNewTile
 	Debug.watchList.destinationTile		= destinationTileCoordinates
-	Debug.watchList.destinationPosition	= Global.getTileGlobalPosition(tileMap, destinationTileCoordinates)
+	Debug.watchList.destinationPosition	= Tools.getTileGlobalPosition(tileMap, destinationTileCoordinates)
 
 
 func onWillStartMovingToNewTile(newDestination: Vector2i) -> void:

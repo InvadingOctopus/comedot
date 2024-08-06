@@ -54,7 +54,7 @@ func _ready() -> void:
 		self.hasNoMoreMoves = true
 		return
 
-	if not Global.isValidArrayIndex(vectors, currentMoveIndex):
+	if not Tools.isValidArrayIndex(vectors, currentMoveIndex):
 		printWarning("Invalid index: " + str(currentMoveIndex, " for size: ", vectors.size()))
 		self.hasNoMoreMoves = true
 		return
@@ -122,7 +122,7 @@ func setNextMove() -> void:
 
 ## Returns: `Vector2.ZERO` if [member currentMoveIndex] is invalid.
 func setCurrentVector() -> Vector2:
-	if Global.isValidArrayIndex(vectors, currentMoveIndex):
+	if Tools.isValidArrayIndex(vectors, currentMoveIndex):
 		self.currentVector = vectors[currentMoveIndex]
 	else:
 		self.currentVector = Vector2.ZERO

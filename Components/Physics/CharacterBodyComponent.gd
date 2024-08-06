@@ -108,7 +108,7 @@ func updateStateAfterMove(_delta: float) -> void:
 	
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	if self.shouldResetVelocityIfZeroMotion:
-		parentEntity.callOnceThisFrame(Global.resetBodyVelocityIfZeroMotion, [body]) 
+		parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) 
 	
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 

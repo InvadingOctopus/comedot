@@ -16,7 +16,7 @@ func onPressed() -> void:
 	Debug.printDebug(str(self, " onPressed(): navigationDestination: ", navigationDestination))
 	if not navigationDestination: return
 
-	var parentContainer: UINavigationContainer = parentOverride if parentOverride else Global.findFirstParentOfType(self, UINavigationContainer)
+	var parentContainer: UINavigationContainer = parentOverride if parentOverride else Tools.findFirstParentOfType(self, UINavigationContainer)
 	if not parentContainer: return
 
 	parentContainer.displayNavigationDestination(navigationDestination)

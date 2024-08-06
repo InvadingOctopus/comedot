@@ -51,7 +51,7 @@ func processTurnUpdate() -> void:
 	%UpdateLabel.visible = true
 	super.processTurnUpdate()
 	if not is_zero_approx(TurnBasedCoordinator.entityTimer.wait_time):
-		Global.skipTimer(TurnBasedCoordinator.entityTimer)
+		Tools.skipTimer(TurnBasedCoordinator.entityTimer)
 
 
 func processTurnEnd() -> void:

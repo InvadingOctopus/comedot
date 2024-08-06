@@ -47,7 +47,7 @@ func spawn() -> void:
 	var sceneResource   := load(sceneToSpawn.resource_path)
 	var newSpawn: Node2D = sceneResource.instantiate()
 
-	newSpawn.position = Global.getRandomPositionInArea(self)
+	newSpawn.position = Tools.getRandomPositionInArea(self)
 
 	# Add the new node to the parent
 
