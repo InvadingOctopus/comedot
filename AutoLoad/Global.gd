@@ -7,14 +7,14 @@ extends Node
 #region Project-Specific Flags & Settings
 
 ## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
-var hasStartScript:		bool = false
+static var hasStartScript:		bool = false
 
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
-var mainGameScene:		PackedScene
+static var mainGameScene:		PackedScene
 	
-var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
+static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
 
-var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
+static var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
 
 #endregion
 
