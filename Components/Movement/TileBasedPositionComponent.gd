@@ -182,21 +182,22 @@ func setDestinationTileCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 
 
 ## Ensures that the specified coordinates are within the [TileMapLayer]'s bounds
-## and also calls [method checkCollision].
+## and also calls [method checkTileVacancy].
 ## May be overridden by subclasses to perform additional checks.
 ## NOTE: Subclasses MUST call super to perform common validation.
 func validateCoordinates(coordinates: Vector2i) -> bool:
 	var isValidBounds: bool = Global.checkTileMapBounds(tileMap, coordinates)
-	var isTileVacant: bool = self.checkTileVacancy(coordinates)
+	var isTileVacant:  bool = self.checkTileVacancy(coordinates)
 	
 	if shouldShowDebugInfo: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
-		
+
 	return isValidBounds and isTileVacant
 
 
 ## Checks if the tile may be moved into.
 ## May be overridden by subclasses to perform different checks, 
-## such as testing custom data on a tile, like [const Global.TileMapCustomData.isWalkable],
+## such as testing custom data on a tile, e.g. [const Global.TileMapCustomData.isWalkable],
+## and custom data on a cell, e.g. [const Global.TileMapCustomData.isOccupied],
 ## or performing a more rigorous physics collision detection.
 func checkTileVacancy(coordinates: Vector2i) -> bool:
 	# UNUSED: Global.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
