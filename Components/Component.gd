@@ -54,7 +54,7 @@ func checkRequiredComponents() -> bool:
 	
 	var haveAllRequirements: bool = true # Start true then make it false if there is any missing requirement.
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
-	if requiredComponentTypes.is_empty(): return false
+	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
 	
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
