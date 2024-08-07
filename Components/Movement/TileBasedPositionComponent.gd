@@ -114,14 +114,19 @@ func willRemoveFromEntity() -> void:
 ## Verifies [member tileMap]. 
 func validateTileMap() -> bool:
 	# TODO: If missing, try to use the first [TileMapLayerWithCustomCellData] found in the current scene, if any?
+	
 	if not tileMap:
 		# printWarning("tileMap not specified! Searching for first TileMapLayerWithCustomCellData in current scene")
 		# tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCustomCellData) # WARNING: Caues bugs! When dynamically moving between TileMaps or setting up new entities.
-		if not tileMap: printError("No TileMapLayerWithCustomCellData found!")
-	elif not tileMap is TileMapLayerWithCustomCellData:
+		if not tileMap: printWarning("Missing TileMapLayerWithCustomCellData")
+		return false
+	
+	if not tileMap is TileMapLayerWithCustomCellData:
 		printWarning(str("tileMap is not TileMapLayerWithCustomCellData: ", tileMap))
+		return false
 
-	return false 
+	return true 
+
 
 ## Ensures that the specified coordinates are within the [TileMapLayer]'s bounds
 ## and also calls [method checkTileVacancy].
