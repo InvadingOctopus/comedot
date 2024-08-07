@@ -67,7 +67,7 @@ func collect(collectibleComponent: CollectibleComponent) -> bool:
 			# A function that matches this signature:
 			# func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
 			
-			var payloadCallable = collectibleComponent.payloadCallable
+			var payloadCallable: Callable = collectibleComponent.payloadCallable
 			payload = payloadCallable
 			payloadCallable.call(self.parentEntity, self)
 	
