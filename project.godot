@@ -19,6 +19,7 @@ boot_splash/bg_color=Color(0.15, 0.15, 0.25, 1)
 boot_splash/image="res://Assets/Logos/Comedot.png"
 boot_splash/fullsize=false
 config/icon="res://Assets/Icons/Comedot.svg"
+config/tags=PackedStringArray("components", "framework", "library", "template")
 
 [audio]
 
