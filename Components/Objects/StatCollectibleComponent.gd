@@ -42,6 +42,6 @@ func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: Col
 		if signi(randomizedModifier) == 1:    symbol = "+"
 		elif signi(randomizedModifier) == -1: symbol = "-"
 		
-		TextBubble.create(collectorComponent.parentEntity, str(stat.name.capitalize(), symbol, randomizedModifier)).label_settings.font_color = Color.GREEN
+		TextBubble.create(collectorComponent.parentEntity, str(stat.name.capitalize(), symbol, randomizedModifier))
 	
 	return randomizedModifier
