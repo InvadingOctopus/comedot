@@ -311,6 +311,7 @@ func printError(message: String = "") -> void:
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> void:
 	if shouldShowDebugInfo and previousValue != newValue:
 		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
-		printLog("[color=gray]" + string) if not logAsDebug else printDebug(string)
+		if not logAsDebug: printLog("[color=gray]" + string)
+		else: printDebug(string)
 
 #endregion

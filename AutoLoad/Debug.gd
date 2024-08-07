@@ -207,7 +207,8 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
 		var string: String = str(previousValue, " → ", newValue)
-		printLog(string, "dimgray", variableName, "gray") if not logAsDebug else printDebug(string)
+		if not logAsDebug: printLog(string, "dimgray", variableName, "gray")
+		else: printDebug(string)
 		return string
 	else:
 		return ""
