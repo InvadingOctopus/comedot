@@ -28,7 +28,7 @@ extends Node
 @export var showDebugWindow: bool = true:
 	set(newValue):
 		showDebugWindow = newValue
-		if Debug.window: Debug.window.visible = newValue
+		if Debug.debugWindow: Debug.debugWindow.visible = newValue
 
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
