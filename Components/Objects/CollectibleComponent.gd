@@ -6,6 +6,7 @@
 ## The collectible then handles its own conditions and removal if the collection is approved.
 ##
 ## Should be subclassed in most cases.
+
 class_name CollectibleComponent
 extends Component
 
@@ -14,19 +15,32 @@ extends Component
 # The pickup process should be covered by a [CollectorComponent].
 
 
-enum PayloadType {node = 0, script = 1}
+enum PayloadType {
+	node	= 0, 
+	script	= 1,
+	callable= 2}
 
 
 #region Parameters
 
-@export var isEnabled := true
+@export var isEnabled:		bool = true
 
-@export var payloadType: PayloadType
+@export var payloadType:	PayloadType
 
-@export var payloadNode:   PackedScene # TBD: Which type to use here for instantiating copies from?
-@export var payloadScript: CollectiblePayloadScript # NOTE: CHECK: Which type to use here for passing around scripts?
+## A Scene whose copy (instance) to add to the [CollectorComponent]'s [Entity].
+## May be used for adding new components to the collecting entity. 
+@export var payloadNode:	PackedScene # TBD: Which type to use here for instantiating copies from?
+
+## A Script to execute when collected. MUST match the interface of [CollectiblePayloadScript]:
+## func executeCollectibleScript(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant
+@export var payloadScript:	CollectiblePayloadScript # NOTE: CHECK: Which type to use here for passing around scripts?
+
+## A function of this component to execute by the [CollectorComponent]. MUST match the following signature:
+## func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
+@export var payloadCallable:Callable
 
 #endregion
+
 
 #region Signals
 signal didCollideWithCollector(collectorComponent: CollectorComponent)
@@ -35,13 +49,14 @@ signal didDenyCollection(collectorEntity: Entity) ## When this component decline
 signal willBeFreed
 #endregion
 
-func onAreaEntered(area: Area2D):
+
+func onAreaEntered(area: Area2D) -> void:
 	if not isEnabled: return
 
 	var collectorComponent: CollectorComponent = area.get_node(".") as CollectorComponent # HACK: TODO: Find better way to cast
 	if not collectorComponent: return
 
-	printDebug("Collided with CollectorComponent: " + str(collectorComponent))
+	printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))
 	didCollideWithCollector.emit(collectorComponent)
 
 
@@ -52,8 +67,9 @@ func onAreaEntered(area: Area2D):
 ## If the transfer is successful, this [CollectibleComponent] may then remove itself from the scene, or it may choose to enter a cooldown recovery state.
 func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not isEnabled: return false
-
-	var isCollectionApproved := checkCollectionConditions(collectorEntity, collectorComponent)
+	printDebug(str("requestToCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+	
+	var isCollectionApproved: bool = checkCollectionConditions(collectorEntity, collectorComponent)
 
 	if isCollectionApproved:
 		willBeCollected.emit(collectorEntity)
@@ -69,9 +85,11 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 
 
 func createPayloadNode() -> Node2D:
-	var payloadResource := load(payloadNode.resource_path)
-	var newPayloadCopy: Node2D = payloadResource.instantiate()
-
+	var payloadResource: PackedScene = load(payloadNode.resource_path)
+	var newPayloadCopy:  Node2D = payloadResource.instantiate()
+	
+	printDebug(str("createPayloadNode() path: ", payloadNode.resource_path, ", payloadResource: ", payloadResource, ", newPayloadCopy: ", newPayloadCopy))
+	
 	if not newPayloadCopy:
 		printError("Cannot instantiate a new copy of the collectible payload: " + str(payloadNode.resource_path))
 		return null
@@ -85,6 +103,7 @@ func createPayloadNode() -> Node2D:
 ## Default: `true`
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	# CHECK: Maybe a better name? :p
+	printDebug(str("checkCollectionConditions() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
 	return true
 
 
@@ -92,6 +111,14 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 ## Default: `true`
 func checkRemovalConditions() -> bool:
 	# CHECK: Maybe a better name? :p
+	printDebug("checkRemovalConditions()")
 	return isEnabled
+
+
+## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value, if the [member payloadType] is [const PayloadType.callable].
+## Must be overridden by subclasses.
+func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
+	printWarning(str("executeCollectibleCallable() must be overridden by a subclass! collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+	return null
 
 #endregion

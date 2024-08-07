@@ -1,16 +1,18 @@
 ## When this component collides with a [CollectibleComponent], the "payload" component is transfered to this [CollectorComponent]'s parent [Entity].
+
 class_name CollectorComponent
 extends Component
 
 
 signal didCollideWithCollectible(collectibleComponent: CollectibleComponent)
-signal didCollect(collectibleComponent: CollectibleComponent, payload)
+signal didCollect(collectibleComponent: CollectibleComponent, payload: Variant)
+
 
 func onAreaEntered(area: Area2D) -> void:
 	var collectibleComponent: CollectibleComponent = area.get_node(".") as CollectibleComponent # HACK: TODO: Find better way to cast
 	if not collectibleComponent: return
 
-	printDebug("Collided with CollectibleComponent: " + str(collectibleComponent))
+	printDebug(str("onAreaEntered() CollectibleComponent: ", collectibleComponent))
 	didCollideWithCollectible.emit(collectibleComponent)
 
 	handleCollection(collectibleComponent)
@@ -32,23 +34,42 @@ func handleCollection(collectibleComponent: CollectibleComponent) -> bool:
 
 ## May be overridden in a subclass to approve or deny the collection of a [CollectibleComponent] by this [CollectorComponent] and the parent [Entity].
 ## Default: `true`
-func checkCollectionConditions(collectibleComponent: CollectibleComponent) -> bool:
+func checkCollectionConditions(_collectibleComponent: CollectibleComponent) -> bool:
 	return true
 
 
+## Performs the collection of a [CollectibleComponent], 
+## either by adding a "Payload" [Node] to this component's parent [Entity], 
+## or by executing a script provided by the collectible.
 func collect(collectibleComponent: CollectibleComponent) -> bool:
-
 	var payload: Variant
-
+	printDebug(str("collect() collectibleComponent: ", collectibleComponent))
+	
 	match collectibleComponent.payloadType:
 
 		CollectibleComponent.PayloadType.node:
-			payload = collectibleComponent.createPayloadNode()
-			self.parentEntity.add_child(payload)
+			var payloadNode: Node = collectibleComponent.createPayloadNode()
+			payload = payloadNode
+			printDebug(str("Payload Node: ", payloadNode))
+			self.parentEntity.add_child(payloadNode)
+			payloadNode.owner = self.parentEntity # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 		CollectibleComponent.PayloadType.script:
-			payload = collectibleComponent.payloadScript
-			payload.executeCollectibleScript(self.parentEntity, self, collectibleComponent)
-
+			# A script that matches this interface: 
+			# func executeCollectibleScript(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant
+			
+			var payloadScript: Script = collectibleComponent.payloadScript
+			payload = payloadScript
+			printDebug(str("Payload Script: ", payloadScript, " ", payloadScript.get_global_name()))
+			payloadScript.executeCollectibleScript(self.parentEntity, self, collectibleComponent)
+		
+		CollectibleComponent.PayloadType.callable:
+			# A function that matches this signature:
+			# func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
+			
+			var payloadCallable = collectibleComponent.payloadCallable
+			payload = payloadCallable
+			payloadCallable.call(self.parentEntity, self)
+	
 	didCollect.emit(collectibleComponent, payload)
 	return true
