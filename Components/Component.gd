@@ -92,6 +92,13 @@ func requestDeletionOfParentEntity() -> bool:
 	return parentEntity.requestDeletion()
 
 
+## Called on [const Node.NOTIFICATION_UNPARENTED]. Overridden by subclasses to perform cleanup specific to each component.
+## NOTE: [member parentEntity] is still assigned at this point and `null` after this function returns.
+func willRemoveFromEntity() -> void:
+	# TBD: Should this be a signal?
+	pass
+
+
 func _exit_tree() -> void:
 	# Since components may be freed without being children of an Entity:
 	var entityName: String = parentEntity.logName if parentEntity else "null"
@@ -101,6 +108,12 @@ func _exit_tree() -> void:
 
 func _notification(what: int) -> void:
 	match what:
+		NOTIFICATION_UNPARENTED:
+			if parentEntity: 
+				willRemoveFromEntity()
+				self.parentEntity = null
+				printLog("􀆄 Unparented")
+		
 		NOTIFICATION_PREDELETE:
 			# NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 			printLog("􀆄 PreDelete")
