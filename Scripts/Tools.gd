@@ -393,6 +393,26 @@ static func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coo
 	
 	return true # HACK: TODO: Implement
 
+## Converts [TileMap] cell coordinates from [param sourceMap] to [param destinationMap].
+## The conversion is performed by converting cell coordinates to pixel/screen coordinates first.
+static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoordinatesInSourceMap: Vector2i, destinationMap: TileMapLayer) -> Vector2i:	
+
+	# 1: Convert the source TileMap's cell coordinates to pixel (screen) coordinates, in the source map's space.
+	# NOTE: This may not correspond to the visual position of the tile; it ignores `TileData.texture_origin` of the individual tiles.
+	var pixelPositionInSourceMap: Vector2 = sourceMap.map_to_local(cellCoordinatesInSourceMap)
+	
+	# 2: Convert the pixel position to the global space
+	var globalPosition: Vector2 = sourceMap.to_global(pixelPositionInSourceMap)
+	
+	# 3: Convert the global position to the destination TileMap's space
+	var pixelPositionInDestinationMap: Vector2 = destinationMap.to_local(globalPosition)
+	
+	# 4: Convert the pixel position to the destination map's cell coordinates
+	var cellCoordinatesInDestinationMap: Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
+	
+	Debug.printDebug(str("Tools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
+	return cellCoordinatesInDestinationMap
+
 #endregion
 
 
