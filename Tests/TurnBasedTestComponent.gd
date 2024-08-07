@@ -20,8 +20,8 @@ func getRequiredComponents() -> Array[Script]:
 func _ready() -> void:
 	self.didUpdateTurn.connect(onDidUpdateTurn)
 	self.didEndTurn.connect(onDidEndTurn)
-	tileBasedPositionComponent.willStartMovingToNewTile.connect(self.onTileBasedPositionComponent_willStartMovingToNewTile)
-	tileBasedPositionComponent.didArriveAtNewTile.connect(self.onTileBasedPositionComponent_didArriveAtNewTile)
+	tileBasedPositionComponent.willStartMovingToNewCell.connect(self.onTileBasedPositionComponent_willStartMovingToNewCell)
+	tileBasedPositionComponent.didArriveAtNewCell.connect(self.onTileBasedPositionComponent_didArriveAtNewCell)
 
 
 func processTurnBegin() -> void:
@@ -53,12 +53,12 @@ func onDidEndTurn() -> void:
 	pass #endStateSprite.visible = false
 
 
-func onTileBasedPositionComponent_willStartMovingToNewTile(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_willStartMovingToNewCell(newDestination: Vector2i) -> void:
 	# Longest name ever? :')
 	$MovingStateSprite.visible = true
 
 
-func onTileBasedPositionComponent_didArriveAtNewTile(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_didArriveAtNewCell(newDestination: Vector2i) -> void:
 	$MovingStateSprite.visible = false
 
 

@@ -35,11 +35,11 @@ func getRequiredcomponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	tileBasedPositionComponent.willStartMovingToNewTile.connect(onTileBasedPositionComponent_willStartMovingToNewTile)
-	tileBasedPositionComponent.didArriveAtNewTile.connect(onTileBasedPositionComponent_didArriveAtNewTile)
+	tileBasedPositionComponent.willStartMovingToNewCell.connect(onTileBasedPositionComponent_willStartMovingToNewCell)
+	tileBasedPositionComponent.didArriveAtNewCell.connect(onTileBasedPositionComponent_didArriveAtNewCell)
 
 
-func onTileBasedPositionComponent_willStartMovingToNewTile(_newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_willStartMovingToNewCell(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
 	
 	animatedSprite.play(walkAnimation)
@@ -50,7 +50,7 @@ func onTileBasedPositionComponent_willStartMovingToNewTile(_newDestination: Vect
 			or (animatedSprite.flip_h and not tileBasedPositionComponent.inputVector.x > 0)
 
 
-func onTileBasedPositionComponent_didArriveAtNewTile(_newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
 	
 	animatedSprite.play(idleAnimation)

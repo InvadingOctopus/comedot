@@ -33,5 +33,5 @@ func _process(_delta: float) -> void:
 	if not isEnabled: return
 	
 	var tileMap: TileMapLayer = tileBasedPositionComponent.tileMap
-	tileBasedPositionComponent.currentTileCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
-	tileBasedPositionComponent.snapEntityPositionToTile(tileBasedPositionComponent.currentTileCoordinates)
+	tileBasedPositionComponent.currentCellCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
+	tileBasedPositionComponent.snapEntityPositionToTile(tileBasedPositionComponent.currentCellCoordinates)

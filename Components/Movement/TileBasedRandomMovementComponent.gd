@@ -25,7 +25,7 @@ const maximumTries: int = 10
 
 
 func _ready() -> void:
-	tileBasedPositionComponent.didArriveAtNewTile.connect(self.onTileBasedPositionComponent_didArriveAtNewTile)
+	tileBasedPositionComponent.didArriveAtNewCell.connect(self.onTileBasedPositionComponent_didArriveAtNewCell)
 
 
 func _input(_event: InputEvent) -> void:
@@ -36,7 +36,7 @@ func _physics_process(_delta: float) -> void:
 	pass # Supress TileBasedControlComponent
 
 
-func onTileBasedPositionComponent_didArriveAtNewTile(_newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
 	pass #stepTimer.start() # Unneeded if Timer is not `one_shot`
 
@@ -54,7 +54,7 @@ func moveRandomly() -> void:
 	var tries: int = 0
 	
 	if shouldKeepTryingUntilValidMove:
-		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentTileCoordinates + self.recentInputVector) \
+		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector) \
 		or tries < maximumTries:
 			self.recentInputVector = getRandomVector()
 			tries += 1
