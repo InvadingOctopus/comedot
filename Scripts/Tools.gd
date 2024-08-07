@@ -336,19 +336,19 @@ static func setTileOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinate
 
 
 ## Checks if the specified tile is vacant by examining the custom tile data for flags such as [const Global.TileMapCustomData.isWalkable].
-static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i) -> bool:
+static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
 	var isTileVacant: bool = false 
 	var isCellVacant: bool = false 
 	
 	# First check the CELL data because it's quicker
 	
-	var cellData: Variant = tileMap.getCellData(coordinates, Global.TileMapCustomData.isOccupied)
+	var cellDataOccupied: Variant = tileMap.getCellData(coordinates, Global.TileMapCustomData.isOccupied) # NOTE: Should not be `bool` so it can be `null` if missing, NOT `false` if missing.
+	var cellDataOccupant: Entity  = tileMap.getCellData(coordinates, Global.TileMapCustomData.occupant)
 	
-	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("checkTileVacancy() ", tileMap, " @", coordinates, " cellData[isOccupied]: ", cellData)) 
+	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("checkTileVacancy() ", tileMap, " @", coordinates, " cellData[cellDataOccupied]: ", cellDataOccupied, ", occupant: ", cellDataOccupant))
 	
-	if cellData is bool:
-		isCellVacant = not cellData
-		# TBD: Check `occupant`?
+	if cellDataOccupied is bool:
+		isCellVacant = not cellDataOccupied or cellDataOccupant == ignoreEntity
 	else:
 		# If there is no data, assume the cell is always unoccupied.
 		isCellVacant = true
