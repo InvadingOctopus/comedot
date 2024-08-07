@@ -310,10 +310,10 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
 #region Tile Map Functions
 
-static func getTileGlobalPosition(tileMap: TileMapLayer, tileCoordinates: Vector2i) -> Vector2:
-	var tilePosition: Vector2 = tileMap.map_to_local(tileCoordinates)
-	var tileGlobalPosition: Vector2 = tileMap.to_global(tilePosition)
-	return tileGlobalPosition
+static func getCellGlobalPosition(tileMap: TileMapLayer, cellCoordinates: Vector2i) -> Vector2:
+	var cellPosition: Vector2 = tileMap.map_to_local(cellCoordinates)
+	var cellGlobalPosition: Vector2 = tileMap.to_global(cellPosition)
+	return cellGlobalPosition
 
 
 ## Sets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
@@ -330,12 +330,13 @@ static func getCellData(tileMap: TileMapLayerWithCustomCellData, coordinates: Ve
 	return tileMap.getCellData(coordinates, key)
 
 
-static func setTileOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
+## Uses a custom data structure to mark individual [TileMap] cells (not tiles) as occupied or unoccupied by an [Entity].
+static func setCellOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
 	tileMap.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
 	tileMap.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
 
 
-## Checks if the specified tile is vacant by examining the custom tile data for flags such as [const Global.TileMapCustomData.isWalkable].
+## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [const Global.TileMapCustomData.isWalkable].
 static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
 	var isTileVacant: bool = false 
 	var isCellVacant: bool = false 

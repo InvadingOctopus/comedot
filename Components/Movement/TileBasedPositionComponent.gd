@@ -104,7 +104,7 @@ func _ready() -> void:
 
 
 func willRemoveFromEntity() -> void:
-	Tools.setTileOccupancy(tileMap, currentCellCoordinates, false, null)
+	Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
 
 #endregion
 
@@ -172,7 +172,7 @@ func applyInitialCoordinates() -> void:
 ## and set the cell's occupancy.
 func updateCurrentTileCoordinates() -> Vector2i:
 	self.currentCellCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
-	if shouldOccupyCell: Tools.setTileOccupancy(tileMap, currentCellCoordinates, true, parentEntity)
+	if shouldOccupyCell: Tools.setCellOccupancy(tileMap, currentCellCoordinates, true, parentEntity)
 	return currentCellCoordinates 
 
 
@@ -183,7 +183,7 @@ func updateCurrentTileCoordinates() -> Vector2i:
 func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentCellCoordinates) -> void:
 	if not isEnabled: return
 
-	var tileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, tileCoordinates)
+	var tileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, tileCoordinates)
 
 	if parentEntity.global_position != tileGlobalPosition:
 		parentEntity.global_position = tileGlobalPosition
@@ -228,10 +228,10 @@ func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	
 	# Vacate the current (to-be previous) tile
 	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
-	Tools.setTileOccupancy(tileMap, currentCellCoordinates, false, null)
+	Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
 	
 	# TODO: Occupy each tile along the way in _process()
-	if shouldOccupyCell: Tools.setTileOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
+	if shouldOccupyCell: Tools.setCellOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
 	
 	# Should we teleport?
 	
@@ -273,13 +273,13 @@ func _physics_process(delta: float) -> void:
 
 func moveTowardsDestinationTile(delta: float) -> void:
 	# TODO: Handle physics collisions
-	var destinationTileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, self.destinationCellCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
+	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
 
 
 ## Are we there yet?
 func checkForArrival() -> bool:
-	var destinationTileGlobalPosition: Vector2 = Tools.getTileGlobalPosition(tileMap, self.destinationCellCoordinates)
+	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates)
 	if parentEntity.global_position == destinationTileGlobalPosition:
 		self.currentCellCoordinates = self.destinationCellCoordinates
 		self.isMovingToNewCell = false
@@ -294,7 +294,7 @@ func checkForArrival() -> bool:
 
 func updateIndicator() -> void:
 	if not visualIndicator: return
-	visualIndicator.global_position = Tools.getTileGlobalPosition(tileMap, self.destinationCellCoordinates)
+	visualIndicator.global_position = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates)
 	visualIndicator.visible = isMovingToNewCell
 
 #endregion
@@ -310,7 +310,7 @@ func showDebugInfo() -> void:
 	Debug.watchList.previousVector		= previousInputVector
 	Debug.watchList.isMovingToNewCell	= isMovingToNewCell
 	Debug.watchList.destinationTile		= destinationCellCoordinates
-	Debug.watchList.destinationPosition	= Tools.getTileGlobalPosition(tileMap, destinationCellCoordinates)
+	Debug.watchList.destinationPosition	= Tools.getCellGlobalPosition(tileMap, destinationCellCoordinates)
 
 
 func onWillStartMovingToNewTile(newDestination: Vector2i) -> void:
