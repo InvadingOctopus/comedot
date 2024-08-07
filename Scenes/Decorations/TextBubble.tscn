@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://ln24qhburqma"]
+[gd_scene load_steps=6 format=3 uid="uid://ln24qhburqma"]
 
 [ext_resource type="Script" path="res://Scenes/Decorations/TextBubble.gd" id="1_ak04i"]
+[ext_resource type="LabelSettings" uid="uid://bsh3cla616l6l" path="res://Assets/Themes/Label/TextBubble.tres" id="1_tuxyy"]
 
 [sub_resource type="Animation" id="Animation_tgw78"]
 length = 0.001
@@ -63,10 +64,17 @@ _data = {
 }
 
 [node name="TextBubble" type="Label"]
-offset_right = 73.0
-offset_bottom = 8.0
-text = "TextBubble
-"
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -90.0
+offset_bottom = -82.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "TextBubble"
+label_settings = ExtResource("1_tuxyy")
+horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("1_ak04i")
 
