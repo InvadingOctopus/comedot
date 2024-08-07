@@ -21,7 +21,8 @@ var tileBasedPositionComponent: TileBasedPositionComponent:
 		if not tileBasedPositionComponent: tileBasedPositionComponent = self.getCoComponent(TileBasedPositionComponent)
 		return tileBasedPositionComponent
 
-var recentInputVector: Vector2i
+var recentInputVector: Vector2i:
+	set(newValue): printChange("recentInputVector", recentInputVector, newValue); recentInputVector = newValue # DEBUG
 
 @onready var timer: Timer = $Timer
 
@@ -50,15 +51,12 @@ func _input(event: InputEvent) -> void:
 		else: # Fractional axis values will get zeroed in the conversion to integers
 			self.recentInputVector = Vector2i(inputVectorFloat)	
 			
-		if shouldShowDebugInfo: printDebug(str(recentInputVector))
-		
 		move()
 		
 
 
 func _physics_process(_delta: float) -> void:
 	if not isEnabled or not shouldMoveContinuously: return	
-	
 	move()
 
 
