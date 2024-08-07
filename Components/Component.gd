@@ -25,6 +25,10 @@ func _enter_tree() -> void:
 	update_configuration_warnings()
 
 	if parentEntity:
+		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default, 
+		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
+		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
+		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo		
 		printLog("􀈅 [b]_enter_tree() parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
 	else:
 		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
@@ -158,8 +162,10 @@ func removeSiblingComponentsOfSameType() -> int:
 
 ## Enables more detailed debugging information for this component, such as verbose log messages, visual indicators, the [member Debug.watchList] live property labels, or chart windows etc.
 ## NOTE: Subclasses may add their own information or may not respect this flag.
-@export var shouldShowDebugInfo: bool = false
+## Defaults to the entity's [member Entity.shouldShowDebugInfo] if initially `false`.
+@export var shouldShowDebugInfo: bool
 
+## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 var isLoggingEnabled: bool:
 	get:
 		if parentEntity: return parentEntity.isLoggingEnabled
