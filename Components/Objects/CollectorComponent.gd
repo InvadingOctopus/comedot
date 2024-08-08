@@ -38,13 +38,13 @@ func checkCollectionConditions(_collectibleComponent: CollectibleComponent) -> b
 	return true
 
 
-## Performs the collection of a [CollectibleComponent], 
-## either by adding a "Payload" [Node] to this component's parent [Entity], 
+## Performs the collection of a [CollectibleComponent],
+## either by adding a "Payload" [Node] to this component's parent [Entity],
 ## or by executing a script provided by the collectible.
 func collect(collectibleComponent: CollectibleComponent) -> bool:
 	var payload: Variant
 	printDebug(str("collect() collectibleComponent: ", collectibleComponent))
-	
+
 	match collectibleComponent.payloadType:
 
 		CollectibleComponent.PayloadType.node:
@@ -55,21 +55,21 @@ func collect(collectibleComponent: CollectibleComponent) -> bool:
 			payloadNode.owner = self.parentEntity # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 		CollectibleComponent.PayloadType.script:
-			# A script that matches this interface: 
+			# A script that matches this interface:
 			# func executeCollectibleScript(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant
-			
+
 			var payloadScript: Script = collectibleComponent.payloadScript
 			payload = payloadScript
 			printDebug(str("Payload Script: ", payloadScript, " ", payloadScript.get_global_name()))
 			payloadScript.executeCollectibleScript(self.parentEntity, self, collectibleComponent)
-		
+
 		CollectibleComponent.PayloadType.callable:
 			# A function that matches this signature:
 			# func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
-			
+
 			var payloadCallable: Callable = collectibleComponent.payloadCallable
 			payload = payloadCallable
 			payloadCallable.call(self.parentEntity, self)
-	
+
 	didCollect.emit(collectibleComponent, payload)
 	return true

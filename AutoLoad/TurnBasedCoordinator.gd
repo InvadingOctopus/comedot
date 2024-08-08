@@ -15,7 +15,7 @@ extends Node # + TurnBasedObjectBase
 # * Each turn has three "states" or "phases": Begin, Update, End
 # * Every turn must cycle through all 3 states
 # 	This helps game objects to play animations, perform actions, and do any setup/cleanup in the proper order every turn.
-# 	NOTE: An Entity must NOT execute Begin → Update → End all at once before the next Entity is updated; 
+# 	NOTE: An Entity must NOT execute Begin → Update → End all at once before the next Entity is updated;
 	# because that would be effectively just like executing only 1 method per Entity.
 # * The Coordinator must call `turnBegin()` on all entities, THEN `turnUpdate()` on all entities, THEN `turnEnd()` on all entities.
 # * Each Entity must then call the same order on all its child components.
@@ -37,7 +37,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnBegin	= 0,
 	turnUpdate	= 1,
 	turnEnd		= 2}
-	
+
 #endregion
 
 
@@ -75,11 +75,11 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	set(newValue):
 		if currentTurn == newValue: return
 		printChange("currentTurn", currentTurn, newValue)
-		
+
 		# Warnings for abnormal behavior
 		if newValue < currentTurn: Debug.printWarning("currentTurn decrementing!", "", str(self))
 		elif newValue > currentTurn + 1: Debug.printWarning("currentTurn incrementing by more than 1!", "", str(self))
-		
+
 		currentTurn = newValue
 		showDebugInfo()
 
@@ -87,24 +87,24 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	set(newValue):
 		if currentTurnState == newValue: return
 		printChange("currentTurnState", currentTurnState, newValue)
-		
+
 		# Warnings for abnormal behavior
 		if newValue > currentTurnState + 1: Debug.printWarning("currentTurnState incrementing by more than 1!", "", str(self))
-		
+
 		currentTurnState = newValue
 		showDebugInfo()
 
-## The total count of turns that have been processed. 
+## The total count of turns that have been processed.
 ## Incremented BEFORE the [signal didEndTurn] signal but AFTER the [method processTurnEnd] method.
 @export_storage var turnsProcessed: int:
 	set(newValue):
 		if turnsProcessed == newValue: return
 		printChange("turnsProcessed", turnsProcessed, newValue)
-		
+
 		# Warnings for abnormal behavior
 		if newValue < turnsProcessed: Debug.printWarning("turnsProcessed decrementing!", "", str(self))
 		elif newValue > turnsProcessed + 1: Debug.printWarning("turnsProcessed incrementing by more than 1!", "", str(self))
-		
+
 		turnsProcessed = newValue
 		showDebugInfo()
 
@@ -149,7 +149,7 @@ func _ready() -> void:
 	stateTimer.wait_time  = delayBetweenStates
 	clearTimerFunctions()
 	showDebugInfo()
-	
+
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
 
 
@@ -195,35 +195,35 @@ func dummyTimerFunction() -> void:
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("startTurnProcess() currentTurn: ", currentTurn), "white", str(self))
-	
+
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
-	
+
 	if not self.isReadyToStartTurn:
 		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when not isReadyToStartTurn", "", str(self))
 		return
-	
+
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
-	
+
 	cycleStatesUntilNextTurn()
 
 
 ## Cycles through all the [enum TurnBasedState]s until the next turn's [constant TurnBasedState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
-	# TODO: A less complex/ambiguous implementation 
+	# TODO: A less complex/ambiguous implementation
 	if shouldShowDebugInfo: Debug.printLog("cycleStatesUntilNextTurn()", "", str(self))
-	
+
 	# If we're already at `turnBegin`, advance the state once.
 	if self.currentTurnState == TurnBasedState.turnBegin:
 		await self.processState()
-		if not is_zero_approx(delayBetweenStates): 
+		if not is_zero_approx(delayBetweenStates):
 			stateTimer.start()
 			await stateTimer.timeout
 		self.incrementState()
-		
+
 	# Cycle through the states until we're at `turnBegin` again
 	while self.currentTurnState != TurnBasedState.turnBegin:
 		await self.processState()
-		if not is_zero_approx(delayBetweenStates): 
+		if not is_zero_approx(delayBetweenStates):
 			stateTimer.start()
 			await stateTimer.timeout
 		self.incrementState()
@@ -238,7 +238,7 @@ func onStateTimer_timeout() -> void:
 ## Calls one of the signals processing methods based on the [member currentTurnState].
 func processState() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", currentTurnState), "", str(self))
-	
+
 	match currentTurnState:
 		# `await` for Entity delays & animations etc.
 		TurnBasedState.turnBegin:	await processTurnBeginSignals()
@@ -268,12 +268,12 @@ func incrementState() -> TurnBasedState:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", entities: ", turnBasedEntities.size()), "", str(self))
-	
+
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
 	currentTurnState = TurnBasedState.turnBegin
-	
+
 	self.set_process(true) # TBD: Enable the `_process` method so it can perform per-frame updates and display the debug info.
-	
+
 	willBeginTurn.emit()
 	await self.processTurnBegin() # `await` for Entity delays & animations etc.
 	didBeginTurn.emit()
@@ -283,9 +283,9 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), "", str(self))
-	
+
 	currentTurnState = TurnBasedState.turnUpdate
-	
+
 	willUpdateTurn.emit()
 	await self.processTurnUpdate() # `await` for Entity delays & animations etc.
 	didUpdateTurn.emit()
@@ -295,14 +295,14 @@ func processTurnUpdateSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if shouldShowDebugInfo: Debug.printLog(str("processTurnEndSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), "", str(self))
-	
+
 	currentTurnState = TurnBasedState.turnEnd
-	
+
 	willEndTurn.emit()
 	await self.processTurnEnd() # `await` for Entity delays & animations etc.
-	
+
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates anymore.
-		
+
 	turnsProcessed += 1 # NOTE: Must be incremented AFTER [processTurnEnd] but BEFORE [didEndTurn]
 	didEndTurn.emit()
 
@@ -312,7 +312,7 @@ func processTurnEndSignals() -> void:
 #region Entity Update Cycle
 
 func waitForEntityTimer() -> void:
-	if not is_zero_approx(delayBetweenEntities): 
+	if not is_zero_approx(delayBetweenEntities):
 		entityTimer.start()
 		await entityTimer.timeout
 
@@ -326,7 +326,7 @@ func onEntityTimer_timeout() -> void:
 # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
 # NOTE: Do NOT `await turnBasedEntity.did…` signals, because they are emitted within `turnBasedEntity.process…`, before the following `await`
 
-# NOTE: The `isProcessingEntities` flag affects the `isReadyToStartTurn` flag, 
+# NOTE: The `isProcessingEntities` flag affects the `isReadyToStartTurn` flag,
 # because some the Coordiantor may be `await`ing on an Entities while still in the `turnBegin` state.
 # TBD: Should `isProcessingEntities` be set at a higher scope to ensure no "leaks"? e.g. starting multiple turns.
 
@@ -369,19 +369,19 @@ func processTurnEnd() -> void:
 ## WARNING: This method relies on entities adding themselves to the `entities` and `turnBased` groups.
 func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 	var turnBasedEntitiesFound: Array[TurnBasedEntity]
-	
+
 	# NOTE: The number of ndoes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
 	# so we start with that first.
-	
+
 	# TODO: Search within children so this code may be used for multiple [TurnBasedCoordinator] parent nodes in the future.
-	
+
 	var entities: Array[Node] = self.get_tree().get_nodes_in_group(Global.Groups.entities)
-	
+
 	for node in entities:
 		if is_instance_of(node, TurnBasedEntity):
 			# TBD: Should we check if it's already in the array?
 			turnBasedEntitiesFound.append(node)
-	
+
 	return turnBasedEntitiesFound
 
 #endregion

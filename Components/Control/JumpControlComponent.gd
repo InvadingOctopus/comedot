@@ -45,48 +45,48 @@ var jumpInput:				bool:
 		# The "just pressed" & "just released" toggles are needed for "short" jumping etc.
 		jumpInputJustPressed  = (newValue and not oldValue)
 		jumpInputJustReleased = (not newValue and oldValue)
-		
+
 var jumpInputJustPressed:	bool
-	# DEBUG: 
+	# DEBUG:
 	#set(newValue):
 		#if jumpInputJustPressed == newValue: return
 		#jumpInputJustPressed = newValue
 		#printDebug("jumpInputJustPressed → " + str(jumpInputJustPressed))
-		
+
 var jumpInputJustReleased:	bool
-	# DEBUG: 
+	# DEBUG:
 	#set(newValue):
 		#if jumpInputJustReleased == newValue: return
 		#jumpInputJustReleased = newValue
 		#printDebug("jumpInputJustReleased → " + str(jumpInputJustReleased))
 
-var didWallJump:	bool ## Did we just perform a "wall jump"? 
+var didWallJump:	bool ## Did we just perform a "wall jump"?
 
 var currentNumberOfJumps: int
 	# DEBUG:
 	#set(newValue):
 		#if currentNumberOfJumps != newValue:
-			#currentNumberOfJumps = newValue	
+			#currentNumberOfJumps = newValue
 			#printDebug("currentNumberOfJumps → " + str(currentNumberOfJumps))
 
 
 var platformerControlComponent: PlatformerControlComponent:
 	get:
-		if not platformerControlComponent: platformerControlComponent = getCoComponent(PlatformerControlComponent)	
+		if not platformerControlComponent: platformerControlComponent = getCoComponent(PlatformerControlComponent)
 		return platformerControlComponent
-		
+
 #endregion
 
 
 func _ready() -> void:
 	self.currentState = State.idle
-	if characterBodyComponent: 
+	if characterBodyComponent:
 		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBodyComponent")
-	
+
 	# Set the initial timers
-	
+
 	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
 	wallJumpTimer.wait_time = parameters.wallJumpTimer
 
@@ -110,9 +110,9 @@ func clearInput() -> void:
 func _physics_process(_delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
-	
+
 	updateStateBeforeMovement()
-	
+
 	processWallJump()
 	processJump()
 
@@ -122,28 +122,28 @@ func _physics_process(_delta: float) -> void:
 func characterBodyComponent_didMove(_delta: float) -> void:
 	# DEBUG: printLog("characterBodyComponent_didMove()")
 	#updateState()
-	
+
 	# Perform updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
-	
-	if characterBodyComponent.wasOnWall: # NOTE: NOT `is_on_wall_only()` CHECK: FORGOT: Why? 
+
+	if characterBodyComponent.wasOnWall: # NOTE: NOT `is_on_wall_only()` CHECK: FORGOT: Why?
 		wallJumpTimer.stop() # TBD: Is this needed?
-	
+
 	updateCoyoteJumpState()
 	updateWallJumpState()
 
-	# DEBUG: 
+	# DEBUG:
 	if shouldShowDebugInfo: showDebugInfo()
-	
+
 	clearInput()
 
 
 func processJump() -> void:
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
 	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
-	
+
 	var shouldJump: bool = false
 	var canCoyoteJump: bool = parameters.allowCoyoteJump and not is_zero_approx(coyoteJumpTimer.time_left)
-	
+
 	# Initial or mid-air jump
 
 	if self.jumpInputJustPressed:
@@ -173,13 +173,13 @@ func processJump() -> void:
 ## May improve the feel of control in some games.
 func updateCoyoteJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
+
 	if not isEnabled or not parameters.allowCoyoteJump: return
-	
+
 	var didWalkOffFloor: bool = characterBodyComponent.wasOnFloor \
 		and not body.is_on_floor() \
 		and body.velocity.y >= 0 # Are we falling?
-	
+
 	if didWalkOffFloor:
 		coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
 		coyoteJumpTimer.start() # beep beep!
@@ -190,7 +190,7 @@ func updateStateBeforeMovement() -> void:
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	# Jump
-	
+
 	if characterBodyComponent.isOnFloor and currentNumberOfJumps != 0: # NOTE: It may be more efficient to check `currentNumberOfJumps` instead of writing these values every frame?
 			# DEBUG: printDebug("currentNumberOfJumps = 0")
 			currentNumberOfJumps = 0
@@ -201,19 +201,19 @@ func updateStateBeforeMovement() -> void:
 
 func processWallJump() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
+
 	if  not isEnabled \
 		or not parameters.allowWallJump \
 		or currentNumberOfJumps >= parameters.maxNumberOfJumps \
 		or (not body.is_on_wall_only() \
 			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
-				return 
-	
+				return
+
 	# NOTE: The current flow of conditions ensures that `wallNormal` will always = `previousWallNormal`,
 	# but let's keep the code as was presented in Heartbeast's tutorial.
-	
+
 	var wallNormal: Vector2 = characterBodyComponent.previousWallNormal
-		
+
 	if self.jumpInputJustPressed:
 		body.velocity.x = wallNormal.x * parameters.wallJumpVelocityX
 		body.velocity.y = parameters.wallJumpVelocity
@@ -222,14 +222,14 @@ func processWallJump() -> void:
 
 func updateWallJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
-	
-	if not isEnabled or not parameters.allowWallJump: return	
-	
+
+	if not isEnabled or not parameters.allowWallJump: return
+
 	# TODO: just_wall_jumped = false
-	
+
 	var didLeaveWall: bool = characterBodyComponent.wasOnWall \
 		and not body.is_on_wall()
-	
+
 	if didLeaveWall:
 		wallJumpTimer.wait_time = parameters.wallJumpTimer
 		wallJumpTimer.start()
@@ -244,4 +244,3 @@ func showDebugInfo() -> void:
 	Debug.watchList.coyoteTimer	= coyoteJumpTimer.time_left
 	Debug.watchList.jumpInput	= jumpInput
 	Debug.watchList.jumps		= currentNumberOfJumps
-	

@@ -13,7 +13,7 @@ func _ready():
 	#printInputList()
 
 
-# TODO: 
+# TODO:
 #func buildTestSettings():
 	#var settings = {}
 	#var newSetting := UserSetting.new()

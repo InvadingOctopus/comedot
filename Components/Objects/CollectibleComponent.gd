@@ -16,7 +16,7 @@ extends Component
 
 
 enum PayloadType {
-	node	= 0, 
+	node	= 0,
 	script	= 1,
 	callable= 2}
 
@@ -28,7 +28,7 @@ enum PayloadType {
 @export var payloadType:	PayloadType
 
 ## A Scene whose copy (instance) to add to the [CollectorComponent]'s [Entity].
-## May be used for adding new components to the collecting entity. 
+## May be used for adding new components to the collecting entity.
 @export var payloadNode:	PackedScene # TBD: Which type to use here for instantiating copies from?
 
 ## A Script to execute when collected. MUST match the interface of [CollectiblePayloadScript]:
@@ -68,7 +68,7 @@ func onAreaEntered(area: Area2D) -> void:
 func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not isEnabled: return false
 	printDebug(str("requestToCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
-	
+
 	var isCollectionApproved: bool = checkCollectionConditions(collectorEntity, collectorComponent)
 
 	if isCollectionApproved:
@@ -87,9 +87,9 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 func createPayloadNode() -> Node2D:
 	var payloadResource: PackedScene = load(payloadNode.resource_path)
 	var newPayloadCopy:  Node2D = payloadResource.instantiate()
-	
+
 	printDebug(str("createPayloadNode() path: ", payloadNode.resource_path, ", payloadResource: ", payloadResource, ", newPayloadCopy: ", newPayloadCopy))
-	
+
 	if not newPayloadCopy:
 		printError("Cannot instantiate a new copy of the collectible payload: " + str(payloadNode.resource_path))
 		return null

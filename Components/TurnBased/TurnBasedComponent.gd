@@ -3,7 +3,7 @@
 ## NOTE: These methods MUST be overridden by subclasses to perform the game-specific actions every turn.
 ##
 ## NOTE: The begin/update/end methods are NOT executed at once for a single component:
-## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ... 
+## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ...
 ## THEN all components perform "Update" phase, and so on.
 
 class_name TurnBasedComponent
@@ -22,19 +22,19 @@ extends Component # + TurnBasedObjectBase
 
 ## Returns: [TurnBasedCoordinator.currentTurn]
 var currentTurn: int:
-	get: return TurnBasedCoordinator.currentTurn # TBD: Should it forward to TurnBasedEntity?  
+	get: return TurnBasedCoordinator.currentTurn # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
-	
+
 ## Returns: [TurnBasedCoordinator.currentTurnState]
 var currentTurnState: TurnBasedCoordinator.TurnBasedState:
 	get: return TurnBasedCoordinator.currentTurnState # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
-	
+
 ## Returns: [TurnBasedCoordinator.turnsProcessed]
 var turnsProcessed: int:
 	get: return TurnBasedCoordinator.turnsProcessed # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
-	
+
 #endregion
 
 
@@ -65,7 +65,7 @@ func _enter_tree() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))	
+	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
 	willBeginTurn.emit()
 	await self.processTurnBegin() # IGNORE Godot Warning; `await` is needed.
 	if shouldShowDebugInfo: printLog("didBeginTurn")
@@ -76,7 +76,7 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))	
+	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
 	willUpdateTurn.emit()
 	await self.processTurnUpdate() # IGNORE Godot Warning; `await` is needed.
 	if shouldShowDebugInfo: printLog("didUpdateTurn")

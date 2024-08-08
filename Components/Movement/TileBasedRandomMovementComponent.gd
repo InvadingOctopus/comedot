@@ -48,17 +48,17 @@ func onStepTimer_timeout() -> void:
 
 func moveRandomly() -> void:
 	self.recentInputVector = getRandomVector()
-	
+
 	# Should we keep rerolling until we find a vacant tile to move to?
-	
+
 	var tries: int = 0
-	
+
 	if shouldKeepTryingUntilValidMove:
 		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector) \
 		or tries < maximumTries:
 			self.recentInputVector = getRandomVector()
 			tries += 1
-		 
+
 	self.move()
 
 

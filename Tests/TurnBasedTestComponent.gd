@@ -27,14 +27,14 @@ func _ready() -> void:
 func processTurnBegin() -> void:
 	$EndStateSprite.visible = false
 	$ReadyStateSprite.visible = true
-	
+
 	var randomDuration: float = randf_range(0.5, 3.0)
 	$Timer.wait_time = randomDuration
 	%WaitLabel.text = str(snappedf(randomDuration, 0.1), " WAITTIME")
-	
+
 	$AnimationPlayer.play(&"turnBegin")
 	await $AnimationPlayer.animation_finished
-	
+
 	$Timer.start()
 	await $Timer.timeout
 	$WaitSprite.visible = false

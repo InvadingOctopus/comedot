@@ -19,12 +19,12 @@ extends Node2D
 	set(newValue):
 		maxHistorySize = newValue
 		resizeArrays()
-		
+
 ## The height of the Y axis on EACH side, positive and negative.
 const verticalHeight: float = 100 # TODO: Remove hardcoding
 
 # Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis, to better fit the screen.
-@export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5 
+@export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5
 
 @export var lineColor:	Color = Color(0.5, 1.0,  0.5,  0.5)
 @export var gridColor:	Color = Color(0.0, 0.25, 0.25, 0.5)
@@ -72,10 +72,10 @@ func resizeArrays() -> void:
 func _draw() -> void:
 	if not isEnabled: return
 	draw_multiline(gridLines,  gridColor, gridwidth, false)
-	
+
 	# Draw the "head" line
 	draw_line(headLineStart, headLineEnd, headColor, 1.0, false)
-	
+
 	draw_multiline(valueLines, lineColor, lineWidth, false)
 
 
@@ -83,11 +83,11 @@ func _process(_delta: float) -> void:
 	if not isEnabled: return
 	recordMonitoredVariable()
 	updateMinMaxLabels()
-	
+
 	# DEBUG:
 	# Debug.watchList.historyIndex = currentHistoryIndex
 	# Debug.watchList.historyValue = monitoredVariableHistory[currentHistoryIndex]
-	
+
 	headLineStart.x	= currentHistoryIndex
 	headLineEnd.x	= currentHistoryIndex
 	queue_redraw()
@@ -97,20 +97,20 @@ func recordMonitoredVariable() -> void:
 	var node:  Node  = self.get_node(nodeToMonitor)
 	if not is_instance_valid(node): return
 	var value: float = node.get_indexed(propertyToMonitor)
-	
+
 	monitoredVariableHistory[currentHistoryIndex] = value * valueScale
-	
+
 	# Record the minimum and maximum values
 	if value < minRecordedValue: minRecordedValue = value
 	if value > maxRecordedValue: maxRecordedValue = value
-	
+
 	# DEBUG:
 	# Debug.printLog(str("velocity: ", platformerPhysicsComponent.body.velocity.y))
 	# Debug.printLog(str("currentHistoryIndex: ", currentHistoryIndex))
-	
+
 	# Add a line
 	createLine(currentHistoryIndex) # NOTE: Update BEFORE incrementing `currentHistoryIndex`
-	
+
 	# Increment or wrap-around the index
 	currentHistoryIndex += 1
 	if currentHistoryIndex >= maxHistorySize:
@@ -119,19 +119,19 @@ func recordMonitoredVariable() -> void:
 
 func createLine(index: int) -> void:
 	# NOTE: Each line needs 2 vectors.
-	
+
 	var currentLineIndex: int = index * 2
-	
+
 	# DEBUG:Debug.printLog(str("currentLineIndex: ", currentLineIndex))
-	
+
 	valueLines[currentLineIndex] = Vector2(currentHistoryIndex, 0)
-	
+
 	valueLines[currentLineIndex + 1] = Vector2( \
 		currentHistoryIndex,
-		# NOTE: Negative Y values must go DOWNWARDS in the chart	
+		# NOTE: Negative Y values must go DOWNWARDS in the chart
 		# NOTE: If the monitored variable is 0 then there should be no line (cleaner and more accurate)
 		-monitoredVariableHistory[currentHistoryIndex])
-	
+
 	# DEBUG:
 	# Debug.printLog(str("Vector ", currentLineIndex, ": ", valueLines[currentLineIndex]))
 	# Debug.printLog(str("Vector ", currentLineIndex+1, ": ", valueLines[currentLineIndex+1]))
@@ -139,59 +139,59 @@ func createLine(index: int) -> void:
 
 func createGridLines() -> void:
 	# TBD: Export these as paramteres?
-	
+
 	var gridMinY:	float = -verticalHeight
 	var gridMaxY:	float = verticalHeight
-	
+
 	var gridStepX:	int = 10
 	var gridStepY:	int = 10
-	
+
 	headLineStart.y	= gridMinY
 	headLineEnd.y	= gridMaxY
-	
+
 	# PERFORMANCE: Calculate and set the total size before appending each line.
-	
+
 	var numberOfGridLinesX: int = maxHistorySize / gridStepX
 	var numberOfGridLinesY: int = int((gridMaxY - gridMinY) / gridStepY)
-	
+
 	# TODO: Verify calculation
 	#gridLines.resize((numberOfGridLinesX * numberOfGridLinesY) * 2) # Each line needs 2 vectors.
-	
+
 	# DEBUG: Debug.printLog(str("numberOfGridLines X, Y: ", numberOfGridLinesX, ", ", numberOfGridLinesY))
-	
+
 	var start:	Vector2
 	var end:		Vector2
-	
+
 	# Vertical lines (X Axis)
-	
+
 	start.y	= gridMinY
 	end.y	= gridMaxY
-	
+
 	for line in numberOfGridLinesX:
-		
+
 		start.x	= gridStepX * line
 		end.x	= gridStepX * line
-		
+
 		# DEBUG: Debug.printLog(str("line X #", line, ": ", start, " → ", end))
-		
+
 		gridLines.append(start)
 		gridLines.append(end)
-	
+
 	# Horizontal lines (Y Axis)
-	
+
 	start.x	= 0
 	start.y	= gridMinY
 	end.x	= maxHistorySize
 	end.y	= gridMinY
-	
+
 	for line in numberOfGridLinesY:
 		# DEBUG: Debug.printLog(str("line Y #", line, ": ", start, " → ", end))
-		
+
 		gridLines.append(start)
 		gridLines.append(end)
-		
+
 		# Go up
-		
+
 		start.y	+= gridStepY
 		end.y	+= gridStepY
 

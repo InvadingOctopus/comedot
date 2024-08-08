@@ -94,11 +94,11 @@ signal didArriveAtNewCell(newDestination: Vector2i)
 
 func _ready() -> void:
 	validateTileMap()
-	
+
 	if shouldShowDebugInfo:
 		self.willStartMovingToNewCell.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewCell.connect(self.onDidArriveAtNewTile)
-	
+
 	if tileMap: # If this component was loaded dynamically at runtime, then the tileMap may be set later.
 		applyInitialCoordinates()
 
@@ -111,21 +111,21 @@ func willRemoveFromEntity() -> void:
 
 #region Validation
 
-## Verifies [member tileMap]. 
+## Verifies [member tileMap].
 func validateTileMap() -> bool:
 	# TODO: If missing, try to use the first [TileMapLayerWithCustomCellData] found in the current scene, if any?
-	
+
 	if not tileMap:
 		# printWarning("tileMap not specified! Searching for first TileMapLayerWithCustomCellData in current scene")
 		# tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCustomCellData) # WARNING: Caues bugs! When dynamically moving between TileMaps or setting up new entities.
 		if not tileMap: printWarning("Missing TileMapLayerWithCustomCellData")
 		return false
-	
+
 	if not tileMap is TileMapLayerWithCustomCellData:
 		printWarning(str("tileMap is not TileMapLayerWithCustomCellData: ", tileMap))
 		return false
 
-	return true 
+	return true
 
 
 ## Ensures that the specified coordinates are within the [TileMapLayer]'s bounds
@@ -135,19 +135,19 @@ func validateTileMap() -> bool:
 func validateCoordinates(coordinates: Vector2i) -> bool:
 	var isValidBounds: bool = Tools.checkTileMapBounds(tileMap, coordinates)
 	var isTileVacant:  bool = self.checkTileVacancy(coordinates)
-	
+
 	if shouldShowDebugInfo: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
 
 	return isValidBounds and isTileVacant
 
 
 ## Checks if the tile may be moved into.
-## May be overridden by subclasses to perform different checks, 
+## May be overridden by subclasses to perform different checks,
 ## such as testing custom data on a tile, e.g. [const Global.TileMapCustomData.isWalkable],
 ## and custom data on a cell, e.g. [const Global.TileMapCustomData.isOccupied],
 ## or performing a more rigorous physics collision detection.
 func checkTileVacancy(coordinates: Vector2i) -> bool:
-	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`. 
+	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`.
 	return Tools.checkTileVacancy(tileMap, coordinates, self.parentEntity) # Ignore our own entity, just in case :')
 
 #endregion
@@ -158,18 +158,18 @@ func checkTileVacancy(coordinates: Vector2i) -> bool:
 func applyInitialCoordinates() -> void:
 	# Get the entity's starting coordinates
 	updateCurrentTileCoordinates()
-	
+
 	if setInitialCoordinatesFromEntityPosition:
 		initialDestinationCoordinates = currentCellCoordinates
-	
+
 	# Even if we `setInitialCoordinatesFromEntityPosition`, snap the entity to the center of the cell
-	
+
 	# NOTE: Directly setting `destinationCellCoordinates = initialDestinationCoordinates` beforehand prevents the movement
 	# because the functions check for a change between coordinates.
-	
+
 	if shouldSnapToInitialDestination:
 		snapEntityPositionToTile(initialDestinationCoordinates)
-	else: 
+	else:
 		setDestinationCellCoordinates(initialDestinationCoordinates)
 
 
@@ -178,11 +178,11 @@ func applyInitialCoordinates() -> void:
 func updateCurrentTileCoordinates() -> Vector2i:
 	self.currentCellCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
 	if shouldOccupyCell: Tools.setCellOccupancy(tileMap, currentCellCoordinates, true, parentEntity)
-	return currentCellCoordinates 
+	return currentCellCoordinates
 
 
 ## Instantly sets the entity's position to a tile's position.
-## NOTE: Does NOT validate coordinates or check the cell's vacancy etc. 
+## NOTE: Does NOT validate coordinates or check the cell's vacancy etc.
 ## TIP: May be useful for UI elements like cursors etc.
 ## If [param destinationOverride] is omitted then [member currentCellCoordinates] is used.
 func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentCellCoordinates) -> void:
@@ -192,7 +192,7 @@ func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentCellCoordi
 
 	if parentEntity.global_position != tileGlobalPosition:
 		parentEntity.global_position = tileGlobalPosition
-	
+
 	self.currentCellCoordinates = tileCoordinates
 
 #endregion
@@ -221,28 +221,28 @@ func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 		return true # NOTE: Return true because arriving at the specified coordinates should be considered a success, even if already there. :)
 
 	# Validate the new destination?
-	
+
 	if not validateCoordinates(newDestinationTileCoordinates):
 		return false
-	
+
 	# Move Your Body ♪
-	
+
 	willStartMovingToNewCell.emit(newDestinationTileCoordinates)
 	self.destinationCellCoordinates = newDestinationTileCoordinates
 	self.isMovingToNewCell = true
-	
+
 	# Vacate the current (to-be previous) tile
 	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
 	Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
-	
+
 	# TODO: Occupy each tile along the way in _process()
 	if shouldOccupyCell: Tools.setCellOccupancy(tileMap, newDestinationTileCoordinates, true, parentEntity)
-	
+
 	# Should we teleport?
-	
+
 	if shouldMoveInstantly:
 		snapEntityPositionToTile(destinationCellCoordinates)
-	
+
 	return true
 
 
@@ -256,15 +256,15 @@ func cancelDestination() -> void:
 
 	self.destinationCellCoordinates = self.currentCellCoordinates
 	self.isMovingToNewCell = false
-	
-#endregion 
+
+#endregion
 
 
 #region Per-Frame Updates
 
 func _physics_process(delta: float) -> void:
 	if not isEnabled: return
-	
+
 	if isMovingToNewCell:
 		moveTowardsDestinationTile(delta)
 		checkForArrival()

@@ -24,7 +24,7 @@ func _ready() -> void:
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
-	
+
 	characterBodyComponent.shouldResetVelocityIfZeroMotion = true
 
 
@@ -53,7 +53,7 @@ func processWalkInput(delta: float) -> void:
 		body.velocity = body.velocity.move_toward(inputDirection * parameters.speed, parameters.acceleration * delta)
 	else:
 		body.velocity = inputDirection * parameters.speed
-	
+
 	# TODO: Compare setting vector components separately vs together
 
 	# Friction?

@@ -20,21 +20,21 @@ func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void
 	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), str(self))
 
 	# NOTE: Do NOT assign an entire dictionary here or that will overrite all other keys!
-	
+
 	# Get the data dictionary for the cell, or add an empty dictionary.
 	var cellData: Variant = dataDictionary.get_or_add(coordinates, {}) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
-	
+
 	cellData[key] = value
 
 
 func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 	var cellData: Variant = dataDictionary.get(coordinates) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
 	var value: Variant
-	
+
 	if cellData is Dictionary:
 		value = (cellData as Dictionary).get(key)
 	else:
 		value = null
-	
+
 	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, " ", key, ": ", value), str(self))
 	return value

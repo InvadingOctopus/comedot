@@ -33,7 +33,7 @@ var coComponent: Component: ## Placeholder
 ## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
 	return []
-	
+
 #endregion
 
 

@@ -26,7 +26,7 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 
 static func instantiateSceneFromPath(resourcePath: String) -> Node:
 	var scene: PackedScene = load(resourcePath) as PackedScene
-	
+
 	if is_instance_valid(scene):
 		return scene.instantiate()
 	else:
@@ -131,27 +131,27 @@ static func removeAllChildren(parent: Node) -> int:
 
 
 ## Convert a path from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
-static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:	
+static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
 	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
 	var propertyPath: String = str(":", relativePath.get_concatenated_subnames())
 	var absolutePathIncludingProperty: NodePath = NodePath(str(absoluteNodePath, propertyPath))
-	
-	# DEBUG: 
+
+	# DEBUG:
 	#Debug.printLog(str("Tools.convertRelativePathToAbsolute() parentNodeToConvertFrom: ", parentNodeToConvertFrom, \
 		#", relativePath: ", relativePath, \
 		#", absoluteNodePath: ", absoluteNodePath, \
 		#", propertyPath: ", propertyPath))
-	
+
 	return absolutePathIncludingProperty
 
 
 static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 	var nodePath: NodePath
 	var propertyPath: NodePath
-	
+
 	nodePath = NodePath(str("/" if path.is_absolute() else "", path.get_concatenated_names()))
 	propertyPath = NodePath(str(":", path.get_concatenated_subnames()))
-	
+
 	return [nodePath, propertyPath]
 
 #endregion
@@ -338,44 +338,44 @@ static func setCellOccupancy(tileMap: TileMapLayerWithCustomCellData, coordinate
 
 ## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [const Global.TileMapCustomData.isWalkable].
 static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
-	var isTileVacant: bool = false 
-	var isCellVacant: bool = false 
-	
+	var isTileVacant: bool = false
+	var isCellVacant: bool = false
+
 	# First check the CELL data because it's quicker
-	
+
 	var cellDataOccupied: Variant = tileMap.getCellData(coordinates, Global.TileMapCustomData.isOccupied) # NOTE: Should not be `bool` so it can be `null` if missing, NOT `false` if missing.
 	var cellDataOccupant: Entity  = tileMap.getCellData(coordinates, Global.TileMapCustomData.occupant)
-	
+
 	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("checkTileVacancy() ", tileMap, " @", coordinates, " cellData[cellDataOccupied]: ", cellDataOccupied, ", occupant: ", cellDataOccupant))
-	
+
 	if cellDataOccupied is bool:
 		isCellVacant = not cellDataOccupied or cellDataOccupant == ignoreEntity
 	else:
 		# If there is no data, assume the cell is always unoccupied.
 		isCellVacant = true
-	
+
 	# If there is an occupant, no need to check the Tile data, just scram
 	if not isCellVacant: return false
-	
-	
+
+
 	# Then check the TILE data
-	
+
 	# NOTE: DESIGN: Missing values should be considered as `true` to assist with quick prototyping
 	# TODO: Check all this in a more elegant way
-	
+
 	var tileData: 	TileData = tileMap.get_cell_tile_data(coordinates)
 	var isWalkable:	Variant
 	var isBlocked:	Variant
-	
+
 	if tileData:
 		isWalkable = tileData.get_custom_data(Global.TileMapCustomData.isWalkable)
 		isBlocked  = tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
-	
+
 	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("tileData[isWalkable]: ", isWalkable, ", [isBlocked]: ", isBlocked))
-	
+
 	# If there is no data, assume the tile is always vacant.
 	isTileVacant = (isWalkable or isWalkable == null) and (not isBlocked or isWalkable == null)
-	
+
 	return isTileVacant and isCellVacant
 
 
@@ -391,26 +391,26 @@ static func checkTileMapBounds(tileMap: TileMapLayer, coordinates: Vector2i) -> 
 static func checkTileCollision(tileMap: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
 	# If the TileMap or its collisions are disabled, then the tile is always available.
 	if not tileMap.enabled or not tileMap.collision_enabled: return true
-	
+
 	return true # HACK: TODO: Implement
 
 ## Converts [TileMap] cell coordinates from [param sourceMap] to [param destinationMap].
 ## The conversion is performed by converting cell coordinates to pixel/screen coordinates first.
-static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoordinatesInSourceMap: Vector2i, destinationMap: TileMapLayer) -> Vector2i:	
+static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoordinatesInSourceMap: Vector2i, destinationMap: TileMapLayer) -> Vector2i:
 
 	# 1: Convert the source TileMap's cell coordinates to pixel (screen) coordinates, in the source map's space.
 	# NOTE: This may not correspond to the visual position of the tile; it ignores `TileData.texture_origin` of the individual tiles.
 	var pixelPositionInSourceMap: Vector2 = sourceMap.map_to_local(cellCoordinatesInSourceMap)
-	
+
 	# 2: Convert the pixel position to the global space
 	var globalPosition: Vector2 = sourceMap.to_global(pixelPositionInSourceMap)
-	
+
 	# 3: Convert the global position to the destination TileMap's space
 	var pixelPositionInDestinationMap: Vector2 = destinationMap.to_local(globalPosition)
-	
+
 	# 4: Convert the pixel position to the destination map's cell coordinates
 	var cellCoordinatesInDestinationMap: Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
-	
+
 	Debug.printDebug(str("Tools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
 	return cellCoordinatesInDestinationMap
 
@@ -425,7 +425,7 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 
 
 #region File System Functions
-# TODO: 
+# TODO:
 #endregion
 
 
@@ -443,7 +443,7 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
 static func skipTimer(timer: Timer) -> float:
 	# WARNING: This may not be accurate because the Timer is still running until the `stop()` call.
-	var leftoverTime: float = timer.time_left 
+	var leftoverTime: float = timer.time_left
 	timer.stop()
 	timer.timeout.emit()
 	return leftoverTime

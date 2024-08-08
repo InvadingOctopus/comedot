@@ -50,7 +50,7 @@ func _ready() -> void:
 
 func initializeDebugWindow() -> void:
 	debugWindow.visible = OS.is_debug_build()
-	
+
 	# Position the Debug Window to the right of the main window
 	# TBD: Support for Right-To-Left locales?
 	var mainWindow: Window = self.get_window()
@@ -84,9 +84,9 @@ func displayInitializationMessage() -> void:
 	var message: String = str("Debug.displayInitializationMessage():\n\
 	F12: Toggle Debug Window\n\
 	See Input Map for more shortcuts")
-	
+
 	print_rich(str("[color=white][b]Comdedot\n", message))
-	
+
 	self.showTemporaryLabel(Global.frameworkTitle, message)
 
 #endregion
@@ -96,7 +96,7 @@ func displayInitializationMessage() -> void:
 
 func _process(_delta: float) -> void:
 	if not showDebugLabels or not is_instance_valid(debugWindow) or not debugWindow.visible: return
-	
+
 	var text: String = ""
 
 	for value: Variant in watchList:
@@ -115,19 +115,19 @@ func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) ->
 #endregion
 
 
-#region Windows 
+#region Windows
 
 ## Returns: The resulting state of the debug window's visibility.
 func toggleDebugWindow() -> bool:
 	var isDebugWindowShown: bool
-	
+
 	if is_instance_valid(debugWindow):
 		debugWindow.visible = not debugWindow.visible
 		isDebugWindowShown  = debugWindow.visible
 	else:
 		isDebugWindowShown = false
 		# TODO: Recreate the window
- 
+
 	return isDebugWindowShown
 
 
@@ -136,24 +136,24 @@ func toggleDebugWindow() -> bool:
 func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> Chart:
 	var newChartWindow: Window = preload("res://Scenes/UI/ChartWindow.tscn").instantiate()
 	var newChart: Chart = Tools.findFirstChildOfType(newChartWindow, Chart)
-	
+
 	newChart.nodeToMonitor = nodeToMonitor
 	newChart.propertyToMonitor = propertyToMonitor
-	
+
 	newChartWindow.title = str(get_node(nodeToMonitor), propertyToMonitor)
 	newChartWindow.close_requested.connect(newChartWindow.queue_free) # TODO: Verify
-	
+
 	# Resize the window and center the chart
-	
+
 	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor)
 	newChartWindow.size.y = int((newChart.verticalHeight * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height for both sides of the Y axis
 	newChart.position.y = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
-	
+
 	# Shift each window so they don't all overlap
-	
+
 	newChartWindow.position = previousChartWindowInitialPosition + Vector2i(newChartWindow.size.x, 0)
 	previousChartWindowInitialPosition = newChartWindow.position
-	
+
 	self.add_child(newChartWindow)
 	return newChart
 
@@ -196,7 +196,7 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 	printerr(plainText)
 	# Don't print a duplicate line, to reduce clutter.
 	#print_rich("[indent]❗️ [color=red]" + objectName + " " + message + "[/color]")
-	
+
 	# WARNING: Crash on error if not developing in the editor.
 	if Global.shouldAlertOnError and not OS.is_debug_build():
 		OS.alert(message, "Framework Error")

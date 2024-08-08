@@ -16,7 +16,7 @@ extends Component
 			printWarning("body is null! Call parentEntity.getBody() to find and remember the Entity's CharacterBody2D")
 		return body
 
-## Removes any leftover "ghost" velocity when the net motion is zero. 
+## Removes any leftover "ghost" velocity when the net motion is zero.
 ## Enable to avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 ## Applied after [method CharacterBody2D.move_and_slide]
 @export var shouldResetVelocityIfZeroMotion: bool = true
@@ -51,10 +51,10 @@ signal didMove(delta: float) ## Emitted after [method CharacterBody2D.move_and_s
 # Called whenever the node enters the scene tree.
 func _enter_tree() -> void:
 	super._enter_tree()
-	
+
 	if self.body == null and parentEntity != null:
 		self.body = parentEntity.getBody()
-	
+
 	if not body:
 		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
 
@@ -74,17 +74,17 @@ func queueMoveAndSlide() -> void:
 ## NOTE: If a subclass overrides this function, it MUST call super.
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog(str("_physics_process() delta: ", delta))
-	
+
 	if self.shouldMoveThisFrame:
 		updateStateBeforeMove(delta)
 		if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
-		
+
 		parentEntity.callOnceThisFrame(body.move_and_slide)
 		updateStateAfterMove(delta)
-		
+
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
 		didMove.emit(delta)
-	
+
 	if shouldShowDebugInfo: showDebugInfo()
 
 
@@ -93,10 +93,10 @@ func updateStateBeforeMove(_delta: float) -> void:
 	self.wasOnFloor		= body.is_on_floor()
 	self.wasOnWall		= body.is_on_wall()
 	self.wasOnCeiling	= body.is_on_ceiling()
-	
+
 	self.previousVelocity = body.velocity
-	
-	if wasOnWall: 
+
+	if wasOnWall:
 		self.previousWallNormal = body.get_wall_normal()
 
 
@@ -105,11 +105,11 @@ func updateStateAfterMove(_delta: float) -> void:
 	# NOTE: `is_on_floor()` returns `true` if the body collided with the floor on the last call of `move_and_slide()`,
 	# so it makes sense to cache it after the move.
 	self.isOnFloor = body.is_on_floor()
-	
+
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	if self.shouldResetVelocityIfZeroMotion:
-		parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) 
-	
+		parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body])
+
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 
 

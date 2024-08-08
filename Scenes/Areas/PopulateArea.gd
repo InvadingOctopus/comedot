@@ -100,7 +100,7 @@ func populate() -> void:
 	# So we have to adjust the first copy's position so that (0,0) is at the top-left of the SHAPE.
 
 	initialOffset += shapeBounds.position # NOTE: But if this is done in createNewCopy() then it will be cumulatively reapplied to each copy!
-	
+
 	if shouldShowDebugInfo:
 		Debug.printDebug(str("shapeBounds: ", shapeBounds, \
 			"\ninitialOffset: ", initialOffset, \
@@ -190,7 +190,7 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 		previousCopy = newCopy
 		totalCopiesCreated += 1
 		if shouldShowDebugInfo: Debug.printDebug(str("totalCopiesCreated: ", totalCopiesCreated))
-		
+
 		return newCopy
 	else:
 		return null

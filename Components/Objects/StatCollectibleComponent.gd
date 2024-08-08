@@ -28,20 +28,20 @@ func getRandomModifier() -> int:
 ## Returns: The randomized stat modifier value
 func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
 	var randomizedModifier := getRandomModifier()
-	
+
 	if shouldShowDebugInfo:
 		printLog(str("executeCollectibleCallable() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent, ", randomizedModifier: ", randomizedModifier))
-	
+
 	stat.value += randomizedModifier
-	
+
 	# Create a visual indicator
 	# TODO: Make it customizable
-	
-	if shouldDisplayIndicator:	
+
+	if shouldDisplayIndicator:
 		var symbol: String
 		if signi(randomizedModifier) == 1:    symbol = "+"
 		elif signi(randomizedModifier) == -1: symbol = "-"
-		
+
 		TextBubble.create(collectorComponent.parentEntity, str(stat.name.capitalize(), symbol, randomizedModifier))
-	
+
 	return randomizedModifier

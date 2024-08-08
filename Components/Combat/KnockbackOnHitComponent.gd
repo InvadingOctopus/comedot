@@ -54,13 +54,13 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 
 	# WARNING: The knockback force may not be applied consistently
 	# because of `PlatformerPhysicsComponent.processAllFriction()` if `PlatformerMovementParameters.shouldStopInstantly…` is true.
-	
+
 	# Apply force in the opposite direction
 	body.velocity += -damageDirection * knockbackForce
-	
+
 	# Any more? For example, a jump when taking damage in a platform game.
 	body.velocity += additionalVector
-	
+
 	if shouldShowDebugInfo: printLog(str("-damageDirection: ", -damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", body.velocity: ", body.velocity))
-	
+
 	characterBodyComponent.queueMoveAndSlide()

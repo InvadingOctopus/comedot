@@ -38,7 +38,7 @@ var coComponent: Component: ## Placeholder
 ## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
 	return []
-	
+
 #endregion
 
 
@@ -65,7 +65,7 @@ func _process(delta: float) -> void: # NOTE: If you need to process movement or 
 	if not isEnabled: return
 	pass # Placeholder: Perform any per-frame updates.
 
- 
+
 ## Called when the [param enteredArea] enters this component's associated [member area]. Requires [member Area2D.monitoring] to be set to [constant true].
 func onArea_areaEntered(enteredArea: Area2D) -> void:
 	if not isEnabled: return

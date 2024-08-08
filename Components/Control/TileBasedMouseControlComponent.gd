@@ -31,7 +31,7 @@ func getRequiredcomponents() -> Array[Script]:
 #func _input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	if not isEnabled: return
-	
+
 	var tileMap: TileMapLayer = tileBasedPositionComponent.tileMap
 	tileBasedPositionComponent.currentCellCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
 	tileBasedPositionComponent.snapEntityPositionToTile(tileBasedPositionComponent.currentCellCoordinates)

@@ -51,16 +51,16 @@ func _enter_tree() -> void:
 	printLog("􀈅 [b]_enter_tree() parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
 	connectSignals()
 
-	
+
 func connectSignals() -> void:
 	self.child_entered_tree.connect(childEnteredTree)
 	self.child_exiting_tree.connect(childExitingTree)
-	
-	
+
+
 func _process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
-	# TBD: Assess performance impact 
+	# TBD: Assess performance impact
 	functionsAlreadyCalledOnceThisFrame.clear()
 
 
@@ -87,15 +87,15 @@ func childEnteredTree(node: Node) -> void:
 
 func registerComponent(newComponent: Component) -> void:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
-	
+
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
 	if existingComponent:
 		printLog(str("Replacing: ", existingComponent, " → ", newComponent))
-	
+
 	newComponent.parentEntity = self # TBD: Is this useful?
 	self.components[componentType] = newComponent
-	
+
 	# DEBUG: printDebug(str(componentType, " ← ", newComponent))
 
 
@@ -107,12 +107,12 @@ func childExitingTree(node: Node) -> void:
 
 func unregisterComponent(componentToRemove: Component) -> void:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
-	
+
 	# Does the dictionary have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
-	
+
 	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
-	
+
 	if existingComponent == componentToRemove:
 		printLog(str("Unregistering ", existingComponent))
 		self.components.erase(componentType)

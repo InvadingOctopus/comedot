@@ -11,7 +11,7 @@ static var hasStartScript:		bool = false
 
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
 static var mainGameScene:		PackedScene
-	
+
 static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
 
 static var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
@@ -47,7 +47,7 @@ class Groups:
 	const collectibles	:= &"collectibles"
 	const interactions	:= &"interactions"
 	const zones			:= &"zones"
-	
+
 	const turnBased		:= &"turnBased"
 
 #endregion
@@ -67,10 +67,10 @@ class Animations: ## Animation labels
 class TileMapCustomData: ## A list of names for the custom data types that [TileMapLayer] Tile Sets may set on tiles.
 	const isWalkable	:= &"isWalkable"	## Tile is vacant
 	const isBlocked		:= &"isBlocked"		## Impassable terrain or object
-	
+
 	const isOccupied	:= &"isOccupied"	## Is occupied by a character
 	const occupant		:= &"occupant"		## The entity occupying the tile
-	
+
 #endregion
 
 
@@ -116,22 +116,22 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 	# TODO: Implement properly :(
 	# BUG:  Does not save all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
-	
+
 	Debug.showTemporaryLabel(&"Game State", "Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
 	await Debug.printLog("Saving state → " + Global.saveFilePath)
-	
+
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
-	
-	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison 
-	
+
+	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison
+
 	var packedSceneToSave := PackedScene.new()
 	packedSceneToSave.pack(sceneTree.get_current_scene())
 	ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
 
 	sceneTree.paused = false
-	
+
 
 ## A very rudimentary implementation of loading the entire game state.
 ## @experimental
@@ -139,36 +139,36 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 	# TODO: Implement properly :(
 	# BUG:  Does not restore all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
-	
+
 	Debug.showTemporaryLabel(&"Game State", "Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
 	await Debug.printLog("Loading state ← " + Global.saveFilePath)
-	
+
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
-	
+
 	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
-	
+
 	sceneTree.paused = false
 	sceneTree.change_scene_to_packed(packedSceneLoaded)
 	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
-	
+
 
 ## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
 ## @experimental
 func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` because of `self.get_viewport()`
 	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
 	# TBD: Is the `await` necessary?
-	var date := Time.get_date_string_from_system().replace(".","-") 
+	var date := Time.get_date_string_from_system().replace(".","-")
 	var time := Time.get_time_string_from_system().replace(":","-")
 
 	var screenshotPath := "user://" + "Comedot Screenshot " + date + " " + time
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"
-	
+
 	var screenshotImage := self.get_viewport().get_texture().get_image() # Capture what the player sees
-	screenshotImage.save_jpg(screenshotPath) 
-	
+	screenshotImage.save_jpg(screenshotPath)
+
 	Debug.showTemporaryLabel(&"Screenshot", time + " " + titleSuffix)
 
 #endregion

@@ -26,10 +26,10 @@ class Actions: ## Input event labels
 	const screenshot	:= &"screenshot"
 	const quickSave		:= &"quickSave"
 	const quickLoad		:= &"quickLoad"
-	
+
 	const debugBreak	:= &"debugBreak"
 	const debugWindow	:= &"debugWindow"
-	
+
 	const windowResizeTo1080		:= &"windowResizeTo1080"
 	const windowResizeTo720			:= &"windowResizeTo720"
 	const windowToggleAlwaysOnTop	:= &"windowToggleAlwaysOnTop"
@@ -40,7 +40,7 @@ class Actions: ## Input event labels
 ## Global keyboard shortcuts
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
-	
+
 	# Debugging, before any other actions are handled.
 
 	if Input.is_action_just_released(Actions.debugBreak):
@@ -73,10 +73,10 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	# Save & Load
-	
+
 	if event.is_action_released(GlobalInput.Actions.screenshot):
 		Global.screenshot()
-	
+
 	if event.is_action_released(GlobalInput.Actions.quickLoad):
 		Global.loadGame()
 	elif event.is_action_released(GlobalInput.Actions.quickSave):
@@ -89,5 +89,5 @@ func _input(event: InputEvent) -> void:
 func hasActionTransitioned(action: StringName) -> bool:
 	return Input.is_action_just_pressed(action) \
 		or Input.is_action_just_released(action)
-		
+
 #endregion

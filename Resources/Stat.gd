@@ -39,7 +39,7 @@ extends Resource
 			previousChange = previousValue - value
 
 			if logChanges:
-				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` because we already checked for changes. 
+				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` because we already checked for changes.
 				Debug.printDebug(str(self) + " " + str(name) + ": " + str(previousValue) + " → " + str(value) + " (" + str(previousChange) + ")")
 
 			emit_changed()

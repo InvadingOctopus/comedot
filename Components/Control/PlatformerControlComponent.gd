@@ -41,7 +41,7 @@ func _physics_process(_delta: float) -> void:
 	if not isEnabled: return
 	processInput()
 	copyInputToPhysicsComponent()
-	
+
 
 ## Handles player input.
 ## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
@@ -64,7 +64,7 @@ func processInput() -> void:
 
 	# NOTE: DESIGN: Accept input in air even if [member PlatformerMovementParameters.shouldAllowMovementInputInAir] is `false`,
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
-	
+
 
 func processJumpInput() -> void:
 	pass # NOTE: Jumping is solely handled by [JumpControlComponent]
@@ -74,9 +74,8 @@ func processJumpInput() -> void:
 
 
 func copyInputToPhysicsComponent() -> void:
-	# TBD: Check performance impact vs setting directly 
+	# TBD: Check performance impact vs setting directly
 	# TBD: Should this only be called after input events?
 	platformerPhysicsComponent.inputDirection		= self.inputDirection
 	platformerPhysicsComponent.isInputZero			= self.isInputZero
 	platformerPhysicsComponent.lastInputDirection	= self.lastInputDirection
-	

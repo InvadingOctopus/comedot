@@ -62,7 +62,7 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 	else:
 		self.add_child(newControl)
 		return true
-	
+
 	showDebugInfo()
 	return false
 
@@ -70,13 +70,13 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 func displayNavigationDestination(newDestination: String) -> bool:
 	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
 	var result: bool
-	
+
 	if self.replaceFirstChildControl(newDestinationScene):
 		navigationHistory.append(newDestination)
 		result = true
 	else:
 		result = false
-	
+
 	updateBackButton()
 	showDebugInfo()
 	return result

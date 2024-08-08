@@ -39,7 +39,7 @@ signal didFinishCooldown
 func startCooldown(overrideTime: float = self.cooldown) -> void:
 	printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime))
 	hasCooldownCompleted = false
-	cooldownTimer.wait_time = overrideTime	
+	cooldownTimer.wait_time = overrideTime
 	cooldownTimer.start(overrideTime)
 	didStartCooldown.emit()
 

@@ -67,5 +67,5 @@ func applyGlobalFlags() -> void:
 	Debug.debugWindow.visible = self.showDebugWindow if OS.is_debug_build() else false
 	Debug.shouldPrintDebugLogs  = self.shouldPrintDebugLogs
 	Debug.showDebugLabels = self.showDebugLabels
-	
+
 	Global.mainGameScene	= self.mainGameScene

@@ -2,7 +2,7 @@
 ## Each turn, the [TurnBasedCoordinator] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods on each entity in order.
 ##
 ## NOTE: The begin/update/end methods are NOT executed at once for a single entity:
-## First, all entities perform the "Begin" phase: Entity1.processTurnBegin → Entity2.processTurnBegin ... 
+## First, all entities perform the "Begin" phase: Entity1.processTurnBegin → Entity2.processTurnBegin ...
 ## THEN all entities perform "Update" phase, and so on.
 ##
 ## NOTE: A [TurnBasedEntity] should not manage turn-coordination state; that is the job of the [TurnBasedCoordinator].
@@ -11,7 +11,7 @@
 class_name TurnBasedEntity
 extends Entity # + TurnBasedObjectBase
 
-# NOTE: DESIGN: This class is almost identical to [TurnBasedComponent] and there is a lot of code duplication 
+# NOTE: DESIGN: This class is almost identical to [TurnBasedComponent] and there is a lot of code duplication
 # because classes can't have multiple inheritance; it would need to extend both [Entity] and [TurnBased] :')
 
 
@@ -42,7 +42,7 @@ var turnsProcessed: int:
 #endregion
 
 
-#region Signals 
+#region Signals
 # See [TurnBasedCoordinator] comments for explanation of signals.
 
 signal willBeginTurn
@@ -74,10 +74,10 @@ func _exit_tree() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: 
+	if shouldShowDebugInfo:
 		printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
 		TextBubble.create(self, str("turnBegin ", currentTurn))
-		
+
 	willBeginTurn.emit()
 	await self.processTurnBegin()
 	if shouldShowDebugInfo: printLog("didBeginTurn")
@@ -88,10 +88,10 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: 
+	if shouldShowDebugInfo:
 		printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
 		TextBubble.create(self, str("turnUpdate ", currentTurn))
-		
+
 	willUpdateTurn.emit()
 	await self.processTurnUpdate()
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
@@ -102,10 +102,10 @@ func processTurnUpdateSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: 
+	if shouldShowDebugInfo:
 		printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
 		TextBubble.create(self, str("turnEnd ", currentTurn))
-		
+
 	willEndTurn.emit()
 	await self.processTurnEnd()
 	if shouldShowDebugInfo: printLog("didEndTurn")
@@ -162,7 +162,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 ## NOTE: May be slow. Use the [member turnBasedComponents] array instead.
 func findTurnBasedComponents() -> Array[TurnBasedComponent]:
 	return self.findChildrenOfType(TurnBasedComponent)
-	
+
 #endregion
 
 

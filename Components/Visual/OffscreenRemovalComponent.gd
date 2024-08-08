@@ -15,7 +15,7 @@ extends Component
 
 func _ready() -> void:
 	onScreenNotifier.rect = self.rectangle
-	
-	
+
+
 func onScreenExited() -> void:
 	self.parentEntity.queue_free()

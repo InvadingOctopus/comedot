@@ -41,9 +41,9 @@ func _ready() -> void:
 
 func onTileBasedPositionComponent_willStartMovingToNewCell(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
-	
+
 	animatedSprite.play(walkAnimation)
-	
+
 	if flipWhenWalkingLeft:
 		# Maintain the flip when moving vertically only
 		animatedSprite.flip_h = (tileBasedPositionComponent.inputVector.x < 0) \
@@ -52,5 +52,5 @@ func onTileBasedPositionComponent_willStartMovingToNewCell(_newDestination: Vect
 
 func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
 	if not isEnabled: return
-	
+
 	animatedSprite.play(idleAnimation)

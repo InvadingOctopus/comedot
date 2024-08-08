@@ -65,16 +65,16 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	# NOTE: The order of processing is as per Heartbeast's tutorial.
-	
+
 	if not isEnabled: return
-	
+
 	# Sanitize the control input and prepare flags etc. for use by other functions.
 	processInput()
 	updateStateBeforeMove()
-	
+
 	# Fall the Fall
 	processGravity(delta)
-	
+
 	# Walk the Walk
 	processHorizontalMovement(delta) # = applyAccelerationOnFloor(delta) & applyAccelerationInAir(delta)
 	processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
@@ -86,16 +86,16 @@ func _physics_process(delta: float) -> void:
 func updateStateBeforeMove() -> void:
 	# NOTE: `currentState` MUST be updated BEFORE `CharacterBody2D.move_and_slide(])` and AFTER `processInput()`
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
-	
+
 	if currentState == State.idle and not isInputZero:
 		# CHECK: Should this be done in `processInput()` so that there is only one check for [isInputZero]?
 		currentState = State.moveOnFloor if characterBodyComponent.isOnFloor else State.moveInAir
-	
+
 	if currentState != State.idle and body.velocity.is_zero_approx():
 		currentState = State.idle
 
 
-## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents. 
+## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents.
 ## Affected by [member isEnabled].
 func processInput() -> void:
 	# TBD: Should be guarded by [isEnabled] or should the flags etc. always be updated?
@@ -105,7 +105,7 @@ func processInput() -> void:
 	# self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
 
 	# Cache properties that are accessed often to avoid repeated function calls on other objects.
-	
+
 	self.isInputZero = is_zero_approx(inputDirection)
 
 	if not isInputZero: lastInputDirection = inputDirection
@@ -116,7 +116,7 @@ func processInput() -> void:
 
 func characterBodyComponent_didMove(_delta: float) -> void:
 	if shouldShowDebugInfo: showDebugInfo()
-	
+
 	# Clear the input so it doesn't carry on over to the next frame.
 	clearInput()
 
@@ -135,7 +135,7 @@ func processGravity(delta: float) -> void:
 	# Vertical Slowdown
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale) * delta
-	
+
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
 
 
@@ -155,7 +155,7 @@ func processHorizontalMovement(delta: float) -> void:
 			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 		else:
 			body.velocity.x = inputDirection * parameters.speedInAir
-	
+
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
 
 
@@ -165,18 +165,18 @@ func processAllFriction(delta: float) -> void:
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input, OR
 	# NOTE: If movement is not allowed in air, then apply air friction regardless of player input.
-	
+
 	if characterBodyComponent.isOnFloor and isInputZero:
 		if parameters.shouldStopInstantlyOnFloor:
 			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
-		elif parameters.shouldApplyFrictionOnFloor: 
+		elif parameters.shouldApplyFrictionOnFloor:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 	elif (not characterBodyComponent.isOnFloor) and (isInputZero or not parameters.shouldAllowMovementInputInAir):
 		if parameters.shouldStopInstantlyInAir:
 			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
-		elif parameters.shouldApplyFrictionInAir: 
+		elif parameters.shouldApplyFrictionInAir:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
-	
+
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processAllFriction(): ", body.velocity))
 
 #endregion
@@ -206,7 +206,7 @@ func applyFrictionOnFloor(delta: float) -> void:
 		if parameters.shouldStopInstantlyOnFloor:
 			# TBD: Ensure that the body can be moved by other forces?
 			body.velocity.x = 0
-		elif parameters.shouldApplyFrictionOnFloor: 
+		elif parameters.shouldApplyFrictionOnFloor:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
@@ -216,9 +216,9 @@ func applyFrictionInAir(delta: float) -> void:
 	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not characterBodyComponent.isOnFloor):
 		if parameters.shouldStopInstantlyInAir:
 			body.velocity.x = 0 # TBD: Ensure that the body can be moved by other forces?
-		elif parameters.shouldApplyFrictionInAir: 
+		elif parameters.shouldApplyFrictionInAir:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
-		
+
 
 #endregion
 
@@ -227,7 +227,7 @@ func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.state = currentState
 	Debug.watchList.input = inputDirection
-	
+
 	# Friction?
 	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		Debug.watchList.friction = "floor"

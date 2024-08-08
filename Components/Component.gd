@@ -1,5 +1,5 @@
 ## A node which represents a distinct behavior or property of a game character or object.
-## A parent node made up of component child nodes is an [Entity]. 
+## A parent node made up of component child nodes is an [Entity].
 ## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
 ## Components may directly modify the parent entity or interact with other sibling components, such as a [DamageReceivingComponent] modifying a [HealthComponent].
 
@@ -25,14 +25,14 @@ func _enter_tree() -> void:
 	update_configuration_warnings()
 
 	if parentEntity:
-		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default, 
+		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
 		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
 		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
-		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo		
+		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
 		printLog("􀈅 [b]_enter_tree() parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
 	else:
 		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
-	
+
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
@@ -42,7 +42,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 	if not checkRequiredComponents():
 		warnings.append("This component is missing a required co-component. Check the getRequiredComponents() method.")
-		
+
 	return warnings
 
 
@@ -55,17 +55,17 @@ func getRequiredComponents() -> Array[Script]:
 
 func checkRequiredComponents() -> bool:
 	if not parentEntity or parentEntity.components.keys().is_empty(): return true # Nothing to do if there are no other components!
-	
+
 	var haveAllRequirements: bool = true # Start true then make it false if there is any missing requirement.
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
 	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
-	
+
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
 		if not parentEntity.components.keys().has(requirement):
 			printWarning(str("? Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
 			haveAllRequirements = false
-		
+
 	return haveAllRequirements
 
 
@@ -109,11 +109,11 @@ func _exit_tree() -> void:
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_UNPARENTED:
-			if parentEntity: 
+			if parentEntity:
 				willRemoveFromEntity()
 				self.parentEntity = null
 				printLog("􀆄 Unparented")
-		
+
 		NOTIFICATION_PREDELETE:
 			# NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 			printLog("􀆄 PreDelete")

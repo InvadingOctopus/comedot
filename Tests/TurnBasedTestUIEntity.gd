@@ -31,16 +31,16 @@ func processTurnBegin() -> void:
 	%NextTurnButton.disabled = true
 	%UpdateLabel.visible = false
 	%EndLabel.visible = false
-	
+
 	%BeginLabel.text = str("TURN ", currentTurn, " START")
 	%BeginLabel.visible = true
-	
+
 	%UIAnimationPlayer.play(&"showBeginLabel")
 	await %UIAnimationPlayer.animation_finished
-	
+
 	%UITimer.start()
 	await %UITimer.timeout
-	
+
 	%BeginLabel.text = str("GET READY")
 	#%BeginLabel.visible = false
 	super.processTurnBegin()

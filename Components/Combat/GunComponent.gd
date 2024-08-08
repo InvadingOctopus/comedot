@@ -103,7 +103,7 @@ func fire(ignoreCooldown: bool = false) -> void:
 	# Add the bullet to the scene
 	self.parentEntity.get_parent().add_child(newBullet)
 	newBullet.owner = newBullet.get_parent() # INFO: Necessary for persistence to a [PackedScene] for save/load.
-	
+
 	didFire.emit(newBullet)
 
 	# Start the cooldown timer
