@@ -13,7 +13,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_otxly")
 
-[node name="VBoxContainer" type="GridContainer" parent="."]
+[node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,54 +21,69 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LogoMarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="LogoMarginContainer" type="MarginContainer" parent="GridContainer"]
+texture_filter = 2
 layout_mode = 2
 size_flags_vertical = 0
+size_flags_stretch_ratio = 0.5
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/LogoMarginContainer"]
+[node name="Logo" type="TextureRect" parent="GridContainer/LogoMarginContainer"]
+custom_minimum_size = Vector2(351, 192)
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
+size_flags_stretch_ratio = 0.5
 texture = ExtResource("2_lujgd")
 expand_mode = 5
 stretch_mode = 5
 
-[node name="TextMarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="TextMarginContainer" type="MarginContainer" parent="GridContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/TextMarginContainer"]
+[node name="HelpLabel" type="RichTextLabel" parent="GridContainer/TextMarginContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=white][b]Components[/b][/color]
-[color=dimgray]Select an [b]Entity[/b] node in the Scene Editor and double-click a component from this list to add it to the entity."
+[color=dimgray]Select an [b]Entity[/b] node in the Scene and double-click a component from this list to add it to the entity."
 fit_content = true
 scroll_active = false
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="TreeScrollContainer" type="ScrollContainer" parent="GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 follow_focus = true
 
-[node name="ComponentsTree" type="Tree" parent="VBoxContainer/ScrollContainer"]
+[node name="ComponentsTree" type="Tree" parent="GridContainer/TreeScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+columns = 2
 hide_root = true
 select_mode = 1
 
-[node name="RefreshButton" type="Button" parent="VBoxContainer"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="GridContainer"]
 layout_mode = 2
-text = "Rescan Components
+alignment = 1
+
+[node name="EditButton" type="Button" parent="GridContainer/ButtonsContainer"]
+layout_mode = 2
+text = "Edit Component"
+
+[node name="RefreshButton" type="Button" parent="GridContainer/ButtonsContainer"]
+layout_mode = 2
+text = "Rescan Folders
 "
 
-[connection signal="item_activated" from="VBoxContainer/ScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
-[connection signal="pressed" from="VBoxContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
+[connection signal="item_activated" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
+[connection signal="pressed" from="GridContainer/ButtonsContainer/EditButton" to="." method="onEditButton_pressed"]
+[connection signal="pressed" from="GridContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]

@@ -44,7 +44,7 @@ func removeCustomTypes() -> void:
 	remove_custom_type(entityTypeName)
 	remove_custom_type(componentTypeName)
 
-#endregion 
+#endregion
 
 
 #region Components Dock
@@ -53,6 +53,7 @@ var componentsDock: ComponentsDock
 
 func addDock() -> void:
 	componentsDock = preload("res://Addons/Comedot/ComponentsDock.tscn").instantiate()
+	componentsDock.plugin = self as EditorPlugin
 	componentsDock.editorInterface = get_editor_interface()
 	add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 
