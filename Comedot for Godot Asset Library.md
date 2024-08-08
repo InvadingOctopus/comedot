@@ -1,6 +1,6 @@
 # Comedot for the Godot Asset Library
 
-A project template and framework for making 2D games by adding components to entities. Includes a library of components for common tasks like player movement and combat, helper functions, UI, and free-to-use 3rd-party assets for prototyping. May be combined with any other framework or architecture. 
+A project template and framework for making 2D games by adding components to entities. Includes a library of components for common tasks like player movement and combat, helper functions, UI, and free-to-use 3rd-party assets for prototyping. May be combined with any other framework or architecture.
 
 This is a work in progress. For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
@@ -17,3 +17,4 @@ Godot Vesion:	4.3
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
+Screenshot:		https://i.imgur.com/7bumNvF.png
