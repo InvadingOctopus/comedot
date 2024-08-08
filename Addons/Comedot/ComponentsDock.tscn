@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3 uid="uid://dn5qx1mv643mq"]
+
+[ext_resource type="Script" path="res://Addons/Comedot/ComponentsDock.gd" id="1_otxly"]
+[ext_resource type="Texture2D" uid="uid://dcdkweiett0gs" path="res://Assets/Logos/Comedot.png" id="2_lujgd"]
+
+[node name="Comedot" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_otxly")
+
+[node name="VBoxContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LogoMarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/LogoMarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+texture = ExtResource("2_lujgd")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="TextMarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/TextMarginContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=white][b]Components[/b][/color]
+[color=dimgray]Select an [b]Entity[/b] node in the Scene Editor and double-click a component from this list to add it to the entity."
+fit_content = true
+scroll_active = false
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+follow_focus = true
+
+[node name="ComponentsTree" type="Tree" parent="VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+hide_root = true
+select_mode = 1
+
+[node name="RefreshButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Rescan Components
+"
+
+[connection signal="item_activated" from="VBoxContainer/ScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
+[connection signal="pressed" from="VBoxContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
