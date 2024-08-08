@@ -22,4 +22,3 @@ func _ready() -> void:
 func onTimerTimeout() -> void:
 	if not isEnabled: return
 	damageReceivingComponent.handleDamage(null, damageOnTimer, attackerFactions, friendlyFire)
-
