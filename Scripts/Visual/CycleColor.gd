@@ -40,6 +40,11 @@ extends CanvasItem
 ## As a low saturation will not let the hue have any visible effect.
 @export var fixSaturationIfZero: bool = true
 
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		if not isEnabled: modulate = Color.WHITE
+
 #endregion
 
 
@@ -73,6 +78,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if not isEnabled: return
 
 	# Cycle the values within 0.0 and 1.0
 
