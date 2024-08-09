@@ -9,6 +9,8 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and no backwards compatibility is guaranteed.
 
+![Custom Dock Plugin][comedock]
+
 ⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
@@ -41,6 +43,9 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 ![components-tree]
 
 🧩 Whenever your game needs an "actor" which has to react to events, like the player character or a monster, or an object with "behaviors" which could be reused for other objects, like interactive items or powerups:
+
+_Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
+
 1. Create a new `Entity` node (a Node2D/CharacterBody2D/Area2D/etc. with the `Entity.gd` script attached)
 2. Add `Component` child nodes to the entity. A component is also a Node/Node2D/Area2D/etc. with a script which extends the `Component` class.
 3. Modify component parameters in the editor's inspector.
@@ -74,6 +79,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 [swift-api-guidelines]: https://swift.org/documentation/api-design-guidelines/
 
+[comedock]: https://i.imgur.com/SR3shzr.png "Custom Godot Editor Dock Plugin"
 [rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [components-tree]: https://i.imgur.com/5XqON69.png "Example Components Tree for a Player Entity"
