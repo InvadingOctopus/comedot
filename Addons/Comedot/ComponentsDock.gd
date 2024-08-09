@@ -165,8 +165,12 @@ func buildComponentsDirectory() -> void:
 
 func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeItem:
 	var categoryItem: TreeItem = componentsTree.create_item()
-	categoryItem.set_text(0, categoryFolder.get_name())
-	categoryItem.set_metadata(0, categoryFolder.get_path())
+	var categoryName: String   = categoryFolder.get_name()
+	var categoryPath: String   = categoryFolder.get_path()
+
+	categoryItem.set_text(0, categoryName)
+	categoryItem.set_metadata(0, categoryPath)
+	categoryItem.set_tooltip_text(0, categoryPath)
 
 	# Customize the Tree row
 	categoryItem.set_icon(0, folderIcon)
@@ -177,8 +181,10 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryItem.set_selectable(0, false)
 
 	# TODO: Add a button
-	categoryItem.add_button(1, componentIcon, 0, false, "Create a new Component in this category folder.")
+	var buttonTooltip := "Create a new Component in the " + categoryName + " folder."
+	categoryItem.add_button(1, componentIcon, 0, false, buttonTooltip)
 	categoryItem.set_text(1, "+")
+	categoryItem.set_tooltip_text(1, buttonTooltip)
 	categoryItem.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	categoryItem.set_custom_color(1, createNewItemButtonColor)
 	categoryItem.set_button_color(1, 0, createNewItemButtonColor)
