@@ -49,16 +49,24 @@ stretch_mode = 5
 layout_mode = 2
 alignment = 1
 
-[node name="AddEntityButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+[node name="AddEntityMenuButton" type="MenuButton" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
 unique_name_in_owner = true
 modulate = Color(0.486275, 0.988235, 0, 1)
 layout_mode = 2
-tooltip_text = "Add a new Entity node to the currently selected node in the Scene Editor."
+tooltip_text = "Add a new Entity node of the chosen base type to the currently selected node in the Scene Editor."
 text = "Add Entity"
 icon = ExtResource("3_fn551")
 alignment = 2
 icon_alignment = 2
 expand_icon = true
+item_count = 4
+popup/item_0/text = "Node2D"
+popup/item_1/text = "Area2D"
+popup/item_1/id = 1
+popup/item_2/text = "CharacterBody2D"
+popup/item_2/id = 2
+popup/item_3/text = "Sprite2D"
+popup/item_3/id = 3
 
 [node name="EditComponentButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
 unique_name_in_owner = true
@@ -81,6 +89,13 @@ layout_mode = 2
 tooltip_text = "Reload the Comedot plugin and refresh the Comedock."
 text = "Reload Plugin"
 alignment = 2
+
+[node name="EditableChildrenCheckBox" type="CheckBox" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Expose the sub-nodes of new Entities & Components?"
+button_pressed = true
+text = "Editable Children"
 
 [node name="TextMarginContainer" type="MarginContainer" parent="GridContainer"]
 layout_mode = 2
@@ -123,7 +138,7 @@ columns = 2
 hide_root = true
 select_mode = 1
 
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/AddEntityButton" to="." method="onAddEntityButton_pressed"]
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/AddEntityMenuButton" to="." method="onAddEntityButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/EditComponentButton" to="." method="onEditComponentButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]

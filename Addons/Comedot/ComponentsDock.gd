@@ -6,7 +6,18 @@ class_name ComponentsDock
 extends Panel
 
 
+enum EntityTypes {
+	# NOTE: MUST correspond to the ids of the Add Entity button's PopupMenu
+	# DESIGN: Almost alphabetical, because Node2D has to be first.
+	node2D = 0,
+	area2D = 1,
+	characterBody2D = 2,
+	sprite2D = 3
+}
+
 #region Parameters
+
+# TBD: `load` or `preload` or just put paths here?
 
 # NOTE: Convert strings `.to_lower()` before comparing strings
 const componentsRootPath		:= "res://Components"
@@ -16,7 +27,13 @@ const acceptedFileExtension	:= ".tscn"
 const acceptedFileSuffix		:= "component.tscn"
 
 const entityBaseScene		:= "res://Entities/Entity.tscn"
+const entityBaseScript		:= "res://Entities/Entity.gd"
 const entityScriptTemplate	:= "res://Templates/Entity/EntityTemplate.gd"
+
+const areaEntityTemplate		:= "res://Templates/Entity/AreaEntityTemplate.tscn"
+const bodyEntityTemplate		:= "res://Templates/Entity/CharacterBodyEntityTemplate.tscn"
+const spriteEntityTemplate	:= "res://Templates/Entity/SpriteEntityTemplate.tscn"
+
 const componentBaseScene		:= "res://Components/Component.tscn"
 const componentScriptTemplate := "res://Templates/Component/ComponentTemplate.gd"
 
@@ -83,19 +100,24 @@ var fileSystem: EditorFileSystem:
 func _ready() -> void:
 	#if shouldShowDebugInfo:
 	printLog("_ready()")
-
-	# Set the controls
-	%DebugReloadButton.visible = shouldShowDebugInfo
-	%AddEntityButton.modulate  = createNewItemButtonColor
+	setupUI()
 
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
-	# TODO: Display the dock if it's hidden (like behind the FileSystem)
+
 
 
 func printLog(text) -> void:
 	print(str("Comedock: ", text))
 
+
+func setupUI() -> void:
+	%DebugReloadButton.visible = shouldShowDebugInfo
+	%AddEntityMenuButton.modulate  = createNewItemButtonColor
+
+	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
+
+	# TODO: Display the dock if it's hidden (like behind the FileSystem)
 
 #region The Erdtree
 
@@ -240,9 +262,9 @@ func onEditComponentButton_pressed() -> void:
 	#editorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
 
 
-func onAddEntityButton_pressed() -> void:
-	if shouldShowDebugInfo: printLog("onAddEntityButton_pressed()")
-	addNewEntity()
+func onAddEntityMenu_idPressed(id: int) -> void:
+	if shouldShowDebugInfo: printLog(str("onAddEntityMenu_idPressed() ", id))
+	addNewEntity(id)
 
 
 func onComponentsTree_buttonClicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
@@ -271,13 +293,15 @@ func reloadPlugin() -> void:
 
 #region Scene Editing
 
-func addNewEntity() -> void:
+func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if shouldShowDebugInfo: printLog("addNewEntity()")
 
 	var editorSelection: EditorSelection = editorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
 
 	# TBD: Support adding multiple new Entities to more than 1 selected Node?
+
+	# Get the first selected node
 
 	if selectedNodes.is_empty() or selectedNodes.size() != 1:
 		#if shouldShowDebugInfo:
@@ -287,8 +311,30 @@ func addNewEntity() -> void:
 	var parentNode: Node = selectedNodes.front()
 
 	# Create a new Entity
-	var newEntity: Entity = preload(entityBaseScene).instantiate()
-	newEntity.name = "Entity"
+
+	var newEntity: Entity
+
+	# TBD: `load` or `preload`?
+	# TODO: CHECK: Is there a better way without `.instantiate()`?
+
+	match entityType:
+		EntityTypes.node2D:
+			newEntity = load(entityBaseScene).instantiate()
+			newEntity.name = "Entity"
+
+		EntityTypes.area2D:
+			newEntity = load(areaEntityTemplate).instantiate()
+			newEntity.name = "AreaEntity"
+
+		EntityTypes.characterBody2D:
+			newEntity = load(bodyEntityTemplate).instantiate()
+			newEntity.name = "CharacterBodyEntity"
+
+		EntityTypes.sprite2D:
+			newEntity = load(spriteEntityTemplate).instantiate()
+			newEntity.name = "SpriteEntity"
+
+		_: printLog(str("ERROR: Invalid entityType: ", entityType))
 
 	if shouldShowDebugInfo: printLog(newEntity)
 
@@ -301,6 +347,11 @@ func addNewEntity() -> void:
 	editorSelection.clear()
 	editorSelection.add_node(newEntity)
 	editorInterface.edit_node(newEntity)
+	#editorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
+
+	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
+	if %EditableChildrenCheckBox.button_pressed:
+		newEntity.get_parent().set_editable_instance(newEntity, true)
 
 
 func createNewComponentOnDisk(categoryFolderPath: String) -> String:
@@ -405,7 +456,11 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	editorSelection.add_node(newComponentNode)
 	editorInterface.edit_node(newComponentNode)
 
-	#Log
+	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
+	if %EditableChildrenCheckBox.button_pressed:
+		newComponentNode.get_parent().set_editable_instance(newComponentNode, true)
+
+	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
 
 #endregion
