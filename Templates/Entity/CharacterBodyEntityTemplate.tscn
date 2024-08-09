@@ -10,7 +10,7 @@ size = Vector2(16, 16)
 
 [node name="CharacterBodyEntity" type="CharacterBody2D" groups=["entities"]]
 collision_layer = 2
-collision_mask = 562
+collision_mask = 18
 script = ExtResource("1_55lcw")
 metadata/_edit_group_ = true
 
@@ -22,4 +22,3 @@ shape = SubResource("RectangleShape2D_nam4a")
 
 [node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("3_01lho")]
 body = NodePath("..")
-shouldResetVelocityIfZeroMotion = true
