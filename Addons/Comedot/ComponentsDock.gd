@@ -7,16 +7,26 @@ extends Panel
 
 
 #region Parameters
-# NOTE: Convert strings `.to_lower()` before comparing
-const acceptedFileExtension := ".tscn"
-const acceptedFileSuffix    := "component.tscn"
 
-const folderIcon    := preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
-const componentIcon := preload("res://Assets/Icons/Component.svg")
+# NOTE: Convert strings `.to_lower()` before comparing strings
+const componentsRootPath		:= "res://Components"
+const entitiesRootPath		:= "res://Entities"
+
+const acceptedFileExtension	:= ".tscn"
+const acceptedFileSuffix		:= "component.tscn"
+
+const entityBaseScene		:= "res://Entities/Entity.tscn"
+const entityScriptTemplate	:= "res://Templates/Entity/EntityTemplate.gd"
+const componentBaseScene		:= "res://Components/Component.tscn"
+const componentScriptTemplate := "res://Templates/Component/ComponentTemplate.gd"
+
+const folderIcon				:= preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
+const componentIcon			:= preload("res://Assets/Icons/Component.svg")
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
 const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's background color for folders chosen to be "Blue"
+const createNewItemButtonColor	:= Color.LAWN_GREEN
 
 const editComponentButtonTooltipPrefix := "Open the original source scene of "
 
@@ -38,6 +48,8 @@ var selectedComponentPath: String:
 
 var selectedComponentCategoryName: String:
 	get: return selectedComponentCateogry.get_text(0) if selectedComponentCateogry else ""
+
+# var isMouseInLogo: bool # TBD: For any future animations
 
 #endregion
 
@@ -70,11 +82,19 @@ var fileSystem: EditorFileSystem:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	#if shouldShowDebugInfo:
-	print("Comedock _ready()")
+	printLog("_ready()")
+
+	# Set the controls
 	%DebugReloadButton.visible = shouldShowDebugInfo
+	%AddEntityButton.modulate  = createNewItemButtonColor
+
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
+
+
+func printLog(text) -> void:
+	print(str("Comedock: ", text))
 
 
 #region The Erdtree
@@ -85,7 +105,7 @@ func updateComponentsTree() -> void:
 
 
 func buildComponentsDirectory() -> void:
-	if shouldShowDebugInfo: print("Comedock buildComponentsDirectory()")
+	if shouldShowDebugInfo: printLog("buildComponentsDirectory()")
 
 	# Get all first-level subfolders in the `/Components/` folder
 	var componentCategories: Array[EditorFileSystemDirectory] = getSubfolders("Components")
@@ -108,19 +128,23 @@ func buildComponentsDirectory() -> void:
 
 			if fileName.to_lower().ends_with(acceptedFileSuffix):
 				var componentName := fileName.trim_suffix(acceptedFileExtension)
-				# if shouldShowDebugInfo:#print(componentName + " " + filePath)
+				# if shouldShowDebugInfo:#printLog(componentName + " " + filePath)
 
 				# Add the component to the Tree
 				createComponentTreeItem(filePath, componentName, categoryTreeItem)
 				componentsCount += 1
 
 	#if shouldShowDebugInfo:
-	print(str(componentsCount, " Components found & added to Comedock"))
+	printLog(str(componentsCount, " Components found & added to Comedock"))
+
+	if componentsCount <= 0:
+		printLog("If the list is empty, try the \"Rescan Folders\" button or check the \"\\Components\\\" subfolder of this Godot project.")
 
 
 func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeItem:
 	var categoryItem: TreeItem = componentsTree.create_item()
 	categoryItem.set_text(0, categoryFolder.get_name())
+	categoryItem.set_metadata(0, categoryFolder.get_path())
 
 	# Customize the Tree row
 	categoryItem.set_icon(0, folderIcon)
@@ -131,7 +155,13 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryItem.set_selectable(0, false)
 
 	# TODO: Add a button
-
+	categoryItem.add_button(1, componentIcon, 0, false, "Create a new Component in this category folder.")
+	categoryItem.set_text(1, "+")
+	categoryItem.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	categoryItem.set_custom_color(1, createNewItemButtonColor)
+	categoryItem.set_button_color(1, 0, createNewItemButtonColor)
+	categoryItem.set_custom_bg_color(1, categoryBackgroundColor)
+	categoryItem.set_expand_right(1, false)
 
 	return categoryItem
 
@@ -158,10 +188,11 @@ func createComponentTreeItem(componentPath: String, componentName: String, categ
 func onComponentsTree_itemSelected() -> void:
 	var selection: TreeItem = componentsTree.get_selected()
 
-	# Clear the previous selection
+	# Clear the previous selection. These values must be reset in any case.
 	selectedComponentRow = null
 	selectedComponentCateogry = null
 	%EditComponentButton.disabled = true
+	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its original source scene."
 
 	# Is a component row selected?
 	if selection.get_text(0).to_lower().ends_with("component"): # TODO: A less crude way of checking for component rows :')
@@ -171,11 +202,10 @@ func onComponentsTree_itemSelected() -> void:
 		%EditComponentButton.tooltip_text = editComponentButtonTooltipPrefix + selectedComponentName
 
 
-
 ## Called when a row is double-clicked
 func onComponentsTree_itemActivated() -> void:
 	if not selectedComponentPath.ends_with(acceptedFileExtension): return
-	if shouldShowDebugInfo: print(str("Comedock onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
+	if shouldShowDebugInfo: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
 
 	# Convert script paths to scenes, just in case
 	var componentScenePath := selectedComponentPath
@@ -211,18 +241,28 @@ func onEditComponentButton_pressed() -> void:
 
 
 func onAddEntityButton_pressed() -> void:
-	createNewEntity()
+	if shouldShowDebugInfo: printLog("onAddEntityButton_pressed()")
+	addNewEntity()
 
 
 func onComponentsTree_buttonClicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
-	pass # TODO:
+	if shouldShowDebugInfo: printLog("onComponentsTree_buttonClicked() " + str(item))
+	var newComponentPath: String = createNewComponentOnDisk(item.get_metadata(0))
+
+	# Add it to the Tree
+	createComponentTreeItem(newComponentPath, newComponentPath, item) # TODO: Get the shortened name
+
+
+func onComponentsTree_itemEdited() -> void:
+	pass #if shouldShowDebugInfo: printLog("onComponentsTree_itemEdited()")
 
 
 func onDebugReloadButton_pressed() -> void:
-	call_deferred(&"reloadDock")
+	call_deferred(&"reloadPlugin")
 
 
-func reloadDock() -> void:
+func reloadPlugin() -> void:
+	printLog("reloadPlugin")
 	editorInterface.set_plugin_enabled(Global.frameworkTitle, false)
 	editorInterface.set_plugin_enabled(Global.frameworkTitle, true)
 
@@ -231,8 +271,8 @@ func reloadDock() -> void:
 
 #region Scene Editing
 
-func createNewEntity() -> void:
-	if shouldShowDebugInfo: print("Comedock createNewEntity()")
+func addNewEntity() -> void:
+	if shouldShowDebugInfo: printLog("addNewEntity()")
 
 	var editorSelection: EditorSelection = editorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
@@ -241,20 +281,20 @@ func createNewEntity() -> void:
 
 	if selectedNodes.is_empty() or selectedNodes.size() != 1:
 		#if shouldShowDebugInfo:
-		print("Cannot add Entity to more than 1 selected Node")
+		printLog("Cannot add Entity to more than 1 selected Node")
 		return
 
 	var parentNode: Node = selectedNodes.front()
 
-	# Create a new instance of the component
-	var newEntity: Entity = preload("res://Entities/Entity.tscn").instantiate()
+	# Create a new Entity
+	var newEntity: Entity = preload(entityBaseScene).instantiate()
 	newEntity.name = "Entity"
 
-	if shouldShowDebugInfo: print(newEntity)
+	if shouldShowDebugInfo: printLog(newEntity)
 
 	# Add the component to the selected Entity
 	editorInterface.edit_node(parentNode)
-	parentNode.add_child(newEntity)
+	parentNode.add_child(newEntity, true) # force_readable_name
 	newEntity.owner = editorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
 
 	# Select the new Entity in the Editor, so the user can quickly modify it and add Components to it.
@@ -263,9 +303,70 @@ func createNewEntity() -> void:
 	editorInterface.edit_node(newEntity)
 
 
+func createNewComponentOnDisk(categoryFolderPath: String) -> String:
+	# TODO: More reliable file/path naming and operations with no room for errors. File system work is nasty business!
+	# TODO: A dialog for naming and more settings
+
+	# Validate
+
+	if categoryFolderPath.is_empty(): return ""
+
+	printLog("createNewComponent() " + categoryFolderPath)
+
+	if not DirAccess.dir_exists_absolute(categoryFolderPath):
+		printLog("Invalid path")
+		return ""
+
+	if not FileAccess.file_exists(componentBaseScene):
+		printLog("ERROR: Missing base Component Scene: " + componentBaseScene)
+		return ""
+
+	# Get the directory manager & set the paths
+	var componentsFolder: DirAccess = DirAccess.open(componentsRootPath)
+	var newComponentName: String = "NewComponent" # TODO: Unique name
+	var newComponentPath: String = categoryFolderPath + newComponentName + ".tscn"
+	var newScriptPath:    String = categoryFolderPath + newComponentName + ".gd"
+
+	# ALERT: MAKE SURE NOT TO OVERWRITE ANY EXISTING FILES! Or there may be doom!
+	if not ensureFileDoesNotExist(newComponentPath) \
+	or not ensureFileDoesNotExist(newScriptPath):
+		# Error messages logged by other functions
+		return ""
+
+	# Make a duplicate of the base Component scene at the specified destination path
+	if not copyFile(componentBaseScene, newComponentPath):
+		# Error messages logged by other functions
+		return ""
+
+	# Copy the script template
+	if not copyFile(componentScriptTemplate, newScriptPath):
+		# Error messages logged by other functions
+		return ""
+
+	# TODO: TBD: The Editor/UI operations should be in the calling function
+
+	# Open it in the Editor
+	editorInterface.select_file(newComponentPath)
+	editorInterface.open_scene_from_path(newComponentPath)
+
+	# Attach the new script file
+	var rootNode:  Node = editorInterface.get_edited_scene_root()
+	var newScript: Script = load(newScriptPath)
+	rootNode.set_script(newScript)
+	editorInterface.set_script(newScript)
+
+	# Save the scene with the new script
+	editorInterface.save_scene()
+
+	# Edit the new script
+	editorInterface.edit_script(newScript)
+
+	return newComponentPath
+
+
 func addComponentToSelectedNode(componentPath: String) -> void:
 	if componentPath.is_empty(): return
-	if shouldShowDebugInfo: print("Comedock addComponentToSelectedNode() " + componentPath)
+	if shouldShowDebugInfo: printLog("addComponentToSelectedNode() " + componentPath)
 
 	var editorSelection: EditorSelection = editorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
@@ -274,7 +375,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 
 	if selectedNodes.is_empty() or selectedNodes.size() != 1:
 		#if shouldShowDebugInfo:
-		print("Cannot add Components to more than 1 selected Node")
+		printLog("Cannot add Components to more than 1 selected Node")
 		return
 
 	var parentNode: Node = selectedNodes.front()
@@ -285,24 +386,27 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 			parentNode = parentNode.get_parent()
 		else:
 			#if shouldShowDebugInfo:
-			print("Cannot add Component to a non-Entity Node")
+			printLog("Cannot add Component to a non-Entity Node")
 			return
 
 	# Create a new instance of the Component
 	var newComponentNode: Node = load(componentPath).instantiate()
 	newComponentNode.name = (newComponentNode.get_script() as Script).get_global_name()
 
-	if shouldShowDebugInfo: print(newComponentNode)
+	if shouldShowDebugInfo: printLog(newComponentNode)
 
 	# Add the Component to the selected Entity
 	editorInterface.edit_node(parentNode)
-	parentNode.add_child(newComponentNode)
+	parentNode.add_child(newComponentNode, true) # force_readable_name
 	newComponentNode.owner = editorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Component is added to the SCENE but not to the Scene Dock TREE.
 
 	# Select the new Component in the Editor, so the user can quickly modify it in the Inspector.
 	editorSelection.clear()
 	editorSelection.add_node(newComponentNode)
 	editorInterface.edit_node(newComponentNode)
+
+	#Log
+	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
 
 #endregion
 
@@ -312,11 +416,11 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 func getSubfolders(path: String) -> Array[EditorFileSystemDirectory]:
 	# TODO: Move this to a general tools script, for the good of all :)
 
-	if shouldShowDebugInfo: print("getSubfolders() " + path)
-	if not fileSystem: print("fileSystem not initialized"); return []
+	if shouldShowDebugInfo: printLog("getSubfolders() " + path)
+	if not fileSystem: printLog("fileSystem not initialized"); return []
 
 	var parentFolder: EditorFileSystemDirectory = fileSystem.get_filesystem_path(path)
-	if not parentFolder: print("Cannot access parentFolder: " + path); return []
+	if not parentFolder: printLog("Cannot access parentFolder: " + path); return []
 
 	# Get each subfolder in the parent folder
 
@@ -327,5 +431,41 @@ func getSubfolders(path: String) -> Array[EditorFileSystemDirectory]:
 		subfolders.append(subfolder)
 
 	return subfolders
+
+
+func ensureFileDoesNotExist(absolutePath: String) -> bool:
+	if FileAccess.file_exists(absolutePath):
+		printLog("ERROR: File already exists: " + absolutePath)
+		return false
+	else:
+		return true
+
+
+func copyFile(sourceAbsolutePath: String, destinationAbsolutePath: String) -> bool:
+	# ATTENTION: Make sure the path starts with "res://"
+	# because we never want to muck with the user's file system outside the Godot project!
+
+	#if shouldShowDebugInfo:
+	printLog("copyFile() Attempting to copy: " + sourceAbsolutePath + " → " + destinationAbsolutePath)
+
+	# Validate
+
+	if not sourceAbsolutePath.to_lower().begins_with("res://"):
+		printLog("ERROR: Source path must begin with `res://`")
+
+	if not destinationAbsolutePath.to_lower().begins_with("res://"):
+		printLog("ERROR: Destination path must begin with `res://`")
+
+	# Copy
+	DirAccess.copy_absolute(sourceAbsolutePath, destinationAbsolutePath)
+
+	# Verify
+
+	if FileAccess.file_exists(destinationAbsolutePath):
+		printLog("Copied: " + sourceAbsolutePath + " → " + destinationAbsolutePath)
+		return true
+	else:
+		printLog("ERROR: Could not create file: " + destinationAbsolutePath)
+		return false
 
 #endregion

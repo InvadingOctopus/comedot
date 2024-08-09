@@ -60,6 +60,6 @@ func addDock() -> void:
 
 func removeDock() -> void:
 	remove_control_from_docks(componentsDock)
-	componentsDock.free()
+	componentsDock.queue_free()
 
 #endregion

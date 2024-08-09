@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://dn5qx1mv643mq"]
+[gd_scene load_steps=4 format=3 uid="uid://dn5qx1mv643mq"]
 
 [ext_resource type="Script" path="res://Addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://dcdkweiett0gs" path="res://Assets/Logos/Comedot.png" id="2_lujgd"]
+[ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 
 [node name="Comedot" type="Panel"]
+clip_contents = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,7 +14,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_otxly")
-shouldShowDebugInfo = true
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
@@ -49,17 +50,15 @@ layout_mode = 2
 alignment = 1
 
 [node name="AddEntityButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+unique_name_in_owner = true
+modulate = Color(0.486275, 0.988235, 0, 1)
 layout_mode = 2
 tooltip_text = "Add a new Entity node to the currently selected node in the Scene Editor."
-text = "New Entity"
+text = "Add Entity"
+icon = ExtResource("3_fn551")
 alignment = 2
-
-[node name="RefreshButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
-layout_mode = 2
-tooltip_text = "Scan the `\\Components\\` folder's subfolders for all Components."
-text = "Rescan Folders
-"
-alignment = 2
+icon_alignment = 2
+expand_icon = true
 
 [node name="EditComponentButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
 unique_name_in_owner = true
@@ -67,6 +66,13 @@ layout_mode = 2
 tooltip_text = "Open the original source scene of the Component currently selected in this Dock."
 disabled = true
 text = "Edit Component"
+alignment = 2
+
+[node name="RefreshButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+layout_mode = 2
+tooltip_text = "Scan the `\\Components\\` folder's subfolders for all Components."
+text = "Rescan Folders
+"
 alignment = 2
 
 [node name="DebugReloadButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
@@ -98,7 +104,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
-text = "Select an Entity node in the Scene and double-click a component from this list to add it to the entity."
+text = "Select an Entity node in the Scene and double-click a Component from this list to add it to the entity."
 autowrap_mode = 3
 
 [node name="TreeScrollContainer" type="ScrollContainer" parent="GridContainer"]
@@ -118,9 +124,10 @@ hide_root = true
 select_mode = 1
 
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/AddEntityButton" to="." method="onAddEntityButton_pressed"]
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/EditComponentButton" to="." method="onEditComponentButton_pressed"]
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
 [connection signal="button_clicked" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
 [connection signal="item_activated" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
+[connection signal="item_edited" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemEdited"]
 [connection signal="item_selected" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]
