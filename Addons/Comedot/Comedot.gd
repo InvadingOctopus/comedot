@@ -1,13 +1,9 @@
-## Comedot Plugin Prototype
-## @experimental
+## Comedot Plugin. Adds a custom dock ("Comedock") to the Godot Editor that provides convenience features for quickly creating [Entity] and [Component] objects.
 
 @tool
 extends EditorPlugin
 
-# INFO: TBD: Currently, Godot "Addons" don't seem to be useful as a delivery format for the Comedot Framework.
-# PROBLEMS:
-#	1: Custom types lack documentation in the Create New Node dialog box.
-#	2: How will Globals/AutoLoads be handled?
+# TODO: add_tool_menu_item
 
 
 #region Constants
