@@ -12,6 +12,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_otxly")
+shouldShowDebugInfo = true
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
@@ -21,39 +22,84 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LogoMarginContainer" type="MarginContainer" parent="GridContainer"]
+[node name="HeaderMarginContainer" type="MarginContainer" parent="GridContainer"]
 texture_filter = 2
 layout_mode = 2
-size_flags_vertical = 0
-size_flags_stretch_ratio = 0.5
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
-[node name="Logo" type="TextureRect" parent="GridContainer/LogoMarginContainer"]
+[node name="HeaderContainer" type="GridContainer" parent="GridContainer/HeaderMarginContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Logo" type="TextureRect" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(351, 192)
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-size_flags_stretch_ratio = 0.5
+size_flags_horizontal = 2
 texture = ExtResource("2_lujgd")
-expand_mode = 5
+expand_mode = 3
 stretch_mode = 5
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="AddEntityButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+layout_mode = 2
+tooltip_text = "Add a new Entity node to the currently selected node in the Scene Editor."
+text = "New Entity"
+alignment = 2
+
+[node name="RefreshButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+layout_mode = 2
+tooltip_text = "Scan the `\\Components\\` folder's subfolders for all Components."
+text = "Rescan Folders
+"
+alignment = 2
+
+[node name="EditComponentButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Open the original source scene of the Component currently selected in this Dock."
+disabled = true
+text = "Edit Component"
+alignment = 2
+
+[node name="DebugReloadButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reload the Comedot plugin and refresh the Comedock."
+text = "Reload Plugin"
+alignment = 2
 
 [node name="TextMarginContainer" type="MarginContainer" parent="GridContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 5
 
-[node name="HelpLabel" type="RichTextLabel" parent="GridContainer/TextMarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GridContainer/TextMarginContainer"]
 layout_mode = 2
-bbcode_enabled = true
-text = "[color=white][b]Components[/b][/color]
-[color=dimgray]Select an [b]Entity[/b] node in the Scene and double-click a component from this list to add it to the entity."
-fit_content = true
-scroll_active = false
+theme_override_constants/separation = 0
+
+[node name="TitleLabel" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Components"
+
+[node name="HelpLabel" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_type_variation = &"TooltipLabel"
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "Select an Entity node in the Scene and double-click a component from this list to add it to the entity."
+autowrap_mode = 3
 
 [node name="TreeScrollContainer" type="ScrollContainer" parent="GridContainer"]
 layout_mode = 2
@@ -71,19 +117,10 @@ columns = 2
 hide_root = true
 select_mode = 1
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="GridContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="EditButton" type="Button" parent="GridContainer/ButtonsContainer"]
-layout_mode = 2
-text = "Edit Component"
-
-[node name="RefreshButton" type="Button" parent="GridContainer/ButtonsContainer"]
-layout_mode = 2
-text = "Rescan Folders
-"
-
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/AddEntityButton" to="." method="onAddEntityButton_pressed"]
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/EditComponentButton" to="." method="onEditComponentButton_pressed"]
+[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
+[connection signal="button_clicked" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
 [connection signal="item_activated" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
-[connection signal="pressed" from="GridContainer/ButtonsContainer/EditButton" to="." method="onEditButton_pressed"]
-[connection signal="pressed" from="GridContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
+[connection signal="item_selected" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]

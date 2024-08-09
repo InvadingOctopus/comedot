@@ -18,7 +18,7 @@ const componentTypeName := &"Comedot Component"
 
 func _enter_tree() -> void:
 	addCustomTypes()
-	addDock()
+	call_deferred(&"addDock") # `call_deferred` because Godot seems to be loading this "too soon" and raising errors.
 
 
 func _exit_tree() -> void:
