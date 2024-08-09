@@ -1,12 +1,13 @@
 ## Sets a maximum and minimum limit for the entity's [member CharacterBody2D.velocity].
 ## Useful for clamping a character's velocity when there are multiple components affecting movement.
-## Requirements: [CharacterBody2D], AFTER control components
+## Requirements: BEFORE [CharacterBodyComponent], AFTER control components
 
 class_name VelocityClampComponent
-extends BodyComponent
+extends CharacterBodyManipulatingComponentBase
 
 # TODO: Fix minimum velocity. Currently can only have positive values and travel right/down.
 # TODO: Correct for diagonal movement; should not reach the same max velocity as movement on only 1 axis.
+
 
 #region Parameters
 @export_range(0, 5000, 5) var maximumVelocityX: float = 100 ## Ignored if <= 0
