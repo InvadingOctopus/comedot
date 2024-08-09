@@ -9,8 +9,8 @@ extends BodyComponent
 # TODO: Correct for diagonal movement; should not reach the same max velocity as movement on only 1 axis.
 
 #region Parameters
-@export_range(0, 5000, 5) var maximumVelocityX: float ## Ignored if <= 0
-@export_range(0, 5000, 5) var maximumVelocityY: float ## Ignored if <= 0
+@export_range(0, 5000, 5) var maximumVelocityX: float = 100 ## Ignored if <= 0
+@export_range(0, 5000, 5) var maximumVelocityY: float = 100 ## Ignored if <= 0
 @export_range(0, 5000, 5) var minimumVelocityX: float ## Ignored if <= 0. NOTE: Will result in constant movement to the right.
 @export_range(0, 5000, 5) var minimumVelocityY: float ## Ignored if <= 0. NOTE: Will result in constant movement downwards.
 @export var isEnabled := true
