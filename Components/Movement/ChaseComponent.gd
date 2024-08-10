@@ -9,7 +9,7 @@ extends CharacterBodyManipulatingComponentBase
 
 #region Parameters
 
-@export var nodeToFollow:						Node2D
+@export var nodeToChase:						Node2D
 
 @export_range(10, 1000, 5) var speed:			float = 300
 
@@ -25,11 +25,11 @@ func _physics_process(delta: float):
 	# CREDIT: GDQuest@YouTube https://www.youtube.com/watch?v=GwCiGixlqiU
 
 	if not isEnabled: return
-	
-	# Check for presence of self and target to account for destroyed entities.
-	if not self.body or not nodeToFollow: return
 
-	var direction: Vector2 = parentEntity.global_position.direction_to(nodeToFollow.global_position)
+	# Check for presence of self and target to account for destroyed entities.
+	if not self.body or not nodeToChase: return
+
+	var direction: Vector2 = parentEntity.global_position.direction_to(nodeToChase.global_position)
 
 	if applyAcceleration:
 		self.body.velocity = body.velocity.move_toward(direction * speed, acceleration * delta)
