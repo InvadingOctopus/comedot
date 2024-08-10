@@ -1,4 +1,4 @@
-## The Comedock :) Scans the `Components` folder and its subfolders, and builds a list of the components found.
+## The Comedock :) Scans the `Components` folder and its subfolders to builds a list of the components found, and provides convenience features for quickly adding new [Entity] and [Component] objects.
 ## NOTE: Assumptions & Limitations: Only scene files with names ending in "Component.tscn" are added. Deeper subfolders are NOT scanned; only the 1st-level subfolders in `/Components/`.
 
 @tool
@@ -16,6 +16,12 @@ enum EntityTypes {
 	area2D = 1,
 	characterBody2D = 2,
 	sprite2D = 3
+}
+
+enum TreeItemButtons {
+	# NOTE: MUST correspond to the ids of the TreeItem buttons
+	createNewComponent = 0,
+	editComponent = 1
 }
 
 #region Parameters
@@ -47,6 +53,7 @@ const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
 const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's background color for folders chosen to be "Blue"
 const createNewItemButtonColor	:= Color.LAWN_GREEN
+const editComponentButtonColor	:= categoryColor
 
 const defaultHelpLabelText := "Select an Entity node in the Scene and double-click a Component from this list to add it to the entity."
 
@@ -121,7 +128,7 @@ func setupUI() -> void:
 	# NOTE: The first access to the `res://Components` sometimes seems to fail,
 	# so maybe we need to let the Godot Editor have some time to finish scanning the file system?
 	printLog("Waiting to scan the Components folder...")
-	await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(1).timeout
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
 
 	# Hook up with Inspector Gadget
@@ -180,34 +187,34 @@ func buildComponentsDirectory() -> void:
 
 
 func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeItem:
-	var categoryItem: TreeItem = componentsTree.create_item()
+	var categoryRow:  TreeItem = componentsTree.create_item()
 	var categoryName: String   = categoryFolder.get_name()
 	var categoryPath: String   = categoryFolder.get_path()
 
-	categoryItem.set_text(0, categoryName)
-	categoryItem.set_metadata(0, categoryPath)
-	categoryItem.set_tooltip_text(0, categoryPath)
+	categoryRow.set_text(0, categoryName)
+	categoryRow.set_metadata(0, categoryPath)
+	categoryRow.set_tooltip_text(0, categoryPath)
 
 	# Customize the Tree row
-	categoryItem.set_icon(0, folderIcon)
-	categoryItem.set_icon_modulate(0, categoryColor)
-	categoryItem.set_custom_color(0, categoryColor)
-	categoryItem.set_custom_bg_color(0, categoryBackgroundColor)
-	categoryItem.set_expand_right(0, true)
-	categoryItem.set_selectable(0, false)
+	categoryRow.set_icon(0, folderIcon)
+	categoryRow.set_icon_modulate(0, categoryColor)
+	categoryRow.set_custom_color(0, categoryColor)
+	categoryRow.set_custom_bg_color(0, categoryBackgroundColor)
+	categoryRow.set_expand_right(0, true)
+	categoryRow.set_selectable(0, false)
 
 	# TODO: Add a button
 	var buttonTooltip := "Create a new Component in the " + categoryName + " folder."
-	categoryItem.add_button(1, componentIcon, 0, false, buttonTooltip)
-	categoryItem.set_text(1, "+")
-	categoryItem.set_tooltip_text(1, buttonTooltip)
-	categoryItem.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
-	categoryItem.set_custom_color(1, createNewItemButtonColor)
-	categoryItem.set_button_color(1, 0, createNewItemButtonColor)
-	categoryItem.set_custom_bg_color(1, categoryBackgroundColor)
-	categoryItem.set_expand_right(1, false)
+	categoryRow.add_button(1, componentIcon, 0, false, buttonTooltip)
+	categoryRow.set_text(1, "+")
+	categoryRow.set_tooltip_text(1, buttonTooltip)
+	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	categoryRow.set_custom_color(1, createNewItemButtonColor)
+	categoryRow.set_button_color(1, 0, createNewItemButtonColor)
+	categoryRow.set_custom_bg_color(1, categoryBackgroundColor)
+	categoryRow.set_expand_right(1, false)
 
-	return categoryItem
+	return categoryRow
 
 
 func createComponentTreeItem(componentPath: String, componentName: String, categoryTreeItem: TreeItem) -> TreeItem:
@@ -224,26 +231,56 @@ func createComponentTreeItem(componentPath: String, componentName: String, categ
 
 	return componentItem
 
+
+func createComponentRowButtons(componentRow: TreeItem) -> void:
+	if not componentRow: return
+	var tooltipText: String = editComponentButtonTooltipPrefix + selectedComponentName
+
+	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
+	componentRow.set_text(1, "Edit")
+	componentRow.set_tooltip_text(1, %EditComponentButton.tooltip_text)
+	componentRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	componentRow.set_custom_color(1, editComponentButtonColor)
+	componentRow.set_button_color(1, 0, editComponentButtonColor)
+	#componentRow.set_custom_bg_color(1, componentBackgroundColor) # Makes it different from the selected row background
+	componentRow.set_expand_right(1, false)
+
+
+func removeComponentRowButtons(componentRow: TreeItem) -> void:
+	if not componentRow: return
+	componentRow.erase_button(1, 0)
+	componentRow.set_text(1, "")
+	componentRow.set_tooltip_text(1, "")
+
 #endregion
 
 
 #region UI Events
 
+
 func onComponentsTree_itemSelected() -> void:
 	var selection: TreeItem = componentsTree.get_selected()
 
 	# Clear the previous selection. These values must be reset in any case.
+
+	# Remove the buttons from any previous selection
+	removeComponentRowButtons(selectedComponentRow)
+
+
 	selectedComponentRow = null
 	selectedComponentCateogry = null
 	%EditComponentButton.disabled = true
 	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its original source scene."
 
 	# Is a component row selected?
+
 	if selection.get_text(0).to_lower().ends_with("component"): # TODO: A less crude way of checking for component rows :')
 		selectedComponentRow = selection
 		selectedComponentCateogry = selection.get_parent()
 		%EditComponentButton.disabled = false
 		%EditComponentButton.tooltip_text = editComponentButtonTooltipPrefix + selectedComponentName
+		createComponentRowButtons(selectedComponentRow)
+
 
 
 ## Called when a row is double-clicked
@@ -265,23 +302,7 @@ func onRefreshButton_pressed() -> void:
 
 
 func onEditComponentButton_pressed() -> void:
-	if not selectedComponentRow or selectedComponentPath.is_empty(): return
-
-	# Open the scene in the editor as that would be more intuitive and also allow editing of the script.
-
-	var scenePath:  String
-	var scriptPath: String
-
-	# Convert the paths, just in case
-	if selectedComponentPath.to_lower().ends_with(".tscn"):
-		scenePath  = selectedComponentPath
-		scriptPath = selectedComponentPath.replace(".tscn", ".gd")
-	elif selectedComponentPath.to_lower().ends_with(".gd"):
-		scenePath  = selectedComponentPath.replace(".gd", ".tscn")
-		scriptPath = selectedComponentPath
-
-	editorInterface.open_scene_from_path(scenePath)
-	#editorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
+	editSelectedComponent()
 
 
 func onAddEntityMenu_idPressed(id: int) -> void:
@@ -290,11 +311,18 @@ func onAddEntityMenu_idPressed(id: int) -> void:
 
 
 func onComponentsTree_buttonClicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
-	if shouldShowDebugInfo: printLog("onComponentsTree_buttonClicked() " + str(item))
-	var newComponentPath: String = createNewComponentOnDisk(item.get_metadata(0))
+	if shouldShowDebugInfo: printLog(str("onComponentsTree_buttonClicked() item: ", item, ", button id: ", id))
 
-	# Add it to the Tree
-	createComponentTreeItem(newComponentPath, newComponentPath, item) # TODO: Get the shortened name
+	# NOTE: Check the button ID because this signal may be emitted by different buttons in different rows
+	match id:
+		TreeItemButtons.createNewComponent:
+			var newComponentPath: String = createNewComponentOnDisk(item.get_metadata(0))
+			# Add the new component to the Tree
+			if not newComponentPath.is_empty():
+				createComponentTreeItem(newComponentPath, newComponentPath, item) # TODO: Get the shortened name
+
+		TreeItemButtons.editComponent:
+			editSelectedComponent()
 
 
 func onComponentsTree_itemEdited() -> void:
@@ -495,6 +523,28 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
+
+
+func editSelectedComponent() -> void:
+	if not selectedComponentRow or selectedComponentPath.is_empty(): return
+	if shouldShowDebugInfo: printLog(str("editSelectedComponent() ", selectedComponentPath))
+
+
+	var scenePath:  String
+	var scriptPath: String
+
+	# Convert the paths, just in case
+	if selectedComponentPath.to_lower().ends_with(".tscn"):
+		scenePath  = selectedComponentPath
+		scriptPath = selectedComponentPath.replace(".tscn", ".gd")
+	elif selectedComponentPath.to_lower().ends_with(".gd"):
+		scenePath  = selectedComponentPath.replace(".gd", ".tscn")
+		scriptPath = selectedComponentPath
+
+	# Just open the scene in the editor as that would be more intuitive and also allow editing of the script.
+	editorInterface.open_scene_from_path(scenePath)
+
+	# TBD: editorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
 
 #endregion
 
