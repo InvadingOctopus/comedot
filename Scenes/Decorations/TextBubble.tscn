@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://ln24qhburqma"]
+[gd_scene load_steps=7 format=3 uid="uid://ln24qhburqma"]
 
 [ext_resource type="Script" path="res://Scenes/Decorations/TextBubble.gd" id="1_ak04i"]
 [ext_resource type="LabelSettings" uid="uid://bsh3cla616l6l" path="res://Assets/Themes/Label/TextBubble.tres" id="1_tuxyy"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j8b7p"]
+light_mode = 1
 
 [sub_resource type="Animation" id="Animation_tgw78"]
 length = 0.001
@@ -64,6 +67,7 @@ _data = {
 }
 
 [node name="TextBubble" type="Label"]
+material = SubResource("CanvasItemMaterial_j8b7p")
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
