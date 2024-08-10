@@ -8,13 +8,14 @@ extends Component
 #region Parameters
 
 ## The amount of damage to cause to the target when this [DamageComponent] first collides with a [DamageReceivingComponent].
-## Suitable for bullets.
-@export_range(1, 1000, 1) var damageOnCollision: int = 1 # NOTE: Should this be an integer or float?
+## Suitable for bullets and other nodes that disappear on a collision.
+## This value may be set to 0 if another script is going to handle the signals and apply the damage.
+@export_range(0, 1000, 1) var damageOnCollision: int = 1 # NOTE: Should this be an integer or float?
 
 ## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
-## Suitable for monsters or hazards.
+## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
-@export_range(0.0, 1000.0) var damagePerSecond: float = 0.0 # NOTE: Should this be an integer or float?
+@export_range(0, 1000) var damagePerSecond: float = 0 # NOTE: Should this be an integer or float?
 
 ## Optional. A [DamageTimerComponent] to apply to the parent [Entity] of the target [DamageReceivingComponent].
 @export var damageTimerComponent: DamageTimerComponent
