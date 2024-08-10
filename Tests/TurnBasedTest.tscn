@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
 [ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedTileBasedControlComponent.tscn" id="4_3bh2s"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Packed.png" id="4_k2j6v"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="4_mkbvj"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_mkbvj"]
 [ext_resource type="PackedScene" uid="uid://b8evr41o1p0ea" path="res://Tests/TurnBasedTestComponent.tscn" id="5_253pd"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bwo5yflm2rjhw"]
 
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_hd7sx"]
-[ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/Checkerboard32x32.png" id="1_ilm3b"]
+[ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/DebugCheckerboard32.png" id="1_ilm3b"]
 
 [node name="SpriteEntity" type="Sprite2D" groups=["entities"]]
 texture = ExtResource("1_ilm3b")

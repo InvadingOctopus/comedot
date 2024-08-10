@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cvdtnaal7d26f"]
 
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_gmsvl"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/Checkerboard16x16.png" id="1_otugm"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="1_otugm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nam4a"]
 resource_local_to_scene = true

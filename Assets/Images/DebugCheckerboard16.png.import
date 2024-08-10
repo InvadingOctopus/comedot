@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxm250dv5b2lo"
-path="res://.godot/imported/Checkerboard32x32.png-f30e4cea79b4b9723fe03c7baa1e24a2.ctex"
+uid="uid://cygvb20buqi2q"
+path="res://.godot/imported/DebugCheckerboard16.png-ea48276a968edf3067c92c7517c13bfe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Images/Checkerboard32x32.png"
-dest_files=["res://.godot/imported/Checkerboard32x32.png-f30e4cea79b4b9723fe03c7baa1e24a2.ctex"]
+source_file="res://Assets/Images/DebugCheckerboard16.png"
+dest_files=["res://.godot/imported/DebugCheckerboard16.png-ea48276a968edf3067c92c7517c13bfe.ctex"]
 
 [params]
 
