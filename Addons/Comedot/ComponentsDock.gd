@@ -5,6 +5,9 @@
 class_name ComponentsDock
 extends Panel
 
+# TODO: More robust scanning; not just filenames ending in "Component" :')
+# TODO: Allow naming of new Components
+
 
 enum EntityTypes {
 	# NOTE: MUST correspond to the ids of the Add Entity button's PopupMenu
@@ -44,6 +47,8 @@ const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
 const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's background color for folders chosen to be "Blue"
 const createNewItemButtonColor	:= Color.LAWN_GREEN
+
+const defaultHelpLabelText := "Select an Entity node in the Scene and double-click a Component from this list to add it to the entity."
 
 const editComponentButtonTooltipPrefix := "Open the original source scene of "
 
@@ -86,6 +91,7 @@ var editorInterface: EditorInterface:
 			fileSystem = editorInterface.get_resource_filesystem()
 
 var fileSystem: EditorFileSystem
+var inspector:  EditorInspector
 
 @onready var componentsTree: Tree = %ComponentsTree
 
@@ -117,6 +123,10 @@ func setupUI() -> void:
 	printLog("Waiting to scan the Components folder...")
 	await get_tree().create_timer(2).timeout
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
+
+	# Hook up with Inspector Gadget
+	inspector = editorInterface.get_inspector()
+	inspector.edited_object_changed.connect(self.onInspector_editedObjectChanged)
 
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
 
@@ -289,6 +299,17 @@ func onComponentsTree_buttonClicked(item: TreeItem, column: int, id: int, mouse_
 
 func onComponentsTree_itemEdited() -> void:
 	pass #if shouldShowDebugInfo: printLog("onComponentsTree_itemEdited()")
+
+
+func onInspector_editedObjectChanged() -> void:
+	var editedObject: Object = inspector.get_edited_object()
+
+	# if shouldShowDebugInfo: printLog(str("onInspector_editedObjectChanged() ", editedObject)) # Excessive logging :P
+
+	var editedNode: Node = editedObject as Node
+
+	if editedNode is Entity: %HelpLabel.text = str("Double-click a Component from the list to add it to ", editedNode.name)
+	else: %HelpLabel.text = defaultHelpLabelText
 
 
 func onDebugReloadButton_pressed() -> void:
