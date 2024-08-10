@@ -4,7 +4,6 @@
 
 [node name="OffscreenRemovalComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_eukg6")
-rectangle = Rect2(-16, -16, 32, 32)
 metadata/_edit_group_ = true
 
 [node name="OnScreenNotifier" type="VisibleOnScreenNotifier2D" parent="."]
