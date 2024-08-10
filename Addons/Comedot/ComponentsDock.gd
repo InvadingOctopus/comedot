@@ -5,8 +5,9 @@
 class_name ComponentsDock
 extends Panel
 
-# TODO: More robust scanning; not just filenames ending in "Component" :')
 # TODO: Allow naming of new Components
+# TODO: Add option to duplicate an existing Component?
+# TODO: More robust scanning; not just filenames ending in "Component" :')
 
 
 enum EntityTypes {
