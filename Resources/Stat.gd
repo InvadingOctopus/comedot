@@ -1,8 +1,10 @@
 ## Represents a statistic on a character or object, such as the player's health or an enemy's attack power.
 ## May be optionally tied to a UI HUD element to update the display whenever the value changes.
+
 @tool # To clamp values when editing stats in the editor. # WARNING: This is causing errors on editor launch because of the GameState signal access.
 class_name Stat
 extends Resource
+
 
 #region Parameters
 
@@ -27,7 +29,6 @@ extends Resource
 		max     = newValue
 		if  max < min: min = max
 		value   = clamp(value,   min, max)
-
 
 ## The current value of the stat. Clamped between [member min] and [member max].
 @export var value:  int = max:
