@@ -23,6 +23,9 @@ extends Control
 ## without waiting for a signal about a change.
 @export var statsToUpdateOnReady: Array[Stat]
 
+## If greater than 1, then smaller values will be padded with leading 0s.
+@export var minimumDigits: int = 2 # TODO: Different for each stat
+
 #endregion
 
 
@@ -53,15 +56,18 @@ func updateStatLabel(stat: Stat, animate: bool = true) -> void:
 	if shouldPrefixValueWithStatName: prefix += " " + statName + " "
 
 	label.text = buildLabelText(prefix, stat, suffix)
-	if animate: animateLabel(label, stat.value, stat.previousValue)
+	if animate:  animateLabel(label, stat.value, stat.previousValue)
 
 
 ## Combines the prefix, value of the stat and the suffix.
 ## May be customized by a subclass for game specific styles,
 ## e.g.: drawing multiple hearts instead of a number to represent lives.
 func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
-	var labelText: String = str(prefix, stat.value, suffix)
-	return labelText
+	if minimumDigits >= 1:
+		var format: String = "%0" + str(minimumDigits) + "d"
+		return str(prefix, format % stat.value, suffix)
+	else:
+		return str(prefix, stat.value, suffix)
 
 
 ## Plays different animations on a label depending on how the [Stat]'s value changes.
