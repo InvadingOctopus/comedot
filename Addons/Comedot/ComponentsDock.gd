@@ -85,11 +85,7 @@ var editorInterface: EditorInterface:
 			editorInterface = newValue
 			fileSystem = editorInterface.get_resource_filesystem()
 
-var fileSystem: EditorFileSystem:
-	set(newValue):
-		if newValue != fileSystem:
-			fileSystem = newValue
-			if self.is_visible_in_tree(): call_deferred(&"updateComponentsTree")
+var fileSystem: EditorFileSystem
 
 @onready var componentsTree: Tree = %ComponentsTree
 
@@ -98,13 +94,10 @@ var fileSystem: EditorFileSystem:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#if shouldShowDebugInfo:
-	printLog("_ready()")
-	setupUI()
-
-	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
-	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
-
+	# NOTE: If we are not running as the actual plugin, i.e. the Dock is being edited in the Editor, then skip the setup.
+	if plugin:
+		printLog("_ready()")
+		setupUI()
 
 
 func printLog(text) -> void:
@@ -117,17 +110,30 @@ func setupUI() -> void:
 
 	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
 
+	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
+
+	# NOTE: The first access to the `res://Components` sometimes seems to fail,
+	# so maybe we need to let the Godot Editor have some time to finish scanning the file system?
+	printLog("Waiting to scan the Components folder...")
+	await get_tree().create_timer(2).timeout
+	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
+
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
+
 
 #region The Erdtree
 
 func updateComponentsTree() -> void:
 	# TODO: Check for changes?
-	buildComponentsDirectory()
+	# NOTE: `call_deferred()` to try to avoid weird first-launch bugs, maybe caused by the Godot Editor scanning the file system.
+	call_deferred(&"buildComponentsDirectory")
 
 
 func buildComponentsDirectory() -> void:
 	if shouldShowDebugInfo: printLog("buildComponentsDirectory()")
+	if not Engine.is_editor_hint():
+		printLog("Not running in editor. Cancelling components scan.")
+		return
 
 	# Get all first-level subfolders in the `/Components/` folder
 	var componentCategories: Array[EditorFileSystemDirectory] = getSubfolders("Components")
