@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Components/Combat/GunComponent.gd" id="1_q51oq"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="2_dmw2s"]
-[ext_resource type="Texture2D" uid="uid://d20biaoblei1q" path="res://Assets/Images/SF Symbols/arrowtriangle.right.svg" id="3_s8fsf"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="3_snrc7"]
 
 [sub_resource type="Resource" id="Resource_tr7v4"]
 resource_local_to_scene = true
@@ -17,6 +17,7 @@ logChanges = false
 [node name="GunComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_q51oq")
 ammo = SubResource("Resource_tr7v4")
+cooldown = 0.5
 metadata/_edit_group_ = true
 
 [node name="Pivot" type="Marker2D" parent="."]
@@ -25,8 +26,9 @@ gizmo_extents = 20.0
 
 [node name="GunSprite" type="Sprite2D" parent="Pivot"]
 texture_filter = 2
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("3_s8fsf")
+texture = ExtResource("3_snrc7")
+region_enabled = true
+region_rect = Rect2(592, 144, 16, 16)
 
 [node name="BulletEmissionLocation" type="Marker2D" parent="Pivot/GunSprite"]
 unique_name_in_owner = true
