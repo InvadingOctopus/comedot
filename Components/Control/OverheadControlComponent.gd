@@ -19,13 +19,13 @@ var lastDirection		:= Vector2.ZERO ## Normalized
 
 func _ready() -> void:
 	# Set the entity's [CharacterBody2D] motion mode to Floating.
-	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Floating")
-		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	if characterBodyComponent and characterBodyComponent.body:
+		printLog("characterBodyComponent.body.motion_mode → Floating")
+		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+		characterBodyComponent.shouldResetVelocityIfZeroMotion = true
+		#characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
-		printWarning("Missing parentEntity.body: " + parentEntity.logName)
-
-	characterBodyComponent.shouldResetVelocityIfZeroMotion = true
+		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
 
 
 func _physics_process(delta: float) -> void:
