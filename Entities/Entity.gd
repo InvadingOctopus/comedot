@@ -1,7 +1,7 @@
-## Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
+## The core of the composition framework. Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
 ## Provides methods for managing components and other common tasks.
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
-## NOTE: For certain specific cases such as [CharacterBody2D], use specific subclasses of Entity such as [CharacterBodyEntity].
+## NOTE: If the entity is a [CharacterBody2D], a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components can queue their updates through it.
 
 @icon("res://Assets/Icons/Entity.svg")
 
@@ -47,7 +47,7 @@ var functionsAlreadyCalledOnceThisFrame := {}
 func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
-	self.add_to_group(Global.Groups.entities, true)
+	self.add_to_group(Global.Groups.entities, true) # persistent
 	printLog("􀈅 [b]_enter_tree() parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
 	connectSignals()
 

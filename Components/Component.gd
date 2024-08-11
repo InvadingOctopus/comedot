@@ -1,4 +1,4 @@
-## A node which represents a distinct behavior or property of a game character or object.
+## The core of the composition framework. A node which represents a distinct behavior or property of a game character or object.
 ## A parent node made up of component child nodes is an [Entity].
 ## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
 ## Components may directly modify the parent entity or interact with other sibling components, such as a [DamageReceivingComponent] modifying a [HealthComponent].
@@ -19,7 +19,7 @@ var parentEntity: Entity
 
 # Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
-	self.add_to_group(Global.Groups.components, true)
+	self.add_to_group(Global.Groups.components, true) # persistent
 
 	self.parentEntity = self.getParentEntity()
 	update_configuration_warnings()
