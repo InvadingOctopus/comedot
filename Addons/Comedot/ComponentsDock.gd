@@ -47,11 +47,13 @@ const spriteEntityTemplate		:= "res://Templates/Entity/SpriteEntityTemplate.tscn
 const componentBaseScene		:= "res://Components/Component.tscn"
 const componentScriptTemplate	:= "res://Templates/Component/ComponentTemplate.gd"
 
+const componentIcon			:= preload("res://Assets/Icons/Component.svg")
+
 var folderIcon: Texture2D:
 	get: return EditorInterface.get_editor_theme().get_icon("Folder", "EditorIcons") # preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
 
-const componentIcon			:= preload("res://Assets/Icons/Component.svg")
-
+var createComponentIcon: Texture2D:
+	get: return preload("res://Assets/Icons/Component.svg") # EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
@@ -95,13 +97,11 @@ var selectedComponentCategoryName: String:
 
 var plugin: EditorPlugin
 
-var editorInterface: EditorInterface:
-	set(newValue):
-		if newValue != editorInterface:
-			editorInterface = newValue
-			fileSystem = editorInterface.get_resource_filesystem()
+var fileSystem: EditorFileSystem:
+	get:
+		if not fileSystem: fileSystem = EditorInterface.get_resource_filesystem()
+		return fileSystem
 
-var fileSystem: EditorFileSystem
 var inspector:  EditorInspector
 
 @onready var componentsTree: Tree = %ComponentsTree
@@ -136,7 +136,7 @@ func setupUI() -> void:
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
 
 	# Hook up with Inspector Gadget
-	inspector = editorInterface.get_inspector()
+	inspector = EditorInterface.get_inspector()
 	inspector.edited_object_changed.connect(self.onInspector_editedObjectChanged)
 
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
@@ -209,7 +209,7 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 
 	# TODO: Add a button
 	var buttonTooltip := "Create a new Component in the " + categoryName + " folder."
-	categoryRow.add_button(1, componentIcon, 0, false, buttonTooltip)
+	categoryRow.add_button(1, createComponentIcon, 0, false, buttonTooltip)
 	categoryRow.set_text(1, "+")
 	categoryRow.set_tooltip_text(1, buttonTooltip)
 	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -350,8 +350,8 @@ func onDebugReloadButton_pressed() -> void:
 
 func reloadPlugin() -> void:
 	printLog("reloadPlugin")
-	editorInterface.set_plugin_enabled(Global.frameworkTitle, false)
-	editorInterface.set_plugin_enabled(Global.frameworkTitle, true)
+	EditorInterface.set_plugin_enabled(Global.frameworkTitle, false)
+	EditorInterface.set_plugin_enabled(Global.frameworkTitle, true)
 
 #endregion
 
@@ -361,7 +361,7 @@ func reloadPlugin() -> void:
 func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if shouldShowDebugInfo: printLog("addNewEntity()")
 
-	var editorSelection: EditorSelection = editorInterface.get_selection()
+	var editorSelection: EditorSelection = EditorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
 
 	# TBD: Support adding multiple new Entities to more than 1 selected Node?
@@ -404,15 +404,15 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if shouldShowDebugInfo: printLog(newEntity)
 
 	# Add the component to the selected Entity
-	editorInterface.edit_node(parentNode)
+	EditorInterface.edit_node(parentNode)
 	parentNode.add_child(newEntity, true) # force_readable_name
-	newEntity.owner = editorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
+	newEntity.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
 
 	# Select the new Entity in the Editor, so the user can quickly modify it and add Components to it.
 	editorSelection.clear()
 	editorSelection.add_node(newEntity)
-	editorInterface.edit_node(newEntity)
-	#editorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
+	EditorInterface.edit_node(newEntity)
+	#EditorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
 
 	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
 	if %EditableChildrenCheckBox.button_pressed:
@@ -462,20 +462,20 @@ func createNewComponentOnDisk(categoryFolderPath: String) -> String:
 	# TODO: TBD: The Editor/UI operations should be in the calling function
 
 	# Open it in the Editor
-	editorInterface.select_file(newComponentPath)
-	editorInterface.open_scene_from_path(newComponentPath)
+	EditorInterface.select_file(newComponentPath)
+	EditorInterface.open_scene_from_path(newComponentPath)
 
 	# Attach the new script file
-	var rootNode:  Node = editorInterface.get_edited_scene_root()
+	var rootNode:  Node = EditorInterface.get_edited_scene_root()
 	var newScript: Script = load(newScriptPath)
 	rootNode.set_script(newScript)
-	editorInterface.set_script(newScript)
+	EditorInterface.set_script(newScript)
 
 	# Save the scene with the new script
-	editorInterface.save_scene()
+	EditorInterface.save_scene()
 
 	# Edit the new script
-	editorInterface.edit_script(newScript)
+	EditorInterface.edit_script(newScript)
 
 	return newComponentPath
 
@@ -484,7 +484,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	if componentPath.is_empty(): return
 	if shouldShowDebugInfo: printLog("addComponentToSelectedNode() " + componentPath)
 
-	var editorSelection: EditorSelection = editorInterface.get_selection()
+	var editorSelection: EditorSelection = EditorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
 
 	# TBD: Support adding components to more than 1 selected Entity?
@@ -512,14 +512,14 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	if shouldShowDebugInfo: printLog(newComponentNode)
 
 	# Add the Component to the selected Entity
-	editorInterface.edit_node(parentNode)
+	EditorInterface.edit_node(parentNode)
 	parentNode.add_child(newComponentNode, true) # force_readable_name
-	newComponentNode.owner = editorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Component is added to the SCENE but not to the Scene Dock TREE.
+	newComponentNode.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Component is added to the SCENE but not to the Scene Dock TREE.
 
 	# Select the new Component in the Editor, so the user can quickly modify it in the Inspector.
 	editorSelection.clear()
 	editorSelection.add_node(newComponentNode)
-	editorInterface.edit_node(newComponentNode)
+	EditorInterface.edit_node(newComponentNode)
 
 	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
 	if %EditableChildrenCheckBox.button_pressed:
@@ -546,9 +546,9 @@ func editSelectedComponent() -> void:
 		scriptPath = selectedComponentPath
 
 	# Just open the scene in the editor as that would be more intuitive and also allow editing of the script.
-	editorInterface.open_scene_from_path(scenePath)
+	EditorInterface.open_scene_from_path(scenePath)
 
-	# TBD: editorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
+	# TBD: EditorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
 
 #endregion
 
