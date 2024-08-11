@@ -31,24 +31,27 @@ enum TreeItemButtons {
 
 # NOTE: Convert strings `.to_lower()` before comparing strings
 const componentsRootPath		:= "res://Components"
-const entitiesRootPath		:= "res://Entities"
+const entitiesRootPath			:= "res://Entities"
 
-const acceptedFileExtension	:= ".tscn"
+const acceptedFileExtension		:= ".tscn"
 const acceptedFileSuffix		:= "component.tscn"
 
-const entityBaseScene		:= "res://Entities/Entity.tscn"
-const entityBaseScript		:= "res://Entities/Entity.gd"
-const entityScriptTemplate	:= "res://Templates/Entity/EntityTemplate.gd"
+const entityBaseScene			:= "res://Entities/Entity.tscn"
+const entityBaseScript			:= "res://Entities/Entity.gd"
+const entityScriptTemplate		:= "res://Templates/Entity/EntityTemplate.gd"
 
 const areaEntityTemplate		:= "res://Templates/Entity/AreaEntityTemplate.tscn"
 const bodyEntityTemplate		:= "res://Templates/Entity/CharacterBodyEntityTemplate.tscn"
-const spriteEntityTemplate	:= "res://Templates/Entity/SpriteEntityTemplate.tscn"
+const spriteEntityTemplate		:= "res://Templates/Entity/SpriteEntityTemplate.tscn"
 
 const componentBaseScene		:= "res://Components/Component.tscn"
-const componentScriptTemplate := "res://Templates/Component/ComponentTemplate.gd"
+const componentScriptTemplate	:= "res://Templates/Component/ComponentTemplate.gd"
 
-const folderIcon				:= preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
+var folderIcon: Texture2D:
+	get: return EditorInterface.get_editor_theme().get_icon("Folder", "EditorIcons") # preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
+
 const componentIcon			:= preload("res://Assets/Icons/Component.svg")
+
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"

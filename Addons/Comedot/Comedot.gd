@@ -4,11 +4,14 @@
 extends EditorPlugin
 
 # TODO: add_tool_menu_item
+# TODO: Fix the Entity & Component icons SVG
 
 
 #region Constants
-const entityTypeName    := &"Comedot Entity"
-const componentTypeName := &"Comedot Component"
+const entityTypeName	:= &"Comedot Entity"
+const componentTypeName	:= &"Comedot Component"
+
+const componentIcon		:= preload("res://Assets/Icons/Component.svg")
 #endregion
 
 
@@ -20,6 +23,10 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	removeDock()
 	removeCustomTypes()
+
+
+func _get_plugin_icon():
+	return componentIcon
 
 
 #region Custom Types
@@ -52,6 +59,7 @@ func addDock() -> void:
 	componentsDock.plugin = self as EditorPlugin
 	componentsDock.editorInterface = get_editor_interface()
 	add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
+	set_dock_tab_icon(componentsDock, componentIcon)
 
 
 func removeDock() -> void:
