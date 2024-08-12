@@ -7,7 +7,7 @@ extends Component
 
 #region Parameters
 
-@export var nodeToSpawnOnDeath: PackedScene
+@export var sceneToSpawnOnDeath: PackedScene
 
 ## Offsets the spawned node's position in relation to the [Entity]'s position in the entity's parent.
 @export var positionOffset: Vector2 = Vector2.ZERO
@@ -33,10 +33,8 @@ var healthComponent: HealthComponent:
 
 var parentForSpawnedNode: Node2D:
 	get:
-		if parentOverrideForSpawnedNode:
-			return parentOverrideForSpawnedNode
-		else:
-			return parentEntity.get_parent()
+		if parentOverrideForSpawnedNode: return parentOverrideForSpawnedNode
+		else: return parentEntity.get_parent()
 
 #endregion
 
@@ -52,10 +50,16 @@ func _ready() -> void:
 func onHealthComponent_healthDidZero() -> void:
 	# TBD: No need to spawn a "drop" if the parent entity doesn't "die" (get removed upon zero health) right?
 	if not isEnabled or not healthComponent.shouldRemoveParentOnZero: return
+	drop()
 
+
+## Creates and returns the [sceneToSpawnOnDeath] ands it as a child of the specified parent.
+## This is a separate method so that custom death handling components may call it without depending on [HealthComponent] signals.
+func drop() -> Node:
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
 	# and add the offset.
 	var position: Vector2 = parentForSpawnedNode.to_local(parentEntity.global_position) + positionOffset
 
-	var spawnedNode := Tools.addSceneInstance(nodeToSpawnOnDeath, parentForSpawnedNode, position)
+	var spawnedNode := Tools.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
 	didDrop.emit(spawnedNode)
+	return spawnedNode
