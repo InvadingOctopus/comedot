@@ -6,6 +6,10 @@ This is a work in progress. For more deets and the latest version, lookie loo th
 
 ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and change the IDs for textures etc. Close and reopen the project. You may need to manually update the "/Templates/TileSetTemplate.tres" tileset to re-add the texture: "/Assets/Images/DebugCheckerboard32.png" (but do not automatically recreate the tiles).
 
+THANKS:
+Tilesets:   https://kenney.nl/assets/1-bit-pack  
+Font:       Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font  
+
 ----
 
 Category:		Templates
