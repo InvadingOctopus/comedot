@@ -21,7 +21,7 @@ extends CharacterBodyManipulatingComponentBase
 #endregion
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	# CREDIT: GDQuest@YouTube https://www.youtube.com/watch?v=GwCiGixlqiU
 
 	if not isEnabled: return
