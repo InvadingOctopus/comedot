@@ -305,6 +305,11 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
 	return randomizedPosition
 
+## Returns the global position of the top-left corner of the screen in the camera's view.
+static func getScreenTopLeftInCamera(camera: Camera2D) -> Vector2:
+	var cameraCenter := camera.get_screen_center_position()
+	return cameraCenter - camera.get_viewport_rect().size / 2
+
 #endregion
 
 
