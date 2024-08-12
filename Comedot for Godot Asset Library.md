@@ -4,7 +4,7 @@ A project template and framework for making 2D games by adding components to ent
 
 This is a work in progress. For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
-ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and change the IDs for textures etc. Close and reopen the project. You may need to manually update the "/Templates/TileSetTemplate.tres" tileset to re-add the texture: "/Assets/Images/Checkerboard32x32.png" (but do not automatically recreate the tiles).
+ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and change the IDs for textures etc. Close and reopen the project. You may need to manually update the "/Templates/TileSetTemplate.tres" tileset to re-add the texture: "/Assets/Images/DebugCheckerboard32.png" (but do not automatically recreate the tiles).
 
 ----
 
