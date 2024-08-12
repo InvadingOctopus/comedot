@@ -13,6 +13,7 @@ extends Node
 
 ## The list of active players.
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
+## NOTE: To avoid a crash when there is no player, access the first player with `players.front()` NOT `player[0]`.
 var players: Array[PlayerEntity] = []
 
 ## A dictionary of stats and values to display in the HUD UI.
