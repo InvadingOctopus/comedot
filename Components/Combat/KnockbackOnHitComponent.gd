@@ -43,10 +43,15 @@ func connectCoComponents() -> void:
 
 
 func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, _amount: int, _attackerFactions: int) -> void:
+	# TODO: Get the POINT OF CONTACT of the collision, not the positions of the entities/bodies/sprites etc.
+
 	if not isEnabled: return
 
 	# Get the direction of the colliding damage source
-	var damageDirection := parentEntity.global_position.direction_to(damageComponent.area.global_position)
+	# TBD: Should we get the position of the components, or their Area2D, or their parent entities?
+	# TBD: Use velocities?
+
+	var damageDirection: Vector2 = self.body.global_position.direction_to(damageComponent.global_position)
 
 	# Should we ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source?
 	if shouldZeroCurrentVelocity:
