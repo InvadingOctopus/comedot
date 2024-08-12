@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://fmd52fai41ew"]
+
+[ext_resource type="Script" path="res://Scenes/UI/CameraFollowingLabel.gd" id="2_mlqdl"]
+[ext_resource type="Script" path="res://Scripts/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
+
+[node name="CameraFollowingLabel" type="CanvasLayer"]
+editor_description = "A Canvas for a Label that follows the Camera for a limited time then \"sticks\" to a fixed position."
+
+[node name="LabelContainer" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+top_level = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="LabelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="Label" type="Label" parent="LabelContainer/MarginContainer"]
+layout_mode = 2
+text = "Feather Label"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_mlqdl")
+
+[node name="LabelTimer" type="Timer" parent="LabelContainer/MarginContainer/Label"]
+unique_name_in_owner = true
+wait_time = 2.0
+autostart = true
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="LabelContainer/MarginContainer/Label"]
+rect = Rect2(160, 90, 320, 180)
+script = ExtResource("3_11c4o")
+
+[connection signal="timeout" from="LabelContainer/MarginContainer/Label/LabelTimer" to="LabelContainer/MarginContainer/Label" method="onLabelTimer_timeout"]
