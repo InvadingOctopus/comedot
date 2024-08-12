@@ -89,7 +89,12 @@ func requestDeletion() -> bool:
 
 
 func requestDeletionOfParentEntity() -> bool:
-	return parentEntity.requestDeletion()
+	if parentEntity:
+		return parentEntity.requestDeletion()
+	else:
+		if shouldShowDebugInfo: printWarning("requestDeletionOfParentEntity() parentEntity already null!")
+		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
+
 
 
 ## Called on [const Node.NOTIFICATION_UNPARENTED]. Overridden by subclasses to perform cleanup specific to each component.
