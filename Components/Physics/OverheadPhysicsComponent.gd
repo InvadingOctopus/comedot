@@ -33,7 +33,7 @@ func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
 	
-	processWalkInput(delta)
+	processMovement(delta)
 	characterBodyComponent.queueMoveAndSlide()
 	clearInput() # PERFORMANCE: Done directly instead of via signal for now
 
@@ -41,7 +41,7 @@ func _physics_process(delta: float) -> void:
 
 
 ## Get the input direction and handle the movement/deceleration.
-func processWalkInput(delta: float) -> void:
+func processMovement(delta: float) -> void:
 	if not isEnabled: return
 
 	# Provided by [OverheadControlComponent] or an AI: self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
