@@ -116,15 +116,16 @@ func processInput() -> void:
 
 func characterBodyComponent_didMove(_delta: float) -> void:
 	if shouldShowDebugInfo: showDebugInfo()
-
+	# NOTE: PERFORMANCE: There may be a performance impact from using signals every frame, 
+	# but the input is cleared after the [CharacterBodyComponent] moves so that other components may inspect and act upon the input of this component for this frame.
+	
 	# Clear the input so it doesn't carry on over to the next frame.
 	clearInput()
 
 
 func clearInput() -> void:
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
-	#jumpInput = false # NOTE: Let the control components reset the `jumpInput`
-	# The justPressed/justReleased flags should be reset here because they represent a state for only 1 frame
+
 
 #endregion
 
