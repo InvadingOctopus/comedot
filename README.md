@@ -60,7 +60,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 [Comedot][repository] ©? MMXXIV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord]
 
-🤍 THANKS:  
+> 🤍 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
 > * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font  
  
