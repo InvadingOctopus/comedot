@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://vbs30ah8krrp"]
+
+[ext_resource type="Script" path="res://Scenes/UI/TextCyclingLabel.gd" id="1_ytf5f"]
+
+[node name="TextCyclingLabel" type="Label"]
+text = "Text Cycling Label"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_ytf5f")
+
+[node name="TextTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="TextTimer" to="." method="onTextTimer_timeout"]
