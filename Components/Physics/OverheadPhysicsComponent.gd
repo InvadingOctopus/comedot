@@ -1,4 +1,5 @@
-## Provides overhead-view (i.e. "top-down") movement control for the parent [Entity]'s [CharacterBody2D].
+## Processes the friction and other physics for overhead-view (i.e. "top-down") movement for the parent [Entity]'s [CharacterBodyComponent].
+## NOTE: Does NOT handle player control; Input is provided by [OverheadControlComponent] or AI agents.
 
 class_name OverheadPhysicsComponent
 extends CharacterBodyManipulatingComponentBase
@@ -31,13 +32,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
+	
 	processWalkInput(delta)
 	characterBodyComponent.queueMoveAndSlide()
+	clearInput() # PERFORMANCE: Done directly instead of via signal for now
 
-	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
-	# parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
-
-	# DEBUG:
 	if shouldShowDebugInfo: showDebugInfo()
 
 
@@ -45,7 +44,7 @@ func _physics_process(delta: float) -> void:
 func processWalkInput(delta: float) -> void:
 	if not isEnabled: return
 
-	self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
+	# Provided by [OverheadControlComponent] or an AI: self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 
 	if not inputDirection.is_zero_approx(): lastInputDirection = inputDirection
 
@@ -85,6 +84,16 @@ func processWalkInput(delta: float) -> void:
 	if not body.velocity.is_zero_approx():
 		#if currentState == State.idle: currentState = State.walk
 		lastDirection = body.velocity.normalized()
+
+
+# func characterBodyComponent_didMove(_delta: float) -> void:
+# 	if shouldShowDebugInfo: showDebugInfo()
+# 	# Clear the input so it doesn't carry on over to the next frame.
+# 	clearInput()
+
+
+func clearInput() -> void:
+	inputDirection = Vector2.ZERO # TBD: Should the "no input" state just be a `0` or some other flag?
 
 
 func showDebugInfo() -> void:
