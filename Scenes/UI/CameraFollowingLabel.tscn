@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://fmd52fai41ew"]
+[gd_scene load_steps=4 format=3 uid="uid://fmd52fai41ew"]
 
+[ext_resource type="PackedScene" uid="uid://vbs30ah8krrp" path="res://Scenes/UI/TextCyclingLabel.tscn" id="1_mgfb3"]
 [ext_resource type="Script" path="res://Scenes/UI/CameraFollowingLabel.gd" id="2_mlqdl"]
 [ext_resource type="Script" path="res://Scripts/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
 
@@ -22,20 +23,12 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="Label" type="Label" parent="LabelContainer/MarginContainer"]
+[node name="TextCyclingLabel" parent="LabelContainer/MarginContainer" instance=ExtResource("1_mgfb3")]
 layout_mode = 2
-text = "Feather Label"
-horizontal_alignment = 1
-vertical_alignment = 1
 script = ExtResource("2_mlqdl")
+textStrings = Array[String](["Feather Label"])
+shouldAppendText = true
 
-[node name="LabelTimer" type="Timer" parent="LabelContainer/MarginContainer/Label"]
-unique_name_in_owner = true
-wait_time = 2.0
-autostart = true
-
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="LabelContainer/MarginContainer/Label"]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="LabelContainer/MarginContainer/TextCyclingLabel"]
 rect = Rect2(160, 90, 320, 180)
 script = ExtResource("3_11c4o")
-
-[connection signal="timeout" from="LabelContainer/MarginContainer/Label/LabelTimer" to="LabelContainer/MarginContainer/Label" method="onLabelTimer_timeout"]
