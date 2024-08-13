@@ -1,6 +1,6 @@
 ## Provides overhead-view (i.e. "top-down") movement control for the parent [Entity]'s [CharacterBody2D].
 
-class_name OverheadControlComponent
+class_name OverheadPhysicsComponent
 extends CharacterBodyManipulatingComponentBase
 
 

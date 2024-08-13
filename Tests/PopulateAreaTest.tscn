@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://b03gxqrqupyqv"]
 
 [ext_resource type="Script" path="res://Scenes/Areas/PopulateArea.gd" id="1_1ktkj"]
-[ext_resource type="Texture2D" uid="uid://bermbxcx4kfb6" path="res://Assets/Images/Checkerboard16x16.png" id="3_xp3dq"]
+[ext_resource type="Texture2D" path="res://Assets/Images/Checkerboard16x16.png" id="3_xp3dq"]
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="4_7kaft"]
-[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="5_1lnua"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="5_1lnua"]
 [ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="6_m7ekq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_42cay"]
@@ -66,7 +66,7 @@ position_smoothing_speed = 100.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
 
-[node name="OverheadControlComponent" parent="PlayerTemplate" instance=ExtResource("5_1lnua")]
+[node name="OverheadPhysicsComponent" parent="PlayerTemplate" instance=ExtResource("5_1lnua")]
 
 [node name="TestSprite16" parent="." instance=ExtResource("6_m7ekq")]
 modulate = Color(1, 0.883333, 0, 0.666667)

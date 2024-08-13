@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctlquc31j3uwi"]
+
+[ext_resource type="Script" path="res://Components/Physics/OverheadPhysicsComponent.gd" id="1_ptm1x"]
+
+[node name="OverheadPhysicsComponent" type="Node" groups=["components"]]
+script = ExtResource("1_ptm1x")
+metadata/_edit_group_ = true

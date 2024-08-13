@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_eybf8"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_stfcg"]
-[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Control/OverheadControlComponent.tscn" id="3_q2npt"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_q2npt"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="4_1se31"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="5_7e1iu"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="6_urskl"]
@@ -39,7 +39,7 @@ position_smoothing_speed = 100.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
 
-[node name="OverheadControlComponent" parent="." instance=ExtResource("3_q2npt")]
+[node name="OverheadPhysicsComponent" parent="." instance=ExtResource("3_q2npt")]
 
 [node name="HealthComponent" parent="." instance=ExtResource("4_1se31")]
 health = SubResource("Resource_f1god")
