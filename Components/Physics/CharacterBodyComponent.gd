@@ -115,6 +115,7 @@ func updateStateAfterMove(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.lastVelocity= previousVelocity
 	Debug.watchList.lastMotion	= body.get_last_motion()
