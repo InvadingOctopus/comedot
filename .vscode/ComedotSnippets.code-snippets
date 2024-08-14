@@ -1,0 +1,110 @@
+{
+	"Function": {
+		"prefix": "func",
+		"body": [
+			"func ${1:name}() -> void:",
+			"\t${2:pass}$0",
+			"\n"
+		],
+		"description": "A basic function skeleton"
+	},
+
+	"Function with Return": {
+		"prefix": "func",
+		"body": [
+			"func ${1:name}() -> ${2:Variant}:",
+			"\t$0",
+			"\treturn null",
+			"\n"
+		],
+		"description": "A basic function skeleton that returns a value"
+	},
+
+	"Complex Function": {
+		"prefix": "func",
+		"body": [
+			"## ${4:Documentation}",
+			"func ${1:name}() -> ${2:Variant}:",
+			"\tif not ${3:isEnabled}: return null",
+			"\t$0",
+			"\treturn false",
+			"\n"
+		],
+		"description": "A complex function skeleton with documentation, arguments, guard clause, and a return value"
+	},
+
+	"@onready Node Reference": {
+		"prefix": "@onready",
+		"body": [
+			"@onready var $0${1:propertyName}: ${1:NodeType} = %${1:NodeName}"
+		],
+		"description": "A property that references a Node with a %Unique name."
+	},
+
+	"External Property": {
+		"prefix": "varReturn",
+		"body": [
+			"var ${2:objectName}: ${3:objectType}:",
+			"\tget: return ${1:objectParent}.${2:objectName}",
+			"\n$0"
+		],
+		"description": "A property that returns another object's property."
+	},
+
+	"Component Dependency": {
+		"prefix": "varComponent",
+		"body": [
+			"var ${2:coComponent}: ${1:ComponentType}:",
+			"\tget:",
+			"\t\tif not ${2:coComponent}: ${2:coComponent} = self.getCoComponent(${1:ComponentType})",
+			"\t\treturn ${2:coComponent}",
+			"\n$0"
+		],
+		"description": "A property that searches for a sibling component and caches a reference to it."
+	},
+
+	"Component Reference": {
+		"prefix": "coComponent",
+		"body": [
+			"var ${2:coComponent}: ${1:ComponentType} = self.getCoComponent(${1:ComponentType})",
+			"${2:coComponent}.$0"
+		],
+		"description": "A variabble that stores a reference to a sibling component."
+	},
+
+	"Void": {
+		"prefix": "void",
+		"body": [
+			"-> void:",
+			"\t$0"
+		],
+		"description": "Embrace the void."
+	},
+
+	"Export": {
+		"prefix": "@export",
+		"body": [
+			"@export var ${1:isFlagged}: ${2:bool} = ${3:false}"
+		],
+		"description": "A basic export parameter"
+	},
+
+	"Export Range": {
+		"prefix": "@export",
+		"body": [
+			"@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}"
+		],
+		"description": "An export parameter with a range"
+	},
+
+	"Debug Info": {
+		"prefix": "showDebugInfo",
+		"body": [
+			"func showDebugInfo() -> void:",
+			"\tif not shouldShowDebugInfo: return",
+			"\tDebug.watchList[str(\"\\n —\", parentEntity.name, \".\", self.name)] = \"\"",
+			"\tDebug.watchList.$0"
+		],
+		"description": "A template for a showDebugInfo() method."
+	},
+}
