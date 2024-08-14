@@ -34,6 +34,7 @@ const verticalHeight: float = 100 # TODO: Remove hardcoding
 
 #endregion
 
+
 #region State
 
 @onready var nameLabel: Label = %NameLabel

@@ -125,7 +125,7 @@ func toggleDebugWindow() -> bool:
 		debugWindow.visible = not debugWindow.visible
 		isDebugWindowShown  = debugWindow.visible
 	else:
-		isDebugWindowShown = false
+		isDebugWindowShown  = false
 		# TODO: Recreate the window
 
 	return isDebugWindowShown
@@ -147,7 +147,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 
 	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor)
 	newChartWindow.size.y = int((newChart.verticalHeight * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height for both sides of the Y axis
-	newChart.position.y = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
+	newChart.position.y   = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
 
 	# Shift each window so they don't all overlap
 
