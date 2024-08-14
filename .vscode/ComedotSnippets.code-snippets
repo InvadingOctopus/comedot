@@ -6,7 +6,7 @@
 			"\t${2:pass}$0",
 			"\n"
 		],
-		"description": "A basic function skeleton"
+		"description": "A basic function skeleton."
 	},
 
 	"Function with Return": {
@@ -17,7 +17,7 @@
 			"\treturn null",
 			"\n"
 		],
-		"description": "A basic function skeleton that returns a value"
+		"description": "A basic function skeleton that returns a value."
 	},
 
 	"Complex Function": {
@@ -30,7 +30,7 @@
 			"\treturn false",
 			"\n"
 		],
-		"description": "A complex function skeleton with documentation, arguments, guard clause, and a return value"
+		"description": "A complex function skeleton with documentation, arguments, guard clause, and a return value."
 	},
 
 	"@onready Node Reference": {
@@ -86,7 +86,7 @@
 		"body": [
 			"@export var ${1:isFlagged}: ${2:bool} = ${3:false}"
 		],
-		"description": "A basic export parameter"
+		"description": "A basic export parameter."
 	},
 
 	"Export Range": {
@@ -94,7 +94,7 @@
 		"body": [
 			"@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}"
 		],
-		"description": "An export parameter with a range"
+		"description": "An export parameter with a range."
 	},
 
 	"Debug Info": {
