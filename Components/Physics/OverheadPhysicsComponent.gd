@@ -23,7 +23,11 @@ func _ready() -> void:
 	if characterBodyComponent and characterBodyComponent.body:
 		printLog("characterBodyComponent.body.motion_mode → Floating")
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-		characterBodyComponent.shouldResetVelocityIfZeroMotion = true
+		
+		if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
+			printDebug("Recommed characterBodyComponent.shouldResetVelocityIfZeroMotion = true")
+			#characterBodyComponent.shouldResetVelocityIfZeroMotion = true 
+
 		#characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
@@ -98,5 +102,6 @@ func clearInput() -> void:
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection
