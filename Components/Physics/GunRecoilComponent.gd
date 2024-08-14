@@ -1,7 +1,8 @@
 ## Applies a knockback to the [CharacterBody2D] of the parent [Entity] when a [GunComponent] fires a bullet.
+## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away when too many bullets are fired too quickly.
+
 class_name GunRecoilComponent
 extends CharacterBodyManipulatingComponentBase
-
 
 # TODO: Beter physics
 # TODO: Handle dynamic removal and addition of a [GunComponent]

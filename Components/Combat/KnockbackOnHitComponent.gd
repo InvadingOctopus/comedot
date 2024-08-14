@@ -1,4 +1,5 @@
 ## Pushes the entity back when a [DamageReceivingComponent] takes damage.
+## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away. 
 ## WARNING: The knockback may not be applied if [member PlatformerMovementParameters.shouldStopInstantlyOnFloor] or [member PlatformerMovementParameters.shouldStopInstantlyInAir] is `true`.
 ## Requirements: [CharacterBodyComponent], [DamageReceivingComponent], AFTER [PlatformerPhysicsComponent]
 
