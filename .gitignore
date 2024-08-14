@@ -17,5 +17,5 @@ mono_crash.*.json
 # Game-specific experiments
 Lab/*
 
-# .vscode/* Temporarily exclude to add snippets
+.vscode/*
 .DS_Store
