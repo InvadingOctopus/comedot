@@ -1,4 +1,4 @@
-## Displays debugging information about the entity and other components or nodes.
+## Displays debugging information and charts about the entity and other components or nodes.
 
 class_name DebugComponent
 extends Component
@@ -8,6 +8,7 @@ extends Component
 @export var propertiesToChart: Array[NodePath]
 @export var propertiesToWatch: Array[NodePath]
 #endregion
+
 
 #region State
 @onready var label: Label = %DebugLabel
@@ -43,7 +44,7 @@ func createCharts() -> void:
 		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1])
 
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float) -> void:
 	updateLabel()
 
 
@@ -51,7 +52,7 @@ func updateLabel() -> void:
 	# TODO: PERFORMANCE: More efficient lookups
 	var nodeAndPropertyPaths: Array[NodePath]
 	var nodeToWatch: Node
-	var labelText: String
+	var labelText: String = ""
 
 	for path: NodePath in propertiesToWatchAbsolutePaths:
 		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
