@@ -1,4 +1,7 @@
 ## Moves the parent entity to chase after another [Node2D].
+## NOTE: characterBodyComponent.shouldResetVelocityIfZeroMotion = false
+## Requirements: BEFORE [OverheadPhysicsComponent]
+
 
 class_name ChaseComponent
 extends CharacterBodyManipulatingComponentBase
@@ -8,32 +11,53 @@ extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
+@export var nodeToChase: Node2D
 
-@export var nodeToChase:						Node2D
+@export_range(10, 1000, 5) var speed: float = 300
 
-@export_range(10, 1000, 5) var speed:			float = 300
+@export var applyAcceleration: bool = false
+@export_range(10, 1000, 5) var acceleration: float = 800
 
-@export var applyAcceleration:					bool  = false
-@export_range(10, 1000, 5) var acceleration:	float = 800
-
-@export var isEnabled:							bool = true
-
+@export var isEnabled: bool = true
 #endregion
 
 
-func _physics_process(delta: float) -> void:
-	# CREDIT: GDQuest@YouTube https://www.youtube.com/watch?v=GwCiGixlqiU
+#region State
+var recentChaseDirection: Vector2
+#endregion
 
-	if not isEnabled: return
+
+#region Dependencies
+var overheadPhysicsComponent: OverheadPhysicsComponent:
+	get:
+		if not overheadPhysicsComponent: overheadPhysicsComponent = self.getCoComponent(OverheadPhysicsComponent)
+		return overheadPhysicsComponent
+
+func getRequiredComponents() -> Array[Script]:
+	return [OverheadPhysicsComponent] + super.getRequiredComponents()
+#endregion
+
+
+func _ready() -> void:
+	if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
+		printLog("characterBodyComponent.shouldResetVelocityIfZeroMotion = false")
+		characterBodyComponent.shouldResetVelocityIfZeroMotion = false
+
+
+func _physics_process(_delta: float) -> void:
+	# THANKS: GDQuest@YouTube https://www.youtube.com/watch?v=GwCiGixlqiU
 
 	# Check for presence of self and target to account for destroyed entities.
-	if not self.body or not nodeToChase: return
+	if not isEnabled or not self.body or not nodeToChase: return
 
-	var direction: Vector2 = parentEntity.global_position.direction_to(nodeToChase.global_position)
+	self.recentChaseDirection = parentEntity.global_position.direction_to(nodeToChase.global_position).normalized()
+	overheadPhysicsComponent.inputDirection = self.recentChaseDirection
+	
+	# characterBodyComponent.queueMoveAndSlide() # Unneeded; will be called by OverheadPhysicsComponent
+	if shouldShowDebugInfo: showDebugInfo()
 
-	if applyAcceleration:
-		self.body.velocity = body.velocity.move_toward(direction * speed, acceleration * delta)
-	else:
-		self.body.velocity = direction * speed
 
-	characterBodyComponent.queueMoveAndSlide()
+func showDebugInfo() -> void:
+	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
+	Debug.watchList.chaseVector = self.recentChaseDirection
