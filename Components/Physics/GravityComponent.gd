@@ -16,10 +16,6 @@ var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 #endregion
 
 
-#region State
-#endregion
-
-
 func _ready() -> void:
 	if parentEntity.body:
 		printLog("parentEntity.body.motion_mode → Grounded")
@@ -35,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	characterBodyComponent.queueMoveAndSlide()
 
 
-func processGravity(delta: float):
+func processGravity(delta: float) -> void:
 	# Vertical Slowdown
 	if not characterBodyComponent.isOnFloor:
 		body.velocity.y += (gravity * gravityScale) * delta
