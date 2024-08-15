@@ -117,7 +117,7 @@ func _ready() -> void:
 		setupUI()
 
 
-func printLog(text) -> void:
+func printLog(text: String) -> void:
 	print(str("Comedock: ", text))
 
 
@@ -139,6 +139,8 @@ func setupUI() -> void:
 	inspector = EditorInterface.get_inspector()
 	inspector.edited_object_changed.connect(self.onInspector_editedObjectChanged)
 
+	plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
+
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
 
 
@@ -158,8 +160,8 @@ func buildComponentsDirectory() -> void:
 
 	# Get all first-level subfolders in the `/Components/` folder
 	var componentCategories: Array[EditorFileSystemDirectory] = getSubfolders("Components")
-	var root: TreeItem = componentsTree.create_item()
-	var componentsCount: int
+	var _root: TreeItem = componentsTree.create_item()
+	var componentsCount: int = 0
 
 	componentsTree.hide_root = true
 
@@ -238,7 +240,7 @@ func createComponentTreeItem(componentPath: String, componentName: String, categ
 
 func createComponentRowButtons(componentRow: TreeItem) -> void:
 	if not componentRow: return
-	var tooltipText: String = editComponentButtonTooltipPrefix + selectedComponentName
+	# var tooltipText: String = editComponentButtonTooltipPrefix + selectedComponentName
 
 	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
 	componentRow.set_text(1, "Edit")
@@ -314,7 +316,7 @@ func onAddEntityMenu_idPressed(id: int) -> void:
 	addNewEntity(id)
 
 
-func onComponentsTree_buttonClicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
+func onComponentsTree_buttonClicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
 	if shouldShowDebugInfo: printLog(str("onComponentsTree_buttonClicked() item: ", item, ", button id: ", id))
 
 	# NOTE: Check the button ID because this signal may be emitted by different buttons in different rows
@@ -401,7 +403,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 
 		_: printLog(str("ERROR: Invalid entityType: ", entityType))
 
-	if shouldShowDebugInfo: printLog(newEntity)
+	if shouldShowDebugInfo: printLog(str(newEntity))
 
 	# Add the component to the selected Entity
 	EditorInterface.edit_node(parentNode)
@@ -419,17 +421,39 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 		newEntity.get_parent().set_editable_instance(newEntity, true)
 
 
-func createNewComponentOnDisk(categoryFolderPath: String) -> String:
+## Calls [method createNewComponentOnDisk] on the first selected folder in the Godot Editor's FileSystem Dock, if any.
+func createNewComponentInSelectedFolder() -> String:
+	var selectedPaths: PackedStringArray = EditorInterface.get_selected_paths()	
+	
+	if selectedPaths.is_empty():
+		printLog("No folder selected.")
+		return ""
+	
+	var selectedFolderPath: String
+	
+	for path in selectedPaths:
+		if DirAccess.dir_exists_absolute(path):
+			selectedFolderPath = path
+			break
+
+	if selectedFolderPath.is_empty():
+		printLog("No folder selected.")
+		return ""
+
+	return createNewComponentOnDisk(selectedFolderPath)
+
+
+func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 	# TODO: More reliable file/path naming and operations with no room for errors. File system work is nasty business!
 	# TODO: A dialog for naming and more settings
 
 	# Validate
 
-	if categoryFolderPath.is_empty(): return ""
+	if destinationFolderPath.is_empty(): return ""
 
-	printLog("createNewComponent() " + categoryFolderPath)
+	printLog("createNewComponent() " + destinationFolderPath)
 
-	if not DirAccess.dir_exists_absolute(categoryFolderPath):
+	if not DirAccess.dir_exists_absolute(destinationFolderPath):
 		printLog("Invalid path")
 		return ""
 
@@ -438,10 +462,10 @@ func createNewComponentOnDisk(categoryFolderPath: String) -> String:
 		return ""
 
 	# Get the directory manager & set the paths
-	var componentsFolder: DirAccess = DirAccess.open(componentsRootPath)
+	var _componentsFolder: DirAccess = DirAccess.open(componentsRootPath)
 	var newComponentName: String = "NewComponent" # TODO: Unique name
-	var newComponentPath: String = categoryFolderPath + newComponentName + ".tscn"
-	var newScriptPath:    String = categoryFolderPath + newComponentName + ".gd"
+	var newComponentPath: String = destinationFolderPath + newComponentName + ".tscn"
+	var newScriptPath:    String = destinationFolderPath + newComponentName + ".gd"
 
 	# ALERT: MAKE SURE NOT TO OVERWRITE ANY EXISTING FILES! Or there may be doom!
 	if not ensureFileDoesNotExist(newComponentPath) \
@@ -509,7 +533,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	var newComponentNode: Node = load(componentPath).instantiate()
 	newComponentNode.name = (newComponentNode.get_script() as Script).get_global_name()
 
-	if shouldShowDebugInfo: printLog(newComponentNode)
+	if shouldShowDebugInfo: printLog(str(newComponentNode))
 
 	# Add the Component to the selected Entity
 	EditorInterface.edit_node(parentNode)
@@ -532,7 +556,6 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 func editSelectedComponent() -> void:
 	if not selectedComponentRow or selectedComponentPath.is_empty(): return
 	if shouldShowDebugInfo: printLog(str("editSelectedComponent() ", selectedComponentPath))
-
 
 	var scenePath:  String
 	var scriptPath: String
