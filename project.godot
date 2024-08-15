@@ -241,6 +241,11 @@ debugWindow={
 2d_physics/layer_12="collectibles"
 2d_physics/layer_13="interactions"
 
+[physics]
+
+common/physics_jitter_fix=0.0
+common/physics_interpolation=true
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
