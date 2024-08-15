@@ -7,6 +7,7 @@ extends Component
 #region Parameters
 @export var propertiesToChart: Array[NodePath]
 @export var propertiesToWatch: Array[NodePath]
+@export var isEnabled: bool = true
 #endregion
 
 
@@ -18,6 +19,9 @@ var propertiesToWatchAbsolutePaths: Array[NodePath]
 
 
 func _ready() -> void:
+	label.visible = isEnabled
+	if not isEnabled: return
+	
 	propertiesToChartAbsolutePaths = convertPathsToAbsolute(propertiesToChart)
 	propertiesToWatchAbsolutePaths = convertPathsToAbsolute(propertiesToWatch)
 	createCharts()
@@ -45,6 +49,7 @@ func createCharts() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if not isEnabled: return
 	updateLabel()
 
 
