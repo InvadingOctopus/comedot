@@ -28,12 +28,12 @@ var thrustInput:		float ## For the Right Joystick. May be identical to [member v
 #endregion
 
 
-func _input(event: InputEvent):
+func _input(_event: InputEvent) -> void:
 	if not isEnabled: return
 	pass # Handle one-shot input events such as jumping or firing.
 
 
-func _process(delta: float):
+func _process(_delta: float) -> void:
 	# TBD: Should we do this in [_process] or [_physics_process]?
 	if not isEnabled: return
 

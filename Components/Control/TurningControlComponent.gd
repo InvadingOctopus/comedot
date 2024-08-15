@@ -1,5 +1,6 @@
 ## Allows the player to rotate a node with left & right input actions.
 ## May be combined with the [ThrustControlComponent] to provide "tank-like" controls, similar to Asteroids.
+## NOTE: Mutually exclusive with [MouseRotationComponent].
 ## Requirements: [PlayerInputComponent]
 
 class_name TurningControlComponent
@@ -19,8 +20,7 @@ extends Component
 #region State
 var playerInputComponent: PlayerInputComponent:
 	get:
-		if not playerInputComponent:
-			playerInputComponent = self.getCoComponent(PlayerInputComponent)
+		if not playerInputComponent: playerInputComponent = self.getCoComponent(PlayerInputComponent)
 		return playerInputComponent
 #endregion
 
@@ -30,9 +30,9 @@ func _ready() -> void:
 		nodeToRotate = self.parentEntity
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
-
+	
 	var rotationDirection: float = playerInputComponent.turnInput
 
 	if rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta

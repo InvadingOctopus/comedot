@@ -1,5 +1,6 @@
 ## Sets a maximum and minimum limit for the entity's [member CharacterBody2D.velocity].
 ## Useful for clamping a character's velocity when there are multiple components affecting movement.
+## TIP: May be used to prevent "rocketing" away due to a [GunComponent] with a fast rate of fire, or a [KnockbackComponent] etc.
 ## Requirements: BEFORE [CharacterBodyComponent], AFTER control components
 
 class_name VelocityClampComponent
@@ -14,11 +15,11 @@ extends CharacterBodyManipulatingComponentBase
 @export_range(0, 5000, 5) var maximumVelocityY: float = 100 ## Ignored if <= 0
 @export_range(0, 5000, 5) var minimumVelocityX: float ## Ignored if <= 0. NOTE: Will result in constant movement to the right.
 @export_range(0, 5000, 5) var minimumVelocityY: float ## Ignored if <= 0. NOTE: Will result in constant movement downwards.
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float) -> void:
 	if not isEnabled: return
 
 	# Cache to reduce the number of property checks and function calls
@@ -30,7 +31,7 @@ func _physics_process(delta: float):
 	var signX: float = signf(velocity.x)
 	var signY: float = signf(velocity.y)
 
-	# Clamps only apply if > 0
+	# NOTE: Clamps only apply if > 0
 
 	if maximumVelocityX > 0 and absoluteVelocityX > maximumVelocityX:
 		body.velocity.x = maximumVelocityX * signX
