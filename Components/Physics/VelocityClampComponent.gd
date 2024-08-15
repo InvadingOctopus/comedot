@@ -45,4 +45,4 @@ func _physics_process(_delta: float) -> void:
 	if minimumVelocityY > 0 and absoluteVelocityY < minimumVelocityY:
 		body.velocity.y = minimumVelocityY * signY
 
-	Debug.watchList.velocity = body.velocity
+	if shouldShowDebugInfo: Debug.watchList.velocity = body.velocity
