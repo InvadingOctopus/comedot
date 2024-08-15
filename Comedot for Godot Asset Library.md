@@ -8,7 +8,7 @@ ALERT: The first time you load this project, there may be errors/glitches becaus
 
 THANKS:
 Tilesets:   https://kenney.nl/assets/1-bit-pack  
-Font:       Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font  
+Font:       Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
 ----
 
@@ -16,7 +16,7 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Commit URL:		8f10926cfd2d776b491a3c3ffae67119d0dcf050
+Commit URL:		7b66e86f208e0fedb6368110928002aa81252e82
 Godot Vesion:	4.3
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
