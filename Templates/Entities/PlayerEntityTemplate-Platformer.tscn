@@ -205,6 +205,7 @@ shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 process_mode = 3
+process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 rotation_smoothing_enabled = true
