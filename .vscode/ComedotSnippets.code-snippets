@@ -125,5 +125,15 @@
 			"#endregion\n\n"
 		],
 		"description": "A code region."
-	}	
+	},
+
+	"GDScript File Template": {
+  	  "isFileTemplate": true,
+		"scope": "gdscript",
+		"prefix": "gdTemplate",
+		"body": [
+        	"## Description"
+    	],
+    	"description": "A template for new GDScript files."
+	},
 }
