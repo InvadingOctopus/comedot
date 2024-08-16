@@ -25,16 +25,17 @@ var players: Array[PlayerEntity] = []
 
 
 #region Signals
+# DESIGN: The names of the signals start with the names of the related types/objects, instead of "did/will" etc., because GameState is a global object.
 signal playersChanged
 signal playerAdded(player: PlayerEntity)
 signal playerRemoved(player: PlayerEntity)
 #endregion
 
 #region Signal Event Bus
-## These signals may be emitted by any object and connected to any object at any time, usually via scripts.
+# These signals may be emitted by any object and connected to any object at any time, usually via scripts.
+# IGNORE Godot Warning; this signal is used by other classes.
 
-signal HUDStatUpdated(stat: Stat) # IGNORE Godot Warning; this signal is used by other classes.
-
+signal HUDStatUpdated(stat: Stat) # TODO: Rename to camelCase
 #endregion
 
 
