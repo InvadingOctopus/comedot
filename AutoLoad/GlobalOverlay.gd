@@ -7,9 +7,22 @@
 extends Node
 
 
+#region State
+var pauseOverlay: PauseOverlay
+#endregion
+
+
+#region Signals
+signal didShowPauseOverlay
+signal didHidePauseOverlay
+#endregion
+
+
 #region Dependencies
+const pauseOverlayScene := preload("res://Scenes/UI/PauseOverlay.tscn")
+
+@onready var foregroundOverlay	:= %ForegroundOverlay
 @onready var animationPlayer	:= %AnimationPlayer
-@onready var pauseSettingsUI	:= %PauseSettingsUI
 @onready var pauseButton		:= %PauseButton
 @onready var labelsList			:= %LabelsList
 #endregion
@@ -21,7 +34,18 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 	pauseButton.updateState()
 	pauseButton.visible = isPaused
-	pauseSettingsUI.visible = isPaused
+	
+	if isPaused:
+		pauseOverlay = pauseOverlayScene.instantiate()
+		foregroundOverlay.add_child(pauseOverlay)
+		pauseOverlay.owner = foregroundOverlay # Necessary for persistence to a [PackedScene] for save/load.
+		foregroundOverlay.move_child(pauseOverlay, 1) # Put it above the fullscreen overlay effect.
+		pauseOverlay.visible = true # Just in case
+		didShowPauseOverlay.emit()
+	elif pauseOverlay:
+		pauseOverlay.queue_free()
+		self.pauseOverlay = null
+		didHidePauseOverlay.emit()
 
 
 func createTemporaryLabel(text: String) -> Label:
