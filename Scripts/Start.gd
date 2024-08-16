@@ -47,7 +47,7 @@ extends Node
 @export var showTestBackground: bool = true:
 	set(newValue):
 		showTestBackground = newValue
-		if GlobalOverlay.testBackground: GlobalOverlay.testBackground.visible = newValue
+		if Debug.testBackground: Debug.testBackground.visible = newValue
 
 #endregion
 
@@ -63,9 +63,9 @@ func _ready() -> void:
 
 
 func applyGlobalFlags() -> void:
-	GlobalOverlay.testBackground.visible = self.showTestBackground
-	Debug.debugWindow.visible = self.showDebugWindow if OS.is_debug_build() else false
-	Debug.shouldPrintDebugLogs  = self.shouldPrintDebugLogs
-	Debug.showDebugLabels = self.showDebugLabels
+	Debug.shouldPrintDebugLogs		= self.shouldPrintDebugLogs
+	Debug.debugWindow.visible		= self.showDebugWindow if OS.is_debug_build() else false
+	Debug.showDebugLabels			= self.showDebugLabels
+	Debug.testBackground.visible	= self.showTestBackground
 
 	Global.mainGameScene	= self.mainGameScene

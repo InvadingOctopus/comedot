@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" path="res://AutoLoad/GlobalOverlay.gd" id="1_ym7ug"]
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://Scenes/UI/PauseButton.tscn" id="2_e15vu"]
 [ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://Scenes/UI/PauseSettingsUI.tscn" id="3_sywc3"]
-[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="4_fcwiq"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
 length = 0.001
@@ -130,6 +129,3 @@ libraries = {
 "": SubResource("AnimationLibrary_k1gpf")
 }
 autoplay = "overlayFadeOut"
-
-[node name="TestBackground" parent="." instance=ExtResource("4_fcwiq")]
-unique_name_in_owner = true

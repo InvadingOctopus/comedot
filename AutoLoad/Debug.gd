@@ -32,7 +32,10 @@ extends Node
 @onready var warningLabel:	Label = %WarningLabel
 @onready var watchListLabel:Label = %WatchListLabel
 
+@onready var testBackground:Node2D = %TestBackground
+
 var previousChartWindowInitialPosition: Vector2i
+
 static var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
 
 #endregion

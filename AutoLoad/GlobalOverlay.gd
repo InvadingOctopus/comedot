@@ -1,16 +1,23 @@
 ## AutoLoad
 ## A scene containing graphics which are overlaid on top of or underneath the actual game content at all times.
 ## Used for performing transition effects between scenes such as fade-in and fade-out.
-## The [process_mode] is set to `PROCESS_MODE_ALWAYS` which ignored the [SceneTree.paused] flag in order to perform transition animations while the gameplay is paused.
+## The [process_mode] is set to `PROCESS_MODE_ALWAYS` which ignores the [SceneTree.paused] flag in order to perform transition animations while the actual gameplay is paused.
 
 #class_name GlobalOverlay
 extends Node
 
 
+#region Dependencies
 @onready var animationPlayer	:= %AnimationPlayer
 @onready var pauseSettingsUI	:= %PauseSettingsUI
-@onready var testBackground		:= %TestBackground
+#endregion
 
+
+func setPauseSettingsVisibility(visible: bool) -> void:
+	pauseSettingsUI.visible = visible
+
+
+#region Animations
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
 func fadeIn() -> void:
@@ -27,6 +34,4 @@ func fadeOut() -> void:
 	#animationPlayer.play(Global.Animations.overlayFadeOut)
 	await animationPlayer.animation_finished
 
-
-func setPauseSettingsVisibility(visible: bool) -> void:
-	pauseSettingsUI.visible = visible
+#endregion
