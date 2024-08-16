@@ -41,6 +41,8 @@ class Actions: ## Input event labels
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
 
+	if not event.is_action_type(): return
+	
 	# Debugging, before any other actions are handled.
 
 	if Input.is_action_just_released(Actions.debugBreak):
@@ -51,7 +53,7 @@ func _input(event: InputEvent) -> void:
 
 	# Game
 
-	if Input.is_action_just_released(Actions.pause):
+	if Input.is_action_just_pressed(Actions.pause):
 		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this okay??
 		Global.togglePause()
 

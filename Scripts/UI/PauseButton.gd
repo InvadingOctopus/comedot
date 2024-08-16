@@ -9,9 +9,13 @@ func _ready() -> void:
 
 
 func updateState() -> void:
+	var isScenePaused: bool = self.get_tree().paused
+	self.button_pressed = isScenePaused
+	
+	
 	# TBD: The Great Conundrum: Should the visual of a toggle-able control represent the CURRENT state or the NEXT state that will happen upon using the control?
 	# i.e. Should the Pause Button show the "PLAY >" icon when it's PAUSED? or should it show the "PAUSED ||" icon?
-	if self.get_tree().paused: self.text = ">"
+	if self.button_pressed: self.text = ">"
 	else: self.text = "||"
 
 

@@ -1,12 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://bf1fy8up8a6j2"]
+[gd_scene load_steps=2 format=3 uid="uid://bf1fy8up8a6j2"]
 
 [ext_resource type="Script" path="res://Scripts/UI/PauseButton.gd" id="1_cb8s2"]
-
-[sub_resource type="InputEventAction" id="InputEventAction_00ir4"]
-action = &"pause"
-
-[sub_resource type="Shortcut" id="Shortcut_u0f1x"]
-events = [SubResource("InputEventAction_00ir4")]
 
 [node name="PauseButton" type="Button"]
 process_mode = 3
@@ -17,7 +11,6 @@ focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 0.76, 0.2, 1)
 toggle_mode = true
-shortcut = SubResource("Shortcut_u0f1x")
 shortcut_in_tooltip = false
 text = "||"
 script = ExtResource("1_cb8s2")

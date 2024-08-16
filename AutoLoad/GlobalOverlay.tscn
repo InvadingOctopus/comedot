@@ -119,6 +119,7 @@ process_mode = 3
 visible = false
 
 [node name="PauseButton" parent="ForegroundOverlay" instance=ExtResource("2_e15vu")]
+unique_name_in_owner = true
 visible = false
 offset_left = 8.0
 offset_top = 8.0

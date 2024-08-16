@@ -93,12 +93,8 @@ func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self
 	var sceneTree: SceneTree = self.get_tree()
 	sceneTree.paused = paused
 
-	if sceneTree.paused: GlobalOverlay.fadeIn()
-	else: GlobalOverlay.fadeOut()
-
-	var isTreePaused := sceneTree.paused # Cache? :')
-	GlobalOverlay.setPauseSettingsVisibility(isTreePaused)
-	return isTreePaused
+	GlobalOverlay.showPauseVisuals(sceneTree.paused)
+	return sceneTree.paused
 
 
 ## Toggles [member SceneTree.paused] and returns the resulting paused status.
