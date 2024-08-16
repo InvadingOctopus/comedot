@@ -26,13 +26,13 @@ extends Node
 
 #region State
 
-@onready var debugWindow:	Window = %DebugWindow
-@onready var labels:		Node  = %Labels
-@onready var label:			Label = %Label
-@onready var warningLabel:	Label = %WarningLabel
-@onready var watchListLabel:Label = %WatchListLabel
+@onready var debugWindow:	 Window = %DebugWindow
+@onready var labels:		 Node   = %Labels
+@onready var label:			 Label  = %Label
+@onready var warningLabel:	 Label  = %WarningLabel
+@onready var watchListLabel: Label  = %WatchListLabel
 
-@onready var testBackground:Node2D = %TestBackground
+@onready var testBackground: Node2D = %TestBackground
 
 var previousChartWindowInitialPosition: Vector2i
 
