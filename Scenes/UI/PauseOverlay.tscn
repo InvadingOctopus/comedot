@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3o0h88u2yifr"]
+[gd_scene load_steps=7 format=3 uid="uid://b3o0h88u2yifr"]
 
 [ext_resource type="Script" path="res://Scenes/UI/PauseOverlay.gd" id="1_sck66"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_k0ue2"]
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://Scenes/UI/BusVolumeUI.tscn" id="2_ryoqm"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="3_7sumf"]
+[ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_612vj"]
 font = ExtResource("2_k0ue2")
@@ -65,8 +66,9 @@ busTitle = "TUNES"
 
 [node name="ExtraLabel" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 24)
+custom_minimum_size = Vector2(312, 24)
 layout_mode = 2
+label_settings = ExtResource("5_su7p3")
 autowrap_mode = 3
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
