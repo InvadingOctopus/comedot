@@ -59,17 +59,17 @@ func _input(event: InputEvent) -> void:
 
 	if Input.is_action_just_released(Actions.windowToggleAlwaysOnTop):
 		var isAlwaysOnTop := DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP)
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, not isAlwaysOnTop)
-		Debug.showTemporaryLabel(&"Window Always on Top", str(not isAlwaysOnTop))
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, not isAlwaysOnTop) # `not` because it's a toggle.
+		GlobalOverlay.createTemporaryLabel(str("Window Always on Top: ", not isAlwaysOnTop))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	if Input.is_action_just_released(Actions.windowResizeTo720):
 		DisplayServer.window_set_size(Vector2i(1280, 720))
-		Debug.showTemporaryLabel(&"Window Size", "1280 x 720")
+		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1280 x 720"))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 	elif Input.is_action_just_released(Actions.windowResizeTo1080):
 		DisplayServer.window_set_size(Vector2i(1920, 1080))
-		Debug.showTemporaryLabel(&"Window Size", "1920 x 1080")
+		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1920 x 1080"))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	# Save & Load

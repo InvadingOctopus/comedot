@@ -118,7 +118,7 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 	# BUG:  Does not save all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
 
-	Debug.showTemporaryLabel(&"Game State", "Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
+	GlobalOverlay.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
 	await Debug.printLog("Saving state → " + Global.saveFilePath)
 
 	var sceneTree := get_tree()
@@ -141,7 +141,7 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 	# BUG:  Does not restore all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
 
-	Debug.showTemporaryLabel(&"Game State", "Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
+	GlobalOverlay.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
 	await Debug.printLog("Loading state ← " + Global.saveFilePath)
 
 	var sceneTree := get_tree()
@@ -170,6 +170,6 @@ func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` b
 	var screenshotImage := self.get_viewport().get_texture().get_image() # Capture what the player sees
 	screenshotImage.save_jpg(screenshotPath)
 
-	Debug.showTemporaryLabel(&"Screenshot", time + " " + titleSuffix)
+	GlobalOverlay.createTemporaryLabel(str("Screenshot ", time + " " + titleSuffix))
 
 #endregion
