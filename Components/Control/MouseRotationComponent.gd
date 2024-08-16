@@ -55,9 +55,10 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 func _input(event: InputEvent) -> void:
 	# Supress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
-		if event.is_action(GlobalInput.Actions.turnLeft) \
-		or event.is_action(GlobalInput.Actions.turnRight):
-			if self.isEnabled: printDebug("Turn action received. Disabling self so TurningControlComponent can work.")
+		if self.isEnabled \
+		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
+			printDebug("Turn action received. Disabling self so TurningControlComponent can work.")
+			GlobalOverlay.createTemporaryLabel("Mouse aiming off if turning. Click to reenable")
 			self.isEnabled = false
 			setMouseCursor(false)
 		elif not self.isEnabled and Input.get_mouse_button_mask() != 0:
@@ -74,7 +75,7 @@ func _physics_process(delta: float) -> void:
 	# TBD: Where to `get_global_mouse_position()` from? The parentEntity or nodeToRotate?
 	# NOTICE: Can't use `self.get_global_mouse_position()` because Component is not a CanvasItem :(
 	# `DisplayServer.mouse_get_position()` doesn't work well either.
-	
+
 	didRotateThisFrame = false
 	previousRotation   = nodeToRotate.global_rotation
 
@@ -90,11 +91,11 @@ func _physics_process(delta: float) -> void:
 		var rotateTo: 		float   = nodePosition.angle_to_point(mousePosition)
 
 		nodeToRotate.global_rotation = rotate_toward(rotateFrom, rotateTo, rotationSpeed * delta)
-		
+
 		if shouldShowDebugInfo:
 			Debug.watchList.rotateFrom	= rotateFrom
 			Debug.watchList.rotateTo	= rotateTo
-	
+
 	# Update flags
 
 	if not is_equal_approx(nodeToRotate.global_rotation, previousRotation):
