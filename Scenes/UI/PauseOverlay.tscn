@@ -29,27 +29,49 @@ text = "COMEDOT"
 label_settings = SubResource("LabelSettings_612vj")
 horizontal_alignment = 1
 vertical_alignment = 1
+uppercase = true
 script = ExtResource("3_7sumf")
 hueModifier = 0.5
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="SubtitleLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.8)
+layout_mode = 2
+text = "GODOT FRAMEWORK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="VolumeContainer" type="MarginContainer" parent="VBoxContainer/CenterContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="GridContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="GridContainer" type="VBoxContainer" parent="VBoxContainer/CenterContainer/VolumeContainer"]
 layout_mode = 2
 
-[node name="SoundVolumeUI" parent="VBoxContainer/MarginContainer/GridContainer" instance=ExtResource("2_ryoqm")]
+[node name="SoundVolumeUI" parent="VBoxContainer/CenterContainer/VolumeContainer/GridContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
 busIndex = 1
 busTitle = "SFX"
 
-[node name="MusicVolumeUI" parent="VBoxContainer/MarginContainer/GridContainer" instance=ExtResource("2_ryoqm")]
+[node name="MusicVolumeUI" parent="VBoxContainer/CenterContainer/VolumeContainer/GridContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
 busTitle = "TUNES"
+
+[node name="ExtraLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 24)
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
