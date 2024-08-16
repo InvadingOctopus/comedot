@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=9 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" path="res://AutoLoad/GlobalOverlay.gd" id="1_ym7ug"]
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://Scenes/UI/PauseButton.tscn" id="2_e15vu"]
 [ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://Scenes/UI/PauseSettingsUI.tscn" id="3_sywc3"]
+[ext_resource type="Script" path="res://Scripts/UI/TemporaryLabelList.gd" id="4_bpooc"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
 length = 0.001
@@ -123,6 +124,17 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 32.0
 offset_bottom = 32.0
+
+[node name="LabelsList" type="VBoxContainer" parent="ForegroundOverlay"]
+unique_name_in_owner = true
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 59.0
+offset_bottom = 48.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("4_bpooc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true

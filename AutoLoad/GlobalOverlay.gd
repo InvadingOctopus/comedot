@@ -10,11 +10,16 @@ extends Node
 #region Dependencies
 @onready var animationPlayer	:= %AnimationPlayer
 @onready var pauseSettingsUI	:= %PauseSettingsUI
+@onready var labelsList			:= %LabelsList
 #endregion
 
 
 func setPauseSettingsVisibility(visible: bool) -> void:
 	pauseSettingsUI.visible = visible
+
+
+func createTemporaryLabel(text: String) -> Label:
+	return labelsList.createTemporaryLabel(text)
 
 
 #region Animations
