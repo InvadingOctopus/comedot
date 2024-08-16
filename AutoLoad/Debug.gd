@@ -90,7 +90,7 @@ func displayInitializationMessage() -> void:
 
 	print_rich(str("[color=white][b]Comdedot\n", message))
 
-	self.showTemporaryLabel(Global.frameworkTitle, message)
+	self.addTemporaryLabel(Global.frameworkTitle, message)
 
 #endregion
 
@@ -108,7 +108,10 @@ func _process(_delta: float) -> void:
 	watchListLabel.text = text
 
 
-func showTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> void:
+## Adds a temporary entry to the [member watchList] for the specified number of seconds.
+## TIP: For gameplay related messages, use [method GlobalOverlay.createTemporaryLabel].
+## NOTE: Does NOT use [TemporaryLabel].
+func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> void:
 	watchList[key] = text
 
 	# Create a temporary timer to remove the key
