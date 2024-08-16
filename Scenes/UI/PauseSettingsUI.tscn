@@ -24,8 +24,8 @@ layout_mode = 2
 [node name="SoundVolumeUI" parent="MarginContainer/GridContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
 busIndex = 1
-busTitle = "S"
+busTitle = "SFX"
 
 [node name="MusicVolumeUI" parent="MarginContainer/GridContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
-busTitle = "M"
+busTitle = "TUNES"

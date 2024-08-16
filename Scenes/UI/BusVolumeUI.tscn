@@ -11,19 +11,28 @@ busIndex = 2
 
 [node name="BusLabel" type="Label" parent="."]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+size_flags_horizontal = 10
 text = "V"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="DecreaseButton" type="Button" parent="."]
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 text = "«"
 
 [node name="VolumeLabel" type="Label" parent="."]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="IncreaseButton" type="Button" parent="."]
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 text = "»"
 
