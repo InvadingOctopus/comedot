@@ -1,5 +1,7 @@
-# AutoLoad
+## AutoLoad
 ## Global data and code provided by the framework for all games, such as constants, flags and helper functions etc.
+## For player control & input actions, see [GlobalInput]. 
+## For visuals and sounds that must be present in every scene, see [GlobalOverlay].
 
 extends Node
 
@@ -17,7 +19,6 @@ static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
 static var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
 
 #endregion
-
 
 #region Constants
 
