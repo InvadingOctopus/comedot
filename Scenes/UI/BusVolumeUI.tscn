@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://Scenes/UI/BusVolumeUI.gd" id="1_06fqj"]
 
 [node name="BusVolumeUI" type="GridContainer"]
-offset_right = 88.0
-offset_bottom = 92.0
+offset_right = 76.0
+offset_bottom = 16.0
 columns = 4
 script = ExtResource("1_06fqj")
 busIndex = 2
