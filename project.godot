@@ -51,7 +51,7 @@ window/stretch/scale_mode="integer"
 
 [editor]
 
-script/templates_search_path="res://Templates"
+script/templates_search_path="res://Templates/Scripts"
 naming/default_signal_callback_name="on{NodeName}_{signalName}"
 naming/default_signal_callback_to_self_name="on{SignalName}"
 naming/scene_name_casing=1
