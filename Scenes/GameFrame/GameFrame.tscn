@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
-[ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scene/PlatformSceneTemplate.tscn" id="2_agfhx"]
+[ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformSceneTemplate.tscn" id="2_agfhx"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_shkaw"]
 [ext_resource type="Script" path="res://Scripts/UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://Scenes/GameFrame/MainMenuButtons.tscn" id="3_27uyb"]

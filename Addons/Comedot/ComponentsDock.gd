@@ -38,14 +38,14 @@ const acceptedFileSuffix		:= "component.tscn"
 
 const entityBaseScene			:= "res://Entities/Entity.tscn"
 const entityBaseScript			:= "res://Entities/Entity.gd"
-const entityScriptTemplate		:= "res://Templates/Entity/EntityTemplate.gd"
+const entityScriptTemplate		:= "res://Templates/Scripts/Entity/EntityTemplate.gd"
 
-const areaEntityTemplate		:= "res://Templates/Entity/AreaEntityTemplate.tscn"
-const bodyEntityTemplate		:= "res://Templates/Entity/CharacterBodyEntityTemplate.tscn"
-const spriteEntityTemplate		:= "res://Templates/Entity/SpriteEntityTemplate.tscn"
+const areaEntityTemplate		:= "res://Templates/Scripts/Entity/AreaEntityTemplate.tscn"
+const bodyEntityTemplate		:= "res://Templates/Scripts/Entity/CharacterBodyEntityTemplate.tscn"
+const spriteEntityTemplate		:= "res://Templates/Scripts/Entity/SpriteEntityTemplate.tscn"
 
 const componentBaseScene		:= "res://Components/Component.tscn"
-const componentScriptTemplate	:= "res://Templates/Component/ComponentTemplate.gd"
+const componentScriptTemplate	:= "res://Templates/Scripts/Component/ComponentTemplate.gd"
 
 const componentIcon			:= preload("res://Assets/Icons/Component.svg")
 

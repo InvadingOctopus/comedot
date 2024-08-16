@@ -21,7 +21,7 @@
 
 4. Set the Body's Physics Collision Layer to `players` and the Mask to `terrain`. Add other categories as needed.
 
-* 💡 Try one of the templates in `/Templates/Entity/`
+* 💡 Try one of the templates in `/Templates/Entities/`
 
 ### 🕹️ Add Player Control and Movement
 

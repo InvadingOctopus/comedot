@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="10_7jquu"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
 [ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
-[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entity/BulletEntityTemplate.tscn" id="11_xrd1n"]
+[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="11_xrd1n"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="12_4b1vu"]
 [ext_resource type="Script" path="res://Scripts/Visual/MatchSpriteFlip.gd" id="12_n5pr4"]
 [ext_resource type="PackedScene" uid="uid://ccsoh7ro7xqlb" path="res://Components/Control/PlatformerControlComponent.tscn" id="13_2teto"]

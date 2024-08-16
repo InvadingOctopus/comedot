@@ -6,11 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_fnve7"]
 [ext_resource type="Script" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="4_vhgyu"]
-[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entity/BulletEntityTemplate.tscn" id="5_8jneb"]
+[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="5_8jneb"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="5_87ms1"]
 [ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="5_kihht"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
-[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scene/OverheadMapTemplate.tscn" id="7_f5htu"]
+[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="7_f5htu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_esh4c"]
 size = Vector2(14, 12)

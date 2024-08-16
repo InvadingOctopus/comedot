@@ -27,7 +27,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 > **Godot 4.3 is required**. _Embrace the Future_ ✨  
 > The first time you load this project, there may be errors because Godot will re-import the asset files and set the internal IDs for textures etc. To fix, just close and reopen the project.
 
-🚀 **For a quick glance:** See the `/Templates/Scene/` folder.
+🚀 **For a quick glance:** See the `/Templates/Scenes/` folder.
 
 ⚙️ **To use this framework for your own games:**
 
