@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://ynn3yny1vw1j"]
+
+[ext_resource type="LabelSettings" uid="uid://crn5uj0c6san2" path="res://Assets/Themes/Label/TemporaryLabel.tres" id="1_r25na"]
+
+[sub_resource type="Animation" id="Animation_p7665"]
+resource_name = "fadeOut"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0, 0.5, 1, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_rrs6i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xatav"]
+_data = {
+"RESET": SubResource("Animation_rrs6i"),
+"fadeOut": SubResource("Animation_p7665")
+}
+
+[node name="TemporaryLabel" type="Label"]
+offset_right = 102.0
+offset_bottom = 8.0
+text = "COMEDOT"
+label_settings = ExtResource("1_r25na")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_xatav")
+}
+
+[connection signal="timeout" from="Timer" to="AnimationPlayer" method="play" binds= [&"fadeOut"]]
