@@ -7,7 +7,7 @@ A project template and framework for making 2D games by adding components to ent
 
 This is a work in progress. For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
-ALERT: The first time you load this project, there may be errors/glitches because Godot will re-import the asset files and set the IDs for textures etc. To fix, just close and reopen the project.
+ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for textures etc. To fix, just close and reopen the project.
 
 THANKS:
 Tilesets:   https://kenney.nl/assets/1-bit-pack  
