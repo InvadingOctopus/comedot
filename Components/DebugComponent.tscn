@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bifi5b0gcmh1v"]
+[gd_scene load_steps=4 format=3 uid="uid://bifi5b0gcmh1v"]
 
 [ext_resource type="Script" path="res://Components/DebugComponent.gd" id="1_sj8xd"]
+[ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="2_o2bsa"]
 
 [sub_resource type="Theme" id="Theme_8onww"]
 default_font_size = 8
@@ -23,3 +24,4 @@ theme = SubResource("Theme_8onww")
 unique_name_in_owner = true
 layout_mode = 2
 text = "DebugLabel"
+label_settings = ExtResource("2_o2bsa")
