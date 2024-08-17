@@ -37,6 +37,12 @@ class Actions: ## Input event labels
 #endregion
 
 
+#region State
+## May be set to `false` to dsiable the pause/unpause shortcut specific situations, such as during a Game Over screen or network UI.
+var isPauseShortcutAllowed: bool = true
+#endregion
+
+
 ## Global keyboard shortcuts
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
@@ -53,8 +59,8 @@ func _input(event: InputEvent) -> void:
 
 	# Game
 
-	if Input.is_action_just_pressed(Actions.pause):
-		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this okay??
+	if isPauseShortcutAllowed and Input.is_action_just_pressed(Actions.pause):
+		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
 		Global.togglePause()
 
 	# Window
