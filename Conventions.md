@@ -27,10 +27,20 @@ https://www.swift.org/documentation/api-design-guidelines/
 	- Examples: UINode, HUDColor
 
 * Names should make grammatical sense wherever possible.
-	- Functions should read like a verb/action.
+	- Functions should read like a verb/action, or a question if their job is to check something and return a boolean.
 	- Booleans should start with `is`, `has`, `should` etc. This may make autocompletion easier by listing all booleans.
 
 * Text names/IDs such as for node groups, input actions and animations should be camelCase, to match the convention of enums: `GlobalInput.Actions.yeet = &"yeet"`
+
+# Functions & Methods
+
+* Functions that perform a quick retrieval operation, like returning a member from an Array or Dictionary, should be named starting with `get`: e.g. `getComponent(...)`
+
+* Functions that need to do a slower _search_ operation, like scanning a list of all child nodes, should be named starting with `find`: e.g. `findComponent(...)`
+
+* Functions that add an existing object to a parent, container or list, should be named starting with `add`: e.g. `addText(...)`
+
+* Functions that _create_ a new object and then add it to a parent, should be named starting with `create`: e.g. `createLabel(...)`
 
 # Signals
 
