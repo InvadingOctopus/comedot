@@ -192,6 +192,15 @@ func removeComponent(componentType: Script, shouldFree: bool = true) -> bool:
 		componentToRemove.removeFromEntity(shouldFree)
 		return true
 
+
+## Calls [method removeComponent] on each of the component types passed in the array.
+## Returns: The number of components that were found and removed.
+func removeComponents(componentTypes: Array[Script]) -> int:
+	var removalCount: int = 0
+	for componentType in componentTypes:
+		if self.removeComponent(componentType): removalCount += 1
+	return removalCount
+
 #endregion
 
 
