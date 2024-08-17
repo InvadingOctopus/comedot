@@ -42,7 +42,7 @@ func onHealthChanged() -> void:
 		if health.value <= 0:
 			healthDidZero.emit()
 			if shouldRemoveParentOnZero:
-				parentEntity.requestDeletion()
+				if parentEntity: parentEntity.requestDeletion()
 
 
 ## [param damageAmount] must be a positive number. Negative values will INCREASE health.

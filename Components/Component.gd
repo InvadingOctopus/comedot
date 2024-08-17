@@ -150,6 +150,9 @@ func getParentEntity() -> Entity:
 func getCoComponent(type: Script) -> Component:
 	# CHECK: Is [Script] the correct type to accept as argument?
 	# Duplicates code from `Entity.getComponent()` to improve performance?
+	
+	if not parentEntity: return null
+
 	var typeName: StringName = type.get_global_name()
 	var foundComponent: Component = parentEntity.components.get(typeName)
 	if not foundComponent:
