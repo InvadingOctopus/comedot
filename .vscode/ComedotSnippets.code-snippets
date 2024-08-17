@@ -64,8 +64,8 @@
 		"prefix": "varReturn",
 		"body": [
 			"var ${2:objectName}: ${3:objectType}:",
-			"\tget: return ${1:objectParent}.${2:objectName}",
-			"\n$0"
+			"\tget: return ${1:objectParent}.$0${2:objectName}",
+			"\n"
 		],
 		"description": "A property that returns another object's property."
 	},
@@ -104,6 +104,15 @@
 			"\t${1:property} = newValue$0"
 		],
 		"description": "A property setter stub."
+	},
+
+	"Signal Connection": {
+		"prefix": ".connect",
+		"body": [ 
+			".connect(self.on${1}_${2})",
+			"$0"
+		],
+		"description": "A signal connector."
 	},
 
 	"Debug Info": {
