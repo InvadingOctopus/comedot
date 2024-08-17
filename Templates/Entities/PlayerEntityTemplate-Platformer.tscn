@@ -217,7 +217,7 @@ stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResourc
 
 [node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
 health = SubResource("Resource_cei4g")
-shouldRemoveParentOnZero = true
+shouldRemoveEntityOnZero = true
 
 [node name="FactionComponent" parent="." instance=ExtResource("7_3141c")]
 factions = 2

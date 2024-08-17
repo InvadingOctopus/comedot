@@ -8,21 +8,24 @@ extends Component
 
 #region Parameters
 @export var health: Stat
-@export var shouldRemoveParentOnZero: bool = false
+@export var shouldRemoveEntityOnZero: bool = false
 #endregion
 
 #region Signals
 
-## May be a negative number.
-signal healthDidDecrease(difference: int)
+## A decrease is a negative [param difference], so this signal may be connected to the same function as [signal didIncrease].
+signal didDecrease(difference: int)
 
-signal healthDidIncrease(difference: int)
+## [param difference] is always positive, so this signal may be connected to the same function as [signal didDecrease], which always has a negative [param difference].
+signal didIncrease(difference: int)
 
 ## May be less than zero.
-signal healthDidZero
+signal didZero
 
-## May be greater than maximumHealth.
-signal healthDidMax
+## May be greater than [member health].[member Stat.max].
+signal didMax
+
+signal willRemoveEntity
 
 #endregion
 
@@ -35,14 +38,16 @@ func _ready() -> void:
 func onHealthChanged() -> void:
 		var _difference: int = health.previousChange # A decrease should appear as a negative difference
 
-		if health.value < health.previousValue: healthDidDecrease.emit(health.previousChange)  # TBD: Should this be a negative number?
-		if health.value > health.previousValue: healthDidIncrease.emit(health.previousChange)
+		if health.value < health.previousValue: didDecrease.emit(health.previousChange) # NOTE: This should be a negative number so that both signals may be connected to the same function.
+		if health.value > health.previousValue: didIncrease.emit(health.previousChange)
 		%DebugIndicator.text = str(health.value)
 
 		if health.value <= 0:
-			healthDidZero.emit()
-			if shouldRemoveParentOnZero:
-				if parentEntity: parentEntity.requestDeletion()
+			didZero.emit()
+			
+			if shouldRemoveEntityOnZero and parentEntity: 
+				willRemoveEntity.emit()
+				parentEntity.requestDeletion()
 
 
 ## [param damageAmount] must be a positive number. Negative values will INCREASE health.
@@ -58,6 +63,6 @@ func heal(healAmount: int) -> int:
 	health.value += healAmount
 
 	if health.value >= health.max:
-		healthDidMax.emit()
+		didMax.emit()
 
 	return health.value
