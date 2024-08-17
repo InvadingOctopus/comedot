@@ -37,7 +37,7 @@ extends Resource
 		value = clamp(newValue, min, max)
 
 		if value != previousValue:
-			previousChange = previousValue - value
+			previousChange = value - previousValue # NOTE: A decrease should be a negative change.
 
 			if logChanges:
 				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` because we already checked for changes.
@@ -57,7 +57,7 @@ extends Resource
 #region Derived Properties
 
 var previousValue:  int
-var previousChange: int ## previousValue - value
+var previousChange: int ## [member value] - [member previousValue] so a decrease is a negative number.
 
 var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
 	get: return float(value) / float(max) * 100.0
