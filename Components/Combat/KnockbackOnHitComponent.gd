@@ -67,6 +67,6 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 	# Any more? For example, a jump when taking damage in a platform game.
 	body.velocity += additionalVector
 
-	if shouldShowDebugInfo: printLog(str("-damageDirection: ", -damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", body.velocity: ", body.velocity))
+	if shouldShowDebugInfo: printDebug(str("-damageDirection: ", -damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", body.velocity: ", body.velocity))
 
 	characterBodyComponent.queueMoveAndSlide()
