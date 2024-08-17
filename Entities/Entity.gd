@@ -1,7 +1,7 @@
 ## The core of the composition framework. Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
 ## Provides methods for managing components and other common tasks.
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
-## NOTE: If the entity is a [CharacterBody2D], a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components can queue their updates through it.
+## TIP: If the entity is a [CharacterBody2D] then a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components may queue their updates through it.
 
 @icon("res://Assets/Icons/Entity.svg")
 
@@ -11,15 +11,17 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 #region Parameters
 
-## The primary [CharacterBody2D] represented by this [Entity] for child [Component]s to manipulate.
-## If left `null`, the [Entity] [Node] itself may be used if it's a [CharacterBody2D],
-## otherwise it will be the first matching child node.
-@export var body: CharacterBody2D
-
 ## The primary [Area2D] represented by this [Entity] for child [Component]s to manipulate.
 ## If left `null`, the [Entity] [Node] itself may be used if it's a [Area2D],
 ## otherwise it will be the first matching child node.
+## Call [method getArea] to automatically set this value.
 @export var area: Area2D
+
+## The primary [CharacterBody2D] represented by this [Entity] for child [Component]s to manipulate.
+## If left `null`, the [Entity] [Node] itself may be used if it's a [CharacterBody2D],
+## otherwise it will be the first matching child node.
+## Call [method getBody] to automatically set this value.
+@export var body: CharacterBody2D
 
 ## If `false`, suppresses log messages from this entity and its child [Component]s.
 @export var isLoggingEnabled:		bool = true
@@ -31,6 +33,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 
 #region State
+
 ## A dictionary of {StringName:Component} where the key is the `class_name` of each component.
 ## Updated by the [signal Node.child_entered_tree] signal.
 ## Used by components to quickly find other sibling components, without a dynamic search at runtime.
@@ -38,6 +41,7 @@ var components := {}
 
 ## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
 var functionsAlreadyCalledOnceThisFrame := {}
+
 #endregion
 
 
@@ -66,7 +70,7 @@ func _process(_delta: float) -> void:
 
 ## May be called by a child component such as a [HealthComponent] when this parent [Entity] is supposed to be removed from the scene.
 ## May be overridden in subclasses to check additional conditions and logic.
-func requestDeletion() -> bool:
+func requestDeletion() -> bool: # TBD: Should this be renamed to `requestDeletionOfEntity()`?
 	self.queue_free()
 	return true
 
@@ -77,7 +81,7 @@ func _exit_tree() -> void:
 #endregion
 
 
-#region Components & Child Nodes
+#region Internal Component Management Functions
 
 func childEnteredTree(node: Node) -> void:
 	# Herd components into the [components] dictionary.
@@ -120,22 +124,10 @@ func unregisterComponent(componentToRemove: Component) -> void:
 		printError(str("Component of type ", componentType, " already in dictionary: ", existingComponent, " but not the same as componentToRemove: ", componentToRemove))
 		# NOTE: TBD: This is a weird situation which should not happen, so it must be considered an error.
 
+#endregion
 
-## Searches all child nodes and returns an array of all nodes which inherit from [Component].
-## NOTE: Does NOT include children of children.
-## WARNING: This may be slow. Use the [member Entity.components] dictionary instead.
-func findChildrenComponents() -> Array[Component]:
-	# This duplicates most code from `getChildrenOfType` because of ensuring strong typing.
-	var childrenNodes: Array[Node] = self.get_children()
-	var childrenComponents: Array[Component] = []
 
-	var filter := func isComponent(node: Node) -> bool:
-		return is_instance_of(node, Component)
-
-	childrenComponents.assign(childrenNodes.filter(filter))
-	printLog("getComponents(): " + str(childrenComponents))
-	return childrenComponents
-
+#region External Component Management Interface
 
 ## Checks the [member Entity.components] dictionary after converting the [param type] to a [StringName] key.
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
@@ -144,36 +136,6 @@ func getComponent(type: Script) -> Component:
 	var typeName: StringName = type.get_global_name()
 	var foundComponent: Component = self.components.get(typeName)
 	return foundComponent
-
-
-## Checks all components in the [member Entity.components] dictionary and returns the first matching component which inherits from the specified [param type].
-## NOTE: Slower than [method Entity.getComponent]
-func findFirstComponentSublcass(type: Script) -> Component:
-	for component: Component in self.components.values():
-		if is_instance_of(component, type):
-			return component
-	return null
-
-
-## NOTE: Does NOT search children of children.
-func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
-	var children: Array[Node] = self.get_children()
-	var childrenFiltered: Array[Node] = []
-
-	var filter := func matchesType(node: Node) -> bool:
-		return is_instance_of(node, type)
-
-	childrenFiltered.assign(children.filter(filter))
-	printDebug("getChildrenOfType(" + str(type) + "): " + str(childrenFiltered))
-	return childrenFiltered
-
-
-## NOTE: Also returns any subclasses which inherit from the specified [param type].
-## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
-func findFirstChildOfType(type: Variant) -> Node:
-	var result: Node = Tools.findFirstChildOfType(self, type)
-	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
-	return result
 
 
 ## Creates a copy of the specified component's scene and adds it as a child node of this entity.
@@ -192,6 +154,68 @@ func addNewComponent(type: Script) -> Component:
 	# Load and instantiate the component scene.
 
 	return Tools.loadSceneAndAddInstance(scenePath, self)
+
+
+## Searches all child nodes and returns an array of all nodes which inherit from [Component].
+## NOTE: Does NOT include children of children.
+## WARNING: This may be slow. Use the [member Entity.components] dictionary instead.
+func findChildrenComponents() -> Array[Component]:
+	# This duplicates most code from `getChildrenOfType` because of ensuring strong typing.
+	var childrenNodes: Array[Node] = self.get_children()
+	var childrenComponents: Array[Component] = []
+
+	var filter := func isComponent(node: Node) -> bool:
+		return is_instance_of(node, Component)
+
+	childrenComponents.assign(childrenNodes.filter(filter))
+	printLog("getComponents(): " + str(childrenComponents))
+	return childrenComponents
+
+
+## Checks all components in the [member Entity.components] dictionary and returns the first matching component which inherits from the specified [param type].
+## NOTE: Slower than [method Entity.getComponent]
+func findFirstComponentSublcass(type: Script) -> Component:
+	for component: Component in self.components.values():
+		if is_instance_of(component, type):
+			return component
+	return null
+
+
+## Removes a component that has been registered in the [member components] Dictionary and frees (deletes) the component unless specified.
+## NOTE: Removes only a SINGLE component of the specified type. To remove multiple children of the same type, use [method removeChildrenOfType].
+func removeComponent(componentType: Script, shouldFree: bool = true) -> bool:
+	var componentToRemove := self.getComponent(componentType)
+	
+	if not componentToRemove:
+		return false
+	else:
+		componentToRemove.removeFromEntity(shouldFree)
+		return true
+
+#endregion
+
+
+#region General Child Node Management
+
+## NOTE: Also returns any subclasses which inherit from the specified [param type].
+## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
+func findFirstChildOfType(type: Variant) -> Node:
+	var result: Node = Tools.findFirstChildOfType(self, type)
+	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))
+	return result
+
+
+## NOTE: Does NOT search children of children.
+func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
+	var children: Array[Node] = self.get_children()
+	var childrenFiltered: Array[Node] = []
+
+	var filter := func matchesType(node: Node) -> bool:
+		return is_instance_of(node, type)
+
+	childrenFiltered.assign(children.filter(filter))
+	printDebug("getChildrenOfType(" + str(type) + "): " + str(childrenFiltered))
+	return childrenFiltered
 
 
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
@@ -214,6 +238,24 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO
 	return childrenRemoved
 
 
+## Returns the [member area] property or searches for an [Area2D].
+## The area may be this [Entity] [Node] itself, or the first matching child node.
+func getArea() -> Area2D:
+	if self.area == null:
+
+		# First, is the entity itself an [Area2D]?
+		var selfAsArea: Area2D = get_node(".") as Area2D # HACK: TODO: Find better way to cast
+
+		if selfAsArea:
+			self.area = selfAsArea
+			printLog("getArea(): self")
+		else:
+			self.area = findFirstChildOfType(Area2D)
+			printLog("getArea(): " + str(area))
+
+	return self.area
+
+
 ## Returns the [member body] property or searches for a [CharacterBody2D].
 ## The body may be this [Entity] [Node] itself, or the first matching child node.
 func getBody() -> CharacterBody2D:
@@ -232,23 +274,6 @@ func getBody() -> CharacterBody2D:
 	return self.body
 
 
-## Returns the [member area] property or searches for an [Area2D].
-## The area may be this [Entity] [Node] itself, or the first matching child node.
-func getArea() -> Area2D:
-	if self.area == null:
-
-		# First, is the entity itself an [Area2D]?
-		var selfAsArea: Area2D = get_node(".") as Area2D # HACK: TODO: Find better way to cast
-
-		if selfAsArea:
-			self.area = selfAsArea
-			printLog("getArea(): self")
-		else:
-			self.area = findFirstChildOfType(Area2D)
-			printLog("getArea(): " + str(area))
-
-	return self.area
-
 #endregion
 
 
@@ -264,8 +289,9 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 		function.callv(arguments)
 
 
+## Uses a [LabelComponent], if available, to display the specified text.
 func displayLabel(text: String, animation: StringName = Global.Animations.blink) -> void:
-	var labelComponent: LabelComponent = self.findFirstComponentSublcass(LabelComponent)
+	var labelComponent: LabelComponent = self.getComponent(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)
 
