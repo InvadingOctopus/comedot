@@ -138,3 +138,6 @@ libraries = {
 "": SubResource("AnimationLibrary_k1gpf")
 }
 autoplay = "overlayFadeOut"
+
+[node name="Sounds" type="Node" parent="."]
+unique_name_in_owner = true

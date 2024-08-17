@@ -50,6 +50,7 @@ class Groups:
 	const zones			:= &"zones"
 
 	const turnBased		:= &"turnBased"
+	const audio			:= &"audio" ## Temporary sound effects
 
 #endregion
 
@@ -63,6 +64,12 @@ class Animations: ## Animation labels
 	const blink				:= &"blink"
 
 #endregion
+
+
+class AudioBuses:
+	const master:= &"Master"
+	const sfx	:= &"SFX"
+	const music	:= &"Music"
 
 
 class TileMapCustomData: ## A list of names for the custom data types that [TileMapLayer] Tile Sets may set on tiles.

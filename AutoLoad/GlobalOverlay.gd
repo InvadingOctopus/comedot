@@ -7,6 +7,11 @@
 extends Node
 
 
+#region Parameters
+var maximumNumberOfSounds: int = 10 # TBD
+#endregion
+
+
 #region State
 var pauseOverlay: PauseOverlay
 #endregion
@@ -25,6 +30,7 @@ const pauseOverlayScene := preload("res://Scenes/UI/PauseOverlay.tscn")
 @onready var animationPlayer	:= %AnimationPlayer
 @onready var pauseButton		:= %PauseButton
 @onready var labelsList			:= %LabelsList
+@onready var sounds				:= %Sounds
 #endregion
 
 
@@ -54,6 +60,31 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 func createTemporaryLabel(text: String) -> Label:
 	return labelsList.createTemporaryLabel(text)
+
+
+## Creates and returns an [AudioStreamPlayer2D], plays it, then deletes it.
+## Used for playing sound effects for nodes and entities that may be deleted before the audio finishes playing, such as enemy destruction or collectible pickup etc.
+func createAudioPlayer(stream: AudioStream, position: Vector2, bus: StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
+	# Check the limit on maximum number of sounds
+	# TODO: A better implementation, like [TemporaryLabelList]'s?
+	
+	if sounds.get_child_count() >= maximumNumberOfSounds:
+		# Delete the oldest sound (the one at the top of the subtree)
+		sounds.remove_child(sounds.get_child(0))
+
+	# Create the new sound
+	var audioPlayer: AudioStreamPlayer2D = AudioStreamPlayer2D.new()
+	audioPlayer.bus = bus
+	audioPlayer.stream = stream
+	audioPlayer.position = position
+	
+	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent 
+	sounds.add_child(audioPlayer) # CHECK: add_to_group before add_child or vice versa?
+	audioPlayer.owner = sounds # Necessary for persistence to a [PackedScene] for save/load.
+	audioPlayer.play() # TBD: Add playback position argument?
+	
+	audioPlayer.finished.connect(audioPlayer.queue_free)
+	return audioPlayer
 
 
 #region Animations
