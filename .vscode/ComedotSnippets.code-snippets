@@ -23,9 +23,9 @@
 	"Complex Function": {
 		"prefix": "func",
 		"body": [
-			"## ${4:Documentation}",
-			"func ${1:name}() -> ${2:Variant}:",
-			"\tif not ${3:isEnabled}: return null",
+			"## ${5:Documentation}",
+			"func ${1:name}(${2:parameter: Type}) -> ${3:Variant}:",
+			"\tif not ${4:isEnabled}: return null",
 			"\t$0",
 			"\treturn false",
 			"\n"
