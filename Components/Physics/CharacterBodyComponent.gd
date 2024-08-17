@@ -79,7 +79,7 @@ func _physics_process(delta: float) -> void:
 		updateStateBeforeMove(delta)
 		if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
 
-		parentEntity.callOnceThisFrame(body.move_and_slide)
+		parentEntity.callOnceThisFrame(body.move_and_slide) # TBD: PERFORMANCE: Should we just call this directly?
 		updateStateAfterMove(delta)
 
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
@@ -108,7 +108,7 @@ func updateStateAfterMove(_delta: float) -> void:
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	if self.shouldResetVelocityIfZeroMotion:
-		parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body])
+		parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) # TBD: PERFORMANCE: Should we just call this directly?
 
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 
