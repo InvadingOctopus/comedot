@@ -5,23 +5,32 @@ class_name GunRecoilComponent
 extends CharacterBodyManipulatingComponentBase
 
 # TODO: Beter physics
+# TODO: Option to apply dynamic knockback based on the bullet's velocity.
 # TODO: Handle dynamic removal and addition of a [GunComponent]
 
 
+#region Parameters
 ## The amount to multiply the normalized knockback vector by.
 @export_range(0, 1000, 50.0) var knockbackForce: float = 150.0
 
+@export var isEnabled: bool = true
+#endregion
+
+
+#region State
+var gunComponent: GunComponent:
+	get: return self.getCoComponent(GunComponent)
+#endregion
+
 
 func _ready() -> void:
-	var gunComponent: GunComponent = self.getCoComponent(GunComponent)
 	if not gunComponent:
-		printError("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?
+		printWarning("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?
 	gunComponent.didFire.connect(self.onGunComponentDidFire)
 
 
 func onGunComponentDidFire(bullet: Entity) -> void:
-
-	# TODO: Option to apply dynamic knockback based on the bullet's velocity.
+	if not isEnabled: return
 
 	#var bulletLinearMotionComponent: LinearMotionComponent = bullet.getComponent(LinearMotionComponent)
 
@@ -30,7 +39,7 @@ func onGunComponentDidFire(bullet: Entity) -> void:
 
 	# Get the bullet's direction.
 
-	var forceVector := Vector2.from_angle(bullet.global_rotation)
+	var forceVector: Vector2 = Vector2.from_angle(bullet.global_rotation)
 
 	# Knock the parent entity's body back in the opposite direction.
 
