@@ -73,6 +73,9 @@ func _ready() -> void:
 	value		= modulate.v
 	alpha		= modulate.a
 
+	# Reset if not enabled
+	if not isEnabled: modulate = Color.WHITE
+
 	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), str(self))
 
 
