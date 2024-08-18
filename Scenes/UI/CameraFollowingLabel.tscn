@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Scenes/UI/CameraFollowingLabel.gd" id="2_mlqdl"]
 [ext_resource type="Script" path="res://Scripts/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
 
-[node name="CameraFollowingLabel" type="CanvasLayer"]
+[node name="CameraFollowingLabelCanvas" type="CanvasLayer"]
 editor_description = "A Canvas for a Label that follows the Camera for a limited time then \"sticks\" to a fixed position."
 
 [node name="LabelContainer" type="CenterContainer" parent="."]
@@ -24,6 +24,7 @@ theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
 [node name="TextCyclingLabel" parent="LabelContainer/MarginContainer" instance=ExtResource("1_mgfb3")]
+unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("2_mlqdl")
 textStrings = Array[String](["Feather Label"])
