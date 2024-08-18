@@ -79,7 +79,7 @@ func updateIndicator() -> void:
 		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
 
-func _input(event: InputEvent):
+func _input(_event: InputEvent) -> void:
 	if not isEnabled or not hasCooldownCompleted or not haveInteracionsInRange: return
 
 	if Input.is_action_just_pressed("interact"): interact()
@@ -111,7 +111,7 @@ func showDebugInfo() -> void:
 
 #region Cooldown
 
-func startCooldown(overrideTime: float = self.cooldown):
+func startCooldown(overrideTime: float = self.cooldown) -> void:
 	super.startCooldown(overrideTime)
 	# Reduce the alpha
 	if interactionIndicator: interactionIndicator.modulate.a = 0.1
