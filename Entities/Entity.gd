@@ -308,7 +308,7 @@ func displayLabel(text: String, animation: StringName = Global.Animations.blink)
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
-			printLog("􀆄 PreDelete")
+			if isLoggingEnabled: printLog("􀆄 PreDelete")
 
 
 #region Logging

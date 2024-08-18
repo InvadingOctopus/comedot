@@ -117,11 +117,11 @@ func _notification(what: int) -> void:
 			if parentEntity:
 				willRemoveFromEntity()
 				self.parentEntity = null
-				printLog("􀆄 Unparented")
+				if isLoggingEnabled: printLog("􀆄 Unparented")
 
 		NOTIFICATION_PREDELETE:
 			# NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
-			printLog("􀆄 PreDelete")
+			if isLoggingEnabled: printLog("􀆄 PreDelete")
 
 #endregion
 
