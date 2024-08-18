@@ -13,14 +13,14 @@ extends CooldownComponent
 ## The [Entity] to instantiate a copy of when the Gun shoots.
 @export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
-const ammoCost: int = -1 ## Should be a negative number, to allow for situations where ammo might increase when firing. ;)
-@export var ammo: Stat
+@export var ammo:Stat
+@export var ammoCost: int = -1 ## The ammo used per shot. Should be a negative number, to allow for situations where ammo might increase when firing. ;)
 
 ## If `true`, the gun fires automatically without any player input.
-@export var autoFire := false
+@export var autoFire: bool = false
 
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
-@export var pressAgainToShoot := false
+@export var pressAgainToShoot: bool = false
 
 ## The position in relation to the Pivot where newly spawned bullets are placed.
 @export var bulletEmissionLocation: Vector2:
