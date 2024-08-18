@@ -64,7 +64,7 @@ func createTemporaryLabel(text: String) -> Label:
 
 ## Creates and returns an [AudioStreamPlayer2D], plays it, then deletes it.
 ## Used for playing sound effects for nodes and entities that may be deleted before the audio finishes playing, such as enemy destruction or collectible pickup etc.
-func createAudioPlayer(stream: AudioStream, position: Vector2, bus: StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
+func createAudioPlayer(stream: AudioStream, position: Vector2 = Vector2.ZERO, bus: StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
 	# Check the limit on maximum number of sounds
 	# TODO: A better implementation, like [TemporaryLabelList]'s?
 	
