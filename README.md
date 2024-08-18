@@ -9,7 +9,8 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and no backwards compatibility is guaranteed.
 
-![Custom Dock Plugin][comedock]
+🌳 _An example of a player entity's node tree:_  
+![components-tree]
 
 ⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
 
@@ -39,8 +40,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 > [!TIP]
 > * Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
 
-🌳 _An example of a player entity's node tree:_  
-![components-tree]
+![Custom Dock Plugin][comedock]
 
 🧩 Whenever your game needs an "actor" which has to react to events, like the player character or a monster, or an object with "behaviors" which could be reused for other objects, like interactive items or powerups:
 
@@ -86,6 +86,6 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [comedock]: https://i.imgur.com/SR3shzr.png "Custom Godot Editor Dock Plugin"
 [rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
-[components-tree]: https://i.imgur.com/5XqON69.png "Example Components Tree for a Player Entity"
+[components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
 
 [logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
