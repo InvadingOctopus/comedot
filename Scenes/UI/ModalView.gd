@@ -10,6 +10,8 @@ extends Node
 ## Must accept a [Variant] argument to receive the result of the modal UI.
 ## May be omitted if the [signal ModalView.didFinish] signal is used.
 @export var callbackOnFinish: Callable
+
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
@@ -18,8 +20,9 @@ signal didFinish(result: Variant)
 #endregion
 
 
-## Closes the modal view and calls the specified function, if any.
-func close(result: Variant = 0) -> void:
+## Closes this modal view and calls the [member callbackOnFinish] function, if any.
+func closeModalView(result: Variant = 0) -> void:
+	# DESIGN: The name is more verbose than `close()` to reduce ambiguity in more complex scenes which extend this script.
 	Debug.printLog(str("close(): ", result))
 	didFinish.emit(result)
 	if callbackOnFinish: callbackOnFinish.call(result)

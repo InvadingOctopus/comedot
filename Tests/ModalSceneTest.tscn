@@ -66,4 +66,4 @@ text = "CLOSE"
 position = Vector2(32, 32)
 collision_mask = 2147483648
 
-[connection signal="pressed" from="CloseButton" to="." method="close"]
+[connection signal="pressed" from="CloseButton" to="." method="closeModalView"]
