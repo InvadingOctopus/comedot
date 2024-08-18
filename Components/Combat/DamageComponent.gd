@@ -64,8 +64,10 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 
 func onAreaExited(areaExited: Area2D) -> void:
-	# No need to cast the area's type, just remove it from the array.
-	damageReceivingComponentsInContact.erase(areaExited)
+	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
+	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
+	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
+	if damageReceivingComponent: damageReceivingComponentsInContact.erase(damageReceivingComponent)
 
 
 ## Casts an [Area2D] as a [DamageReceivingComponent].

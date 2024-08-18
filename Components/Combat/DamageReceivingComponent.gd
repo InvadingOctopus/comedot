@@ -80,10 +80,12 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 func onAreaExited(areaExited: Area2D) -> void:
 	if not isEnabled: return
 
-	# No need to cast the area's type, just remove it from the array.
-	damageComponentsInContact.erase(areaExited)
-
-	# Reset the accumulatedFractionalDamage if there is no source of damage in contact.
+	# NOTE: Even though we don't need to use a [DamageComponent] here, we have to cast the type, to fix this Godot runtime error:
+	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
+	var damageComponent: DamageComponent = areaExited.get_node(".") as DamageComponent # HACK: TODO: Find better way to cast
+	if damageComponent: damageComponentsInContact.erase(damageComponent)
+	
+	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
 	if damageComponentsInContact.size() <= 0:
 		accumulatedFractionalDamage = 0
 
