@@ -1,5 +1,5 @@
 ## Represents a statistic on a character or object, such as the player's health or an enemy's attack power.
-## May be optionally tied to a UI HUD element to update the display whenever the value changes.
+## TIP: Use the `Scripts/UI/[StatsUI].gd` script to automatically display and update these values in a HUD during runtime.
 
 #@tool # To clamp values when editing stats in the editor. # WARNING: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
 class_name Stat
@@ -13,10 +13,10 @@ extends Resource
 @export var name:   StringName:
 	set(newValue):
 		if newValue.is_empty():
-			Debug.printWarning("Rejected attempt to set name to empty string")
+			Debug.printWarning("Rejected attempt to set name to empty string", str(self))
 			return
 		name = newValue
-		self.resource_name = name
+		self.resource_name = name # CHECK: Does this work without @tool?
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 @export var min:    int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.

@@ -1,5 +1,6 @@
 ## Stores an array of [Stat]s such as health and ammo for an [Entity].
-## TIP: Use the `Scripts/UI/StatsUI.gd` script to automatically display and update these values in a HUD during runtime.
+## TIP: Use the `Scripts/UI/[StatsUI].gd` script to automatically display and update these values in a HUD during runtime.
+
 class_name StatsComponent
 extends Component
 
@@ -27,6 +28,7 @@ func _ready() -> void:
 ## WARNING: May override previously cached stats.
 ## Returns: The number of stats saved in the dictionary.
 func cacheStats() -> int:
+	# CHECK: Should the dictionary be cleared before re-caching?
 	for stat in self.stats:
 		statsDictionary[stat.name] = stat
 	return statsDictionary.size()
@@ -34,7 +36,7 @@ func cacheStats() -> int:
 
 func resetStats() -> void:
 	for stat in stats:
-		stat = stat.duplicate() # TBD: Is there a better way?
+		stat = stat.duplicate() # TBD: CHECK: Is there a better way?
 
 
 ## Searches the [member statsDictionary] for the [param name] key. If no matching [Stat] is found, calls [method findStat].
