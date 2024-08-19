@@ -7,7 +7,7 @@ extends Node
 
 
 #region Parameters
-@export var shouldShowDebugInfo: bool = true
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
