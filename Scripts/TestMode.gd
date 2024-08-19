@@ -1,10 +1,12 @@
-## TestMode
+## TestMode. Attach to any [Node] in a scene.
 ## Assists with testing a project during development by temporarily modifying nodes, global flags and other variables from a single point,
 ## such as disabling superfluous visual effects for a game, or increasing the lives of a player,
 ## instead of permanently modifying values in the Godot Editor and multiple files then trying to remember, find and revert them.
 
-#class_name TestMode
+class_name TestMode
 extends Node
+
+# TBD: Should this be an AutoLoad?
 
 
 #region Parameters
@@ -17,9 +19,12 @@ var isInTestMode: bool = false:
 	set(newValue):
 		if newValue == isInTestMode: return # Avoid emitting signals needlessly
 		isInTestMode = newValue
+
+		Debug.addTemporaryLabel(&"Test Mode", str(isInTestMode))
+		GlobalOverlay.createTemporaryLabel(str("TEST MODE ", "ON" if isInTestMode else "OFF"))
+
 		if isInTestMode: didEnableTestMode.emit()
 		else: didDisableTestMode.emit()
-
 #endregion
 
 
@@ -36,8 +41,8 @@ var player: PlayerEntity:
 
 
 func onDidToggleTestMode() -> void:
-	var exampleFlag: bool = isInTestMode
-	var exampleProperty: int = 42 if isInTestMode else 69
+	# var exampleFlag: bool = isInTestMode
+	# var exampleProperty: int = 42 if isInTestMode else 69
 	pass
 
 
@@ -51,7 +56,7 @@ func _process(_delta: float) -> void:
 
 func _ready() -> void:
 	self.didEnableTestMode.connect(self.onDidToggleTestMode)
-	self.didEnableTestMode.connect(self.onDidToggleTestMode)
+	self.didDisableTestMode.connect(self.onDidToggleTestMode)
 		
 	if activateTestModeOnStart:
 		isInTestMode = true
@@ -59,7 +64,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action(GlobalInput.Actions.debugTest):
+	if event.is_action(GlobalInput.Actions.debugTest) \
+	and event.is_action_pressed(GlobalInput.Actions.debugTest):
+		self.get_viewport().set_input_as_handled()
 		isInTestMode = not isInTestMode
 
 #endregion 
