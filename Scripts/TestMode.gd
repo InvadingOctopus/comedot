@@ -40,15 +40,20 @@ var player: PlayerEntity:
 #endregion
 
 
+#region Game-specific Temporary Modifications
+
 func onDidToggleTestMode() -> void:
-	# var exampleFlag: bool = isInTestMode
-	# var exampleProperty: int = 42 if isInTestMode else 69
+	# Examples:
+	# Debug.testBackground.visible = isInTestMode
+	# player.statsComponent.getStat(&"lives").value += 999 if isInTestMode else 0
 	pass
 
 
 func _process(_delta: float) -> void:
 	# Perform any per-frame updates that may help with testing, such as displaying the values of other variables or clamping the physics of entities etc.
 	pass  
+
+#endregion
 
 
 #region Setup 

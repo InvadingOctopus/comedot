@@ -20,7 +20,6 @@ extends Component
 		set_deferred("monitorable", newValue)
 		set_deferred("monitoring",  newValue)
 
-
 #endregion
 
 
