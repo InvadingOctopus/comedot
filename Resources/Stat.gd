@@ -63,6 +63,7 @@ extends Resource
 			GameState.HUDStatUpdated.emit(self) # TBD: Should this be optional?
 
 
+@export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var logChanges: bool = false
 
 #endregion
