@@ -27,12 +27,13 @@ class Actions: ## Input event labels
 	const quickSave		:= &"quickSave"
 	const quickLoad		:= &"quickLoad"
 
-	const debugBreak	:= &"debugBreak"
-	const debugWindow	:= &"debugWindow"
-
+	const windowToggleAlwaysOnTop	:= &"windowToggleAlwaysOnTop"
 	const windowResizeTo1080		:= &"windowResizeTo1080"
 	const windowResizeTo720			:= &"windowResizeTo720"
-	const windowToggleAlwaysOnTop	:= &"windowToggleAlwaysOnTop"
+
+	const debugWindow	:= &"debugWindow"
+	const debugTest		:= &"debugTest"
+	const debugBreak	:= &"debugBreak"
 
 #endregion
 
