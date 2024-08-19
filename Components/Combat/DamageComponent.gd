@@ -23,6 +23,16 @@ extends Component
 ## Should bullets from the same faction hurt?
 @export var friendlyFire := false
 
+@export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
+	set(newValue):
+		isEnabled = newValue
+		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
+		# e.g. after an [InvulnerabilityOnHitComponent] ends.
+
+		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
+		set_deferred("monitorable", newValue)
+		set_deferred("monitoring",  newValue)
+
 #endregion
 
 
@@ -51,6 +61,8 @@ signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent
 #region Collisions
 
 func onAreaEntered(areaEntered: Area2D) -> void:
+	if not isEnabled: return
+
 	var damageReceivingComponent := getDamageReceivingComponent(areaEntered)
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
@@ -64,6 +76,8 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 
 func onAreaExited(areaExited: Area2D) -> void:
+	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
+
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
@@ -89,7 +103,7 @@ func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingCompon
 
 
 func _physics_process(delta: float) -> void:
-	if is_zero_approx(damagePerSecond): return
+	if not isEnabled or is_zero_approx(damagePerSecond): return
 
 	## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
 	## TBD: Skip the frame in which a collision happens?
@@ -104,6 +118,8 @@ func _physics_process(delta: float) -> void:
 
 
 func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
+	if not isEnabled: return
+
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
 	# The signal is emitted in [onAreaEntered]
@@ -117,6 +133,8 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 
 
 func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
+	if not isEnabled: return
+
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
 	# TBD: Should there be a signal emitted every frame??
@@ -133,7 +151,8 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 
 
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
-
+	if not isEnabled: return
+	
 	# Create a new copy of the provided component.
 
 	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()
