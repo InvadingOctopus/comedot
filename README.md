@@ -12,7 +12,7 @@ The aim is to be an all-in-one framework for 2D games (platformers, RPGs, shoot-
 🌳 _An example of a player entity's node tree:_  
 ![components-tree]
 
-⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ 
+⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
@@ -63,8 +63,8 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 > 🤍 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
-> * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font  
- 
+> * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
+
 [repository]: https://github.com/invadingoctopus/comedot
 [website]: https://invadingoctopus.io
 [license]: https://about:blank
