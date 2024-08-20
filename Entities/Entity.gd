@@ -40,7 +40,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 var components := {}
 
 ## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
-var functionsAlreadyCalledOnceThisFrame := {}
+var functionsAlreadyCalledOnceThisFrame: Dictionary = {}
 
 #endregion
 
