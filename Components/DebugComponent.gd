@@ -5,8 +5,8 @@ extends Component
 
 
 #region Parameters
-@export var propertiesToChart: Array[NodePath]
-@export var propertiesToWatch: Array[NodePath]
+@export_node_path var propertiesToChart: Array[NodePath] # TODO: Use `PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT`?
+@export_node_path var propertiesToWatch: Array[NodePath] # TODO: Use `PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT`?
 @export var isEnabled: bool = true
 #endregion
 
