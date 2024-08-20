@@ -33,6 +33,15 @@
 		"description": "A function skeleton with documentation, arguments, guard clause, and a return value."
 	},
 
+	"Ready Method": {
+		"prefix": "ready",
+		"body": [
+			"func _ready() -> void:",
+			"\t${1:pass}$0"
+		],
+		"description": "A Node's _ready() method."
+	},
+
 	"Void": {
 		"prefix": "void",
 		"body": [
