@@ -23,7 +23,7 @@ signal didSomethingHappen ## Placeholder
 
 #region Dependencies
 var player: PlayerEntity:
-	get: return GameState.players[0]
+	get: return GameState.players.front()
 #endregion
 
 
