@@ -22,10 +22,14 @@ extends Resource
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
 
+## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
+## If no stat is specified, then the Upgrade is always free.
+@export var costStat: Stat
+
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
 ## If a cost is missing, then the level is free. If the array is empty, then the Upgrade is always free.
-@export var cost: Array[Stat]
+@export var costs: Array[int]
 
 ## The upgrade level of this Upgrade. Some upgrades may be upgraded multiple times to make them more powerful.
 ## If this value is set higher than [member maxLevel] then it is reset to [member maxLevel].
@@ -58,14 +62,17 @@ extends Resource
 
 
 ## An optional list of other upgrades which are needed before this upgrade may be used.
+## This array is checked in order.
 @export var requiredUpgrades: Array[Upgrade]
 
 ## An optional list of upgrades which prevent this upgrade from being acquired or used.
 ## For example, if the player has a fire-based weapon, they may not equip a water-based weapon.
+## This array is checked in order.
 @export var mutuallyExclusiveUpgrades: Array[Upgrade]
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
+
 #endregion
 
 
@@ -86,6 +93,8 @@ signal didMaxLevel
 #region Dependencies
 #endregion
 
+
+#region Gameplay Functionality
 
 func acquire(entity: Entity) -> bool:
 	# TODO: Stub
@@ -109,3 +118,49 @@ func discard(entity: Entity) -> bool:
 	# TODO: Stub
 	didDiscard.emit(entity)
 	return true
+
+#endregion
+
+
+#region Management
+
+## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade, and none of this Upgrade's [mutuallyExclusiveUpgrades].
+func validateRequirements(upgradesComponent: UpgradesComponent) -> bool:
+	# If we have no requirements or antirequirements, this Upgrade is good to go.
+	if self.findMissingRequirement(upgradesComponent) == null \
+	and self.findMutuallyExclusiveConflict(upgradesComponent) == null:
+		return true
+	else:
+		return false
+
+
+## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade.
+## Returns: The first MISSING required Upgrade. If `null` is returned, then there are no missing requirements.
+func findMissingRequirement(upgradesComponent: UpgradesComponent) -> Upgrade:
+	if self.requiredUpgrades.is_empty(): return null
+
+	for requirement in self.requiredUpgrades:
+		# Is there any missing requirement?
+		if not upgradesComponent.getUpgrade(requirement.name):
+			if shouldShowDebugInfo: Debug.printDebug(str("Missing requirement ", requirement, " in ", upgradesComponent), str(self))
+			return requirement
+	
+	return null
+
+
+## Checks whether the provided [UpgradesComponent] has any of the [mutuallyExclusiveUpgrades] which conflict with THIS Upgrade.
+## Returns: The first MATCHING mutually-exclusive Upgrade. If `null` is returned, then there are no conflicting Upgrades.
+func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgrade:
+	if self.mutuallyExclusiveUpgrades.is_empty(): return null
+
+	for conflict in self.mutuallyExclusiveUpgrades:
+		# Is there any conflicting Upgrade?
+		if not upgradesComponent.getUpgrade(conflict.name):
+			if shouldShowDebugInfo: Debug.printDebug(str("Mutually-exclusive upgrade ", conflict, " in ", upgradesComponent), str(self))
+			return conflict
+	
+	return null
+
+#endregion
+
+
