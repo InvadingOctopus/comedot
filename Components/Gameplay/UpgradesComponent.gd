@@ -67,3 +67,19 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 	# else:
 	printWarning("Cannot find Upgrade: " + nameToSearch)
 	return null
+
+
+## If the specified [Upgrade] is not already "installed" in this [UpgradesComponent], it will be added.
+## If the Upgrade is already in this component, it's level will be incremented by 1.
+## Returns: The new level of the Upgrade. If 0 then this Upgrade was not in this component before.
+func addOrLevelUpUpgrade(upgrade: Upgrade) -> int:
+	if self.getUpgrade(upgrade.name):
+		if shouldShowDebugInfo: printDebug(str("addOrLevelUpUpgrade() ", upgrade, " already installed."))
+		if upgrade.level < upgrade.maxLevel: upgrade.level += 1
+	else:
+		# TODO: Check upgrade requirements
+		if shouldShowDebugInfo: printDebug(str("addOrLevelUpUpgrade() Installing ", upgrade))
+		self.upgrades.append(upgrade)
+		self.upgradesDictionary[upgrade.name] = upgrade
+
+	return upgrade.level
