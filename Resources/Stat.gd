@@ -10,7 +10,8 @@ extends Resource
 
 #region Parameters
 
-@export var name:   StringName:
+## NOTE: This name MUST BE UNIQUE across all Stats, because [StatsComponent] and other classes search Stats by their names.
+@export var name: StringName:
 	set(newValue):
 		if newValue.is_empty():
 			Debug.printWarning("Rejected attempt to set name to empty string", str(self))
@@ -19,21 +20,21 @@ extends Resource
 		self.resource_name = name # CHECK: Does this work without @tool?
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
-@export var min:    int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.
+@export var min: int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		min     = newValue
 		if  min > max: max = min
 		value   = clamp(value,   min, max)
 
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
-@export var max:    int = 10: # IGNORE Godot Warning; variable names can be the same as built-in functions.
+@export var max: int = 10: # IGNORE Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		max     = newValue
 		if  max < min: min = max
 		value   = clamp(value,   min, max)
 
 ## The current value of the stat. Clamped between [member min] and [member max].
-@export var value:  int = max:
+@export var value: int = max:
 	set(newValue):
 		previousValue = value
 		value = clamp(newValue, min, max)
