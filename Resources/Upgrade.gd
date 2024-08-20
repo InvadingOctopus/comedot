@@ -14,6 +14,7 @@ extends Resource
 
 #region Parameters
 
+## NOTE: This name MUST BE UNIQUE across all Upgrades, because [UpgradesComponent] and other classes search Upgrades by their names.
 @export var name: StringName:
 	set(newValue):
 		if newValue.is_empty():
@@ -28,8 +29,8 @@ extends Resource
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
-## If a cost is missing, then the level is free. If the array is empty, then the Upgrade is always free.
-@export var costs: Array[int]
+## If a cost is missing or <= -1, then the level is free. If the array is empty, then the Upgrade is always free.
+@export_range(-1, 1000) var costs: Array[int]
 
 ## The upgrade level of this Upgrade. Some upgrades may be upgraded multiple times to make them more powerful.
 ## If this value is set higher than [member maxLevel] then it is reset to [member maxLevel].
