@@ -27,15 +27,11 @@ extends Resource
 @export var displayName: StringName:
 	get: return displayName if not displayName.is_empty() else self.name
 
-## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
-## If no stat is specified, then the Upgrade is always free.
-## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
-@export var costStat: Stat # TBD: Should this just be a StringName?
+@export var description: String ## An optional explanation, for internal development notes or to show the player.
+@export var shouldShowDebugInfo: bool = false
 
-## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
-## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
-## If a cost is missing or <= -1, then the level is free. If the array is empty, then the Upgrade is always free.
-@export_range(-1, 1000) var costs: Array[int]
+
+@export_group("Level")
 
 ## The upgrade level of this Upgrade. Some upgrades may be upgraded multiple times to make them more powerful.
 ## If this value is set higher than [member maxLevel] then it is reset to [member maxLevel].
@@ -65,6 +61,28 @@ extends Resource
 			Debug.printDebug(str("Decreasing higher level ", level, " to new maxLevel ", maxLevel))
 			level = maxLevel
 
+
+@export_group("Costs")
+
+## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
+## If no stat is specified, then the Upgrade is always free.
+## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
+@export var costStat: Stat # TBD: Should this just be a StringName?
+
+## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
+## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
+## If a cost is <= -1, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free. 
+## If the array is empty, then the Upgrade is always free.
+## TIP: Use [member shouldUseLastCostForHigherLevels] to specify only 1 or a few costs and use the last cost for all subsequent levels.
+@export_range(-1, 1000) var costs: Array[int]
+
+## If `true`, then the highest index of the [member costs] array is used for all subsequent higher levels.
+## This lets you write only 1 or a few costs even if the number of allowed upgrade levels is higher.
+@export var shouldUseLastCostForHigherLevels: bool = false
+
+
+@export_group("Requirements")
+
 ## An optional list of other upgrades which are needed before this upgrade may be used.
 ## This array is checked in order.
 @export var requiredUpgrades: Array[Upgrade]
@@ -73,9 +91,6 @@ extends Resource
 ## For example, if the player has a fire-based weapon, they may not equip a water-based weapon.
 ## This array is checked in order.
 @export var mutuallyExclusiveUpgrades: Array[Upgrade]
-
-@export var description: String ## An optional explanation, for internal development notes or to show the player.
-@export var shouldShowDebugInfo: bool = false
 
 ## An optional list of [Component]s that this Upgrade requires or modifies, such as a [GunComponent].
 ## This array is checked in order.
@@ -133,10 +148,13 @@ func discard(entity: Entity) -> bool:
 
 #region Management
 	
-## Returns the cost for the specified level or the current level. If no cost has been specified for the respective level, -1 is returned.
+## Returns the cost for the specified level or the current level. 
+## If no cost has been specified for the respective level and [member shouldUseLastCostForHigherLevels] is not `true`, -1 is returned.
 func getCost(levelOverride: int = self.level) -> int:
 	if levelOverride < costs.size(): # Array size will be 1 less than the last valid index.
 		return costs[levelOverride]
+	elif shouldUseLastCostForHigherLevels and not costs.is_empty() and levelOverride >= costs.size(): # If the level is higher than the array size, return the highest index if the array is not empty.
+		return costs.back()
 	else:
 		return -1
 
