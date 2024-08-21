@@ -8,16 +8,17 @@ extends Control
 
 #region Parameters
 
-@export var shouldPrefixValueWithStatName := false
+## If `true`, the Stat's value will be prefixed with its [member Stat.displayName].
+@export var shouldPrefixValueWithStatName: bool = false
 
 ## An optional dictionary of additional prefixes to write in the [Label] before the value of each [Stat].
 ## The dictionary types should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
 ## If [member shouldPrefixValueWithStatName] is `true`, the name will be added after the custom prefix.
-@export var prefixes := {&"health": "HP:"}
+@export var prefixes: Dictionary = {&"health": "HP:"}
 
 ## An optional dictionary of suffixes to write in the [Label] after the value of each [Stat].
 ## The dictionary type should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
-@export var suffixes := {&"health": "♡"}
+@export var suffixes: Dictionary = {}
 
 ## A list of stats to display as soon as the Stats UI is ready,
 ## without waiting for a signal about a change.
@@ -53,7 +54,7 @@ func updateStatLabel(stat: Stat, animate: bool = true) -> void:
 	var prefix: String = self.prefixes.get(statName, "")
 	var suffix: String = self.suffixes.get(statName, "")
 
-	if shouldPrefixValueWithStatName: prefix += " " + statName + " "
+	if shouldPrefixValueWithStatName: prefix += " " + stat.displayName + " " # NOTE: Use stat.displayName
 
 	label.text = buildLabelText(prefix, stat, suffix)
 	if animate:  animateLabel(label, stat.value, stat.previousValue)

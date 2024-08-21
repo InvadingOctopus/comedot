@@ -19,6 +19,10 @@ extends Resource
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
 
+## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
+@export var displayName: StringName:
+	get: return displayName if not displayName.is_empty() else self.name
+
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 @export var min: int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
