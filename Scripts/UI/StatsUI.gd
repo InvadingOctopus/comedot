@@ -1,9 +1,9 @@
-## A script for nodes which manage a HUD UI that displays the values of [Stat] Resources.
-## To use this, add [Label] child nodes and name them with this convention: "[Stat's name]Label"
-## NOTE: The case should be exactly the same as the name of the [Stat] which should be displayed via that label!
+## A script for [Container] controls which manage a HUD UI to display the values of [Stat] Resources.
+## To use, add [Label] child nodes and name them with the convention: "[Stat's name]Label" e.g. "healthLabel"
+## NOTE: The case should be exactly the same as the [member Stat.name] of the [Stat] which should be displayed via that label! Do NOT use the [member Stat.displatName].
 
 class_name StatsUI
-extends Control
+extends Container
 
 
 #region Parameters
@@ -21,7 +21,7 @@ extends Control
 @export var suffixes: Dictionary = {}
 
 ## A list of stats to display as soon as the Stats UI is ready,
-## without waiting for a signal about a change.
+## without waiting for a signal for a change in a stat's value.
 @export var statsToUpdateOnReady: Array[Stat]
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
@@ -83,7 +83,7 @@ func animateLabel(label: Label, value, previousValue) -> void: # IGNORE: Godot W
 
 	var defaultColor: Color = Color.WHITE # TODO: CHECK: A better way to reset a property.
 
-	var tween: Tween = get_tree().create_tween()
+	var tween: Tween = self.get_tree().create_tween()
 	tween.set_trans(Tween.TRANS_BOUNCE)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate", color, duration)
