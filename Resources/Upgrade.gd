@@ -153,8 +153,11 @@ func discard(entity: Entity) -> bool:
 func getCost(levelOverride: int = self.level) -> int:
 	if levelOverride < costs.size(): # Array size will be 1 less than the last valid index.
 		return costs[levelOverride]
-	elif shouldUseLastCostForHigherLevels and not costs.is_empty() and levelOverride >= costs.size(): # If the level is higher than the array size, return the highest index if the array is not empty.
+
+	# If the level is higher than the array size and shouldUseLastCostForHigherLevels, return the highest index if the array is not empty.
+	elif shouldUseLastCostForHigherLevels and not costs.is_empty() and levelOverride >= costs.size(): # Checks are in order of speed
 		return costs.back()
+
 	else:
 		return -1
 

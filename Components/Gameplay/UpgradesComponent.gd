@@ -5,7 +5,7 @@ extends Component
 
 # NOTE: Too much code duplication from StatsComponent :(
 
-	
+
 #region Parameters
 @export var upgrades: Array[Upgrade]
 
