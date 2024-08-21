@@ -51,7 +51,6 @@ extends Resource
 		elif level < previousValue:
 			didLevelDown.emit()
 
-
 ## The maximum number of times this Upgrade may be upgraded.
 ## If maxLevel is -1 or less, then [member level] has no limit.
 @export var maxLevel: int:
@@ -60,7 +59,6 @@ extends Resource
 		if maxLevel >= 0 and level > maxLevel:
 			Debug.printDebug(str("Decreasing higher level ", level, " to new maxLevel ", maxLevel))
 			level = maxLevel
-
 
 ## An optional list of other upgrades which are needed before this upgrade may be used.
 ## This array is checked in order.
@@ -74,10 +72,23 @@ extends Resource
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
 
+## An optional list of [Component]s that this Upgrade requires or modifies, such as a [GunComponent].
+## This array is checked in order.
+# TODO: @export var requiredComponents: Array[Component] # GODOT LIMITATION: "Node export is only supported in Node-derived classes, but the current class inherits 'Resource'." :(
+
 #endregion
 
 
 #region State
+#endregion
+
+
+#region Derived Properties
+
+## Returns the cost for the next level. If there is no level, -1 is returned.
+var nextCost: int:
+	get: return self.getCost(self.level + 1)
+
 #endregion
 
 
@@ -124,6 +135,14 @@ func discard(entity: Entity) -> bool:
 
 
 #region Management
+	
+## Returns the cost for the specified level or the current level. If no cost has been specified for the respective level, -1 is returned.
+func getCost(levelOverride: int = self.level) -> int:
+	if levelOverride < costs.size(): # Array size will be 1 less than the last valid index.
+		return costs[levelOverride]
+	else:
+		return -1
+
 
 ## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade, and none of this Upgrade's [mutuallyExclusiveUpgrades].
 func validateRequirements(upgradesComponent: UpgradesComponent) -> bool:
