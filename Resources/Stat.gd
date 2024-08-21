@@ -24,14 +24,14 @@ extends Resource
 	get: return displayName if not displayName.is_empty() else self.name
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
-@export var min: int = 0: # IGNORE Godot Warning; variable names can be the same as built-in functions.
+@export var min: int = 0: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		min     = newValue
 		if  min > max: max = min
 		value   = clamp(value,   min, max)
 
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
-@export var max: int = 10: # IGNORE Godot Warning; variable names can be the same as built-in functions.
+@export var max: int = 10: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		max     = newValue
 		if  max < min: min = max

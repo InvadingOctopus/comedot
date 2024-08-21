@@ -73,7 +73,7 @@ func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
 
 ## Plays different animations on a label depending on how the [Stat]'s value changes.
 ## May be overridden in a subclass.
-func animateLabel(label: Label, value, previousValue) -> void: # NOTE: IGNORE Godot Warning; Values not typed so we can use [float].
+func animateLabel(label: Label, value, previousValue) -> void: # IGNORE: Godot Warning; Values not typed so we can use [float].
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
 

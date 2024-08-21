@@ -42,6 +42,7 @@ var player: PlayerEntity:
 
 #region Game-specific Temporary Modifications
 
+## TIP: Override in a project-specific subclass.
 func onDidToggleTestMode() -> void:
 	# Examples:
 	# Debug.testBackground.visible = isInTestMode
