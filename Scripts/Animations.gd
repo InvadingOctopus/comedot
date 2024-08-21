@@ -17,7 +17,7 @@ const blink				:= &"blink"
 #region Label Animations
 
 ## Plays different animations on a [Label] depending on how the specified number changes.
-static func animateNumberLabel(label: Label, value: Variant, previousValue: Variant) -> void:
+static func animateNumberLabel(label: Label, value: Variant, previousValue: Variant) -> Tween:
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
 
@@ -32,6 +32,8 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 	tween.set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate", color, duration)
 	tween.tween_property(label, "modulate", defaultColor, duration)
+
+	return tween
 
 #endregion
 
