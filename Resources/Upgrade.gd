@@ -83,15 +83,6 @@ extends Resource
 #endregion
 
 
-#region Derived Properties
-
-## Returns the cost for the next level. If there is no level, -1 is returned.
-var nextCost: int:
-	get: return self.getCost(self.level + 1)
-
-#endregion
-
-
 #region Signals
 signal didAcquire(entity: Entity)
 signal didDiscard(entity: Entity)
@@ -144,8 +135,50 @@ func getCost(levelOverride: int = self.level) -> int:
 		return -1
 
 
+## Returns the cost for the next level. If there is no next level, -1 is returned.
+func getNextCost() -> int:
+	return self.getCost(self.level + 1)
+
+
+## Returns the cost for acquiring or upgrading this Upgrade for a particular [UpgradesComponent].
+## If the component does NOT have this Upgrade, then the CURRENT level's cost is returned.
+## If the component already has this Upgrade, then the NEXT level's cost is returned. 
+## If there is no cost for the respective level, -1 is returned.
+func getCostForUpgradesComponent(upgradesComponent: UpgradesComponent) -> int:
+	if upgradesComponent.getUpgrade(self.name): # Is this upgrade already installed in that component?
+		return getNextCost()
+	else:
+		return getCost()
+
+#endregion
+
+
+
+#region Validation
+
+## Checks if the specific entity meets all the requirements and costs to acquire this Upgrade.
+func validateEntityEligibility(entity: Entity) -> bool:
+	var statsComponent: StatsComponent = entity.getComponent(StatsComponent)
+	var upgradesComponent: UpgradesComponent = entity.getComponent(UpgradesComponent)
+	return validateStatsComponent(statsComponent) and validateUpgradesComponent(upgradesComponent)
+
+
+## Checks whether the specified [StatsComponent] can meet the cost for this Upgrade's specified level.
+func validateStatsComponent(statsComponent: StatsComponent, levelOverride: int = self.level) -> bool:
+	# If there is no cost for the specified level, then the component can afford it, of course.
+	var cost: int = self.getCost(levelOverride)
+	if cost <= 0: return true
+
+	# Does the component have our required Stat type?
+	var costStatInComponent: Stat = statsComponent.getStat(self.costStat.name)
+	if not costStatInComponent: return false
+
+	# Is the stat's value >= our cost?
+	return costStatInComponent.value >= cost
+
+
 ## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade, and none of this Upgrade's [mutuallyExclusiveUpgrades].
-func validateRequirements(upgradesComponent: UpgradesComponent) -> bool:
+func validateUpgradesComponent(upgradesComponent: UpgradesComponent) -> bool:
 	# If we have no requirements or antirequirements, this Upgrade is good to go.
 	if self.findMissingRequirement(upgradesComponent) == null \
 	and self.findMutuallyExclusiveConflict(upgradesComponent) == null:
