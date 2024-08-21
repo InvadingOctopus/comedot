@@ -63,12 +63,17 @@ func readdAllChoices() -> void:
 
 func addChoiceUI(upgrade: Upgrade) -> Control:
 	var newChoiceUI: UpgradeChoiceUI = choiceUIScene.instantiate()
+	newChoiceUI.shouldShowDebugInfo  = self.shouldShowDebugInfo
+
 	newChoiceUI.upgrade = upgrade
 	newChoiceUI.targetUpgradesComponent = self.targetUpgradesComponent
 	newChoiceUI.targetStatsComponent = self.targetStatsComponent
+	
 	Tools.addChildAndSetOwner(newChoiceUI, self)
-	newChoiceUI.updateUI()
+	
+	newChoiceUI.updateUI() # TBD: Update before adding or after?
 	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade)
+	
 	return newChoiceUI
 
 

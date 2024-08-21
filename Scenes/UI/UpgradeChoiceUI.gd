@@ -85,5 +85,5 @@ func validateRequirements() -> bool:
 
 
 func onUpgradeButton_pressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), str(self))
 	self.didChooseUpgrade.emit(self.upgrade)
