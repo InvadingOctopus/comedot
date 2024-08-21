@@ -14,7 +14,7 @@ func _ready() -> void:
 	label.visible = false
 
 
-func display(text: String, animation: StringName = Global.Animations.blink) -> void:
+func display(text: String, animation: StringName = Animations.blink) -> void:
 	label.text = text
 	playAnimation(animation)
 

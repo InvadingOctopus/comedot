@@ -55,17 +55,6 @@ class Groups:
 #endregion
 
 
-#region Animations
-
-class Animations: ## Animation labels
-	const overlayFadeIn		:= &"overlayFadeIn"
-	const overlayFadeOut	:= &"overlayFadeOut"
-
-	const blink				:= &"blink"
-
-#endregion
-
-
 class AudioBuses:
 	const master:= &"Master"
 	const sfx	:= &"SFX"

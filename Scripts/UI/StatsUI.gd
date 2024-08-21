@@ -57,7 +57,7 @@ func updateStatLabel(stat: Stat, animate: bool = true) -> void:
 	if shouldPrefixValueWithStatName: prefix += " " + stat.displayName + " " # NOTE: Use stat.displayName
 
 	label.text = buildLabelText(prefix, stat, suffix)
-	if animate:  animateLabel(label, stat.value, stat.previousValue)
+	if animate:  Animations.animateLabelNumber(label, stat.value, stat.previousValue)
 
 
 ## Combines the prefix, value of the stat and the suffix.
@@ -70,35 +70,3 @@ func buildLabelText(prefix: String, stat: Stat, suffix: String) -> String:
 	else:
 		return str(prefix, stat.value, suffix)
 
-
-## Plays different animations on a label depending on how the [Stat]'s value changes.
-## May be overridden in a subclass.
-func animateLabel(label: Label, value, previousValue) -> void: # IGNORE: Godot Warning; Values not typed so we can use [float].
-	var color: Color
-	const duration: float = 0.25 # TBD: Should this be an argument?
-
-	if    value > previousValue: color = Color.GREEN
-	elif  value < previousValue: color = Color.RED
-	else: return
-
-	var defaultColor: Color = Color.WHITE # TODO: CHECK: A better way to reset a property.
-
-	var tween: Tween = self.get_tree().create_tween()
-	tween.set_trans(Tween.TRANS_BOUNCE)
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate", color, duration)
-	tween.tween_property(label, "modulate", defaultColor, duration)
-
-
-# TODO: Use a more compact and strictly-typed resource,
-# but Godot as of 4.3 Dev 3 does not support creating instances of an "inner class"
-# inside the editor yet :(
-
-#class StatLabelPrefixAndSuffix:
-	#extends Resource
-
-	#@export var statName: StringName
-	#@export var prefix: String
-	#@export var suffix: String
-
-#@export var prefixesResources: Array[StatLabelPrefixAndSuffix]

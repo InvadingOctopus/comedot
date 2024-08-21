@@ -299,7 +299,7 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 
 
 ## Uses a [LabelComponent], if available, to display the specified text.
-func displayLabel(text: String, animation: StringName = Global.Animations.blink) -> void:
+func displayLabel(text: String, animation: StringName = Animations.blink) -> void:
 	var labelComponent: LabelComponent = self.getComponent(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)

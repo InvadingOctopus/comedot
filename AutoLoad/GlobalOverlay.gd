@@ -91,7 +91,7 @@ func createAudioPlayer(stream: AudioStream, position: Vector2 = Vector2.ZERO, bu
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
 func fadeIn() -> void:
-	animationPlayer.play(Global.Animations.overlayFadeIn)
+	animationPlayer.play(Animations.overlayFadeIn)
 	await animationPlayer.animation_finished
 
 
@@ -100,8 +100,8 @@ func fadeOut() -> void:
 	# Playing the fade-in animation backwards allows for smoother-looking blending from the current values,
 	# in case the fade-out happens during the previous fade-in.
 	# TODO: CHECK: Is the visibility still set correctly afterwards?
-	animationPlayer.play_backwards(Global.Animations.overlayFadeIn)
-	#animationPlayer.play(Global.Animations.overlayFadeOut)
+	animationPlayer.play_backwards(Animations.overlayFadeIn)
+	#animationPlayer.play(Animations.overlayFadeOut)
 	await animationPlayer.animation_finished
 
 #endregion
