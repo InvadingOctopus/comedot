@@ -8,6 +8,7 @@ extends Entity
 #region State
 
 # Shortcuts to common components...
+# NOTE: Not cached
 
 var bodyComponent: CharacterBodyComponent:
 	get: return getComponent(CharacterBodyComponent)
@@ -17,6 +18,9 @@ var healthComponent: HealthComponent:
 
 var statsComponent: StatsComponent:
 	get: return getComponent(StatsComponent)
+
+var upgradesComponent: UpgradesComponent:
+	get: return getComponent(UpgradesComponent)
 
 #endregion
 
