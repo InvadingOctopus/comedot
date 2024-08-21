@@ -68,4 +68,10 @@ func addChoiceUI(upgrade: Upgrade) -> Control:
 	newChoiceUI.targetStatsComponent = self.targetStatsComponent
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 	newChoiceUI.updateUI()
+	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade.bind(upgrade))
 	return newChoiceUI
+
+
+func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
+	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade), str(self))
+	pass
