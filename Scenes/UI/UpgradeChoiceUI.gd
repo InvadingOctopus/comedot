@@ -29,7 +29,7 @@ extends Control
 
 
 #region Signals
-signal didChooseUpgrade
+signal didChooseUpgrade(upgrade: Upgrade)
 #endregion
 
 
@@ -43,7 +43,7 @@ func _ready() -> void:
 	if not targetUpgradesComponent:
 		targetUpgradesComponent = player.upgradesComponent
 		if not targetUpgradesComponent: Debug.printWarning("Missing targetUpgradesComponent", str(self))
-	
+
 	if not targetStatsComponent:
 		targetStatsComponent = player.statsComponent
 		if not targetStatsComponent: Debug.printWarning("Missing targetStatsComponent", str(self))
@@ -80,8 +80,8 @@ func validateCost() -> bool:
 
 
 func validateRequirements() -> bool:
-	return upgrade.validateRequirements(targetUpgradesComponent)
+	return upgrade.validateUpgradesComponent(targetUpgradesComponent)
 
 
 func onUpgradeButton_pressed() -> void:
-	self.didChooseUpgrade.emit()
+	self.didChooseUpgrade.emit(self.upgrade)

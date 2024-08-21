@@ -33,7 +33,7 @@ var targetStatsComponent: StatsComponent:
 
 
 #region Signals
-signal didChooseUpgrade
+signal didChooseUpgrade(upgrade: Upgrade)
 #endregion
 
 
@@ -63,15 +63,16 @@ func readdAllChoices() -> void:
 
 func addChoiceUI(upgrade: Upgrade) -> Control:
 	var newChoiceUI: UpgradeChoiceUI = choiceUIScene.instantiate()
-	newChoiceUI.uograde = upgrade
+	newChoiceUI.upgrade = upgrade
 	newChoiceUI.targetUpgradesComponent = self.targetUpgradesComponent
 	newChoiceUI.targetStatsComponent = self.targetStatsComponent
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 	newChoiceUI.updateUI()
-	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade.bind(upgrade))
+	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade)
 	return newChoiceUI
 
 
 func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
 	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade), str(self))
+	self.didChooseUpgrade.emit(upgrade)
 	pass
