@@ -55,7 +55,7 @@ extends Resource
 
 			emit_changed()
 
-			# NOTE: We don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
+			# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
 			
 			if previousChange > 0: # Were we rising?
 				if value >= max: didMax.emit()
