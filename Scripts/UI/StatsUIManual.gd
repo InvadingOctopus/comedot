@@ -57,7 +57,7 @@ func updateStatLabel(stat: Stat, animate: bool = true) -> void:
 	if shouldPrefixValueWithStatName: prefix += " " + stat.displayName + " " # NOTE: Use stat.displayName
 
 	label.text = buildLabelText(prefix, stat, suffix)
-	if animate:  Animations.animateLabelNumber(label, stat.value, stat.previousValue)
+	if animate:  Animations.animateNumberLabel(label, stat.value, stat.previousValue)
 
 
 ## Combines the prefix, value of the stat and the suffix.
