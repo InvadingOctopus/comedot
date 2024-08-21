@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://gvkx3bnathwr"]
+
+[ext_resource type="Script" path="res://Scenes/UI/UpgradeChoiceUI.gd" id="1_5bd1h"]
+
+[node name="UpgradeChoiceUI" type="GridContainer"]
+editor_description = "A list item for a UpgradesListUI"
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -183.0
+offset_bottom = -156.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+columns = 3
+script = ExtResource("1_5bd1h")
+
+[node name="CostAmountLabel" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "000"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="CostStatLabel" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "COST"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpgradeButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 5
+mouse_default_cursor_shape = 2
+text = "UPGRADE"
+
+[connection signal="pressed" from="UpgradeButton" to="." method="onUpgradeButton_pressed"]
