@@ -63,6 +63,7 @@ func updateCostUI() -> void:
 
 func updateButton() -> void:
 	# Cost is quicker to check first :)
+	upgradeButton.text = upgrade.displayName
 	upgradeButton.disabled = not self.validateCost() and not self.validateRequirements()
 
 
@@ -84,4 +85,5 @@ func validateRequirements() -> bool:
 
 
 func onUpgradeButton_pressed() -> void:
+	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), str(self))
 	self.didChooseUpgrade.emit(self.upgrade)

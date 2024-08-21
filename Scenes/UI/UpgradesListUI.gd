@@ -73,6 +73,5 @@ func addChoiceUI(upgrade: Upgrade) -> Control:
 
 
 func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), str(self))
 	self.didChooseUpgrade.emit(upgrade)
-	pass

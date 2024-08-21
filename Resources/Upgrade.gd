@@ -23,6 +23,10 @@ extends Resource
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
 
+## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
+@export var displayName: StringName:
+	get: return displayName if not displayName.is_empty() else self.name
+
 ## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
 ## If no stat is specified, then the Upgrade is always free.
 ## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
@@ -81,6 +85,8 @@ extends Resource
 
 
 #region State
+var logName: String:
+	get: return str(self, " ", self.name, " ", self.level)
 #endregion
 
 
