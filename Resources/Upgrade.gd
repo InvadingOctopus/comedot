@@ -25,7 +25,8 @@ extends Resource
 
 ## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
 ## If no stat is specified, then the Upgrade is always free.
-@export var costStat: Stat
+## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
+@export var costStat: Stat # TBD: Should this just be a StringName?
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
@@ -123,7 +124,6 @@ func discard(entity: Entity) -> bool:
 	return true
 
 #endregion
-
 
 #region Management
 	
