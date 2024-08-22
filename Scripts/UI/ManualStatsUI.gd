@@ -1,8 +1,9 @@
 ## A script for [Container] controls which manage a HUD UI to display the values of [Stat] Resources.
 ## To use, add [Label] child nodes and name them with the convention: "[Stat's name]Label" e.g. "healthLabel"
 ## NOTE: The case should be exactly the same as the [member Stat.name] of the [Stat] which should be displayed via that label! Do NOT use the [member Stat.displatName].
+## TIP: If you have [Stat]s saved as ".tres" Resource files, use the newer [StatsUI] and [StatLabel] instead for automatic UI creation and updates.
 
-class_name StatsUI
+class_name ManualStatsUI
 extends Container
 
 

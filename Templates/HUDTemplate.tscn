@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://convttrcwh6rm"]
 
-[ext_resource type="Script" path="res://Scripts/UI/StatsUIManual.gd" id="1_yk82h"]
+[ext_resource type="Script" path="res://Scripts/UI/ManualStatsUI.gd" id="1_yk82h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_57mah"]
 bg_color = Color(0, 0, 0, 0.392157)
@@ -47,10 +47,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 columns = 2
 script = ExtResource("1_yk82h")
-prefixes = {
-"health": "HP:",
-"score": "SCORE:"
-}
 
 [node name="healthLabel" type="Label" parent="Control/TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
 layout_mode = 2
