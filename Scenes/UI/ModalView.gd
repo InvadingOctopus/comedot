@@ -23,6 +23,6 @@ signal didFinish(result: Variant)
 ## Closes this modal view and calls the [member callbackOnFinish] function, if any.
 func closeModalView(result: Variant = 0) -> void:
 	# DESIGN: The name is more verbose than `close()` to reduce ambiguity in more complex scenes which extend this script.
-	Debug.printLog(str("close(): ", result))
+	Debug.printLog(str("closeModalView() ", result), str(self))
 	didFinish.emit(result)
 	if callbackOnFinish: callbackOnFinish.call(result)
