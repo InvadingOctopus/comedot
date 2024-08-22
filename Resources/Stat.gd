@@ -20,7 +20,7 @@ extends Resource
 		self.resource_name = name # CHECK: Does this work without @tool?
 
 ## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
-@export var displayName: StringName:
+@export var displayName: String:
 	get: return displayName if not displayName.is_empty() else self.name
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
