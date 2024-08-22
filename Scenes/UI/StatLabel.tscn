@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdmsbf0fuwqno"]
+
+[ext_resource type="Script" path="res://Scenes/UI/StatLabel.gd" id="1_axogl"]
+[ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="1_q4sdu"]
+
+[node name="StatLabel" type="Label"]
+offset_right = 21.0
+offset_bottom = 8.0
+text = "000"
+label_settings = ExtResource("1_q4sdu")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_axogl")
