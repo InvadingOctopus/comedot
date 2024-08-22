@@ -187,10 +187,7 @@ func removeSiblingComponentsOfSameType() -> int:
 @export var shouldShowDebugInfo: bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
-var isLoggingEnabled: bool:
-	get:
-		if parentEntity: return parentEntity.isLoggingEnabled
-		else: return true
+var isLoggingEnabled: bool
 
 var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
 	get: return "􀥭 " + self.name
@@ -205,8 +202,10 @@ func printLog(message: String = "", objectName: String = self.logName) -> void:
 	Debug.printLog(message, "lightBlue", objectName, "cyan")
 
 
+## Affected by [member shouldShowDebugInfo], but not affected by [member isLoggingEnabled].
 func printDebug(message: String = "") -> void:
-	if not isLoggingEnabled or not shouldShowDebugInfo: return
+	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
+	if not shouldShowDebugInfo: return
 	Debug.printDebug(message, logName, "cyan")
 
 

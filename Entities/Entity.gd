@@ -327,8 +327,10 @@ func printLog(message: String = "", objectName: String = self.logName) -> void:
 	Debug.printLog(message, "lightGreen", objectName, "green")
 
 
+## Affected by [member shouldShowDebugInfo], but not affected by [member isLoggingEnabled].
 func printDebug(message: String = "") -> void:
-	if not isLoggingEnabled or not shouldShowDebugInfo: return
+	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
+	if not shouldShowDebugInfo: return
 	Debug.printDebug(message, logName, "green")
 
 
