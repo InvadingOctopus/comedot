@@ -74,11 +74,11 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 ## Returns: The new level of the Upgrade. If 0 then this Upgrade was not in this component before.
 func addOrLevelUpUpgrade(upgrade: Upgrade) -> int:
 	if self.getUpgrade(upgrade.name):
-		if shouldShowDebugInfo: printDebug(str("addOrLevelUpUpgrade() ", upgrade, " already installed."))
+		printDebug(str("addOrLevelUpUpgrade() ", upgrade, " already installed."))
 		if upgrade.level < upgrade.maxLevel: upgrade.level += 1
 	else:
 		# TODO: Check upgrade requirements
-		if shouldShowDebugInfo: printDebug(str("addOrLevelUpUpgrade() Installing ", upgrade))
+		printDebug(str("addOrLevelUpUpgrade() Installing ", upgrade))
 		self.upgrades.append(upgrade)
 		self.upgradesDictionary[upgrade.name] = upgrade
 
