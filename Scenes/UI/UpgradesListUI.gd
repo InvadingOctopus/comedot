@@ -58,10 +58,10 @@ func _ready() -> void:
 func readdAllChoices() -> void:
 	Tools.removeAllChildren(self)
 	for upgrade in upgrades:
-		addChoiceUI(upgrade)
+		createChoiceUI(upgrade)
 
 
-func addChoiceUI(upgrade: Upgrade) -> Control:
+func createChoiceUI(upgrade: Upgrade) -> Control:
 	var newChoiceUI: UpgradeChoiceUI = choiceUIScene.instantiate()
 	newChoiceUI.shouldShowDebugInfo  = self.shouldShowDebugInfo
 
