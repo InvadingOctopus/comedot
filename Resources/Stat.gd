@@ -65,7 +65,7 @@ extends Resource
 				if value <= min: didMin.emit()
 				if value <= 0:	 didZero.emit()
 			
-			GameState.UiStatUpdated.emit(self) # TBD: Should this be optional?
+			GameState.uiStatUpdated.emit(self) # TBD: Should this be optional?
 
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.

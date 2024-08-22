@@ -33,7 +33,7 @@ extends Container
 
 func _ready() -> void:
 	updateInitialStats()
-	GameState.UiStatUpdated.connect(self.onGameState_UiStatUpdated)
+	GameState.uiStatUpdated.connect(self.onGameState_uiStatUpdated)
 
 
 func updateInitialStats() -> void:
@@ -42,7 +42,7 @@ func updateInitialStats() -> void:
 		updateStatLabel(stat, false)
 
 
-func onGameState_UiStatUpdated(stat: Stat) -> void:
+func onGameState_uiStatUpdated(stat: Stat) -> void:
 	updateStatLabel(stat)
 
 
