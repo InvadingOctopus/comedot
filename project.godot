@@ -73,7 +73,7 @@ folder_colors={
 "res://Games/": "orange",
 "res://Resources/": "red",
 "res://Scenes/": "yellow",
-"res://Scripts/": "pink",
+"res://Scripts/": "orange",
 "res://Templates/": "gray",
 "res://Temporary/": "gray",
 "res://Tests/": "gray"
