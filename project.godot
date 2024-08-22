@@ -70,6 +70,7 @@ folder_colors={
 "res://Components/": "blue",
 "res://Components/Parameters/": "red",
 "res://Entities/": "green",
+"res://Game/": "pink",
 "res://Games/": "orange",
 "res://Resources/": "red",
 "res://Scenes/": "yellow",

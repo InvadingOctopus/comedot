@@ -16,6 +16,7 @@ mono_crash.*.json
 
 # Game-specific experiments
 Lab/*
+Game/*
 
 .vscode/*
 .DS_Store
