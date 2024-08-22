@@ -21,7 +21,9 @@ extends Resource
 
 ## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
 @export var displayName: String:
-	get: return displayName if not displayName.is_empty() else self.name
+	get: 
+		if not displayName.is_empty(): return displayName
+		else: return self.name
 
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 @export var min: int = 0: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
