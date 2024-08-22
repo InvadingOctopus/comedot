@@ -58,14 +58,14 @@ func getTextAtIndex(indexOverride: int = self.textIndex) -> String:
 func onTextTimer_timeout() -> void:
 	## Increment the index first, because the first string should already be displayed in `_ready()`
 	cycleIndex()
-	displayTextAtIndex()
+	if textIndex < textStrings.size(): displayTextAtIndex() # NOTE: Check index here to avoid logging the error message after we just displayed the last string.
 
 
 func cycleIndex() -> void:
 	textIndex += 1
 
 	# Did the index go past the last string?
-	if textIndex >= textStrings.size(): # NOTE: The array size is 1 greater than the last valid index
+	if textIndex >= textStrings.size(): # The array size is 1 greater than the last valid index
 		didDisplayFinalString.emit()
 		
 		if shouldDeleteAfterLastString:
