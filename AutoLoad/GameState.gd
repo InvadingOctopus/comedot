@@ -35,7 +35,7 @@ signal playerRemoved(player: PlayerEntity)
 # These signals may be emitted by any object and connected to any object at any time, usually via scripts.
 # IGNORE Godot Warning; this signal is used by other classes.
 
-signal HUDStatUpdated(stat: Stat) # TODO: Rename to camelCase
+signal uiStatUpdated(stat: Stat)
 #endregion
 
 
