@@ -20,6 +20,7 @@ var upgradesDictionary: Dictionary = {} ## Caches upgrades accessed by [StringNa
 
 
 #region Signals
+signal didAcquire(upgrade: Upgrade) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
 #endregion
 
 
@@ -69,17 +70,46 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 	return null
 
 
-## If the specified [Upgrade] is not already "installed" in this [UpgradesComponent], it will be added.
-## If the Upgrade is already in this component, it's level will be incremented by 1.
-## Returns: The new level of the Upgrade. If 0 then this Upgrade was not in this component before.
-func addOrLevelUpUpgrade(upgrade: Upgrade) -> int:
-	if self.getUpgrade(upgrade.name):
-		printDebug(str("addOrLevelUpUpgrade() ", upgrade, " already installed."))
-		if upgrade.level < upgrade.maxLevel: upgrade.level += 1
-	else:
-		# TODO: Check upgrade requirements
-		printDebug(str("addOrLevelUpUpgrade() Installing ", upgrade))
-		self.upgrades.append(upgrade)
-		self.upgradesDictionary[upgrade.name] = upgrade
+func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
+	# TODO: Review the order of the tasks executed here, and which class should execute the installation etc? The [Upgrade] or the [UpgradesComponent]?
 
-	return upgrade.level
+	printDebug(str("addUpgrade() ", newUpgrade.logName))
+
+	# Do we already have the upgrade?
+	
+	var conflictingUpgrade: Upgrade = self.getUpgrade(newUpgrade.name)
+	
+	if conflictingUpgrade:
+		printDebug("Upgrade name already in dictionary")
+		
+		# Is it the same upgrade?
+		if conflictingUpgrade == newUpgrade:
+			printDebug("Upgrade already in component")
+			return true
+		elif not overwrite:
+			printDebug("Not overwriting Upgrade already in component with same name: " + str(conflictingUpgrade))
+			return false
+	
+	# If the Upgrade is not already installed in this component or `overwrite` is `true`, add it!
+
+	if newUpgrade.acquire(self.parentEntity):
+		self.upgrades.append(newUpgrade)
+		self.upgradesDictionary[newUpgrade.name] = newUpgrade
+		self.didAcquire.emit(newUpgrade)
+		printDebug("Upgrade added")
+
+	return true
+
+
+## If the specified [Upgrade] is not already "installed" in this [UpgradesComponent], it will be added.
+## If the Upgrade is already in this component, its level will be incremented by 1.
+## Returns: The new level of the Upgrade. If 0 then this Upgrade was not in this component before.
+func addOrLevelUpUpgrade(newUpgrade: Upgrade) -> int:
+	if self.getUpgrade(newUpgrade.name):
+		printDebug(str("addOrLevelUpUpgrade() ", newUpgrade, " already installed."))
+		if newUpgrade.level < newUpgrade.maxLevel: newUpgrade.level += 1
+	else:
+		printDebug(str("addOrLevelUpUpgrade() Installing ", newUpgrade))
+		self.addUpgrade(newUpgrade)
+
+	return newUpgrade.level

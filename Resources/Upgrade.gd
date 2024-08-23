@@ -10,6 +10,7 @@ class_name Upgrade
 extends Resource
 
 # TBD: Create an emtpy subclass called "Downgrade" for naming consistency? :P
+# TBD: Should `acquire` be renamed `install`?
 
 
 #region Parameters
@@ -25,9 +26,16 @@ extends Resource
 
 ## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
 @export var displayName: String:
-	get: 
+	get:
 		if not displayName.is_empty(): return displayName
 		else: return self.name
+
+## A [Script] containing the code to execute when this Upgrade is acquired/"installed" by an [Entity] or leveled up.
+## IMPORTANT: The script MUST have a function matching this signature:
+## `func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
+@export var payload: Script
+
+const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload].
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
@@ -71,9 +79,9 @@ extends Resource
 ## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
 @export var costStat: Stat # TBD: Should this just be a StringName?
 
-## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade. 
+## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
-## If a cost is <= -1, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free. 
+## If a cost is <= -1, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free.
 ## If the array is empty, then the Upgrade is always free.
 ## TIP: Use [member shouldUseLastCostForHigherLevels] to specify only 1 or a few costs and use the last cost for all subsequent levels.
 @export_range(-1, 1000) var costs: Array[int]
@@ -108,7 +116,7 @@ var logName: String:
 
 
 #region Signals
-signal didAcquire(entity: Entity)
+signal didAcquire(entity: Entity) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
 signal didDiscard(entity: Entity)
 
 signal didLevelUp
@@ -123,9 +131,11 @@ signal didMaxLevel
 
 #region Gameplay Functionality
 
+## Applies this Upgrade to an [Entity] by calling the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
+## May be overridden in a subclass to check game-specific conditions etc.
 func acquire(entity: Entity) -> bool:
-	# TODO: Stub
-	didAcquire.emit(entity)
+	self.payload.call(self.payloadMethodName, self, entity)
+	self.didAcquire.emit(entity)
 	return true
 
 
@@ -149,8 +159,8 @@ func discard(entity: Entity) -> bool:
 #endregion
 
 #region Management
-	
-## Returns the cost for the specified level or the current level. 
+
+## Returns the cost for the specified level or the current level.
 ## If no cost has been specified for the respective level and [member shouldUseLastCostForHigherLevels] is not `true`, -1 is returned.
 func getCost(levelOverride: int = self.level) -> int:
 	if levelOverride < costs.size(): # Array size will be 1 less than the last valid index.
@@ -171,7 +181,7 @@ func getNextCost() -> int:
 
 ## Returns the cost for acquiring or upgrading this Upgrade for a particular [UpgradesComponent].
 ## If the component does NOT have this Upgrade, then the CURRENT level's cost is returned.
-## If the component already has this Upgrade, then the NEXT level's cost is returned. 
+## If the component already has this Upgrade, then the NEXT level's cost is returned.
 ## If there is no cost for the respective level, -1 is returned.
 func getCostForUpgradesComponent(upgradesComponent: UpgradesComponent) -> int:
 	if upgradesComponent.getUpgrade(self.name): # Is this upgrade already installed in that component?
@@ -226,7 +236,7 @@ func findMissingRequirement(upgradesComponent: UpgradesComponent) -> Upgrade:
 		if not upgradesComponent.getUpgrade(requirement.name):
 			if shouldShowDebugInfo: Debug.printDebug(str("Missing requirement ", requirement, " in ", upgradesComponent), str(self))
 			return requirement
-	
+
 	return null
 
 
@@ -240,9 +250,12 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 		if not upgradesComponent.getUpgrade(conflict.name):
 			if shouldShowDebugInfo: Debug.printDebug(str("Mutually-exclusive upgrade ", conflict, " in ", upgradesComponent), str(self))
 			return conflict
-	
+
 	return null
 
+
+## Checks if the [member payload] script contains a function matching the required signature as [member payloadMethodName].
+func validatePayloadSignature() -> bool:
+	return Tools.findMethodInScript(self.payload, self.payloadMethodName)
+
 #endregion
-
-
