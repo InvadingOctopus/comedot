@@ -25,6 +25,13 @@ signal didAcquire(upgrade: Upgrade) ## NOTE: [signal Upgrade.didAcquire] is emit
 
 
 #region Dependencies
+var statsComponent: StatsComponent:
+	get:
+		if not statsComponent: statsComponent = self.getCoComponent(StatsComponent)
+		return statsComponent
+
+func getRequiredComponents() -> Array[Script]:
+	return [StatsComponent]
 #endregion
 
 
@@ -91,8 +98,11 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 			return false
 	
 	# If the Upgrade is not already installed in this component or `overwrite` is `true`, add it!
+	
+	# But we gotta pay first!
+	var statToOffer: Stat = self.findPaymentStat(newUpgrade)
 
-	if newUpgrade.acquire(self.parentEntity):
+	if newUpgrade.requestToAcquire(self.parentEntity, statToOffer):
 		self.upgrades.append(newUpgrade)
 		self.upgradesDictionary[newUpgrade.name] = newUpgrade
 		self.didAcquire.emit(newUpgrade)
@@ -101,15 +111,31 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 	return true
 
 
+## Attempts to increase the level of the Upgrade after paying the required Stat cost.
+func incrementUpgradeLevel(upgrade: Upgrade) -> bool:
+	var statToOffer: Stat = self.findPaymentStat(upgrade)
+	return upgrade.requestLevelUp(self.parentEntity, statToOffer)
+
+
 ## If the specified [Upgrade] is not already "installed" in this [UpgradesComponent], it will be added.
 ## If the Upgrade is already in this component, its level will be incremented by 1.
 ## Returns: The new level of the Upgrade. If 0 then this Upgrade was not in this component before.
 func addOrLevelUpUpgrade(newUpgrade: Upgrade) -> int:
+	# Do we already have the upgrade?
 	if self.getUpgrade(newUpgrade.name):
 		printDebug(str("addOrLevelUpUpgrade() ", newUpgrade, " already installed."))
-		if newUpgrade.level < newUpgrade.maxLevel: newUpgrade.level += 1
+		self.incrementUpgradeLevel(newUpgrade) # Level up!
+	
+	# If not, then install it.
 	else:
 		printDebug(str("addOrLevelUpUpgrade() Installing ", newUpgrade))
 		self.addUpgrade(newUpgrade)
 
 	return newUpgrade.level
+
+
+## Searches the entity's [StatsComponent] for the [Stat] required to purchase or level-up the specified [Upgrade]
+func findPaymentStat(upgradeToBuy: Upgrade) -> Stat:
+	var statToOffer: Stat = statsComponent.getStat(upgradeToBuy.costStatName)
+	return statToOffer
+
