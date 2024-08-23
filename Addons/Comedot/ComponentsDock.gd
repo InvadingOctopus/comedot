@@ -117,8 +117,8 @@ func _ready() -> void:
 		setupUI()
 
 
-func printLog(text: String) -> void:
-	print(str("Comedock: ", text))
+func printLog(message: String) -> void:
+	print(str("Comedock: ", message))
 
 
 func setupUI() -> void:
