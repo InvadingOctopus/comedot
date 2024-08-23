@@ -75,9 +75,15 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 @export_group("Costs")
 
 ## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
-## If no stat is specified, then the Upgrade is always free.
-## NOTE: The actual [Stat] is never used when searching in a [StatsComponent], ONLY THE NAME.
+## If no Stat is specified, then the Upgrade is always free.
+## NOTE: This actual [Stat] is never used for comparison when searching in a [StatsComponent], ONLY THE NAME. 
+## Searching by the name allows any Entity, even monsters etc. to use Upgrades, by having different instances of the same Stat resource. 
+## This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
 @export var costStat: Stat # TBD: Should this just be a StringName?
+
+## This is the property that is ACTUALLY used to search for the required Stat, so that ANY instance of a particular Stat resource may be usable.
+var costStatName: StringName:
+	get: return self.costStat.name
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
@@ -111,13 +117,13 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 
 #region State
 var logName: String:
-	get: return str(self, " ", self.name, " ", self.level)
+	get: return str(self, " ", self.name, " L", self.level)
 #endregion
 
 
 #region Signals
 signal didAcquire(entity: Entity) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
-signal didDiscard(entity: Entity)
+signal didDiscard(entity: Entity) # TODO:
 
 signal didLevelUp
 signal didLevelDown
@@ -131,19 +137,73 @@ signal didMaxLevel
 
 #region Gameplay Functionality
 
-## Applies this Upgrade to an [Entity] by calling the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
-## May be overridden in a subclass to check game-specific conditions etc.
-func acquire(entity: Entity) -> bool:
-	self.payload.call(self.payloadMethodName, self, entity)
+## Allows or declines this Upgrade to be installed in an [Entity]'s [UpgradesComponent] after deducting the required [method getCost] from the required [Stat].
+## May be overridden in a subclass to check additional game-specific conditions.
+func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
+	# DESIGN: The Stat to pay with should be chosen from the Entity's side (i.e. the UpgradesComponent),
+	# in case they have multiple Stats of the same type to choose from.
+
+	printLog(str("requestToAcquire() entity: ", entity, ", paymentStat: ", paymentStat))
+	
+	# Pay up!
+	if not deductPayment(paymentStat, self.level): return false
+
+	# Install.exe
 	self.didAcquire.emit(entity)
 	return true
 
 
+## Allows or declines this Upgrade's [member level] to be incremented after deducting the required [method getCost] from the required [Stat].
+## May be overridden in a subclass to check additional game-specific conditions.
+func requestLevelUp(entity: Entity, paymentStat: Stat) -> bool:
+	# DESIGN: The Stat to pay with should be chosen from the Entity's side (i.e. the UpgradesComponent),
+	# in case they have multiple Stats of the same type to choose from.
+
+	printLog(str("requestLevelUp() entity: ", entity, ", paymentStat: ", paymentStat))
+
+	# First, verify that we HAVE a next level to level up to.
+	if not self.maxLevel <= -1 and self.level >= self.maxLevel: # Remember that a maxLevel of <= -1 means infinite levels.
+		printLog(str("Already at maxLevel ", maxLevel))
+		return false
+	
+	# Next, pay up before level up!
+	if not deductPayment(paymentStat, self.level + 1): return false
+
+	# Finally, level up!
+	self.level += 1
+	return true
+
+
+func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
+	printLog(str("deductPayment() offeredStat: ", offeredStat))
+
+	# NOTE: DESIGN: Check the NAME instead of the Stat itself, so that any Entity, even monsters etc. may be able to use Upgrades by using different instances of a Stat resource.
+
+	# Is it the Stat we want?
+	if not offeredStat.name == self.costStat.name: 
+		printLog(str("offeredStat.name: ", offeredStat, " != self.costStat.name: ", self.costStat.name))
+		return false
+
+	# Does it have enough?
+	var cost: int = self.getCost(levelToPurchase)
+	var offeredValue: int = offeredStat.value # Cache
+
+	if not offeredValue >= cost:
+		printLog(str("offeredStat.value: ", offeredValue, " < self.getCost(): ", cost))
+		return false
+
+	# Kaching!
+	offeredStat.value -= cost
+	printLog(str("Paid offeredStat.value: ", offeredValue, " - ", cost))
+
+	return false
+
+
+## Performs the actual actions or purpose of the Upgrade. Calls the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
 ## Override in subclass to perform any modifications to the entity or other components when gaining (or losing) a [member level].
 ## Level 0 is when the Upgrade is first acquired by an entity.
-func processLevel() -> bool:
-	# TODO: Stub
-	return true
+func processLevel(entity: Entity) -> bool:
+	return self.payload.new().call(self.payloadMethodName, self, entity) # TBD: Is `new()` needed or can it avoided with a `static func`?
 
 
 ## Override in subclass to perform any per-frame modifications to the entity or other components.
@@ -234,7 +294,7 @@ func findMissingRequirement(upgradesComponent: UpgradesComponent) -> Upgrade:
 	for requirement in self.requiredUpgrades:
 		# Is there any missing requirement?
 		if not upgradesComponent.getUpgrade(requirement.name):
-			if shouldShowDebugInfo: Debug.printDebug(str("Missing requirement ", requirement, " in ", upgradesComponent), str(self))
+			printLog(str("Missing requirement ", requirement, " in ", upgradesComponent))
 			return requirement
 
 	return null
@@ -248,7 +308,7 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 	for conflict in self.mutuallyExclusiveUpgrades:
 		# Is there any conflicting Upgrade?
 		if not upgradesComponent.getUpgrade(conflict.name):
-			if shouldShowDebugInfo: Debug.printDebug(str("Mutually-exclusive upgrade ", conflict, " in ", upgradesComponent), str(self))
+			printLog(str("Mutually-exclusive upgrade ", conflict, " in ", upgradesComponent))
 			return conflict
 
 	return null
@@ -259,3 +319,7 @@ func validatePayloadSignature() -> bool:
 	return Tools.findMethodInScript(self.payload, self.payloadMethodName)
 
 #endregion
+
+
+func printLog(message: String) -> void:
+	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName))
