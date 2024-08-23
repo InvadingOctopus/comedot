@@ -460,4 +460,17 @@ static func skipTimer(timer: Timer) -> float:
 	timer.timeout.emit()
 	return leftoverTime
 
+
+## Checks whether a script has a function/method with the specified name.
+## NOTE: Only checks for the name, NOT the arguments or return type.
+## ALERT: Use the EXACT SAME CASE as the method you need to find!
+static func findMethodInScript(script: Script, methodName: StringName) -> bool: # TBD: Should it be [StringName]?
+	# TODO: Check arguments and return type.
+	var methodDictionary: Array[Dictionary] = script.get_script_method_list()
+	for method in methodDictionary:
+		# DEBUG: Debug.printDebug(str("findMethodInScript() script: ", script, " searching: ", method))
+		if method["name"] == methodName: return true
+	return false
+
+
 #endregion
