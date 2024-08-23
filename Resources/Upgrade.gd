@@ -145,6 +145,9 @@ func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
 
 	printLog(str("requestToAcquire() entity: ", entity, ", paymentStat: ", paymentStat))
 	
+	# Validate
+	if not validateEntityEligibility: return false
+
 	# Pay up!
 	if not deductPayment(paymentStat, self.level): return false
 
@@ -174,6 +177,7 @@ func requestLevelUp(entity: Entity, paymentStat: Stat) -> bool:
 	return true
 
 
+## Deducts a level's cost from the [member Stat.value] of the [Stat] used to pay for this Upgrade.
 func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	printLog(str("deductPayment() offeredStat: ", offeredStat))
 
@@ -195,8 +199,7 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	# Kaching!
 	offeredStat.value -= cost
 	printLog(str("Paid offeredStat.value: ", offeredValue, " - ", cost))
-
-	return false
+	return true
 
 
 ## Performs the actual actions or purpose of the Upgrade. Calls the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
