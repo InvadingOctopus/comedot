@@ -115,6 +115,16 @@
 		"description": "A property setter stub."
 	},
 
+	"Property Setter If New": {
+		"prefix": "setNew",
+		"body": [
+			"set(newValue):",
+			"\tif newValue != ${1:property}:",
+			"\t\t${1:property} = newValue$0"
+		],
+		"description": "A property setter which only updates a variable if the new value is different."
+	},
+
 	"Signal Connection": {
 		"prefix": "connect",
 		"body": [ 
