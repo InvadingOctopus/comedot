@@ -1,4 +1,4 @@
-## A [Label] linked to a [Stat] which automatically updates its text when the stat's value changes.
+## A [Label] linked to a [Stat] which automatically updates its text when the Stat's value changes.
 
 class_name StatLabel
 extends Label
