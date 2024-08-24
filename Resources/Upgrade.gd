@@ -80,6 +80,8 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 
 ## The [Stat] required to "pay" for the Upgrade, such as spending Money at a shop or Energy at a machine.
 ## If no Stat is specified, then the Upgrade is always free.
+## NOTE: If a Stat is specified but not present in an Entity's [StatsComponent], the Upgrade CANNOT be purchased EVEN IF the cost is <= 0.
+## This acts as a further layer of validation: The Entity must have the Stat type in its StatsComponent, i.e. be able to HOLD a resource such as gold etc., but it may be 0.
 ## NOTE: This actual [Stat] is never used for comparison when searching in a [StatsComponent], ONLY THE NAME. 
 ## Searching by the name allows any Entity, even monsters etc. to use Upgrades, by having different instances of the same Stat resource. 
 ## This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
@@ -91,10 +93,10 @@ var costStatName: StringName:
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
-## If a cost is <= 0, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free.
+## If a cost is <= 0, or missing and [member shouldUseLastCostForHigherLevels] is false, then the level is free.
 ## If the array is empty, then the Upgrade is always free.
 ## TIP: Use [member shouldUseLastCostForHigherLevels] to specify only 1 or a few costs and use the last cost for all subsequent levels.
-@export_range(0, 1000, 10, "or_greater") var costs: Array[int]
+@export_range(0, 1000, 1, "or_greater") var costs: Array[int]
 
 ## If `true`, then the highest index of the [member costs] array is used for all subsequent higher levels.
 ## This lets you write only 1 or a few costs even if the number of allowed upgrade levels is higher.
@@ -190,14 +192,21 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	printLog(str("deductPayment() offeredStat: ", offeredStat))
 
 	# NOTE: DESIGN: Check the NAME instead of the Stat itself, so that any Entity, even monsters etc. may be able to use Upgrades by using different instances of a Stat resource.
+	# NOTE: DESIGN: Check for the presence of the Stat EVEN IF the cost is FREE; this acts as a further layer of validation: The Entity must have the Stat type in its StatsComponent, i.e. be able to HOLD a resource such as gold etc., but it may be 0.
 
-	# Is it the Stat we want?
+	# If the Upgrade does not need any Stat, the Upgrade is always free.
+	if self.costStat == null: return true
+
+	# If the Upgrade requires a Stat, make sure the offered Stat is an instance of the type we want.
 	if not offeredStat.name == self.costStat.name: 
 		printLog(str("offeredStat.name: ", offeredStat, " != self.costStat.name: ", self.costStat.name))
 		return false
 
-	# Does it have enough?
+	# Check our cost. If it's <= 0, the purchase is free!
 	var cost: int = self.getCost(levelToPurchase)
+	if cost <= 0: return true
+
+	# Does the Stat have enough?
 	var offeredValue: int = offeredStat.value # Cache
 
 	if not offeredValue >= cost:
@@ -243,8 +252,9 @@ func getNextLevel() -> int:
 
 
 ## Returns the cost for the specified level or the current level.
-## If no cost has been specified for the respective level and [member shouldUseLastCostForHigherLevels] is not `true`, -1 is returned.
+## Returns 0 if no cost has been specified for the respective level and [member shouldUseLastCostForHigherLevels] is `false`.
 func getCost(levelOverride: int = self.level) -> int:
+	# If the level number a valid index within the costs array, get the cost associated with the level.
 	if levelOverride < costs.size(): # Array size will be 1 less than the last valid index.
 		return costs[levelOverride]
 
@@ -253,10 +263,10 @@ func getCost(levelOverride: int = self.level) -> int:
 		return costs.back()
 
 	else:
-		return -1
+		return 0 # TBD: Return 0 on a missing cost or <= -1?
 
 
-## Returns the cost for the next level. If there is no next level, -1 is returned.
+## Returns the cost for the next level. If there is no next level, 0 is returned.
 func getNextCost() -> int:
 	return self.getCost(self.level + 1)
 
@@ -264,7 +274,7 @@ func getNextCost() -> int:
 ## Returns the cost for acquiring or upgrading this Upgrade for a particular [UpgradesComponent].
 ## If the component does NOT have this Upgrade, then the CURRENT level's cost is returned.
 ## If the component already has this Upgrade, then the NEXT level's cost is returned.
-## If there is no cost for the respective level, -1 is returned.
+## If there is no cost for the respective level, 0 is returned.
 func getCostForUpgradesComponent(upgradesComponent: UpgradesComponent) -> int:
 	if upgradesComponent.getUpgrade(self.name): # Is this upgrade already installed in that component?
 		return getNextCost()
