@@ -276,7 +276,8 @@ func getNextCost() -> int:
 ## If the component already has this Upgrade, then the NEXT level's cost is returned.
 ## If there is no cost for the respective level, 0 is returned.
 func getCostForUpgradesComponent(upgradesComponent: UpgradesComponent) -> int:
-	if upgradesComponent.getUpgrade(self.name): # Is this upgrade already installed in that component?
+	# Is this upgrade already installed in that component?
+	if upgradesComponent.getUpgrade(self.name): # TBD: Match just the name or check for the exact same resource instance?
 		return getNextCost()
 	else:
 		return getCost()
