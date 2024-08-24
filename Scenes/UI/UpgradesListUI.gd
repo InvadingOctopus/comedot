@@ -66,8 +66,7 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 	newChoiceUI.shouldShowDebugInfo  = self.shouldShowDebugInfo
 
 	newChoiceUI.upgrade = upgrade
-	newChoiceUI.targetUpgradesComponent = self.targetUpgradesComponent
-	newChoiceUI.targetStatsComponent = self.targetStatsComponent
+	newChoiceUI.targetEntity = self.targetEntity
 	
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 	
@@ -79,4 +78,5 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 
 func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
 	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), str(self))
+	self.lastUpgradeChosen = upgrade
 	self.didChooseUpgrade.emit(upgrade)

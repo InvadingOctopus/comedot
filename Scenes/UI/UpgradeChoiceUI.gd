@@ -6,15 +6,15 @@ extends Control
 
 #region Parameters
 
-@export var upgrade: Upgrade
+@export var upgrade: Upgrade:
+	set(newValue):
+		if newValue != upgrade:
+			upgrade = newValue
+			connectSignals()
 
-## The [UpgradesComponent] to check for each Upgrade's [member Upgrade.requiredUpgrades] and [member Upgrade.mutuallyExclusiveUpgrades].
-## If `null`, the [member GameState.players] Entity will be searched.
-@export var targetUpgradesComponent: UpgradesComponent
-
-## The [StatsComponent] to check for each Upgrade's [member Upgrade.costStat].
-## If `null`, the [member GameState.players] Entity will be searched.
-@export var targetStatsComponent: StatsComponent
+## The [Entity] which will be receiving the [Upgrade].
+## If `null`, the first [member GameState.players] Entity will be used.
+@export var targetEntity: Entity
 
 @export var shouldShowDebugInfo: bool = false
 
@@ -22,9 +22,23 @@ extends Control
 
 
 #region State
+
 @onready var costAmountLabel:	Label  = %CostAmountLabel
 @onready var costStatLabel:		Label  = %CostStatLabel
 @onready var upgradeButton:		Button = %UpgradeButton
+
+## The [UpgradesComponent] to check for the Upgrade's [member Upgrade.requiredUpgrades] and [member Upgrade.mutuallyExclusiveUpgrades].
+var targetUpgradesComponent: UpgradesComponent:
+	get:
+		if not targetUpgradesComponent: targetUpgradesComponent = targetEntity.getComponent(UpgradesComponent)
+		return targetUpgradesComponent
+
+## The [StatsComponent] to check for the Upgrade's [member Upgrade.costStat].
+var targetStatsComponent: StatsComponent:
+	get:
+		if not targetStatsComponent: targetStatsComponent = targetEntity.getComponent(StatsComponent)
+		return targetStatsComponent
+
 #endregion
 
 
@@ -40,16 +54,22 @@ var player: PlayerEntity:
 
 
 func _ready() -> void:
-	if not targetUpgradesComponent:
-		targetUpgradesComponent = player.upgradesComponent
-		if not targetUpgradesComponent: Debug.printWarning("Missing targetUpgradesComponent", str(self))
-
-	if not targetStatsComponent:
-		targetStatsComponent = player.statsComponent
-		if not targetStatsComponent: Debug.printWarning("Missing targetStatsComponent", str(self))
+	if not targetEntity:
+		targetEntity = player
+		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
 
 
-func updateUI() -> void:
+func connectSignals() -> void:
+	# TBD: Disconnect signals if Upgrade is null'ed?
+	if not upgrade: return
+	upgrade.didLevelUp.connect(self.updateUI)
+	upgrade.didLevelDown.connect(self.updateUI)
+	upgrade.didAcquire.connect(self.updateUI)
+	upgrade.didDiscard.connect(self.updateUI)
+
+
+func updateUI(_entity: Entity = self.targetEntity) -> void:
+	# The Entity argument is needed to match the Upgrade's signals signature.
 	updateCostUI()
 	updateButton()
 
@@ -58,30 +78,16 @@ func updateUI() -> void:
 func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
 	costStatLabel.text = upgrade.costStat.displayName
-	costAmountLabel.text = str(upgrade.getCost())
+	costAmountLabel.text = str(upgrade.getCostForUpgradesComponent(targetUpgradesComponent))
 
 
 func updateButton() -> void:
-	# Cost is quicker to check first :)
-	upgradeButton.text = upgrade.displayName
-	upgradeButton.disabled = not self.validateCost() and not self.validateRequirements()
+	if upgrade.maxLevel > 0:
+		upgradeButton.text = str(upgrade.displayName, " L", upgrade.level)
+	else:
+		upgradeButton.text = upgrade.displayName
 
-
-func validateCost() -> bool:
-	# If there the Upgrade has no cost, it's valid!
-	if upgrade.getCost() <= 0: return true
-
-	# Do we have the required Stat and does its value meet the Upgrade's cost?
-	if targetStatsComponent:
-		var stat: Stat = targetStatsComponent.getStat(upgrade.costStat.name)
-		if stat and stat.value >= upgrade.getCost():
-			return true
-	# else
-	return false
-
-
-func validateRequirements() -> bool:
-	return upgrade.validateUpgradesComponent(targetUpgradesComponent)
+	upgradeButton.disabled = not upgrade.validateEntityEligibility(targetEntity)
 
 
 func onUpgradeButton_pressed() -> void:
