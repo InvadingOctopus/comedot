@@ -24,6 +24,7 @@ var player: PlayerEntity:
 func _ready() -> void:
 	self.visible = not shouldBeHiddenUntilAcquired
 	connectSignals()
+	updateLabel()
 
 
 func connectSignals() -> void:
