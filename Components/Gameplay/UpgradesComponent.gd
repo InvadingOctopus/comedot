@@ -108,13 +108,21 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 		self.didAcquire.emit(newUpgrade)
 		printDebug("Upgrade added")
 
+		# After the upgrade is installed, perform its ACTUAL JOB!
+		newUpgrade.processLevel(self.parentEntity)
+
 	return true
 
 
 ## Attempts to increase the level of the Upgrade after paying the required Stat cost.
 func incrementUpgradeLevel(upgrade: Upgrade) -> bool:
 	var statToOffer: Stat = self.findPaymentStat(upgrade)
-	return upgrade.requestLevelUp(self.parentEntity, statToOffer)
+	if upgrade.requestLevelUp(self.parentEntity, statToOffer):
+		# After the upgrade is leveled up, perform its ACTUAL JOB at the new level!
+		upgrade.processLevel(self.parentEntity)
+		return true
+	else:
+		return false
 
 
 ## If the specified [Upgrade] is not already "installed" in this [UpgradesComponent], it will be added.
