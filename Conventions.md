@@ -70,6 +70,13 @@ func onGunComponent_ammoDepleted()
 func onHealthChanged()
 func onTimeout() # in a script on a Timer node
 ```
+
+# Resources
+
+* Resources like [Stat] and [Upgrade] should ONLY CONTAIN INFORMATION and validation functions.
+* Resources should NOT contain WHERE THEY ARE USED; an Upgrade should NOT hold a reference to the [UpgradesComponent] where it's "installed"; that should be the job of the component.
+* "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between UpgradesComponents, should be done via signals.
+
 # Git Workflow
 
 * TBD: The `develop` branch should be merged into `main` only on a weekend, I guess?
