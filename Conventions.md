@@ -77,6 +77,11 @@ func onTimeout() # in a script on a Timer node
 * Resources should NOT contain WHERE THEY ARE USED; an Upgrade should NOT hold a reference to the [UpgradesComponent] where it's "installed"; that should be the job of the component.
 * "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between UpgradesComponents, should be done via signals.
 
+# Miscellaneous
+
+* Do not try to use `-1` etc as an indicator of whether some numerical value is invalid or should be ignored. It complicates ALL other calculations down the road. Just use a separate flag.
+	- e.g. `allowInfiniteLevels = true` instead of `maxLevel = -1`
+
 # Git Workflow
 
 * TBD: The `develop` branch should be merged into `main` only on a weekend, I guess?
