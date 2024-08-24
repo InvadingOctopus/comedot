@@ -1,7 +1,7 @@
-## A [Control] which builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
+## A [Container] [Control] which builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
 
 class_name UpgradesListUI
-extends Control
+extends Container
 
 
 #region Parameters
@@ -38,7 +38,7 @@ signal didChooseUpgrade(upgrade: Upgrade)
 
 
 #region Dependencies
-const choiceUIScene: PackedScene = preload("res://Scenes/UI/UpgradeChoiceUI.tscn")
+const choiceUIScene: PackedScene = preload("res://Scenes/UI/UpgradeChoiceUI.tscn") # TBD: load or preload?
 
 var player: PlayerEntity:
 	get: return GameState.players.front()
