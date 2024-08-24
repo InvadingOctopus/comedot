@@ -45,32 +45,35 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 @export_group("Level")
 
 ## The upgrade level of this Upgrade. Some upgrades may be upgraded multiple times to make them more powerful.
-## If this value is set higher than [member maxLevel] then it is reset to [member maxLevel].
-@export var level: int:
+## If this value is set higher than [member maxLevel] and [member shouldAllowInfiniteLevels] is false, then it is reset to [member maxLevel].
+@export_range(0, 100, 1, "or_greater") var level: int:
 	set(newValue):
 		if newValue == level: return
 
 		# Keep the level at or under maxLevel.
-		# NOTE: Remember that maxLevel <= -1 means infinite levels.
-		if maxLevel >= 0 and newValue > maxLevel: newValue = maxLevel # TBD: Should we reject the attempt to set a higher value?
+		if not shouldAllowInfiniteLevels and maxLevel >= 0 and newValue > maxLevel: 
+			newValue = maxLevel # TBD: Should we reject the attempt to set a higher value?
 
 		var previousValue: int = level
 		level = newValue # Set the value first before emitting signals in case the handlers need to check it.
 
 		if level > previousValue:
 			didLevelUp.emit()
-			if level >= maxLevel: didMaxLevel.emit()
+			if not shouldAllowInfiniteLevels and level >= maxLevel: didMaxLevel.emit()
 		elif level < previousValue:
 			didLevelDown.emit()
 
-## The maximum number of times this Upgrade may be upgraded.
-## If maxLevel is -1 or less, then [member level] has no limit.
-@export var maxLevel: int:
+## The maximum number of times this Upgrade may be upgraded. Ignored if [member shouldAllowInfiniteLevels] is true.
+## A value of <= -1 is invalid.
+@export_range(0, 100, 1, "or_greater") var maxLevel: int:
 	set(newValue):
 		maxLevel = newValue
-		if maxLevel >= 0 and level > maxLevel:
+		if not shouldAllowInfiniteLevels and maxLevel >= 0 and level > maxLevel:
 			Debug.printDebug(str("Decreasing higher level ", level, " to new maxLevel ", maxLevel))
 			level = maxLevel
+
+## If `true` then [member maxLevel] is ignored and [member level] has no limit.
+@export var shouldAllowInfiniteLevels: bool = false
 
 
 @export_group("Costs")
@@ -88,10 +91,10 @@ var costStatName: StringName:
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
-## If a cost is <= -1, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free.
+## If a cost is <= 0, or missing and not [member shouldUseLastCostForHigherLevels], then the level is free.
 ## If the array is empty, then the Upgrade is always free.
 ## TIP: Use [member shouldUseLastCostForHigherLevels] to specify only 1 or a few costs and use the last cost for all subsequent levels.
-@export_range(-1, 1000) var costs: Array[int]
+@export_range(0, 1000, 10, "or_greater") var costs: Array[int]
 
 ## If `true`, then the highest index of the [member costs] array is used for all subsequent higher levels.
 ## This lets you write only 1 or a few costs even if the number of allowed upgrade levels is higher.
@@ -166,7 +169,7 @@ func requestLevelUp(entity: Entity, paymentStat: Stat) -> bool:
 	printLog(str("requestLevelUp() entity: ", entity, ", paymentStat: ", paymentStat))
 
 	# First, verify that we HAVE a next level to level up to.
-	if not self.maxLevel <= -1 and self.level >= self.maxLevel: # Remember that a maxLevel of <= -1 means infinite levels.
+	if not self.shouldAllowInfiniteLevels and self.level >= self.maxLevel:
 		printLog(str("Already at maxLevel ", maxLevel))
 		return false
 	
@@ -224,12 +227,11 @@ func discard(entity: Entity) -> bool:
 
 #region Management
 
-## Returns the next level after clamping it to the [member maxLevel].
-## If maxLevel is <= -1, then [member level] can be infinite.
+## Returns the next level after clamping it to the [member maxLevel] if not [member shouldAllowInfiniteLevels].
 ## If there is no next level possible, then the current [member level] is returned.
 func getNextLevel() -> int:
 	# TBD: Should we return an invalid number if there is no next level?
-	if maxLevel <= -1 or self.level < maxLevel: 
+	if self.shouldAllowInfiniteLevels or self.level < maxLevel: 
 		return self.level + 1 
 	else: 
 		return level

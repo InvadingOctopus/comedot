@@ -68,8 +68,7 @@ func connectSignals() -> void:
 	upgrade.didDiscard.connect(self.updateUI)
 
 
-func updateUI(_entity: Entity = self.targetEntity) -> void:
-	# The Entity argument is needed to match the Upgrade's signals signature.
+func updateUI(_entity: Entity = self.targetEntity) -> void: # The Entity argument is needed to match the Upgrade signals signatures.
 	updateCostUI()
 	updateButton()
 
@@ -82,10 +81,9 @@ func updateCostUI() -> void:
 
 
 func updateButton() -> void:
-	if upgrade.maxLevel > 0:
-		upgradeButton.text = str(upgrade.displayName, " L", upgrade.level)
-	else:
-		upgradeButton.text = upgrade.displayName
+	# Write the level if there are any levels, or infinite levels are allowed .
+	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", upgrade.level)
+	else: upgradeButton.text = upgrade.displayName
 
 	upgradeButton.disabled = not upgrade.validateEntityEligibility(targetEntity)
 
