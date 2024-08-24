@@ -21,6 +21,7 @@ var upgradesDictionary: Dictionary = {} ## Caches upgrades accessed by [StringNa
 
 #region Signals
 signal didAcquire(upgrade: Upgrade) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
+signal didDiscard(upgrade: Upgrade)
 #endregion
 
 
