@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c70acig5l5xjx"]
 
-[ext_resource type="Script" path="res://Scenes/UI/Chart.gd" id="1_ktel2"]
+[ext_resource type="Script" path="res://UI/Chart.gd" id="1_ktel2"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_7qj2e"]
 font_size = 8

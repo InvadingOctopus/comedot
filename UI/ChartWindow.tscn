@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://doek86wjw137k"]
 
-[ext_resource type="PackedScene" uid="uid://c70acig5l5xjx" path="res://Scenes/UI/Chart.tscn" id="1_g7onf"]
+[ext_resource type="PackedScene" uid="uid://c70acig5l5xjx" path="res://UI/Chart.tscn" id="1_g7onf"]
 
 [node name="ChartWindow" type="Window"]
 disable_3d = true

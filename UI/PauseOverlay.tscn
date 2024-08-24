@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://b3o0h88u2yifr"]
 
-[ext_resource type="Script" path="res://Scenes/UI/PauseOverlay.gd" id="1_sck66"]
+[ext_resource type="Script" path="res://UI/PauseOverlay.gd" id="1_sck66"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_k0ue2"]
-[ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://Scenes/UI/BusVolumeUI.tscn" id="2_ryoqm"]
+[ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/BusVolumeUI.tscn" id="2_ryoqm"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="3_7sumf"]
 [ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
 

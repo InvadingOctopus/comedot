@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://gvkx3bnathwr"]
 
-[ext_resource type="Script" path="res://Scenes/UI/UpgradeChoiceUI.gd" id="1_5bd1h"]
+[ext_resource type="Script" path="res://UI/UpgradeChoiceUI.gd" id="1_5bd1h"]
 
 [node name="UpgradeChoiceUI" type="GridContainer"]
 editor_description = "A list item for a UpgradesListUI"
