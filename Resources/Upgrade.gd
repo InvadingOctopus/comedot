@@ -9,8 +9,9 @@
 class_name Upgrade
 extends Resource
 
-# TBD: Create an emtpy subclass called "Downgrade" for naming consistency? :P
-# TBD: Should `acquire` be renamed `install`?
+# TODO: Create a base superclass for general purchasable items.
+# TBD:  Create an emtpy subclass called "Downgrade" for naming consistency? :P
+# TBD:  Should `acquire` be renamed `install`?
 
 
 #region Parameters
@@ -223,6 +224,17 @@ func discard(entity: Entity) -> bool:
 
 #region Management
 
+## Returns the next level after clamping it to the [member maxLevel].
+## If maxLevel is <= -1, then [member level] can be infinite.
+## If there is no next level possible, then the current [member level] is returned.
+func getNextLevel() -> int:
+	# TBD: Should we return an invalid number if there is no next level?
+	if maxLevel <= -1 or self.level < maxLevel: 
+		return self.level + 1 
+	else: 
+		return level
+
+
 ## Returns the cost for the specified level or the current level.
 ## If no cost has been specified for the respective level and [member shouldUseLastCostForHigherLevels] is not `true`, -1 is returned.
 func getCost(levelOverride: int = self.level) -> int:
@@ -260,7 +272,8 @@ func getCostForUpgradesComponent(upgradesComponent: UpgradesComponent) -> int:
 
 ## Checks if the specific entity meets all the requirements and costs to acquire this Upgrade.
 func validateEntityEligibility(entity: Entity) -> bool:
-	var statsComponent: StatsComponent = entity.getComponent(StatsComponent)
+	printLog(str("validateEntityEligibility() ", entity.logFullName))
+	var statsComponent:	   StatsComponent    = entity.getComponent(StatsComponent)
 	var upgradesComponent: UpgradesComponent = entity.getComponent(UpgradesComponent)
 	return validateStatsComponent(statsComponent) and validateUpgradesComponent(upgradesComponent)
 
@@ -270,13 +283,13 @@ func validateStatsComponent(statsComponent: StatsComponent, levelOverride: int =
 	# If there is no cost for the specified level, then the component can afford it, of course.
 	var cost: int = self.getCost(levelOverride)
 	if cost <= 0: return true
-
+	
 	# Does the component have our required Stat type?
-	var costStatInComponent: Stat = statsComponent.getStat(self.costStat.name)
-	if not costStatInComponent: return false
+	var paymentStatInComponent: Stat = statsComponent.getStat(self.costStat.name)
+	if not paymentStatInComponent: return false
 
 	# Is the stat's value >= our cost?
-	return costStatInComponent.value >= cost
+	return paymentStatInComponent.value >= cost
 
 
 ## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade, and none of this Upgrade's [mutuallyExclusiveUpgrades].
