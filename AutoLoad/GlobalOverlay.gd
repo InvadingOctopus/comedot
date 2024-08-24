@@ -24,7 +24,7 @@ signal didHidePauseOverlay
 
 
 #region Dependencies
-const pauseOverlayScene := preload("res://Scenes/UI/PauseOverlay.tscn")
+const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 
 @onready var foregroundOverlay	:= %ForegroundOverlay
 @onready var animationPlayer	:= %AnimationPlayer

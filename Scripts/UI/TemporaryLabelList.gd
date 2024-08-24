@@ -28,7 +28,7 @@ extends Container
 func createTemporaryLabel(text: String) -> Label:
 	if haveMaximumLabelCount(): deleteOldestLabel()
 
-	var newLabel: Label = load("res://Scenes/UI/TemporaryLabel.tscn").instantiate()
+	var newLabel: Label = load("res://UI/TemporaryLabel.tscn").instantiate()
 	
 	if newLabel:
 		newLabel.text = text

@@ -22,7 +22,7 @@ extends Container
 
 
 #region Dependencies
-const statLabelScene: PackedScene = preload("res://Scenes/UI/StatLabel.tscn")
+const statLabelScene: PackedScene = preload("res://UI/StatLabel.tscn")
 #endregion
 
 

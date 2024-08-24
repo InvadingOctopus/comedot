@@ -78,7 +78,8 @@ folder_colors={
 "res://Scripts/": "orange",
 "res://Templates/": "gray",
 "res://Temporary/": "gray",
-"res://Tests/": "gray"
+"res://Tests/": "gray",
+"res://UI/": "yellow"
 }
 
 [global_group]
