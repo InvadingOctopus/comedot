@@ -59,16 +59,7 @@ func _ready() -> void:
 		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
 
 
-func connectSignals() -> void:
-	# TBD: Disconnect signals if Upgrade is null'ed?
-	if not upgrade: return
-	upgrade.didLevelUp.connect(self.updateUI)
-	upgrade.didLevelDown.connect(self.updateUI)
-	upgrade.didAcquire.connect(self.updateUI)
-	upgrade.didDiscard.connect(self.updateUI)
-
-
-func updateUI(_entity: Entity = self.targetEntity) -> void: # The Entity argument is needed to match the Upgrade signals signatures.
+func updateUI() -> void:
 	updateCostUI()
 	updateButton()
 
@@ -89,9 +80,31 @@ func updateButton() -> void:
 
 
 func validateChoice() -> bool:
-	return upgrade.validateEntityEligibility(targetEntity) and not upgrade.isMaxLevel # TODO: Allow installation at level 0
+	return upgrade.validateEntityEligibility(targetEntity) \
+	and (not upgrade.isMaxLevel or not targetUpgradesComponent.getUpgrade(upgrade.name))  # Allow installation at level == maxLevel == 0 if the Upgrade is not already in the UpgradesComponent.
+	# TBD: Compare only name or the Upgrade instance itself?
 
 
 func onUpgradeButton_pressed() -> void:
 	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), str(self))
 	self.didChooseUpgrade.emit(self.upgrade)
+
+
+#region External Signals
+
+func connectSignals() -> void:
+	# TBD: Disconnect signals if Upgrade is null'ed?
+	if not upgrade: return
+	upgrade.didLevelUp.connect(self.updateUI)
+	upgrade.didLevelDown.connect(self.updateUI)
+
+	# NOTE: Connect to the [UpgradesComponent] for these signals, because the component adds the Upgrade AFTER the Upgrade emits its signal!
+	targetUpgradesComponent.didAcquire.connect(self.onUpgradesComponent_didChange) 
+	targetUpgradesComponent.didDiscard.connect(self.onUpgradesComponent_didChange)
+
+	
+func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
+	if upgradeInComponent == self.upgrade: self.updateUI()
+
+#endregion
+
