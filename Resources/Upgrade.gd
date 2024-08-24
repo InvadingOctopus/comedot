@@ -122,6 +122,10 @@ var costStatName: StringName:
 #region State
 var logName: String:
 	get: return str(self, " ", self.name, " L", self.level)
+
+## Returns `true` if [member shouldAllowInfiniteLevels] is false and [member level] == [member maxLevel]
+var isMaxLevel: bool:
+	get: return not shouldAllowInfiniteLevels and level >= maxLevel
 #endregion
 
 
@@ -224,6 +228,7 @@ func discard(entity: Entity) -> bool:
 	return true
 
 #endregion
+
 
 #region Management
 

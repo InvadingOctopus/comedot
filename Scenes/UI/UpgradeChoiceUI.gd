@@ -85,7 +85,11 @@ func updateButton() -> void:
 	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", upgrade.level)
 	else: upgradeButton.text = upgrade.displayName
 
-	upgradeButton.disabled = not upgrade.validateEntityEligibility(targetEntity)
+	upgradeButton.disabled = not self.validateChoice()
+
+
+func validateChoice() -> bool:
+	return upgrade.validateEntityEligibility(targetEntity) and not upgrade.isMaxLevel # TODO: Allow installation at level 0
 
 
 func onUpgradeButton_pressed() -> void:
