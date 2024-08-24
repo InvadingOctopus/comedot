@@ -1,4 +1,5 @@
 ## A [Control] representing an [Upgrade] for the player to choose.
+## If the Upgrade is already "installed" in an Entity's [UpgradesComponent], then the UI will represent a Level Up for the Upgrade, if available.
 
 class_name UpgradeChoiceUI
 extends Control
@@ -39,6 +40,9 @@ var targetStatsComponent: StatsComponent:
 		if not targetStatsComponent: targetStatsComponent = targetEntity.getComponent(StatsComponent)
 		return targetStatsComponent
 
+var isUpgradeInstalled: bool:
+	get: return targetUpgradesComponent.getUpgrade(upgrade.name) != null # TBD: Match just the name or the exact resource instance?
+
 #endregion
 
 
@@ -68,29 +72,32 @@ func updateUI() -> void:
 func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
 	costStatLabel.text = upgrade.costStat.displayName
-	costAmountLabel.text = str(upgrade.getCostForUpgradesComponent(targetUpgradesComponent))
+	costAmountLabel.text = str(upgrade.getCost(self.getLevelToPurchase()))
 
 
 func updateButton() -> void:
 	# Write the level if there are any levels, or infinite levels are allowed .
-	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", upgrade.level)
+	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", self.getLevelToPurchase())
 	else: upgradeButton.text = upgrade.displayName
 
 	upgradeButton.disabled = not self.validateChoice()
 
 
+## If the Upgrade is not in the [member targetUpgradesComponent], the Upgrade's current [member Upgrade.level] is returned.
+## If the Upgrade is already installed in the component, the next level is returned.
+## If the Upgrade is already at its [member Upgrade.maxLevel], its current level is returned.
+func getLevelToPurchase() -> int:
+	if not isUpgradeInstalled: return upgrade.level
+	else: return upgrade.getNextLevel()
+
+
 func validateChoice() -> bool:
 	return upgrade.validateEntityEligibility(targetEntity) \
-	and (not upgrade.isMaxLevel or not targetUpgradesComponent.getUpgrade(upgrade.name))  # Allow installation at level == maxLevel == 0 if the Upgrade is not already in the UpgradesComponent.
+	and (not upgrade.isMaxLevel or not isUpgradeInstalled)  # Allow installation at level == maxLevel == 0 if the Upgrade is not already in the UpgradesComponent.
 	# TBD: Compare only name or the Upgrade instance itself?
 
 
-func onUpgradeButton_pressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), str(self))
-	self.didChooseUpgrade.emit(self.upgrade)
-
-
-#region External Signals
+#region Signal Handlers
 
 func connectSignals() -> void:
 	# TBD: Disconnect signals if Upgrade is null'ed?
@@ -105,6 +112,11 @@ func connectSignals() -> void:
 	
 func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
 	if upgradeInComponent == self.upgrade: self.updateUI()
+
+
+func onUpgradeButton_pressed() -> void:
+	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), str(self))
+	self.didChooseUpgrade.emit(self.upgrade)
 
 #endregion
 
