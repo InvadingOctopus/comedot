@@ -65,8 +65,8 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 	var newChoiceUI: UpgradeChoiceUI = choiceUIScene.instantiate()
 	newChoiceUI.shouldShowDebugInfo  = self.shouldShowDebugInfo
 
-	newChoiceUI.upgrade = upgrade
 	newChoiceUI.targetEntity = self.targetEntity
+	newChoiceUI.upgrade = upgrade
 	
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 	
