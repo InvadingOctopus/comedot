@@ -41,6 +41,8 @@ func _ready() -> void:
 	cacheUpgrades()
 
 
+#region Management
+
 ## Saves each [Upgrade] in the [member upgrades] array to the [member upgradesDictionary] with the [member Upgrade.name] as its key, for quicker access.
 ## TIP: Use [method getUpgrade] to quickly access cached upgrades.
 ## WARNING: May override previously cached upgrades.
@@ -77,6 +79,15 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 	printWarning("Cannot find Upgrade: " + nameToSearch)
 	return null
 
+## Searches the entity's [StatsComponent] for the [Stat] required to purchase or level-up the specified [Upgrade]
+func findPaymentStat(upgradeToBuy: Upgrade) -> Stat:
+	var statToOffer: Stat = statsComponent.getStat(upgradeToBuy.costStatName)
+	return statToOffer
+
+#endregion
+
+
+#region Upgrade Installation
 
 func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 	# TODO: Review the order of the tasks executed here, and which class should execute the installation etc? The [Upgrade] or the [UpgradesComponent]?
@@ -107,7 +118,7 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 		self.upgrades.append(newUpgrade)
 		self.upgradesDictionary[newUpgrade.name] = newUpgrade
 		self.didAcquire.emit(newUpgrade)
-		printDebug("Upgrade added")
+		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
 		newUpgrade.processLevel(self.parentEntity)
@@ -142,9 +153,4 @@ func addOrLevelUpUpgrade(newUpgrade: Upgrade) -> int:
 
 	return newUpgrade.level
 
-
-## Searches the entity's [StatsComponent] for the [Stat] required to purchase or level-up the specified [Upgrade]
-func findPaymentStat(upgradeToBuy: Upgrade) -> Stat:
-	var statToOffer: Stat = statsComponent.getStat(upgradeToBuy.costStatName)
-	return statToOffer
-
+#endregion
