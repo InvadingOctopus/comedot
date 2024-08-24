@@ -60,9 +60,33 @@ func findStat(nameToSearch: StringName) -> Stat:
 	return null
 
 
+#region Convenience Functions
+
 ## Returns the value of the matching [Stat] found in [member stats], otherwise a `0` if no match is found.
 ## Queries the [member statsDictionary] first or calls [method findStat].
 func getStatValue(statName: StringName) -> int:
 	var stat: Stat = self.getStat(statName)
-	if not stat: return 0
-	else: return stat.value
+	if stat: return stat.value
+	else: return 0
+
+
+## Applies the [param difference] to the specified Stat's [member value].
+## TIP: May be used as a shortcut for changing Stats by signals from UI buttons etc. without writing a separate script.
+func change(statName: StringName, difference: int) -> void:
+	var stat: Stat = self.getStat(statName)
+	if stat: stat.value += difference
+
+
+## TIP: May be used as a shortcut for changing Stats by signals from UI buttons etc. without writing a separate script.
+func setStatToMax(statName: StringName) -> void:
+	var stat: Stat = self.getStat(statName)
+	if stat: stat.value = stat.max
+
+
+## TIP: May be used as a shortcut for changing Stats by signals from UI buttons etc. without writing a separate script.
+func setStatToMin(statName: StringName) -> void:
+	var stat: Stat = self.getStat(statName)
+	if stat: stat.value = stat.min
+
+#endregion
+

@@ -96,3 +96,24 @@ signal didMax  ## Only emitted when [member previousChange] is >= +1
 signal didMin  ## Only emitted when [member previousChange] is <= -1
 signal didZero ## Emitted whether the value is rising or falling. See [member previousChange] to check the direction of approach to 0.
 #endregion
+
+
+## Applies the [param difference] to [member value] and returns the value.
+func change(difference: int) -> int:
+	self.value += difference
+	return self.value
+
+
+## Returns a COPY of the Stat's [member value] + the [param difference] after clamping it between [member min] and [member max].
+## NOTE: Does NOT modify the [member value].
+## TIP: May be used to test for a clamped result before altering the value.
+func testChange(difference: int) -> int:
+	return clampi(self.value + difference, self.min, self.max)
+
+
+func setToMax() -> void:
+	self.value = self.max
+
+
+func setToMin() -> void:
+	self.value = self.min
