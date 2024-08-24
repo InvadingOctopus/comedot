@@ -67,7 +67,7 @@ func getUpgrade(upgradeName: StringName) -> Upgrade:
 
 
 ## Returns the first matching [Upgrade] found in [member upgrades].
-## NOTE: This has a slower performance than [method getUpgrade] if [param nameToSearch] has already been cached in the [member upgradesDictionary].
+## NOTE: This has slower performance than [method getUpgrade] if [param nameToSearch] has already been cached in the [member upgradesDictionary].
 func findUpgrade(nameToSearch: StringName) -> Upgrade:
 	if upgrades.is_empty(): return null
 
@@ -76,7 +76,8 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 			upgradesDictionary[upgrade.name] = upgrade # Cache for quicker future access
 			return upgrade
 	# else:
-	printWarning("Cannot find Upgrade: " + nameToSearch)
+	printDebug("Cannot find Upgrade: " + nameToSearch)
+	# TODO: Reduce multiple calls to this function from other Upgrade-handling classes when adding a new Upgrade
 	return null
 
 ## Searches the entity's [StatsComponent] for the [Stat] required to purchase or level-up the specified [Upgrade]
