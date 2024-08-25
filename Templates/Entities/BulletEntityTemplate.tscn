@@ -31,7 +31,7 @@ shape = SubResource("RectangleShape2D_lt4cn")
 
 [node name="LinearMotionComponent" parent="." instance=ExtResource("3_m0kev")]
 shouldDeleteParentAtMaximumDistance = true
-maximumDistance = 100.0
+maximumDistance = 500.0
 
 [node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_ogryl")]
 
