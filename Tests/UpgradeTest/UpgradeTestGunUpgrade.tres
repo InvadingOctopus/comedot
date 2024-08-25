@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="Upgrade" load_steps=4 format=3 uid="uid://ha75hcisu4qg"]
+
+[ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_3umlv"]
+[ext_resource type="Resource" uid="uid://cs65uuef7fi0x" path="res://Tests/UpgradeTest/UpgradeTestMoneyStat.tres" id="1_glsm2"]
+
+[sub_resource type="GDScript" id="GDScript_ogju5"]
+script/source = "func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
+	Debug.printLog(str(\"onUpgrade_didAcquireOrLevelUp() upgrade: \", upgrade, \", entity: \", entity), str(self))
+	var gunComponent: GunComponent = entity.getComponent(GunComponent)
+	var mouseRotationComponent: MouseRotationComponent = entity.getComponent(MouseRotationComponent)
+	gunComponent.visible = true
+	gunComponent.isEnabled = true
+	mouseRotationComponent.isEnabled = true
+	return true
+"
+
+[resource]
+script = ExtResource("1_3umlv")
+name = &"gun"
+displayName = "GUN"
+payload = SubResource("GDScript_ogju5")
+description = "Big Gun"
+shouldShowDebugInfo = true
+level = 0
+maxLevel = 0
+shouldAllowInfiniteLevels = false
+costStat = ExtResource("1_glsm2")
+costs = Array[int]([400])
+shouldUseLastCostForHigherLevels = false
+requiredUpgrades = Array[ExtResource("1_3umlv")]([])
+mutuallyExclusiveUpgrades = Array[StringName]([])

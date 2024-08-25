@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Stat" load_steps=2 format=3 uid="uid://d4c5l66oa3lfi"]
+
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="1_es7al"]
+
+[resource]
+script = ExtResource("1_es7al")
+name = &"ammo"
+displayName = "AMMO"
+min = 0
+max = 100
+value = 100
+description = ""
+logChanges = false

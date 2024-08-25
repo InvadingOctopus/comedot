@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Upgrade" load_steps=4 format=3 uid="uid://3v2uvuown2fn"]
+
+[ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_7ejvl"]
+[ext_resource type="Resource" uid="uid://db6e53uh7hg3w" path="res://Tests/UpgradeTest/UpgradeTestEnergyStat.tres" id="1_iq60w"]
+
+[sub_resource type="GDScript" id="GDScript_y5tjm"]
+script/source = "func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
+	Debug.printLog(str(\"onUpgrade_didAcquireOrLevelUp() upgrade: \", upgrade, \", entity: \", entity), str(self))
+	entity.getComponent(OverheadPhysicsComponent).parameters.speed += 100
+	return true
+"
+
+[resource]
+script = ExtResource("1_7ejvl")
+name = &"speed"
+displayName = "ZOOM"
+payload = SubResource("GDScript_y5tjm")
+description = ""
+shouldShowDebugInfo = true
+level = 0
+maxLevel = 10
+shouldAllowInfiniteLevels = false
+costStat = ExtResource("1_iq60w")
+costs = Array[int]([100, 200, 300])
+shouldUseLastCostForHigherLevels = true
+requiredUpgrades = Array[ExtResource("1_7ejvl")]([])
+mutuallyExclusiveUpgrades = Array[StringName]([])
