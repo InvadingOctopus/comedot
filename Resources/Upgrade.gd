@@ -303,11 +303,16 @@ func validateStatsComponent(statsComponent: StatsComponent, levelOverride: int =
 	if cost <= 0: return true
 	
 	# Does the component have our required Stat type?
-	var paymentStatInComponent: Stat = statsComponent.getStat(self.costStat.name)
+	var paymentStatInComponent: Stat = self.findPaymentStatInStatsComponent(statsComponent)
 	if not paymentStatInComponent: return false
 
 	# Is the stat's value >= our cost?
 	return paymentStatInComponent.value >= cost
+
+
+func findPaymentStatInStatsComponent(statsComponent: StatsComponent) -> Stat:
+	# TBD: Match the name only or check for the exact same resource instance?
+	return statsComponent.getStat(self.costStat.name)
 
 
 ## Checks whether the provided [UpgradesComponent] has all the [requiredUpgrades] for THIS Upgrade, and none of this Upgrade's [mutuallyExclusiveUpgrades].
