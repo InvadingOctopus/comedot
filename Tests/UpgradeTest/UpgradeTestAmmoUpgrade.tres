@@ -8,7 +8,7 @@
 script/source = "func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
 	Debug.printLog(str(\"onUpgrade_didAcquireOrLevelUp() upgrade: \", upgrade, \", entity: \", entity), str(self))
 	var ammo: Stat = entity.getComponent(StatsComponent).getStat(&\"ammo\")
-	ammo.max += 50; ammo.setToMax()
+	ammo.max += 10; ammo.setToMax()
 	return true
 "
 

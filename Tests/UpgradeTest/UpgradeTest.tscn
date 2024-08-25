@@ -56,6 +56,7 @@ script = ExtResource("1_vc4ji")
 showTestBackground = false
 
 [node name="TestBackground" parent="." instance=ExtResource("2_3hvx5")]
+modulate = Color(1, 1, 1, 0.1)
 
 [node name="Parallax2D1" parent="TestBackground" index="0"]
 repeat_times = 3
@@ -80,6 +81,7 @@ visible = false
 bulletEntity = ExtResource("12_24xaf")
 ammo = ExtResource("8_l7edd")
 isEnabled = false
+cooldown = 1.01
 
 [node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadBasic" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("13_ylr6w")]
 nodeToRotate = NodePath("../GunComponent")
