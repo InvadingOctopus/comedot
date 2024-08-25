@@ -109,7 +109,10 @@ func connectSignals() -> void:
 	targetUpgradesComponent.didAcquire.connect(self.onUpgradesComponent_didChange) 
 	targetUpgradesComponent.didDiscard.connect(self.onUpgradesComponent_didChange)
 
-	
+	var paymentStat: Stat = upgrade.findPaymentStatInStatsComponent(targetStatsComponent)
+	if paymentStat: paymentStat.changed.connect(self.updateUI)
+
+
 func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
 	if upgradeInComponent == self.upgrade: self.updateUI()
 
