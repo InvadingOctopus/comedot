@@ -10,8 +10,8 @@ This is a work in progress. For more deets and the latest version, lookie loo th
 ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for textures etc. To fix, just close and reopen the project.
 
 THANKS:
-Tilesets:   https://kenney.nl/assets/1-bit-pack  
-Font:       Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
+Tilesets: https://kenney.nl/assets/1-bit-pack  
+Font: Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
 ----
 
@@ -19,11 +19,10 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Commit URL:		55286d434ddfc06d3dc4fd4bf2dac72d99137d40
+Commit URL:		8935da0c2d0ace3bb0c35a0cef91ae953b43f8cd
 Godot Vesion:	4.3
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
 Screenshot 1:	https://i.imgur.com/SR3shzr.png
 Screenshot 2:	https://i.imgur.com/7M0pH3v.png
-
