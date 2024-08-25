@@ -473,4 +473,11 @@ static func findMethodInScript(script: Script, methodName: StringName) -> bool: 
 	return false
 
 
+## Connects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections.
+static func reconnect(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
+	if not sourceSignal.is_connected(targetCallable):
+		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
+	else:
+		return 0
+
 #endregion

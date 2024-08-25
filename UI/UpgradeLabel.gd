@@ -5,10 +5,11 @@ extends Label
 
 
 #region Parameters
-@export var upgrade: Upgrade
-	# set(newValue):
-	# 	upgrade = newValue
-	# 	connectSignals()  # Causes errors because of duplicate connections from _ready()
+@export var upgrade: Upgrade:
+	set(newValue):
+		if newValue != upgrade:
+			upgrade = newValue
+			connectSignals()
 
 @export var shouldBeHiddenUntilAcquired: bool = false
 #endregion
@@ -28,11 +29,10 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	# TODO: Disconnect any existing connections, but of course Godot doesn't provide a non-cumbersome way to do that :(
-	upgrade.didAcquire.connect(self.onUpgrade_didAcquire)
-	upgrade.didDiscard.connect(self.onUpgrade_didDiscard)
-	upgrade.didLevelUp.connect(self.onUpgrade_didLevelChange)
-	upgrade.didLevelDown.connect(self.onUpgrade_didLevelChange)
+	Tools.reconnect(upgrade.didAcquire,   self.onUpgrade_didAcquire)
+	Tools.reconnect(upgrade.didDiscard,   self.onUpgrade_didDiscard)
+	Tools.reconnect(upgrade.didLevelUp,	  self.onUpgrade_didLevelChange)
+	Tools.reconnect(upgrade.didLevelDown, self.onUpgrade_didLevelChange)
 
 
 func onUpgrade_didAcquire(_entity: Entity) -> void:
