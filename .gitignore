@@ -17,6 +17,7 @@ mono_crash.*.json
 # Game-specific experiments
 Lab/*
 Game/
+override.cfg
 
 .vscode/*
 .DS_Store
