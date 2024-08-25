@@ -112,7 +112,8 @@ var costStatName: StringName:
 ## An optional list of upgrades which prevent this upgrade from being acquired or used.
 ## For example, if the player has a fire-based weapon, they may not equip a water-based weapon.
 ## This array is checked in order.
-@export var mutuallyExclusiveUpgrades: Array[Upgrade]
+## NOTE: This is an Array of [StringName] instead of [Upgrade], because 2 Upgrades referring to each other would cause a cyclic dependency, preventing Godot from loading them. :')
+@export var mutuallyExclusiveUpgrades: Array[StringName]
 
 ## An optional list of [Component]s that this Upgrade requires or modifies, such as a [GunComponent].
 ## This array is checked in order.
@@ -222,8 +223,11 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 ## Performs the actual actions or purpose of the Upgrade. Calls the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
 ## Override in subclass to perform any modifications to the entity or other components when gaining (or losing) a [member level].
 ## Level 0 is when the Upgrade is first acquired by an entity.
-func processLevel(entity: Entity) -> bool:
-	return self.payload.new().call(self.payloadMethodName, self, entity) # TBD: Is `new()` needed or can it avoided with a `static func`?
+func processPayload(entity: Entity) -> bool:
+	if self.payload:
+		return self.payload.new().call(self.payloadMethodName, self, entity) # TBD: Is `new()` needed or can it avoided with a `static func`?
+	else:
+		return false
 
 
 ## Override in subclass to perform any per-frame modifications to the entity or other components.
@@ -344,10 +348,11 @@ func findMissingRequirement(upgradesComponent: UpgradesComponent) -> Upgrade:
 func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgrade:
 	if self.mutuallyExclusiveUpgrades.is_empty(): return null
 
-	for conflict in self.mutuallyExclusiveUpgrades:
+	for conflicName in self.mutuallyExclusiveUpgrades:
 		# Is there any conflicting Upgrade?
-		if not upgradesComponent.getUpgrade(conflict.name):
-			printLog(str("Mutually-exclusive upgrade ", conflict, " in ", upgradesComponent))
+		var conflict: Upgrade = upgradesComponent.getUpgrade(conflicName)
+		if conflict:
+			printLog(str("Mutually-exclusive upgrade ", conflict.logName, " in ", upgradesComponent))
 			return conflict
 
 	return null

@@ -122,7 +122,7 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
-		newUpgrade.processLevel(self.parentEntity)
+		newUpgrade.processPayload(self.parentEntity)
 
 	return true
 
@@ -132,7 +132,7 @@ func incrementUpgradeLevel(upgrade: Upgrade) -> bool:
 	var statToOffer: Stat = self.findPaymentStat(upgrade)
 	if upgrade.requestLevelUp(self.parentEntity, statToOffer):
 		# After the upgrade is leveled up, perform its ACTUAL JOB at the new level!
-		upgrade.processLevel(self.parentEntity)
+		upgrade.processPayload(self.parentEntity)
 		return true
 	else:
 		return false
