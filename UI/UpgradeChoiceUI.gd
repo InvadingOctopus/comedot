@@ -104,11 +104,23 @@ func connectSignals() -> void:
 	if not upgrade: return
 	upgrade.didLevelUp.connect(self.updateUI)
 	upgrade.didLevelDown.connect(self.updateUI)
-	upgrade.didAcquire.connect(self.updateUI) 
-	upgrade.didDiscard.connect(self.updateUI)
+
+	# IMPORTANT: NOTE: Connect to the [UpgradesComponent] for these signals, because the component adds the Upgrade AFTER the Upgrade emits its signal!
+	targetUpgradesComponent.didAcquire.connect(self.onUpgradesComponent_didChange) 
+	targetUpgradesComponent.didDiscard.connect(self.onUpgradesComponent_didChange)
 
 	var paymentStat: Stat = upgrade.findPaymentStatInStatsComponent(targetStatsComponent)
 	if paymentStat: paymentStat.changed.connect(self.updateUI)
+
+
+func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
+	# If the UpgradesComponent acquired or discarded any upgrade,
+	# update the UI if it was the Upgrade we were monitoring,
+	# or if our Upgrade has any required/conflicting Upgrades.
+	if upgradeInComponent == self.upgrade \
+	or not self.upgrade.requiredUpgrades.is_empty() \
+	or not self.upgrade.mutuallyExclusiveUpgrades.is_empty():
+		self.updateUI()
 
 
 func onUpgradeButton_pressed() -> void:
