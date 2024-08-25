@@ -9,13 +9,10 @@ class_name CooldownComponent
 extends Component
 
 
-@onready var cooldownTimer: Timer = $CooldownTimer
-
-
 #region Parameters
 
 ## Number of seconds after shooting before another bullet can be emitted.
-@export_range(0.1, 10.0, 0.1, "suffix:seconds") var cooldown: float = 3:
+@export_range(0.01, 100, 0.1, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
 		cooldown = newValue
 		if cooldownTimer: cooldownTimer.wait_time = newValue
@@ -24,7 +21,9 @@ extends Component
 
 
 #region State
-var hasCooldownCompleted := true # Start with the cooldown off
+@onready var cooldownTimer: Timer = $CooldownTimer
+
+var hasCooldownCompleted: bool = true # Start with the cooldown off
 #endregion
 
 
