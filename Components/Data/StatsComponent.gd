@@ -72,7 +72,7 @@ func getStatValue(statName: StringName) -> int:
 
 ## Applies the [param difference] to the specified Stat's [member value].
 ## TIP: May be used as a shortcut for changing Stats by signals from UI buttons etc. without writing a separate script.
-func change(statName: StringName, difference: int) -> void:
+func changeStatValue(statName: StringName, difference: int) -> void:
 	var stat: Stat = self.getStat(statName)
 	if stat: stat.value += difference
 
