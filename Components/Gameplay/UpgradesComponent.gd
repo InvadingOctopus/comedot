@@ -162,4 +162,21 @@ func addOrLevelUpUpgrade(newUpgrade: Upgrade) -> int:
 
 	return newUpgrade.level
 
+
+## Returns `true` if the specified Upgrade was found and discarded.
+func discardUpgrade(nameToDiscard: StringName) -> bool:
+	var upgradeToDiscard: Upgrade = self.getUpgrade(nameToDiscard)
+	if not upgradeToDiscard: return false
+
+	self.upgrades.erase(upgradeToDiscard)
+	
+	if self.upgradesDictionary.erase(nameToDiscard):
+		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
+		# because any handlers connected to the Upgrade will except the Upgrade to not be in any component when they receive the discard signal.
+		self.didDiscard.emit(upgradeToDiscard)
+		upgradeToDiscard.didDiscard.emit(self.parentEntity)
+		return true
+	else:
+		return false
+
 #endregion
