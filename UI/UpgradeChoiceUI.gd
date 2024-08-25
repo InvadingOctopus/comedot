@@ -1,8 +1,11 @@
 ## A [Control] representing an [Upgrade] for the player to choose.
 ## If the Upgrade is already "installed" in an Entity's [UpgradesComponent], then the UI will represent a Level Up for the Upgrade, if available.
+## TIP: To hide the Stat name labels, enable "Editable Children" in the Godot Editor and manually set the visibility of the [Label] node.
 
 class_name UpgradeChoiceUI
 extends Control
+
+# TODO: Option to choose the order of cost & stat name Labels.
 
 
 #region Parameters
