@@ -1,10 +1,11 @@
-[gd_scene load_steps=27 format=3 uid="uid://cj6ao7ju12nhg"]
+[gd_scene load_steps=28 format=3 uid="uid://cj6ao7ju12nhg"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_vc4ji"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="2_3hvx5"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_momiq"]
 [ext_resource type="Script" path="res://UI/UpgradesListUI.gd" id="3_1nlo4"]
 [ext_resource type="PackedScene" uid="uid://csfqa5yos7088" path="res://Components/Gameplay/UpgradesComponent.tscn" id="3_fmr6d"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_2osyf"]
 [ext_resource type="PackedScene" uid="uid://gvkx3bnathwr" path="res://UI/UpgradeChoiceUI.tscn" id="4_cvcfv"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_xiv2l"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="5_ntilw"]
@@ -66,7 +67,12 @@ repeat_times = 3
 
 [node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_momiq")]
 
+[node name="FactionComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_2osyf")]
+factions = 2
+
 [node name="UpgradesComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_fmr6d")]
+upgrades = null
+shouldResetResourcesOnReady = null
 shouldShowDebugInfo = true
 
 [node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_xiv2l")]
@@ -93,7 +99,7 @@ isEnabled = false
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 145.0
-offset_bottom = 44.0
+offset_bottom = 232.0
 
 [node name="StatsUI" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
@@ -105,18 +111,22 @@ layout_mode = 2
 
 [node name="LoanButton" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+mouse_filter = 1
 text = "GET LOAN"
 
 [node name="RechargeButton" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+mouse_filter = 1
 text = "RECHARGE"
 
 [node name="Spacer1" type="Control" parent="CanvasLayer/VBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="Label1" type="Label" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Buy"
 
@@ -125,7 +135,6 @@ layout_mode = 2
 script = ExtResource("3_1nlo4")
 upgrades = Array[ExtResource("6_rg6n6")]([ExtResource("8_d8lhl"), ExtResource("7_rhbc6"), ExtResource("14_tqxh8"), ExtResource("17_q53kf")])
 targetEntity = NodePath("../../../PlayerEntityTemplate-OverheadBasic")
-shouldShowDebugInfo = null
 
 [node name="TemporaryUpgradeChoiceUI" parent="CanvasLayer/VBoxContainer/UpgradesListUI" instance=ExtResource("4_cvcfv")]
 layout_mode = 2
@@ -133,26 +142,31 @@ layout_mode = 2
 [node name="Spacer2" type="Control" parent="CanvasLayer/VBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Installed"
 
 [node name="UpgradeLabel1" parent="CanvasLayer/VBoxContainer" instance=ExtResource("15_yhqpv")]
 layout_mode = 2
+mouse_filter = 1
 text = "GUN"
 label_settings = SubResource("LabelSettings_7h4yk")
 upgrade = ExtResource("7_rhbc6")
 
 [node name="UpgradeLabel2" parent="CanvasLayer/VBoxContainer" instance=ExtResource("15_yhqpv")]
 layout_mode = 2
+mouse_filter = 1
 text = "COOLDOWN"
 label_settings = SubResource("LabelSettings_t2l6a")
 upgrade = ExtResource("14_tqxh8")
 
 [node name="UpgradeLabel3" parent="CanvasLayer/VBoxContainer" instance=ExtResource("15_yhqpv")]
 layout_mode = 2
+mouse_filter = 1
 text = "AMMO
 "
 label_settings = SubResource("LabelSettings_6ecoo")
@@ -160,6 +174,7 @@ upgrade = ExtResource("17_q53kf")
 
 [node name="UpgradeLabel4" parent="CanvasLayer/VBoxContainer" instance=ExtResource("15_yhqpv")]
 layout_mode = 2
+mouse_filter = 1
 text = "ZOOM"
 label_settings = SubResource("LabelSettings_0n0ul")
 upgrade = ExtResource("8_d8lhl")
@@ -169,4 +184,3 @@ upgrade = ExtResource("8_d8lhl")
 [connection signal="didChooseUpgrade" from="CanvasLayer/VBoxContainer/UpgradesListUI" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]
 
 [editable path="TestBackground"]
-[editable path="PlayerEntityTemplate-OverheadBasic"]
