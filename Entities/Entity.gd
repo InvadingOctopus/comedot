@@ -138,6 +138,14 @@ func getComponent(type: Script) -> Component:
 	return foundComponent
 
 
+## Adds an existing [Component] [Node] to this entity.
+## The component must not already be a child of another parent node. 
+## This is a convenience method for adding components created and configured in code during runtime.
+func addComponent(component: Component) -> void:
+	self.add_child(component)
+	component.owner = self
+
+
 ## Creates a copy of the specified component's scene and adds it as a child node of this entity.
 ## Shortcut for [load] and [method PackedScene.instantiate].
 func addNewComponent(type: Script) -> Component:
