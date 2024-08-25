@@ -114,7 +114,13 @@ func connectSignals() -> void:
 
 
 func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
-	if upgradeInComponent == self.upgrade: self.updateUI()
+	# If the UpgradesComponent acquired or discarded any upgrade,
+	# update the UI if it was the Upgrade we were monitoring,
+	# or if our Upgrade has any required/conflicting Upgrades.
+	if upgradeInComponent == self.upgrade \
+	or not self.upgrade.requiredUpgrades.is_empty() \
+	or not self.upgrade.mutuallyExclusiveUpgrades.is_empty():
+		self.updateUI()
 
 
 func onUpgradeButton_pressed() -> void:
