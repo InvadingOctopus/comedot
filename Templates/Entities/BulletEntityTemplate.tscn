@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://3ousmbcfyuac"]
 
 [ext_resource type="Script" path="res://Entities/Objects/BulletEntity.gd" id="1_hhrsr"]
-[ext_resource type="Texture2D" uid="uid://cs0utush8q26" path="res://Assets/Images/SF Symbols/arrowtriangle.right.fill.svg" id="2_rh52s"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_fpdkc"]
 [ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_m0kev"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_ogryl"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_qww6u"]
@@ -21,10 +21,10 @@ script = ExtResource("1_hhrsr")
 metadata/_edit_group_ = true
 
 [node name="BulletSprite" type="Sprite2D" parent="."]
-modulate = Color(1, 0, 0, 1)
-texture_filter = 2
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("2_rh52s")
+modulate = Color(1, 0.5, 0, 1)
+texture = ExtResource("2_fpdkc")
+region_enabled = true
+region_rect = Rect2(432, 336, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_lt4cn")
