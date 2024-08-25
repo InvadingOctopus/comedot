@@ -164,7 +164,9 @@ func addOrLevelUpUpgrade(newUpgrade: Upgrade) -> int:
 
 
 ## Returns `true` if the specified Upgrade was found and discarded.
+## NOTE: Requires the [member Upgrade.name] instead of a specific Upgrade instance, so that any matching Upgrade may be found, even if it has a different level etc. in the UpgradesComponent.
 func discardUpgrade(nameToDiscard: StringName) -> bool:
+	
 	var upgradeToDiscard: Upgrade = self.getUpgrade(nameToDiscard)
 	if not upgradeToDiscard: return false
 

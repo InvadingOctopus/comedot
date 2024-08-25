@@ -50,7 +50,7 @@ func _ready() -> void:
 	if not targetEntity:
 		targetEntity = player
 		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
-		
+
 	readdAllChoices()
 
 
@@ -67,12 +67,12 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 
 	newChoiceUI.targetEntity = self.targetEntity
 	newChoiceUI.upgrade = upgrade
-	
+
 	Tools.addChildAndSetOwner(newChoiceUI, self)
-	
+
 	newChoiceUI.updateUI() # TBD: Update before adding or after?
 	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade)
-	
+
 	return newChoiceUI
 
 
