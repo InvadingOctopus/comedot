@@ -133,8 +133,11 @@ var isMaxLevel: bool:
 
 
 #region Signals
-signal didAcquire(entity: Entity) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
-signal didDiscard(entity: Entity) # TODO:
+# DESIGN: Acquire/Discard signals should be emitted by the UpgradesCOMPONENT first, THEN by the Upgrade,
+# because any handlers connected to the Upgrade will expect the Upgrade to be or not be in a component when they receive the Upgrade's signals.
+
+signal didAcquire(entity: Entity) ## NOTE: [signal Upgrade.didAcquire] is emitted AFTER [signal UpgradesComponent.didAcquire].
+signal didDiscard(entity: Entity) ## NOTE: [signal Upgrade.didDiscard] is emitted AFTER [signal UpgradesComponent.didDiscard].
 
 signal didLevelUp
 signal didLevelDown
@@ -163,7 +166,11 @@ func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
 	if not deductPayment(paymentStat, self.level): return false
 
 	# Install.exe
-	self.didAcquire.emit(entity)
+	# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
+	# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the acquire signal.
+	# Even though a class not emitting its own signals is unreliable design :')
+	# Handled by [UpgradesComponent]: self.didAcquire.emit(entity)
+	# TBD: Should we use `await` on the component to be able to emit our signal by ourselves?
 	return true
 
 

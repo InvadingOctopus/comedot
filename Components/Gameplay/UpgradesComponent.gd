@@ -20,8 +20,11 @@ var upgradesDictionary: Dictionary = {} ## Caches upgrades accessed by [StringNa
 
 
 #region Signals
-signal didAcquire(upgrade: Upgrade) ## NOTE: [signal Upgrade.didAcquire] is emitted before [signal UpgradesComponent.didAcquire].
-signal didDiscard(upgrade: Upgrade)
+# DESIGN: Acquire/Discard signals should be emitted by the UpgradesCOMPONENT first, THEN by the Upgrade,
+# because any handlers connected to the Upgrade will expect the Upgrade to be or not be in a component when they receive the Upgrade's signals.
+
+signal didAcquire(upgrade: Upgrade) ## NOTE: [signal UpgradesComponent.didAcquire] is emitted BEFORE [signal Upgrade.didAcquire].
+signal didDiscard(upgrade: Upgrade) ## NOTE: [signal UpgradesComponent.didDiscard] is emitted BEFORE [signal Upgrade.didDiscard].
 #endregion
 
 
@@ -118,7 +121,12 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 	if newUpgrade.requestToAcquire(self.parentEntity, statToOffer):
 		self.upgrades.append(newUpgrade)
 		self.upgradesDictionary[newUpgrade.name] = newUpgrade
+
+		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
+		# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the acquire signal.
 		self.didAcquire.emit(newUpgrade)
+		newUpgrade.didAcquire.emit(self.parentEntity)
+
 		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
