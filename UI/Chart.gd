@@ -152,8 +152,10 @@ func createGridLines() -> void:
 
 	# PERFORMANCE: Calculate and set the total size before appending each line.
 
+	@warning_ignore("integer_division")
 	var numberOfGridLinesX: int = maxHistorySize / gridStepX
-	var numberOfGridLinesY: int = int((gridMaxY - gridMinY) / gridStepY)
+	@warning_ignore("narrowing_conversion")
+	var numberOfGridLinesY: int = (gridMaxY - gridMinY) / gridStepY
 
 	# TODO: Verify calculation
 	#gridLines.resize((numberOfGridLinesX * numberOfGridLinesY) * 2) # Each line needs 2 vectors.

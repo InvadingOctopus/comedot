@@ -21,10 +21,11 @@ extends Resource
 
 ## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
 @export var displayName: String:
-	get: 
+	get:
 		if not displayName.is_empty(): return displayName
 		else: return self.name
 
+@warning_ignore("shadowed_global_identifier")
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 @export var min: int = 0: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
@@ -32,6 +33,7 @@ extends Resource
 		if  min > max: max = min
 		value   = clamp(value,   min, max)
 
+@warning_ignore("shadowed_global_identifier")
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
 @export var max: int = 10: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
@@ -58,7 +60,7 @@ extends Resource
 			emit_changed()
 
 			# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
-			
+
 			if previousChange > 0: # Were we rising?
 				if value >= max: didMax.emit()
 				if value >= 0:	 didZero.emit()
@@ -66,7 +68,7 @@ extends Resource
 			if previousChange < 0: # Were we falling?
 				if value <= min: didMin.emit()
 				if value <= 0:	 didZero.emit()
-			
+
 			GameState.uiStatUpdated.emit(self) # TBD: Should this be optional?
 
 

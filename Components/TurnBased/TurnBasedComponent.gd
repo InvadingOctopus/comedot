@@ -67,6 +67,7 @@ func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
 	willBeginTurn.emit()
+	@warning_ignore("redundant_await")
 	await self.processTurnBegin() # IGNORE Godot Warning; `await` is needed.
 	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
@@ -78,6 +79,7 @@ func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
 	willUpdateTurn.emit()
+	@warning_ignore("redundant_await")
 	await self.processTurnUpdate() # IGNORE Godot Warning; `await` is needed.
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
@@ -89,6 +91,7 @@ func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
 	willEndTurn.emit()
+	@warning_ignore("redundant_await")
 	await self.processTurnEnd() # IGNORE Godot Warning; `await` is needed.
 	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
