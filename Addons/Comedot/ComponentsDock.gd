@@ -139,7 +139,7 @@ func setupUI() -> void:
 	inspector = EditorInterface.get_inspector()
 	inspector.edited_object_changed.connect(self.onInspector_editedObjectChanged)
 
-	plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
+	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
 
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
 
@@ -451,7 +451,7 @@ func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 
 	if destinationFolderPath.is_empty(): return ""
 
-	printLog("createNewComponent() " + destinationFolderPath)
+	printLog("createNewComponentOnDisk() destinationFolderPath: " + destinationFolderPath)
 
 	if not DirAccess.dir_exists_absolute(destinationFolderPath):
 		printLog("Invalid path")
@@ -497,6 +497,12 @@ func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 
 	# Save the scene with the new script
 	EditorInterface.save_scene()
+
+	# Register the newly-created files with Godot
+	fileSystem.update_file(newScriptPath)
+	fileSystem.update_file(newComponentPath)
+	fileSystem.scan() # TBD: Is this necessary?
+	# GODOT: Calling `EditorFileSystem.reimport_files()` raises error: "BUG: File queued for import, but can't be imported, importer for type '' not found."
 
 	# Edit the new script
 	EditorInterface.edit_script(newScript)

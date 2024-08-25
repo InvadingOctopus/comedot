@@ -9,9 +9,14 @@ extends EditorPlugin
 
 #region Constants
 const entityTypeName	:= &"Comedot Entity"
-const componentTypeName	:= &"Comedot Component"
+const entityScript		:= preload("res://Entities/Entity.gd")
+const entityIcon		:= preload("res://Assets/Icons/Entity.svg")
 
+const componentTypeName	:= &"Comedot Component"
+const componentScript	:= preload("res://Components/Component.gd")
 const componentIcon		:= preload("res://Assets/Icons/Component.svg")
+
+const componentMenuItem := "New Component in Selected Folder"
 #endregion
 
 
@@ -25,7 +30,7 @@ func _exit_tree() -> void:
 	removeCustomTypes()
 
 
-func _get_plugin_icon():
+func _get_plugin_icon() -> Texture2D:
 	return componentIcon
 
 
@@ -33,13 +38,9 @@ func _get_plugin_icon():
 
 func addCustomTypes() -> void:
 	# Entity
-	const entityScript := preload("res://Entities/Entity.gd")
-	const entityIcon   := preload("res://Assets/Icons/Entity.svg")
 	add_custom_type(entityTypeName, "Node2D", entityScript, entityIcon)
 
 	# Component
-	const componentScript := preload("res://Components/Component.gd")
-	const componentIcon   := preload("res://Assets/Icons/Component.svg")
 	add_custom_type(componentTypeName, "Node", componentScript, componentIcon)
 
 
@@ -57,11 +58,12 @@ var componentsDock: ComponentsDock
 func addDock() -> void:
 	componentsDock = preload("res://Addons/Comedot/ComponentsDock.tscn").instantiate()
 	componentsDock.plugin = self as EditorPlugin
-	add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
-	set_dock_tab_icon(componentsDock, componentIcon)
-
+	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
+	self.set_dock_tab_icon(componentsDock, componentIcon)
+	self.add_tool_menu_item(componentMenuItem, componentsDock.createNewComponentInSelectedFolder)
 
 func removeDock() -> void:
+	self.remove_tool_menu_item(componentMenuItem)
 	remove_control_from_docks(componentsDock)
 	componentsDock.queue_free()
 
