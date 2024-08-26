@@ -465,6 +465,7 @@ static func skipTimer(timer: Timer) -> float:
 ## NOTE: Only checks for the name, NOT the arguments or return type.
 ## ALERT: Use the EXACT SAME CASE as the method you need to find!
 static func findMethodInScript(script: Script, methodName: StringName) -> bool: # TBD: Should it be [StringName]?
+	# TODO: A variant or option to check for multiple methods.
 	# TODO: Check arguments and return type.
 	var methodDictionary: Array[Dictionary] = script.get_script_method_list()
 	for method in methodDictionary:
