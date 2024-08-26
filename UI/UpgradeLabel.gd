@@ -24,11 +24,12 @@ var player: PlayerEntity:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	self.visible = not shouldBeHiddenUntilAcquired
-	connectSignals()
+	if upgrade: connectSignals()
 	updateLabel()
 
 
 func connectSignals() -> void:
+	if not upgrade: return
 	Tools.reconnect(upgrade.didAcquire,   self.onUpgrade_didAcquire)
 	Tools.reconnect(upgrade.didDiscard,   self.onUpgrade_didDiscard)
 	Tools.reconnect(upgrade.didLevelUp,	  self.onUpgrade_didLevelChange)
@@ -51,6 +52,10 @@ func onUpgrade_didLevelChange() -> void:
 
 
 func updateLabel() -> void:
+	if not upgrade: 
+		self.text = "" # TBD: Should there be some text when there is no Upgrade?
+		return
+
 	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels:
 		self.text = str(upgrade.displayName, " L", upgrade.level)
 	else:
