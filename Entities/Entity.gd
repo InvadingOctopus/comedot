@@ -37,7 +37,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## A dictionary of {StringName:Component} where the key is the `class_name` of each component.
 ## Updated by the [signal Node.child_entered_tree] signal.
 ## Used by components to quickly find other sibling components, without a dynamic search at runtime.
-var components := {}
+var components: Dictionary = {}
 
 ## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
 var functionsAlreadyCalledOnceThisFrame: Dictionary = {}

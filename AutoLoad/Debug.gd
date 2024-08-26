@@ -19,7 +19,7 @@ extends Node
 		setLabelVisibility()
 
 ## A dictionary of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
-@export var watchList := {}
+@export var watchList: Dictionary = {}
 
 #endregion
 
