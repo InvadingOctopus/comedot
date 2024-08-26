@@ -14,7 +14,7 @@ static var hasStartScript:		bool = false
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
 static var mainGameScene:		PackedScene
 
-static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd
+static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd # TBD: Should this be `OS.has_feature("debug")`?
 
 static var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
 
