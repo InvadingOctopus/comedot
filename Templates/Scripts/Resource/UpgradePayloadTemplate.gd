@@ -1,6 +1,6 @@
 # meta-default: true
 
-## Description
+## A script to execute when the associated [Upgrade] is "installed" or "uninstalled" in an [Entity]'s [UpgradesComponent].
 
 class_name _CLASS_
 extends UpgradePayload

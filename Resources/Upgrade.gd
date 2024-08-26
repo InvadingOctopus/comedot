@@ -35,6 +35,7 @@ extends Resource
 ## IMPORTANT: The script MUST have functions matching these signatures, as per `UpgradePayload.gd`:
 ## `static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
 ## `static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool`
+## TIP: Use the `Templates/Scripts/Resource/UpgradePayloadTemplate.gd` template.
 @export var payload: GDScript # TODO: Stronger typing when Godot allows it :')
 
 const payloadAcquireMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload] when the Upgrade is "installed" or leveled up.
