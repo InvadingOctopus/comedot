@@ -31,12 +31,14 @@ extends Resource
 		if not displayName.is_empty(): return displayName
 		else: return self.name
 
-## A [Script] containing the code to execute when this Upgrade is acquired/"installed" by an [Entity] or leveled up.
-## IMPORTANT: The script MUST have a function matching this signature:
-## `func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
-@export var payload: Script
+## The core functionality of this Upgrade. A [Script] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
+## IMPORTANT: The script MUST have functions matching these signatures, as per `UpgradePayload.gd`:
+## `static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
+## `static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool`
+@export var payload: GDScript # TODO: Stronger typing when Godot allows it :')
 
-const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload].
+const payloadAcquireMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload] when the Upgrade is "installed" or leveled up.
+const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The method/function which will be executed from the [member payload] when the Upgrade is "uninstalled".
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
@@ -51,7 +53,7 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 		if newValue == level: return
 
 		# Keep the level at or under maxLevel.
-		if not shouldAllowInfiniteLevels and maxLevel >= 0 and newValue > maxLevel: 
+		if not shouldAllowInfiniteLevels and maxLevel >= 0 and newValue > maxLevel:
 			newValue = maxLevel # TBD: Should we reject the attempt to set a higher value?
 
 		var previousValue: int = level
@@ -82,8 +84,8 @@ const payloadMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The me
 ## If no Stat is specified, then the Upgrade is always free.
 ## NOTE: If a Stat is specified but not present in an Entity's [StatsComponent], the Upgrade CANNOT be purchased EVEN IF the cost is <= 0.
 ## This acts as a further layer of validation: The Entity must have the Stat type in its StatsComponent, i.e. be able to HOLD a resource such as gold etc., but it may be 0.
-## NOTE: This actual [Stat] is never used for comparison when searching in a [StatsComponent], ONLY THE NAME. 
-## Searching by the name allows any Entity, even monsters etc. to use Upgrades, by having different instances of the same Stat resource. 
+## NOTE: This actual [Stat] is never used for comparison when searching in a [StatsComponent], ONLY THE NAME.
+## Searching by the name allows any Entity, even monsters etc. to use Upgrades, by having different instances of the same Stat resource.
 ## This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
 @export var costStat: Stat # TBD: Should this just be a StringName?
 
@@ -136,16 +138,13 @@ var isMaxLevel: bool:
 # DESIGN: Acquire/Discard signals should be emitted by the UpgradesCOMPONENT first, THEN by the Upgrade,
 # because any handlers connected to the Upgrade will expect the Upgrade to be or not be in a component when they receive the Upgrade's signals.
 
+@warning_ignore("unused_signal")
 signal didAcquire(entity: Entity) ## NOTE: [signal Upgrade.didAcquire] is emitted AFTER [signal UpgradesComponent.didAcquire].
 signal didDiscard(entity: Entity) ## NOTE: [signal Upgrade.didDiscard] is emitted AFTER [signal UpgradesComponent.didDiscard].
 
 signal didLevelUp
 signal didLevelDown
 signal didMaxLevel
-#endregion
-
-
-#region Dependencies
 #endregion
 
 
@@ -158,7 +157,7 @@ func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
 	# in case they have multiple Stats of the same type to choose from.
 
 	printLog(str("requestToAcquire() entity: ", entity, ", paymentStat: ", paymentStat))
-	
+
 	# Validate
 	if not validateEntityEligibility: return false
 
@@ -186,7 +185,7 @@ func requestLevelUp(entity: Entity, paymentStat: Stat) -> bool:
 	if not self.shouldAllowInfiniteLevels and self.level >= self.maxLevel:
 		printLog(str("Already at maxLevel ", maxLevel))
 		return false
-	
+
 	# Next, pay up before level up!
 	if not deductPayment(paymentStat, self.level + 1): return false
 
@@ -206,7 +205,7 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	if self.costStat == null: return true
 
 	# If the Upgrade requires a Stat, make sure the offered Stat is an instance of the type we want.
-	if not offeredStat.name == self.costStat.name: 
+	if not offeredStat.name == self.costStat.name:
 		printLog(str("offeredStat.name: ", offeredStat, " != self.costStat.name: ", self.costStat.name))
 		return false
 
@@ -227,12 +226,13 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	return true
 
 
-## Performs the actual actions or purpose of the Upgrade. Calls the method [member payloadMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
+## Performs the actual actions or purpose of the Upgrade. Calls the static method [member payloadAcquireMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
 ## Override in subclass to perform any modifications to the entity or other components when gaining (or losing) a [member level].
 ## Level 0 is when the Upgrade is first acquired by an entity.
 func processPayload(entity: Entity) -> bool:
+	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payload))
 	if self.payload:
-		return self.payload.new().call(self.payloadMethodName, self, entity) # TBD: Is `new()` needed or can it avoided with a `static func`?
+		return self.payload.call(self.payloadAcquireMethodName, self, entity) 
 	else:
 		return false
 
@@ -242,10 +242,15 @@ func _process(_delta: float) -> void:
 	pass
 
 
+## Calls the static method [member payloadDiscardMethodName] from the [member payload] Script: `onUpgrade_willDiscard()`
 func discard(entity: Entity) -> bool:
-	# TODO: Stub
-	didDiscard.emit(entity)
-	return true
+	var payloadResult: bool
+
+	if self.payload:
+		payloadResult = self.payload.call(self.payloadDiscardMethodName, self, entity)
+
+	self.didDiscard.emit(entity)
+	return payloadResult
 
 #endregion
 
@@ -256,9 +261,9 @@ func discard(entity: Entity) -> bool:
 ## If there is no next level possible, then the current [member level] is returned.
 func getNextLevel() -> int:
 	# TBD: Should we return an invalid number if there is no next level?
-	if self.shouldAllowInfiniteLevels or self.level < maxLevel: 
-		return self.level + 1 
-	else: 
+	if self.shouldAllowInfiniteLevels or self.level < maxLevel:
+		return self.level + 1
+	else:
 		return level
 
 
@@ -312,7 +317,7 @@ func validateStatsComponent(statsComponent: StatsComponent, levelOverride: int =
 	# If there is no cost for the specified level, then the component can afford it, of course.
 	var cost: int = self.getCost(levelOverride)
 	if cost <= 0: return true
-	
+
 	# Does the component have our required Stat type?
 	var paymentStatInComponent: Stat = self.findPaymentStatInStatsComponent(statsComponent)
 	if not paymentStatInComponent: return false
@@ -367,7 +372,7 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 
 ## Checks if the [member payload] script contains a function matching the required signature as [member payloadMethodName].
 func validatePayloadSignature() -> bool:
-	return Tools.findMethodInScript(self.payload, self.payloadMethodName)
+	return Tools.findMethodInScript(self.payload, self.payloadAcquireMethodName) and Tools.findMethodInScript(self.payload, self.payloadAcquireMethodName)
 
 #endregion
 
