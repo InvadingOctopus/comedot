@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stat" load_steps=2 format=3 uid="uid://drkt6rhhny6b4"]
+
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="1_s18af"]
+
+[resource]
+resource_name = "testEnergy"
+script = ExtResource("1_s18af")
+name = &"testEnergy"
+displayName = "ENERGY"
+min = 0
+max = 100
+value = 100
+description = ""
+logChanges = true
