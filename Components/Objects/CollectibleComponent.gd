@@ -31,12 +31,16 @@ enum PayloadType {
 ## May be used for adding new components to the collecting entity.
 @export var payloadNode:	PackedScene # TBD: Which type to use here for instantiating copies from?
 
-## A Script to execute when collected. MUST match the interface of [CollectiblePayloadScript]:
-## func executeCollectibleScript(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant
-@export var payloadScript:	CollectiblePayloadScript # NOTE: CHECK: Which type to use here for passing around scripts?
+## The code to execute when this Collectible is collected.
+## IMPORTANT: The script MUST have a function matching this signature; the same interface as [CollectiblePayload]:
+## `static func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant:`
+## TIP: Use the `Templates/Scripts/Resource/CollectiblePayloadTemplate.gd` template.
+@export var payloadScript:	GDScript # TODO: Stronger typing when Godot allows it :')
+
+const payloadMethodName:	StringName = &"onCollectible_didCollect" ## The method/function which will be executed from the [member payload] when this Collectible is collected by an [CollectorComponent].
 
 ## A function of this component to execute by the [CollectorComponent]. MUST match the following signature:
-## func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
+## func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
 @export var payloadCallable:Callable
 
 #endregion
@@ -117,8 +121,8 @@ func checkRemovalConditions() -> bool:
 
 ## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value, if the [member payloadType] is [const PayloadType.callable].
 ## Must be overridden by subclasses.
-func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
-	printWarning(str("executeCollectibleCallable() must be overridden by a subclass! collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
+	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
 	return null
 
 #endregion

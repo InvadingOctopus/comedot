@@ -56,16 +56,16 @@ func collect(collectibleComponent: CollectibleComponent) -> bool:
 
 		CollectibleComponent.PayloadType.script:
 			# A script that matches this interface:
-			# func executeCollectibleScript(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant
+			# static func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant:
 
-			var payloadScript: Script = collectibleComponent.payloadScript
+			var payloadScript: GDScript = collectibleComponent.payloadScript
 			payload = payloadScript
 			printDebug(str("Payload Script: ", payloadScript, " ", payloadScript.get_global_name()))
-			payloadScript.executeCollectibleScript(self.parentEntity, self, collectibleComponent)
+			payloadScript.call(CollectibleComponent.payloadMethodName, self.parentEntity, self, collectibleComponent)
 
 		CollectibleComponent.PayloadType.callable:
 			# A function that matches this signature:
-			# func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
+			# func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
 
 			var payloadCallable: Callable = collectibleComponent.payloadCallable
 			payload = payloadCallable

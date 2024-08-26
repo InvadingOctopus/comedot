@@ -16,7 +16,7 @@ extends CollectibleComponent
 
 func _ready() -> void:
 	self.payloadType = PayloadType.callable
-	self.payloadCallable = executeCollectibleCallable
+	self.payloadCallable = onCollectible_didCollect
 
 
 ## Returns a random integer between [member statModifierMinimum] and [member statModifierMaximum], inclusive.
@@ -26,11 +26,11 @@ func getRandomModifier() -> int:
 
 
 ## Returns: The randomized stat modifier value
-func executeCollectibleCallable(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
+func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
 	var randomizedModifier := getRandomModifier()
 
 	if shouldShowDebugInfo:
-		printLog(str("executeCollectibleCallable() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent, ", randomizedModifier: ", randomizedModifier))
+		printLog(str("onCollectible_didCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent, ", randomizedModifier: ", randomizedModifier))
 
 	stat.value += randomizedModifier
 
