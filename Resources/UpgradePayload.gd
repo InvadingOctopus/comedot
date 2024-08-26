@@ -7,10 +7,10 @@ extends Resource
 
 
 static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity), str(upgrade)) # TBD: Should there be a warning if this abstract method is unimplemented?
+	Debug.printWarning(str("onUpgrade_didAcquireOrLevelUp() not implemented! entity: ", entity), str(upgrade))
 	return false
 
 
 static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_willDiscard() entity: ", entity), str(upgrade)) # TBD: Should there be a warning if this abstract method is unimplemented?
+	Debug.printWarning(str("onUpgrade_willDiscard() not implemented! entity: ", entity), str(upgrade))
 	return false
