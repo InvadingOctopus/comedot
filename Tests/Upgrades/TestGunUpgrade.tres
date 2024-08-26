@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Upgrade" load_steps=4 format=3 uid="uid://bsmyby33ll8ok"]
+
+[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestMoney.tres" id="1_70l4j"]
+[ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_kkrmp"]
+[ext_resource type="Script" path="res://Tests/Upgrades/TestGunUpgradePayload.gd" id="2_3pfuh"]
+
+[resource]
+script = ExtResource("1_kkrmp")
+name = &"gun"
+displayName = "GUN"
+payload = ExtResource("2_3pfuh")
+description = ""
+shouldShowDebugInfo = true
+level = 0
+maxLevel = 0
+shouldAllowInfiniteLevels = false
+costStat = ExtResource("1_70l4j")
+costs = Array[int]([500])
+shouldUseLastCostForHigherLevels = false
+requiredUpgrades = Array[ExtResource("1_kkrmp")]([])
+mutuallyExclusiveUpgrades = Array[StringName]([])

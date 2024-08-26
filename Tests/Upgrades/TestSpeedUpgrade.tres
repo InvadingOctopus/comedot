@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="Upgrade" load_steps=4 format=3 uid="uid://qnkhwtlbroqg"]
+
+[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestEnergy.tres" id="1_f00qb"]
+[ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_m1sav"]
+[ext_resource type="Script" path="res://Tests/Upgrades/TestSpeedUpgradePayload.gd" id="2_723c3"]
+
+[resource]
+script = ExtResource("1_m1sav")
+name = &"speed"
+displayName = "SPEED"
+payload = ExtResource("2_723c3")
+description = ""
+shouldShowDebugInfo = true
+level = 0
+maxLevel = 10
+shouldAllowInfiniteLevels = false
+costStat = ExtResource("1_f00qb")
+costs = Array[int]([10, 20, 30])
+shouldUseLastCostForHigherLevels = true
+requiredUpgrades = Array[ExtResource("1_m1sav")]([])
+mutuallyExclusiveUpgrades = Array[StringName]([])
