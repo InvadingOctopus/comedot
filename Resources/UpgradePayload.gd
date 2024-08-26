@@ -5,13 +5,11 @@ class_name UpgradePayload
 extends Resource
 
 
-@warning_ignore("unused_parameter")
 static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_didAcquireOrLevelUp() upgrade: ", upgrade, ", entity: ", entity), str(self))
+	Debug.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity), str(upgrade))
 	return false
 
 
-@warning_ignore("unused_parameter")
 static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_willDiscard() upgrade: ", upgrade, ", entity: ", entity), str(self))
+	Debug.printLog(str("onUpgrade_willDiscard() entity: ", entity), str(upgrade))
 	return false
