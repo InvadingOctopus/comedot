@@ -1,5 +1,6 @@
 ## A container for a `Callable` function to execute when a [CollectibleComponent] is processed by a [CollectorComponent].
-## This must be subclassed and the subclass must override the [method executeCollectibleScript] method.
+## This must be subclassed and the subclass MUST override the [method onCollectible_didCollect] method.
+## TIP: Use the `Templates/Scripts/Resource/CollectiblePayloadTemplate.gd` template.
 
 class_name CollectiblePayload
 extends Resource
