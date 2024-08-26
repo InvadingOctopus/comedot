@@ -32,7 +32,7 @@ extends Resource
 		else: return self.name
 
 ## The core functionality of this Upgrade. A [Script] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
-## IMPORTANT: The script MUST have functions matching these signatures, as per `UpgradePayload.gd`:
+## IMPORTANT: The script MUST have functions matching these signatures; the same interface as [UpgradePayload]:
 ## `static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
 ## `static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool`
 ## TIP: Use the `Templates/Scripts/Resource/UpgradePayloadTemplate.gd` template.
