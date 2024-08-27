@@ -441,18 +441,18 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 ## Returns the path of the specified object, after replacing its extension with the specified string.
 ## May be used for quickly getting the accompanying `.gd` Script for a `.tscn` Scene or `.tres` Resource, if they share the same file name.
 ## If the resulting file with the replaced extension does not exist, an empty string is returned.
-static func getPathWithDifferentExtension(object: Variant, replacementExtension: String) -> String:
-	Debug.printDebug(str("getPathWithDifferentExtension() object: ", object, ", replacementExtension: ", replacementExtension))
-
-	var sourcePath: String = object.get_script().resource_path
+static func getPathWithDifferentExtension(sourcePath: String, replacementExtension: String) -> String:
+	# var sourcePath: String = object.get_script().resource_path
 	if sourcePath.is_empty(): return ""
-	
+
 	var sourceExtension: String = "." + sourcePath.get_extension() # Returns the file extension without the leading period
-	var replacedPath:	 String = sourcePath.replacen(sourceExtension, replacementExtension) # The `N` in `replacen` means case-insensitive 
-	
-	if FileAccess.file_exists(replacedPath): return replacedPath
+	var replacementPath: String = sourcePath.replacen(sourceExtension, replacementExtension) # The `N` in `replacen` means case-insensitive
+
+	Debug.printDebug(str("getPathWithDifferentExtension() sourcePath: ", sourcePath, ", replacementPath: ", replacementPath))
+
+	if FileAccess.file_exists(replacementPath): return replacementPath
 	else:
-		Debug.printDebug(str("replacedPath does not exist: ", replacedPath))
+		Debug.printDebug(str("replacementPath does not exist: ", replacementPath))
 		return ""
 
 #endregion
