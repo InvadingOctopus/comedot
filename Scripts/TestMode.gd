@@ -2,6 +2,7 @@
 ## Assists with testing a project during development by temporarily modifying nodes, global flags and other variables from a single point,
 ## such as disabling superfluous visual effects for a game, or increasing the lives of a player,
 ## instead of permanently modifying values in the Godot Editor and multiple files then trying to remember, find and revert them.
+## TIP: In a subclass, just implement [method TestMode.onDidToggleTestMode]
 
 class_name TestMode
 extends Node
