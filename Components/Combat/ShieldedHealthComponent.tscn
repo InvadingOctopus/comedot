@@ -1,7 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://5yiyg3iv4qgd"]
+[gd_scene load_steps=5 format=3 uid="uid://33kigwntmd1i"]
 
 [ext_resource type="Script" path="res://Components/Combat/ShieldedHealthComponent.gd" id="1_5sr7c"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="2_ujoql"]
+
+[sub_resource type="Resource" id="Resource_xmmct"]
+resource_local_to_scene = true
+resource_name = "shield"
+script = ExtResource("2_ujoql")
+name = &"shield"
+displayName = "Shield"
+min = 0
+max = 10
+value = 10
+description = "Absorbs damage. Health cannot be decreased while Shield > 0"
+logChanges = false
+
+[sub_resource type="Resource" id="Resource_ty0wk"]
+resource_local_to_scene = true
+resource_name = "health"
+script = ExtResource("2_ujoql")
+name = &"health"
+displayName = "HP"
+min = 0
+max = 10
+value = 10
+description = "The actual health. Damaged when Shield is 0"
+logChanges = false
 
 [node name="ShieldedHealthComponent" type="Node" groups=["components"]]
 script = ExtResource("1_5sr7c")
-
+shield = SubResource("Resource_xmmct")
+health = SubResource("Resource_ty0wk")
+shouldRemoveEntityOnZero = true
