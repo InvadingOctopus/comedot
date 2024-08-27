@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://5yiyg3iv4qgd"]
+
+[ext_resource type="Script" path="res://Components/Combat/ShieldedHealthComponent.gd" id="1_5sr7c"]
+
+[node name="ShieldedHealthComponent" type="Node" groups=["components"]]
+script = ExtResource("1_5sr7c")
+
