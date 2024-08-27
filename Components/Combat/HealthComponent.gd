@@ -8,7 +8,8 @@ extends Component
 
 #region Parameters
 @export var health: Stat
-@export var shouldRemoveEntityOnZero: bool = false
+@export var shouldRemoveEntityOnZero: bool = false ## Affected by [member isEnabled].
+@export var isEnabled: bool = true
 #endregion
 
 #region Signals
@@ -45,7 +46,7 @@ func onHealthChanged() -> void:
 		if health.value <= 0:
 			healthDidZero.emit()
 			
-			if shouldRemoveEntityOnZero and parentEntity: 
+			if isEnabled and shouldRemoveEntityOnZero and parentEntity: 
 				willRemoveEntity.emit()
 				parentEntity.requestDeletion()
 
@@ -53,13 +54,14 @@ func onHealthChanged() -> void:
 ## [param damageAmount] must be a positive number. Negative values will INCREASE health.
 ## Returns: Remaining health.
 func damage(damageAmount: int) -> int:
-	health.value -= damageAmount
+	if isEnabled: health.value -= damageAmount
 	return health.value
 
 
 ## [param healAmount] must be a positive number. Negative values will DECREASE health.
 ## Returns: Remaining health.
 func heal(healAmount: int) -> int:
-	health.value += healAmount
-	if health.value >= health.max: healthDidMax.emit()
+	if isEnabled: 
+		health.value += healAmount
+		if health.value >= health.max: healthDidMax.emit()
 	return health.value
