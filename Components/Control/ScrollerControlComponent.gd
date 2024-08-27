@@ -43,7 +43,7 @@ func _ready() -> void:
 	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 	
 	processInput(delta)
@@ -62,7 +62,7 @@ func characterBodyComponent_didMove() -> void:
 	#showDebugInfo()
 
 
-func processInput(delta: float):
+func processInput(delta: float) -> void:
 	if not isEnabled: return
 	
 	# Get the input direction and handle the movement/deceleration.
@@ -116,7 +116,7 @@ func processInput(delta: float):
 		lastDirection = body.velocity.normalized()
 
 
-func applyDefaultVelocity(delta: float):
+func applyDefaultVelocity(_delta: float) -> void:
 	# TBD: Is this necessary as separate function or should this be done in processInput()?
 	if not isEnabled: return
 	
@@ -136,7 +136,7 @@ func applyDefaultVelocity(delta: float):
 		body.velocity.y = parameters.verticalVelocityDefault
 		
 	
-func clampVelocity(delta: float):
+func clampVelocity(_delta: float) -> void:
 	# TODO: Better performance by using cached vectors?
 	# NOTE: Do NOT apply acceleration here. [move_toward()] applies very slowly because of `delta`.
 	
@@ -145,5 +145,7 @@ func clampVelocity(delta: float):
 	
 
 func showDebugInfo() -> void:
+	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection
