@@ -23,7 +23,6 @@ var currentModalView: ModalView
 
 
 #region Signals
-signal didSomethingHappen ## Placeholder
 #endregion
 
 

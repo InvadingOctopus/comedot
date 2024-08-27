@@ -4,4 +4,4 @@
 
 [node name="AttackComponent" type="Node" groups=["components"]]
 script = ExtResource("1_urvkf")
-metadata/_edit_group_ = true
+
