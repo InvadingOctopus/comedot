@@ -9,7 +9,9 @@ The aim is to be an all-in-one toolkit for 2D games (platformers, RPGs, shoot-em
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and no backwards compatibility is guaranteed.
 
-🌳 _An example of a player entity's node tree:_  
+
+🌳 _An example of a player entity's node tree:_
+
 ![components-tree]
 
 ⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
@@ -20,7 +22,12 @@ https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
+📈 There's even cool charts for debugging variables in real-time!
+
+![debug-charts]
+
 _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swapping-components]
+
 
 ## How To Use
 
@@ -29,6 +36,8 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 > The first time you load this project, there may be errors because Godot will re-import the asset files and set the internal IDs for textures etc. To fix, just close and reopen the project.
 
 🚀 **For a quick glance:** See the `/Templates/Scenes/` folder.
+
+![Custom Dock Plugin][comedock]
 
 ⚙️ **To use this framework for your own games:**
 
@@ -40,8 +49,6 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 
 > [!TIP]
 > * Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
-
-![Custom Dock Plugin][comedock]
 
 🧩 Whenever your game needs an "actor" which has to react to events, like the player character or a monster, or an object with "behaviors" which could be reused for other objects, like interactive items or powerups:
 
@@ -88,5 +95,5 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [rocks-with-guns]: https://i.imgur.com/wH84m23.gifv "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
-
+[debug-charts]: https://i.imgur.com/jgAjmzY.png "Debug Chart Windows"
 [logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
