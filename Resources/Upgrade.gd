@@ -36,7 +36,12 @@ extends Resource
 ## `static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
 ## `static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool`
 ## TIP: Use the `Templates/Scripts/Resource/UpgradePayloadTemplate.gd` template.
-@export var payload: GDScript # TODO: Stronger typing when Godot allows it :')
+## If not specified, a `.gd` script file matching the same name as the Upgrade `.tres` is used, if found, e.g. `GunUpgrade.tres`: `GunUpgrade.gd`
+@export var payload: GDScript: # TODO: Stronger typing when Godot allows it :')
+	get:
+		if not payload:
+			payload = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
+		return payload
 
 const payloadAcquireMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload] when the Upgrade is "installed" or leveled up.
 const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The method/function which will be executed from the [member payload] when the Upgrade is "uninstalled".
@@ -92,7 +97,7 @@ const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The met
 
 ## This is the property that is ACTUALLY used to search for the required Stat, so that ANY instance of a particular Stat resource may be usable.
 var costStatName: StringName:
-	get: return self.costStat.name
+	get: return self.costStat.name if self.costStat else ""
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.
@@ -233,7 +238,7 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 func processPayload(entity: Entity) -> bool:
 	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payload))
 	if self.payload:
-		return self.payload.call(self.payloadAcquireMethodName, self, entity) 
+		return self.payload.call(self.payloadAcquireMethodName, self, entity)
 	else:
 		return false
 
