@@ -564,6 +564,7 @@ func editSelectedComponent() -> void:
 	if shouldShowDebugInfo: printLog(str("editSelectedComponent() ", selectedComponentPath))
 
 	var scenePath:  String
+	@warning_ignore("unused_variable")
 	var scriptPath: String
 
 	# Convert the paths, just in case

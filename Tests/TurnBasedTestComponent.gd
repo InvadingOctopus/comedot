@@ -53,15 +53,15 @@ func onDidEndTurn() -> void:
 	pass #endStateSprite.visible = false
 
 
-func onTileBasedPositionComponent_willStartMovingToNewCell(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_willStartMovingToNewCell(_newDestination: Vector2i) -> void:
 	# Longest name ever? :')
 	$MovingStateSprite.visible = true
 
 
-func onTileBasedPositionComponent_didArriveAtNewCell(newDestination: Vector2i) -> void:
+func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
 	$MovingStateSprite.visible = false
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if shouldShowDebugInfo and $WaitSprite.visible:
 		%WaitLabel.text = str("WAIT:", snappedf($Timer.time_left, 0.001))
