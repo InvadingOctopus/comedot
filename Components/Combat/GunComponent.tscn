@@ -9,9 +9,11 @@ resource_local_to_scene = true
 resource_name = "ammo"
 script = ExtResource("2_dmw2s")
 name = &"ammo"
+displayName = ""
 min = 0
 max = 100
 value = 100
+description = ""
 logChanges = false
 
 [node name="GunComponent" type="Node2D" groups=["components"]]

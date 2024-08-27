@@ -49,7 +49,7 @@ func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
 
 	if not event.is_action_type(): return
-	
+
 	# Debugging, before any other actions are handled.
 
 	if Input.is_action_just_released(Actions.debugBreak):
