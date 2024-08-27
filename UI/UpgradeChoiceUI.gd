@@ -74,7 +74,7 @@ func updateUI(_entity: Entity = self.targetEntity) -> void: # The entity argumen
 ## Shows the cost for the Upgrade's current level.
 func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
-	costStatLabel.text = upgrade.costStat.displayName
+	costStatLabel.text = upgrade.costStat.displayName if upgrade.costStat else ""
 	costAmountLabel.text = str(upgrade.getCost(self.getLevelToPurchase()))
 
 
@@ -112,7 +112,7 @@ func connectSignals() -> void:
 	targetUpgradesComponent.didAcquire.connect(self.onUpgradesComponent_didChange) 
 	targetUpgradesComponent.didDiscard.connect(self.onUpgradesComponent_didChange)
 
-	var paymentStat: Stat = upgrade.findPaymentStatInStatsComponent(targetStatsComponent)
+	var paymentStat: Stat = upgrade.findCostStatInStatsComponent(targetStatsComponent)
 	if paymentStat: paymentStat.changed.connect(self.updateUI)
 
 
