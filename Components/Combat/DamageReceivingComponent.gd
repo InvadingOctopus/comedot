@@ -5,11 +5,10 @@ class_name DamageReceivingComponent
 extends Component
 
 # CHECK: Dynamically find co-components?
+# NOTE: Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
+
 
 #region Parameters
-@export var healthComponent:  HealthComponent
-@export var factionComponent: FactionComponent
-
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
 		isEnabled = newValue
@@ -19,7 +18,6 @@ extends Component
 		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
 		set_deferred("monitorable", newValue)
 		set_deferred("monitoring",  newValue)
-
 #endregion
 
 
@@ -49,15 +47,20 @@ var damageComponentsInContact: Array[DamageComponent]
 #endregion
 
 
-func _ready() -> void:
+#region Dependencies
 
-	# Is there a HealthComponent and FactionComponent? If not, try to find them from the Entity. In any case, we will still emit a `didReceiveDamage` signal.
+## May be a subclass such as [ShieldedHealthComponent].
+@export var healthComponent: HealthComponent:
+	get:
+		if not healthComponent: healthComponent = parentEntity.findFirstComponentSublcass(HealthComponent) # NOTE: Subclasses such as [ShieldedHealthComponent] may also be used.
+		return healthComponent
 
-	if not healthComponent:
-		healthComponent = self.getCoComponent(HealthComponent)
+@export var factionComponent: FactionComponent:
+	get:
+		if not factionComponent: factionComponent = self.getCoComponent(FactionComponent)
+		return factionComponent
 
-	if not factionComponent:
-		factionComponent = self.getCoComponent(FactionComponent)
+#endregion
 
 
 #region Collisions
@@ -142,8 +145,7 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 		return
 
 	# Even if there is no HealthComponent, we will still emit the signal.
-	if healthComponent:
-		healthComponent.damage(damageAmount)
+	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
 
 	# CHECK: Should this signal be emitted regardless of health?
 	didReceiveDamage.emit(damageComponent, damageAmount, attackerFactions)
@@ -179,8 +181,7 @@ func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: 
 
 	if damageToApply > 0:
 		# Even if there is no HealthComponent, we will still emit the signal.
-		if healthComponent:
-			healthComponent.damage(damageToApply)
+		if healthComponent: healthComponent.damage(damageToApply) # See header notes.
 
 		# CHECK: Should this signal be emitted regardless of health?
 		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
