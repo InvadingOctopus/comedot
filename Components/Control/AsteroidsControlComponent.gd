@@ -2,6 +2,7 @@
 ## Similar to Asteroids; a common control scheme for spaceships or "tank"-like movement.
 ## NOTE: This component is an independent and more advanced alternative to combining [TurningControlComponent] + [ThrustControlComponent], and it does not depend on [PlayerInputComponent].
 ## Requirements: [CharacterBody2D]
+## @experimental
 
 class_name AsteroidsControlComponent
 extends CharacterBodyManipulatingComponentBase
@@ -32,7 +33,7 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 	processInput(delta)
 	characterBodyComponent.queueMoveAndSlide()
@@ -45,7 +46,7 @@ func _physics_process(delta: float):
 
 
 ## Get the input direction and handle the movement/deceleration.
-func processInput(delta: float):
+func processInput(delta: float) -> void:
 	if not isEnabled: return
 
 	self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
@@ -81,7 +82,10 @@ func processInput(delta: float):
 
 	if parameters.shouldMaintainPreviousVelocity and not inputDirection:
 		body.velocity = lastVelocity
+	
 	return
+	
+	# TBD:
 	# Minimum velocity?
 
 	if parameters.shouldMaintainMinimumVelocity:
@@ -102,11 +106,13 @@ func processInput(delta: float):
 
 
 ## NOTE: Not implemented
-func processFriction(delta: float):
+func processFriction(_delta: float) -> void:
 	pass
 
 
 func showDebugInfo() -> void:
+	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.velocity = body.velocity
 	Debug.watchList.wallNormal = body.get_wall_normal()
 	Debug.watchList.lastMotion = body.get_last_motion()
