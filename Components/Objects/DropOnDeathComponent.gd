@@ -44,10 +44,10 @@ func _ready() -> void:
 		printError("Missing HealthComponent")
 		return
 
-	healthComponent.didZero.connect(self.onHealthComponent_didZero)
+	healthComponent.healthDidZero.connect(self.onHealthComponent_healthDidZero)
 
 
-func onHealthComponent_didZero() -> void:
+func onHealthComponent_healthDidZero() -> void:
 	# TBD: No need to spawn a "drop" if the parent entity doesn't "die" (get removed upon zero health) right?
 	if not isEnabled or not healthComponent.shouldRemoveEntityOnZero: return
 	drop()

@@ -5,26 +5,17 @@
 
 [sub_resource type="Resource" id="Resource_d8l7q"]
 resource_local_to_scene = true
+resource_name = "health"
 script = ExtResource("2_els5r")
 name = &"health"
+displayName = "Health"
 min = 0
 max = 10
 value = 10
+description = ""
 logChanges = false
 
-[node name="HealthComponent" type="Node2D" groups=["components"]]
+[node name="HealthComponent" type="Node" groups=["components"]]
 script = ExtResource("1_6fujl")
 health = SubResource("Resource_d8l7q")
-metadata/_edit_group_ = true
-
-[node name="DebugIndicator" type="Label" parent="."]
-unique_name_in_owner = true
-visible = false
-modulate = Color(0, 1, 0, 1)
-offset_left = -16.0
-offset_top = -32.0
-offset_right = 16.0
-theme_override_font_sizes/font_size = 16
-text = "N"
-horizontal_alignment = 1
-vertical_alignment = 1
+shouldRemoveEntityOnZero = true

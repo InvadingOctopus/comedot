@@ -13,17 +13,17 @@ extends Component
 
 #region Signals
 
-## A decrease is a negative [param difference], so this signal may be connected to the same function as [signal didIncrease].
-signal didDecrease(difference: int)
+## A decrease is a negative [param difference], so this signal may be connected to the same function as [signal healthDidIncrease].
+signal healthDidDecrease(difference: int)
 
-## [param difference] is always positive, so this signal may be connected to the same function as [signal didDecrease], which always has a negative [param difference].
-signal didIncrease(difference: int)
+## [param difference] is always positive, so this signal may be connected to the same function as [signal healthDidDecrease], which always has a negative [param difference].
+signal healthDidIncrease(difference: int)
 
 ## May be less than zero.
-signal didZero
+signal healthDidZero
 
 ## May be greater than [member health].[member Stat.max].
-signal didMax
+signal healthDidMax
 
 signal willRemoveEntity
 
@@ -32,18 +32,18 @@ signal willRemoveEntity
 
 func _ready() -> void:
 	health.changed.connect(onHealthChanged, CONNECT_PERSIST) # CAUTION: TBD: Should `CONNECT_PERSIST` be used?
-	%DebugIndicator.text = str(health.value)
+	# %DebugIndicator.text = str(health.value) # TBD: Add a visual indicator into this component or let [DebugComponent] handle this job?
 
 
 func onHealthChanged() -> void:
-		var _difference: int = health.previousChange # A decrease should appear as a negative difference
+		var difference: int = health.previousChange # A decrease should appear as a negative difference
 
-		if health.value < health.previousValue: didDecrease.emit(health.previousChange) # NOTE: This should be a negative number so that both signals may be connected to the same function.
-		if health.value > health.previousValue: didIncrease.emit(health.previousChange)
-		%DebugIndicator.text = str(health.value)
+		if health.value < health.previousValue: healthDidDecrease.emit(difference) # NOTE: This should be a negative number so that both signals may be connected to the same function.
+		if health.value > health.previousValue: healthDidIncrease.emit(difference)
+		# %DebugIndicator.text = str(health.value) # TBD: ?
 
 		if health.value <= 0:
-			didZero.emit()
+			healthDidZero.emit()
 			
 			if shouldRemoveEntityOnZero and parentEntity: 
 				willRemoveEntity.emit()
@@ -61,8 +61,5 @@ func damage(damageAmount: int) -> int:
 ## Returns: Remaining health.
 func heal(healAmount: int) -> int:
 	health.value += healAmount
-
-	if health.value >= health.max:
-		didMax.emit()
-
+	if health.value >= health.max: healthDidMax.emit()
 	return health.value
