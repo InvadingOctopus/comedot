@@ -54,7 +54,8 @@ func _input(event: InputEvent) -> void:
 
 	if Input.is_action_just_released(Actions.debugBreak):
 		Debug.printDebug("Debug Breakpoint Input Received")
-		assert(false, "Debug Breakpoint Input Received")
+		breakpoint # TBD: Use `breakpoint` or `assert(false)`? `assert` also adds a message but only runs in debug builds.
+		# assert(false, "Debug Breakpoint Input Received")
 	elif Input.is_action_just_released(Actions.debugWindow):
 		Debug.toggleDebugWindow()
 
