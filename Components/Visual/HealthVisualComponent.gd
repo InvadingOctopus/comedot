@@ -22,7 +22,7 @@ func connectToHealthComponent() -> void:
 	healthComponent.didIncrease.connect(self.onHealthComponent_healthChanged)
 
 
-func onHealthComponent_healthChanged(difference: int):
+func onHealthComponent_healthChanged(_difference: int) -> void:
 	var health: Stat = healthComponent.health
 
 	var red: float   = 1.0 - (health.percentage / 100.0)

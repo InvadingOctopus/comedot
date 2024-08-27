@@ -7,7 +7,7 @@ extends Control
 # TODO: @export var setting: UserSetting
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	pass
 	# TODO: buildTestSettings()
 	#printInputList()
@@ -21,6 +21,6 @@ func _ready():
 	#settings.test = newSetting
 	#print(newSetting.currentValue)
 
-func printInputList():
+func printInputList() -> void:
 	for action: StringName in InputMap.get_actions():
 		print(action)

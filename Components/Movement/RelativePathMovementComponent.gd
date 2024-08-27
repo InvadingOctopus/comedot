@@ -79,7 +79,7 @@ func _ready() -> void:
 	willStartMove.emit()
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if (not isEnabled) or isInDelay or hasNoMoreMoves or self.currentVector.is_zero_approx(): return
 
 	# The node's position after applying the current movement vector.

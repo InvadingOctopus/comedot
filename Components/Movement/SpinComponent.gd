@@ -16,7 +16,7 @@ func _ready() -> void:
 	self.parent = get_parent()
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 
 	if isPaused: return
 

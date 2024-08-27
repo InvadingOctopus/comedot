@@ -65,7 +65,7 @@ func updateCurrentZones() -> int:
 	return currentZones.size()
 
 
-func onAreaEntered(area: Area2D):
+func onAreaEntered(area: Area2D) -> void:
 	# Is the area a member of the "zones" group?
 	if not isEnabled or not area.is_in_group(Global.Groups.zones): return
 
@@ -78,7 +78,7 @@ func onAreaEntered(area: Area2D):
 	didEnterZone.emit(area)
 
 
-func onAreaExited(area: Area2D):
+func onAreaExited(area: Area2D) -> void:
 	# Is the area a member of the "zones" group?
 	if not isEnabled or not area.is_in_group(Global.Groups.zones): return
 

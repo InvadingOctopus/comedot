@@ -111,7 +111,8 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
 
 	GlobalOverlay.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
-	await Debug.printLog("Saving state → " + Global.saveFilePath)
+	@warning_ignore("redundant_await")
+	await Debug.printLog("Saving state → " + Global.saveFilePath) # TBD: await or not?
 
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -134,7 +135,8 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
 
 	GlobalOverlay.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
-	await Debug.printLog("Loading state ← " + Global.saveFilePath)
+	@warning_ignore("redundant_await")
+	await Debug.printLog("Loading state ← " + Global.saveFilePath) # TBD: await or not?
 
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS

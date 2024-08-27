@@ -10,5 +10,6 @@ extends InteractionComponent
 #endregion
 
 
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent):
+@warning_ignore("unused_parameter")
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
 	interactorEntity.global_position = destinationNode.global_position

@@ -11,7 +11,7 @@ extends CharacterBodyManipulatingComponentBase
 #endregion
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	for collisionIndex in body.get_slide_collision_count():
 		var collision: KinematicCollision2D = body.get_slide_collision(collisionIndex)
 		if collision.get_collider() is RigidBody2D:

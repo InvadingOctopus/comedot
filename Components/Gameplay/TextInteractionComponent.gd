@@ -31,6 +31,7 @@ func _ready() -> void:
 	updateLabel()
 
 
+@warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
 	displayNextText()
 
@@ -42,6 +43,7 @@ func displayNextText() -> void:
 	updateLabel()
 
 
+@warning_ignore("unused_parameter")
 func applyTextFromArray(indexOverride: int = self.currentTextIndex) -> void:
 	self.label = self.textStrings[currentTextIndex]
 	

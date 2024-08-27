@@ -34,7 +34,7 @@ func _ready() -> void:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 	var input: float = playerInputComponent.thrustInput
 

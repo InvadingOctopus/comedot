@@ -97,7 +97,7 @@ const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The met
 
 ## This is the property that is ACTUALLY used to search for the required Stat, so that ANY instance of a particular Stat resource may be usable.
 var costStatName: StringName:
-	get: return self.costStat.name if self.costStat else ""
+	get: return self.costStat.name if self.costStat else &""
 
 ## A list of costs for each [member level] of this upgrade. The first cost at array index 0 is the requirement for initially acquiring this upgrade.
 ## `cost[n]` == Level n+1 so `cost[1]` == Upgrade Level 2.

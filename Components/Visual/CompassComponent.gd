@@ -20,7 +20,7 @@ extends Component
 #endregion
 
 
-func _process(delta: float):
+func _process(delta: float) -> void:
 
 	var compass: Node2D
 
@@ -30,7 +30,7 @@ func _process(delta: float):
 	var targetPosition := nodeToTrack.global_position
 
 	if shouldDisappearWhenNear:
-		var distance = parentEntity.global_position.distance_to(targetPosition)
+		var distance: float = parentEntity.global_position.distance_to(targetPosition)
 
 		if distance < proximityDistance or is_equal_approx(distance, proximityDistance):
 			compass.visible = false

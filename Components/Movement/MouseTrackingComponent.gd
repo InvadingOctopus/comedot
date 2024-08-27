@@ -11,7 +11,7 @@ extends Component
 #endregion
 
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 	if shouldRepositionImmediately:
 		parentEntity.global_position = parentEntity.get_global_mouse_position()

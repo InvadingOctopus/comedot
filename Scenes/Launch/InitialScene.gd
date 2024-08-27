@@ -44,7 +44,8 @@ func clearScenePlaceholder() -> void:
 #endregion
 
 func _ready() -> void:
-	await startLogoScene()
+	@warning_ignore("redundant_await")
+	await startLogoScene() # TBD: await or not?
 	startMainScene()
 
 

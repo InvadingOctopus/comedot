@@ -9,6 +9,6 @@ extends Component
 @export var maximum: Vector2 = Vector2(500, 500)
 
 
-func _process(delta: float):
+func _process(_delta: float) -> void:
 	parentEntity.position.clamp(minimum, maximum)
 	print("SCRIPT ONLY WORKING") # DEBUG
