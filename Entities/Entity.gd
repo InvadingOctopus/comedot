@@ -52,7 +52,7 @@ func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
 	self.add_to_group(Global.Groups.entities, true) # persistent
-	printLog("􀈅 [b]_enter_tree() parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
+	printLog("􀈅 [b]_enter_tree() → parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
 	connectSignals()
 
 
