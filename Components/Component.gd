@@ -194,7 +194,7 @@ var logName: String: # NOTE: This is a dynamic property because direct assignmen
 
 ## A more detailed name including the node name, instance, and the script's `class_name`.
 var logFullName: String:
-	get: return "􀥭 " + str(self) + ":" + self.get_script().get_global_name()
+	get: return str("􀥭 ", self, ":", self.get_script().get_global_name())
 
 
 func printLog(message: String = "", objectName: String = self.logName) -> void:
