@@ -38,6 +38,9 @@ var previousChartWindowInitialPosition: Vector2i
 
 static var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
 
+## A custom log that holds extra on-demand information for each component and its parent entity etc.
+static var log: Array[Dictionary]
+
 #endregion
 
 
@@ -221,9 +224,21 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
-func updateLastFrameLogged() -> void:
+static func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
 		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
+
+
+static func getObjectDetails(object: Variant) -> Dictionary:
+	return {
+		"object":	object, 
+		"instance":	object.get_instance_id(), 
+		"name":		object.name,
+		"type":		type_string(typeof(object)), 
+		"class":	object.get_class(), 
+		"baseScript": object.get_script().get_base_script().get_global_name(), 
+		"className": object.get_script().get_global_name()
+	}
 
 #endregion
