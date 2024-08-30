@@ -21,6 +21,9 @@ extends Node
 ## A dictionary of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
 @export var watchList: Dictionary = {}
 
+const customLogEntryScene: PackedScene = preload("res://UI/CustomLogEntryUI.tscn")
+const customLogMaximumEntries: int = 100
+
 #endregion
 
 
@@ -31,6 +34,7 @@ extends Node
 @onready var label:			 Label  = %Label
 @onready var warningLabel:	 Label  = %WarningLabel
 @onready var watchListLabel: Label  = %WatchListLabel
+@onready var customLogList:	 Container = %CustomLogList
 
 @onready var testBackground: Node2D = %TestBackground
 
@@ -39,7 +43,7 @@ var previousChartWindowInitialPosition: Vector2i
 static var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
-static var log: Array[Dictionary]
+static var customLog: Array[Dictionary]
 
 #endregion
 
@@ -171,6 +175,19 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 
 #region Logging
 
+class CustomLogKeys:
+	# NOTE: Must be all lower case for `Tools.setLabelsWithDictionary()`
+	const message	= &"message"
+	const object	= &"object"
+	const instance	= &"instance"
+	const name		= &"name"
+	const type		= &"type"
+	const nodeClass	= &"nodeclass"
+	const baseScript = &"basescript"
+	const className	= &"classname"
+	const parent	= &"parent"
+
+
 func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
@@ -230,15 +247,50 @@ static func updateLastFrameLogged() -> void:
 		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
 
 
+func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
+	var customLogEntry: Dictionary = getObjectDetails(object)
+
+	customLogEntry[CustomLogKeys.parent]  = parent
+	customLogEntry[CustomLogKeys.message] = message
+
+	customLog.append(customLogEntry)
+	addCustomLogUIItem(customLogEntry)
+
+
+func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
+	if not customLogList or customLogEntry.is_empty(): return
+
+	if customLogList.get_child_count() >= customLogMaximumEntries:
+		customLogList.remove_child(customLogList.get_child(0))
+
+	var newLogEntryUI: CustomLogEntryUI = customLogEntryScene.instantiate()
+	newLogEntryUI.logEntry = customLogEntry
+
+	customLogList.add_child(newLogEntryUI) # Don't call Tools, for performance
+	newLogEntryUI.owner = customLogList
+	# TBD: Return newLogEntryUI?
+
+
+## Returns a dictionary of almost all details about an object, using the [Debug.CustomLogKeys].
 static func getObjectDetails(object: Variant) -> Dictionary:
-	return {
-		"object":	object, 
-		"instance":	object.get_instance_id(), 
-		"name":		object.name,
-		"type":		type_string(typeof(object)), 
-		"class":	object.get_class(), 
-		"baseScript": object.get_script().get_base_script().get_global_name(), 
-		"className": object.get_script().get_global_name()
+	# TBD: Should the values be actual variables or Strings?
+
+	var dictionary: Dictionary = {
+		CustomLogKeys.object:		object,
+		CustomLogKeys.instance:		object.get_instance_id(),
+		CustomLogKeys.name:			object.name,
+		CustomLogKeys.type:			type_string(typeof(object)),
+		CustomLogKeys.nodeClass:	object.get_class()
 	}
+
+	var script: Script = object.get_script()
+	
+	if script: 
+		dictionary[CustomLogKeys.className] = script.get_global_name()
+		
+		var baseScript: Script = script.get_base_script()
+		if baseScript:  dictionary[CustomLogKeys.baseScript] = baseScript.get_global_name()
+	
+	return dictionary
 
 #endregion

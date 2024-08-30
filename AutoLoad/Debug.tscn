@@ -13,9 +13,6 @@ outline_color = Color(0, 0, 0, 1)
 
 [node name="Debug" type="Node"]
 script = ExtResource("1_rd14n")
-shouldPrintDebugLogs = null
-showDebugLabels = null
-watchList = null
 
 [node name="Canvas" type="CanvasLayer" parent="."]
 layer = 110
@@ -83,7 +80,45 @@ layout_mode = 2
 text = "Watchlist"
 metadata/_edit_use_anchors_ = true
 
+[node name="CustomLogWindow" type="Window" parent="."]
+process_mode = 3
+process_priority = 100
+process_physics_priority = 100
+auto_translate_mode = 1
+disable_3d = true
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+title = "Comedot Log"
+position = Vector2i(100, 100)
+size = Vector2i(1000, 400)
+wrap_controls = true
+transient = true
+content_scale_mode = 1
+content_scale_aspect = 1
+content_scale_stretch = 1
+content_scale_factor = 2.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="CustomLogWindow"]
+layer = 110
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CustomLogWindow/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="CustomLogList" type="VBoxContainer" parent="CustomLogWindow/CanvasLayer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
 [node name="TestBackground" parent="." instance=ExtResource("4_v5ev8")]
 unique_name_in_owner = true
 
 [connection signal="close_requested" from="DebugWindow" to="DebugWindow" method="hide"]
+[connection signal="close_requested" from="CustomLogWindow" to="CustomLogWindow" method="hide"]
