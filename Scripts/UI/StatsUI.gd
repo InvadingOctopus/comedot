@@ -15,6 +15,9 @@ extends Container
 ## Will apply to all [StatLabels].
 @export var minimumDigits: int = 2
 
+@export var horizontalAlignment: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT ## The aligment for all newly created [Label]s.
+@export var verticalAlignment:	 VerticalAlignment   = VERTICAL_ALIGNMENT_CENTER ## The aligment for all newly created [Label]s
+
 ## Make all [StatLabel]s [member Label.uppercase].
 @export var shouldWriteAllUppercase: bool = false
 
@@ -31,10 +34,8 @@ func _ready() -> void:
 		var player: PlayerEntity = GameState.players.front()
 		if player: self.statsComponent = player.statsComponent
 
-	if statsComponent:
-		buildLabels()
-	else:
-		Debug.printWarning("Missing statsComponent", str(self))
+	if statsComponent: buildLabels()
+	else: Debug.printWarning("Missing statsComponent", str(self))
 
 
 ## Creates a [StatLabel] for each of the [Stat] in the [member statsComponent].
@@ -49,7 +50,10 @@ func createStatLabel(stat: Stat) -> StatLabel:
 	var newLabel: StatLabel = statLabelScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
+	newLabel.horizontal_alignment = self.horizontalAlignment
+	newLabel.vertical_alignment = self.verticalAlignment
 	newLabel.uppercase = self.shouldWriteAllUppercase
+	
 	Tools.addChildAndSetOwner(newLabel, self)
 	# newLabel.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
 	return newLabel
