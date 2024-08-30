@@ -95,6 +95,7 @@ canvas_item_default_texture_filter = 0
 title = "Comedot Log"
 position = Vector2i(100, 100)
 size = Vector2i(1000, 400)
+visible = false
 wrap_controls = true
 transient = true
 min_size = Vector2i(80, 80)
