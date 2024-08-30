@@ -265,7 +265,10 @@ static func updateLastFrameLogged() -> void:
 func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
 	var customLogEntry: Dictionary = getObjectDetails(object)
 
-	customLogEntry[CustomLogKeys.parent]  = parent
+	# Unless the object specified a custom parent, like a Component mentioning its Entity, just get the parent Node in the scene
+	if parent: customLogEntry[CustomLogKeys.parent] = parent
+	elif object is Node: customLogEntry[CustomLogKeys.parent] = object.get_parent()
+
 	customLogEntry[CustomLogKeys.message] = message
 
 	# customLog.append(customLogEntry) # No need to take up memory for an array when we already have the visual UI.

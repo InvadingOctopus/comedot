@@ -36,7 +36,7 @@ size_flags_vertical = 0
 size_flags_stretch_ratio = 2.0
 text = "Some really heckin long as heck log message text string wooohooo \\(^-^)/"
 autowrap_mode = 1
-max_lines_visible = 3
+max_lines_visible = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HeaderContainer"]
 layout_mode = 2
@@ -62,6 +62,17 @@ horizontal_alignment = 2
 text_overrun_behavior = 3
 max_lines_visible = 1
 
+[node name="ParentLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.6, 0.4, 1)
+text = "ShirodenPlayer:<CharacterBody2D#150709737192>:PlayerEntity"
+horizontal_alignment = 2
+text_overrun_behavior = 3
+
 [node name="ShowDetailsControl" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -75,6 +86,7 @@ horizontal_alignment = 2
 
 [node name="DetailsContainer" type="GridContainer" parent="VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/DetailsContainer"]
@@ -141,16 +153,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 text = "Node2D"
-text_overrun_behavior = 3
-
-[node name="ParentLabel" type="Label" parent="VBoxContainer/DetailsContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.4, 0.6, 0.4, 1)
-text = "ShirodenPlayer:<CharacterBody2D#150709737192>:PlayerEntity"
 text_overrun_behavior = 3
 
 [connection signal="gui_input" from="." to="." method="onToggleDetailsControl_guiInput"]
