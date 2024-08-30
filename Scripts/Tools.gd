@@ -437,7 +437,7 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 ## Example: `logMessageLabel.text = dictionary["logmessage"]`
 ## TIP: Use to quickly populate an "inspector" UI with text representing multiple properties of a selected object etc.
 ## NOTE: The dictionary keys must all be fully LOWER CASE.
-static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary, shouldHideEmptyLabels: bool = false) -> void:
+static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary, shouldShowPrefix: bool = false, shouldHideEmptyLabels: bool = false) -> void:
 	# DESIGN: We don't accept an array of any Control/Node because Labels may be in different containers, and some Labels may not need to be assigned from the Dictionary.
 	for label: Label in labels:
 		if not label: continue
@@ -445,11 +445,13 @@ static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary
 		var namePrefix: String = label.name.trim_suffix("Label").to_lower()
 		var dictionaryValue: Variant = dictionary.get(namePrefix)
 
+		label.text = namePrefix + ":" if shouldShowPrefix else "" # TBD: Space after colon?
+
 		if dictionaryValue:
-			label.text = str(dictionaryValue)
+			label.text += str(dictionaryValue)
 			if shouldHideEmptyLabels: label.visible = true # Automatically show non-empty labels in case they were already hidden
 		else:
-			label.text = "" # DEBUG: "? NO " + namePrefix
+			label.text += ""
 			if shouldHideEmptyLabels: label.visible = false
 
 #endregion
