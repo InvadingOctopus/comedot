@@ -64,7 +64,7 @@ func _ready() -> void:
 
 
 func initializeLogWindow() -> void:
-	logWindow.visible = OS.is_debug_build()
+	# TBD: # logWindow.visible = OS.is_debug_build()
 	# Position the Log Window to the bottom of the main window
 	var mainWindow: Window = self.get_window()
 	logWindow.position = mainWindow.position
