@@ -1,0 +1,89 @@
+[gd_scene load_steps=2 format=3 uid="uid://cn21mhevkd8se"]
+
+[ext_resource type="Script" path="res://UI/CustomLogEntryUI.gd" id="1_q7q8k"]
+
+[node name="CustomLogEntryUI" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+script = ExtResource("1_q7q8k")
+
+[node name="GridContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Some really heckin long as heck log message text string wooohooo \\(^-^)/"
+autowrap_mode = 3
+max_lines_visible = 3
+
+[node name="ClassNameLabel" type="Label" parent="GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "ShieldedHealthComponent"
+horizontal_alignment = 2
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "Name"
+
+[node name="DetailsButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Details..."
+flat = true
+alignment = 0
+
+[node name="DetailsGrid" type="GridContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="ObjectLabel" type="Label" parent="DetailsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "ShieldedHealthComponent:<Node#150139312029>"
+
+[node name="InstanceLabel" type="Label" parent="DetailsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.4, 0.6, 1)
+text = "150139312029"
+
+[node name="TypeLabel" type="Label" parent="DetailsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "Object"
+
+[node name="NodeClassLabel" type="Label" parent="DetailsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "Node"
+
+[node name="BaseScriptLabel" type="Label" parent="DetailsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "HealthComponent"
+
+[node name="ParentLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "PlayerEntity"
+
+[connection signal="pressed" from="DetailsButton" to="." method="onDetailsButton_pressed"]
+[connection signal="gui_input" from="DetailsGrid" to="." method="onDetailsGrid_guiInput"]
