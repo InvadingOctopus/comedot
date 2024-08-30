@@ -30,6 +30,8 @@ const customLogMaximumEntries: int = 100
 #region State
 
 @onready var debugWindow:	 Window = %DebugWindow
+@onready var logWindow:		 Window = %CustomLogWindow
+
 @onready var labels:		 Node   = %Labels
 @onready var label:			 Label  = %Label
 @onready var warningLabel:	 Label  = %WarningLabel
@@ -53,6 +55,7 @@ static var customLog: Array[Dictionary]
 #region Initialization
 
 func _ready() -> void:
+	initializeLogWindow()
 	initializeDebugWindow()
 	resetLabels()
 	setLabelVisibility()
@@ -60,11 +63,20 @@ func _ready() -> void:
 	displayInitializationMessage()
 
 
+func initializeLogWindow() -> void:
+	logWindow.visible = OS.is_debug_build()
+	# Position the Log Window to the bottom of the main window
+	var mainWindow: Window = self.get_window()
+	logWindow.position = mainWindow.position
+	logWindow.position.y += mainWindow.size.y + 75
+	logWindow.size.x = mainWindow.size.x
+
+
 func initializeDebugWindow() -> void:
 	debugWindow.visible = OS.is_debug_build()
 
 	# Position the Debug Window to the right of the main window
-	# TBD: Support for Right-To-Left locales?
+	# TBD: Support for Right-To-Left locales? :')
 	var mainWindow: Window = self.get_window()
 	debugWindow.position = mainWindow.position
 	debugWindow.position.x += mainWindow.size.x + 50
@@ -262,7 +274,7 @@ func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
 
 ## @experimental
 func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
-	if not %CustomLogWindow or not %CustomLogWindow.visible or not customLogList or customLogEntry.is_empty(): return
+	if not logWindow or not logWindow.visible or not customLogList or customLogEntry.is_empty(): return
 
 	var listChildCount: int = customLogList.get_child_count()
 	
