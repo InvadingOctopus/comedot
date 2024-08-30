@@ -429,6 +429,32 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 #endregion
 
 
+#region UI Functions
+
+## Sets the text of [Label]s from a [Dictionary].
+## Iterates over an array of [Label]s, and takes the prefix of the node name by removing the "Label" suffix, if any, and making it LOWER CASE,
+## and searches the [param dictionary] for any keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
+## Example: `logMessageLabel.text = dictionary["logmessage"]`
+## TIP: Use to quickly populate an "inspector" UI with text representing multiple properties of a selected object etc.
+## NOTE: The dictionary keys must all be fully LOWER CASE.
+static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary, shouldHideEmptyLabels: bool = false) -> void:
+	# DESIGN: We don't accept an array of any Control/Node because Labels may be in different containers, and some Labels may not need to be assigned from the Dictionary.
+	for label: Label in labels:
+		if not label: continue
+
+		var namePrefix: String = label.name.trim_suffix("Label").to_lower()
+		var dictionaryValue: Variant = dictionary.get(namePrefix)
+
+		if dictionaryValue:
+			label.text = str(dictionaryValue)
+			if shouldHideEmptyLabels: label.visible = true # Automatically show non-empty labels in case they were already hidden
+		else:
+			label.text = "" # DEBUG: "? NO " + namePrefix
+			if shouldHideEmptyLabels: label.visible = false
+
+#endregion
+
+
 #region Maths Functions
 
 ## INFO: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
