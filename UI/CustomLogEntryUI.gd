@@ -1,4 +1,5 @@
 ## A view for an entry in the custom log, with interactive details about the object that emitted the message.
+## @experimental
 
 class_name CustomLogEntryUI
 extends Control
@@ -11,9 +12,9 @@ var logEntry: Dictionary # Doesn't need to be @exported (to disk)
 
 var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk)
 	set(newValue):
-			isShowingExtraDetails = newValue
-			detailsButton.visible = not isShowingExtraDetails
-			detailsGrid.visible   = isShowingExtraDetails
+			isShowingExtraDetails    = newValue
+			detailsControl.visible   = not isShowingExtraDetails
+			detailsContainer.visible = isShowingExtraDetails
 
 #endregion
 
@@ -21,9 +22,10 @@ var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk
 #region State
 @onready var messageLabel:	Label = %MessageLabel
 
-@onready var detailsButton:	Button = %DetailsButton
-@onready var detailsGrid:	Container = %DetailsGrid
+@onready var detailsControl:		Control   = %ShowDetailsControl
+@onready var detailsContainer:	Container = %DetailsContainer
 
+@onready var frameTImeLabel: Label = %FrameTimeLabel
 @onready var nameLabel:		Label = %NameLabel
 @onready var instanceLabel:	Label = %InstanceLabel
 @onready var typeLabel:		Label = %TypeLabel
@@ -33,7 +35,7 @@ var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk
 @onready var parentLabel:	Label = %ParentLabel
 # @onready var objectLabel:	Label = %ObjectLabel # Redundant information; always "Object"
 
-@onready var labels: Array[Label] = [messageLabel, nameLabel, instanceLabel, typeLabel, nodeClassLabel, baseScriptLabel, classNameLabel, parentLabel]
+@onready var labels: Array[Label] = [messageLabel, frameTImeLabel, nameLabel, instanceLabel, typeLabel, nodeClassLabel, baseScriptLabel, classNameLabel, parentLabel]
 #endregion
 
 
@@ -42,16 +44,13 @@ func _ready() -> void:
 
 
 func updateUI() -> void:
-	Tools.setLabelsWithDictionary(self.labels, self.logEntry, true, false)
+	Tools.setLabelsWithDictionary(self.labels, self.logEntry, false, false)
 
 
-func onDetailsGrid_guiInput(event: InputEvent) -> void:
-	if event is InputEventMouseButton \
+func onToggleDetailsControl_guiInput(event: InputEvent) -> void:
+	if  event is InputEventMouseButton \
+	and event.pressed \
 	and event.button_index == MOUSE_BUTTON_LEFT:
 		isShowingExtraDetails = not isShowingExtraDetails
 		accept_event()
 	pass
-
-
-func onDetailsButton_pressed() -> void:
-	isShowingExtraDetails = not isShowingExtraDetails

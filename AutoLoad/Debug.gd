@@ -41,8 +41,10 @@ const customLogMaximumEntries: int = 100
 var previousChartWindowInitialPosition: Vector2i
 
 static var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
+static var customLogColorFlag: bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
+## @experimental
 static var customLog: Array[Dictionary]
 
 #endregion
@@ -178,6 +180,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath) -> 
 class CustomLogKeys:
 	# NOTE: Must be all lower case for `Tools.setLabelsWithDictionary()`
 	const message	= &"message"
+	const frameTime	= &"frametime"
 	const object	= &"object"
 	const instance	= &"instance"
 	const name		= &"name"
@@ -186,7 +189,6 @@ class CustomLogKeys:
 	const baseScript = &"basescript"
 	const className	= &"classname"
 	const parent	= &"parent"
-
 
 func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
@@ -247,27 +249,37 @@ static func updateLastFrameLogged() -> void:
 		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
 
 
+## @experimental
 func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
 	var customLogEntry: Dictionary = getObjectDetails(object)
 
 	customLogEntry[CustomLogKeys.parent]  = parent
 	customLogEntry[CustomLogKeys.message] = message
 
-	customLog.append(customLogEntry)
-	addCustomLogUIItem(customLogEntry)
+	# customLog.append(customLogEntry) # No need to take up memory for an array when we already have the visual UI.
+	addCustomLogUIItem(customLogEntry) 
 
 
+## @experimental
 func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
-	if not customLogList or customLogEntry.is_empty(): return
+	if not %CustomLogWindow or not %CustomLogWindow.visible or not customLogList or customLogEntry.is_empty(): return
 
-	if customLogList.get_child_count() >= customLogMaximumEntries:
-		customLogList.remove_child(customLogList.get_child(0))
+	var listChildCount: int = customLogList.get_child_count()
+	
+	if  listChildCount >= customLogMaximumEntries:
+		var childToDelete: Node = customLogList.get_child(0)
+		customLogList.remove_child(childToDelete)
+		childToDelete.queue_free() # CHECK: Is this needed?
 
 	var newLogEntryUI: CustomLogEntryUI = customLogEntryScene.instantiate()
 	newLogEntryUI.logEntry = customLogEntry
 
+	if  customLogColorFlag: # Alternate the color of rows starting from the 2nd row.
+		newLogEntryUI.self_modulate = Color(.5, 0, .5)
+	customLogColorFlag = not customLogColorFlag
+
 	customLogList.add_child(newLogEntryUI) # Don't call Tools, for performance
-	newLogEntryUI.owner = customLogList
+	newLogEntryUI.owner = customLogList # CHECK: Is this needed for emphemeral controls?
 	# TBD: Return newLogEntryUI?
 
 
@@ -276,6 +288,7 @@ static func getObjectDetails(object: Variant) -> Dictionary:
 	# TBD: Should the values be actual variables or Strings?
 
 	var dictionary: Dictionary = {
+		CustomLogKeys.frameTime:	str("F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000),
 		CustomLogKeys.object:		object,
 		CustomLogKeys.instance:		object.get_instance_id(),
 		CustomLogKeys.name:			object.name,
@@ -284,13 +297,13 @@ static func getObjectDetails(object: Variant) -> Dictionary:
 	}
 
 	var script: Script = object.get_script()
-	
-	if script: 
+
+	if script:
 		dictionary[CustomLogKeys.className] = script.get_global_name()
-		
+
 		var baseScript: Script = script.get_base_script()
 		if baseScript:  dictionary[CustomLogKeys.baseScript] = baseScript.get_global_name()
-	
+
 	return dictionary
 
 #endregion
