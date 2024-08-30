@@ -152,7 +152,7 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
 	if not isEnabled: return
-	
+
 	# Create a new copy of the provided component.
 
 	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()

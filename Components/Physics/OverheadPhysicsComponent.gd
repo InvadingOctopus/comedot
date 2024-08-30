@@ -23,10 +23,10 @@ func _ready() -> void:
 	if characterBodyComponent and characterBodyComponent.body:
 		printLog("characterBodyComponent.body.motion_mode → Floating")
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-		
+
 		if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
 			printDebug("Recommed characterBodyComponent.shouldResetVelocityIfZeroMotion = true")
-			#characterBodyComponent.shouldResetVelocityIfZeroMotion = true 
+			#characterBodyComponent.shouldResetVelocityIfZeroMotion = true
 
 		#characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
@@ -36,7 +36,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
-	
+
 	processMovement(delta)
 	characterBodyComponent.queueMoveAndSlide()
 	clearInput() # PERFORMANCE: Done directly instead of via signal for now
