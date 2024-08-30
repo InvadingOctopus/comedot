@@ -4,6 +4,8 @@
 class_name CustomLogEntryUI
 extends Control
 
+# TODO: Add log entry nodes to groups depending on their object's category, e.g. `logEntity` or `logComponent` etc.
+
 
 #region Parameters
 
@@ -22,7 +24,7 @@ var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk
 #region State
 @onready var messageLabel:	Label = %MessageLabel
 
-@onready var detailsControl:		Control   = %ShowDetailsControl
+@onready var detailsControl:	Control   = %ShowDetailsControl
 @onready var detailsContainer:	Container = %DetailsContainer
 
 @onready var frameTImeLabel: Label = %FrameTimeLabel
@@ -44,7 +46,7 @@ func _ready() -> void:
 
 
 func updateUI() -> void:
-	Tools.setLabelsWithDictionary(self.labels, self.logEntry, false, false)
+	Tools.setLabelsWithDictionary(self.labels, self.logEntry, false, false) # Don't show labels, don't hide labels, because some are already permanently hidden.
 
 
 func onToggleDetailsControl_guiInput(event: InputEvent) -> void:
