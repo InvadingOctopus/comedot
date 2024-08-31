@@ -47,6 +47,7 @@ class Groups:
 	const hazards		:= &"hazards"
 	const collectibles	:= &"collectibles"
 	const interactions	:= &"interactions"
+	const targetables	:= &"targetables"
 	const zones			:= &"zones"
 
 	const turnBased		:= &"turnBased"

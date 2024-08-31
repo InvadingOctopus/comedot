@@ -94,6 +94,7 @@ hazards=""
 collectibles=""
 interactions=""
 turnBased=""
+targetables="May be targeted by an action/command/skill/spell which requires a target to be chosen."
 
 [gui]
 
