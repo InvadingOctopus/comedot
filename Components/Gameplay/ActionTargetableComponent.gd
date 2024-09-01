@@ -16,6 +16,7 @@ extends Component
 
 
 #region Signals
+signal wasChosen
 #endregion
 
 
@@ -24,10 +25,24 @@ extends Component
 
 
 func _ready() -> void:
-    self.add_to_group(Global.Groups.targetables)
-    parentEntity.add_to_group(Global.Groups.targetables)
+	self.add_to_group(Global.Groups.targetables)
+	parentEntity.add_to_group(Global.Groups.targetables)
 
 
 func willRemoveFromEntity() -> void:
-    super.willRemoveFromEntity()
-    parentEntity.remove_from_group(Global.Groups.targetables)
+	super.willRemoveFromEntity()
+	parentEntity.remove_from_group(Global.Groups.targetables)
+
+
+func choose() -> bool:
+	if checkConditions():
+		self.wasChosen.emit()
+		return true
+	else:
+		return false
+
+
+## Overridden in subclass to specify any conditions.
+func checkConditions() -> bool:
+	# TODO: Add arguments to specify the chooser/action etc.
+	return true
