@@ -25,11 +25,11 @@ extends Resource
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
 
-## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
+## An optional different name for displaying in the HUD and other UI. If empty, returns [member name] capitalized.
 @export var displayName: String:
 	get:
 		if not displayName.is_empty(): return displayName
-		else: return self.name
+		else: return self.name.capitalize()
 
 ## The core functionality of this Upgrade. A [Script] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
 ## IMPORTANT: The script MUST have functions matching these signatures; the same interface as [UpgradePayload]:

@@ -19,11 +19,11 @@ extends Resource
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
 
-## An optional different name for displaying in the HUD and other UI. If empty, returns [member name].
+## An optional different name for displaying in the HUD and other UI. If empty, returns [member name] capitalized.
 @export var displayName: String:
 	get:
 		if not displayName.is_empty(): return displayName
-		else: return self.name
+		else: return self.name.capitalize()
 
 @warning_ignore("shadowed_global_identifier")
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
