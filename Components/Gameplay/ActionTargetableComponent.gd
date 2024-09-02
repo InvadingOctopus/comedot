@@ -1,5 +1,6 @@
-## Allows the Entity to be targetted by a player or another character's action which requires a target,
-## such as a skill/spell like "Fireball", or a trivial command like "Examine".
+## Allows the Entity to be targetted by a player or another character's action which requires a target to be chosen,
+## such as a special skill/spell like "Fireball", or a trivial command like "Examine".
+## Requirements: Component must be [Node2D] to receive mouse events.
 ## @experimental
 
 class_name ActionTargetableComponent
@@ -25,6 +26,9 @@ signal wasChosen
 
 
 func _ready() -> void:
+	if self.get_node(^".") is not Node2D:
+		printWarning("Component is not Node2D")
+
 	self.add_to_group(Global.Groups.targetables)
 	parentEntity.add_to_group(Global.Groups.targetables)
 
