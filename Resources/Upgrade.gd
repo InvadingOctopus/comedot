@@ -92,8 +92,8 @@ const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The met
 ## This acts as a further layer of validation: The Entity must have the Stat type in its StatsComponent, i.e. be able to HOLD a resource such as gold etc., but it may be 0.
 ## NOTE: This actual [Stat] is never used for comparison when searching in a [StatsComponent], ONLY THE NAME.
 ## Searching by the name allows any Entity, even monsters etc. to use Upgrades, by having different instances of the same Stat resource.
-## This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
-@export var costStat: Stat # TBD: Should this just be a StringName?
+## DESIGN: This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
+@export var costStat: Stat
 
 ## This is the property that is ACTUALLY used to search for the required Stat, so that ANY instance of a particular Stat resource may be usable.
 var costStatName: StringName:
