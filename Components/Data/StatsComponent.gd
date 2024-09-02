@@ -39,6 +39,8 @@ func resetStats() -> void:
 		stat = stat.duplicate() # TBD: CHECK: Is there a better way?
 
 
+#region Interface
+
 ## Searches the [member statsDictionary] for the [param name] key. If no matching [Stat] is found, calls [method findStat].
 func getStat(statName: StringName) -> Stat:
 	var stat: Stat = statsDictionary.get(statName)
@@ -58,6 +60,26 @@ func findStat(nameToSearch: StringName) -> Stat:
 	# else:
 	printWarning("Cannot find Stat: " + nameToSearch)
 	return null
+
+
+## Returns `true` if this [StatsComponent] has the specified [Stat] and the [member Stat.value] is >= the specified [param amount].
+func canSpend(statName: StringName, amount: int) -> bool:
+	var stat: Stat = self.getStat(statName)
+	if stat and stat.value >= amount: return true # TBD: Check for `stat.min`?		
+	else: return false
+
+
+## Deducts the specified amount from the specified Stat, if available.
+## Returns `true` if successful.
+## NOTE: If [param amount] is negative, then the Stat's value is INCREASED.
+func spend(statName: StringName, amount: int) -> bool:
+	if self.canSpend(statName, amount):
+		self.getStat(statName).value -= amount # Let a positive amount be a dedution, because the verb is "spend" not "change".
+		return true
+	else:
+		return false
+
+#endregion
 
 
 #region Convenience Functions
