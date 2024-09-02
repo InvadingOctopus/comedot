@@ -157,11 +157,9 @@ signal didMaxLevel
 #region Gameplay Functionality
 
 ## Allows or declines this Upgrade to be installed in an [Entity]'s [UpgradesComponent] after deducting the required [method getCost] from the required [Stat].
+## NOTE: The Stat to pay with must be chosen by the Entity (i.e. the UpgradesComponent), in case the entity have multiple Stats of the same type to choose from.
 ## May be overridden in a subclass to check additional game-specific conditions.
 func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
-	# DESIGN: The Stat to pay with should be chosen from the Entity's side (i.e. the UpgradesComponent),
-	# in case they have multiple Stats of the same type to choose from.
-
 	printLog(str("requestToAcquire() entity: ", entity, ", paymentStat: ", paymentStat))
 
 	# Validate
