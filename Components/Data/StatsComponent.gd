@@ -65,8 +65,7 @@ func findStat(nameToSearch: StringName) -> Stat:
 ## Returns `true` if this [StatsComponent] has the specified [Stat] and the [member Stat.value] is >= the specified [param amount].
 func canSpend(statName: StringName, amount: int) -> bool:
 	var stat: Stat = self.getStat(statName)
-	if stat and stat.value >= amount: return true # TBD: Check for `stat.min`?		
-	else: return false
+	return stat and stat.value >= amount # TBD: Check for `stat.min`?
 
 
 ## Deducts the specified amount from the specified Stat, if available.
