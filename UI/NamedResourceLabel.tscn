@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpf6syqk7dayu"]
+
+[ext_resource type="Script" path="res://UI/NamedResourceLabel.gd" id="1_nw3x8"]
+[ext_resource type="Resource" uid="uid://d3v6vexcc5clr" path="res://Lab/NamedResourceTest.tres" id="2_0p8hw"]
+
+[node name="NamedResourceLabel" type="GridContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = -81.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nw3x8")
+resource = ExtResource("2_0p8hw")
+
+[node name="Icon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+stretch_mode = 2
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+text = "Display Name"
