@@ -48,6 +48,13 @@ func getStat(statName: StringName) -> Stat:
 	return stat
 
 
+## Returns the specified [Stat] if it has been added to this [StatsComponent] and its [member Stat.value] is >= the specified [param requiredValue].
+func getStatIfHasValue(statName: StringName, requiredValue: int) -> Stat:
+	var stat: Stat = self.getStat(statName)
+	if stat and stat.value >= requiredValue: return stat
+	else: return null
+
+
 ## Returns the first matching [Stat] found in [member stats].
 ## NOTE: This has a slower performance than [method getStat] if [param nameToSearch] has already been cached in the [member statsDictionary].
 func findStat(nameToSearch: StringName) -> Stat:
@@ -72,8 +79,9 @@ func canSpend(statName: StringName, amount: int) -> bool:
 ## Returns `true` if successful.
 ## NOTE: If [param amount] is negative, then the Stat's value is INCREASED.
 func spend(statName: StringName, amount: int) -> bool:
-	if self.canSpend(statName, amount):
-		self.getStat(statName).value -= amount # Let a positive amount be a dedution, because the verb is "spend" not "change".
+	var stat: Stat = self.getStatIfHasValue(statName, amount)
+	if stat:
+		stat.value -= amount # Let a positive amount be a dedution, because the verb is "spend" not "change".
 		return true
 	else:
 		return false
