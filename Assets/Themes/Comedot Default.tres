@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://16iw8px1vot0"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://16iw8px1vot0"]
 
 [ext_resource type="StyleBox" uid="uid://cn0nasortgjdq" path="res://Assets/Themes/Button/Comedot Default/Disabled StyleBox.tres" id="1_c7sdf"]
 [ext_resource type="StyleBox" uid="uid://bximlchqiv3qx" path="res://Assets/Themes/Button/Comedot Default/Normal StyleBox.tres" id="1_yj4d2"]
@@ -6,6 +6,8 @@
 [ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_qfpu2"]
 [ext_resource type="StyleBox" uid="uid://b8wetmvjllfi1" path="res://Assets/Themes/Button/Comedot Default/Hover StyleBox.tres" id="3_febwk"]
 [ext_resource type="StyleBox" uid="uid://byccvy8tvkt2w" path="res://Assets/Themes/Button/Comedot Default/Pressed StyleBox.tres" id="5_5dpge"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5phl"]
 
 [resource]
 default_font = ExtResource("2_qfpu2")
@@ -17,3 +19,5 @@ Button/styles/hover = ExtResource("3_febwk")
 Button/styles/hover_pressed = ExtResource("5_5dpge")
 Button/styles/normal = ExtResource("1_yj4d2")
 Button/styles/pressed = ExtResource("5_5dpge")
+TooltipLabel/font_sizes/font_size = 16
+TooltipPanel/styles/panel = SubResource("StyleBoxEmpty_a5phl")
