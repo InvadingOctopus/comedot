@@ -1,7 +1,7 @@
 ## A [Label] linked to a [Stat] which automatically updates its text when the Stat's value changes.
 
 class_name StatLabel
-extends Label
+extends Container
 
 
 #region Parameters
@@ -27,22 +27,39 @@ extends Label
 #endregion
 
 
+#region State
+@onready var label: Label = $Label
+@onready var icon:  TextureRect = $Icon
+#endregion
+
+
 func _ready() -> void:
+	updateIcon()
+
 	if stat: 
 		stat.changed.connect(self.onStat_changed)
-		updateStatText(false) # No animation for the initial text
+		updateStatText(false) # Display the initital value, without animation
 	else:
 		Debug.printWarning("Missing stat", str(self))
-
 
 
 func onStat_changed() -> void:
 	updateStatText()
 
 
+func updateUI() -> void:
+	updateIcon()
+	updateStatText()
+
+
+## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value].
+func updateIcon() -> void:
+	icon.texture = stat.icon
+
+
 func updateStatText(animate: bool = self.shouldAnimate) -> void:
-	self.text = self.buildLabelText()
-	if animate: Animations.animateNumberLabel(self, stat.value, stat.previousValue)
+	self.label.text = self.buildLabelText()
+	if animate: Animations.animateNumberLabel(self.label, stat.value, stat.previousValue)
 
 
 ## Combines the prefix + [member Stat.displayName] + value of the stat + the suffix.
