@@ -1,7 +1,7 @@
 ## Abstract base class for Resources that may have cost a certain amount of an [Stat] to "purchase" or use.
 ## For example, a product in a shop with a price represented as a Gold Stat, or a [TargetableAction] spell which requires a Mana Stat to cast.
 
-class_name CostableResourceBase
+class_name StatDependentResourceBase
 extends NamedResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 

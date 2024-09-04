@@ -3,7 +3,7 @@
 ## @experimental
 
 class_name Action
-extends CostableResourceBase
+extends StatDependentResourceBase
 
 
 #region Parameters
