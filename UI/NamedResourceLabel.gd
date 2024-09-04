@@ -2,7 +2,7 @@
 
 @tool
 class_name NamedResourceLabel
-extends GridContainer
+extends Container
 
 # TBD: Should it be named "-Label" or "-UI"?
 
