@@ -17,3 +17,4 @@ stretch_mode = 2
 [node name="Label" type="Label" parent="."]
 custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
+text = "Named Resource"
