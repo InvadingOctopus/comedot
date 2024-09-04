@@ -19,7 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://gvkx3bnathwr" path="res://UI/UpgradeChoiceUI.tscn" id="17_dh703"]
 [ext_resource type="Script" path="res://Resources/Upgrade.gd" id="17_mfdhu"]
 [ext_resource type="Resource" uid="uid://qnkhwtlbroqg" path="res://Tests/Upgrades/TestSpeedUpgrade.tres" id="18_0oqoc"]
-[ext_resource type="PackedScene" uid="uid://hydpkxd84sfq" path="res://UI/UpgradeLabel.tscn" id="18_ft6r0"]
+[ext_resource type="PackedScene" uid="uid://hydpkxd84sfq" path="res://UI/Labels/UpgradeLabel.tscn" id="18_ft6r0"]
 [ext_resource type="Resource" uid="uid://bsmyby33ll8ok" path="res://Tests/Upgrades/TestGunUpgrade.tres" id="21_ykf3j"]
 [ext_resource type="Resource" uid="uid://btyn678insww1" path="res://Tests/Upgrades/TestCooldownUpgrade.tres" id="22_ucsfw"]
 [ext_resource type="Resource" uid="uid://dubsrpy44b7kw" path="res://Tests/Upgrades/TestAmmoUpgrade.tres" id="23_2aq68"]

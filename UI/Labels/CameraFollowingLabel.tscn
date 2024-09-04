@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://fmd52fai41ew"]
 
-[ext_resource type="PackedScene" uid="uid://vbs30ah8krrp" path="res://UI/TextCyclingLabel.tscn" id="1_mgfb3"]
-[ext_resource type="Script" path="res://UI/CameraFollowingLabel.gd" id="2_mlqdl"]
+[ext_resource type="PackedScene" uid="uid://vbs30ah8krrp" path="res://UI/Labels/TextCyclingLabel.tscn" id="1_mgfb3"]
+[ext_resource type="Script" path="res://UI/Labels/CameraFollowingLabel.gd" id="2_mlqdl"]
 [ext_resource type="Script" path="res://Scripts/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
 
 [node name="CameraFollowingLabelCanvas" type="CanvasLayer"]
