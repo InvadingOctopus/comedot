@@ -10,10 +10,10 @@ extends Container
 
 ## An optional string to write before the stat's [member Stat.displayName], e.g. "Player" to make "Player Lives:".
 @export var prefix: String
-@export var shouldAddSpaceAfterPrefix: bool = true
+@export var shouldAddSpaceAfterPrefix:  bool = true
 
 ## Appends the stat's [member Stat.displayName] + a colon, AFTER the [member prefix] and before the value, e.g. "Lives:"
-@export var shouldShowStatDisplayName: bool = true
+@export var shouldShowStatDisplayName:  bool = true
 
 ## An optional string to add after the stat's value.
 @export var suffix: String

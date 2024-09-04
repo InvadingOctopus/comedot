@@ -9,5 +9,3 @@ extends StatDependentResourceBase
 #region Parameters
 @export var requiresTarget: bool 
 #endregion
-
-
