@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://UI/UpgradeChoiceUI.gd" id="1_5bd1h"]
 
 [node name="UpgradeChoiceUI" type="GridContainer"]
-editor_description = "A list item for a UpgradesListUI"
+editor_description = "A list item for an UpgradesList"
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

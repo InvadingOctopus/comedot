@@ -1,6 +1,6 @@
 ## A [Container] [Control] which builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
 
-class_name UpgradesListUI
+class_name UpgradesList
 extends Container
 
 
