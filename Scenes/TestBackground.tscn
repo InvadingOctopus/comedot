@@ -11,6 +11,7 @@ z_as_relative = false
 modulate = Color(1, 0.5, 0.5, 1)
 scroll_scale = Vector2(0.5, 0.5)
 repeat_size = Vector2(256, 256)
+repeat_times = 3
 script = ExtResource("1_ngbrm")
 hueModifier = 0.1
 
@@ -26,6 +27,7 @@ navigation_enabled = false
 modulate = Color(1, 0.5, 0.5, 1)
 scroll_scale = Vector2(0.75, 0.75)
 repeat_size = Vector2(256, 256)
+repeat_times = 3
 script = ExtResource("1_ngbrm")
 
 [node name="TileMap2Checkered" type="TileMapLayer" parent="Parallax2D2"]
