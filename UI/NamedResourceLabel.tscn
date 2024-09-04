@@ -1,13 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bpf6syqk7dayu"]
+[gd_scene load_steps=2 format=3 uid="uid://bpf6syqk7dayu"]
 
 [ext_resource type="Script" path="res://UI/NamedResourceLabel.gd" id="1_nw3x8"]
-[ext_resource type="Resource" uid="uid://d3v6vexcc5clr" path="res://Lab/NamedResourceTest.tres" id="2_0p8hw"]
 
 [node name="NamedResourceLabel" type="GridContainer"]
 offset_right = 79.0
 offset_bottom = 20.0
 script = ExtResource("1_nw3x8")
-resource = ExtResource("2_0p8hw")
 
 [node name="Icon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(16, 16)
@@ -19,4 +17,3 @@ stretch_mode = 2
 [node name="Label" type="Label" parent="."]
 custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
-text = "Display Name"
