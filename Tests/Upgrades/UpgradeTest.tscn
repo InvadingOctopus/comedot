@@ -15,7 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="13_0rm54"]
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="14_8d8lk"]
 [ext_resource type="Script" path="res://UI/Lists/StatsList.gd" id="15_648xx"]
-[ext_resource type="Script" path="res://UI/UpgradesListUI.gd" id="16_xr2h1"]
+[ext_resource type="Script" path="res://UI/Lists/UpgradesListUI.gd" id="16_xr2h1"]
 [ext_resource type="PackedScene" uid="uid://gvkx3bnathwr" path="res://UI/UpgradeChoiceUI.tscn" id="17_dh703"]
 [ext_resource type="Script" path="res://Resources/Upgrade.gd" id="17_mfdhu"]
 [ext_resource type="Resource" uid="uid://qnkhwtlbroqg" path="res://Tests/Upgrades/TestSpeedUpgrade.tres" id="18_0oqoc"]
