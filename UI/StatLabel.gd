@@ -22,6 +22,12 @@ extends Container
 ## If greater than 1, then smaller values will be padded with leading 0s.
 @export var minimumDigits: int = 2 
 
+@export var shouldWriteAllUppercase: bool = false:
+	set(newValue):
+		if newValue != shouldWriteAllUppercase:
+			shouldWriteAllUppercase = newValue
+			if label: label.uppercase = shouldWriteAllUppercase
+
 @export var shouldAnimate: bool = true
 
 #endregion
@@ -35,6 +41,7 @@ extends Container
 
 func _ready() -> void:
 	updateIcon()
+	if label: label.uppercase = shouldWriteAllUppercase
 
 	if stat: 
 		stat.changed.connect(self.onStat_changed)

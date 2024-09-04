@@ -52,7 +52,7 @@ func createStatLabel(stat: Stat) -> StatLabel:
 	newLabel.minimumDigits = self.minimumDigits
 	newLabel.horizontal_alignment = self.horizontalAlignment
 	newLabel.vertical_alignment = self.verticalAlignment
-	newLabel.uppercase = self.shouldWriteAllUppercase
+	newLabel.shouldWriteAllUppercase = self.shouldWriteAllUppercase
 	
 	Tools.addChildAndSetOwner(newLabel, self)
 	# newLabel.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
