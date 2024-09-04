@@ -6,6 +6,10 @@ extends Camera2D
 # TODO: TBD: Do something more useful?
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	self.position = get_local_mouse_position()
+func _ready() -> void:
+	self.position = self.get_local_mouse_position()
+
+
+func _input(event: InputEvent) -> void:
+	if not event is InputEventMouseMotion: return
+	self.position = self.get_local_mouse_position()

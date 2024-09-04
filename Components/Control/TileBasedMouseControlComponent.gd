@@ -5,7 +5,7 @@
 class_name TileBasedMouseControlComponent
 extends Component
 
-# TODO: Only update on mouse movement
+# TODO: Option to ignore mouse outside the window
 
 
 #region Parameters
@@ -28,9 +28,8 @@ func getRequiredcomponents() -> Array[Script]:
 	return [TileBasedPositionComponent]
 
 
-#func _input(event: InputEvent) -> void:
-func _process(_delta: float) -> void:
-	if not isEnabled: return
+func _input(event: InputEvent) -> void:
+	if not isEnabled or not event is InputEventMouseMotion: return
 
 	var tileMap: TileMapLayer = tileBasedPositionComponent.tileMap
 	tileBasedPositionComponent.currentCellCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
