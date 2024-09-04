@@ -1,5 +1,5 @@
 ## Stores an array of [Stat]s such as health and ammo for an [Entity].
-## TIP: Use the `Scripts/UI/[StatsUI].gd` script to automatically display and update these values in a HUD during runtime.
+## TIP: Use the `UI/Lists/[StatsList].gd` script to automatically display and update these values in a HUD during runtime.
 
 class_name StatsComponent
 extends Component

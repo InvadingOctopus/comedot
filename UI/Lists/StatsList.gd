@@ -1,6 +1,6 @@
 ## A [Container] [Control] which builds a list of [StatLabel]s for all the stats in a [StatsComponent].
 
-class_name StatsUI
+class_name StatsList
 extends Container
 
 
