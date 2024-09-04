@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
 [ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_agfhx"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_shkaw"]
-[ext_resource type="Script" path="res://Scripts/UI/UINavigationContainer.gd" id="2_y2sis"]
+[ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://Scenes/GameFrame/MainMenuButtons.tscn" id="3_27uyb"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]

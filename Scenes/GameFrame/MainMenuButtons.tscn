@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://mwsrn6l4gw51"]
 
 [ext_resource type="Script" path="res://Scenes/GameFrame/MainMenuButtons.gd" id="1_7ifjj"]
-[ext_resource type="Script" path="res://Scripts/UI/UINavigationButton.gd" id="2_phlj7"]
+[ext_resource type="Script" path="res://UI/UINavigationButton.gd" id="2_phlj7"]
 
 [node name="MainMenuButtons" type="VBoxContainer"]
 auto_translate_mode = 1
