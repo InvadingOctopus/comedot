@@ -5,10 +5,9 @@ class_name PlayerEntity
 extends Entity
 
 
-#region State
-
-# Shortcuts to common components...
-# NOTE: Not cached
+#region Shortcuts
+# Quick access to common components
+# NOTE: Not cached, because components may change during runtime. 
 
 var bodyComponent: CharacterBodyComponent:
 	get: return getComponent(CharacterBodyComponent)
@@ -18,6 +17,9 @@ var healthComponent: HealthComponent:
 
 var statsComponent: StatsComponent:
 	get: return getComponent(StatsComponent)
+
+var actionsComponent: ActionsComponent:
+	get: return getComponent(ActionsComponent)
 
 var upgradesComponent: UpgradesComponent:
 	get: return getComponent(UpgradesComponent)
