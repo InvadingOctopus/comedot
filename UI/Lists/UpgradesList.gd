@@ -38,7 +38,7 @@ signal didChooseUpgrade(upgrade: Upgrade)
 
 
 #region Dependencies
-const choiceUIScene: PackedScene = preload("res://UI/UpgradeChoiceUI.tscn") # TBD: load or preload?
+const choiceUIScene: PackedScene = preload("res://UI/Buttons/UpgradeChoiceUI.tscn") # TBD: load or preload?
 
 var player: PlayerEntity:
 	get: return GameState.players.front()
