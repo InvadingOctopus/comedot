@@ -16,8 +16,18 @@ extends Container
 
 
 #region State
-
 var lastUpgradeChosen: Upgrade
+#endregion
+
+
+#region Signals
+signal didChooseUpgrade(upgrade: Upgrade)
+#endregion
+
+
+#region Dependencies
+
+const choiceUIScene: PackedScene = preload("res://UI/Buttons/UpgradeChoiceUI.tscn") # TBD: load or preload?
 
 var targetUpgradesComponent: UpgradesComponent:
 	get:
@@ -29,19 +39,9 @@ var targetStatsComponent: StatsComponent:
 		if not targetStatsComponent: targetStatsComponent = targetEntity.getComponent(StatsComponent)
 		return targetStatsComponent
 
-#endregion
-
-
-#region Signals
-signal didChooseUpgrade(upgrade: Upgrade)
-#endregion
-
-
-#region Dependencies
-const choiceUIScene: PackedScene = preload("res://UI/Buttons/UpgradeChoiceUI.tscn") # TBD: load or preload?
-
 var player: PlayerEntity:
 	get: return GameState.players.front()
+
 #endregion
 
 
@@ -51,7 +51,8 @@ func _ready() -> void:
 		targetEntity = player
 		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
 
-	readdAllChoices()
+	if targetUpgradesComponent: readdAllChoices()
+	else: Debug.printWarning("Missing targetUpgradesComponent", str(self))
 
 
 ## Removes all children and adds all choices again.
