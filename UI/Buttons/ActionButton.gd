@@ -1,7 +1,10 @@
 ## Displays a button for one of the [Action]s that a playable character may perform.
+## @experimental
 
 class_name ActionButton
 extends Button
+
+# TBD: Use `action.name` to search within an `ActionsComponent`?
 
 
 #region Parameters
@@ -10,11 +13,10 @@ extends Button
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var entity: Entity
 
-## The name of the [Action] to search from the [member Entity]'s [ActionsComponent].
-@export var actionName: StringName:
+@export var action: Action:
 	set(newValue):
-		if newValue != actionName:
-			actionName = newValue
+		if newValue != action:
+			action = newValue
 			updateUI()
 
 @export var shouldShowDebugInfo: bool = false
@@ -22,10 +24,6 @@ extends Button
 
 
 #region State
-var action: Action:
-	get:
-		if not action: action = actionsComponent.actions.front() # TODO: PLACEHOLDER
-		return action
 #endregion
 
 
@@ -56,12 +54,21 @@ func _ready() -> void:
 		entity = player
 		if not entity: Debug.printWarning("Missing entity", str(self))
 	
-	updateUI()
+	if action: updateUI()
 
 
 func updateUI() -> void:
-	pass
+	self.text = action.displayName
+	self.icon = action.icon
+	self.tooltip_text = action.description
+	self.disabled = not checkUsability()
+
+
+## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
+func checkUsability() -> bool:
+	return action.validateStatsComponent(statsComponent)
 
 
 func onPressed() -> void:
+	if shouldShowDebugInfo: Debug.printDebug("onPressed()", str(self))
 	self.didPressButton.emit()
