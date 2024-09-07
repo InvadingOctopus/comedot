@@ -1,4 +1,4 @@
-## Abstract base class for Scripts that will be executed by an [Upgrade] when it is "installed" or "uninstalled" in an [Entity]'s [UpgradesComponent].
+## Abstract base class for Scripts that may be executed by an [Upgrade] when it is "installed" or "uninstalled" in an [Entity]'s [UpgradesComponent].
 ## MUST be subclassed.
 ## TIP: Use the `Templates/Scripts/Resource/UpgradePayloadTemplate.gd` template.
 

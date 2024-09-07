@@ -1,4 +1,4 @@
-## A container for a `Callable` function to execute when a [CollectibleComponent] is processed by a [CollectorComponent].
+## Abstract base class for Scripts that may be executed by a [CollectorComponent] when it "collects" the associated [CollectibleComponent].
 ## This must be subclassed and the subclass MUST override the [method onCollectible_didCollect] method.
 ## TIP: Use the `Templates/Scripts/Resource/CollectiblePayloadTemplate.gd` template.
 

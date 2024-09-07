@@ -120,7 +120,7 @@ func checkRemovalConditions() -> bool:
 
 
 ## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value, if the [member payloadType] is [const PayloadType.callable].
-## Must be overridden by subclasses.
+## MUST be overridden by subclasses.
 func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
 	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
 	return null

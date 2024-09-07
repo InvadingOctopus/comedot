@@ -8,7 +8,7 @@ extends Container
 
 ## The [StatsComponent] to build [StatLabel]s from.
 ## If `null`, then the [member GameState.players] Player Entity will be searched.
-## NOTE: Does NOT monitor the addition or removal of stats at runtime.
+## NOTE: Does NOT monitor the addition or removal of Stats at runtime.
 @export var statsComponent: StatsComponent
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
