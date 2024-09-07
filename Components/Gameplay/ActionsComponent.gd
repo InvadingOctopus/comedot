@@ -35,3 +35,25 @@ var statsComponent: StatsComponent: ## Placeholder
 
 #endregion
 
+
+#region Interface
+
+func findAction(nameToSearch: StringName) -> Action:
+	# TBD: Use `Array.any()`?
+	for action in self.actions:
+		if action.name == nameToSearch: return action
+
+	printDebug("Cannot find Action named: " + nameToSearch)
+	return null
+
+
+func performAction(actionName: StringName, target: Entity = null) -> void:
+	if shouldShowDebugInfo: printLog(str("performAction(): " + actionName, ", target: ", target))
+
+	var actionToPerform: Action = self.findAction(actionName)
+	if not actionToPerform: return
+
+	actionToPerform.perform(self.parentEntity)
+
+#endregion
+
