@@ -23,6 +23,14 @@ extends StatDependentResourceBase
 
 const payloadMethodName: StringName = &"onAction_didPerform" ## The method/function which will be executed from the [member payload] when this Action is performed.
 
+@export var shouldShowDebugInfo: bool
+
+#endregion
+
+
+#region Derived Properties
+var logName: String:
+	get: return str(self, " ", self.name)
 #endregion
 
 
@@ -30,7 +38,7 @@ const payloadMethodName: StringName = &"onAction_didPerform" ## The method/funct
 
 func perform(entity: Entity, target: Entity = null) -> bool:
 	# TODO: Handle target
-	if shouldShowDebugInfo: Debug.printLog(str("perform() entity: ", entity, ", target: ", target), "", str(self))
+	printLog(str("perform() entity: ", entity, ", target: ", target))
 
 	if not self.payload:
 		Debug.printWarning("Missing payload", str(self))
@@ -41,3 +49,5 @@ func perform(entity: Entity, target: Entity = null) -> bool:
 #endregion
 
 
+func printLog(message: String) -> void:
+	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName))

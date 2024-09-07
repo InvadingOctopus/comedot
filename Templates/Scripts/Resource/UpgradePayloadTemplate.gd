@@ -7,10 +7,10 @@ extends UpgradePayload
 
 
 static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_willDiscard() entity: ", entity), str(upgrade))
+	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
 	return false
 
 
 static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	Debug.printLog(str("onUpgrade_willDiscard() entity: ", entity), str(upgrade))
+	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
 	return false

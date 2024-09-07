@@ -7,5 +7,5 @@ extends ActionPayload
 
 
 static func onAction_didPerform(action: Action, entity: Entity) -> bool:
-	Debug.printLog(str("onAction_didPerform() entity: ", entity), str(action))
+	action.printLog(str("onAction_didPerform() entity: ", entity))
 	return false
