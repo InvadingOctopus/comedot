@@ -7,6 +7,7 @@ extends StatDependentResourceBase
 
 
 #region Parameters
+
 @export var requiresTarget: bool
 
 ## The code to execute when this Action is performed.
@@ -19,4 +20,21 @@ extends StatDependentResourceBase
 		if not payload:
 			payload = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
 		return payload
+
+const payloadMethodName: StringName = &"onAction_didPerform" ## The method/function which will be executed from the [member payload] when this Action is performed.
+
 #endregion
+
+
+#region Interface
+
+func perform(entity: Entity) -> bool:
+	if not self.payload:
+		Debug.printWarning("Missing payload", str(self))
+		return false
+	
+	return payload.call(self.payloadMethodName, entity)
+
+#endregion
+
+
