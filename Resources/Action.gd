@@ -28,7 +28,10 @@ const payloadMethodName: StringName = &"onAction_didPerform" ## The method/funct
 
 #region Interface
 
-func perform(entity: Entity) -> bool:
+func perform(entity: Entity, target: Entity = null) -> bool:
+	# TODO: Handle target
+	if shouldShowDebugInfo: Debug.printLog(str("perform() entity: ", entity, ", target: ", target), "", str(self))
+
 	if not self.payload:
 		Debug.printWarning("Missing payload", str(self))
 		return false
