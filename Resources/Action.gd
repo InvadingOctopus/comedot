@@ -7,5 +7,16 @@ extends StatDependentResourceBase
 
 
 #region Parameters
-@export var requiresTarget: bool 
+@export var requiresTarget: bool
+
+## The code to execute when this Action is performed.
+## IMPORTANT: The script MUST have functions matching these signatures; the same interface as [ActionPayload]:
+## `static func onAction_didPerform(action: Action, entity: Entity) -> bool`
+## TIP: Use the `Templates/Scripts/Resource/ActionPayloadTemplate.gd` template.
+## If not specified, a `.gd` script file matching the same name as the Action `.tres` is used, if found, e.g. `FireballAction.tres`: `FireballAction.gd`
+@export var payload: GDScript: # TODO: Stronger typing when Godot allows it :')
+	get:
+		if not payload:
+			payload = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
+		return payload
 #endregion
