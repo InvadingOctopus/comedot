@@ -25,9 +25,9 @@ extends CharacterBodyManipulatingComponentBase
 
 enum State { idle, jump }
 
-var states := {
+var states: Dictionary = {
 	State.idle: null,
-	State.jump: null
+	State.jump: null,
 	}
 
 var currentState: State:

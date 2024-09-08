@@ -36,7 +36,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnInvalid	= -1,
 	turnBegin	=  0,
 	turnUpdate	=  1,
-	turnEnd		=  2
+	turnEnd		=  2,
 	}
 
 #endregion
