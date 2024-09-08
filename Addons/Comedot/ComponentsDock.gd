@@ -17,13 +17,13 @@ enum EntityTypes {
 	area2D = 1,
 	characterBody2D = 2,
 	sprite2D = 3
-}
+	}
 
 enum TreeItemButtons {
 	# NOTE: MUST correspond to the ids of the TreeItem buttons
 	createNewComponent = 0,
 	editComponent = 1
-}
+	}
 
 #region Parameters
 

@@ -12,11 +12,11 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 	const none		:= Vector2i.ZERO
 	const northWest	:= Vector2i(-1, -1)
 	const north		:= Vector2i.UP
-	const northEast	:= Vector2i(1, -1)
+	const northEast	:= Vector2i(+1, -1)
 	const east		:= Vector2i.RIGHT
-	const southEast	:= Vector2i(1, 1)
+	const southEast	:= Vector2i(+1, +1)
 	const south		:= Vector2i.DOWN
-	const southWest	:= Vector2i(-1, 1)
+	const southWest	:= Vector2i(-1, +1)
 	const west		:= Vector2i.LEFT
 
 #endregion

@@ -18,7 +18,8 @@ extends Component
 enum PayloadType {
 	node	= 0,
 	script	= 1,
-	callable= 2}
+	callable= 2
+	}
 
 
 #region Parameters
