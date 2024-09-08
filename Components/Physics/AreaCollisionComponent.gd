@@ -14,7 +14,7 @@ extends Component
 #region Parameters
 ## If `false`, no new areas are added.
 ## NOTE: Does NOT affect the removal of areas that exit contact with this component.
-@export var isEnabled: bool = true 
+@export var isEnabled: bool = true
 #endregion
 
 
@@ -24,9 +24,8 @@ var areasInContact: Array[Area2D]
 
 var selfAsArea: Area2D:
 	get:
-		if not selfAsArea:
-			selfAsArea = self.get_node(^".") as Area2D
-			return selfAsArea
+		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
+		return selfAsArea
 #endregion
 
 
@@ -40,7 +39,7 @@ func _ready() -> void:
 	if not selfAsArea:
 		printWarning("Component Node is not Area2D")
 		return
-	
+
 	readdAllAreas()
 
 
