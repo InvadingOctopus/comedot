@@ -17,5 +17,5 @@ func _physics_process(_delta: float) -> void:
 	if not isEnabled: return
 	for collisionIndex in body.get_slide_collision_count():
 		var collision: KinematicCollision2D = body.get_slide_collision(collisionIndex)
-		if collision.get_collider() is RigidBody2D:
-			collision.get_collider().apply_central_impulse(-collision.get_normal() * pushingForce)
+		var collider:  RigidBody2D = collision.get_collider() as RigidBody2D
+		if collider: collider.apply_central_impulse(-collision.get_normal() * pushingForce)
