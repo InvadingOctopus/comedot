@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://5yiyg3iv4qgd"]
+
+[ext_resource type="Script" path="res://Components/Physics/AreaCollisionComponent.gd" id="1_ovg8j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ljky"]
+resource_local_to_scene = true
+size = Vector2(32, 32)
+
+[node name="AreaCollisionComponent" type="Area2D" groups=["components"]]
+collision_layer = 513
+collision_mask = 513
+script = ExtResource("1_ovg8j")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6ljky")
