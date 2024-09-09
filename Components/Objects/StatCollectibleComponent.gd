@@ -15,8 +15,8 @@ extends CollectibleComponent
 
 
 func _ready() -> void:
-	self.payloadType = PayloadType.callable
-	self.payloadCallable = onCollectible_didCollect
+	self.payload = CallablePayload.new()
+	(self.payload as CallablePayload).payloadCallable = self.onCollectible_didCollect
 
 
 ## Returns a random integer between [member statModifierMinimum] and [member statModifierMaximum], inclusive.
@@ -26,11 +26,11 @@ func getRandomModifier() -> int:
 
 
 ## Returns: The randomized stat modifier value
-func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
-	var randomizedModifier := getRandomModifier()
+func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int:
+	var randomizedModifier: int = getRandomModifier()
 
 	if shouldShowDebugInfo:
-		printLog(str("onCollectible_didCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent, ", randomizedModifier: ", randomizedModifier))
+		printLog(str("onCollectible_didCollect() collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity, ", randomizedModifier: ", randomizedModifier))
 
 	stat.value += randomizedModifier
 
@@ -42,6 +42,6 @@ func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: Colle
 		if signi(randomizedModifier) == 1:    symbol = "+"
 		elif signi(randomizedModifier) == -1: symbol = "-"
 
-		TextBubble.create(collectorComponent.parentEntity, str(stat.name.capitalize(), symbol, randomizedModifier))
-
+		TextBubble.create(collectorEntity, str(stat.name.capitalize(), symbol, randomizedModifier))
+	
 	return randomizedModifier

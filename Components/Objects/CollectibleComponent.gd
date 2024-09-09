@@ -1,5 +1,5 @@
 ## Represents an item that may be picked up by a character [Entity] which has a [CollectorComponent].
-## Provides a "payload" child node that will be copied to the collector [Entity], or a script [CollectiblePayloadScript] resource that will be executed by the [CollectorComponent].
+## Provides a "[Payload]" which may be a new child node that will be copied to the collector [Entity], or a script that will be executed by the [CollectorComponent].
 ##
 ## NOTE: DESIGN: By default, a [CollectibleComponent] starts with [member Area2D.monitoring] disabled, so it does not waste processing time.
 ## In the recommended convention, a [CollectorComponent] handles the collision, checks its own collection conditions (such as maximum health or ammo), then calls the [method requestToCollect] on the collectible.
@@ -15,35 +15,12 @@ extends Component
 # The pickup process should be covered by a [CollectorComponent].
 
 
-enum PayloadType {
-	node	= 0,
-	script	= 1,
-	callable= 2,
-	}
-
-
 #region Parameters
 
-@export var isEnabled:		bool = true
+## The actual effect of picking up this collectibe. See [Payload] for more information.
+@export var payload: Payload
 
-@export var payloadType:	PayloadType
-
-## A Scene whose copy (instance) to add to the [CollectorComponent]'s [Entity].
-## May be used for adding new components to the collecting entity.
-@export var payloadNode:	PackedScene # TBD: Which type to use here for instantiating copies from?
-
-## The code to execute when this Collectible is collected.
-## IMPORTANT: The script MUST have a function matching this signature; the same interface as [CollectiblePayload]:
-## `static func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant:`
-## TIP: Use the `Templates/Scripts/Resource/CollectiblePayloadTemplate.gd` template.
-@export var payloadScript:	GDScript # TODO: Stronger typing when Godot allows it :')
-
-const payloadMethodName:	StringName = &"onCollectible_didCollect" ## The method/function which will be executed from the [member payload] when this Collectible is collected by an [CollectorComponent].
-
-## A function of this component to execute by the [CollectorComponent]. MUST match the following signature:
-## func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
-@export var payloadCallable:Callable
-
+@export var isEnabled: bool = true
 #endregion
 
 
@@ -89,19 +66,6 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 	return isCollectionApproved
 
 
-func createPayloadNode() -> Node2D:
-	var payloadResource: PackedScene = load(payloadNode.resource_path)
-	var newPayloadCopy:  Node2D = payloadResource.instantiate()
-
-	printDebug(str("createPayloadNode() path: ", payloadNode.resource_path, ", payloadResource: ", payloadResource, ", newPayloadCopy: ", newPayloadCopy))
-
-	if not newPayloadCopy:
-		printError("Cannot instantiate a new copy of the collectible payload: " + str(payloadNode.resource_path))
-		return null
-
-	return newPayloadCopy
-
-
 #region Virtual Methods
 
 ## May be overridden in a subclass to approve or deny the collection of this item by a [CollectorComponent].
@@ -120,10 +84,10 @@ func checkRemovalConditions() -> bool:
 	return isEnabled
 
 
-## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value, if the [member payloadType] is [const PayloadType.callable].
+## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value.
 ## MUST be overridden by subclasses.
-func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant:
-	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> Variant:
+	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity))
 	return null
 
 #endregion

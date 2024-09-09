@@ -1,11 +1,12 @@
-## When this component collides with a [CollectibleComponent], the "payload" component is transfered to this [CollectorComponent]'s parent [Entity].
+## When this component collides with a [CollectibleComponent], the "payload" of the collectible is executed.
+## The "payload" may be a new Component added to the collector [Entity], or a change in an [Stat], and so on.
 
 class_name CollectorComponent
 extends Component
 
 
 signal didCollideWithCollectible(collectibleComponent: CollectibleComponent)
-signal didCollect(collectibleComponent: CollectibleComponent, payload: Variant)
+signal didCollect(collectibleComponent: CollectibleComponent, payload: Variant, result: Variant)
 
 
 func onAreaEntered(area: Area2D) -> void:
@@ -18,7 +19,7 @@ func onAreaEntered(area: Area2D) -> void:
 	handleCollection(collectibleComponent)
 
 
-func handleCollection(collectibleComponent: CollectibleComponent) -> bool:
+func handleCollection(collectibleComponent: CollectibleComponent) -> Variant:
 
 	# First, check our own conditions. Can we collect this item?
 	# For example, are we already at maximum health or ammo, or do we have enough inventory space?
@@ -39,37 +40,18 @@ func checkCollectionConditions(_collectibleComponent: CollectibleComponent) -> b
 
 
 ## Performs the collection of a [CollectibleComponent],
-## either by adding a "Payload" [Node] to this component's parent [Entity],
+## either by adding a [Payload] [Node] to this component's parent [Entity],
 ## or by executing a script provided by the collectible.
-func collect(collectibleComponent: CollectibleComponent) -> bool:
-	var payload: Variant
+func collect(collectibleComponent: CollectibleComponent) -> Variant:
 	printDebug(str("collect() collectibleComponent: ", collectibleComponent))
+	var payload: Payload = collectibleComponent.payload
+	var result:  Variant = false
 
-	match collectibleComponent.payloadType:
+	if payload: result = payload.execute(collectibleComponent, self.parentEntity) # TBD: Should this be the CollectibleComponent's job?
+	else: printWarning("collectibleComponent missing payload")
 
-		CollectibleComponent.PayloadType.node:
-			var payloadNode: Node = collectibleComponent.createPayloadNode()
-			payload = payloadNode
-			printDebug(str("Payload Node: ", payloadNode))
-			self.parentEntity.add_child(payloadNode)
-			payloadNode.owner = self.parentEntity # INFO: Necessary for persistence to a [PackedScene] for save/load.
+	if   result != null \
+	and (result is not bool or result != false): # Must not be `null` and not `false`
+		didCollect.emit(collectibleComponent, payload, result)
 
-		CollectibleComponent.PayloadType.script:
-			# A script that matches this interface:
-			# static func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant:
-
-			var payloadScript: GDScript = collectibleComponent.payloadScript
-			payload = payloadScript
-			printDebug(str("Payload Script: ", payloadScript, " ", payloadScript.get_global_name()))
-			payloadScript.call(CollectibleComponent.payloadMethodName, self.parentEntity, self, collectibleComponent)
-
-		CollectibleComponent.PayloadType.callable:
-			# A function that matches this signature:
-			# func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> Variant
-
-			var payloadCallable: Callable = collectibleComponent.payloadCallable
-			payload = payloadCallable
-			payloadCallable.call(self.parentEntity, self)
-
-	didCollect.emit(collectibleComponent, payload)
-	return true
+	return result
