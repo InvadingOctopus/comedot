@@ -1,4 +1,4 @@
-## A Payload which creates a new copy of a specified [PackedScene] and attaches it to a receiving target Node.
+## A [Payload] which creates a new copy of a specified [PackedScene] and attaches it to a receiving target Node.
 ## May be used for adding new [Component]s to a player [Entity] or other character.
 
 class_name NodePayload
@@ -9,13 +9,15 @@ extends Payload
 
 ## A Scene whose copy (instance) will be added to the receiving [Node] that is the target of this Payload.
 ## May be used for adding new components to an Entity.
+## [method executeImplementation] will return an instance of this scene.
 @export var payloadScene: PackedScene # TBD: Which type to use here for instantiating copies from?
 
 #endregion
 
 
+## Returns the [Node] instance that was created from the [member payloadScene].
 func executeImplementation(source: Variant, target: Variant) -> Node:
-	printLog(str("executeNode() scene: ", payloadScene, ", source: ", source, " target: ", target))
+	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, " target: ", target))
 	
 	var targetParent: Node = target as Node
 

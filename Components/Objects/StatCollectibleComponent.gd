@@ -25,7 +25,7 @@ func getRandomModifier() -> int:
 	return randi_range(statModifierMinimum, statModifierMaximum) if statModifierMinimum != statModifierMaximum else statModifierMaximum
 
 
-## Returns: The randomized stat modifier value
+## Returns: The randomized stat modifier value.
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int:
 	var randomizedModifier: int = getRandomModifier()
 

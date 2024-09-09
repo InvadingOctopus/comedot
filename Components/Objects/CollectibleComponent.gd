@@ -1,11 +1,11 @@
 ## Represents an item that may be picked up by a character [Entity] which has a [CollectorComponent].
-## Provides a "[Payload]" which may be a new child node that will be copied to the collector [Entity], or a script that will be executed by the [CollectorComponent].
+## Provides a "[Payload]" which may be a new child node that will be attached to the collector [Entity], or a script or [Callable] that will be executed by the [CollectorComponent], or a signal to be emitted.
 ##
 ## NOTE: DESIGN: By default, a [CollectibleComponent] starts with [member Area2D.monitoring] disabled, so it does not waste processing time.
 ## In the recommended convention, a [CollectorComponent] handles the collision, checks its own collection conditions (such as maximum health or ammo), then calls the [method requestToCollect] on the collectible.
 ## The collectible then handles its own conditions and removal if the collection is approved.
 ##
-## Should be subclassed in most cases.
+## TIP: Should be subclassed with game-specific logic in most cases.
 
 class_name CollectibleComponent
 extends Component
@@ -17,7 +17,7 @@ extends Component
 
 #region Parameters
 
-## The actual effect of picking up this collectibe. See [Payload] for more information.
+## The actual gameplay effect of picking up this collectibe. See [Payload] for possible values and more information.
 @export var payload: Payload
 
 @export var isEnabled: bool = true
@@ -84,7 +84,8 @@ func checkRemovalConditions() -> bool:
 	return isEnabled
 
 
-## A function to execute when a [CollectorComponent] picks up this [CollectibleComponent]. May optionally return any value.
+## If the [Payload] type os [CallablePayload], this function may be called when a [CollectorComponent] picks up this [CollectibleComponent]. 
+## May optionally return any value.
 ## MUST be overridden by subclasses.
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> Variant:
 	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity))
