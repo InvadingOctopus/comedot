@@ -23,7 +23,9 @@ enum PayloadType {
 #region Parameters
 @export var payloadType: PayloadType = PayloadType.signalPayload
 
-@export var payloadSignal: Signal
+## The name of a [Signal] in the global [GameState] AutoLoad.
+## IMPORTANT: The signal must ALREADY be defined in [GameState].gd
+@export var payloadSignalName: StringName
 
 ## A function to call when this Payload is executed. MUST take the following arguments:
 ## `func anyName(source: Variant, target: Variant) -> Variant`
@@ -80,20 +82,25 @@ func execute(source: Variant, target: Variant) -> Variant:
 
 
 func executeSignal(source: Variant, target: Variant) -> bool:
-	printLog(str("executeSignal() signal: ", payloadSignal, ", source: ", source, " target: ", target))
+	printLog(str("executeSignal() signal: GameState.", payloadSignalName, ", source: ", source, " target: ", target))
 
-	if self.payloadSignal:
+	if not self.payloadSignalName.is_empty():
 		self.willExecute.emit(source, target)
-		payloadSignal.emit(source, target)		
-		return true
+	
+		var result: Error = GameState.emit_signal(payloadSignalName, source, target)
+		
+		if result == 0: return true 
+		else: Debug.printWarning(str("Error emitting signal: ", result), self.logName)
+	
 	else:
 		Debug.printWarning("Missing callable", self.logName)
-		return false
 	
+	return false
+
 
 func executeCallable(source: Variant, target: Variant) -> Variant:
 	printLog(str("executeCallable() callable: ", payloadCallable, ", source: ", source, " target: ", target))
-	if self.payloadSignal:
+	if self.payloadCallable:
 		# A function with the following arguments:
 		# func anyName(source: Variant, target: Variant) -> Variant
 		return payloadCallable.call(source, target)
