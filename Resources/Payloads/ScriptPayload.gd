@@ -3,6 +3,8 @@
 class_name ScriptPayload
 extends Payload
 
+# TBD: Should the script method arguments include a reference to the calling Payload?
+
 
 #region Parameters
 
@@ -10,6 +12,7 @@ extends Payload
 ## IMPORTANT: The script MUST have a function with the same name as [member payloadScriptMethodName] and the following arguments:
 ## `static func [payloadScriptMethodName](source: Variant, target: Variant) -> Variant`
 ## IMPORTANT: The method MUST be `static` so as to avoid the need for creating an instance of the script.
+## TIP: Use the `Templates/Scripts/Resource/ScriptPayloadScriptTemplate.gd` template.
 @export var payloadScript: GDScript # TODO: Stronger typing when Godot allows it :')
 
 ## The method/function which will be executed from the [member payloadScript].
