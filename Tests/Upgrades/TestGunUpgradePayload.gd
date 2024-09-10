@@ -2,7 +2,7 @@ extends UpgradePayload
 
 
 static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	super.onUpgrade_didAcquireOrLevelUp(upgrade, entity)
+	upgrade.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity))
 	
 	var gunComponent: GunComponent = entity.getComponent(GunComponent)
 	var mouseRotationComponent: MouseRotationComponent = entity.getComponent(MouseRotationComponent)
@@ -14,5 +14,5 @@ static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> b
 
 
 static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	super.onUpgrade_willDiscard(upgrade, entity)
+	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
 	return false

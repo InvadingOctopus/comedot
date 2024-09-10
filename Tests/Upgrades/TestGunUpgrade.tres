@@ -1,14 +1,28 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=4 format=3 uid="uid://bsmyby33ll8ok"]
+[gd_resource type="Resource" script_class="Upgrade" load_steps=7 format=3 uid="uid://bsmyby33ll8ok"]
 
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestMoney.tres" id="1_70l4j"]
 [ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_kkrmp"]
 [ext_resource type="Script" path="res://Tests/Upgrades/TestGunUpgradePayload.gd" id="2_3pfuh"]
+[ext_resource type="Script" path="res://Resources/Payloads/ScriptPayload.gd" id="3_q67te"]
+
+[sub_resource type="Resource" id="Resource_7sewg"]
+script = ExtResource("3_q67te")
+payloadScript = ExtResource("2_3pfuh")
+payloadScriptMethodName = &"onUpgrade_didAcquireOrLevelUp"
+shouldShowDebugInfo = false
+
+[sub_resource type="Resource" id="Resource_xprmf"]
+script = ExtResource("3_q67te")
+payloadScript = ExtResource("2_3pfuh")
+payloadScriptMethodName = &"onUpgrade_willDiscard"
+shouldShowDebugInfo = false
 
 [resource]
 script = ExtResource("1_kkrmp")
 name = &"gun"
 displayName = "GUN"
-payload = ExtResource("2_3pfuh")
+payloadOnAcquire = SubResource("Resource_7sewg")
+payloadOnDiscard = SubResource("Resource_xprmf")
 description = ""
 shouldShowDebugInfo = true
 level = 0
