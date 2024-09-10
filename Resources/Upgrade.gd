@@ -33,20 +33,11 @@ extends Resource
 		if not displayName.is_empty(): return displayName
 		else: return self.name.capitalize()
 
-## The core functionality of this Upgrade. A [Script] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
-## IMPORTANT: The script MUST have functions matching these signatures; the same interface as [UpgradePayload]:
-## `static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool`
-## `static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool`
-## TIP: Use the `Templates/Scripts/Resource/UpgradePayloadTemplate.gd` template.
-## If not specified, a `.gd` script file matching the same name as the Upgrade `.tres` is used, if found, e.g. `GunUpgrade.tres`: `GunUpgrade.gd`
-@export var payload: GDScript: # TODO: Stronger typing when Godot allows it :')
-	get:
-		if not payload:
-			payload = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
-		return payload
+## The core functionality of this Upgrade. A [Payload] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
+@export var payloadOnAcquire: Payload
 
-const payloadAcquireMethodName: StringName = &"onUpgrade_didAcquireOrLevelUp" ## The method/function which will be executed from the [member payload] when the Upgrade is "installed" or leveled up.
-const payloadDiscardMethodName: StringName = &"onUpgrade_willDiscard" ## The method/function which will be executed from the [member payload] when the Upgrade is "uninstalled".
+## A [Payload] to execute when this Upgrade is removed from an [Entity]'s [UpgradesComponent].
+@export var payloadOnDiscard: Payload
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
@@ -232,14 +223,16 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 	return true
 
 
-## Performs the actual actions or purpose of the Upgrade. Calls the static method [member payloadAcquireMethodName] from the [member payload] Script: `onUpgrade_didAcquireOrLevelUp()`
+## Performs the actual actions or effects of the Upgrade. Executes the [member payloadOnAcquire] [Payload].
 ## Override in subclass to perform any modifications to the entity or other components when gaining (or losing) a [member level].
 ## Level 0 is when the Upgrade is first acquired by an entity.
-func processPayload(entity: Entity) -> bool:
-	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payload))
-	if self.payload:
-		return self.payload.call(self.payloadAcquireMethodName, self, entity)
+## Returns: The result of the [member payloadOnAcquire] or `false` if the payload is missing.
+func processPayload(entity: Entity) -> Variant:
+	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payloadOnAcquire))
+	if self.payloadOnAcquire:
+		return self.payloadOnAcquire.execute(self, entity)
 	else:
+		Debug.printWarning("Missing payloadOnAcquire", self.logName)
 		return false
 
 
@@ -248,12 +241,17 @@ func _process(_delta: float) -> void:
 	pass
 
 
-## Calls the static method [member payloadDiscardMethodName] from the [member payload] Script: `onUpgrade_willDiscard()`
-func discard(entity: Entity) -> bool:
-	var payloadResult: bool
+## Executes the [member payloadOnDiscard].
+## Returns: The result of the [member payloadOnAcquire] or `false` if the payload is missing.
+func discard(entity: Entity) -> Variant:
+	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payloadOnDiscard))
+	var payloadResult: Variant
 
-	if self.payload:
-		payloadResult = self.payload.call(self.payloadDiscardMethodName, self, entity)
+	if self.payloadOnDiscard:
+		payloadResult = self.payloadOnDiscard.execute(self, entity)
+	else:
+		Debug.printWarning("Missing payloadOnDiscard", self.logName)
+		payloadResult = false
 
 	self.didDiscard.emit(entity)
 	return payloadResult
@@ -374,11 +372,6 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 			return conflict
 
 	return null
-
-
-## Checks if the [member payload] script contains a function matching the required signature as [member payloadMethodName].
-func validatePayloadSignature() -> bool:
-	return Tools.findMethodInScript(self.payload, self.payloadAcquireMethodName) and Tools.findMethodInScript(self.payload, self.payloadAcquireMethodName)
 
 #endregion
 
