@@ -25,16 +25,10 @@ extends CharacterBodyManipulatingComponentBase
 
 enum State { idle, jump }
 
-var states: Dictionary = {
-	State.idle: null,
-	State.jump: null,
-	}
-
-var currentState: State:
-	set(newValue):
-		currentState = newValue
-		#Debug.printDebug(self, value)
-
+var currentState: State #:
+	# DEBUG: set(newValue): 
+	# 	Debug.printChange("currentState", currentState, newValue)
+	# 	currentState = newValue
 
 ## Cache the input state so we only have to query [Input] once when there is an input event.
 var jumpInput:				bool:

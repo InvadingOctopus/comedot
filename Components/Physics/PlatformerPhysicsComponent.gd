@@ -28,24 +28,16 @@ extends CharacterBodyManipulatingComponentBase
 
 enum State { idle, moveOnFloor, moveInAir }
 
-var states := {
-	State.idle:			null,
-	State.moveOnFloor:	null,
-	State.moveInAir:	null,
-	# State.jumping:	null, # TBD
-	# State.falling:	null, # TBD
-	}
-
-var currentState: State:
-	set(newValue):
-		currentState = newValue
-		# DEBUG: printDebug(str(currentState))
+var currentState: State #:
+	# DEBUG: set(newValue): 
+	# 	Debug.printChange("currentState", currentState, newValue)
+	# 	currentState = newValue
 
 var inputDirection:		float
 var lastInputDirection:	float
-var isInputZero:			bool = true
+var isInputZero:		bool = true
 
-var gravity:	 float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
+var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
 
 #endregion
 
