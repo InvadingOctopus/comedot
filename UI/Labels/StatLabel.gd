@@ -3,6 +3,8 @@
 class_name StatLabel
 extends Container
 
+# TBD: Choose a different name since the root node is no longer a Label?
+
 
 #region Parameters
 
