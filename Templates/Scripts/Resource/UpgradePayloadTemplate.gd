@@ -7,7 +7,7 @@ extends UpgradePayload
 
 
 static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
+	upgrade.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity))
 	return false
 
 

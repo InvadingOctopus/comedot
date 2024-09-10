@@ -17,7 +17,7 @@ extends Component
 
 #region Parameters
 
-## The actual gameplay effect of picking up this collectibe. See [Payload] for possible values and more information.
+## The actual gameplay effect of picking up this collectibe. See [Payload] for possible options and more information.
 @export var payload: Payload
 
 @export var isEnabled: bool = true
