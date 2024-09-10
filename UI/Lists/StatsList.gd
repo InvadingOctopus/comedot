@@ -50,10 +50,11 @@ func createStatLabel(stat: Stat) -> StatLabel:
 	var newLabel: StatLabel = statLabelScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
-	newLabel.horizontal_alignment = self.horizontalAlignment
-	newLabel.vertical_alignment = self.verticalAlignment
 	newLabel.shouldWriteAllUppercase = self.shouldWriteAllUppercase
-	
+
 	Tools.addChildAndSetOwner(newLabel, self)
+	newLabel.label.horizontal_alignment = self.horizontalAlignment
+	newLabel.label.vertical_alignment   = self.verticalAlignment
+
 	# newLabel.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
 	return newLabel
