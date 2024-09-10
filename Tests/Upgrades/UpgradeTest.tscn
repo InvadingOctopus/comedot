@@ -65,8 +65,6 @@ modulate = Color(1, 1, 1, 0.1)
 factions = 2
 
 [node name="UpgradesComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("5_3wt1t")]
-upgrades = null
-shouldResetResourcesOnReady = null
 shouldShowDebugInfo = true
 
 [node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("6_3nle0")]
