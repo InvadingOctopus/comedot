@@ -15,7 +15,13 @@ extends Payload
 ## [method executeImplementation] will return the result of that method.
 ## TIP: Use the `Templates/Scripts/Resource/ScriptPayloadScriptTemplate.gd` template.
 ## TIP: The parameter names and the [Variant] types may be replaced with any name and any type, for better clarity.
-@export var payloadScript: GDScript # TODO: Stronger typing when Godot allows it :')
+## If not specified, a `.gd` script file matching the same name as this Payload's `.tres` filename is used, if found, e.g. `GunUpgrade.tres`: `GunUpgrade.gd`
+@export var payloadScript: GDScript: # TODO: Stronger typing when Godot allows it :')
+	get:
+		if not payloadScript:
+			printLog("payloadScript not assigned. Searching for a .gd with the same filename as: " + self.resource_path.get_file())
+			payloadScript = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
+		return payloadScript
 
 ## The method/function which will be executed from the [member payloadScript].
 @export var payloadScriptMethodName: StringName = &"onPayload_didExecute" # TBD: Better default name?
@@ -27,9 +33,11 @@ extends Payload
 func executeImplementation(source: Variant, target: Variant) -> Variant:
 	printLog(str("executeImplementation() script: ", payloadScript, " ", payloadScript.get_global_name(), ", source: ", source, " target: ", target))
 
-	# TODO: Check for method availability
-	
 	if self.payloadScript:
+		if not Tools.findMethodInScript(payloadScript, payloadScriptMethodName):
+			Debug.printWarning(str("Missing method: ", payloadScriptMethodName), self.logName)
+			return false
+
 		self.willExecute.emit(source, target)
 		# A script that matches this interface:
 		# static func [payloadScriptMethodName](source: Variant, target: Variant) -> Variant
