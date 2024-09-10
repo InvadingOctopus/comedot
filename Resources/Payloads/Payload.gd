@@ -15,7 +15,8 @@ extends Resource
 
 
 #region State
-var logName: String = str(self.get_script().get_global_name(), " ", self) # Subclasses may add more details.
+var logName: String: # Subclasses may add more details.
+	get: return str(self.get_script().get_global_name(), " ", self.resource_path.get_file(), " ", self)
 #endregion
 
 
