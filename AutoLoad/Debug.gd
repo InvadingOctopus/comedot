@@ -19,7 +19,7 @@ extends Node
 		setLabelVisibility()
 
 ## A dictionary of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
-@export var watchList: Dictionary = {}
+@export var watchList: Dictionary[StringName, Variant] = {}
 
 const customLogEntryScene: PackedScene = preload("res://UI/CustomLogEntryUI.tscn")
 const customLogMaximumEntries: int = 100
@@ -263,7 +263,7 @@ static func updateLastFrameLogged() -> void:
 
 ## @experimental
 func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
-	var customLogEntry: Dictionary = getObjectDetails(object)
+	var customLogEntry: Dictionary[StringName, Variant] = getObjectDetails(object)
 
 	# Unless the object specified a custom parent, like a Component mentioning its Entity, just get the parent Node in the scene
 	if parent: customLogEntry[CustomLogKeys.parent] = parent
@@ -299,10 +299,10 @@ func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
 
 
 ## Returns a dictionary of almost all details about an object, using the [Debug.CustomLogKeys].
-static func getObjectDetails(object: Variant) -> Dictionary:
+static func getObjectDetails(object: Variant) -> Dictionary[StringName, Variant]:
 	# TBD: Should the values be actual variables or Strings?
 
-	var dictionary: Dictionary = {
+	var dictionary: Dictionary[StringName, Variant] = {
 		CustomLogKeys.frameTime:	str("F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000),
 		CustomLogKeys.object:		object,
 		CustomLogKeys.instance:		object.get_instance_id(),

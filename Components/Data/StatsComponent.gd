@@ -14,7 +14,7 @@ extends Component
 
 
 #region State
-var statsDictionary: Dictionary = {} ## Caches stats accessed by [StringName] keys.
+var statsDictionary: Dictionary[StringName, Stat] = {} ## Caches stats accessed by [StringName] keys.
 #endregion
 
 

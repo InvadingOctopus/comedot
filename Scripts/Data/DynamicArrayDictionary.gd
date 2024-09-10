@@ -8,7 +8,7 @@ extends Node
 #region Parameters & State
 ## A Dictionary representing a grid: `{Coordinates : Value}`
 ## Each (x,y) [Vector2i] coordinate key contains an arbitrary value.
-@export var gridDictionary := { Vector2i(0, 0): null }
+@export var gridDictionary: Dictionary[Vector2i, Variant] = { Vector2i(0, 0): null }
 
 @export var shouldShowDebugInfo: bool = false
 #endregion

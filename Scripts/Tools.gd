@@ -433,11 +433,11 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 
 ## Sets the text of [Label]s from a [Dictionary].
 ## Iterates over an array of [Label]s, and takes the prefix of the node name by removing the "Label" suffix, if any, and making it LOWER CASE,
-## and searches the [param dictionary] for any keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
+## and searches the [param dictionary] for any String keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
 ## Example: `logMessageLabel.text = dictionary["logmessage"]`
 ## TIP: Use to quickly populate an "inspector" UI with text representing multiple properties of a selected object etc.
 ## NOTE: The dictionary keys must all be fully LOWER CASE.
-static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary, shouldShowPrefix: bool = false, shouldHideEmptyLabels: bool = false) -> void:
+static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary[String, Variant], shouldShowPrefix: bool = false, shouldHideEmptyLabels: bool = false) -> void:
 	# DESIGN: We don't accept an array of any Control/Node because Labels may be in different containers, and some Labels may not need to be assigned from the Dictionary.
 	for label: Label in labels:
 		if not label: continue

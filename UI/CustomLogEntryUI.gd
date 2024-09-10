@@ -10,7 +10,7 @@ extends Control
 #region Parameters
 
 ## NOTE: Call [method CustomLogEntryUI.updateUI] after changing this dictionary.
-var logEntry: Dictionary # Doesn't need to be @exported (to disk)
+var logEntry: Dictionary[String, Variant] # Doesn't need to be @exported (to disk)
 
 var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk)
 	set(newValue):

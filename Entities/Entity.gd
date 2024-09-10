@@ -34,13 +34,13 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 #region State
 
-## A dictionary of {StringName:Component} where the key is the `class_name` of each component.
+## A dictionary of {StringName:Component} where the key is the `class_name` of each Component, which may be discovered via [method Script.get_global_name].
 ## Updated by the [signal Node.child_entered_tree] signal.
 ## Used by components to quickly find other sibling components, without a dynamic search at runtime.
-var components: Dictionary = {}
+var components: Dictionary[StringName, Component] = {}
 
-## A dictionary of functions that should be called only once per frame, for example move_and_slide() on a CharacterBody2D
-var functionsAlreadyCalledOnceThisFrame: Dictionary = {}
+## A dictionary of functions that should be called only once per frame, for example [member CharacterBody2D.move_and_slide] on a [CharacterBody2D].
+var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable] = {}
 
 #endregion
 

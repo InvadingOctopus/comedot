@@ -9,7 +9,7 @@ extends Node
 
 ## A dictionary of values that may be accessed and modified by multiple nodes and the scripts in the scene tree.
 ## [StringName] is the optimal type to use for keys.
-@export var globalData: Dictionary = {}
+@export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## The list of active players.
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
@@ -17,9 +17,9 @@ extends Node
 var players: Array[PlayerEntity] = []
 
 ## A dictionary of stats and values to display in the HUD UI.
-## Changes to the dictionary emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
+## Changes to the dictionary should emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
 ## [StringName] is the optimal type to use for keys.
-@export var hudStats: Dictionary = {}
+@export var hudStats: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 #endregion
 

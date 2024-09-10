@@ -15,7 +15,7 @@ extends Component
 
 
 #region State
-var upgradesDictionary: Dictionary = {} ## Caches upgrades accessed by [StringName] keys.
+var upgradesDictionary: Dictionary[StringName, Upgrade] = {} ## Caches upgrades accessed by [StringName] keys.
 #endregion
 
 

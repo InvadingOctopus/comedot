@@ -15,11 +15,11 @@ extends Container
 ## An optional dictionary of additional prefixes to write in the [Label] before the value of each [Stat].
 ## The dictionary types should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
 ## If [member shouldPrefixValueWithStatName] is `true`, the name will be added after the custom prefix.
-@export var prefixes: Dictionary = {&"health": "HP:"}
+@export var prefixes: Dictionary[StringName, String] = {}
 
 ## An optional dictionary of suffixes to write in the [Label] after the value of each [Stat].
 ## The dictionary type should be {[StringName]:[String]}, where the keys are the names of the stats (`playerHealth`, `levelTime`) in the exact case.
-@export var suffixes: Dictionary = {}
+@export var suffixes: Dictionary[StringName, String] = {}
 
 ## A list of stats to display as soon as the Stats UI is ready,
 ## without waiting for a signal for a change in a stat's value.
