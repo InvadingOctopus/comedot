@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://csfqa5yos7088" path="res://Components/Gameplay/UpgradesComponent.tscn" id="5_3wt1t"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="6_3nle0"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="7_7nw6f"]
-[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestEnergy.tres" id="8_157i1"]
-[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestMoney.tres" id="9_okulf"]
+[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="8_157i1"]
+[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="9_okulf"]
 [ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="10_fcijy"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="11_gj3d5"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="12_vmhuw"]
@@ -173,6 +173,6 @@ text = "AMMO
 label_settings = SubResource("LabelSettings_6ecoo")
 upgrade = ExtResource("23_2aq68")
 
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testEnergy", 50]]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMoney", 100]]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
 [connection signal="didChooseUpgrade" from="CanvasLayer/VBoxContainer/UpgradesList" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]

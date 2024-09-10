@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Upgrade" load_steps=7 format=3 uid="uid://bsmyby33ll8ok"]
 
-[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestMoney.tres" id="1_70l4j"]
+[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="1_ff526"]
 [ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_kkrmp"]
 [ext_resource type="Script" path="res://Tests/Upgrades/TestGunUpgradePayload.gd" id="2_3pfuh"]
 [ext_resource type="Script" path="res://Resources/Payloads/ScriptPayload.gd" id="3_q67te"]
@@ -28,7 +28,7 @@ shouldShowDebugInfo = true
 level = 0
 maxLevel = 0
 shouldAllowInfiniteLevels = false
-costStat = ExtResource("1_70l4j")
+costStat = ExtResource("1_ff526")
 costs = Array[int]([500])
 shouldUseLastCostForHigherLevels = false
 requiredUpgrades = Array[ExtResource("1_kkrmp")]([])

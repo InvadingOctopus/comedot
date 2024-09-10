@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Upgrade" load_steps=8 format=3 uid="uid://dubsrpy44b7kw"]
 
-[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestMoney.tres" id="1_pqodm"]
+[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="1_pqodm"]
 [ext_resource type="Script" path="res://Resources/Upgrade.gd" id="1_qyj58"]
 [ext_resource type="Script" path="res://Tests/Upgrades/TestAmmoUpgradePayload.gd" id="2_fvtco"]
 [ext_resource type="Resource" uid="uid://bsmyby33ll8ok" path="res://Tests/Upgrades/TestGunUpgrade.tres" id="3_ap2o0"]

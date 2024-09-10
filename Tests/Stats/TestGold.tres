@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Stat" load_steps=4 format=3 uid="uid://cu2cyw7oyn5ae"]
+
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="1_4ly1t"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="1_xhuns"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gs8nh"]
+atlas = ExtResource("1_xhuns")
+region = Rect2(656, 64, 16, 16)
+
+[resource]
+resource_name = "testGold"
+script = ExtResource("1_4ly1t")
+min = 0
+max = 2000
+value = 2000
+logChanges = true
+name = &"testGold"
+displayName = "GOLD"
+icon = SubResource("AtlasTexture_gs8nh")
+description = ""
