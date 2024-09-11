@@ -10,18 +10,8 @@ extends StatDependentResourceBase
 
 @export var requiresTarget: bool
 
-## The code to execute when this Action is performed.
-## IMPORTANT: The script MUST have functions matching these signatures; the same interface as [ActionPayload]:
-## `static func onAction_didPerform(action: Action, entity: Entity) -> bool`
-## TIP: Use the `Templates/Scripts/Resource/ActionPayloadTemplate.gd` template.
-## If not specified, a `.gd` script file matching the same name as the Action `.tres` is used, if found, e.g. `FireballAction.tres`: `FireballAction.gd`
-@export var payload: GDScript: # TODO: Stronger typing when Godot allows it :')
-	get:
-		if not payload:
-			payload = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
-		return payload
-
-const payloadMethodName: StringName = &"onAction_didPerform" ## The method/function which will be executed from the [member payload] when this Action is performed.
+## The code to execute when this Action is performed. See [Payload] for explanation and possible options.
+@export var payload: Payload
 
 @export var shouldShowDebugInfo: bool
 
@@ -36,15 +26,17 @@ var logName: String:
 
 #region Interface
 
-func perform(entity: Entity, target: Entity = null) -> bool:
-	# TODO: Handle target
-	printLog(str("perform() entity: ", entity, ", target: ", target))
+## Returns the result of the [member payload].
+func perform(source: Entity, target: Entity = null) -> Variant:
+	# TODO: Handle target acquisition.
+
+	printLog(str("perform() source: ", source, ", target: ", target))
 
 	if not self.payload:
 		Debug.printWarning("Missing payload", str(self))
 		return false
 	
-	return payload.call(self.payloadMethodName, entity)
+	return payload.execute(source, target)
 
 #endregion
 
