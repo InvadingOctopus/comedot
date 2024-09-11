@@ -19,7 +19,8 @@ extends Button
 			action = newValue
 			updateUI()
 
-@export var shouldShowDebugInfo: bool = false
+@export var shouldShowDebugInfo: bool
+
 #endregion
 
 
@@ -28,7 +29,6 @@ extends Button
 
 
 #region Signals
-signal didPressButton
 #endregion
 
 
@@ -71,4 +71,14 @@ func checkUsability() -> bool:
 
 func onPressed() -> void:
 	if shouldShowDebugInfo: Debug.printDebug("onPressed()", str(self))
-	self.didPressButton.emit()
+	generateInputEvent()
+
+
+## Generates a "fake" input event with the [member Action.name] of the [member action] prefixed with [member GlobalInput.Actions.specialActionPrefix].
+## This [InputEventAction] may then be processed by any Component or other class as any other [method _input] event.
+func generateInputEvent() -> void:
+	var actionEvent: InputEventAction = InputEventAction.new()
+	actionEvent.action  = GlobalInput.Actions.specialActionPrefix + self.action.name
+	actionEvent.pressed = true
+	Input.parse_input_event(actionEvent)
+
