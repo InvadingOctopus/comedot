@@ -1,4 +1,5 @@
-## A [Container] [Control] which builds a list of [StatLabel]s for all the stats in a [StatsComponent].
+## Builds a list of [StatLabel]s for all the stats in a [StatsComponent].
+## Attach this script to any [Container] [Control] such as a [GridContainer] or [HBoxContainer].
 
 class_name StatsList
 extends Container

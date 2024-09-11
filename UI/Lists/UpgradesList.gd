@@ -1,4 +1,5 @@
-## A [Container] [Control] which builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
+## Builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
+## Attach this script to any [Container] [Control] such as a [GridContainer] or [HBoxContainer].
 
 class_name UpgradesList
 extends Container
