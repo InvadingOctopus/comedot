@@ -38,6 +38,7 @@ var statsComponent: StatsComponent: ## Placeholder
 
 #region Interface
 
+## Returns the first [Action] with the matching name from the [member actions] array.
 func findAction(nameToSearch: StringName) -> Action:
 	# TBD: Use `Array.any()`?
 	for action in self.actions:
@@ -54,6 +55,31 @@ func performAction(actionName: StringName, target: Entity = null) -> void:
 	if not actionToPerform: return
 
 	actionToPerform.perform(self.parentEntity)
+
+#endregion
+
+
+#region Input & Execution
+
+func _input(event: InputEvent) -> void:
+	# TBD: A better implementation?
+
+	if not event is InputEventAction: return
+
+	var eventAction: InputEventAction = event as InputEventAction
+	var eventName:   StringName = eventAction.action
+
+	# Is it a "special" Action? # TBD: Less ambiguous name? :')
+	if not eventName.begins_with(GlobalInput.Actions.specialActionPrefix): return
+
+	var actionName: StringName = eventName.trim_prefix(GlobalInput.Actions.specialActionPrefix)
+	var action: Action = self.findAction(actionName)
+
+	if not action: return
+
+	# TODO: Handle target acquisition
+
+	action.payload.execute(self.parentEntity, null)
 
 #endregion
 
