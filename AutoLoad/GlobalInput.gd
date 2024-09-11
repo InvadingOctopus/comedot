@@ -21,6 +21,8 @@ class Actions: ## Input event labels
 	const jump			:= &"jump"
 	const fire			:= &"fire"
 	const interact		:= &"interact"
+	
+	const specialActionPrefix := &"specialAction" ## Used for generating events for an [Action]. # TBD: Less ambiguous name? :')
 
 	const pause			:= &"pause"
 	const screenshot	:= &"screenshot"
