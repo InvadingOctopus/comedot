@@ -11,6 +11,7 @@ region = Rect2(544, 336, 16, 16)
 custom_minimum_size = Vector2(32, 32)
 offset_right = 62.0
 offset_bottom = 32.0
+size_flags_horizontal = 3
 text = "ACTION"
 icon = SubResource("AtlasTexture_hnvq4")
 text_overrun_behavior = 3
