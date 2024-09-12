@@ -1,11 +1,11 @@
 ## Provides player control input to a [PlatformerPhysicsComponent].
 ## Requirements: BEFORE [PlatformerPhysicsComponent]
-## @experimental
 
 class_name PlatformerControlComponent
 extends Component
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
+# TBD: CHECK: Performance impact of having multiple components for basic player movement.
 
 
 #region Parameters

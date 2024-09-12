@@ -1,10 +1,11 @@
 ## Base class for components which depend on a [CharacterBodyComponent] to manipulate a [CharacterBody2D] before and after it moves during each frame.
 ## Components which need to perform updates AFTER [method CharacterBody2D.move_and_slide] must connect to the [signal CharacterBodyComponent.didMove] signal.
 ## NOTE: This is NOT the base class for the [CharacterBodyComponent] itself.
-## @experimental
 
 class_name CharacterBodyManipulatingComponentBase
 extends Component
+
+# TBD: Better name? :')
 
 
 #region Parameters
