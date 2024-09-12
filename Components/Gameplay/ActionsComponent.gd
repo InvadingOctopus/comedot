@@ -21,6 +21,12 @@ extends Component
 
 
 #region Signals
+
+## Emitted if the [Action] [member Action.requiresTarget] but a target has not been provided for [method perform].
+## May be handled by game-specific UI to prompt the player to choose a target for the Action.
+## NOTE: If an Action is to be performed via this component's [method perform] then this signal is emitted by the [ActionsComponent] ONLY; [signal Action.didRequestTarget] will NOT be emitted.
+signal didRequestTarget(action: Action, source: Entity)
+
 signal willDoAction(action: Action)
 signal didDoAction(action: Action)
 #endregion
@@ -48,13 +54,21 @@ func findAction(nameToSearch: StringName) -> Action:
 	return null
 
 
-func performAction(actionName: StringName, target: Entity = null) -> void:
+## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
+func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	if shouldShowDebugInfo: printLog(str("performAction(): " + actionName, ", target: ", target))
 
 	var actionToPerform: Action = self.findAction(actionName)
-	if not actionToPerform: return
+	if not actionToPerform: return false
 
-	actionToPerform.perform(self.parentEntity)
+	# Check for target
+	if actionToPerform.requiresTarget and target == null:
+		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
+		# TBD: ALSO emit the Action's signal? 
+		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
+		return false
+
+	return actionToPerform.perform(self.parentEntity, target)
 
 #endregion
 
@@ -62,7 +76,7 @@ func performAction(actionName: StringName, target: Entity = null) -> void:
 #region Input & Execution
 
 func _input(event: InputEvent) -> void:
-	# TBD: A better implementation?
+	# Just get an Action's name, if any, and forward it to performAction()
 
 	if not event is InputEventAction: return
 
@@ -73,13 +87,7 @@ func _input(event: InputEvent) -> void:
 	if not eventName.begins_with(GlobalInput.Actions.specialActionPrefix): return
 
 	var actionName: StringName = eventName.trim_prefix(GlobalInput.Actions.specialActionPrefix)
-	var action: Action = self.findAction(actionName)
-
-	if not action: return
-
-	# TODO: Handle target acquisition
-
-	action.payload.execute(self.parentEntity, null)
+	self.performAction(actionName)
 
 #endregion
 

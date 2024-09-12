@@ -27,16 +27,29 @@ var logName: String:
 #endregion
 
 
+#region Signals
+
+## Emitted if [member requiresTarget] is `true` but a target has not been provided for [method perform]. 
+## May be handled by game-specific UI to prompt the player to choose a target for this Action.
+## NOTE: If this Action is to be performed via an [ActionsComponent]'s [method ActionsComponent.perform] then this signal will NOT be emitted; ONLY the Component's [signal ActionsComponent.didRequestTarget] is emitted.
+signal didRequestTarget(source: Entity)
+
+#endregion
+
+
 #region Interface
 
-## Returns the result of the [member payload].
+## Returns the result of the [member payload], or `false` if the Payload or a required [param target] is missing.
 func perform(source: Entity, target: Entity = null) -> Variant:
-	# TODO: Handle target acquisition.
-
 	printLog(str("perform() source: ", source, ", target: ", target))
 
 	if not self.payload:
 		Debug.printWarning("Missing payload", str(self))
+		return false
+	
+	# Check for target
+	if self.requiresTarget and target == null:
+		self.didRequestTarget.emit(source)
 		return false
 	
 	return payload.execute(source, target)
