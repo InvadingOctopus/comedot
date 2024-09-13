@@ -248,6 +248,7 @@ debugBreak={
 2d_physics/layer_11="combat"
 2d_physics/layer_12="collectibles"
 2d_physics/layer_13="interactions"
+2d_physics/layer_14="targetables"
 
 [physics]
 
