@@ -53,7 +53,7 @@ func _ready() -> void:
 	if not entity:
 		entity = player
 		if not entity: Debug.printWarning("Missing entity", str(self))
-	
+
 	if action: updateUI()
 
 
@@ -81,4 +81,3 @@ func generateInputEvent() -> void:
 	actionEvent.action  = GlobalInput.Actions.specialActionPrefix + self.action.name
 	actionEvent.pressed = true
 	Input.parse_input_event(actionEvent)
-

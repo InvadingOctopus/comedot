@@ -66,12 +66,10 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
-		# TBD: ALSO emit the Action's signal? 
+		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
 
 	return actionToPerform.perform(self.parentEntity, target)
 
 #endregion
-
-

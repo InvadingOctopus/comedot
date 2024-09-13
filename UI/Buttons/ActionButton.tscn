@@ -14,7 +14,6 @@ offset_bottom = 32.0
 size_flags_horizontal = 3
 text = "ACTION"
 icon = SubResource("AtlasTexture_hnvq4")
-text_overrun_behavior = 3
 icon_alignment = 1
 vertical_icon_alignment = 0
 script = ExtResource("2_5a242")
