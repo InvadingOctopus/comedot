@@ -105,6 +105,14 @@ func validateStatsComponent(statsComponent: StatsComponent) -> bool:
 		return self.validateOfferedStat(offeredStat)
 
 
+## Queries the specified [StatsComponent] and returns the [Stat] matching the [member Stat.name] of this Resource's [member costStat].
+## If this Resource has not [member costStat], `null` is returned.
+func getPaymentStatFromStatsComponent(statsComponent: StatsComponent) -> Stat:
+	# TBD: Review & replace with a better interface if needed
+	if self.costStat == null: return null
+	else: return statsComponent.getStat(self.costStat.name)
+
+
 func updateFlags() -> void:
 	## DESIGN: If there is no `costStat` then `isUsableWithCostStat` should be `false` even though this resource is always free.
 	self.isUsableWithCostStat = costStat != null \
@@ -112,3 +120,13 @@ func updateFlags() -> void:
 
 #endregion
 
+
+## If [method validateOfferedStat] returns `true` for the [param offeredStat], this Resource's [member cost] is deducted from the Stat's value and this method returns `true`.
+## Returns `false` if [method validateOfferedStat] fails.
+func deductCostFromStat(offeredStat: Stat) -> bool:
+	# TBD: Review & replace with a better interface if needed
+	if validateOfferedStat(offeredStat):
+		offeredStat.value -= self.cost
+		return true
+	else:
+		return false
