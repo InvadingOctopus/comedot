@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://5yiyg3iv4qgd"]
+[gd_scene load_steps=2 format=3 uid="uid://dkejn1qlbxsa2"]
 
 [ext_resource type="Script" path="res://Components/Control/ActionControlComponent.gd" id="1_4j1cu"]
 
