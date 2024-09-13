@@ -39,13 +39,18 @@ signal didRequestTarget(source: Entity)
 #region Interface
 
 ## Returns the result of the [member payload], or `false` if the Payload or a required [param target] is missing.
-func perform(source: Entity, target: Entity = null) -> Variant:
+func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Variant:
 	printLog(str("perform() source: ", source, ", target: ", target))
 
 	if not self.payload:
 		Debug.printWarning("Missing payload", str(self))
 		return false
 	
+	# Spend the Stat
+	if self.costStat and self.cost >= 0 and not self.deductCostFromStat(paymentStat): # TBD: Validate even if the `cost` is negative?
+		printLog(str("Payment failed! self.costStat: ", self.costStat, ", self.cost: ", self.cost, ", paymentStat: ", paymentStat))
+		return false
+
 	# Check for target
 	if self.requiresTarget and target == null:
 		self.didRequestTarget.emit(source)

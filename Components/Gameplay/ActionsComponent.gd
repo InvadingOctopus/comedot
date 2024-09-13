@@ -70,6 +70,9 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
 
-	return actionToPerform.perform(self.parentEntity, target)
+	# Get the Stat to pay the Action's cost with, if any,
+	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
+
+	return actionToPerform.perform(statToPayWith, self.parentEntity, target)
 
 #endregion
