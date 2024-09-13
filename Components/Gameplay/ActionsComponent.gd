@@ -1,6 +1,7 @@
 ## Stores a list of gameplay actions which an Entity such as the player character or an NPC may perform.
 ## The actions may cost a Stat Resource when used and may require a target to be chosen,
 ## such as a special skill/spell like "Fireball", or a trivial command like "Examine".
+## To perform an Action in response to player control, use [ActionControlComponent].
 ## Requirements: [StatsComponent] to perform Actions which have a Stat cost.
 ## @experimental
 
@@ -55,6 +56,7 @@ func findAction(nameToSearch: StringName) -> Action:
 
 
 ## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
+## To perform Actions in response to player control, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	if shouldShowDebugInfo: printLog(str("performAction(): " + actionName, ", target: ", target))
 
@@ -72,22 +74,4 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 
 #endregion
 
-
-#region Input & Execution
-
-func _input(event: InputEvent) -> void:
-	# Just get an Action's name, if any, and forward it to performAction()
-
-	if not event is InputEventAction: return
-
-	var eventAction: InputEventAction = event as InputEventAction
-	var eventName:   StringName = eventAction.action
-
-	# Is it a "special" Action? # TBD: Less ambiguous name? :')
-	if not eventName.begins_with(GlobalInput.Actions.specialActionPrefix): return
-
-	var actionName: StringName = eventName.trim_prefix(GlobalInput.Actions.specialActionPrefix)
-	self.performAction(actionName)
-
-#endregion
 
