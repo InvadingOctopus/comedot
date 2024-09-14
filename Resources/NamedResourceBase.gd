@@ -23,9 +23,9 @@ extends Resource
 		if not displayName.is_empty(): return displayName
 		else: return self.name.capitalize()
 
-@export var icon: Texture2D
-
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
+
+@export var icon: Texture2D ## An optional image to display in UI elements such as [StatLabel].
 
 #endregion
 
