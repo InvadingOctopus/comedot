@@ -139,7 +139,7 @@ func getComponent(type: Script) -> Component:
 
 
 ## Adds an existing [Component] [Node] to this entity.
-## The component must not already be a child of another parent node. 
+## The component must not already be a child of another parent node.
 ## This is a convenience method for adding components created and configured in code during runtime.
 func addComponent(component: Component) -> void:
 	self.add_child(component)
@@ -193,7 +193,7 @@ func findFirstComponentSublcass(type: Script) -> Component:
 ## NOTE: Removes only a SINGLE component of the specified type. To remove multiple children of the same type, use [method removeChildrenOfType].
 func removeComponent(componentType: Script, shouldFree: bool = true) -> bool:
 	var componentToRemove := self.getComponent(componentType)
-	
+
 	if not componentToRemove:
 		return false
 	else:
