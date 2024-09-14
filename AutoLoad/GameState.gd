@@ -33,10 +33,14 @@ signal playerRemoved(player: PlayerEntity)
 
 #region Signal Event Bus
 # These signals may be emitted by any object and connected to any object at any time, usually via scripts.
-# IGNORE Godot Warning; this signal is used by other classes.
+# IGNORE Godot Warning; these signals are used by other classes.
+
+## @experimental
+@warning_ignore("unused_signal")
+signal uiActionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
 
 @warning_ignore("unused_signal")
-signal uiStatUpdated(stat: Stat)
+signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that any UI elements which depend on that Stat may be updated.
 #endregion
 
 
