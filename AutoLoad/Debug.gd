@@ -9,11 +9,11 @@ extends Node
 
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
-@export var shouldPrintDebugLogs: bool = OS.has_feature("debug") # TBD: Should this be a constant to improve performance?
+@export var shouldPrintDebugLogs: bool = OS.is_debug_build() # TBD: Should this be a constant to improve performance?
 
 ## Sets the visibility of the debug information overlay text.
 ## NOTE: Does NOT affect the visibility of the framework warning label.
-@export var showDebugLabels: bool = OS.has_feature("debug"):
+@export var showDebugLabels: bool = OS.is_debug_build():
 	set(newValue):
 		showDebugLabels = newValue
 		setLabelVisibility()
