@@ -36,7 +36,7 @@ extends Container
 	set(newValue):
 		if newValue != shouldShowText:
 			shouldShowText = newValue
-			if label: updateStatText()
+			if label: updateStatText(false) # Update the label, without animation
 
 @export var shouldShowIcon: bool = true:
 	set(newValue):
@@ -58,8 +58,8 @@ func _ready() -> void:
 	updateIcon()
 
 	if stat:
-		stat.changed.connect(self.onStat_changed)
 		updateStatText(false) # Display the initital value, without animation
+		stat.changed.connect(self.onStat_changed)
 	else:
 		Debug.printWarning("Missing stat", str(self))
 

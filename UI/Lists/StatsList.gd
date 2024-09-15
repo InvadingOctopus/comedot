@@ -53,11 +53,11 @@ func createStatLabel(stat: Stat) -> StatLabel:
 	var newLabel: StatLabel = statLabelScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
-
-	Tools.addChildAndSetOwner(newLabel, self)
 	newLabel.shouldShowText				= self.shouldShowText
 	newLabel.shouldShowIcon				= self.shouldShowIcon
 	newLabel.shouldUppercase			= self.shouldUppercase
+
+	Tools.addChildAndSetOwner(newLabel, self)
 	newLabel.label.horizontal_alignment = self.horizontalAlignment
 	newLabel.label.vertical_alignment   = self.verticalAlignment
 
