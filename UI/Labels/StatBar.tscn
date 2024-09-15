@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7lv5qv211x8k"]
+
+[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Labels/StatLabel.tscn" id="1_iaydn"]
+[ext_resource type="Script" path="res://UI/Labels/StatBar.gd" id="1_u04ku"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b8ivq"]
+resource_local_to_scene = true
+font_size = 8
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[node name="StatBar" instance=ExtResource("1_iaydn")]
+columns = 3
+script = ExtResource("1_u04ku")
+animationDuration = 0.25
+
+[node name="Bar" type="ProgressBar" parent="." index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 10.0
+step = 1.0
+show_percentage = false
+
+[node name="Label" parent="." index="2"]
+label_settings = SubResource("LabelSettings_b8ivq")
