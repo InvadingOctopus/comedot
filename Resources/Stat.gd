@@ -17,7 +17,7 @@ extends NamedResourceBase
 	set(newValue):
 		min     = newValue
 		if  min > max: max = min
-		value   = clamp(value,   min, max)
+		value   = clamp(value, min, max)
 
 @warning_ignore("shadowed_global_identifier")
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
@@ -25,10 +25,11 @@ extends NamedResourceBase
 	set(newValue):
 		max     = newValue
 		if  max < min: min = max
-		value   = clamp(value,   min, max)
+		value   = clamp(value, min, max)
 
 ## The current value of the stat. Clamped between [member min] and [member max].
-@export var value: int = max:
+## NOTE: The default initial value is set equal to [member min].
+@export var value: int = min: # DESIGN: Default to `min` because it is almost always 0, but `max` is usually different for most Stats, which causes a redundant `value` change from the default `max` of 10 to the new `max`.
 	set(newValue):
 		previousValue = value
 		value = clamp(newValue, min, max)
