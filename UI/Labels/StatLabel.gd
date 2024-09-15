@@ -22,15 +22,27 @@ extends Container
 @export var shouldAddSpaceBeforeSuffix: bool = true
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
-@export var minimumDigits: int = 2 
+@export var minimumDigits: int = 2
 
-@export var shouldWriteAllUppercase: bool = false:
+@export var shouldUppercase: bool = false:
 	set(newValue):
-		if newValue != shouldWriteAllUppercase:
-			shouldWriteAllUppercase = newValue
-			if label: label.uppercase = shouldWriteAllUppercase
+		if newValue != shouldUppercase:
+			shouldUppercase = newValue
+			if label: label.uppercase = shouldUppercase
 
 @export var shouldAnimate: bool = true
+
+@export var shouldShowText: bool = true: ## Affects the prefix and suffix labels, not the actual Stat value numbers.
+	set(newValue):
+		if newValue != shouldShowText:
+			shouldShowText = newValue
+			if label: updateStatText()
+
+@export var shouldShowIcon: bool = true:
+	set(newValue):
+		if newValue != shouldShowIcon:
+			shouldShowIcon = newValue
+			if icon: icon.visible = shouldShowIcon
 
 #endregion
 
@@ -42,14 +54,19 @@ extends Container
 
 
 func _ready() -> void:
+	applyInitialFlags()
 	updateIcon()
-	if label: label.uppercase = shouldWriteAllUppercase
 
-	if stat: 
+	if stat:
 		stat.changed.connect(self.onStat_changed)
 		updateStatText(false) # Display the initital value, without animation
 	else:
 		Debug.printWarning("Missing stat", str(self))
+
+
+func applyInitialFlags() -> void:
+	if label: label.uppercase	= shouldUppercase
+	if icon:  icon.visible		= shouldShowIcon
 
 
 func onStat_changed() -> void:
@@ -75,11 +92,14 @@ func updateStatText(animate: bool = self.shouldAnimate) -> void:
 ## May be customized by a subclass for game specific styles,
 ## e.g.: drawing multiple hearts instead of a number to represent lives.
 func buildLabelText() -> String:
-	var fullPrefix: String = prefix + " " if shouldAddSpaceAfterPrefix  else prefix
-	var fullSuffix: String = " " + suffix if shouldAddSpaceBeforeSuffix else suffix
+	var fullPrefix: String
+	var fullSuffix: String
 
-	if shouldShowStatDisplayName:
-		fullPrefix += stat.displayName + ":"
+	if shouldShowText:
+		fullPrefix = prefix + " " if shouldAddSpaceAfterPrefix  else prefix
+		fullSuffix = " " + suffix if shouldAddSpaceBeforeSuffix else suffix
+
+		if shouldShowStatDisplayName: fullPrefix += stat.displayName + ":"
 
 	if minimumDigits >= 1:
 		var format: String = "%0" + str(minimumDigits) + "d"

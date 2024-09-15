@@ -19,8 +19,10 @@ extends Container
 @export var horizontalAlignment: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT ## The aligment for all newly created [Label]s.
 @export var verticalAlignment:	 VerticalAlignment   = VERTICAL_ALIGNMENT_CENTER ## The aligment for all newly created [Label]s
 
-## Make all [StatLabel]s [member Label.uppercase].
-@export var shouldWriteAllUppercase: bool = false
+
+@export var shouldUppercase: bool = false ## Make all [StatLabel]s [member Label.uppercase].
+@export var shouldShowText:  bool = true  ## Only affects newly created [StatLabel]s.
+@export var shouldShowIcon:  bool = true  ## Only affects newly created [StatLabel]s.
 
 #endregion
 
@@ -51,9 +53,11 @@ func createStatLabel(stat: Stat) -> StatLabel:
 	var newLabel: StatLabel = statLabelScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
-	newLabel.shouldWriteAllUppercase = self.shouldWriteAllUppercase
 
 	Tools.addChildAndSetOwner(newLabel, self)
+	newLabel.shouldShowText				= self.shouldShowText
+	newLabel.shouldShowIcon				= self.shouldShowIcon
+	newLabel.shouldUppercase			= self.shouldUppercase
 	newLabel.label.horizontal_alignment = self.horizontalAlignment
 	newLabel.label.vertical_alignment   = self.verticalAlignment
 
