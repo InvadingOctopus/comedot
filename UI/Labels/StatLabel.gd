@@ -55,10 +55,9 @@ extends Container
 
 func _ready() -> void:
 	applyInitialFlags()
-	updateIcon()
 
 	if stat:
-		updateStatText(false) # Display the initital value, without animation
+		updateUI(false) # Display the initial value, without animation
 		stat.changed.connect(self.onStat_changed)
 	else:
 		Debug.printWarning("Missing stat", str(self))
@@ -73,9 +72,10 @@ func onStat_changed() -> void:
 	updateStatText()
 
 
-func updateUI() -> void:
+func updateUI(animate: bool = self.shouldAnimate) -> void:
 	updateIcon()
-	updateStatText()
+	updateStatText(animate)
+	self.tooltip_text = stat.description
 
 
 ## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value].

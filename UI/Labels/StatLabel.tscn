@@ -8,7 +8,7 @@ offset_right = 33.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-tooltip_text = "Experimental"
+tooltip_text = "Stat"
 columns = 2
 script = ExtResource("1_axogl")
 
