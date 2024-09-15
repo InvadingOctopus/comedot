@@ -208,6 +208,7 @@ func printLog(message: String = "", messageColor: String = "", objectName: Strin
 
 
 ## Prints a faded message to reduce apparent visual clutter.
+## Affected by [member shouldPrintDebugLogs].
 func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	if Debug.shouldPrintDebugLogs:
 		# Do not print frames on a separate line to reduce less clutter.
@@ -243,6 +244,7 @@ func printError(message: String = "", objectName: String = "", _objectColor: Str
 
 
 ## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs].
+## Affected by [member shouldPrintDebugLogs].
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
@@ -254,12 +256,24 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 		return ""
 
 
+## Prints a list of variables in a highlighted color.
+## TIP: Helpful for temporary debugging of bugs currently under attention.
+## Affected by [member shouldPrintDebugLogs].
+func printVariables(values: Array[Variant], separator: String = "\t") -> void:
+	if shouldPrintDebugLogs: 
+		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " \t[color=orange][b]", separator.join(values)))
+
+
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
 static func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
 		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
 
+#endregion
+
+
+#region Custom Log UI
 
 ## @experimental
 func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
