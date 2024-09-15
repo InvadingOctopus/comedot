@@ -44,6 +44,12 @@ extends Container
 			shouldShowIcon = newValue
 			if icon: icon.visible = shouldShowIcon
 
+@export var shouldShowIconAfterText: bool = false:
+	set(newValue):
+		if newValue != shouldShowIconAfterText:
+			shouldShowIconAfterText = newValue
+			rearrangeControls()
+
 #endregion
 
 
@@ -66,6 +72,7 @@ func _ready() -> void:
 func applyInitialFlags() -> void:
 	if label: label.uppercase	= shouldUppercase
 	if icon:  icon.visible		= shouldShowIcon
+	if shouldShowIconAfterText: rearrangeControls()
 
 
 func onStat_changed() -> void:
@@ -76,6 +83,15 @@ func updateUI(animate: bool = self.shouldAnimate) -> void:
 	updateIcon()
 	updateStatText(animate)
 	self.tooltip_text = stat.description
+
+
+func rearrangeControls() -> void:
+	if not shouldShowIconAfterText:
+		self.move_child(icon,  0)
+		self.move_child(label, 1)
+	else:
+		self.move_child(label, 0)
+		self.move_child(icon,  1)
 
 
 ## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value].
