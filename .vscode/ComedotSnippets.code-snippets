@@ -69,6 +69,12 @@
 		"description": "A property that references a Node with a %Unique name."
 	},
 
+	"Variable": {
+		"prefix": "var",
+		"body": ["var ${1:name}: ${2:type} = ${3:default}\n$0"],
+		"description": "A variable definition with an explicit type."
+	},
+
 	"External Property": {
 		"prefix": "varReturn",
 		"body": [
