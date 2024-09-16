@@ -14,10 +14,14 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
+# Editors
+.vscode/*
+.editorconfig
+
 # Game-specific experiments
 Lab/*
 Game/
 override.cfg
 
-.vscode/*
+# etc
 .DS_Store
