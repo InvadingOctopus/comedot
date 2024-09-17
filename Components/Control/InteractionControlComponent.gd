@@ -56,7 +56,7 @@ func onArea_entered(area: Area2D) -> void:
 	var interactionComponent: InteractionComponent = area.get_node(".") as InteractionComponent # HACK: TODO: Find better way to cast
 	if not interactionComponent: return
 
-	Debug.printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
+	printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
 
 	self.interactionsInRange.append(interactionComponent)
 	updateIndicator()
@@ -67,7 +67,7 @@ func onArea_exited(area: Area2D) -> void:
 	var interactionComponent: InteractionComponent = area.get_node(".") as InteractionComponent # HACK: TODO: Find better way to cast
 	if not interactionComponent: return
 
-	Debug.printDebug(self.logName + " onArea_exited: " + str(interactionComponent))
+	printDebug(self.logName + " onArea_exited: " + str(interactionComponent))
 
 	self.interactionsInRange.erase(interactionComponent)
 	updateIndicator()
