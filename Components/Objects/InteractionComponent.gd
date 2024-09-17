@@ -1,10 +1,15 @@
 ## Represents an area where an interaction may occur when the player inputs the interaction action.
+## The initiator of an interaction is an [Entity]'s [InteractionControlComponent].
 
 class_name InteractionComponent
 extends Component
 
 
 #region Parameters
+
+## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the parent [Entity] of the [InteractionControlComponent] is the `target`.
+## See [Payload] for explanation and available options.
+@export var payload: Payload
 
 @export var interactionIndicator: Node ## A node or control to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
 
@@ -116,9 +121,10 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 	return isEnabled
 
 
-## Must be overriden by a subclass to execute the actual interaction script.
+## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.
+## May be overriden by a subclass to perform custom actions.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
-	pass
+	payload.execute(self, interactorEntity)
 
 #endregion
