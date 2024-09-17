@@ -48,10 +48,11 @@ func checkCollectionConditions(_collectibleComponent: CollectibleComponent) -> b
 
 
 ## Performs the collection of a [CollectibleComponent],
-## either by adding a [Payload] [Node] to this component's parent [Entity],
-## or by executing a script or [Callable] provided by the collectible,
-## or emitting a [Signal], or other custom behavior.
-## Returns: The result of [method Payload.execute] or `false` if there [member CollectibleComponent.payload] is missing.
+## which calls [method Payload.execute] with the [CollectibleComponent] as the `source` and this [CollectorComponent]'s parent [Entity] as the `target`.
+## Either adds a [Payload] [Node] to the [Entity],
+## or executes a script or [Callable] provided by the collectible,
+## or emits a [Signal], or may perform other game-specific custom behavior.
+## Returns: The result of [method Payload.execute] or `false` if the [member CollectibleComponent.payload] is missing.
 func collect(collectibleComponent: CollectibleComponent) -> Variant:
 	var payload: Payload = collectibleComponent.payload
 	
@@ -61,7 +62,7 @@ func collect(collectibleComponent: CollectibleComponent) -> Variant:
 		printWarning("collectibleComponent missing payload")
 		return false
 
-	var result: Variant = payload.execute(collectibleComponent, self.parentEntity) # TBD: Should this be the CollectibleComponent's job?
+	var result: Variant = collectibleComponent.collect(self)
 	
 	if   result != null \
 	and (result is not bool or result != false): # Must not be `null` and not `false`

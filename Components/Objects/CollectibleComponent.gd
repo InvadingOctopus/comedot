@@ -17,7 +17,8 @@ extends Component
 
 #region Parameters
 
-## The actual gameplay effect of picking up this collectibe. See [Payload] for explanation and possible options.
+## The actual gameplay effect of picking up this collectibe, where this [CollectibleComponent] is passed as the `source` for [method Payload.execute], and the [CollectorComponent]'s parent [Entity] is the `target`.
+## See [Payload] for explanation and available options.
 @export var payload: Payload
 
 @export var isEnabled: bool = true
@@ -64,6 +65,13 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 		self.requestDeletionOfParentEntity()
 
 	return isCollectionApproved
+
+
+## Called by a [CollectorComponent] to perform the collection of this [CollectibleComponent],
+## by calling [method Payload.execute] and passing this [CollectibleComponent] as the `source` and the [CollectorComponent]'s parent [Entity] as the `target`.
+## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
+func collect(collectorComponent: CollectorComponent) -> Variant:
+	return payload.execute(self, collectorComponent.parentEntity) if payload else false
 
 
 #region Virtual Methods
