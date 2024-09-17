@@ -34,11 +34,11 @@ extends Resource
 		else: return self.name.capitalize()
 
 ## The core functionality of this Upgrade. A [Payload] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
-## See [Payload] for explanation and possible options.
+## See [Payload] for explanation and available options.
 @export var payloadOnAcquire: Payload
 
 ## A [Payload] to execute when this Upgrade is removed from an [Entity]'s [UpgradesComponent].
-## See [Payload] for explanation and possible options.
+## See [Payload] for explanation and available options.
 @export var payloadOnDiscard: Payload
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.

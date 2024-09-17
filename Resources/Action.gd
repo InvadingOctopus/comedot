@@ -12,7 +12,7 @@ extends StatDependentResourceBase
 
 @export var requiresTarget: bool
 
-## The code to execute when this Action is performed. See [Payload] for explanation and possible options.
+## The code to execute when this Action is performed. See [Payload] for explanation and available options.
 @export var payload: Payload
 
 @export var shouldShowDebugInfo: bool
