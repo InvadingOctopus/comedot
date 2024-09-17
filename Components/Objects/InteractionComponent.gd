@@ -11,7 +11,7 @@ extends Component
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
-@export var interactionIndicator: Node ## A node or control to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
+@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
 
 @export var alwaysShowIndicator: bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
 
@@ -25,7 +25,11 @@ extends Component
 
 ## An optional detailed description of the interaction to display in the UI.
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
-@export var description: String
+@export var description: String:
+	set(newValue):
+		if newValue != description:
+			description = newValue
+			if interactionIndicator is Control: interactionIndicator.tooltip_text = description
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -33,7 +37,7 @@ extends Component
 		if selfAsArea:
 			selfAsArea.monitorable = isEnabled
 			selfAsArea.monitoring  = isEnabled
-		
+
 #endregion
 
 
@@ -43,7 +47,7 @@ var selfAsArea: Area2D:
 	get:
 		if not selfAsArea: selfAsArea = self.get_node(".") as Area2D
 		return selfAsArea
-		
+
 #endregion
 
 
@@ -58,8 +62,9 @@ signal didDenyInteraction(interactorEntity: Entity)
 func _ready() -> void:
 	# Set the initial state of the indicator
 	if interactionIndicator:
-		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
 		updateLabel()
+		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
+		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
 
 
 func onArea_entered(area: Area2D) -> void:
@@ -69,6 +74,7 @@ func onArea_entered(area: Area2D) -> void:
 	# Display the indicators and labels, if any.
 	if interactionIndicator:
 		updateLabel()
+
 		interactionIndicator.visible = true
 
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
@@ -107,7 +113,7 @@ func updateLabel() -> void:
 	# TBD: Should this be optional?
 	if (not self.label.is_empty()) and interactionIndicator is Label:
 		interactionIndicator.text = self.label
-		# Also apply the color 
+		# Also apply the color
 		interactionIndicator.modulate = self.modulate
 
 
