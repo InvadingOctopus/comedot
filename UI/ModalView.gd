@@ -15,6 +15,11 @@ extends Node
 #endregion
 
 
+#region State
+var lastResult: Variant ## The `result` parameter provided to the last [method closeModalView] call, if any.
+#endregion
+
+
 #region Signals
 signal didFinish(result: Variant)
 #endregion
@@ -24,5 +29,6 @@ signal didFinish(result: Variant)
 func closeModalView(result: Variant = 0) -> void:
 	# DESIGN: The name is more verbose than `close()` to reduce ambiguity in more complex scenes which extend this script.
 	Debug.printLog(str("closeModalView() ", result), str(self))
+	lastResult = result
 	didFinish.emit(result)
 	if callbackOnFinish: callbackOnFinish.call(result)
