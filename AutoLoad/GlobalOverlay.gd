@@ -26,11 +26,11 @@ signal didHidePauseOverlay
 #region Dependencies
 const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 
-@onready var foregroundOverlay	:= %ForegroundOverlay
-@onready var animationPlayer	:= %AnimationPlayer
-@onready var pauseButton		:= %PauseButton
-@onready var labelsList			:= %LabelsList
-@onready var sounds				:= %Sounds
+@onready var foregroundOverlay	:CanvasLayer = %ForegroundOverlay
+@onready var animationPlayer	:AnimationPlayer = %AnimationPlayer
+@onready var pauseButton		:Button = %PauseButton
+@onready var labelsList			:TemporaryLabelList = %LabelsList
+@onready var sounds				:Node = %Sounds
 #endregion
 
 
