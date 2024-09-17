@@ -7,7 +7,7 @@ extends Component
 
 #region Parameters
 
-## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the parent [Entity] of the [InteractionControlComponent] is the `target`.
+## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`.
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
@@ -123,8 +123,9 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 
 ## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.
 ## May be overriden by a subclass to perform custom actions.
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
-	payload.execute(self, interactorEntity)
+	return payload.execute(self, interactorEntity) if payload else false
 
 #endregion

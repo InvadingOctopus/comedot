@@ -10,6 +10,8 @@ extends InteractionComponent
 #endregion
 
 
+## Returns the updated [member Ndoe2D.global_position] of the interactor [Entity].
 @warning_ignore("unused_parameter")
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Vector2:
 	interactorEntity.global_position = destinationNode.global_position
+	return interactorEntity.global_position

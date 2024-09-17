@@ -27,12 +27,13 @@ var currentModalView: ModalView
 
 
 ## NOTE: Subclasses MUST call `super.performInteraction(...)`
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+## Returns [member ModalView.lastResult]
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	
 	if not modalScene:
 		printWarning("No modalView")
-		return
+		return false
 		
 	var sceneTree: SceneTree = self.get_tree()
 	var modalView: ModalView = modalScene.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
@@ -54,6 +55,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	modalView.didFinish.connect(self.modalView_didFinish)
 	
 	self.currentModalView = modalView
+	return modalView.lastResult
 
 
 func modalView_didFinish(result: Variant) -> void:

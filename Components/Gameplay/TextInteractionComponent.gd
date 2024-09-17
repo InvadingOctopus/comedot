@@ -31,9 +31,11 @@ func _ready() -> void:
 	updateLabel()
 
 
+## Returns the updated label text.
 @warning_ignore("unused_parameter")
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
 	displayNextText()
+	return self.label
 
 
 ## This function may be called by a [Timer] or other scripts to automate the text display.
