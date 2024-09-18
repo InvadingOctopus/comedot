@@ -12,23 +12,24 @@ extends Node
 class Actions: 
 
 	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
-	const moveUp		:= &"moveUp"
-	const moveDown		:= &"moveDown"
 	const moveLeft		:= &"moveLeft"
 	const moveRight		:= &"moveRight"
+	const moveUp		:= &"moveUp"
+	const moveDown		:= &"moveDown"
 
 	# Relative-movement controls in games where a character rotates left/right and "thrusts" forward or "reverses" backward.
 	# Also known as "tank controls", and used in games like Asteroids.
-	const moveForward	:= &"moveForward"
-	const moveBackward	:= &"moveBackward"
 	const turnLeft		:= &"turnLeft"  ## Gamepad Right Joystick
 	const turnRight		:= &"turnRight" ## Gamepad Right Joystick
+	const moveForward	:= &"moveForward"
+	const moveBackward	:= &"moveBackward"
 
 	# A secondary axis for controlling a camera or aiming cursor etc. Gamepad Right Joystick.
-	const lookUp		:= &"lookUp"
-	const lookDown		:= &"lookDown"
+	# TBD: Should these be named "aim-" instead of "look-"?
 	const lookLeft		:= &"lookLeft"
 	const lookRight		:= &"lookRight"
+	const lookUp		:= &"lookUp"
+	const lookDown		:= &"lookDown"
 
 	const jump			:= &"jump"
 	const fire			:= &"fire"
