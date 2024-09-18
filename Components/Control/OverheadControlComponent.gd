@@ -31,10 +31,13 @@ func getRequiredcomponents() -> Array[Script]:
 # func _input(_event: InputEvent) -> void:
 # 	if not isEnabled: return
 # 	# TBD: PERFORMANCE: Handle inputs here only when an input occurs?
-# 	pass
 
 
-func _process(_delta: float) -> void: # NOTE: If you need to process movement or collisions, use `_physics_process()`
+func _physics_process(_delta: float) -> void: # TBD: CHECK: Should this be `_physics_process()` or `_process()`?
 	if not isEnabled: return
-	overheadPhysicsComponent.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
+	overheadPhysicsComponent.inputDirection = Input.get_vector(
+		GlobalInput.Actions.moveLeft,
+		GlobalInput.Actions.moveRight,
+		GlobalInput.Actions.moveUp,
+		GlobalInput.Actions.moveDown)
 
