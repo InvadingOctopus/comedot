@@ -1,4 +1,5 @@
 ## A [Payload] which calls a specific function/method from the specified `.gd` script file.
+## TIP: If your script requires more complex parameters than just the `source` and `target`, create a new custom subclass of [Payload].
 
 class_name ScriptPayload
 extends Payload
@@ -39,6 +40,7 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 			return false
 
 		self.willExecute.emit(source, target)
+
 		# A script that matches this interface:
 		# static func [payloadScriptMethodName](source: Variant, target: Variant) -> Variant
 		return self.payloadScript.call(self.payloadScriptMethodName, source, target)
