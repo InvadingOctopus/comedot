@@ -48,15 +48,18 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xatav"]
 _data = {
-"RESET": SubResource("Animation_rrs6i"),
-"fadeOut": SubResource("Animation_p7665")
+&"RESET": SubResource("Animation_rrs6i"),
+&"fadeOut": SubResource("Animation_p7665")
 }
 
 [node name="TemporaryLabel" type="Label"]
 offset_right = 102.0
 offset_bottom = 8.0
+size_flags_horizontal = 3
 text = "COMEDOT"
 label_settings = ExtResource("1_r25na")
+autowrap_mode = 3
+text_overrun_behavior = 3
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 2.0
@@ -65,7 +68,7 @@ autostart = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_xatav")
+&"": SubResource("AnimationLibrary_xatav")
 }
 
 [connection signal="timeout" from="Timer" to="AnimationPlayer" method="play" binds= [&"fadeOut"]]
