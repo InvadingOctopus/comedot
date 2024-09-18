@@ -53,13 +53,12 @@ _data = {
 }
 
 [node name="TemporaryLabel" type="Label"]
-offset_right = 102.0
-offset_bottom = 8.0
+offset_right = 1.0
+offset_bottom = 1.0
 size_flags_horizontal = 3
 text = "COMEDOT"
 label_settings = ExtResource("1_r25na")
 autowrap_mode = 3
-text_overrun_behavior = 3
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 2.0
