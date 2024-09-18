@@ -1,8 +1,18 @@
 ## A [Payload] which creates a new copy of a specified [PackedScene] and attaches it to a receiving target Node.
-## May be used for adding new [Component]s to a player [Entity] or other character.
+## May be used for adding new [Component]s to a player [Entity] or other character, or for spawning new objects or characters in the game world.
 
 class_name NodePayload
 extends Payload
+
+
+#region Constants
+enum ParentOptions {
+	payloadSource,
+	parentOfPayloadSource,
+	payloadTarget,
+	parentOfPayloadTarget,
+	}
+#endregion
 
 
 #region Parameters
@@ -12,6 +22,9 @@ extends Payload
 ## [method executeImplementation] will return an instance of this scene.
 @export var payloadScene: PackedScene # TBD: Which type to use here for instantiating copies from?
 
+## The parent [Node] to add a new instance of [member payloadScene] to.
+@export var parentChoice: ParentOptions = ParentOptions.payloadTarget
+
 #endregion
 
 
@@ -19,22 +32,49 @@ extends Payload
 func executeImplementation(source: Variant, target: Variant) -> Node:
 	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, " target: ", target))
 	
-	var targetParent: Node = target as Node
-
-	if not targetParent:
-		Debug.printWarning("target is not a Node; cannot be a parent", self.logName)
-		return null
-
-	if self.payloadScene:
-		self.willExecute.emit(source, target)
-		var payloadNode: Node = createPayloadNode()
-		
-		targetParent.add_child(payloadNode)
-		payloadNode.owner = targetParent # INFO: Necessary for persistence to a [PackedScene] for save/load.
-		return payloadNode
-	else:
+	if not self.payloadScene:
 		Debug.printWarning("Missing payloadScene", self.logName)
 		return null
+
+	# Decide the parent of the new node instance
+
+	var parent: Node
+
+	match parentChoice:
+		ParentOptions.payloadSource:
+			if source is Node: parent = source
+			else: Debug.printWarning("source is not a Node; cannot be a parent", self.logName)
+		ParentOptions.parentOfPayloadSource:
+			if source is Node: parent = source.get_parent()
+			else: Debug.printWarning("source is not a Node; cannot get_parent()", self.logName)
+		ParentOptions.payloadTarget:
+			if target is Node: parent = target
+			else: Debug.printWarning("target is not a Node; cannot be a parent", self.logName)
+		ParentOptions.parentOfPayloadTarget:
+			if target is Node: parent = target.get_parent()
+			else: Debug.printWarning("target is not a Node; cannot get_parent()", self.logName)
+
+	if not parent:
+		Debug.printWarning(str("Cannot get parent for parentChoice: ", ParentOptions.keys()[parentChoice]), self.logName)
+		return null
+
+	# Instantiate
+
+	self.willExecute.emit(source, target)
+	var payloadNode: Node = createPayloadNode()
+	
+	# Position
+	
+	if payloadNode is Node2D:
+		if source is Node2D: payloadNode.global_position = source.global_position
+		# payloadNode.position.x += randf_range(-10, 10) # TODO: Add variance
+		payloadNode.position = parent.to_local(payloadNode.position)
+
+	# Attach
+
+	parent.add_child(payloadNode)
+	payloadNode.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
+	return payloadNode
 
 
 ## Creates and returns a new instance of [member payloadScene].
