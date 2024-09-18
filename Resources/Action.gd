@@ -1,6 +1,7 @@
 ## Represents an "special" action, skill or ability that a player or another character may explicitly choose to perform. May have a cost and may require a target to be chosen.
 ## It may be a special skill/spell such as "Fireball", an innate ability such as "Fly", or a trivial command like "Examine".
 ## NOTE: In most games this does NOT include the very basic common actions such as movement, jumping, shooting etc.
+## NOTE: This is NOT a player input action such as a joystick movement, gamepad button or keyboard keypress.
 
 class_name Action
 extends StatDependentResourceBase
