@@ -428,34 +428,6 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 	Debug.printDebug(str("Tools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
 	return cellCoordinatesInDestinationMap
 
-#endregion
-
-
-#region UI Functions
-
-## Sets the text of [Label]s from a [Dictionary].
-## Iterates over an array of [Label]s, and takes the prefix of the node name by removing the "Label" suffix, if any, and making it LOWER CASE,
-## and searches the [param dictionary] for any String keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
-## Example: `logMessageLabel.text = dictionary["logmessage"]`
-## TIP: Use to quickly populate an "inspector" UI with text representing multiple properties of a selected object etc.
-## NOTE: The dictionary keys must all be fully LOWER CASE.
-static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary[String, Variant], shouldShowPrefix: bool = false, shouldHideEmptyLabels: bool = false) -> void:
-	# DESIGN: We don't accept an array of any Control/Node because Labels may be in different containers, and some Labels may not need to be assigned from the Dictionary.
-	for label: Label in labels:
-		if not label: continue
-
-		var namePrefix: String = label.name.trim_suffix("Label").to_lower()
-		var dictionaryValue: Variant = dictionary.get(namePrefix)
-
-		label.text = namePrefix + ":" if shouldShowPrefix else "" # TBD: Space after colon?
-
-		if dictionaryValue:
-			label.text += str(dictionaryValue)
-			if shouldHideEmptyLabels: label.visible = true # Automatically show non-empty labels in case they were already hidden
-		else:
-			label.text += ""
-			if shouldHideEmptyLabels: label.visible = false
-
 
 ## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
 ## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
@@ -487,29 +459,60 @@ static func populateTileMap(tileMap: TileMapLayer, sceneToCopy: PackedScene, num
 
 	for count in numberOfCopies:
 		var newNode: Node2D = sceneToCopy.instantiate()
-		
+
 		# Find a unoccupied cell
-		
+		# Rect size = 1 if 1 cell, so subtract - 1
+		# TBD: A more efficient way?
+
 		var cellCoordinates: Vector2i = Vector2i(
-			randi_range(0, mapRect.size.x),
-			randi_range(0, mapRect.size.y))
+			randi_range(0, mapRect.size.x - 1),
+			randi_range(0, mapRect.size.y - 1))
 
 		while(nodesSpawned.get(cellCoordinates)):
 			cellCoordinates = Vector2i(
-				randi_range(0, mapRect.size.x),
-				randi_range(0, mapRect.size.y))
+				randi_range(0, mapRect.size.x - 1),
+				randi_range(0, mapRect.size.y - 1))
 
 		# Position
-		newNode.global_position = tileMap.to_global(tileMap.map_to_local(cellCoordinates)) # TODO: Verify
+		newNode.position = parent.to_local(
+			tileMap.to_global(
+				tileMap.map_to_local(cellCoordinates)))
 
 		# Add
 
-		parent.add_child(newNode)
-		newNode.owner = parent # Necessary for persistence 
-		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo)
+		Tools.addChildAndSetOwner(newNode, parent)
+		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
 		nodesSpawned[cellCoordinates] = newNode
 
 	return nodesSpawned
+
+#endregion
+
+
+#region UI Functions
+
+## Sets the text of [Label]s from a [Dictionary].
+## Iterates over an array of [Label]s, and takes the prefix of the node name by removing the "Label" suffix, if any, and making it LOWER CASE,
+## and searches the [param dictionary] for any String keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
+## Example: `logMessageLabel.text = dictionary["logmessage"]`
+## TIP: Use to quickly populate an "inspector" UI with text representing multiple properties of a selected object etc.
+## NOTE: The dictionary keys must all be fully LOWER CASE.
+static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary[String, Variant], shouldShowPrefix: bool = false, shouldHideEmptyLabels: bool = false) -> void:
+	# DESIGN: We don't accept an array of any Control/Node because Labels may be in different containers, and some Labels may not need to be assigned from the Dictionary.
+	for label: Label in labels:
+		if not label: continue
+
+		var namePrefix: String = label.name.trim_suffix("Label").to_lower()
+		var dictionaryValue: Variant = dictionary.get(namePrefix)
+
+		label.text = namePrefix + ":" if shouldShowPrefix else "" # TBD: Space after colon?
+
+		if dictionaryValue:
+			label.text += str(dictionaryValue)
+			if shouldHideEmptyLabels: label.visible = true # Automatically show non-empty labels in case they were already hidden
+		else:
+			label.text += ""
+			if shouldHideEmptyLabels: label.visible = false
 
 #endregion
 
