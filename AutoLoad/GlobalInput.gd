@@ -11,7 +11,7 @@ extends Node
 ## NOTE: This is NOT the same as the [Action] Resource which represent special actions performed by explicit in-game choices.
 class Actions: 
 
-	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad
+	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
 	const moveUp		:= &"moveUp"
 	const moveDown		:= &"moveDown"
 	const moveLeft		:= &"moveLeft"
@@ -23,6 +23,12 @@ class Actions:
 	const moveBackward	:= &"moveBackward"
 	const turnLeft		:= &"turnLeft"  ## Gamepad Right Joystick
 	const turnRight		:= &"turnRight" ## Gamepad Right Joystick
+
+	# A secondary axis for controlling a camera or aiming cursor etc. Gamepad Right Joystick.
+	const lookUp		:= &"lookUp"
+	const lookDown		:= &"lookDown"
+	const lookLeft		:= &"lookLeft"
+	const lookRight		:= &"lookRight"
 
 	const jump			:= &"jump"
 	const fire			:= &"fire"
