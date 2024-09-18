@@ -8,7 +8,7 @@ extends Component
 
 
 #region Parameters
-@export_range(0.0, 100.0, 10.0) var speed: float ## Placeholder
+@export_range(0, 100, 10) var speed: float = 100 ## Placeholder
 @export var isEnabled: bool = true
 #endregion
 
