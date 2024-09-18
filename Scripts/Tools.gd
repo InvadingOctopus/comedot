@@ -77,8 +77,9 @@ static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2
 
 ## Calls [param parent].[method Node.add_child] and sets the [param child].[member Node.owner].
 ## This is necessary for persistence to a [PackedScene] for save/load.
+## Also sets the `force_readable_name` parameter.
 static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TBD: Should `parent` be the 1st argument or 2nd? All global functions operate on the 1st argument, the parent [Node], but this method's name has "child" as the first word, so the `child` should be the 1st argument, right? :')
-	parent.add_child(child)
+	parent.add_child(child, true) # force_readable_name
 	child.owner = parent
 
 
