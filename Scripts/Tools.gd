@@ -455,6 +455,61 @@ static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary
 			label.text += ""
 			if shouldHideEmptyLabels: label.visible = false
 
+
+## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
+## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
+static func populateTileMap(tileMap: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
+
+	# Validation
+
+	if not sceneToCopy:
+		Debug.printWarning("No sceneToCopy specified", str(tileMap))
+		return {}
+
+	var mapRect: Rect2i = tileMap.get_used_rect()
+
+	if not mapRect.has_area():
+		Debug.printWarning(str("tileMap has no area: ", mapRect.size), str(tileMap))
+		return {}
+
+	var totalCells: int = mapRect.size.x * mapRect.size.y
+
+	if numberOfCopies > totalCells:
+		Debug.printWarning(str("numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells), str(tileMap))
+		return {}
+
+	# Spawn
+
+	var nodesSpawned: Dictionary[Vector2i, Node2D]
+	var parent: Node2D = parentOverride if parentOverride else tileMap
+
+	for count in numberOfCopies:
+		var newNode: Node2D = sceneToCopy.instantiate()
+		
+		# Find a unoccupied cell
+		
+		var cellCoordinates: Vector2i = Vector2i(
+			randi_range(0, mapRect.size.x),
+			randi_range(0, mapRect.size.y))
+
+		while(nodesSpawned.get(cellCoordinates)):
+			cellCoordinates = Vector2i(
+				randi_range(0, mapRect.size.x),
+				randi_range(0, mapRect.size.y))
+
+		# Position
+		newNode.global_position = tileMap.to_global(tileMap.map_to_local(cellCoordinates)) # TODO: Verify
+
+		# Add
+
+		parent.add_child(newNode)
+		newNode.owner = parent # Necessary for persistence 
+		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo)
+		nodesSpawned[cellCoordinates] = newNode
+
+	return nodesSpawned
+
 #endregion
 
 
