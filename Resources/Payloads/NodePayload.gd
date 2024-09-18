@@ -25,6 +25,9 @@ enum ParentOptions {
 ## The parent [Node] to add a new instance of [member payloadScene] to.
 @export var parentChoice: ParentOptions = ParentOptions.payloadTarget
 
+@export var randomPositionOffsetMin: Vector2 # The lower bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
+@export var randomPositionOffsetMax: Vector2 # The upper bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
+
 #endregion
 
 
@@ -67,7 +70,9 @@ func executeImplementation(source: Variant, target: Variant) -> Node:
 	
 	if payloadNode is Node2D:
 		if source is Node2D: payloadNode.global_position = source.global_position
-		# payloadNode.position.x += randf_range(-10, 10) # TODO: Add variance
+		# TBD: Ensure minimum distance from parent so as to not obscure the parent?
+		payloadNode.position.x += randf_range(randomPositionOffsetMin.x, randomPositionOffsetMax.x)
+		payloadNode.position.y += randf_range(randomPositionOffsetMin.y, randomPositionOffsetMax.y)
 		payloadNode.position = parent.to_local(payloadNode.position)
 
 	# Attach
