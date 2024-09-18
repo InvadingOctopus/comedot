@@ -1,4 +1,4 @@
-## Rotates the parent [Entity] OR a specified [Node] towards the mouse pointer.
+## Rotates the parent [Entity] OR an specified [Node2D] to face towards the mouse pointer.
 ## TIP: May be used to aim a [GunComponent] etc.
 ## NOTE: Mutually exclusive with [TurningControlComponent]: Set [member shouldDisableOnTurningInput] to disable this component when the player inputs a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight]. To reenable, press any mouse button.
 
