@@ -12,6 +12,7 @@ extends Component
 
 
 func _physics_process(delta: float) -> void:
+	# NOTE: Cannot use `_input()` because `delta` is needed here.
 	if not isEnabled: return
 	if shouldRepositionImmediately:
 		parentEntity.global_position = parentEntity.get_global_mouse_position()
