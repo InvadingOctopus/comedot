@@ -22,6 +22,7 @@ stretch_mode = 2
 [node name="Label" type="Label" parent="."]
 editor_description = "View for a Stat Resource"
 layout_mode = 2
+mouse_filter = 1
 text = "000"
 label_settings = ExtResource("1_q4sdu")
 horizontal_alignment = 1
