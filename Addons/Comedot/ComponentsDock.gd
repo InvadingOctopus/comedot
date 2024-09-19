@@ -473,6 +473,9 @@ func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 		# Error messages logged by other functions
 		return ""
 
+	# TODO:  Create a NEW component and save it to a file, instead of copying an existing `.tscn`
+	# FIXME: COPYING a file causes duplicate UID conflicts!
+
 	# Make a duplicate of the base Component scene at the specified destination path
 	if not copyFile(componentBaseScene, newComponentPath):
 		# Error messages logged by other functions
