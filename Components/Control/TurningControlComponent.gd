@@ -22,6 +22,9 @@ var playerInputComponent: PlayerInputComponent:
 	get:
 		if not playerInputComponent: playerInputComponent = self.getCoComponent(PlayerInputComponent)
 		return playerInputComponent
+
+func getRequiredComponents() -> Array[Script]:
+	return [PlayerInputComponent]
 #endregion
 
 
@@ -32,7 +35,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not isEnabled: return
-	
+
 	var rotationDirection: float = playerInputComponent.turnInput
 
 	if rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
