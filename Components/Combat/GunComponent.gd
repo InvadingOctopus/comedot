@@ -2,7 +2,7 @@
 ## WARNING: This component relies on [method _unhandled_input] to process player input,
 ## in order to allow UI elements to receive input without firing the gun.
 ## If mouse input events are not reaching this component, check the [member Control.mouse_filter] property of any overlaying nodes, and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
-## TIP: For aiming, use [MouseRotationComponent].
+## TIP: For aiming, use [NodeFacingComponent] or [MouseRotationComponent].
 
 class_name GunComponent
 extends CooldownComponent
