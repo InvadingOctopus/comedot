@@ -27,6 +27,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 @export var isLoggingEnabled:		bool = true
 
 ## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
+## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
 @export var shouldShowDebugInfo:	bool = false
 
 #endregion

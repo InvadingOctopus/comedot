@@ -184,6 +184,7 @@ func removeSiblingComponentsOfSameType() -> int:
 ## Enables more detailed debugging information for this component, such as verbose log messages, visual indicators, the [member Debug.watchList] live property labels, or chart windows etc.
 ## NOTE: Subclasses may add their own information or may not respect this flag.
 ## Defaults to the entity's [member Entity.shouldShowDebugInfo] if initially `false`.
+## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
 @export var shouldShowDebugInfo: bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
