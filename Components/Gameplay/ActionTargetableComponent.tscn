@@ -1,7 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://5yiyg3iv4qgd"]
+[gd_scene load_steps=3 format=3 uid="uid://c6sthnygmcwpg"]
 
-[ext_resource type="Script" path="res://Components/Gameplay/ActionTargetableComponent.gd" id="1_yvpiq"]
+[ext_resource type="Script" path="res://Components/Gameplay/ActionTargetableComponent.gd" id="1_bmle7"]
 
-[node name="ActionTargetableComponent" type="Node2D" groups=["components", "targetables"]]
-script = ExtResource("1_yvpiq")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gis5n"]
+resource_local_to_scene = true
+size = Vector2(32, 32)
+
+[node name="ActionTargetableComponent" type="Area2D" groups=["components", "targetables"]]
+monitoring = false
+monitorable = false
+script = ExtResource("1_bmle7")
 metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_gis5n")
+
+[connection signal="mouse_entered" from="." to="." method="onMouseEntered"]
+[connection signal="mouse_exited" from="." to="." method="onMouseExited"]

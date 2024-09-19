@@ -50,3 +50,11 @@ func choose() -> bool:
 func checkConditions() -> bool:
 	# TODO: Add arguments to specify the chooser/action etc.
 	return true
+
+
+func onMouseEntered() -> void:
+	parentEntity.modulate = Color.GREEN
+
+
+func onMouseExited() -> void:
+	parentEntity.modulate = Color.WHITE
