@@ -21,23 +21,26 @@ extends Component
 #endregion
 
 
+#region State
+var lastInput: Vector2 # NOTE: This is a class variable so that subclasses such as [PositionControlComponent] may access it.
+#endregion
+
+
 func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` or `_process()`?
 	# NOTE: Cannot use `_input()` because `delta` is needed.
 	if not isEnabled: return
-
-	var input: Vector2
 	
 	if shouldUseSecondaryAxis:
-		input = Input.get_vector(
+		lastInput = Input.get_vector(
 			GlobalInput.Actions.moveLeft,
 			GlobalInput.Actions.moveRight,
 			GlobalInput.Actions.moveUp,
 			GlobalInput.Actions.moveDown)
 	else:
-		input = Input.get_vector(
+		lastInput = Input.get_vector(
 			GlobalInput.Actions.lookLeft,
 			GlobalInput.Actions.lookRight,
 			GlobalInput.Actions.lookUp,
 			GlobalInput.Actions.lookDown)
 
-	parentEntity.position += input * speed * delta
+	parentEntity.position += lastInput * speed * delta
