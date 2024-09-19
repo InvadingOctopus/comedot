@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ck0j3cvj5d26w"]
+
+[ext_resource type="Script" path="res://Components/Control/StationaryHidingPositionControlComponent.gd" id="1_iiojd"]
+
+[node name="StationaryHidingPositionControlComponent" type="Node" groups=["components"]]
+script = ExtResource("1_iiojd")
+
+[node name="HidingTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="HidingTimer" to="." method="onHidingTimer_timeout"]
