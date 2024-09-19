@@ -57,12 +57,12 @@ func _input(event: InputEvent) -> void:
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \
 		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
-			printDebug("Turn action received. Disabling self so TurningControlComponent can work.")
+			printDebug("Turn action received. Disabling MouseRotationComponent so TurningControlComponent can be used.")
 			GlobalOverlay.createTemporaryLabel("Mouse aiming off if turning. Click to reenable")
 			self.isEnabled = false
 			setMouseCursor(false)
 		elif not self.isEnabled and Input.get_mouse_button_mask() != 0:
-			printDebug("Mouse button pressed. Enabling self. TurningControlComponent may not work.")
+			printDebug("Mouse button pressed. Enabling MouseRotationComponent. TurningControlComponent may not work.")
 			self.isEnabled = true
 			setMouseCursor(true)
 
