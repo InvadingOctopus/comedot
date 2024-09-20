@@ -31,7 +31,7 @@ func clampToBoundary() -> void:
 	#printDebug()
 
 
-func printDebug() -> void:
+func showDebugInfo() -> void:
 	Debug.watchList.boundary		= self.boundary.position
 	Debug.watchList.limit_left  	= limit_left
 	Debug.watchList.limit_right 	= limit_right

@@ -67,7 +67,7 @@ var damageComponentsInContact: Array[DamageComponent]
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
-	printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if shouldShowDebugInfo: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 
 	var damageComponent: DamageComponent = getDamageComponent(areaEntered)
 
@@ -98,7 +98,7 @@ func getDamageComponent(componentArea: Area2D) -> DamageComponent:
 
 	if not damageComponent:
 		## NOTE: This warning may help to set collision masks properly.
-		printDebug("Cannot cast area as DamageComponent: " + str(componentArea) + " | Check collision masks")
+		printDebug("Cannot cast area as DamageComponent: " + str(componentArea) + " — Check collision masks")
 		return null
 
 	# Is it our own entity?

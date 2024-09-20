@@ -22,13 +22,13 @@ extends Entity
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not areaEntered.owner == self: 
-		if shouldShowDebugInfo: printDebug(str(areaEntered)) # Check for flag to avoid `str()` call
+		if shouldShowDebugInfo: printDebug(str(areaEntered))
 		onCollide()
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
 	if not bodyEntered.owner == self:
-		if shouldShowDebugInfo: printDebug(str(bodyEntered)) # Check for flag to avoid `str()` call
+		if shouldShowDebugInfo: printDebug(str(bodyEntered))
 		onCollide()
 
 
