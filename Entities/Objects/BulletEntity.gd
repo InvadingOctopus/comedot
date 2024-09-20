@@ -13,19 +13,12 @@ extends Entity
 ## This does NOT apply to the [DamageComponent]'s area.
 @export var removeOnAnyCollision: bool = true
 
-## Should the bullet be removed when the [DamageComponent] collides with a [DamageReceivingComponent]?
-@export var removeOnCollisionWithDamageReceiver: bool = true
+
 
 #endregion
 
 
 #region Collisions
-
-func onDamageComponent_didCollideWithReceiver(_damageReceivingComponent: DamageReceivingComponent) -> void:
-	if removeOnCollisionWithDamageReceiver:
-		printDebug("onDamageComponent_didCollideWithReceiver(): removeOnCollisionWithDamageReceiver")
-		self.requestDeletion()
-
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not areaEntered.owner == self: 

@@ -28,7 +28,7 @@ signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerF
 ## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
 signal didCollideWithDamage(damageComponent: DamageComponent)
 
-signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: float, attackerFactions: int)
+signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: float, attackerFactions: int) ## @experimental
 
 #endregion
 
@@ -65,11 +65,11 @@ var damageComponentsInContact: Array[DamageComponent]
 
 #region Collisions
 
-
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled: return
+	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
+	printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 
-	var damageComponent := getDamageComponent(areaEntered)
+	var damageComponent: DamageComponent = getDamageComponent(areaEntered)
 
 	# If the Area2D is not a DamageComponent, there's nothing to do.
 	if damageComponent:
@@ -85,7 +85,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: Even though we don't need to use a [DamageComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageComponent: DamageComponent = areaExited.get_node(".") as DamageComponent # HACK: TODO: Find better way to cast
-	if damageComponent: damageComponentsInContact.erase(damageComponent)
+	if  damageComponent: damageComponentsInContact.erase(damageComponent)
 	
 	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
 	if damageComponentsInContact.size() <= 0:
@@ -111,7 +111,7 @@ func getDamageComponent(componentArea: Area2D) -> DamageComponent:
 ## This function may be called by a colliding [DamageComponent].
 func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> void:
 	if not isEnabled: return
-
+	if shouldShowDebugInfo: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
 	if attackerFactionComponent:
 		self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else:
@@ -128,21 +128,26 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 ## Example: if CharacterA is in the Players faction and CharacterB is in Enemies, they can damage each other.
 ## But if CharacterB is in Enemies and ALSO IN Players, they will not damage each other.
 func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
-	var shouldReceiveDamage := false
+	var shouldReceiveDamage: bool = false
 
 	if friendlyFire or not self.factionComponent:
 		shouldReceiveDamage = true
 	else:
-		var myFactions: int = self.factionComponent.factions
-		shouldReceiveDamage = not (myFactions & attackerFactions) # Bitwise AND means any matching bits at all.
+		var selfFactions: int = self.factionComponent.factions
+		shouldReceiveDamage = not (selfFactions & attackerFactions) # Bitwise AND means any matching bits at all.
 
+	if shouldShowDebugInfo: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
 	return shouldReceiveDamage
 
+
+#region Damage
 
 ## NOTE: [param damageComponent] may be `null` in case the caller is a [DamageTimerComponent]
 func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire):
 		return
+
+	if shouldShowDebugInfo: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
 
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
@@ -153,6 +158,7 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 
 ## Converts float damage values to a single integer damage value.
 ## Such as damage accumulated over time/per frame.
+## @experimental
 func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
 	# INFO: The convention is to keep all player-facing stats as integers,
 	# to eliminate any potential bugs or inconsistencies arising from floating point math inaccuracies.
@@ -187,6 +193,7 @@ func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: 
 		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
 
 
+## @experimental
 func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> bool:
 	# TODO: Signals
 	# TODO: Removal
@@ -196,3 +203,5 @@ func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> b
 
 	self.parentEntity.add_child(damageTimerComponent)
 	return true
+
+#endregion

@@ -8,7 +8,7 @@ size = Vector2(16, 16)
 
 [node name="DamageComponent" type="Area2D" groups=["components"]]
 collision_layer = 1024
-collision_mask = 2
+collision_mask = 1024
 script = ExtResource("1_c26d6")
 metadata/_edit_group_ = true
 

@@ -21,7 +21,11 @@ extends Component
 @export var damageTimerComponent: DamageTimerComponent
 
 ## Should bullets from the same faction hurt?
-@export var friendlyFire := false
+@export var friendlyFire: bool = false
+
+## Should the parent Entity be removed when this [DamageComponent] collides with a [DamageReceivingComponent]?
+## Useful for bullets.
+@export var removeEntityOnCollisionWithDamageReceiver: bool = false
 
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
@@ -61,18 +65,23 @@ signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent
 #region Collisions
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled: return
+	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
+	printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 
-	var damageReceivingComponent := getDamageReceivingComponent(areaEntered)
+	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:
 		damageReceivingComponentsInContact.append(damageReceivingComponent)
 		didCollideWithReceiver.emit(damageReceivingComponent)
-		causeCollisionDamage(damageReceivingComponent)
+		self.causeCollisionDamage(damageReceivingComponent)
 
 		if damageTimerComponent:
 			applyDamageTimerComponent(damageReceivingComponent)
+		
+		if removeEntityOnCollisionWithDamageReceiver:
+			printDebug("removeEntityOnCollisionWithDamageReceiver")
+			self.requestDeletionOfParentEntity()
 
 
 func onAreaExited(areaExited: Area2D) -> void:
@@ -81,7 +90,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
-	if damageReceivingComponent: damageReceivingComponentsInContact.erase(damageReceivingComponent)
+	if  damageReceivingComponent: damageReceivingComponentsInContact.erase(damageReceivingComponent)
 
 
 ## Casts an [Area2D] as a [DamageReceivingComponent].
@@ -110,7 +119,7 @@ func _physics_process(delta: float) -> void:
 	## But the would require more work to keep track of each collision :(
 
 	# TODO: Verify that it is indeed per second.
-	var damageForThisFrame := self.damagePerSecond * delta
+	var damageForThisFrame: float = self.damagePerSecond * delta
 
 	for damageReceivingComponent in damageReceivingComponentsInContact:
 		# DEBUG: printLog("causeFrameDamage: " + str(damageReceivingComponent) + " | damageForThisFrame: " + str(damageForThisFrame))
@@ -134,6 +143,7 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 
 func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
 	if not isEnabled: return
+	if shouldShowDebugInfo: printDebug(str("causeFrameDamage() damageReceivingComponent: ", damageReceivingComponent, ", damageForThisFrame: ", damageForThisFrame))
 
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
@@ -152,7 +162,8 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
 	if not isEnabled: return
-
+	if shouldShowDebugInfo: printDebug(str("applyDamageTimerComponent() damageReceivingComponent: ", damageReceivingComponent))
+	
 	# Create a new copy of the provided component.
 
 	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()
