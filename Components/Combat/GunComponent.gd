@@ -156,6 +156,6 @@ func createNewBullet() -> Entity:
 	if factionComponent:
 		printDebug(str("Copying factionComponent to newBullet: ", factionComponent))
 		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
-		newBullet.add_child(factionComponentCopy)
+		newBullet.add_child(factionComponentCopy, true) # force_readable_name
 	
 	return newBullet
