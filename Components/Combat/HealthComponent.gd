@@ -7,9 +7,20 @@ extends Component
 
 
 #region Parameters
+
 @export var health: Stat
 @export var shouldRemoveEntityOnZero: bool = false ## Affected by [member isEnabled].
+
+## If true, [member health] will not decrease (or increase, if the damage is negative) more than [member maximumHealthDamagePerHit] during a single call to [method damage].
+## This may be used for objects or enemies that require a fixed number of hits to destroy, no matter what the "strength" of the gun or attack is.
+@export var shouldClampHealthDamage: bool
+
+## Limits the maximum amount of damage during a single call to [method damage] if [member HealthComponent.health] is true.
+## NOTE: If this limit is NEGATIVE then only HEALING will be allowed.
+@export var maximumHealthDamagePerHit: int
+
 @export var isEnabled: bool = true
+
 #endregion
 
 #region Signals
@@ -52,15 +63,24 @@ func onHealthChanged() -> void:
 
 
 ## [param damageAmount] must be a positive number. Negative values will INCREASE health.
-## Returns: Remaining health.
+## If [member shouldClampHealthDamage] is true, then the [param damageAmount] will be limited to [member maximumHealthDamagePerHit] before deducting it from [member health].
+## Returns: Remaining [member health].
 func damage(damageAmount: int) -> int:
-	if isEnabled: health.value -= damageAmount
+	if not isEnabled: return health.value
+
+	if self.shouldClampHealthDamage and damageAmount > self.maximumHealthDamagePerHit:
+		printDebug(str("Clamping damage ", damageAmount, " → ", maximumHealthDamagePerHit))
+		damageAmount = self.maximumHealthDamagePerHit # NOTE: Limit may be negative. See property documentation.
+
+	health.value -= damageAmount
+
 	return health.value
 
 
 ## [param healAmount] must be a positive number. Negative values will DECREASE health.
 ## Returns: Remaining health.
 func heal(healAmount: int) -> int:
+	# TBD: Add option for clamping healing?
 	if isEnabled: 
 		health.value += healAmount
 		if health.value >= health.max: healthDidMax.emit()

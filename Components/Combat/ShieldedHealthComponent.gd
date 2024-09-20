@@ -9,15 +9,6 @@ extends HealthComponent
 ## The [Stat] that will absorb the damage before [member HealthComponent.health] can be decreased.
 @export var shield: Stat
 
-## If true, [member HealthComponent.health] will not decrease (or increase, if the damage is negative) more than [member maximumHealthDamagePerHit] during a single call to [method damage].
-## NOTE: Does not depend on `isShieldEnabled`
-## because in games that use HP + Shields, the common expected behavior may be to do only 1 point of damage to HP when Shields are 0.
-@export var shouldClampHealthDamage: bool
-
-## Limits the maximum amount of damage during a single call to [method damage] if [member HealthComponent.health] is true.
-## NOTE: If this limit is NEGATIVE then only HEALING will be allowed.
-@export var maximumHealthDamagePerHit: int
-
 ## If true, [method recharge] will call [method HealthComponent.heal] if [member shield] is at maximum and [member isShieldEnabled].
 ## NOTE: "LEFTOVER" values are IGNORED. e.g. if the `rechargeAmount` is 100 while the shield is at 9 and its maximum is 10, the shield will only be recharged to 10 and healing will not occur.
 @export var shouldHealOnMaxRecharge: bool = false
@@ -68,22 +59,13 @@ func onShieldChanged() -> void:
 
 
 ## Applies the specified damage to the [member shield] [Stat]. If shield is 0 or [member isShieldEnabled] is false, then the damage is passed to the [member HealthComponent.health].
-## If [member shouldClampHealthDamage] is true, then the [param damageAmount] will be limited to [member maximumHealthDamagePerHit] before passing on to [member HealthComponent.health].
 ## NOTE: [param damageAmount] must be a positive number. Negative values will INCREASE the shield.
 ## Returns: Remaining shield.
 func damage(damageAmount: int) -> int:
 	# If we're still shielded, don't let the health get damaged.
 	if self.isShieldEnabled and shield.value > 0: 
 		shield.value -= damageAmount
-	
 	else: 
-	
-		# DESIGN: This does not depend on `isShieldEnabled`
-		# because in games that use HP + Shields, the common expected behavior may be to do only 1 point of damage to HP when Shields are 0.
-		if self.shouldClampHealthDamage and damageAmount > self.maximumHealthDamagePerHit:
-			printDebug(str("Clamping damage ", damageAmount, " → ", maximumHealthDamagePerHit))
-			damageAmount = self.maximumHealthDamagePerHit # NOTE: Limit may be negative. See property documentation.
-
 		super.damage(damageAmount)
 
 	return shield.value
@@ -100,7 +82,6 @@ func recharge(rechargeAmount: int) -> int:
 
 	# If the shields are at max, heal the health.
 	if self.shouldHealOnMaxRecharge and shield.value >= shield.max:
-		# TBD: Add option for clamping healing? Some other day :')
 		super.heal(rechargeAmount)
 	else:
 		shield.value += rechargeAmount
