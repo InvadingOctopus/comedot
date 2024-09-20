@@ -96,7 +96,7 @@ func registerComponent(newComponent: Component) -> void:
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
 	if existingComponent:
-		printLog(str("Replacing: ", existingComponent, " → ", newComponent))
+		printLog(str("Replacing: ", existingComponent, " ← ", newComponent))
 
 	newComponent.parentEntity = self # TBD: Is this useful?
 	self.components[componentType] = newComponent
