@@ -7,7 +7,8 @@
 class_name GunComponent
 extends CooldownComponent
 
-# TBD: Optional toggle for only [_unhandled_input] or accepting all [_input]
+# TBD: Optional toggle for only `_unhandled_input()` or accepting all `_input()`?
+
 
 #region Parameters
 
@@ -15,7 +16,7 @@ extends CooldownComponent
 @export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
 @export var ammo:Stat
-@export var ammoCost: int = -1 ## The ammo used per shot. Should be a negative number, to allow for situations where ammo might increase when firing. ;)
+@export var ammoCost: int = 1 ## The ammo used per shot. A negative number will INCREASE the ammo when firing.
 
 ## If `true`, the gun fires automatically without any player input.
 @export var autoFire: bool = false
@@ -25,27 +26,29 @@ extends CooldownComponent
 
 ## The position in relation to the Pivot where newly spawned bullets are placed.
 @export var bulletEmissionLocation: Vector2:
-	get:
-		return %BulletEmissionLocation.position
+	get: return %BulletEmissionLocation.position
 	set(newValue):
 		if %BulletEmissionLocation:
 			%BulletEmissionLocation.position = newValue
 
-@export var isEnabled := true
+## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
+@export var ammoDepletedMessage: String = "AMMO DEPLETED"
+
+@export var isEnabled: bool = true
 
 #endregion
 
 
 #region Signals
 signal didFire(bullet: Entity)
-signal didDepleteAmmo ## Emited when [member ammo] goes below 1 after firing the gun.
-signal ammoInsufficient ## Emited when attempt to fire the gun while [member ammo] is < 1
+signal didDepleteAmmo   ## Emitted when [member ammo] goes below 1 after firing the gun.
+signal ammoInsufficient ## Emitted when attempt to fire the gun while [member ammo] is < 1
 #endregion
 
 
 #region State
-var isFireActionPressed := false
-var wasFireActionJustPressed := false
+var isFireActionPressed: bool = false
+var wasFireActionJustPressed: bool = false
 #region
 
 
@@ -79,60 +82,54 @@ func _process(_delta: float) -> void:
 		wasFireActionJustPressed = false
 
 
-func fire(ignoreCooldown: bool = false) -> void:
-
-	if not isEnabled: return
-	if not hasCooldownCompleted and not ignoreCooldown: return
+## Returns the bullet that was fired.
+func fire(ignoreCooldown: bool = false) -> Entity:
+	if not isEnabled: return null
+	if not hasCooldownCompleted and not ignoreCooldown: return null
 
 	if not bulletEntity:
 		printWarning("No bulletEntity specified!")
-		return
+		return null
 
-	# Create a new bullet, but we may not have enough ammo, in which case return.
-
+	# Create a new bullet, but it may fail if there is not enough ammo or any other errors.
 	var newBullet: Entity = createNewBullet()
-	if not newBullet: return
-
-	# Do we have a faction? If so, copy the FactionComponent to the new bullet.
-
-	var factionComponent: FactionComponent = self.getCoComponent(FactionComponent)
-
-	if factionComponent:
-		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
-		newBullet.add_child(factionComponentCopy)
+	if not newBullet: return null
 
 	# Add the bullet to the scene
-	self.parentEntity.get_parent().add_child(newBullet)
+	self.parentEntity.get_parent().add_child(newBullet, true) # force_readable_name
 	newBullet.owner = newBullet.get_parent() # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 	didFire.emit(newBullet)
+	startCooldown() # Start the cooldown Timer
 
-	# Start the cooldown timer
-	startCooldown()
+	return newBullet
 
 
+## Deducts the [member ammoCost] from the [member ammo] [Stat].
+## Returns `false` if there is not enough ammo.
 func useAmmo() -> bool:
-
 	# First, do we have enough ammo?
 
-	if ammo.value <= 0:
+	if ammo.value < ammoCost:
+		printDebug("Not enough ammo")
 		ammoInsufficient.emit()
 		return false
 
-	ammo.value += ammoCost
+	ammo.value -= ammoCost
 
 	# Did we just deplete the ammo with this shot?
 
 	if ammo.previousValue > 0 and ammo.value <= 0:
-		Debug.printDebug("ammo depleted")
+		printDebug("ammo depleted")
 		didDepleteAmmo.emit()
-		parentEntity.displayLabel("AMMO DEPLETED")
+		if not self.ammoDepletedMessage.is_empty(): parentEntity.displayLabel(self.ammoDepletedMessage)
 
 	return true
 
 
 ## Decreases the [member ammo] [Stat] and creates a new [member bulletEntity] [Entity].
 func createNewBullet() -> Entity:
+	printDebug("createNewBullet()")
 
 	# First, do we have enough ammo?
 	if not useAmmo(): return
@@ -146,8 +143,19 @@ func createNewBullet() -> Entity:
 		printError("Cannot instantiate a new bullet: " + str(bulletEntity.resource_path))
 		return null
 
-	newBullet.global_position = %BulletEmissionLocation.global_position
-	newBullet.global_rotation = %BulletEmissionLocation.global_rotation
-	newBullet.z_index   = %BulletEmissionLocation.z_index
-	newBullet.top_level = %BulletEmissionLocation.top_level
+	newBullet.global_position	= %BulletEmissionLocation.global_position
+	newBullet.global_rotation	= %BulletEmissionLocation.global_rotation
+	newBullet.z_index			= %BulletEmissionLocation.z_index
+	newBullet.top_level			= %BulletEmissionLocation.top_level
+
+	# Does this gun's firing entity have a faction? If so, copy the FactionComponent to the new bullet.
+	# TBD:
+	
+	var factionComponent: FactionComponent = self.getCoComponent(FactionComponent)
+
+	if factionComponent:
+		printDebug(str("Copying factionComponent to newBullet: ", factionComponent))
+		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
+		newBullet.add_child(factionComponentCopy)
+	
 	return newBullet
