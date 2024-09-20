@@ -101,9 +101,11 @@ func _ready() -> void:
 
 	if tileMap: # If this component was loaded dynamically at runtime, then the tileMap may be set later.
 		applyInitialCoordinates()
+	
+	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
 
 
-func willRemoveFromEntity() -> void:
+func onWillRemoveFromEntity() -> void:
 	Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
 
 #endregion

@@ -3,7 +3,7 @@
 ## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
 ## Components may directly modify the parent entity or interact with other sibling components, such as a [DamageReceivingComponent] modifying a [HealthComponent].
 
-#@tool # Tool is not useful because it's not inherited :(
+#@tool # Not useful because it's not inherited :(
 @icon("res://Assets/Icons/Component.svg")
 
 class_name Component
@@ -15,25 +15,19 @@ var parentEntity: Entity
 #endregion
 
 
-#region Life Cycle
+#region Signals
 
-# Called when the node enters the scene tree for the first time.
-func _enter_tree() -> void:
-	self.add_to_group(Global.Groups.components, true) # persistent
+## Emitted on [const Node.NOTIFICATION_UNPARENTED]. 
+## May be connected to by subclasses to perform cleanup specific to each component.
+## NOTE: [member parentEntity] is still assigned at this point and set to `null` after this signal is emitted.
+signal willRemoveFromEntity
 
-	self.parentEntity = self.getParentEntity()
-	update_configuration_warnings()
-
-	if parentEntity:
-		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
-		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
-		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
-		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
-		printLog("􀈅 [b]_enter_tree() → parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
-	else:
-		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
+#endregion
 
 
+#region Validation
+
+## NOTE: Used only if `@tool` is specified at the top of this script.
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 
@@ -68,6 +62,41 @@ func checkRequiredComponents() -> bool:
 
 	return haveAllRequirements
 
+#endregion
+
+
+#region Life Cycle
+
+func registerParent() -> void:
+	printDebug(str("registerParent() ", get_parent()))
+	
+	var newparent: Node = self.get_parent()
+	
+	if parentEntity:
+		if parentEntity == newparent: printWarning(str("parentEntity already set: ", parentEntity))
+		else: printError(str("parentEntity already set to a different parent: ", parentEntity)) # This situation should never happen, so treat it as an Error.
+
+	if newparent is Entity:
+		self.parentEntity = newparent
+		self.parentEntity.registerComponent(self)
+
+
+# Called when the node enters the scene tree for the first time.
+func _enter_tree() -> void:
+	self.add_to_group(Global.Groups.components, true) # persistent
+
+	self.parentEntity = self.getParentEntity()
+	update_configuration_warnings()
+
+	if parentEntity:
+		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
+		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
+		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
+		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
+		printLog("􀈅 [b]_enter_tree() → parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
+	else:
+		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
+
 
 ## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
 ## Components that are only removed but not freed may be re-added to any entity,
@@ -96,32 +125,31 @@ func requestDeletionOfParentEntity() -> bool:
 		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 
-
-## Called on [const Node.NOTIFICATION_UNPARENTED]. Overridden by subclasses to perform cleanup specific to each component.
-## NOTE: [member parentEntity] is still assigned at this point and `null` after this function returns.
-func willRemoveFromEntity() -> void:
-	# TBD: Should this be a signal?
-	pass
+func unregisterParent() -> void:
+	# CHECK: Is there still a parent reference available at this point?
+	printDebug(str("unregisterParent() ", get_parent()))
+	if parentEntity:
+		willRemoveFromEntity.emit()
+		self.parentEntity.unregisterComponent(self)
+		self.parentEntity = null
+		if isLoggingEnabled: printLog("􀆄 Unparented")
 
 
 func _exit_tree() -> void:
+	# NOTE: This method is called even when the Entity is removed from the SCENE,
+	# so it does not necessarily mean that this Component was removed from the ENTITY.
+	# So `parentEntity` must NOT be `null`ed here!
+
 	# Since components may be freed without being children of an Entity:
 	var entityName: String = parentEntity.logName if parentEntity else "null"
 	printLog("􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
-	self.parentEntity = null
 
 
 func _notification(what: int) -> void:
 	match what:
-		NOTIFICATION_UNPARENTED:
-			if parentEntity:
-				willRemoveFromEntity()
-				self.parentEntity = null
-				if isLoggingEnabled: printLog("􀆄 Unparented")
-
-		NOTIFICATION_PREDELETE:
-			# NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
-			if isLoggingEnabled: printLog("􀆄 PreDelete")
+		NOTIFICATION_PARENTED:   registerParent()
+		NOTIFICATION_UNPARENTED: unregisterParent()
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 
 #endregion
 

@@ -48,18 +48,25 @@ var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable] = {}
 
 #region Life Cycle
 
+func _ready() -> void:
+	printDebug("_ready()")
+
+
 # Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
+	printDebug("_enter_tree()")
 	self.add_to_group(Global.Groups.entities, true) # persistent
 	printLog("􀈅 [b]_enter_tree() → parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
 	connectSignals()
 
 
 func connectSignals() -> void:
-	self.child_entered_tree.connect(childEnteredTree)
-	self.child_exiting_tree.connect(childExitingTree)
+	# TBD: Unneeded for now
+	# self.child_entered_tree.connect(childEnteredTree)
+	# self.child_exiting_tree.connect(childExitingTree)
+	pass
 
 
 func _process(_delta: float) -> void:
@@ -79,17 +86,27 @@ func requestDeletion() -> bool: # TBD: Should this be renamed to `requestDeletio
 func _exit_tree() -> void:
 	printLog("􀈃 _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
 
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PREDELETE:
+			if isLoggingEnabled: printLog("􀆄 PreDelete")
+
 #endregion
 
 
 #region Internal Component Management Functions
 
+@warning_ignore("unused_parameter")
 func childEnteredTree(node: Node) -> void:
-	# Herd components into the [components] dictionary.
-	if is_instance_of(node, Component):
-		registerComponent(node as Component)
+	# NOTE: A child node will `_enter_tree()` even when this Entity is added to the SCENE,
+	# so this method does not necessarily mean that a Component was added to the ENTITY.
+	# So do not call `registerComponent()` here!
+	# A Component itself should call `parentEntity.registerComponent()` when it receives its `NOTIFICATION_PARENTED` Notification.
+	pass
 
 
+## May be called by a [Component] when it receives the [const Node.NOTIFICATION_PARENTED] Notification.
 func registerComponent(newComponent: Component) -> void:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 
@@ -97,19 +114,23 @@ func registerComponent(newComponent: Component) -> void:
 	var existingComponent: Component = self.components.get(componentType)
 	if existingComponent:
 		printLog(str("Replacing: ", existingComponent, " ← ", newComponent))
+		existingComponent.removeFromEntity(true) # shouldFree
 
 	newComponent.parentEntity = self # TBD: Is this useful?
 	self.components[componentType] = newComponent
+	printDebug(str(componentType, " = ", newComponent))
 
-	# DEBUG: printDebug(str(componentType, " ← ", newComponent))
 
-
+@warning_ignore("unused_parameter")
 func childExitingTree(node: Node) -> void:
-	# Remove components from the [components] dictionary.
-	if is_instance_of(node, Component):
-		unregisterComponent(node as Component)
+	# NOTE: A child node will `_exit_tree()` even when this Entity is removed from the SCENE,
+	# so this method does not necessarily mean that a Component was removed from the ENTITY.
+	# So do not call `unregisterComponent()` here!
+	# A Component itself should call `parentEntity.unregisterComponent()` when it receives its `NOTIFICATION_UNPARENTED` Notification.
+	pass
 
 
+## May be called by a [Component] when it receives the [const Node.NOTIFICATION_UNPARENTED] Notification.
 func unregisterComponent(componentToRemove: Component) -> void:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 
@@ -117,7 +138,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 	var existingComponent: Component = self.components.get(componentType)
 
 	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
-
+	
 	if existingComponent == componentToRemove:
 		printLog(str("Unregistering ", existingComponent))
 		self.components.erase(componentType)
@@ -309,15 +330,10 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 
 ## Uses a [LabelComponent], if available, to display the specified text.
 func displayLabel(text: String, animation: StringName = Animations.blink) -> void:
+	# TBD: Should this be a part of the base `Entity` class?
 	var labelComponent: LabelComponent = self.getComponent(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)
-
-
-func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_PREDELETE:
-			if isLoggingEnabled: printLog("􀆄 PreDelete")
 
 
 #region Logging

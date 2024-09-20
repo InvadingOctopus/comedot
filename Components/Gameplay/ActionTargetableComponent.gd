@@ -31,10 +31,10 @@ func _ready() -> void:
 
 	self.add_to_group(Global.Groups.targetables)
 	parentEntity.add_to_group(Global.Groups.targetables)
+	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
+	
 
-
-func willRemoveFromEntity() -> void:
-	super.willRemoveFromEntity()
+func onWillRemoveFromEntity() -> void:
 	parentEntity.remove_from_group(Global.Groups.targetables)
 
 
