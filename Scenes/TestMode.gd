@@ -1,17 +1,20 @@
-## TestMode. Attach to any [Node] in a scene.
+## TestMode. Attach to any [Node] in a scene. Shows/hides selected nodes and performs other debugging-related actions when toggled.
 ## Assists with testing a project during development by temporarily modifying nodes, global flags and other variables from a single point,
 ## such as disabling superfluous visual effects for a game, or increasing the lives of a player,
 ## instead of permanently modifying values in the Godot Editor and multiple files then trying to remember, find and revert them.
+## NOTE: The [TestMode] node itself will be visible when Test Mode is active, and hidden when not.
 ## TIP: In a subclass, just implement [method TestMode.onDidToggleTestMode]
 
 class_name TestMode
 extends Node
 
-# TBD: Should this be an AutoLoad?
-
 
 #region Parameters
 @export var activateTestModeOnStart: bool = false
+
+## A list of nodes to hide when the Test Mode is activated, and to show when deactivated.
+## NOTE: The [TestMode] node itself will be visible when [member isInTestMode], and hidden when not.
+@export var nodesToHide: Array[Node2D]
 #endregion
 
 
@@ -20,12 +23,7 @@ var isInTestMode: bool = false:
 	set(newValue):
 		if newValue == isInTestMode: return # Avoid emitting signals needlessly
 		isInTestMode = newValue
-
-		Debug.addTemporaryLabel(&"Test Mode", str(isInTestMode))
-		GlobalOverlay.createTemporaryLabel(str("TEST MODE ", "ON" if isInTestMode else "OFF"))
-
-		if isInTestMode: didEnableTestMode.emit()
-		else: didDisableTestMode.emit()
+		applyTestMode()
 #endregion
 
 
@@ -64,10 +62,9 @@ func _process(_delta: float) -> void:
 func _ready() -> void:
 	self.didEnableTestMode.connect(self.onDidToggleTestMode)
 	self.didDisableTestMode.connect(self.onDidToggleTestMode)
-		
-	if activateTestModeOnStart:
-		isInTestMode = true
-		didEnableTestMode.emit() # CHECK: Emit manually or will the property setter be called during _ready()?
+	
+	if activateTestModeOnStart: isInTestMode = true # Calls `applyTestMode()`
+	else: setNodesVisibility() # Called by `applyTestMode()` when `activateTestModeOnStart`
 
 
 func _input(event: InputEvent) -> void:
@@ -75,5 +72,22 @@ func _input(event: InputEvent) -> void:
 	and event.is_action_pressed(GlobalInput.Actions.debugTest):
 		self.get_viewport().set_input_as_handled()
 		isInTestMode = not isInTestMode
+
+
+func applyTestMode() -> void:
+	Debug.addTemporaryLabel(&"Test Mode", str(isInTestMode))
+	GlobalOverlay.createTemporaryLabel(str("TEST MODE ", "ON" if isInTestMode else "OFF"))
+
+	setNodesVisibility()
+
+	if isInTestMode: didEnableTestMode.emit()
+	else: didDisableTestMode.emit()
+
+
+## Shows the [TestMode] node itself and hides [nodesToHide] when [member isInTestMode], and vice-versa.
+func setNodesVisibility() -> void:
+	self.visible = isInTestMode
+	for node in nodesToHide:
+		node.visible = not isInTestMode
 
 #endregion 
