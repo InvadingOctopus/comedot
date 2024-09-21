@@ -71,6 +71,8 @@ var previousChange: int ## [member value] - [member previousValue] so a decrease
 var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
 	get: return float(value) / float(max) * 100.0
 
+var logText: String:
+	get: return str(self, " ", self.name, ", value: ", value, ", range: ", min, "-", max)
 #endregion
 
 
