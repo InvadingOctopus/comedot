@@ -148,6 +148,9 @@ func createNewBullet() -> Entity:
 	newBullet.z_index			= %BulletEmissionLocation.z_index
 	newBullet.top_level			= %BulletEmissionLocation.top_level
 
+	newBullet.isLoggingEnabled	= self.shouldShowDebugInfo
+	newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
+	
 	# Does this gun's firing entity have a faction? If so, copy the FactionComponent to the new bullet.
 	# TBD:
 	
