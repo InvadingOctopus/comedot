@@ -13,7 +13,7 @@ extends Component
 
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
 
-@export var alwaysShowIndicator: bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
+@export var alwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
 
 ## An optional short label, name or phrase for the interaction to display in the UI.
 ## Example: "Open Door" or "Chop Tree".
@@ -75,7 +75,6 @@ func onArea_entered(area: Area2D) -> void:
 	# Display the indicators and labels, if any.
 	if interactionIndicator:
 		updateLabel()
-
 		interactionIndicator.visible = true
 
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
