@@ -41,7 +41,8 @@ var selfAsArea: Area2D:
 #region Signals
 signal didEnterInteractionArea(entity: Entity, interactionComponent: InteractionComponent)
 signal didExitInteractionArea (entity: Entity, interactionComponent: InteractionComponent)
-signal willBeginInteraction   (entity: Entity, interactionComponent: InteractionComponent)
+signal willPerformInteraction (entity: Entity, interactionComponent: InteractionComponent)
+signal didPerformInteraction  (result: Variant)
 #endregion
 
 
@@ -94,8 +95,9 @@ func interact() -> void:
 
 	for interactionComponent in self.interactionsInRange:
 		if interactionComponent.requestToInteract(self.parentEntity, self):
-			willBeginInteraction.emit(interactionComponent.parentEntity, interactionComponent)
-			interactionComponent.performInteraction(self.parentEntity, self)
+			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
+			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
+			self.didPerformInteraction.emit(result)
 
 	startCooldown()
 

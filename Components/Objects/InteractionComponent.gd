@@ -54,8 +54,9 @@ var selfAsArea: Area2D:
 #region Signals
 signal didEnterInteractionArea(entity: Entity, interactionControlComponent: InteractionControlComponent)
 signal didExitInteractionArea(entity: Entity, interactionControlComponent: InteractionControlComponent)
-signal willBeginInteraction(interactorEntity: Entity)
 signal didDenyInteraction(interactorEntity: Entity)
+signal willPerformInteraction(interactorEntity: Entity)
+signal didPerformInteraction(result: Variant)
 #region endregion
 
 
@@ -97,15 +98,13 @@ func onArea_exited(area: Area2D) -> void:
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	if not isEnabled: return false
 
-	var isInteractionApproved := checkInteractionConditions(interactorEntity, interactionControlComponent)
+	var isInteractionApproved: bool = checkInteractionConditions(interactorEntity, interactionControlComponent)
 
 	if isInteractionApproved:
-		willBeginInteraction.emit(interactorEntity)
+		return true
 	else:
 		didDenyInteraction.emit(interactorEntity)
 		return false
-
-	return isInteractionApproved
 
 
 ## If the [interactionIndicator] is a [Label], display our [label] parameter.
@@ -132,6 +131,9 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
-	return payload.execute(self, interactorEntity) if payload else false
+	self.willPerformInteraction.emit(interactorEntity)
+	var result: Variant = payload.execute(self, interactorEntity) if payload else false
+	self.didPerformInteraction.emit(result)
+	return result
 
 #endregion
