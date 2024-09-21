@@ -119,10 +119,11 @@ func updateLabel() -> void:
 #region Virtual Methods
 
 ## May be overridden in a subclass to approve or deny an interaction.
+## NOTE: Remember to check [member isEnabled] in the subclass implementation!
 ## Default: `true`
 func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	# CHECK: Maybe a better name? :p
-	printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+	if shouldShowDebugInfo: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	return isEnabled
 
 
@@ -130,10 +131,13 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 ## May be overriden by a subclass to perform custom actions.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+	if shouldShowDebugInfo: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled))
+	if not isEnabled: return false
+
 	self.willPerformInteraction.emit(interactorEntity)
 	var result: Variant = payload.execute(self, interactorEntity) if payload else false
 	self.didPerformInteraction.emit(result)
+
 	return result
 
 #endregion
