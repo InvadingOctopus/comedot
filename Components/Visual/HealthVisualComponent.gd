@@ -1,32 +1,42 @@
-## Adds visual effects and indicators of a [HealthComponent].
-## Not currently implemented.
+## Adds visual effects and indicators based on the state of a [HealthComponent].
+## @experimental
+
 class_name HealthVisualComponent
 extends Component
 
-# TODO: Implement
+# TODO: Better implementation
 
-@export var healthComponent: HealthComponent
+
+#region Dependencies
+var healthComponent: HealthComponent:
+	get:
+		if not healthComponent: healthComponent = self.getCoComponent(HealthComponent)
+		return healthComponent
+#endregion
 
 
 func _ready() -> void:
-	if not healthComponent: connectToHealthComponent()
+	connectSignals()
 
 
-func connectToHealthComponent() -> void:
-	self.healthComponent = getCoComponent(HealthComponent)
-	if not healthComponent:
-		printWarning("Cannot find a HealthComponent in parent Entity: " + self.parentEntity.logName)
-		return
-
+func connectSignals() -> void:
 	healthComponent.healthDidDecrease.connect(self.onHealthComponent_healthChanged)
 	healthComponent.healthDidIncrease.connect(self.onHealthComponent_healthChanged)
 
 
-func onHealthComponent_healthChanged(_difference: int) -> void:
-	var health: Stat = healthComponent.health
+func onHealthComponent_healthChanged(difference: int) -> void:
+	animate(difference)
 
-	var red: float   = 1.0 - (health.percentage / 100.0)
-	var green: float = (health.percentage / 100.0) - 0.5
-	var blue: float  = (health.percentage / 100.0) - 0.5
 
-	self.parentEntity.modulate = Color(red, green, blue, 1.0)
+## @experimental
+func animate(difference: int) -> void:
+	if difference < 0:
+		Animations.blinkNode(self.parentEntity, 3)
+	
+	var health: Stat  = healthComponent.health
+	var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase red as health gets lower
+	var currentModulate: Color = self.parentEntity.modulate
+	var targetModulate:  Color = currentModulate
+
+	targetModulate.r = red
+	Animations.tweenProperty(self.parentEntity, ^"modulate", targetModulate, 0.1)
