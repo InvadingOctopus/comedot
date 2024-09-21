@@ -46,8 +46,6 @@ scale = Vector2(0.25, 0.25)
 
 [node name="RemovalOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
 
-[connection signal="area_entered" from="." to="." method="onAreaEntered"]
-[connection signal="body_entered" from="." to="." method="onBodyEntered"]
 [connection signal="didCollideWithReceiver" from="DamageComponent" to="." method="onDamageComponent_didCollideWithReceiver"]
 
 [editable path="DamageComponent"]
