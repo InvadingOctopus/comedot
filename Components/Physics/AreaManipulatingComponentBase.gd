@@ -5,6 +5,7 @@ class_name AreaManipulatingComponentBase
 extends Component
 
 # TBD: Better name? :')
+# DESIGN: Do not connect signals here; specific signals should only be connected in specific subclasses when they are needed, to improve performance.
 
 
 #region Parameters

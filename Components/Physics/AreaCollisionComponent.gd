@@ -4,7 +4,7 @@
 ## Requirements: Component Node must be Area2D
 
 class_name AreaCollisionComponent
-extends Component
+extends AreaManipulatingComponentBase
 
 # TBD: Handle [PhysicsBody2D] in this component or a separate component?
 # TBD: Allow an `areaOverride` as in [ZoneComponent]?
@@ -21,11 +21,6 @@ extends Component
 #region State
 ## A list of [Area2Ds]s currently in collision contact.
 var areasInContact: Array[Area2D]
-
-var selfAsArea: Area2D:
-	get:
-		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
-		return selfAsArea
 #endregion
 
 
@@ -36,12 +31,13 @@ signal didExit(area: Area2D)
 
 
 func _ready() -> void:
-	if not selfAsArea:
-		printWarning("Component Node is not Area2D")
-		return
-
+	connectSignals()
 	readdAllAreas()
 
+
+func connectSignals() -> void:
+	area.area_entered.connect(self.onArea_areaEntered)
+	area.area_exited.connect(self.onArea_areaExited)
 
 #region Collisions
 
@@ -53,19 +49,19 @@ func readdAllAreas() -> void:
 	self.areasInContact.clear()
 	if not isEnabled: return
 
-	for area in selfAsArea.get_overlapping_areas():
-		self.areasInContact.append(area)
-		self.didEnter.emit(area) # TBD: Should this be emitted here?
+	for overlappingArea in selfAsArea.get_overlapping_areas():
+		self.areasInContact.append(overlappingArea)
+		self.didEnter.emit(overlappingArea) # TBD: Should this be emitted here?
 
 
-func onAreaEntered(areaEntered: Area2D) -> void:
+func onArea_areaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled: return
 	# TBD: Make sure no area is added twice?
 	areasInContact.append(areaEntered)
 	didEnter.emit(areaEntered)
 
 
-func onAreaExited(areaExited: Area2D) -> void:
+func onArea_areaExited(areaExited: Area2D) -> void:
 	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
 	areasInContact.erase(areaExited)
 	didExit.emit(areaExited)
