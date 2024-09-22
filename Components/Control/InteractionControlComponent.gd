@@ -1,14 +1,17 @@
 ## Allows the player to interact with an [InteractionComponent].
 ## "Interactions" are similar to "Collectibles"; the difference is that an interaction occurs on a button input instead of automatically on a collision.
-## Requirements: The component node must be an [Area2D]
+## Requirements: This component node must be an [Area2D]
 
 class_name InteractionControlComponent
 extends CooldownComponent
 
 # TODO: Update indicator only on collision events.
-
+# TBD:  Check interaction success?
 
 #region Parameters
+
+## The limit of [InteractionComponent]s in range that may be interacted with in a single interaction.
+@export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
@@ -91,13 +94,21 @@ func interact() -> void:
 	# should they all be processed withing a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
 
-	if not hasCooldownCompleted: return
+	if not isEnabled or not hasCooldownCompleted: return
+
+	var count: int = 0
 
 	for interactionComponent in self.interactionsInRange:
 		if interactionComponent.requestToInteract(self.parentEntity, self):
+			count += 1 # TBD: Increase counter at start or end?
+			if shouldShowDebugInfo: printDebug(str("interact() ", count, " of ", maximumSimultaneousInteractions))
+
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
 			self.didPerformInteraction.emit(result)
+			# TBD: Check interaction success?
+			
+			if count >= maximumSimultaneousInteractions: break
 
 	startCooldown()
 

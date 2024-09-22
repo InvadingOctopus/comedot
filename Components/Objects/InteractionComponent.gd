@@ -127,7 +127,7 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 
 
 ## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.
-## May be overriden by a subclass to perform custom actions.
+## May be overridden by a subclass to perform custom actions.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	if shouldShowDebugInfo: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled))
