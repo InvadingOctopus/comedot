@@ -11,7 +11,12 @@ extends CharacterBodyManipulatingComponentBase
 
 
 #region Parameters
+
+## If not specified and [member shouldChasePlayerIfUnspecified], then the first [PlayerEntity] from [member GameState.players] will be chased.
 @export var nodeToChase: Node2D
+
+## If `true` amd [member nodeToChase] is `null`, the first [PlayerEntity] from [member GameState.players] will be chased.
+@export var shouldChasePlayerIfUnspecified: bool = true
 
 @export_range(10, 1000, 5) var speed: float = 300
 
@@ -42,6 +47,9 @@ func _ready() -> void:
 	if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
 		printLog("characterBodyComponent.shouldResetVelocityIfZeroMotion = false")
 		characterBodyComponent.shouldResetVelocityIfZeroMotion = false
+	
+	if not nodeToChase and shouldChasePlayerIfUnspecified:
+		nodeToChase = GameState.players.front()
 
 
 func _physics_process(_delta: float) -> void:
