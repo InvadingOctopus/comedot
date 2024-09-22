@@ -5,7 +5,7 @@ class_name CustomLogEntryUI
 extends Control
 
 # TODO: Add log entry nodes to groups depending on their object's category, e.g. `logEntity` or `logComponent` etc.
-
+# TODO: Get caller function via Debug.getLogCaller()
 
 #region Parameters
 

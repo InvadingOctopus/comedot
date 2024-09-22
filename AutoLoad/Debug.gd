@@ -207,14 +207,13 @@ func printLog(message: String = "", messageColor: String = "", objectName: Strin
 	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
 
 
-## Prints a faded message to reduce apparent visual clutter.
+## Prints a faded message to reduce visual clutter.
 ## Affected by [member shouldPrintDebugLogs].
 func printDebug(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	if Debug.shouldPrintDebugLogs:
-		# Do not print frames on a separate line to reduce less clutter.
-		#updateLastFrameLogged()
-		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # Not useful because it will always say it was called from this Debug script.
-		print_rich("[right][color=dimgray]F" + str(Engine.get_frames_drawn()) + " " + objectName + " " + message + "[/color]")
+		#updateLastFrameLogged() # OMIT: Do not print frames on a separate line, to reduce clutter.
+		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # OMIT: Not useful because it will always say it was called from this Debug script.
+		print_rich(str("[right][color=dimgray]F", Engine.get_frames_drawn(), " ", objectName, " ", message, "[/color]"))
 
 
 ## Prints the message in bold and a bright color, with empty lines on each side.
@@ -260,8 +259,17 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 ## TIP: Helpful for temporary debugging of bugs currently under attention.
 ## Affected by [member shouldPrintDebugLogs].
 func printVariables(values: Array[Variant], separator: String = "\t") -> void:
-	if shouldPrintDebugLogs: 
-		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " \t[color=orange][b]", separator.join(values)))
+	if shouldPrintDebugLogs:
+		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " ", getLogCaller(), " \t[color=orange][b]", separator.join(values)))
+
+
+## Returns a string denoting the script file & function which called the CALLER of this [method getLastCaller()].
+## Example: If `_ready()` in `Component.gd` calls [method Debug.printDebug], then `printDebug()` calls `getLastCaller()`, then `Component.gd:_ready()`
+## NOTE: Does NOT include function arguments.
+## @experimental
+static func getLogCaller() -> String:
+	var caller: Dictionary = get_stack()[3] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
+	return caller.source.get_file() + ":" + caller.function + "()"
 
 
 ## Updates the frame counter and prints an extra line between logs from different frames for clarity of readability.
@@ -286,7 +294,7 @@ func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
 	customLogEntry[CustomLogKeys.message] = message
 
 	# customLog.append(customLogEntry) # No need to take up memory for an array when we already have the visual UI.
-	addCustomLogUIItem(customLogEntry) 
+	addCustomLogUIItem(customLogEntry)
 
 
 ## @experimental
@@ -294,7 +302,7 @@ func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
 	if not logWindow or not logWindow.visible or not customLogList or customLogEntry.is_empty(): return
 
 	var listChildCount: int = customLogList.get_child_count()
-	
+
 	if  listChildCount >= customLogMaximumEntries:
 		var childToDelete: Node = customLogList.get_child(0)
 		customLogList.remove_child(childToDelete)
