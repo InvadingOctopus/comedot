@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://dntrlgcg1fk83"]
+
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_3365v"]
+[ext_resource type="Script" path="res://Components/Objects/MineableComponent.gd" id="2_4r01q"]
+[ext_resource type="Script" path="res://Resources/Payloads/NodePayload.gd" id="3_ld8mv"]
+
+[sub_resource type="Resource" id="Resource_l1gyg"]
+resource_local_to_scene = true
+script = ExtResource("3_ld8mv")
+parentChoice = 3
+randomPositionOffsetMin = Vector2(-16, -16)
+randomPositionOffsetMax = Vector2(16, 16)
+shouldShowDebugInfo = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0tho5"]
+size = Vector2(18, 18)
+
+[node name="MineableComponent" instance=ExtResource("1_3365v")]
+script = ExtResource("2_4r01q")
+contents = null
+minimumContentDeduction = 1
+maximumContentDeduction = 1
+allowCostHigherThanContents = true
+shouldRemoveEntityOnDepletion = true
+payload = SubResource("Resource_l1gyg")
+label = "MINE"
+description = "Mine resources"
+
+[node name="InteractionShape" parent="." index="0"]
+shape = SubResource("RectangleShape2D_0tho5")
