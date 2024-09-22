@@ -432,6 +432,7 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 ## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
 ## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
 static func populateTileMap(tileMap: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+	# TODO: FIXME: Handle negative cell coordinates
 	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
 
 	# Validation
@@ -474,9 +475,12 @@ static func populateTileMap(tileMap: TileMapLayer, sceneToCopy: PackedScene, num
 				randi_range(0, mapRect.size.y - 1))
 
 		# Position
-		newNode.position = parent.to_local(
-			tileMap.to_global(
-				tileMap.map_to_local(cellCoordinates)))
+		if parent == tileMap:
+			newNode.position = tileMap.map_to_local(cellCoordinates)
+		else:
+			newNode.position = parent.to_local(
+				tileMap.to_global(
+					tileMap.map_to_local(cellCoordinates)))
 
 		# Add
 
