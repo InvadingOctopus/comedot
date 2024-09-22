@@ -19,8 +19,8 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Commit URL:		5b361353ea23a800770c763ee7563f73a785f619 2024-08-27
-Godot Vesion:	4.3
+Commit URL:		01658b51158e5cebc1ee85a95fe9d07f23975a2f 2024-09-22
+Godot Vesion:	4.4
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
