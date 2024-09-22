@@ -10,7 +10,7 @@ extends Component
 #region Dependencies
 var healthComponent: HealthComponent:
 	get:
-		if not healthComponent: healthComponent = self.getCoComponent(HealthComponent)
+		if not healthComponent: healthComponent = parentEntity.findFirstComponentSublcass(HealthComponent)
 		return healthComponent
 #endregion
 
