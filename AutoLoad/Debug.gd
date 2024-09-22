@@ -268,7 +268,7 @@ func printVariables(values: Array[Variant], separator: String = "\t") -> void:
 ## NOTE: Does NOT include function arguments.
 ## @experimental
 static func getLogCaller() -> String:
-	var caller: Dictionary = get_stack()[3] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
+	var caller: Dictionary = get_stack()[2] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
 	return caller.source.get_file() + ":" + caller.function + "()"
 
 
