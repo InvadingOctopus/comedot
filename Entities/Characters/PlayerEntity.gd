@@ -34,6 +34,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	GameState.addPlayer(self)
+	GameState.playerReady.emit(self)
 
 
 func _exit_tree() -> void:

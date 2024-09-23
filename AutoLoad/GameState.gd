@@ -28,6 +28,8 @@ var players: Array[PlayerEntity] = []
 # DESIGN: The names of the signals start with the names of the related types/objects, instead of "did/will" etc., because GameState is a global object.
 signal playersChanged
 signal playerAdded(player: PlayerEntity)
+@warning_ignore("unused_signal")
+signal playerReady(player: PlayerEntity) ## Emitted by a [PlayerEntity] at the end of its [method Node._ready], indicating that it has entered a Scene.
 signal playerRemoved(player: PlayerEntity)
 #endregion
 
