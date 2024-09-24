@@ -8,6 +8,7 @@ offset_right = 33.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_vertical = 3
 tooltip_text = "Stat"
 columns = 2
 script = ExtResource("1_axogl")
@@ -21,7 +22,9 @@ stretch_mode = 2
 
 [node name="Label" type="Label" parent="."]
 editor_description = "View for a Stat Resource"
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 1
 text = "000"
 label_settings = ExtResource("1_q4sdu")
