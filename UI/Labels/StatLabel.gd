@@ -22,7 +22,7 @@ extends Container
 @export var shouldAddSpaceBeforeSuffix: bool = true
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
-@export var minimumDigits: int = 2
+@export var minimumDigits:   int = 2
 
 @export var shouldUppercase: bool = false:
 	set(newValue):
@@ -30,15 +30,23 @@ extends Container
 			shouldUppercase = newValue
 			if label: label.uppercase = shouldUppercase
 
-@export var shouldAnimate: bool = true
+@export var shouldAnimate:   bool = true
 
-@export var shouldShowText: bool = true: ## Affects the prefix and suffix labels, not the actual Stat value numbers.
+## Affects the prefix and suffix labels, not the actual Stat value numbers.
+@export var shouldShowText:  bool = true: 
 	set(newValue):
 		if newValue != shouldShowText:
 			shouldShowText = newValue
 			if label: updateStatText(false) # Update the label, without animation
 
-@export var shouldShowIcon: bool = true:
+## Affects the actual Stat value numbers, NOT the prefix and suffix labels. Useful if showing multiple symbols/icons or "pips" to represent the value, as with [StatPips].
+@export var shouldShowValue: bool = true:
+	set(newValue):
+		if newValue != shouldShowValue:
+			shouldShowValue = newValue
+			if label: updateStatText(false) # Update the label, without animation
+
+@export var shouldShowIcon:  bool = true:
 	set(newValue):
 		if newValue != shouldShowIcon:
 			shouldShowIcon = newValue
@@ -111,14 +119,23 @@ func buildLabelText() -> String:
 	var fullPrefix: String
 	var fullSuffix: String
 
+	# The pre/suf fixes
+
 	if shouldShowText:
 		fullPrefix = prefix + " " if shouldAddSpaceAfterPrefix  else prefix
 		fullSuffix = " " + suffix if shouldAddSpaceBeforeSuffix else suffix
 
 		if shouldShowStatDisplayName: fullPrefix += stat.displayName + ":"
 
-	if minimumDigits >= 1:
-		var format: String = "%0" + str(minimumDigits) + "d"
-		return str(fullPrefix, format % stat.value, fullSuffix)
-	else:
-		return str(fullPrefix, stat.value, fullSuffix)
+	# The value numbers
+
+	var valueText: String
+
+	if shouldShowValue:
+		if minimumDigits >= 1:
+			var format: String = "%0" + str(minimumDigits) + "d"
+			valueText = format % stat.value
+		else:
+			valueText = str(stat.value)
+	
+	return str(fullPrefix, valueText, fullSuffix)

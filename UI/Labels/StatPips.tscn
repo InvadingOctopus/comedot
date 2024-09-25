@@ -8,6 +8,7 @@ columns = 3
 script = ExtResource("2_2gygj")
 symbol = null
 depletedSymbol = null
+shouldShowValue = false
 
 [node name="Pips" type="HBoxContainer" parent="." index="1"]
 layout_mode = 2
