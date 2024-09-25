@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://6wsqxkjc6csy"]
+
+[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Labels/StatLabel.tscn" id="1_bgnbj"]
+[ext_resource type="Script" path="res://UI/Labels/StatPips.gd" id="2_2gygj"]
+
+[node name="StatPips" instance=ExtResource("1_bgnbj")]
+columns = 3
+script = ExtResource("2_2gygj")
+symbol = null
+depletedSymbol = null
+
+[node name="Pips" type="HBoxContainer" parent="." index="1"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AvailablePips" type="TextureRect" parent="Pips" index="0"]
+texture_repeat = 2
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 2
+stretch_mode = 1
+
+[node name="DepletedPips" type="TextureRect" parent="Pips" index="1"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+size_flags_horizontal = 3
+expand_mode = 2
+stretch_mode = 1
