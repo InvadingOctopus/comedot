@@ -4,13 +4,17 @@
 [ext_resource type="Script" path="res://UI/Labels/StatPips.gd" id="2_2gygj"]
 
 [node name="StatPips" instance=ExtResource("1_bgnbj")]
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
 columns = 3
 script = ExtResource("2_2gygj")
 symbol = null
 depletedSymbol = null
+shouldAddSpaceAfterPrefix = false
 shouldShowValue = false
 
 [node name="Pips" type="HBoxContainer" parent="." index="1"]
+custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
 theme_override_constants/separation = 0
 

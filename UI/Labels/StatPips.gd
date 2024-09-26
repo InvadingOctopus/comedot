@@ -32,7 +32,7 @@ var tween: Tween
 func arrangeControls() -> void:
 	if not shouldShowIconAfterText:
 		self.move_child(icon,  0)
-		self.move_child(pips,   1)
+		self.move_child(pips,  1)
 		self.move_child(label, 2)
 	else:
 		self.move_child(label, 0)
@@ -55,7 +55,7 @@ func setPipTextures() -> void:
 	availablePips.texture = symbol
 	availablePips.visible = true
 	symbolWidth = symbol.get_width()
-	
+
 	depletedPips.texture  = depletedSymbol
 	depletedSymbolWidth   = depletedSymbol.get_width()
 
