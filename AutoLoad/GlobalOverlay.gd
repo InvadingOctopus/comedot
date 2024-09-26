@@ -64,8 +64,13 @@ func createTemporaryLabel(text: String) -> Label:
 
 
 ## Creates and returns an [AudioStreamPlayer2D], plays it, then deletes it.
-## Used for playing sound effects for nodes and entities that may be deleted before the audio finishes playing, such as enemy destruction or collectible pickup etc.
-func createAudioPlayer(stream: AudioStream, position: Vector2 = Vector2.ZERO, bus: StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
+## Used for playing sound effects for nodes and entities that may be deleted before the audio finishes playing,
+## such as enemy destruction or collectible pickups etc.
+func createAudioPlayer(
+	stream:   AudioStream,
+	position: Vector2 = Vector2.ZERO,
+	bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
+	
 	# Check the limit on maximum number of sounds
 	# TODO: A better implementation, like [TemporaryLabelList]'s?
 	
@@ -79,10 +84,10 @@ func createAudioPlayer(stream: AudioStream, position: Vector2 = Vector2.ZERO, bu
 	audioPlayer.stream = stream
 	audioPlayer.position = position
 	
-	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent 
-	sounds.add_child(audioPlayer) # CHECK: add_to_group before add_child or vice versa?
+	sounds.add_child(audioPlayer, true) # force_readable_name
 	audioPlayer.owner = sounds # Necessary for persistence to a [PackedScene] for save/load.
-	audioPlayer.play() # TBD: Add playback position argument?
+	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent 
+	audioPlayer.play() # TBD: Add playback position argument? TBD: Find a way to move along with node and continue playing after the node is destroyed?
 	
 	audioPlayer.finished.connect(audioPlayer.queue_free)
 	return audioPlayer
