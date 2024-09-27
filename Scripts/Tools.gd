@@ -559,6 +559,16 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 		return false
 
 
+## Iterates over a [String] and replaces all occurrences of text matching the [param substitutions] [Dictionary]'s [method Dictionary.keys] with the values for those keys.
+## Example: A Dictionary of { "Apple":"Banana", "Cat":"Dog" } would replace all "Apple" in [param sourceString] with "Banana" and all "Cat" with "Dog".
+## NOTE: Does NOT modify the [param sourceString], instead returns a modified string.
+static func replaceStrings(sourceString: String, substitutions: Dictionary[String, String]) -> String:
+	var modifiedString: String = sourceString
+	for key: String in substitutions.keys():
+		modifiedString = modifiedString.replace(key, substitutions[key])
+	return modifiedString
+
+
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
 ## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
