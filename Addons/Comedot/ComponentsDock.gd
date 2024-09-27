@@ -121,6 +121,12 @@ func printLog(message: String) -> void:
 	print(str("Comedock: ", message))
 
 
+func printError(message: String) -> void:
+	var errorMessage: String = str("Comedock: ERROR: ", message)
+	print(errorMessage)
+	push_error(errorMessage)
+
+
 func setupUI() -> void:
 	%DebugReloadButton.visible = shouldShowDebugInfo
 	%AddEntityMenuButton.modulate  = createNewItemButtonColor
@@ -401,7 +407,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 			newEntity = load(spriteEntityTemplate).instantiate()
 			newEntity.name = "SpriteEntity"
 
-		_: printLog(str("ERROR: Invalid entityType: ", entityType))
+		_: printError(str("Invalid entityType: ", entityType))
 
 	if shouldShowDebugInfo: printLog(str(newEntity))
 
@@ -454,11 +460,11 @@ func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 	printLog("createNewComponentOnDisk() destinationFolderPath: " + destinationFolderPath)
 
 	if not DirAccess.dir_exists_absolute(destinationFolderPath):
-		printLog("Invalid path")
+		printError("Invalid path")
 		return ""
 
 	if not FileAccess.file_exists(componentBaseScene):
-		printLog("ERROR: Missing base Component Scene: " + componentBaseScene)
+		printError("Missing base Component Scene: " + componentBaseScene)
 		return ""
 
 	# Get the directory manager & set the paths
@@ -473,14 +479,16 @@ func createNewComponentOnDisk(destinationFolderPath: String) -> String:
 		# Error messages logged by other functions
 		return ""
 
-	# TODO:  Create a NEW component and save it to a file, instead of copying an existing `.tscn`
-	# FIXME: COPYING a file causes duplicate UID conflicts!
+	# Create a new vanilla Component and save a copy of it at the new destination.
+	# NOTE: Using the EditorInterface to save a new instance instead of copying the scene file prevents duplicate UID conflicts.
+	EditorInterface.open_scene_from_path(componentBaseScene)
+	EditorInterface.save_scene_as(newComponentPath)
 
-	# Make a duplicate of the base Component scene at the specified destination path
-	if not copyFile(componentBaseScene, newComponentPath):
-		# Error messages logged by other functions
+	# Verify that the new scene file exists.
+	if not FileAccess.file_exists(newComponentPath):
+		printError(str("Could not save a copy of componentBaseScene: ", componentBaseScene, " at: ", newComponentPath))
 		return ""
-
+	
 	# Copy the script template
 	if not copyFile(componentScriptTemplate, newScriptPath):
 		# Error messages logged by other functions
@@ -610,7 +618,7 @@ func getSubfolders(path: String) -> Array[EditorFileSystemDirectory]:
 
 func ensureFileDoesNotExist(absolutePath: String) -> bool:
 	if FileAccess.file_exists(absolutePath):
-		printLog("ERROR: File already exists: " + absolutePath)
+		printError("File already exists: " + absolutePath)
 		return false
 	else:
 		return true
@@ -626,10 +634,10 @@ func copyFile(sourceAbsolutePath: String, destinationAbsolutePath: String) -> bo
 	# Validate
 
 	if not sourceAbsolutePath.to_lower().begins_with("res://"):
-		printLog("ERROR: Source path must begin with `res://`")
+		printError("Source path must begin with `res://`")
 
 	if not destinationAbsolutePath.to_lower().begins_with("res://"):
-		printLog("ERROR: Destination path must begin with `res://`")
+		printError("Destination path must begin with `res://`")
 
 	# Copy
 	DirAccess.copy_absolute(sourceAbsolutePath, destinationAbsolutePath)
@@ -640,7 +648,7 @@ func copyFile(sourceAbsolutePath: String, destinationAbsolutePath: String) -> bo
 		printLog("Copied: " + sourceAbsolutePath + " → " + destinationAbsolutePath)
 		return true
 	else:
-		printLog("ERROR: Could not create file: " + destinationAbsolutePath)
+		printError("Could not create file: " + destinationAbsolutePath)
 		return false
 
 #endregion
