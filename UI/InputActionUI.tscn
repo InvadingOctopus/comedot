@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://cpfliajqwj4lf"]
+
+[ext_resource type="Script" path="res://UI/InputActionUI.gd" id="1_ehik8"]
+[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_kmpqn"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xqos3"]
+font = ExtResource("2_kmpqn")
+font_size = 8
+
+[node name="InputActionUI" type="GridContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_ehik8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Action Name"
+label_settings = SubResource("LabelSettings_xqos3")
+
+[node name="AddButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Add Key/Button/Axis"
+text = "+"
+
+[node name="EventsList" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="HBoxContainer/AddButton" to="." method="onAddButton_pressed"]

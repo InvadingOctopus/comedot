@@ -60,6 +60,15 @@ var isPauseShortcutAllowed: bool = true
 #endregion
 
 
+#region Signals
+@warning_ignore("unused_signal")
+signal didAddInputEvent(inputAction: StringName, inputEvent: InputEvent) ## Emitted by [InputActionUI]
+
+@warning_ignore("unused_signal")
+signal didDeleteInputEvent(inputAction: StringName, inputEvent: InputEvent) ## Emitted by [InputActionEventUI]
+#endregion
+
+
 ## Global keyboard shortcuts
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?

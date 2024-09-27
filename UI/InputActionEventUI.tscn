@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://du2pda8it2bh0"]
+
+[ext_resource type="Script" path="res://UI/InputActionEventUI.gd" id="1_se1fj"]
+
+[node name="InputActionEventUI" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_se1fj")
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(80, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+text = "InputEvent"
+vertical_alignment = 1
+text_overrun_behavior = 3
+visible_characters_behavior = 1
+
+[node name="DeleteButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Remove this control from the action"
+text = "X"
+
+[connection signal="pressed" from="DeleteButton" to="." method="onDeleteButton_pressed"]
