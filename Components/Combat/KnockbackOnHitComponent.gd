@@ -27,7 +27,9 @@ extends CharacterBodyManipulatingComponentBase
 
 #region State
 var damageReceivingComponent: DamageReceivingComponent:
-	get: return self.getCoComponent(DamageReceivingComponent)
+	get:
+		if not damageReceivingComponent: damageReceivingComponent = self.getCoComponent(DamageReceivingComponent)
+		return damageReceivingComponent
 #endregion
 
 
@@ -36,11 +38,12 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	connectCoComponents()
+	connectSignals()
 
 
-func connectCoComponents() -> void:
-	damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
+func connectSignals() -> void:
+	if damageReceivingComponent:
+		damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
 
 
 func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, _amount: int, _attackerFactions: int) -> void:
