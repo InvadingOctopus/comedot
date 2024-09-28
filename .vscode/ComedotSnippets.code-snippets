@@ -168,6 +168,17 @@
 		"description": "A code region."
 	},
 
+	"Animation Function": {
+		"prefix": "animationFunc",
+		"body": [
+			"static func ${1:animate}(node: CanvasItem, duration: float = ${2:1.0}) -> Tween:",
+			"\tvar tween: Tween = node.create_tween()",
+			"\ttween.tween_property(node, ^\"${3:modulate}\", ${4:Color.BLACK}, duration)$0",
+			"\treturn tween\n\n"
+		],
+		"description": "A function for creating a customizable animation at runtime."
+	},
+	
 	"GDScript File Template": {
   	  "isFileTemplate": true,
 		"scope": "gdscript",
