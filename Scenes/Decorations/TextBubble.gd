@@ -3,21 +3,27 @@
 ## Useful for showing health values etc. over a sprite.
 
 class_name TextBubble
-extends Label
+extends Node2D
 
-@onready var animationPlayer: AnimationPlayer = $AnimationPlayer
+
+#region State
+static var scenePath: String:
+	get:
+		if not scenePath: scenePath = Tools.getScenePathFromClass(TextBubble)
+		return scenePath
+
+@onready var label: Label = $Label
+#endregion
 
 
 static func create(parentNode: Node2D, bubbleText: String) -> TextBubble:
-	var scenePath := Tools.getScenePathFromClass(TextBubble)
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
-	newBubble.text = bubbleText
 	parentNode.add_child(newBubble)
-	newBubble.owner = parentNode
+	newBubble.label.text = bubbleText
+	# newBubble.owner = parentNode # TBD: No need for persistence across Save/Load, right?
 	return newBubble
 
 
 func _ready() -> void:
-	animationPlayer.play(&"bubble") # TBD: Remove hardcoding?
-	await animationPlayer.animation_finished
+	await Animations.bubble(self).finished
 	self.queue_free()
