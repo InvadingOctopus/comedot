@@ -33,11 +33,13 @@ static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -
 
 
 static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), duration: float = 1.0) -> Tween:
+	# TODO: FIXME: Weird bug where the first time this animation is played, the node starts with the modulate color of its parent?
 	var tween: Tween = node.create_tween()
-	var targetModulate: Color = node.modulate
-	targetModulate.a = 0.1
-	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration + 0.2) # Slow down the fade-out
-	tween.parallel().tween_property(node, ^"position", distance, duration).set_ease(Tween.EaseType.EASE_OUT)
+	var targetPosition: Vector2 = node.position + distance # Assume `node` has `position`
+	var targetModulate: Color   = node.modulate
+	targetModulate.a = 0
+	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration).set_delay(0.5)
+	tween.parallel().tween_property(node, ^"position", targetPosition, duration).set_ease(Tween.EaseType.EASE_OUT)
 	return tween
 
 
