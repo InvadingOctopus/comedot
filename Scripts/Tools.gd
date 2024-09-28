@@ -277,8 +277,8 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 ## it will take a noticeable delay to move in the other direction while the velocity gradually changes from the wall's direction to away from the wall.
 static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 	var lastMotion: Vector2 = body.get_last_motion()
-	if abs(lastMotion.x) < 0.1: body.velocity.x = 0
-	if abs(lastMotion.y) < 0.1: body.velocity.y = 0
+	if is_zero_approx(lastMotion.x): body.velocity.x = 0
+	if is_zero_approx(lastMotion.y): body.velocity.y = 0
 	return lastMotion
 
 #endregion
