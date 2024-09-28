@@ -1,10 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3o0h88u2yifr"]
+[gd_scene load_steps=10 format=3 uid="uid://b3o0h88u2yifr"]
 
+[ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_jwxdq"]
 [ext_resource type="Script" path="res://UI/PauseOverlay.gd" id="1_sck66"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_k0ue2"]
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/BusVolumeUI.tscn" id="2_ryoqm"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="3_7sumf"]
 [ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
+
+[sub_resource type="Theme" id="Theme_xpd01"]
+default_font = ExtResource("1_jwxdq")
 
 [sub_resource type="LabelSettings" id="LabelSettings_612vj"]
 font = ExtResource("2_k0ue2")
@@ -12,18 +16,33 @@ shadow_size = 4
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_offset = Vector2(0, 2)
 
+[sub_resource type="LabelSettings" id="LabelSettings_2jd5g"]
+font_size = 8
+outline_size = 2
+outline_color = Color(1, 1, 1, 0.25)
+
 [node name="PauseOverlay" type="CenterContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme = SubResource("Theme_xpd01")
 script = ExtResource("1_sck66")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "COMEDOT"
@@ -34,48 +53,55 @@ uppercase = true
 script = ExtResource("3_7sumf")
 hueModifier = 0.5
 
-[node name="SubtitleLabel" type="Label" parent="VBoxContainer"]
+[node name="SubtitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.8)
+custom_minimum_size = Vector2(80, 8)
 layout_mode = 2
 text = "GODOT FRAMEWORK"
+label_settings = SubResource("LabelSettings_2jd5g")
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
+max_lines_visible = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="VolumeContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 46
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer"]
 layout_mode = 2
 
-[node name="VolumeContainer" type="MarginContainer" parent="VBoxContainer/CenterContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="GridContainer" type="VBoxContainer" parent="VBoxContainer/CenterContainer/VolumeContainer"]
-layout_mode = 2
-
-[node name="SoundVolumeUI" parent="VBoxContainer/CenterContainer/VolumeContainer/GridContainer" instance=ExtResource("2_ryoqm")]
+[node name="SoundVolumeUI" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer/VBoxContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
 busIndex = 1
 busTitle = "SFX"
 
-[node name="MusicVolumeUI" parent="VBoxContainer/CenterContainer/VolumeContainer/GridContainer" instance=ExtResource("2_ryoqm")]
+[node name="MusicVolumeUI" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer/VBoxContainer" instance=ExtResource("2_ryoqm")]
 layout_mode = 2
 busTitle = "TUNES"
 
-[node name="ExtraLabel" type="Label" parent="VBoxContainer"]
+[node name="ExtraLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(312, 24)
+custom_minimum_size = Vector2(312, 8)
 layout_mode = 2
+size_flags_vertical = 6
 label_settings = ExtResource("5_su7p3")
 autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 16)
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="TimeLabel" type="Label" parent="VBoxContainer"]
+[node name="TimeLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "TIME"
