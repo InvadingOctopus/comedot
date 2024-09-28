@@ -26,7 +26,7 @@ extends Resource
 ## Allows a "grace period" to let the player to jump just after walking off a platform floor.
 ## This may provide a better feel of control in some games.
 ## Named after Wile E. Coyote from Road Runner :>
-@export var allowCoyoteJump:									bool  = true
+@export var allowCoyoteJump:								bool  = true
 
 ## The "grace period" for allowing the player to jump just after walking off a platform floor.
 @export_range(0, 10, 0.1, "seconds") var coyoteJumpTimer:	float = 0.15
@@ -36,12 +36,14 @@ extends Resource
 @export var allowWallJump:									bool  = true
 
 ## NOTE: This should be a NEGATIVE value because a positive Y axis value means downwards.
-@export_range(-1000, -10, 5)	var wallJumpVelocity:			float = -300
+@export_range(-1000, -10, 5) var wallJumpVelocity:			float = -300
 
 ## The force with which the player bounces away horizontally from the wall during a wall jump.
-@export_range(10, 1000, 5)	var wallJumpVelocityX:			float = 150
+@export_range(10, 1000, 5) var wallJumpVelocityX:			float = 150
 
 ## The "grace period" for allowing the player to jump just after leaving a wall.
 @export_range(0, 10, 0.1, "seconds") var wallJumpTimer:		float = 0.1
 
+## If `true`, then wall jumps do not count towards [member maxNumberOfJumps], allowing the player to jump between walls indefinitely.
+@export var decreaseJumpCountOnWallJump:					bool = false
 #endregion

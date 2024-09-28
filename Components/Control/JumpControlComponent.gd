@@ -139,11 +139,13 @@ func processJump() -> void:
 	var canCoyoteJump: bool = parameters.allowCoyoteJump and not is_zero_approx(coyoteJumpTimer.time_left)
 
 	# Initial or mid-air jump
+	# TODO: TBD: Allow double-jumping after a wall jump?
 
 	if self.jumpInputJustPressed:
 		if currentNumberOfJumps <= 0: shouldJump = characterBodyComponent.isOnFloor or canCoyoteJump
 		else: shouldJump = (currentNumberOfJumps < parameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
-		# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
+	
+	# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
 
 	if shouldJump:
 		if currentNumberOfJumps <= 0:
@@ -211,6 +213,11 @@ func processWallJump() -> void:
 	if self.jumpInputJustPressed:
 		body.velocity.x = wallNormal.x * parameters.wallJumpVelocityX
 		body.velocity.y = parameters.wallJumpVelocity
+		
+		# Allow unlimited jumps between walls?
+		if parameters.decreaseJumpCountOnWallJump and currentNumberOfJumps > 0:
+			currentNumberOfJumps -= 1
+
 		didWallJump = true
 
 
