@@ -1,10 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://mwsrn6l4gw51"]
+[gd_scene load_steps=5 format=3 uid="uid://mwsrn6l4gw51"]
 
 [ext_resource type="Script" path="res://Scenes/GameFrame/MainMenuButtons.gd" id="1_7ifjj"]
+[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="1_x55uw"]
 [ext_resource type="Script" path="res://UI/UINavigationButton.gd" id="2_phlj7"]
+
+[sub_resource type="Theme" id="Theme_xjusq"]
+default_font = ExtResource("1_x55uw")
+default_font_size = 8
 
 [node name="MainMenuButtons" type="VBoxContainer"]
 auto_translate_mode = 1
+theme = SubResource("Theme_xjusq")
 script = ExtResource("1_7ifjj")
 
 [node name="StartButton" type="Button" parent="."]

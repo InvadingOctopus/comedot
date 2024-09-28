@@ -1,8 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=9 format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
 [ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_agfhx"]
-[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_shkaw"]
 [ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://Scenes/GameFrame/MainMenuButtons.tscn" id="3_27uyb"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
@@ -14,10 +13,6 @@ background_mode = 3
 glow_enabled = true
 glow_bloom = 0.1
 glow_blend_mode = 0
-
-[sub_resource type="Theme" id="Theme_0i5lv"]
-default_font = ExtResource("2_shkaw")
-default_font_size = 8
 
 [node name="GameFrame" type="Node2D"]
 editor_description = "The Main Menu"
@@ -58,16 +53,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_0i5lv")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer" node_paths=PackedStringArray("backButton")]
+[node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer" node_paths=PackedStringArray("backButton")]
 layout_mode = 2
 script = ExtResource("2_y2sis")
 backButton = NodePath("BackButton")
 
-[node name="MainMenuButtons" parent="CanvasLayer/CenterContainer/VBoxContainer" instance=ExtResource("3_27uyb")]
+[node name="MainMenuButtons" parent="CanvasLayer/CenterContainer/UINavigationContainer" instance=ExtResource("3_27uyb")]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="BackButton" type="Button" parent="CanvasLayer/CenterContainer/UINavigationContainer"]
 layout_mode = 2
-text = "← Back"
+size_flags_horizontal = 4
+text = "< Back"
