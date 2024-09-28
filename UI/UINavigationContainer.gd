@@ -71,6 +71,10 @@ func displayNavigationDestination(newDestination: String) -> bool:
 	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
 	var result: bool
 
+	if newDestinationScene is not Control:
+		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestination), str(self))
+		return false
+
 	if self.replaceFirstChildControl(newDestinationScene):
 		navigationHistory.append(newDestination)
 		result = true
