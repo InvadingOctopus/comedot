@@ -222,7 +222,8 @@ func updateWallJumpState() -> void:
 	# TODO: just_wall_jumped = false
 
 	var didLeaveWall: bool = characterBodyComponent.wasOnWall \
-		and not body.is_on_wall()
+		and not body.is_on_wall() \
+		and not body.is_on_floor()
 
 	if didLeaveWall:
 		wallJumpTimer.wait_time = parameters.wallJumpTimer
@@ -230,9 +231,9 @@ func updateWallJumpState() -> void:
 
 #endregion
 
-
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.state		= currentState
 	Debug.watchList.wallTimer	= wallJumpTimer.time_left
 	Debug.watchList.coyoteTimer	= coyoteJumpTimer.time_left
