@@ -4,6 +4,7 @@ class_name UINavigationContainer
 extends Container
 
 # TODO: More flexibility and reliability?
+# TODO: A UI navigation system based on global signals?
 
 
 #region Parameters

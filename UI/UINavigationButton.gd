@@ -5,6 +5,7 @@ class_name UINavigationButton
 extends Button
 
 # TODO: Only allow Control scenes as navigationDestination
+# TODO: A UI navigation system based on global signals
 
 
 #region Parameters
