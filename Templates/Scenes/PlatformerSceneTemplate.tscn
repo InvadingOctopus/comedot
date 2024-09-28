@@ -9,8 +9,6 @@
 [node name="PlatformerSceneTemplate" type="Node2D"]
 script = ExtResource("1_xj2di")
 
-[node name="HUDTemplate" parent="." instance=ExtResource("2_i2yvf")]
-
 [node name="PlatformerMapTemplate" parent="." instance=ExtResource("3_cdsxv")]
 
 [node name="MonsterEntity" parent="." instance=ExtResource("4_a3w4r")]
@@ -18,3 +16,5 @@ position = Vector2(240, 176)
 
 [node name="PlayerEntityTemplate-Platformer" parent="." instance=ExtResource("5_jott3")]
 position = Vector2(240, 80)
+
+[node name="HUDTemplate" parent="." instance=ExtResource("2_i2yvf")]
