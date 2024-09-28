@@ -1,16 +1,33 @@
-[gd_scene load_steps=11 format=3 uid="uid://h3pbo0mlj4je"]
+[gd_scene load_steps=17 format=3 uid="uid://h3pbo0mlj4je"]
 
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_5a21o"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_gepur"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="3_1r4r1"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="3_wtegg"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="4_5bs4y"]
 [ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="4_pvycy"]
 [ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="5_c8kjw"]
+[ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="5_u488s"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="6_p3b0u"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="6_w2yd5"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="7_aroie"]
+[ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="7_qjlrm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
+
+[sub_resource type="Resource" id="Resource_jrqcu"]
+resource_local_to_scene = true
+resource_name = "health"
+script = ExtResource("4_5bs4y")
+min = 0
+max = 5
+value = 5
+logChanges = false
+name = &"monsterHealth"
+displayName = "Health"
+description = ""
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
 resource_local_to_scene = true
@@ -30,11 +47,20 @@ region_rect = Rect2(448, 96, 16, 16)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dpspd")
 
+[node name="HealthComponent" parent="." instance=ExtResource("3_wtegg")]
+health = SubResource("Resource_jrqcu")
+
+[node name="HealthVisualComponent" parent="." instance=ExtResource("5_u488s")]
+
 [node name="FactionComponent" parent="." instance=ExtResource("2_a5njj")]
 factions = 8
 
+[node name="DamageReceivingComponent" parent="." instance=ExtResource("6_p3b0u")]
+
+[node name="KnockbackOnHitComponent" parent="." instance=ExtResource("7_qjlrm")]
+
 [node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
-collision_layer = 32
+collision_layer = 8
 collision_mask = 6
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
