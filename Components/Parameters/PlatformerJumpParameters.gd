@@ -45,5 +45,5 @@ extends Resource
 @export_range(0, 10, 0.1, "seconds") var wallJumpTimer:		float = 0.1
 
 ## If `true`, then wall jumps do not count towards [member maxNumberOfJumps], allowing the player to jump between walls indefinitely.
-@export var decreaseJumpCountOnWallJump:					bool = false
+@export var decreaseJumpCountOnWallJump:					bool = true
 #endregion
