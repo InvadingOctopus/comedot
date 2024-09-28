@@ -51,6 +51,7 @@ shape = SubResource("RectangleShape2D_dpspd")
 health = SubResource("Resource_jrqcu")
 
 [node name="HealthVisualComponent" parent="." instance=ExtResource("5_u488s")]
+shouldShowRemainingHealth = true
 
 [node name="FactionComponent" parent="." instance=ExtResource("2_a5njj")]
 factions = 8
