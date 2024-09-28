@@ -4,19 +4,34 @@
 class_name UINavigationButton
 extends Button
 
+# TODO: Only allow Control scenes as navigationDestination
 
-## The path of the new control to display in the parent [UINavigationContainer], replacing the parent's current first child control.
+
+#region Parameters
+
+## The path of the new [Control] to display in the parent [UINavigationContainer], replacing the parent's current first child [Control].
 @export_file("*.tscn") var navigationDestination: String
 
 ## Optional: The [UINavigationContainer] whose child to replace with the [member navigationDestination]
 ## If `null`, then the first parent or grandparent of type [UINavigationContainer] is used.
 @export var parentOverride: UINavigationContainer
 
+@export var shouldShowDebugInfo: bool
+
+#endregion
+
+
+func _ready() -> void:
+	if not self.pressed.is_connected(self.onPressed):
+		self.pressed.connect(self.onPressed)
+
+
 func onPressed() -> void:
-	Debug.printDebug(str(self, " onPressed(): navigationDestination: ", navigationDestination))
+	if shouldShowDebugInfo: Debug.printDebug(str("onPressed(): navigationDestination: ", navigationDestination), str(self))
 	if not navigationDestination: return
 
 	var parentContainer: UINavigationContainer = parentOverride if parentOverride else Tools.findFirstParentOfType(self, UINavigationContainer)
+	if shouldShowDebugInfo: Debug.printDebug(str("parentContainer: ", parentContainer), str(self))
 	if not parentContainer: return
 
 	parentContainer.displayNavigationDestination(navigationDestination)
