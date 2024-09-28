@@ -18,13 +18,13 @@ const blink				:= &"blink"
 
 ## A convenient shortcut for calling [method Node.create_tween()] (which also implicitly calls [method Tween.bind_node]) then [method Tween.tween_property] in a single call.
 ## Returns: The created [Tween].
-static func tweenProperty(node: Node, property: NodePath, value: Variant, duration: float = 1.0) -> Tween:
+static func tweenProperty(node: CanvasItem, property: NodePath, value: Variant, duration: float = 1.0) -> Tween:
 	var tween: Tween = node.create_tween()
 	tween.tween_property(node, property, value, duration)
 	return tween
 
 
-static func blinkNode(node: Node2D, loops: int = 3, duration: float = 0.1) -> Tween:
+static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -> Tween:
 	var tween: Tween = node.create_tween()
 	tween.set_loops(loops)
 	tween.tween_property(node, "visible", false, duration)
