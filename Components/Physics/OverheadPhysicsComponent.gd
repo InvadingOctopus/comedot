@@ -25,7 +25,7 @@ func _ready() -> void:
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 
 		if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
-			printDebug("Recommed characterBodyComponent.shouldResetVelocityIfZeroMotion = true")
+			printDebug("Recommend characterBodyComponent.shouldResetVelocityIfZeroMotion = true")
 			#characterBodyComponent.shouldResetVelocityIfZeroMotion = true
 
 		#characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
