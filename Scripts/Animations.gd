@@ -27,9 +27,19 @@ static func tweenProperty(node: CanvasItem, property: NodePath, value: Variant, 
 static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -> Tween:
 	var tween: Tween = node.create_tween()
 	tween.set_loops(loops)
-	tween.tween_property(node, "visible", false, duration)
-	tween.tween_property(node, "visible", true,  duration)
+	tween.tween_property(node, ^"visible", false, duration)
+	tween.tween_property(node, ^"visible", true,  duration)
 	return tween
+
+
+static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), duration: float = 1.0) -> Tween:
+	var tween: Tween = node.create_tween()
+	var targetModulate: Color = node.modulate
+	targetModulate.a = 0.1
+	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration + 0.2) # Slow down the fade-out
+	tween.parallel().tween_property(node, ^"position", distance, duration).set_ease(Tween.EaseType.EASE_OUT)
+	return tween
+
 
 #endregion
 
@@ -50,8 +60,8 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 	var tween: Tween = label.create_tween()
 	tween.set_trans(Tween.TRANS_BOUNCE)
 	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate", color, duration)
-	tween.tween_property(label, "modulate", defaultColor, duration)
+	tween.tween_property(label, ^"modulate", color, duration)
+	tween.tween_property(label, ^"modulate", defaultColor, duration)
 
 	return tween
 
