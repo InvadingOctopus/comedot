@@ -10,6 +10,6 @@ func _ready() -> void:
 	self.position = self.get_local_mouse_position()
 
 
-func _input(event: InputEvent) -> void:
-	if not event is InputEventMouseMotion: return
+func _process(_delta: float) -> void:
+	# NOTE: Cannot use `_input()` for updating position only on mouse events, because it causes erratic behavior.
 	self.position = self.get_local_mouse_position()
