@@ -3,7 +3,7 @@
 ## NOTE: If you need a custom functionality for your main scene's root node, such as initializing the game-specific environment, then your script must extend [Start] and call [super._ready()]
 
 class_name Start
-extends Node
+extends CanvasItem
 
 
 #region Framework Settings
