@@ -8,30 +8,42 @@
 default_font = ExtResource("1_x55uw")
 default_font_size = 8
 
-[node name="MainMenuButtons" type="VBoxContainer"]
+[node name="MainMenuButtonsContainer" type="CenterContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MainMenuButtons" type="VBoxContainer" parent="."]
 auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
 theme = SubResource("Theme_xjusq")
 script = ExtResource("1_7ifjj")
 
-[node name="StartButton" type="Button" parent="."]
+[node name="StartButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
 text = "START"
 
-[node name="OptionsButton" type="Button" parent="."]
+[node name="OptionsButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
 text = "OPTIONS"
 script = ExtResource("2_phlj7")
-navigationDestination = "res://Scenes/GameFrame/OptionsUI.tscn"
+navigationDestination = "res://UI/Menus/OptionsUI.tscn"
 
-[node name="QuitButton" type="Button" parent="."]
+[node name="QuitButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
 text = "QUIT"
 
-[connection signal="pressed" from="StartButton" to="." method="onStartButton_pressed"]
-[connection signal="pressed" from="StartButton" to="StartButton" method="onPressed"]
-[connection signal="pressed" from="OptionsButton" to="OptionsButton" method="onPressed"]
-[connection signal="pressed" from="QuitButton" to="." method="onQuitButton_pressed"]
-[connection signal="pressed" from="QuitButton" to="QuitButton" method="onPressed"]
+[connection signal="pressed" from="MainMenuButtons/StartButton" to="MainMenuButtons" method="onStartButton_pressed"]
+[connection signal="pressed" from="MainMenuButtons/StartButton" to="MainMenuButtons/StartButton" method="onPressed"]
+[connection signal="pressed" from="MainMenuButtons/OptionsButton" to="MainMenuButtons/OptionsButton" method="onPressed"]
+[connection signal="pressed" from="MainMenuButtons/QuitButton" to="MainMenuButtons" method="onQuitButton_pressed"]
+[connection signal="pressed" from="MainMenuButtons/QuitButton" to="MainMenuButtons/QuitButton" method="onPressed"]
