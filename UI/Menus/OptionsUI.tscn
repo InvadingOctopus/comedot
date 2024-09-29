@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cysctd14jlutm"]
+[gd_scene load_steps=4 format=3 uid="uid://cysctd14jlutm"]
 
 [ext_resource type="Script" path="res://UI/Menus/OptionsUI.gd" id="1_w373j"]
 [ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://UI/PauseOverlay.tscn" id="2_hqky3"]
+[ext_resource type="Script" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
 
 [node name="OptionsContainer" type="VBoxContainer"]
 script = ExtResource("1_w373j")
@@ -9,3 +10,12 @@ metadata/_edit_group_ = true
 
 [node name="PauseSettingsUI" parent="." instance=ExtResource("2_hqky3")]
 layout_mode = 2
+
+[node name="InputMapButton" type="Button" parent="PauseSettingsUI/MarginContainer/VBoxContainer" index="3"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "CONTROLS"
+script = ExtResource("3_415it")
+navigationDestination = "res://UI/InputMapUI.tscn"
+
+[editable path="PauseSettingsUI"]
