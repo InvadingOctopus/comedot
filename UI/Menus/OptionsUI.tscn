@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cysctd14jlutm"]
 
-[ext_resource type="Script" path="res://Scenes/GameFrame/OptionsUI.gd" id="1_w373j"]
+[ext_resource type="Script" path="res://UI/Menus/OptionsUI.gd" id="1_w373j"]
 [ext_resource type="PackedScene" uid="uid://b3o0h88u2yifr" path="res://UI/PauseOverlay.tscn" id="2_hqky3"]
 
 [node name="OptionsContainer" type="VBoxContainer"]

@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
 [ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_agfhx"]
 [ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
-[ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://Scenes/GameFrame/MainMenuButtons.tscn" id="3_27uyb"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
+[ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://UI/Menus/MainMenuButtons.tscn" id="7_wy4rx"]
 [ext_resource type="Texture2D" uid="uid://dcdkweiett0gs" path="res://Assets/Logos/Comedot.png" id="7_x8oq1"]
 
 [sub_resource type="Environment" id="Environment_ljcfk"]
@@ -59,7 +59,7 @@ layout_mode = 2
 script = ExtResource("2_y2sis")
 backButton = NodePath("BackButton")
 
-[node name="MainMenuButtons" parent="CanvasLayer/CenterContainer/UINavigationContainer" instance=ExtResource("3_27uyb")]
+[node name="MainMenuButtons" parent="CanvasLayer/CenterContainer/UINavigationContainer" instance=ExtResource("7_wy4rx")]
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="CanvasLayer/CenterContainer/UINavigationContainer"]
