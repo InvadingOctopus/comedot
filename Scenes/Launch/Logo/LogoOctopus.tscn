@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://csq2lekj41v32"]
+
+[ext_resource type="Script" path="res://Scripts/Visual/RandomModulate.gd" id="1_6jb7h"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_hgvq6"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6utrp"]
+bounce = 0.5
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hkblr"]
+atlas = ExtResource("2_hgvq6")
+region = Rect2(400, 128, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c1e8x"]
+size = Vector2(14, 14)
+
+[node name="LogoInvader" type="RigidBody2D"]
+texture_filter = 2
+physics_material_override = SubResource("PhysicsMaterial_6utrp")
+gravity_scale = 0.2
+script = ExtResource("1_6jb7h")
+redMin = 0.05
+greenMin = 0.05
+blueMin = 0.05
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_hkblr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_c1e8x")
