@@ -47,22 +47,24 @@ position = Vector2(144, 96)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("7_x8oq1")
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+[node name="UIContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer" node_paths=PackedStringArray("backButton")]
+[node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/UIContainer" node_paths=PackedStringArray("backButton")]
 layout_mode = 2
 script = ExtResource("2_y2sis")
 backButton = NodePath("BackButton")
 
-[node name="MainMenuButtons" parent="CanvasLayer/CenterContainer/UINavigationContainer" instance=ExtResource("7_wy4rx")]
+[node name="MainMenuButtons" parent="CanvasLayer/UIContainer/UINavigationContainer" instance=ExtResource("7_wy4rx")]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="CanvasLayer/CenterContainer/UINavigationContainer"]
+[node name="BackButton" type="Button" parent="CanvasLayer/UIContainer/UINavigationContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "< Back"
