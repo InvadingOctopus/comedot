@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/Menus/MainMenuButtons.gd" id="1_7ifjj"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="1_x55uw"]
-[ext_resource type="Script" path="res://UI/UINavigationButton.gd" id="2_phlj7"]
+[ext_resource type="Script" path="res://UI/Buttons/UINavigationButton.gd" id="2_phlj7"]
 
 [sub_resource type="Theme" id="Theme_xjusq"]
 default_font = ExtResource("1_x55uw")
