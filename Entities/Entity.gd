@@ -11,6 +11,13 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 #region Parameters
 
+## If `false`, suppresses log messages from this entity and its child [Component]s.
+@export var isLoggingEnabled: bool = true
+
+## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
+## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
+@export var shouldShowDebugInfo: bool = false
+
 ## The primary [Area2D] represented by this [Entity] for child [Component]s to manipulate.
 ## If left `null`, the [Entity] [Node] itself may be used if it's a [Area2D],
 ## otherwise it will be the first matching child node.
@@ -23,13 +30,6 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## Call [method getBody] to automatically set this value.
 @export var body: CharacterBody2D
 
-## If `false`, suppresses log messages from this entity and its child [Component]s.
-@export var isLoggingEnabled:		bool = true
-
-## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
-## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
-@export var shouldShowDebugInfo:	bool = false
-
 #endregion
 
 
@@ -38,10 +38,10 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## A dictionary of {StringName:Component} where the key is the `class_name` of each Component, which may be discovered via [method Script.get_global_name].
 ## Updated by the [signal Node.child_entered_tree] signal.
 ## Used by components to quickly find other sibling components, without a dynamic search at runtime.
-var components: Dictionary[StringName, Component] = {}
+var components: Dictionary[StringName, Component]
 
 ## A dictionary of functions that should be called only once per frame, for example [member CharacterBody2D.move_and_slide] on a [CharacterBody2D].
-var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable] = {}
+var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
 
 #endregion
 
@@ -106,6 +106,7 @@ func childEnteredTree(node: Node) -> void:
 	pass
 
 
+## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards. 
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_PARENTED] Notification.
 func registerComponent(newComponent: Component) -> void:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
@@ -130,6 +131,7 @@ func childExitingTree(node: Node) -> void:
 	pass
 
 
+## Adds a [Component] from the [member components] [Dictionary].
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_UNPARENTED] Notification.
 func unregisterComponent(componentToRemove: Component) -> void:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
