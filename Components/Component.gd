@@ -12,12 +12,13 @@ extends Node
 
 #region Core Properties
 var parentEntity: Entity
+var coComponents: Dictionary[StringName, Component] ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components]. NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
 #endregion
 
 
 #region Signals
 
-## Emitted on [const Node.NOTIFICATION_UNPARENTED]. 
+## Emitted on [const Node.NOTIFICATION_UNPARENTED].
 ## May be connected to by subclasses to perform cleanup specific to each component.
 ## NOTE: [member parentEntity] is still assigned at this point and set to `null` after this signal is emitted.
 signal willRemoveFromEntity
@@ -68,10 +69,10 @@ func checkRequiredComponents() -> bool:
 #region Life Cycle
 
 func registerParent() -> void:
-	printDebug(str("registerParent() ", get_parent()))
-	
+	if shouldShowDebugInfo: printDebug(str("registerParent() ", get_parent()))
+
 	var newparent: Node = self.get_parent()
-	
+
 	if parentEntity:
 		if parentEntity == newparent: printWarning(str("parentEntity already set: ", parentEntity))
 		else: printError(str("parentEntity already set to a different parent: ", parentEntity)) # This situation should never happen, so treat it as an Error.
@@ -79,6 +80,7 @@ func registerParent() -> void:
 	if newparent is Entity:
 		self.parentEntity = newparent
 		self.parentEntity.registerComponent(self)
+		self.coComponents = parentEntity.components
 
 
 # Called when the node enters the scene tree for the first time.
@@ -112,7 +114,7 @@ func removeFromEntity(shouldFree: bool = true) -> void:
 ## Calls [method queue_free()] on itself if the parent entity approves. Returns `true` if removed.
 ## May be overridden in subclasses to check additional conditions and logic.
 func requestDeletion() -> bool:
-	# TODO: Ask the parent entity for approval?
+	# TBD: Ask the parent entity for approval?
 	self.queue_free()
 	return true
 
@@ -127,9 +129,10 @@ func requestDeletionOfParentEntity() -> bool:
 
 func unregisterParent() -> void:
 	# CHECK: Is there still a parent reference available at this point?
-	printDebug(str("unregisterParent() ", get_parent()))
+	if shouldShowDebugInfo: printDebug(str("unregisterParent() ", get_parent()))
 	if parentEntity:
 		willRemoveFromEntity.emit()
+		self.coComponents = {}
 		self.parentEntity.unregisterComponent(self)
 		self.parentEntity = null
 		if isLoggingEnabled: printLog("􀆄 Unparented")
@@ -166,26 +169,20 @@ func getParentEntity() -> Entity:
 
 	# If parent is null or not an Entity, get the grandparent (parent's parent) and keep searching up the tree.
 	while not (parent is Entity) and not (parent == null):
-		printDebug("getParentEntity() searching non-Entity parent: " + str(parent))
+		if shouldShowDebugInfo: printDebug(str("getParentEntity() searching non-Entity parent: ", parent))
 		parent = parent.get_parent()
 
 	#DEBUG printDebug("getParentEntity(): " + str(parent))
 	return parent
 
 
-## Searches the [member parentEntity.components] dictionary after converting the [param type] to a [StringName].
+## Returns a sibling [Component] from the [member coComponents] [Dictionary],
+## after converting the [param type] [method Script.get_global_name] to a [StringName].
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
+## ALERT: OBSOLETE! Use the [member coComponents] [Dictionary] directly for better performance.
 func getCoComponent(type: Script) -> Component:
 	# CHECK: Is [Script] the correct type to accept as argument?
-	# Duplicates code from `Entity.getComponent()` to improve performance?
-	
-	if not parentEntity: return null
-
-	var typeName: StringName = type.get_global_name()
-	var foundComponent: Component = parentEntity.components.get(typeName)
-	if not foundComponent:
-		printWarning("Cannot find " + typeName + " in parent Entity: " + parentEntity.logName)
-	return foundComponent
+	return self.coComponents.get(type.get_global_name())
 
 
 ## Asks the parent [Entity] to remove all other components of the same class as this component.
