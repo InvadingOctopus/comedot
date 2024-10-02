@@ -23,7 +23,7 @@ extends StatDependentResourceBase
 
 #region Derived Properties
 var logName: String:
-	get: return str(self, " ", self.name)
+	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
 #endregion
 
 
@@ -63,4 +63,4 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName))
+	if shouldShowDebugInfo: Debug.printLog(message, "", str(self.logName), "pink")
