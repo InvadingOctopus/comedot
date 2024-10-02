@@ -15,7 +15,7 @@ extends Payload
 ## IMPORTANT: The method MUST be `static` so as to avoid the need for creating an instance of the script.
 ## [method executeImplementation] will return the result of that method.
 ## TIP: Use the `Templates/Scripts/Resource/ScriptPayloadScriptTemplate.gd` template.
-## TIP: The parameter names and the [Variant] types may be replaced with any name and any type, for better clarity.
+## TIP: The parameter names and the [Variant] types may be replaced with any name and any specific type, for better reliability and performance.
 ## If not specified, a `.gd` script file matching the same name as this Payload's `.tres` filename is used, if found, e.g. `GunUpgradePayload.tres`: `GunUpgradePayload.gd`
 @export var payloadScript: GDScript: # TODO: Stronger typing when Godot allows it :')
 	get:

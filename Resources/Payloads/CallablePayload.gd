@@ -9,7 +9,7 @@ extends Payload
 ## A function to call when this [Payload] is executed. MUST take the following arguments:
 ## `func anyName(payload: Payload, source: Variant, target: Variant) -> Variant`
 ## [method executeImplementation] will return the result of the [Callable].
-## TIP: The parameter names and the [Variant] types may be replaced with any name and any type, for better clarity.
+## TIP: The parameter names and the [Variant] types may be replaced with any name and any specific type, for better reliability and performance.
 ## For example, `func onCollectible_didCollect(payload: Payload, collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int` as in [StatCollectibleComponent].
 @export var payloadCallable: Callable
 

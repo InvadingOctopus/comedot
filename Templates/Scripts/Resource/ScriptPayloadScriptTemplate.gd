@@ -1,8 +1,8 @@
 # meta-default: true
 
-## A script for an [ScriptPayload] to execute.
+## A script for a [ScriptPayload] to execute.
 
-extends Resource # TBD: Should the base be a `ScriptPayloadScript`? :)
+extends Resource
 
 
 static func onPayload_didExecute(payload: Payload, source: Variant, target: Variant) -> Variant:
