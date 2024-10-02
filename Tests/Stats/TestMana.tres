@@ -16,5 +16,5 @@ value = 100
 logChanges = true
 name = &"testMana"
 displayName = "MANA"
-icon = SubResource("AtlasTexture_17j6j")
 description = ""
+icon = SubResource("AtlasTexture_17j6j")

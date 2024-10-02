@@ -16,5 +16,5 @@ value = 2000
 logChanges = true
 name = &"testGold"
 displayName = "GOLD"
-icon = SubResource("AtlasTexture_gs8nh")
 description = ""
+icon = SubResource("AtlasTexture_gs8nh")

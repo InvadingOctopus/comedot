@@ -16,5 +16,5 @@ value = 50
 logChanges = false
 name = &"testAmmo"
 displayName = "AMMO"
-icon = SubResource("AtlasTexture_t6t6a")
 description = ""
+icon = SubResource("AtlasTexture_t6t6a")
