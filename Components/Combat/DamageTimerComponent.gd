@@ -8,15 +8,10 @@ extends Component
 @export_range(0, 100, 1) var damageOnTimer: int = 1
 @export_flags("neutral", "players", "playerAllies", "enemies") var attackerFactions: int = 1
 @export var friendlyFire := false
-
-@export var damageReceivingComponent: DamageReceivingComponent
 @export var isEnabled := true
 #endregion
 
-
-func _ready() -> void:
-	if not damageReceivingComponent:
-		damageReceivingComponent = getCoComponent(DamageReceivingComponent)
+@onready var damageReceivingComponent: DamageReceivingComponent = coComponents.DamageReceivingComponent # TBD: Static or dynamic?
 
 
 func onTimerTimeout() -> void:

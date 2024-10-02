@@ -4,7 +4,7 @@
 class_name GunRecoilComponent
 extends CharacterBodyManipulatingComponentBase
 
-# TODO: Beter physics
+# TODO: Better physics
 # TODO: Option to apply dynamic knockback based on the bullet's velocity.
 # TODO: Handle dynamic removal and addition of a [GunComponent]
 
@@ -17,9 +17,8 @@ extends CharacterBodyManipulatingComponentBase
 #endregion
 
 
-#region State
-var gunComponent: GunComponent:
-	get: return self.getCoComponent(GunComponent)
+#region Dependencies
+@onready var gunComponent: GunComponent = coComponents.GunComponent # TBD: Static or dynamic?
 #endregion
 
 

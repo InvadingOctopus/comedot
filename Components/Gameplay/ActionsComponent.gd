@@ -34,12 +34,7 @@ signal didDoAction(action: Action)
 
 
 #region Dependencies
-
-var statsComponent: StatsComponent: ## Placeholder
-	get:
-		if not statsComponent: statsComponent = self.getCoComponent(StatsComponent)
-		return statsComponent
-
+@onready var statsComponent: StatsComponent = coComponents.StatsComponent # TBD: Static or dynamic?
 #endregion
 
 

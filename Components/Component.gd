@@ -178,11 +178,22 @@ func getParentEntity() -> Entity:
 
 ## Returns a sibling [Component] from the [member coComponents] [Dictionary],
 ## after converting the [param type] [method Script.get_global_name] to a [StringName].
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
-## ALERT: OBSOLETE! Use the [member coComponents] [Dictionary] directly for better performance.
-func getCoComponent(type: Script) -> Component:
-	# CHECK: Is [Script] the correct type to accept as argument?
-	return self.coComponents.get(type.get_global_name())
+## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSublcass] is called to find the first [Component] which extends/inherits the specified type.
+## ALERT: Slower performance compared to accessing the [member coComponents] [Dictionary] directly! Use this method only if a warning is needed instead of a crash, in case of a missing component.
+func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
+	# TBD: Is [Script] the correct type for the argument?
+	var coComponent: Component = self.coComponents.get(type.get_global_name())
+	
+	if not coComponent:
+		
+		if includeSubclasses:
+			coComponent = parentEntity.findFirstComponentSublcass(type)
+			printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
+		
+		if not coComponent: # Did we still not find any match? :(
+			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName))
+
+	return coComponent
 
 
 ## Asks the parent [Entity] to remove all other components of the same class as this component.

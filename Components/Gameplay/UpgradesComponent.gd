@@ -29,10 +29,7 @@ signal didDiscard(upgrade: Upgrade) ## NOTE: [signal UpgradesComponent.didDiscar
 
 
 #region Dependencies
-var statsComponent: StatsComponent:
-	get:
-		if not statsComponent: statsComponent = self.getCoComponent(StatsComponent)
-		return statsComponent
+@onready var statsComponent: StatsComponent = coComponents.StatsComponent # TBD: Static or dynamic?
 
 func getRequiredComponents() -> Array[Script]:
 	return [StatsComponent]

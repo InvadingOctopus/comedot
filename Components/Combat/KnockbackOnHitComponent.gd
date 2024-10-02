@@ -25,11 +25,8 @@ extends CharacterBodyManipulatingComponentBase
 #endregion
 
 
-#region State
-var damageReceivingComponent: DamageReceivingComponent:
-	get:
-		if not damageReceivingComponent: damageReceivingComponent = self.getCoComponent(DamageReceivingComponent)
-		return damageReceivingComponent
+#region Dependencies
+@onready var damageReceivingComponent: DamageReceivingComponent = coComponents.DamageReceivingComponent # TBD: Static or dynamic?
 #endregion
 
 

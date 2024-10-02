@@ -16,12 +16,8 @@ extends CharacterBodyManipulatingComponentBase
 #endregion
 
 
-#region State
-var playerInputComponent: PlayerInputComponent:
-	get:
-		if not playerInputComponent:
-			playerInputComponent = self.getCoComponent(PlayerInputComponent)
-		return playerInputComponent
+#region Dependencies
+@onready var playerInputComponent: PlayerInputComponent = coComponents.PlayerInputComponent # TBD: Static or dynamic?
 #endregion
 
 

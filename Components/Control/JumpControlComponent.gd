@@ -63,11 +63,7 @@ var currentNumberOfJumps: int
 			#currentNumberOfJumps = newValue
 			#printDebug("currentNumberOfJumps → " + str(currentNumberOfJumps))
 
-
-var platformerControlComponent: PlatformerControlComponent:
-	get:
-		if not platformerControlComponent: platformerControlComponent = getCoComponent(PlatformerControlComponent)
-		return platformerControlComponent
+@onready var platformerControlComponent: PlatformerControlComponent = coComponents.PlatformerControlComponent # TBD: Static or dynamic?
 
 #endregion
 

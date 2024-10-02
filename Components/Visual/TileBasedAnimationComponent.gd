@@ -16,10 +16,7 @@ extends Component
 
 #region State
 
-var tileBasedPositionComponent: TileBasedPositionComponent:
-	get:
-		if not tileBasedPositionComponent: tileBasedPositionComponent = self.getCoComponent(TileBasedPositionComponent)
-		return tileBasedPositionComponent
+@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 
 var animatedSprite: AnimatedSprite2D:
 	get:

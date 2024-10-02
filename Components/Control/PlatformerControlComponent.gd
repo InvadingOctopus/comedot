@@ -20,10 +20,7 @@ var inputDirection:			float
 var lastInputDirection:		float
 var isInputZero:			bool = true
 
-var platformerPhysicsComponent: PlatformerPhysicsComponent:
-	get:
-		if not platformerPhysicsComponent: platformerPhysicsComponent = getCoComponent(PlatformerPhysicsComponent)
-		return platformerPhysicsComponent
+@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
 
 #endregion
 

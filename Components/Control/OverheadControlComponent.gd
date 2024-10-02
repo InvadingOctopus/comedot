@@ -15,16 +15,10 @@ extends Component
 
 
 #region Dependencies
+@onready var overheadPhysicsComponent: OverheadPhysicsComponent = coComponents.OverheadPhysicsComponent # TBD: Static or dynamic?
 
-var overheadPhysicsComponent: OverheadPhysicsComponent:
-	get:
-		if not overheadPhysicsComponent: overheadPhysicsComponent = self.getCoComponent(OverheadPhysicsComponent)
-		return overheadPhysicsComponent
-
-## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
 	return [OverheadPhysicsComponent]
-
 #endregion
 
 

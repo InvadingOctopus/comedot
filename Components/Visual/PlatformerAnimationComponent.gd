@@ -18,27 +18,22 @@ extends Component
 #endregion
 
 
-#region State
+#region Dependencies
 var animatedSprite:				AnimatedSprite2D
 var characterBodyComponent:		CharacterBodyComponent
 var body:						CharacterBody2D
-var platformControlComponent:	PlatformerControlComponent
-#endregion
-
-
-#region Signals
-#endregion
-
+var platformerControlComponent: PlatformerControlComponent
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, PlatformerControlComponent]
+#endregion
 
 
 func _ready() -> void:
 	self.animatedSprite				= parentEntity.findFirstChildOfType(AnimatedSprite2D)
 	self.characterBodyComponent		= parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
 	self.body						= characterBodyComponent.body
-	self.platformControlComponent	= getCoComponent(PlatformerControlComponent)
+	self.platformerControlComponent	= coComponents.PlatformerControlComponent # TBD: Static or dynamic?
 
 
 func _process(_delta: float) -> void:
@@ -48,8 +43,8 @@ func _process(_delta: float) -> void:
 
 	var animationToPlay: StringName
 
-	if flipWhenWalkingLeft and platformControlComponent:
-		animatedSprite.flip_h = true if signf(platformControlComponent.lastInputDirection) < 0.0 else false
+	if flipWhenWalkingLeft and platformerControlComponent:
+		animatedSprite.flip_h = true if signf(platformerControlComponent.lastInputDirection) < 0.0 else false
 		# Debug.watchList.hDirection = platformControlComponent.lastDirection
 
 	if not idleAnimation.is_empty() \

@@ -28,8 +28,7 @@ signal didDrop(node: Node2D)
 
 #region State
 
-var healthComponent: HealthComponent:
-	get: return self.getCoComponent(HealthComponent)
+@onready var healthComponent: HealthComponent = coComponents.HealthComponent # TBD: Static or dynamic?
 
 var parentForSpawnedNode: Node2D:
 	get:

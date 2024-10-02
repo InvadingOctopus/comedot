@@ -17,11 +17,8 @@ extends Component
 #endregion
 
 
-#region State
-var playerInputComponent: PlayerInputComponent:
-	get:
-		if not playerInputComponent: playerInputComponent = self.getCoComponent(PlayerInputComponent)
-		return playerInputComponent
+#region Dependencies
+@onready var playerInputComponent: PlayerInputComponent = coComponents.PlayerInputComponent # TBD: Static or dynamic?
 
 func getRequiredComponents() -> Array[Script]:
 	return [PlayerInputComponent]

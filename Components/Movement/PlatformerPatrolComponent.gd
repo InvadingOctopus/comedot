@@ -45,17 +45,8 @@ var sprite: Sprite2D:
 		if not sprite: sprite = parentEntity.findFirstChildOfType(Sprite2D) # TODO: Check that this also picks up [AnimatedSprite2D]
 		return sprite
 
-var cornerCollisionComponent: CornerCollisionComponent:
-	get:
-		# Search for the co-component only once and save it for future access.
-		if not cornerCollisionComponent: cornerCollisionComponent = getCoComponent(CornerCollisionComponent)
-		return cornerCollisionComponent
-
-var platformerPhysicsComponent: PlatformerPhysicsComponent:
-	get:
-		# Search for the co-component only once and save it for future access.
-		if not platformerPhysicsComponent: platformerPhysicsComponent = getCoComponent(PlatformerPhysicsComponent)
-		return platformerPhysicsComponent
+@onready var cornerCollisionComponent:   CornerCollisionComponent   = coComponents.CornerCollisionComponent   # TBD: Static or dynamic?
+@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
 
 #endregion
 

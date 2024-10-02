@@ -15,21 +15,14 @@ extends Component
 
 
 #region State
-
-var tileBasedPositionComponent: TileBasedPositionComponent:
-	get:
-		if not tileBasedPositionComponent: tileBasedPositionComponent = self.getCoComponent(TileBasedPositionComponent)
-		return tileBasedPositionComponent
-
 var recentInputVector: Vector2i:
 	set(newValue): printChange("recentInputVector", recentInputVector, newValue); recentInputVector = newValue # DEBUG
 
 @onready var timer: Timer = $Timer
-
+@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 #endregion
 
 
-## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
 	return [TileBasedPositionComponent]
 

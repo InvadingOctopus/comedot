@@ -50,16 +50,8 @@ var damageComponentsInContact: Array[DamageComponent]
 #region Dependencies
 
 ## May be a subclass such as [ShieldedHealthComponent].
-@export var healthComponent: HealthComponent:
-	get:
-		if not healthComponent: healthComponent = parentEntity.findFirstComponentSublcass(HealthComponent) # NOTE: Subclasses such as [ShieldedHealthComponent] may also be used.
-		return healthComponent
-
-@export var factionComponent: FactionComponent:
-	get:
-		if not factionComponent: factionComponent = self.getCoComponent(FactionComponent)
-		return factionComponent
-
+@onready var healthComponent:  HealthComponent  = coComponents.HealthComponent  # TBD: Static or dynamic?
+@onready var factionComponent: FactionComponent = coComponents.FactionComponent # TBD: Static or dynamic?
 #endregion
 
 

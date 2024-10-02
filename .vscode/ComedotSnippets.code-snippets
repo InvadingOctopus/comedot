@@ -86,24 +86,18 @@
 	},
 
 	"Component Dependency": {
-		"prefix": "varComponent",
-		"body": [
-			"var ${2:coComponent}: ${1:ComponentType}:",
-			"\tget:",
-			"\t\tif not ${2:coComponent}: ${2:coComponent} = self.getCoComponent(${1:ComponentType})",
-			"\t\treturn ${2:coComponent}",
-			"\n$0"
-		],
+		"prefix": "coComponent",
+		"body": [ "@onready var ${2:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType} # TBD: Static or dynamic?\n" ],
 		"description": "A property that searches for a sibling component and caches a reference to it."
 	},
 
 	"Component Reference": {
-		"prefix": "coComponent",
+		"prefix": "varComponent",
 		"body": [
-			"var ${2:coComponent}: ${1:ComponentType} = self.getCoComponent(${1:ComponentType})",
+			"var ${2:coComponent}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
 			"${2:coComponent}.$0"
 		],
-		"description": "A variabble that stores a reference to a sibling component."
+		"description": "A variable that stores a reference to a sibling component."
 	},
 
 	"Property Getter": {

@@ -47,9 +47,7 @@ var area: Area2D:
 	get: return (self.get_node(".") as Area2D)
 
 ## A shortcut that returns the [FactionComponent] of the parent [Entity].
-var factionComponent: FactionComponent:
-	# TBD: Export as parameter?
-	get: return getCoComponent(FactionComponent)
+@onready var factionComponent: FactionComponent = coComponents.FactionComponent # TBD: Static or dynamic?
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]

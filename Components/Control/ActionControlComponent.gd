@@ -25,12 +25,8 @@ extends Component
 
 #region Dependencies
 
-var actionsComponent: ActionsComponent:
-	get:
-		if not actionsComponent: actionsComponent = self.getCoComponent(ActionsComponent)
-		return actionsComponent
+@onready var actionsComponent: ActionsComponent = coComponents.ActionsComponent # TBD: Static or dynamic?
 
-## Returns a list of required component types that this component depends on.
 func getRequiredcomponents() -> Array[Script]:
 	return [ActionsComponent]
 

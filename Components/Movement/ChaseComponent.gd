@@ -33,10 +33,7 @@ var recentChaseDirection: Vector2
 
 
 #region Dependencies
-var overheadPhysicsComponent: OverheadPhysicsComponent:
-	get:
-		if not overheadPhysicsComponent: overheadPhysicsComponent = self.getCoComponent(OverheadPhysicsComponent)
-		return overheadPhysicsComponent
+@onready var overheadPhysicsComponent: OverheadPhysicsComponent = coComponents.OverheadPhysicsComponent # TBD: Static or dynamic?
 
 func getRequiredComponents() -> Array[Script]:
 	return [OverheadPhysicsComponent] + super.getRequiredComponents()

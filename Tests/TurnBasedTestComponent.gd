@@ -5,11 +5,8 @@ class_name TurnBasedTestComponent
 extends TurnBasedComponent
 
 
-#region State
-var tileBasedPositionComponent: TileBasedPositionComponent:
-	get:
-		if not tileBasedPositionComponent: tileBasedPositionComponent = getCoComponent(TileBasedPositionComponent)
-		return tileBasedPositionComponent
+#region Dependencies
+@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 #endregion
 
 
