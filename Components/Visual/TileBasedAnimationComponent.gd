@@ -14,7 +14,7 @@ extends Component
 #endregion
 
 
-#region State
+#region Dependencies
 
 @onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 
@@ -23,12 +23,12 @@ var animatedSprite: AnimatedSprite2D:
 		if not animatedSprite: animatedSprite = parentEntity.findFirstChildOfType(AnimatedSprite2D)
 		return animatedSprite
 
+func getRequiredcomponents() -> Array[Script]:
+	return [TileBasedPositionComponent]
+
 #endregion
 
 
-## Returns a list of required component types that this component depends on.
-func getRequiredcomponents() -> Array[Script]:
-	return [TileBasedPositionComponent]
 
 
 func _ready() -> void:
