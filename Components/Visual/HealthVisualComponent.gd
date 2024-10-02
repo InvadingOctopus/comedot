@@ -17,7 +17,7 @@ extends Component
 #region Dependencies
 var healthComponent: HealthComponent:
 	get:
-		if not healthComponent: healthComponent = parentEntity.findFirstComponentSublcass(HealthComponent)
+		if not healthComponent: healthComponent = parentEntity.findFirstComponentSubclass(HealthComponent)
 		return healthComponent
 #endregion
 

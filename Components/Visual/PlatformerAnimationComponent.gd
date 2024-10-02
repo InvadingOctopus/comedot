@@ -31,7 +31,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	self.animatedSprite				= parentEntity.findFirstChildOfType(AnimatedSprite2D)
-	self.characterBodyComponent		= parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
+	self.characterBodyComponent		= parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
 	self.body						= characterBodyComponent.body
 	self.platformerControlComponent	= coComponents.PlatformerControlComponent # TBD: Static or dynamic?
 

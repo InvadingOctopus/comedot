@@ -1,7 +1,7 @@
 ## Represents a delay for any action the player may not perform too quickly, such as firing a gun or mining resources.
 ## Recommended subclass for other components like [GunComponent] or [InteractionControlComponent].
 
-## BUG: NOTE: When this component is subclassed and a Cooldown [Timer] is connected to the sublass,
+## BUG: NOTE: When this component is subclassed and a Cooldown [Timer] is connected to the subclass,
 ## Godot [as of 4.3 Dev 3] will not show the [method onCooldownTimer_timeout] in the existing methods list for the new connection.
 ## But you can connect a new [Timer] to the `onCooldownTimer_timeout` method even if it is not overridden in the subclass.
 

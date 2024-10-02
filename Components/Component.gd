@@ -12,7 +12,7 @@ extends Node
 
 #region Core Properties
 var parentEntity: Entity
-var coComponents: Dictionary[StringName, Component] ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components]. NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
+var coComponents: Dictionary[StringName, Component] ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components]. NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
 #endregion
 
 
@@ -178,7 +178,7 @@ func getParentEntity() -> Entity:
 
 ## Returns a sibling [Component] from the [member coComponents] [Dictionary],
 ## after converting the [param type] [method Script.get_global_name] to a [StringName].
-## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSublcass] is called to find the first [Component] which extends/inherits the specified type.
+## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSubclass] is called to find the first [Component] which extends/inherits the specified type.
 ## ALERT: Slower performance compared to accessing the [member coComponents] [Dictionary] directly! Use this method only if a warning is needed instead of a crash, in case of a missing component.
 func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
@@ -187,7 +187,7 @@ func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 	if not coComponent:
 		
 		if includeSubclasses:
-			coComponent = parentEntity.findFirstComponentSublcass(type)
+			coComponent = parentEntity.findFirstComponentSubclass(type)
 			printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
 		
 		if not coComponent: # Did we still not find any match? :(

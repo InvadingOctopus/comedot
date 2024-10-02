@@ -154,7 +154,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 #region External Component Management Interface
 
 ## Checks the [member Entity.components] dictionary after converting the [param type] to a [StringName] key.
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSublcass] instead.
+## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
 func getComponent(type: Script) -> Component:
 	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
 	var typeName: StringName = type.get_global_name()
@@ -206,7 +206,7 @@ func findChildrenComponents() -> Array[Component]:
 
 ## Checks all components in the [member Entity.components] dictionary and returns the first matching component which inherits from the specified [param type].
 ## NOTE: Slower than [method Entity.getComponent]
-func findFirstComponentSublcass(type: Script) -> Component:
+func findFirstComponentSubclass(type: Script) -> Component:
 	for component: Component in self.components.values():
 		if is_instance_of(component, type):
 			return component
@@ -239,7 +239,7 @@ func removeComponents(componentTypes: Array[Script]) -> int:
 #region General Child Node Management
 
 ## NOTE: Also returns any subclasses which inherit from the specified [param type].
-## WARNING: [method Entity.findFirstComponentSublcass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
+## WARNING: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant) -> Node:
 	var result: Node = Tools.findFirstChildOfType(self, type)
 	# DEBUG: printDebug("findFirstChildOfType(" + str(type) + "): " + str(result))

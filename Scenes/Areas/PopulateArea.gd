@@ -212,7 +212,7 @@ func clearAllNodes() -> void:
 	totalCopiesCreated = 0
 
 
-## A method for sublasses to override. Prepares newly spawned node with further game-specific logic.
+## A method for subclasses to override. Prepares newly spawned node with further game-specific logic.
 ## May suppress the creation of a newly spawned node by checking additional conditions and returning `false`.
 @warning_ignore("unused_parameter")
 func validateNewNode(newCopy: Node2D, parent: Node2D) -> bool:

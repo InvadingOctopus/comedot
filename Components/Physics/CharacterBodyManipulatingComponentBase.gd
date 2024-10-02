@@ -18,7 +18,7 @@ var characterBodyComponent: CharacterBodyComponent:
 	get:
 		# NOTE: Use [findFirstChildOfType()] instead of [coComponents] so that subclasses of [CharacterBodyComponent] may also be usable.
 		if not characterBodyComponent:
-			characterBodyComponent = parentEntity.findFirstComponentSublcass(CharacterBodyComponent)
+			characterBodyComponent = parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
 			if not characterBodyComponent: # If we STILL don't have it, raise a ruckus.
 				printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
 		return characterBodyComponent
