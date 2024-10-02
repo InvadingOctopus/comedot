@@ -53,13 +53,13 @@ func findAction(nameToSearch: StringName) -> Action:
 ## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
 ## To perform Actions in response to player control, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
-	if shouldShowDebugInfo: printLog(str("performAction(): " + actionName, ", target: ", target))
-
 	var actionToPerform: Action = self.findAction(actionName)
+	if shouldShowDebugInfo: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
 	if not actionToPerform: return false
 
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
+		if shouldShowDebugInfo: printDebug("Missing target")
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
