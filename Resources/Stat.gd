@@ -38,8 +38,8 @@ extends NamedResourceBase
 			previousChange = value - previousValue # NOTE: A decrease should be a negative change.
 
 			if logChanges:
-				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` because we already checked for changes.
-				Debug.printDebug(str(self) + " " + str(name) + ": " + str(previousValue) + " → " + str(value) + " (" + str(previousChange) + ")")
+				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` or other calls because we already checked for changes.
+				Debug.printDebug(str(previousValue, " → ", value, " (%+d" % previousChange, ")"), str(self.get_script().get_global_name(), " ", self, " ", name))
 
 			# Signals
 			# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
@@ -58,7 +58,7 @@ extends NamedResourceBase
 
 			GameState.uiStatUpdated.emit(self) # TBD: Should this be optional?
 
-@export var logChanges: bool = false
+@export var logChanges: bool = false # WARNING: May reduce performance if used for very frequently-changing stats.
 
 #endregion
 
@@ -71,8 +71,8 @@ var previousChange: int ## [member value] - [member previousValue] so a decrease
 var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
 	get: return float(value) / float(max) * 100.0
 
-var logText: String:
-	get: return str(self, " ", self.name, ", value: ", value, ", range: ", min, "-", max)
+var logName: String:
+	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ", value: ", value, ", range: ", min, "-", max)
 #endregion
 
 

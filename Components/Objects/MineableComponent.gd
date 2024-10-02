@@ -45,7 +45,7 @@ func _ready() -> void:
 	super._ready()
 
 	if not contents: printWarning("No contents Stat provided")
-	if shouldShowDebugInfo: printDebug(str("_ready() contents: ", contents.logText))
+	if shouldShowDebugInfo: printDebug(str("_ready() contents: ", contents.logName))
 	self.didPerformInteraction.connect(self.onDidPerformInteraction)
 
 
