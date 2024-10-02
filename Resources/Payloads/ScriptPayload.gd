@@ -11,7 +11,7 @@ extends Payload
 
 ## A script to run when this [Payload] is executed.
 ## IMPORTANT: The script MUST have a function with the same name as [member payloadScriptMethodName] and the following arguments:
-## `static func [payloadScriptMethodName](source: Variant, target: Variant) -> Variant`
+## `static func [payloadScriptMethodName](payload: Payload, source: Variant, target: Variant) -> Variant`
 ## IMPORTANT: The method MUST be `static` so as to avoid the need for creating an instance of the script.
 ## [method executeImplementation] will return the result of that method.
 ## TIP: Use the `Templates/Scripts/Resource/ScriptPayloadScriptTemplate.gd` template.
@@ -42,8 +42,8 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 		self.willExecute.emit(source, target)
 
 		# A script that matches this interface:
-		# static func [payloadScriptMethodName](source: Variant, target: Variant) -> Variant
-		return self.payloadScript.call(self.payloadScriptMethodName, source, target)
+		# static func [payloadScriptMethodName](payload: Payload, source: Variant, target: Variant) -> Variant
+		return self.payloadScript.call(self.payloadScriptMethodName, self, source, target)
 	else:
 		Debug.printWarning("Missing payloadScript", self.logName)
 		return false
