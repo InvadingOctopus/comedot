@@ -5,6 +5,7 @@
 extends Resource
 
 
+@warning_ignore("unused_parameter")
 static func onPayload_didExecute(payload: Payload, source: Variant, target: Variant) -> Variant:
-	Debug.printLog(str("onPayload_didExecute() payload: ", payload, ", source: ", source, ", target: ", target))
+	# Function entry logging done in ScriptPayload.executeImplementation()
 	return false
