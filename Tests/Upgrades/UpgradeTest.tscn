@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cj6ao7ju12nhg"]
+[gd_scene load_steps=27 format=3 uid="uid://cj6ao7ju12nhg"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_ght07"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="2_3h5d0"]
@@ -12,7 +12,6 @@
 [ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="10_fcijy"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="11_gj3d5"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="12_vmhuw"]
-[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="13_0rm54"]
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="14_8d8lk"]
 [ext_resource type="Script" path="res://UI/Lists/StatsList.gd" id="15_648xx"]
 [ext_resource type="Script" path="res://UI/Lists/UpgradesList.gd" id="16_xr2h1"]
@@ -76,7 +75,6 @@ propertiesToWatch = Array[NodePath]([NodePath("../OverheadPhysicsComponent:param
 
 [node name="GunComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("12_vmhuw")]
 visible = false
-bulletEntity = ExtResource("13_0rm54")
 ammo = ExtResource("10_fcijy")
 isEnabled = false
 cooldown = 1.01

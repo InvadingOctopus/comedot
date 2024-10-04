@@ -1,16 +1,9 @@
-## Description
+## A script called by a [ScriptPayload] when an [Upgrade] is "installed" into or removed from an [UpgradesComponent].
 
-class_name TestCooldownUpgradePayload
-extends UpgradePayload
-
-
-static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity))
-	entity.getComponent(GunComponent).cooldown -= 0.2
-	return false
+extends GDScript
 
 
-static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
-	return false
-
+@warning_ignore("unused_parameter")
+static func onPayload_didExecute(payload: Payload, source: Upgrade, target: Entity) -> Variant:
+	target.getComponent(GunComponent).cooldown -= 0.2
+	return true

@@ -8,13 +8,13 @@
 [sub_resource type="Resource" id="Resource_7sewg"]
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
-payloadScriptMethodName = &"onUpgrade_didAcquireOrLevelUp"
+payloadScriptMethodName = &"onPayload_didExecute"
 shouldShowDebugInfo = false
 
 [sub_resource type="Resource" id="Resource_xprmf"]
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
-payloadScriptMethodName = &"onUpgrade_willDiscard"
+payloadScriptMethodName = &"onPayload_didExecute"
 shouldShowDebugInfo = false
 
 [resource]

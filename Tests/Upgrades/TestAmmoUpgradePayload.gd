@@ -1,17 +1,8 @@
-## Description
-
-class_name TestAmmoUpgradePayload
-extends UpgradePayload
+## A script called by a [ScriptPayload] when an [Upgrade] is "installed" into or removed from an [UpgradesComponent].
 
 
-static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity))
-	var ammo: Stat = entity.getComponent(StatsComponent).getStat(&"testAmmo")
+@warning_ignore("unused_parameter")
+static func onPayload_didExecute(payload: Payload, source: Upgrade, target: Entity) -> Variant:
+	var ammo: Stat = target.getComponent(StatsComponent).getStat(&"testAmmo")
 	ammo.max += 10; ammo.setToMax()
-	return false
-
-
-static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
-	return false
-
+	return true

@@ -8,13 +8,13 @@
 [sub_resource type="Resource" id="Resource_dxtrk"]
 script = ExtResource("3_d6b6q")
 payloadScript = ExtResource("2_723c3")
-payloadScriptMethodName = &"onUpgrade_didAcquireOrLevelUp"
+payloadScriptMethodName = &"onPayload_didExecute"
 shouldShowDebugInfo = true
 
 [sub_resource type="Resource" id="Resource_umyfg"]
 script = ExtResource("3_d6b6q")
 payloadScript = ExtResource("2_723c3")
-payloadScriptMethodName = &"onUpgrade_willDiscard"
+payloadScriptMethodName = &"onPayload_didExecute"
 shouldShowDebugInfo = true
 
 [resource]
