@@ -11,8 +11,15 @@ extends Node
 
 
 #region Core Properties
+
 var parentEntity: Entity
-var coComponents: Dictionary[StringName, Component] ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components]. NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
+
+## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
+## Access via the shortcut of `coComponents.ComponentClassName` or,
+## TIP: Use `coComponents.get(ComponentClassName)` to avoid a crash in case of missing components and return `null`.
+## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
+var coComponents: Dictionary[StringName, Component]
+
 #endregion
 
 
