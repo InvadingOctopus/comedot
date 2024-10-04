@@ -2,18 +2,5 @@
 
 [ext_resource type="Script" path="res://Components/Combat/FactionComponent.gd" id="1_qwcyo"]
 
-[node name="FactionComponent" type="Node2D" groups=["components"]]
+[node name="FactionComponent" type="Node" groups=["components"]]
 script = ExtResource("1_qwcyo")
-metadata/_edit_group_ = true
-
-[node name="DebugIndicator" type="Label" parent="."]
-unique_name_in_owner = true
-visible = false
-modulate = Color(0, 1, 1, 1)
-offset_left = -16.0
-offset_right = 16.0
-offset_bottom = 32.0
-theme_override_font_sizes/font_size = 16
-text = "N"
-horizontal_alignment = 1
-vertical_alignment = 1

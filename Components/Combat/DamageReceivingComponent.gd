@@ -125,8 +125,7 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 	if friendlyFire or not self.factionComponent:
 		shouldReceiveDamage = true
 	else:
-		var selfFactions: int = self.factionComponent.factions
-		shouldReceiveDamage = not (selfFactions & attackerFactions) # Bitwise AND means any matching bits at all.
+		shouldReceiveDamage = self.factionComponent.checkOpposition(attackerFactions)
 
 	if shouldShowDebugInfo: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
 	return shouldReceiveDamage
