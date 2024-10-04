@@ -47,7 +47,7 @@ var area: Area2D:
 	get: return (self.get_node(".") as Area2D)
 
 ## A shortcut that returns the [FactionComponent] of the parent [Entity].
-@onready var factionComponent: FactionComponent = coComponents.get(FactionComponent) # Use `get()` to avoid crash if `null`. TBD: Static or dynamic?
+@onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Use `get()` to avoid crash if `null`. TBD: Static or dynamic?
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]

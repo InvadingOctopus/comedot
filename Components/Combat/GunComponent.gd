@@ -154,7 +154,7 @@ func createNewBullet() -> Entity:
 	# Does this gun's firing entity have a faction? If so, copy the FactionComponent to the new bullet.
 	# TBD:
 
-	var factionComponent: FactionComponent = self.coComponents.get(FactionComponent) # Use `get()` to avoid crash if `null`
+	var factionComponent: FactionComponent = self.coComponents.get(&"FactionComponent") # Use `get()` to avoid crash if `null`
 
 	if factionComponent:
 		printDebug(str("Copying factionComponent to newBullet: ", factionComponent))
