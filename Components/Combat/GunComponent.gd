@@ -150,15 +150,15 @@ func createNewBullet() -> Entity:
 
 	newBullet.isLoggingEnabled	= self.shouldShowDebugInfo
 	newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
-	
+
 	# Does this gun's firing entity have a faction? If so, copy the FactionComponent to the new bullet.
 	# TBD:
-	
-	var factionComponent: FactionComponent = self.coComponents.FactionComponent
+
+	var factionComponent: FactionComponent = self.coComponents.get(FactionComponent) # Use `get()` to avoid crash if `null`
 
 	if factionComponent:
 		printDebug(str("Copying factionComponent to newBullet: ", factionComponent))
 		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
 		newBullet.add_child(factionComponentCopy, true) # force_readable_name
-	
+
 	return newBullet

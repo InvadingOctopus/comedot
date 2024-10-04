@@ -47,7 +47,7 @@ var area: Area2D:
 	get: return (self.get_node(".") as Area2D)
 
 ## A shortcut that returns the [FactionComponent] of the parent [Entity].
-@onready var factionComponent: FactionComponent = coComponents.FactionComponent # TBD: Static or dynamic?
+@onready var factionComponent: FactionComponent = coComponents.get(FactionComponent) # Use `get()` to avoid crash if `null`. TBD: Static or dynamic?
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
@@ -76,7 +76,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 		if damageTimerComponent:
 			applyDamageTimerComponent(damageReceivingComponent)
-		
+
 		if removeEntityOnCollisionWithDamageReceiver:
 			printDebug("removeEntityOnCollisionWithDamageReceiver")
 			self.requestDeletionOfParentEntity()
@@ -161,7 +161,7 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printDebug(str("applyDamageTimerComponent() damageReceivingComponent: ", damageReceivingComponent))
-	
+
 	# Create a new copy of the provided component.
 
 	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()
