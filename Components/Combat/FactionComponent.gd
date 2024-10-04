@@ -9,10 +9,10 @@ extends Component
 #region Constants
 
 enum Factions {
-	neutral,
-	players,
-	playerAllies,
-	enemies,
+	neutral = 1, # TBD: Should `neutral` be 0?
+	players = 2,
+	playerAllies = 3,
+	enemies = 4,
 }
 
 const factionStrings: Array[String] = [
@@ -31,7 +31,7 @@ const factionStrings: Array[String] = [
 ## Entities that share ANY faction are considered implicit allies.
 ## An Entity belonging to [player, playerAllies] would be considered an ally of an Entity belonging to [playerAllies, enemies].
 ## Entities that have NO matching factions are considered implicit opponents.
-@export_flags(factionStrings[0], factionStrings[1], factionStrings[2], factionStrings[3]) var factions:			 int = Factions.neutral
+@export_flags(factionStrings[0], factionStrings[1], factionStrings[2], factionStrings[3]) var factions: int = Factions.neutral # TBD: Should the default be 0 or 1?
 
 # TBD: Add `explicitAllies` and `explicitOpponents`?
 
