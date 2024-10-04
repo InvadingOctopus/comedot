@@ -9,6 +9,7 @@ extends AreaManipulatingComponentBase
 # TBD: Handle [PhysicsBody2D] in this component or a separate component?
 # TBD: Allow an `areaOverride` as in [ZoneComponent]?
 # TBD: Use this as the base for DamageComponent, ZoneComponent, etc.?
+# TBD: Reduce code duplication between [CollisionsArrayArea]?
 
 
 #region Parameters
@@ -38,6 +39,7 @@ func _ready() -> void:
 func connectSignals() -> void:
 	area.area_entered.connect(self.onArea_areaEntered)
 	area.area_exited.connect(self.onArea_areaExited)
+
 
 #region Collisions
 
