@@ -64,8 +64,7 @@ func collect(collectibleComponent: CollectibleComponent) -> Variant:
 
 	var result: Variant = collectibleComponent.collect(self)
 	
-	if   result != null \
-	and (result is not bool or result != false): # Must not be `null` and not `false`
+	if result: # Must not be `null` and not `false`
 		didCollect.emit(collectibleComponent, payload, result)
 
 	return result
