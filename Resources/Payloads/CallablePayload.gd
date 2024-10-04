@@ -7,11 +7,15 @@ extends Payload
 #region Parameters
 
 ## A function to call when this [Payload] is executed. MUST take the following arguments:
-## `func anyName(payload: Payload, source: Variant, target: Variant) -> Variant`
+## `func anyName(source: Variant, target: Variant) -> Variant`
 ## [method executeImplementation] will return the result of the [Callable].
 ## TIP: The parameter names and the [Variant] types may be replaced with any name and any specific type, for better reliability and performance.
-## For example, `func onCollectible_didCollect(payload: Payload, collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int` as in [StatCollectibleComponent].
+## For example, `func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int` as in [StatCollectibleComponent].
 @export var payloadCallable: Callable
+
+# DESIGN: No `payload` argument for `payloadCallable()` because `CallablePayload` is intended for calling an existing function in an existing script/class,
+# so any extra information/properties etc. would be in the called script, instead of in the `CallablePayload`.
+# This is unlike a `ScriptPayload` which may call a generic/reusable script, and that script may need to access specific properties from the `ScriptPayload`.
 
 #endregion
 
@@ -22,8 +26,8 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 	if self.payloadCallable:
 		self.willExecute.emit(source, target)
 		# A function with the following arguments:
-		# func anyName(payload: Payload, source: Variant, target: Variant) -> Variant
-		return payloadCallable.call(self, source, target)
+		# func anyName(source: Variant, target: Variant) -> Variant
+		return payloadCallable.call(source, target)
 	else:
 		Debug.printWarning("Missing payloadCallable", self.logName)
 		return false
