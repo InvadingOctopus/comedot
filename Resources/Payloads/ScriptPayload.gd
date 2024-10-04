@@ -5,6 +5,7 @@ class_name ScriptPayload
 extends Payload
 
 # TBD: Should the script method arguments include a reference to the calling Payload?
+# TBD: Instead of taking different `script` parameters, should we just use different subclasses of `ScriptPayload`?
 
 
 #region Parameters

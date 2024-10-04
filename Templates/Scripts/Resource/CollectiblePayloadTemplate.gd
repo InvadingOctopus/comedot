@@ -1,13 +1,11 @@
 # meta-default: true
 
-## A script to execute when the associated [CollectibleComponent] is collected by an [Entity]'s [CollectorComponent].
+## A script called by a [ScriptPayload] when a [CollectibleComponent] is collected by a [CollectorComponent].
 
-class_name _CLASS_
-extends CollectiblePayload
+extends GDScript
 
 
-## A function to execute when a [CollectorComponent] picks up a [CollectibleComponent].
-## May optionally return any value.
-static func onCollectible_didCollect(collectorEntity: Entity, collectorComponent: CollectorComponent, collectibleComponent: CollectibleComponent) -> Variant:
-	Debug.printLog(str("onCollectible_didCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent), str(collectibleComponent))
-	return null
+@warning_ignore("unused_parameter")
+static func onPayload_didExecute(payload: Payload, source: CollectibleComponent, target: Entity) -> Variant:
+	# Function entry logging done in ScriptPayload.executeImplementation()
+	return false

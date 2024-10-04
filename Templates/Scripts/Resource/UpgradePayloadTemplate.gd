@@ -1,16 +1,11 @@
 # meta-default: true
 
-## A script to execute when the associated [Upgrade] is "installed" or "uninstalled" in an [Entity]'s [UpgradesComponent].
+## A script called by a [ScriptPayload] when an [Upgrade] is "installed" into or removed from an [UpgradesComponent].
 
-class_name _CLASS_
-extends UpgradePayload
-
-
-static func onUpgrade_didAcquireOrLevelUp(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_didAcquireOrLevelUp() entity: ", entity))
-	return false
+extends GDScript
 
 
-static func onUpgrade_willDiscard(upgrade: Upgrade, entity: Entity) -> bool:
-	upgrade.printLog(str("onUpgrade_willDiscard() entity: ", entity))
+@warning_ignore("unused_parameter")
+static func onPayload_didExecute(payload: Payload, source: Upgrade, target: Entity) -> Variant:
+	# Function entry logging done in ScriptPayload.executeImplementation()
 	return false

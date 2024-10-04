@@ -1,11 +1,11 @@
 # meta-default: true
 
-## A script to execute when the associated [Action] is performed by an [Entity] with an [ActionsComponent].
+## A script called by a [ScriptPayload] when it is executed by an [Action].
 
-class_name _CLASS_
-extends ActionPayload
+extends GDScript
 
 
-static func onAction_didPerform(action: Action, entity: Entity) -> bool:
-	action.printLog(str("onAction_didPerform() entity: ", entity))
+@warning_ignore("unused_parameter")
+static func onPayload_didExecute(payload: Payload, source: Entity, target: Entity) -> Variant:
+	# Function entry logging done in ScriptPayload.executeImplementation()
 	return false
