@@ -52,12 +52,19 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 		self.didRequestTarget.emit(source)
 		return false
 
-	# Spend the Stat
-	if self.costStat and self.cost >= 0 and not self.deductCostFromStat(paymentStat): # TBD: Validate even if the `cost` is negative?
+	# Check if the offered Stat can pay for the cost, if there is a cost.
+	if self.costStat and self.cost >= 0 and not validateOfferedStat(paymentStat):
 		printLog(str("Payment failed! self.costStat: ", self.costStat, ", self.cost: ", self.cost, ", paymentStat: ", paymentStat))
 		return false
 	
-	return payload.execute(source, target)
+	# Execute the payload!
+	var payloadResult: Variant = payload.execute(source, target)
+
+	# IMPORTANT: Deduct the cost from the Stat only if the payload was successfully executed!
+	if payloadResult and payloadResult != false:
+		self.deductCostFromStat(paymentStat) # TBD: Validate even if the `cost` is negative?
+
+	return payloadResult
 
 #endregion
 

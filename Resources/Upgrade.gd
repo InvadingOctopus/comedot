@@ -161,6 +161,8 @@ func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
 	if not validateEntityEligibility: return false
 
 	# Pay up!
+	# TODO: Deduct the Stat only if `Payload.execute()` is successful
+
 	if not deductPayment(paymentStat, self.level): return false
 
 	# Install.exe
@@ -186,6 +188,8 @@ func requestLevelUp(entity: Entity, paymentStat: Stat) -> bool:
 		return false
 
 	# Next, pay up before level up!
+	# TODO: Deduct the Stat only if `Payload.execute()` is successful
+	
 	if not deductPayment(paymentStat, self.level + 1): return false
 
 	# Finally, level up!
