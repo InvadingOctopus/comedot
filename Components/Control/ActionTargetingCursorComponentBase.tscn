@@ -32,3 +32,15 @@ texture = SubResource("AtlasTexture_op1y3")
 
 [node name="CursorAreaShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_57er2")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 16.0
+offset_right = 20.0
+offset_bottom = 24.0
+grow_horizontal = 2
+text = "ACTION"
+horizontal_alignment = 1

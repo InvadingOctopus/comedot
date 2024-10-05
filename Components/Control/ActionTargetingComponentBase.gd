@@ -36,6 +36,7 @@ signal didCancel
 
 
 func _ready() -> void:
+	if not action: printWarning("No action provided")
 	self.isChoosing = self.isEnabled
 
 
