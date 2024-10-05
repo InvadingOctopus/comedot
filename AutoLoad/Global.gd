@@ -74,9 +74,9 @@ class TileMapCustomData: ## A list of names for the custom data types that [Tile
 
 #region Scene Management
 
-func transitionToScene(nextScene: PackedScene) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
 	var sceneTree: SceneTree = self.get_tree()
-	sceneTree.paused = true
+	sceneTree.paused = pauseSceneTree
 	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
 
 	sceneTree.change_scene_to_packed(nextScene)
