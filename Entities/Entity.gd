@@ -166,8 +166,8 @@ func getComponent(type: Script) -> Component:
 ## The component must not already be a child of another parent node.
 ## This is a convenience method for adding components created and configured in code during runtime.
 func addComponent(component: Component) -> void:
-	self.add_child(component)
-	component.owner = self
+	self.add_child(component, true) # force_readable_name
+	component.owner = self # For persistence in Save/Load
 
 
 ## Creates a copy of the specified component's scene and adds it as a child node of this entity.
