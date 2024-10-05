@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Action" load_steps=7 format=3 uid="uid://hfn0hhrpo6ui"]
+
+[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="1_cvxns"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="1_d47mu"]
+[ext_resource type="Script" path="res://Resources/Action.gd" id="1_hcgok"]
+[ext_resource type="Script" path="res://Resources/Payloads/ScriptPayload.gd" id="2_6ij4r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gap3j"]
+resource_name = "testZoom"
+atlas = ExtResource("1_d47mu")
+region = Rect2(544, 336, 16, 16)
+
+[sub_resource type="Resource" id="Resource_xqubo"]
+script = ExtResource("2_6ij4r")
+payloadScriptMethodName = &"onPayload_didExecute"
+shouldShowDebugInfo = true
+
+[resource]
+resource_name = "TestZoom"
+script = ExtResource("1_hcgok")
+requiresTarget = false
+payload = SubResource("Resource_xqubo")
+shouldShowDebugInfo = true
+costStat = ExtResource("1_cvxns")
+cost = 5
+name = &"testZoom"
+displayName = "ZOOM"
+description = ""
+icon = SubResource("AtlasTexture_gap3j")
