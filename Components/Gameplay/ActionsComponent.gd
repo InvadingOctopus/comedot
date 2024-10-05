@@ -10,10 +10,15 @@ extends Component
 
 
 #region Parameters
+
 ## The list of available actions that the Entity may choose to perform.
 @export var actions: Array[Action]
 
+## A subclass of [ActionTargetingComponentBase] to add to the parent [Entity] to present a UI to the player for choosing a target for [Action]s which require a target, such as a "Fireball" spell or a "Talk" command.
+@export_file("*ActionTargeting*Component.tscn") var targetingComponentPath: String # Exclude the abstract "Base" components.
+
 @export var isEnabled: bool = true
+
 #endregion
 
 
@@ -28,8 +33,8 @@ extends Component
 ## NOTE: If an Action is to be performed via this component's [method perform] then this signal is emitted by the [ActionsComponent] ONLY; [signal Action.didRequestTarget] will NOT be emitted.
 signal didRequestTarget(action: Action, source: Entity)
 
-signal willDoAction(action: Action)
-signal didDoAction(action: Action)
+signal willPerformAction(action: Action)
+signal didPerformAction(action: Action, result: Variant)
 #endregion
 
 
@@ -60,6 +65,7 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
 		if shouldShowDebugInfo: printDebug("Missing target")
+		createTargetingComponent() # Create & add a component which prompt the player to choose a target.
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
@@ -68,6 +74,24 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# Get the Stat to pay the Action's cost with, if any,
 	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
 
-	return actionToPerform.perform(statToPayWith, self.parentEntity, target)
+	self.willPerformAction.emit(actionToPerform)
+	var result: Variant = actionToPerform.perform(statToPayWith, self.parentEntity, target)
+
+	if result: # Must not be `null` and not `false`
+		self.didPerformAction.emit(actionToPerform, result)
+
+	return result
+
+
+func createTargetingComponent() -> ActionTargetingComponentBase:
+	var componentScene: PackedScene = load(targetingComponentPath)
+	var targetingComponent: ActionTargetingComponentBase = componentScene.instantiate()
+	
+	if not targetingComponent:
+		printWarning(str("Cannot instantiate an instance of ActionTargetingComponentBase: ", targetingComponentPath))
+		return null
+
+	parentEntity.addComponent(targetingComponent)
+	return targetingComponent
 
 #endregion
