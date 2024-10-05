@@ -1,5 +1,5 @@
-## Allows the Entity to be targeted by a player or another character's [Action] which requires a target to be chosen,
-## such as a special skill/spell like "Fireball", or a trivial command like "Examine".
+## Allows the Entity to be targeted by a player or another character's [ActionTargetingComponentBase] which requires a target to be chosen,
+## for an [Action] such as a special skill/spell like "Fireball", or a trivial command like "Examine".
 ## Requirements: Component must be [Node2D] to receive mouse events.
 ## @experimental
 
