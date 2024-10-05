@@ -7,22 +7,6 @@ class_name ActionTargetingMouseComponent
 extends ActionTargetingCursorComponentBase
 
 
-#region Parameters
-#endregion
-
-
-#region State
-#endregion
-
-
-#region Signals
-#endregion
-
-
-#region Dependencies
-#endregion
-
-
 func _ready() -> void:
 	super._ready()
 	self.global_position = parentEntity.get_global_mouse_position()
@@ -31,3 +15,20 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not isEnabled or not isChoosing: return
 	self.global_position = parentEntity.get_global_mouse_position()
+
+
+func _input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton: return
+
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT): # TBD: Use "just pressed"?
+		chooseTargetsUnderCursor()
+
+
+func chooseTargetsUnderCursor() -> Array[ActionTargetableComponent]:
+	# TODO: Set limits on concurrent targets
+	var chosenTargets: Array[ActionTargetableComponent]
+	for target in self.actionTargetableComponentInContact:
+		self.chooseTarget(target)
+		chosenTargets.append(target)
+	self.requestDeletion()
+	return chosenTargets

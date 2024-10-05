@@ -65,7 +65,7 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
 		if shouldShowDebugInfo: printDebug("Missing target")
-		createTargetingComponent() # Create & add a component which prompt the player to choose a target.
+		createTargetingComponent(actionToPerform) # Create & add a component which prompt the player to choose a target.
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
@@ -83,14 +83,14 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	return result
 
 
-func createTargetingComponent() -> ActionTargetingComponentBase:
+func createTargetingComponent(actionToPerform: Action) -> ActionTargetingComponentBase:
 	var componentScene: PackedScene = load(targetingComponentPath)
 	var targetingComponent: ActionTargetingComponentBase = componentScene.instantiate()
 	
 	if not targetingComponent:
 		printWarning(str("Cannot instantiate an instance of ActionTargetingComponentBase: ", targetingComponentPath))
 		return null
-
+	targetingComponent.action = actionToPerform
 	parentEntity.addComponent(targetingComponent)
 	return targetingComponent
 
