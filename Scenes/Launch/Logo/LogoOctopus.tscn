@@ -13,7 +13,7 @@ region = Rect2(400, 128, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c1e8x"]
 size = Vector2(14, 14)
 
-[node name="LogoInvader" type="RigidBody2D"]
+[node name="LogoInvader" type="RigidBody2D" groups=["logo"]]
 texture_filter = 2
 physics_material_override = SubResource("PhysicsMaterial_6utrp")
 gravity_scale = 0.2
