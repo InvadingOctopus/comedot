@@ -77,11 +77,11 @@ func collect(collectorComponent: CollectorComponent) -> Variant:
 #region Virtual Methods
 
 ## May be overridden in a subclass to approve or deny the collection of this item by a [CollectorComponent].
-## Default: `true`
+## Default: `isEnabled`
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	# CHECK: Maybe a better name? :p
 	printDebug(str("checkCollectionConditions() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
-	return true
+	return isEnabled
 
 
 ## May be overridden in a subclass to approve or deny the removal of this item after it has been collected by a [CollectorComponent].
