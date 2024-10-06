@@ -6,7 +6,7 @@ extends Container
 
 
 #region Parameters
-## If a new label is created when the total count of child [Lable]s in this Control is >= this number, the first child [Label] is removed.
+## If a new label is created when the total count of child [Label]s in this Control is >= this number, the first child [Label] is removed.
 @export var maximumLabels: int = 5
 #endregion
 
