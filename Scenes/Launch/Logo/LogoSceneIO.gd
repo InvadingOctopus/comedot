@@ -5,30 +5,48 @@ extends Start
 
 
 #region Constants & State
+
 const nextScene: PackedScene = preload("res://Scenes/Launch/GameFrame.tscn") # preload to prevent frame stutter/lag during scene transition or skipping.
+
+var textLines: Array[String] = [
+	str("LOAD\"", ProjectSettings.get_setting("application/config/name", "Comedot"), "\"").to_upper(),
+	"READY © MMXXIV",
+	"RUN",
+]
+
 var isSkipping: bool
-var tween: Tween
+var logoTween:  Tween
+
 #endregion
 
 
 func _ready() -> void:
 	super._ready()
+	animateText()
 	animateLogo()
 
 
+func animateText() -> void:
+	for text in textLines:
+		var label: Label = GlobalOverlay.createTemporaryLabel(text)
+		label.modulate = Color(1,1,1,0)
+		Animations.tweenProperty(label, ^"modulate", Color.WHITE, 0.5)
+		await get_tree().create_timer(0.5).timeout
+
+
 func animateLogo() -> void:
-	self.tween = Animations.tweenProperty(self, ^"modulate", Color(0,0,0,0), 3.0)
-	await tween.finished
+	self.logoTween = Animations.tweenProperty(self, ^"modulate", Color(0,0,0,0), 3.0)
+	await logoTween.finished
 	if not isSkipping: displayNextScene() # If skipping, let the key release trigger the scene transition.
 
 
 func _input(event: InputEvent) -> void:
-	
+
 	# Check is_released() before setting `isSkipping`
 	# to ensure that both `if`s don't run during the same frame if multiple keys are pressed/released.
 	if isSkipping and event.is_released():
 		displayNextScene()
-	
+
 	if not isSkipping and event.is_pressed():
 		isSkipping = true
 		scatterLogo()
