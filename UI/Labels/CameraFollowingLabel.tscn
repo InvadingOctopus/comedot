@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://vbs30ah8krrp" path="res://UI/Labels/TextCyclingLabel.tscn" id="1_mgfb3"]
 [ext_resource type="Script" path="res://UI/Labels/CameraFollowingLabel.gd" id="2_mlqdl"]
-[ext_resource type="Script" path="res://Scripts/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
+[ext_resource type="Script" path="res://Scripts/Visual/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
 
 [node name="CameraFollowingLabelCanvas" type="CanvasLayer"]
 editor_description = "A Canvas for a Label that follows the Camera for a limited time then \"sticks\" to a fixed position."
