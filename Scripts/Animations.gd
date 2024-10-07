@@ -1,7 +1,7 @@
 ## A collection of animations written in code that may be applied to any node.
 
 class_name Animations
-extends Node
+extends GDScript
 
 
 #region Names

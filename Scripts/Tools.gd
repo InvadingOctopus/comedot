@@ -1,7 +1,7 @@
 ## Helper functions for built-in Godot nodes and types to assist with common tasks.
 
 class_name Tools
-extends Node
+extends GDScript
 
 
 
