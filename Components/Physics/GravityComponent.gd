@@ -12,7 +12,7 @@ extends CharacterBodyManipulatingComponentBase
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
 @export_range(-10, 10, 0.05) var gravityScale: float = 1.0
 
-var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
+var gravity: float = Settings.gravity
 #endregion
 
 

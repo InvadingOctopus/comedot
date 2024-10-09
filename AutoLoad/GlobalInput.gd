@@ -9,7 +9,7 @@ extends Node
 ## Input event labels.
 ## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each action.
 ## NOTE: This is NOT the same as the [Action] Resource which represent special actions performed by explicit in-game choices.
-class Actions: 
+class Actions:
 
 	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
 	const moveLeft		:= &"moveLeft"
@@ -34,7 +34,7 @@ class Actions:
 	const jump			:= &"jump"
 	const fire			:= &"fire"
 	const interact		:= &"interact"
-	
+
 	## Used for generating input events for an [Action], a Resource which represents an explicitly-chosen game-specific special ability, such as casting a spell.
 	const specialActionPrefix := &"specialAction" # TBD: Less ambiguous name? :')
 
@@ -99,11 +99,16 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	if Input.is_action_just_released(Actions.windowResizeTo720):
-		DisplayServer.window_set_size(Vector2i(1280, 720))
+		self.get_window().size = (Vector2i(1280, 720))
+		Settings.windowWidth  = 1280
+		Settings.windowHeight = 720
 		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1280 x 720"))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
+		
 	elif Input.is_action_just_released(Actions.windowResizeTo1080):
-		DisplayServer.window_set_size(Vector2i(1920, 1080))
+		self.get_window().size = (Vector2i(1920, 1080))
+		Settings.windowWidth  = 1920
+		Settings.windowHeight = 1080
 		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1920 x 1080"))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 

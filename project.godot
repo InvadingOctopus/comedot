@@ -29,6 +29,7 @@ buses/default_bus_layout="res://Resources/DefaultAudioBusLayout.tres"
 [autoload]
 
 Global="*res://AutoLoad/Global.gd"
+Settings="*res://AutoLoad/Settings.gd"
 GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
 TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
