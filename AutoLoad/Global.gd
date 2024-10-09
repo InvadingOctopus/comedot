@@ -6,19 +6,13 @@
 extends Node
 
 
-#region Project-Specific Flags & Settings
+#region Project-Specific Flags
 
 ## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
 static var hasStartScript:		bool = false
 
-## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
-static var mainGameScene:		PackedScene
-
-static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd # TBD: Should this be `OS.is_debug_build()`?
-
-static var saveFilePath:		StringName = &"user://SaveGame.scn"
-
 #endregion
+
 
 #region Constants
 
@@ -26,17 +20,6 @@ static var saveFilePath:		StringName = &"user://SaveGame.scn"
 
 const frameworkTitle		:= &"Comedot"
 
-#region Settings
-
-## Paths to project settings
-## NOTE: This is not named "Settings" to avoid any confusion that they may be the actual properties; they're just paths to the values.
-class SettingsPaths:
-	const gravity		:= &"physics/2d/default_gravity"
-
-#endregion
-
-
-#region Groups
 
 class Groups:
 	const components	:= &"components"
@@ -52,8 +35,6 @@ class Groups:
 
 	const turnBased		:= &"turnBased"
 	const audio			:= &"audio" ## Temporary sound effects
-
-#endregion
 
 
 class AudioBuses:
@@ -113,7 +94,7 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 
 	GlobalOverlay.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
 	@warning_ignore("redundant_await")
-	await Debug.printLog("Saving state → " + Global.saveFilePath) # TBD: await or not?
+	await Debug.printLog("Saving state → " + Settings.saveFilePath) # TBD: await or not?
 
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -123,7 +104,7 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 
 	var packedSceneToSave := PackedScene.new()
 	packedSceneToSave.pack(sceneTree.get_current_scene())
-	ResourceSaver.save(packedSceneToSave, Global.saveFilePath)
+	ResourceSaver.save(packedSceneToSave, Settings.saveFilePath)
 
 	sceneTree.paused = false
 
@@ -137,13 +118,13 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 
 	GlobalOverlay.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
 	@warning_ignore("redundant_await")
-	await Debug.printLog("Loading state ← " + Global.saveFilePath) # TBD: await or not?
+	await Debug.printLog("Loading state ← " + Settings.saveFilePath) # TBD: await or not?
 
 	var sceneTree := get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
 
-	var packedSceneLoaded := ResourceLoader.load(Global.saveFilePath)
+	var packedSceneLoaded := ResourceLoader.load(Settings.saveFilePath)
 
 	sceneTree.paused = false
 	sceneTree.change_scene_to_packed(packedSceneLoaded)

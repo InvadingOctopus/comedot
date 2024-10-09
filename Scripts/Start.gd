@@ -17,7 +17,7 @@ extends CanvasItem
 @export var mainGameScene: PackedScene:
 	set(newValue):
 		mainGameScene = newValue
-		Global.mainGameScene = newValue
+		Settings.mainGameScene = newValue
 
 #endregion
 
@@ -69,4 +69,4 @@ func applyGlobalFlags() -> void:
 	Debug.showDebugLabels			= self.showDebugLabels
 	Debug.testBackground.visible	= self.showTestBackground
 
-	Global.mainGameScene = self.mainGameScene
+	Settings.mainGameScene = self.mainGameScene

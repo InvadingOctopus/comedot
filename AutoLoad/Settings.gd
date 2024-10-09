@@ -4,6 +4,18 @@
 extends Node
 
 
+#region Project-Specific Settings
+
+## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
+static var mainGameScene:		PackedScene
+
+static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd # TBD: Should this be `OS.is_debug_build()`?
+
+static var saveFilePath:		StringName = &"user://SaveGame.scn"
+
+#endregion
+
+
 #region Settings
 
 var windowWidth: int:

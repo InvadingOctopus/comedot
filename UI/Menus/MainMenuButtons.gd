@@ -7,11 +7,11 @@ func onStartButton_pressed() -> void:
 
 
 func startGame() -> void:
-	if not Global.mainGameScene:
-		Debug.printError("Global.mainGameScene not set!")
+	if not Settings.mainGameScene:
+		Debug.printError("Settings.mainGameScene not set!")
 		return
 		
-	var mainGameScene: PackedScene = load(Global.mainGameScene.resource_path)
+	var mainGameScene: PackedScene = load(Settings.mainGameScene.resource_path)
 	Global.transitionToScene(mainGameScene)
 
 
