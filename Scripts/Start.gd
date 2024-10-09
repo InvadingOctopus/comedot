@@ -55,7 +55,8 @@ extends CanvasItem
 #endregion
 
 
-# Called when the node enters the scene tree for the first time.
+## Called when the scene enters the tree for the first time.
+## IMPORTANT: A subclass which `extends Start` and overrides [method _ready] MUST call `super_ready()`
 func _ready() -> void:
 	Global.hasStartScript = true
 	Debug.performFrameworkChecks() # Update the warning about missing Start script
