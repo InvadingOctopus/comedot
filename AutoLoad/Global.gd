@@ -1,6 +1,6 @@
 ## AutoLoad
 ## Global data and code provided by the framework for all games, such as constants, flags and helper functions etc.
-## For player control & input actions, see [GlobalInput]. 
+## For player control & input actions, see [GlobalInput].
 ## For visuals and sounds that must be present in every scene, see [GlobalOverlay].
 
 extends Node
@@ -16,7 +16,7 @@ static var mainGameScene:		PackedScene
 
 static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd # TBD: Should this be `OS.is_debug_build()`?
 
-static var saveFilePath:		StringName = &"user://ComedotSaveGame.scn"
+static var saveFilePath:		StringName = &"user://SaveGame.scn"
 
 #endregion
 
