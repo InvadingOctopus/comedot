@@ -126,9 +126,9 @@
 	},
 
 	"Signal Connection": {
-		"prefix": ".connect",
+		"prefix": "connect",
 		"body": [ 
-			".connect(self.${3:on${1}_${2}})\n\n",
+			"connect(self.${3:on${1}_${2}})\n\n",
 			"${4:func $3() -> void:}",
 			"\t${5:pass}"
 		],
