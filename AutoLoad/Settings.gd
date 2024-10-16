@@ -197,7 +197,8 @@ func getSetting(propertyName: StringName) -> Variant:
 func getSettingFromFile(section: StringName, key: StringName, default: Variant = null) -> Variant:
 	if section.is_empty(): section = SectionNames.default
 
-	if not default: Debug.printWarning("No default specified for setting: " + key, str(self))
+	if default == null: # NOTE: Do NOT check `not default` because it will cause a default value of 0 to be interpreted as a missing default!
+		Debug.printWarning("No default specified for setting: " + key, str(self))
 
 	var value: Variant = configFile.get_value(section, key, default)
 
