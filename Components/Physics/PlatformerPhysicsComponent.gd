@@ -29,7 +29,7 @@ extends CharacterBodyManipulatingComponentBase
 enum State { idle, moveOnFloor, moveInAir }
 
 var currentState: State #:
-	# DEBUG: set(newValue): 
+	# DEBUG: set(newValue):
 	# 	Debug.printChange("currentState", currentState, newValue)
 	# 	currentState = newValue
 
@@ -37,7 +37,7 @@ var inputDirection:		float
 var lastInputDirection:	float
 var isInputZero:		bool = true
 
-var gravity: float = ProjectSettings.get_setting(Global.SettingsPaths.gravity)
+var gravity: float = Settings.gravity
 
 #endregion
 
@@ -108,9 +108,9 @@ func processInput() -> void:
 
 func characterBodyComponent_didMove(_delta: float) -> void:
 	if shouldShowDebugInfo: showDebugInfo()
-	# NOTE: PERFORMANCE: There may be a performance impact from using signals every frame, 
+	# NOTE: PERFORMANCE: There may be a performance impact from using signals every frame,
 	# but the input is cleared after the [CharacterBodyComponent] moves so that other components may inspect and act upon the input of this component for this frame.
-	
+
 	# Clear the input so it doesn't carry on over to the next frame.
 	clearInput()
 

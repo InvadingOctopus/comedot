@@ -49,6 +49,8 @@ class SectionNames:
 var settingsDictionary: Dictionary[StringName, Setting] = {
 	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
 	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
+
+	SettingNames.gravity:		Setting.new(SettingNames.gravity,		SectionNames.projectSettings,	TYPE_FLOAT,	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity])),
 	}
 
 ## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is a path for [ProjectSettings].
@@ -80,7 +82,7 @@ signal didChange(settingName: StringName, newValue: Variant)
 
 #region Inner Classes
 
-## A structure which defines the name of a setting, which is also its "key" in the configuration file, 
+## A structure which defines the name of a setting, which is also its "key" in the configuration file,
 ## its section/category in the file,
 ## the type allowed for its value (e.g. integer or string),
 ## and the default value if the setting is missing from the file.
@@ -129,6 +131,7 @@ func loadConfig() -> bool:
 ## Loads user settings which are counterpart to the Godot [ProjectSettings] such as window size.
 func loadProjectUserSettings() -> void:
 	self.get_window().size = (Vector2i(self.windowWidth, self.windowHeight))
+
 
 #endregion
 
