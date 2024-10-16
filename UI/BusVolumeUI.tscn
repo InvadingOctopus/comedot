@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cdj4v68mvmp1u"]
+[gd_scene load_steps=3 format=3 uid="uid://cdj4v68mvmp1u"]
 
 [ext_resource type="Script" path="res://UI/BusVolumeUI.gd" id="1_06fqj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ior2c"]
+resource_local_to_scene = true
+font_size = 8
 
 [node name="BusVolumeUI" type="GridContainer"]
 offset_right = 76.0
@@ -8,6 +12,7 @@ offset_bottom = 16.0
 columns = 4
 script = ExtResource("1_06fqj")
 busIndex = 2
+settingsKey = null
 
 [node name="BusLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -27,7 +32,8 @@ text = "«"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-text = "4"
+text = "6"
+label_settings = SubResource("LabelSettings_ior2c")
 horizontal_alignment = 1
 vertical_alignment = 1
 

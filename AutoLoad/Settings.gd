@@ -38,12 +38,15 @@ const configFilePath	:= "user://Settings.cfg"
 class SettingNames:
 	const windowWidth	:= &"windowWidth"
 	const windowHeight	:= &"windowHeight"
+	const musicVolume	:= &"musicVolume"
+	const sfxVolume		:= &"sfxVolume"
 	const gravity		:= &"gravity"
 
 ## A static list of names for the sections (categories) that settings may be grouped under, to prevent typing mistakes.
 class SectionNames:
 	const default			:= &"General"
 	const projectSettings	:= &"GodotProjectSettings"
+	const audio				:= &"Audio"
 
 ## A [Dictionary] where the key is the name of a setting and the property via which it will be accessed, and the value is an instance of the [Setting] inner class.
 var settingsDictionary: Dictionary[StringName, Setting] = {
@@ -51,6 +54,9 @@ var settingsDictionary: Dictionary[StringName, Setting] = {
 	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
 
 	SettingNames.gravity:		Setting.new(SettingNames.gravity,		SectionNames.projectSettings,	TYPE_FLOAT,	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity])),
+
+	SettingNames.musicVolume:	Setting.new(SettingNames.musicVolume,	SectionNames.audio,	TYPE_FLOAT,	0.0),
+	SettingNames.sfxVolume:		Setting.new(SettingNames.sfxVolume,		SectionNames.audio,	TYPE_FLOAT,	0.0),
 	}
 
 ## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is a path for [ProjectSettings].
@@ -112,6 +118,7 @@ class Setting:
 func _ready() -> void:
 	loadConfig()
 	loadProjectUserSettings()
+	loadAudioSettings()
 
 
 func loadConfig() -> bool:
@@ -132,6 +139,12 @@ func loadConfig() -> bool:
 func loadProjectUserSettings() -> void:
 	self.get_window().size = (Vector2i(self.windowWidth, self.windowHeight))
 
+
+func loadAudioSettings() -> void:
+	var musicBus: int = AudioServer.get_bus_index(Global.AudioBuses.music)
+	var sfxBus:   int = AudioServer.get_bus_index(Global.AudioBuses.sfx)
+	AudioServer.set_bus_volume_db(musicBus,	getSetting(SettingNames.musicVolume))
+	AudioServer.set_bus_volume_db(sfxBus,	getSetting(SettingNames.sfxVolume))
 
 #endregion
 
