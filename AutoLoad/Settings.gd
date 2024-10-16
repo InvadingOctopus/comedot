@@ -18,13 +18,9 @@ static var saveFilePath:		StringName = &"user://SaveGame.scn"
 
 #region Settings
 
-var windowWidth: int:
-	get: return getSetting(SettingNames.windowWidth)
-	set(newValue): saveSetting(SettingNames.windowWidth, newValue)
-
-var windowHeight: int:
-	get: return getSetting(SettingNames.windowHeight)
-	set(newValue): saveSetting(SettingNames.windowHeight, newValue)
+# NOTE: Properties will be handled dynamically via the `propertyToSettingNames` Dictionary and the `_get_property_list()`, `_get()` and `_set()` methods.
+# Dynamic/implicit settings will be saved/loaded via `getSetting()` and `saveSetting()`.
+# Settings with customized behavior must be added manually as normal properties.
 
 var gravity: int:
 	get: return getSetting(SettingNames.gravity)
@@ -46,34 +42,20 @@ class SettingNames:
 
 ## A static list of names for the sections (categories) that settings may be grouped under, to prevent typing mistakes.
 class SectionNames:
-	const projectSettings := &"ProjectSettings"
+	const default			:= &"General"
+	const projectSettings	:= &"GodotProjectSettings"
 
-## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is its section (category) header in the configuration file.
-const sections: Dictionary[StringName, StringName] = {
-	SettingNames.windowWidth:	SectionNames.projectSettings,
-	SettingNames.windowHeight:	SectionNames.projectSettings,
-	SettingNames.gravity:		SectionNames.projectSettings,
+## A [Dictionary] where the key is the name of a setting and the property via which it will be accessed, and the value is an instance of the [Setting] inner class.
+var settingsDictionary: Dictionary[StringName, Setting] = {
+	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
+	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
 	}
-
-## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is the valid type code allowed for that setting, such as integer (`TYPE_INT`) etc.
-const allowedTypes: Dictionary[StringName, Variant.Type] = {
-	SettingNames.windowWidth:	TYPE_INT,
-	SettingNames.windowHeight:	TYPE_INT,
-	SettingNames.gravity:		TYPE_INT,
-}
 
 ## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is a path for [ProjectSettings].
 const projectSettingsPaths: Dictionary[StringName, String] = {
 	SettingNames.windowWidth:	"display/window/size/window_width_override",
 	SettingNames.windowHeight:	"display/window/size/window_height_override",
 	SettingNames.gravity:		"physics/2d/default_gravity",
-	}
-
-## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is the default fallback in case of a missing [ConfigFile].
-var defaults: Dictionary[StringName, Variant] = {
-	SettingNames.windowWidth:	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.windowWidth]),
-	SettingNames.windowHeight:	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.windowHeight]),
-	SettingNames.gravity:		ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity]),
 	}
 
 #endregion
@@ -95,6 +77,35 @@ var shouldShowDebugInfo: bool = OS.is_debug_build()
 signal didChange(settingName: StringName, newValue: Variant)
 #endregion
 
+
+#region Inner Classes
+
+## A structure which defines the name of a setting, which is also its "key" in the configuration file, 
+## its section/category in the file,
+## the type allowed for its value (e.g. integer or string),
+## and the default value if the setting is missing from the file.
+class Setting:
+	var name:	 StringName
+	var section: StringName ## If omitted, [const SectionNames.default] will be used.
+	var type:	 Variant.Type
+	var default: Variant
+
+	var logName: String:
+		get: return str(self, " [", section, "] ", name, ": ", type_string(type), " (default = ", default, ")")
+
+	func _init(initName: StringName, initSection: StringName, initType: Variant.Type, initDefault: Variant) -> void:
+		self.name	 = initName
+		self.section = initSection
+		self.type	 = initType
+		self.default = initDefault
+
+		if typeof(default) != type:
+			Debug.printWarning(str("Incorrect type for default: ", default, " is not ", type_string(type)), self.logName) # TBD: Should this be an error?
+
+#endregion
+
+
+#region Initialization
 
 func _ready() -> void:
 	loadConfig()
@@ -119,25 +130,56 @@ func loadConfig() -> bool:
 func loadProjectUserSettings() -> void:
 	self.get_window().size = (Vector2i(self.windowWidth, self.windowHeight))
 
+#endregion
 
-func getSection(settingName: StringName) -> StringName:
-	var section: StringName = sections.get(settingName)
 
-	if not section.is_empty():
-		return section
+#region External Interface
+
+## Dynamic properties
+func _get_property_list() -> Array[Dictionary]:
+	var propertyDictionaries: Array[Dictionary]
+
+	for propertyName: StringName in settingsDictionary.keys():
+		var setting: Setting = settingsDictionary[propertyName]
+		var propertyDictionary: Dictionary[String, Variant]
+		propertyDictionary["name"] = propertyName
+		propertyDictionary["type"] = setting.type # TBD: What to do if type is missing?
+		propertyDictionaries.append(propertyDictionary)
+
+	return propertyDictionaries
+
+
+## Dynamic properties
+func _get(propertyName: StringName) -> Variant:
+	if settingsDictionary.has(propertyName):
+		return self.getSetting(propertyName)
 	else:
-		Debug.printWarning("No section specified for setting: " + settingName, str(self))
-		return ""
+		return null # Returning `null` means the property should be handled normally.
 
 
-func getSetting(settingName: StringName) -> Variant:
-	var section: StringName = getSection(settingName)
-	if section.is_empty(): return null
-	return getSettingFromFile(section, settingName)
+## Dynamic properties
+func _set(propertyName: StringName, value: Variant) -> bool:
+	if settingsDictionary.has(propertyName):
+		self.saveSetting(propertyName, value)
+		return true
+	return false # Returning `false` means the property should be handled normally.
+
+#endregion
 
 
-func getSettingFromFile(section: StringName, key: StringName) -> Variant:
-	var default: Variant = defaults.get(key)
+#region Configuration File Management
+
+func getSetting(propertyName: StringName) -> Variant:
+	var setting: Setting = settingsDictionary.get(propertyName)
+	if setting:
+		return getSettingFromFile(setting.section, setting.name, setting.default)
+	else:
+		Debug.printWarning("getSetting() No Setting with propertyName: " + propertyName, str(self))
+		return null
+
+
+func getSettingFromFile(section: StringName, key: StringName, default: Variant = null) -> Variant:
+	if section.is_empty(): section = SectionNames.default
 
 	if not default: Debug.printWarning("No default specified for setting: " + key, str(self))
 
@@ -157,37 +199,44 @@ func getSettingFromFile(section: StringName, key: StringName) -> Variant:
 
 ## Checks the [member allowedTypes] [Dictionary] to make sure that the value for a setting stored in the config file is of the correct type, such as numbers or text.
 func validateType(settingName: StringName, value: Variant) -> bool:
-	var allowedType: Variant.Type = self.allowedTypes.get(settingName)
+	var setting: Setting = settingsDictionary.get(settingName)
+	var allowedType: Variant.Type = setting.type
 
 	if not allowedType:
-		Debug.printWarning("Missing valid type for setting: " + settingName, str(self))
+		Debug.printWarning("Setting does not specify an allowed type: " + setting.name, str(self))
 		return false
 
 	if typeof(value) == allowedType:
 		return true
 	else:
-		Debug.printWarning(str("Incorrect type for setting: ", settingName, ": ", value, " is not ", type_string(allowedType)), str(self))
+		Debug.printWarning(str("Incorrect value type in configuration file for setting: ", setting.name, ": ", value, " is not ", type_string(allowedType)), str(self))
 		return false
 
 
-func saveSetting(settingName: StringName, value: Variant) -> void:
-	var section: StringName = getSection(settingName)
-	if section.is_empty(): return
+func saveSetting(propertyName: StringName, newValue: Variant) -> void:
+	var setting: Setting = settingsDictionary.get(propertyName)
 
-	if value != getSetting(settingName):
-		saveSettingToFile(section, settingName, value)
-		self.didChange.emit(settingName, value)
+	if setting:
+		if newValue != getSettingFromFile(setting.section, setting.name, setting.default):
+			saveSettingToFile(setting.section, setting.name, newValue)
+			self.didChange.emit(setting.name, newValue)
+		else:
+			printLog(str("saveSetting() value already set, not saving: ", setting.name, " == ", newValue))
+
 	else:
-		printLog(str("saveSetting() value already set, not saving: ", settingName, " == ", value))
+		Debug.printWarning("saveSetting() No Setting with propertyName: " + propertyName, str(self))
 
 
 func saveSettingToFile(section: String, key: String, value: Variant) -> void:
+	if section.is_empty(): section = SectionNames.default
 	if shouldShowDebugInfo: printLog(str("saveSetting() section: ", section, " key: ", key, " ← ", value))
 
 	configFile.set_value(section, key, value)
 
 	# Save the file (overwrite if already exists).
 	configFile.save(self.configFilePath)
+
+#endregion
 
 
 func printLog(message: String) -> void:
