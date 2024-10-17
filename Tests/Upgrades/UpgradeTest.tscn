@@ -1,7 +1,6 @@
-[gd_scene load_steps=27 format=3 uid="uid://cj6ao7ju12nhg"]
+[gd_scene load_steps=26 format=3 uid="uid://cj6ao7ju12nhg"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_ght07"]
-[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="2_3h5d0"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="3_udv4x"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_0trfh"]
 [ext_resource type="PackedScene" uid="uid://csfqa5yos7088" path="res://Components/Gameplay/UpgradesComponent.tscn" id="5_3wt1t"]
@@ -53,10 +52,6 @@ outline_color = Color(0, 0, 0, 1)
 
 [node name="UpgradeTest" type="Node2D"]
 script = ExtResource("1_ght07")
-showTestBackground = false
-
-[node name="TestBackground" parent="." instance=ExtResource("2_3h5d0")]
-modulate = Color(1, 1, 1, 0.1)
 
 [node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("3_udv4x")]
 
