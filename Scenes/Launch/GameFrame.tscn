@@ -1,5 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=11 format=3 uid="uid://celt7hx1gstld"]
 
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/DebugBackground.tscn" id="1_uhj4x"]
+[ext_resource type="Texture2D" uid="uid://bkhxlpbb5fmqx" path="res://Assets/Images/Checkerboard32.png" id="2_mabn4"]
 [ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
@@ -12,6 +14,15 @@ glow_enabled = true
 glow_bloom = 0.1
 glow_blend_mode = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jd6d7"]
+texture = ExtResource("2_mabn4")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_t25e2"]
+tile_size = Vector2i(32, 32)
+sources/3 = SubResource("TileSetAtlasSource_jd6d7")
+
 [node name="GameFrame" type="Node2D"]
 editor_description = "The Main Menu"
 
@@ -20,6 +31,14 @@ environment = SubResource("Environment_ljcfk")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="CleanDebugBackground" parent="." instance=ExtResource("1_uhj4x")]
+
+[node name="TileMap1Solid" parent="CleanDebugBackground/Parallax2D1" index="0"]
+tile_set = SubResource("TileSet_t25e2")
+
+[node name="TileMap2Checkered" parent="CleanDebugBackground/Parallax2D2" index="0"]
+tile_set = SubResource("TileSet_t25e2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 process_callback = 0
@@ -59,8 +78,11 @@ backButton = NodePath("BackButton")
 
 [node name="MainMenuButtons" parent="CanvasLayer/UIContainer/UINavigationContainer" instance=ExtResource("7_wy4rx")]
 layout_mode = 2
+focus_mode = 2
 
 [node name="BackButton" type="Button" parent="CanvasLayer/UIContainer/UINavigationContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "< Back"
+
+[editable path="CleanDebugBackground"]
