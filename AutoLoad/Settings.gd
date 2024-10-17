@@ -8,7 +8,7 @@ extends Node
 # but we cannot elegantly do that because of dynamic properties, signals etc. :()
 
 
-#region Project-Specific Settings
+#region Godot Project Settings
 
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
 static var mainGameScene:		PackedScene
@@ -20,7 +20,7 @@ static var saveFilePath:		StringName = &"user://SaveGame.scn"
 #endregion
 
 
-#region Settings
+#region Game-specific Settings / Player Preferences
 
 # NOTE: Properties will be handled dynamically via the `settingsDictionary` Dictionary and the `_get_property_list()`, `_get()` and `_set()` methods.
 # Dynamic/implicit settings will be saved/loaded via `getSetting()` and `saveSetting()` which may also be called manually.
@@ -122,6 +122,7 @@ class Setting:
 #region Initialization
 
 func _ready() -> void:
+	Debug.printLog("_ready() Loading user preferences from configuration file...", "", "Settings.gd")
 	loadConfig()
 	loadProjectUserSettings()
 	loadAudioSettings()
