@@ -4,6 +4,8 @@
 extends Node
 
 # TODO: Better comments & documentation
+# TBD: Settings should be `static` to enforce a "single source of truth" because there shouldn't be multiple instances,
+# but we cannot elegantly do that because of dynamic properties, signals etc. :()
 
 
 #region Project-Specific Settings
@@ -11,7 +13,7 @@ extends Node
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
 static var mainGameScene:		PackedScene
 
-static var shouldAlertOnError:	bool = true # TODO: Add toggle in Start.gd # TBD: Should this be `OS.is_debug_build()`?
+static var shouldAlertOnError:	bool = OS.is_debug_build() # TODO: Add toggle in Start.gd
 
 static var saveFilePath:		StringName = &"user://SaveGame.scn"
 
@@ -20,9 +22,22 @@ static var saveFilePath:		StringName = &"user://SaveGame.scn"
 
 #region Settings
 
-# NOTE: Properties will be handled dynamically via the `propertyToSettingNames` Dictionary and the `_get_property_list()`, `_get()` and `_set()` methods.
-# Dynamic/implicit settings will be saved/loaded via `getSetting()` and `saveSetting()`.
-# Settings with customized behavior must be added manually as normal properties.
+# NOTE: Properties will be handled dynamically via the `settingsDictionary` Dictionary and the `_get_property_list()`, `_get()` and `_set()` methods.
+# Dynamic/implicit settings will be saved/loaded via `getSetting()` and `saveSetting()` which may also be called manually.
+# Settings with customized behavior must be added manually as explicit normal properties.
+
+## A [Dictionary] where the key is the name of a setting and the property via which it will be accessed, and the value is an instance of the [Setting] inner class.
+var settingsDictionary: Dictionary[StringName, Setting] = {
+	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
+	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
+
+	SettingNames.gravity:		Setting.new(SettingNames.gravity,		SectionNames.projectSettings,	TYPE_FLOAT,	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity])),
+
+	SettingNames.musicVolume:	Setting.new(SettingNames.musicVolume,	SectionNames.audio,	TYPE_FLOAT,	0.0),
+	SettingNames.sfxVolume:		Setting.new(SettingNames.sfxVolume,		SectionNames.audio,	TYPE_FLOAT,	0.0),
+	}
+
+# Explicit properties for settings with customized behavior
 
 var gravity: int:
 	get: return getSetting(SettingNames.gravity)
@@ -49,17 +64,6 @@ class SectionNames:
 	const default			:= &"General"
 	const projectSettings	:= &"GodotProjectSettings"
 	const audio				:= &"Audio"
-
-## A [Dictionary] where the key is the name of a setting and the property via which it will be accessed, and the value is an instance of the [Setting] inner class.
-var settingsDictionary: Dictionary[StringName, Setting] = {
-	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
-	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
-
-	SettingNames.gravity:		Setting.new(SettingNames.gravity,		SectionNames.projectSettings,	TYPE_FLOAT,	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity])),
-
-	SettingNames.musicVolume:	Setting.new(SettingNames.musicVolume,	SectionNames.audio,	TYPE_FLOAT,	0.0),
-	SettingNames.sfxVolume:		Setting.new(SettingNames.sfxVolume,		SectionNames.audio,	TYPE_FLOAT,	0.0),
-	}
 
 ## A [Dictionary] where the key is the name of a setting such as [member windowWidth] and the value is a path for [ProjectSettings].
 const projectSettingsPaths: Dictionary[StringName, String] = {
@@ -88,7 +92,7 @@ signal didChange(settingName: StringName, newValue: Variant)
 #endregion
 
 
-#region Inner Classes
+#region Setting Inner Class
 
 ## A structure which defines the name of a setting, which is also its "key" in the configuration file,
 ## its section/category in the file,
@@ -167,10 +171,10 @@ func _get_property_list() -> Array[Dictionary]:
 	return propertyDictionaries
 
 
-## Dynamic properties
+## Handles dynamic properties.
 func _get(propertyName: StringName) -> Variant:
 	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
-		Debug.printDebug(str("_get() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file"), str(self))
+		printLog(str("_get() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file"))
 
 	# NOTE: Try reading the setting from file even if it has not been defined as a property.
 	return self.getSetting(propertyName)
@@ -178,10 +182,21 @@ func _get(propertyName: StringName) -> Variant:
 	# return null # Returning `null` means the property should be handled normally.
 
 
-## Dynamic properties
+## Fetches a [Setting] matching the [param propertyName] key from the [member settingsDictionary] and reads it from the [member configFile].
+## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [const SectionNames.default] section.
+func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) -> Variant:
+	var setting: Setting = settingsDictionary.get(propertyName)
+	if setting:
+		return getSettingFromFile(setting.section, setting.name, setting.default)
+	else:
+		printWarning(str("getSetting() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file anyway with defaultIfUndefined: ", defaultIfUndefined))
+		return getSettingFromFile(SectionNames.default, propertyName, defaultIfUndefined)
+
+
+## Handles dynamic properties.
 func _set(propertyName: StringName, value: Variant) -> bool:
 	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
-		Debug.printDebug(str("_set() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", value), str(self))
+		printLog(str("_set() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", value))
 
 	# NOTE: Save the setting to file even if it has not been defined as a property.
 	self.saveSetting(propertyName, value)
@@ -189,25 +204,33 @@ func _set(propertyName: StringName, value: Variant) -> bool:
 
 	# return false # Returning `false` means the property should be handled normally.
 
+
+## Fetches a [Setting] matching the [param propertyName] key from the [member settingsDictionary] and saves it to the [member configFile].
+## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [const SectionNames.default] section.
+func saveSetting(propertyName: StringName, newValue: Variant) -> void:
+	var setting: Setting = settingsDictionary.get(propertyName)
+
+	if setting:
+		if newValue != getSettingFromFile(setting.section, setting.name, setting.default):
+			saveSettingToFile(setting.section, setting.name, newValue)
+			self.didChange.emit(setting.name, newValue)
+		else:
+			printLog(str("saveSetting() value already in file, not saving: ", setting.name, " == ", newValue))
+
+	else:
+		printWarning(str("saveSetting() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", newValue))
+		saveSettingToFile(SectionNames.default, propertyName, newValue)
+
 #endregion
 
 
 #region Configuration File Management
 
-func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) -> Variant:
-	var setting: Setting = settingsDictionary.get(propertyName)
-	if setting:
-		return getSettingFromFile(setting.section, setting.name, setting.default)
-	else:
-		Debug.printWarning(str("getSetting() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file anyway with defaultIfUndefined: ", defaultIfUndefined), str(self))
-		return getSettingFromFile(SectionNames.default, propertyName, defaultIfUndefined)
-
-
 func getSettingFromFile(section: StringName, key: StringName, default: Variant = null) -> Variant:
 	if section.is_empty(): section = SectionNames.default
 
 	if default == null: # NOTE: Do NOT check `not default` because it will cause a default value of 0 to be interpreted as a missing default!
-		Debug.printWarning("No default specified for setting: " + key, str(self))
+		printWarning("No default specified for setting: " + key)
 
 	var value: Variant = configFile.get_value(section, key, default)
 
@@ -228,35 +251,20 @@ func validateType(settingName: StringName, value: Variant) -> bool:
 	var setting: Setting = settingsDictionary.get(settingName)
 
 	if not setting:
-		Debug.printWarning(str("validateType() No Setting defined with name: " + settingName), str(self))
+		printWarning(str("validateType() No Setting defined with name: " + settingName))
 		return false
 
 	var allowedType: Variant.Type = setting.type
 
 	if not allowedType:
-		Debug.printWarning("Setting does not specify an allowed type: " + setting.name, str(self))
+		printWarning("Setting does not specify an allowed type: " + setting.name)
 		return false
 
 	if typeof(value) == allowedType:
 		return true
 	else:
-		Debug.printWarning(str("Incorrect value type in configuration file for setting: ", setting.name, ": ", value, " is not ", type_string(allowedType)), str(self))
+		printWarning(str("Incorrect value type in configuration file for setting: ", setting.name, ": ", value, " is not ", type_string(allowedType)))
 		return false
-
-
-func saveSetting(propertyName: StringName, newValue: Variant) -> void:
-	var setting: Setting = settingsDictionary.get(propertyName)
-
-	if setting:
-		if newValue != getSettingFromFile(setting.section, setting.name, setting.default):
-			saveSettingToFile(setting.section, setting.name, newValue)
-			self.didChange.emit(setting.name, newValue)
-		else:
-			printLog(str("saveSetting() value already in file, not saving: ", setting.name, " == ", newValue))
-
-	else:
-		Debug.printWarning(str("saveSetting() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", newValue), str(self))
-		saveSettingToFile(SectionNames.default, propertyName, newValue)
 
 
 func saveSettingToFile(section: String, key: String, value: Variant) -> void:
@@ -273,3 +281,7 @@ func saveSettingToFile(section: String, key: String, value: Variant) -> void:
 
 func printLog(message: String) -> void:
 	if shouldShowDebugInfo: Debug.printDebug(message, str(self))
+
+
+func printWarning(message: String) -> void:
+	Debug.printWarning(message, str(self))
