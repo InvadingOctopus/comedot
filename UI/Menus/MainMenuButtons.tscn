@@ -28,11 +28,19 @@ script = ExtResource("1_7ifjj")
 [node name="StartButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../OptionsButton")
+focus_next = NodePath("../OptionsButton")
+focus_previous = NodePath("../QuitButton")
 text = "START"
 
 [node name="OptionsButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
+focus_neighbor_top = NodePath("../StartButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+focus_next = NodePath("../QuitButton")
+focus_previous = NodePath("../StartButton")
 text = "OPTIONS"
 script = ExtResource("2_phlj7")
 navigationDestination = "res://UI/Menus/OptionsUI.tscn"
@@ -40,6 +48,10 @@ navigationDestination = "res://UI/Menus/OptionsUI.tscn"
 [node name="QuitButton" type="Button" parent="MainMenuButtons"]
 auto_translate_mode = 1
 layout_mode = 2
+focus_neighbor_top = NodePath("../OptionsButton")
+focus_neighbor_bottom = NodePath("../StartButton")
+focus_next = NodePath("../StartButton")
+focus_previous = NodePath("../OptionsButton")
 text = "QUIT"
 
 [connection signal="pressed" from="MainMenuButtons/StartButton" to="MainMenuButtons" method="onStartButton_pressed"]

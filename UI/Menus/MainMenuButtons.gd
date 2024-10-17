@@ -2,6 +2,21 @@
 extends Control
 
 
+var didSetInitialFocus: bool = false
+
+
+func setInitialFocus() -> void:
+	if not didSetInitialFocus:
+		$StartButton.grab_focus()
+		didSetInitialFocus = true
+
+
+func _input(event: InputEvent) -> void: # TBD: Use `_unhandled_input()`
+	if not didSetInitialFocus and event is InputEventAction:
+		setInitialFocus()
+		self.get_viewport().set_input_as_handled()
+
+
 func onStartButton_pressed() -> void:
 	startGame()
 
