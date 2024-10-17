@@ -44,7 +44,7 @@ var player: PlayerEntity:
 ## TIP: Override in a project-specific subclass.
 func onDidToggleTestMode() -> void:
 	# Examples:
-	# Debug.testBackground.visible = isInTestMode
+	# Debug.debugBackground.visible = isInTestMode
 	# player.statsComponent.getStat(&"lives").value += 999 if isInTestMode else 0
 	pass
 

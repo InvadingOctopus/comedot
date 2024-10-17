@@ -44,10 +44,10 @@ extends CanvasItem
 		showDebugLabels = newValue
 		Debug.showDebugLabels = newValue
 
-@export var showTestBackground: bool = true:
+@export var showDebugBackground: bool = true:
 	set(newValue):
-		showTestBackground = newValue
-		if Debug.testBackground: Debug.testBackground.visible = newValue
+		showDebugBackground = newValue
+		if Debug.debugBackground: Debug.debugBackground.visible = newValue
 
 #endregion
 
@@ -67,6 +67,6 @@ func applyGlobalFlags() -> void:
 	Debug.shouldPrintDebugLogs		= self.shouldPrintDebugLogs
 	Debug.debugWindow.visible		= self.showDebugWindow if OS.is_debug_build() else false
 	Debug.showDebugLabels			= self.showDebugLabels
-	Debug.testBackground.visible	= self.showTestBackground
+	Debug.debugBackground.visible	= self.showDebugBackground
 
 	Settings.mainGameScene = self.mainGameScene

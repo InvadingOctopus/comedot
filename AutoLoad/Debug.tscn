@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
-[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/TestBackground.tscn" id="4_v5ev8"]
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/DebugBackground.tscn" id="4_v5ev8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rssih"]
 font = ExtResource("2_6qwn4")
@@ -123,7 +123,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 2
 
-[node name="TestBackground" parent="." instance=ExtResource("4_v5ev8")]
+[node name="DebugBackground" parent="." instance=ExtResource("4_v5ev8")]
 unique_name_in_owner = true
 
 [connection signal="close_requested" from="DebugWindow" to="DebugWindow" method="hide"]

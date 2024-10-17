@@ -38,7 +38,7 @@ const customLogMaximumEntries: int = 100
 @onready var watchListLabel: Label  = %WatchListLabel
 @onready var customLogList:	 Container = %CustomLogList
 
-@onready var testBackground: Node2D = %TestBackground
+@onready var debugBackground: Node2D = %DebugBackground
 
 var previousChartWindowInitialPosition: Vector2i
 

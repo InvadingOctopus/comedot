@@ -23,7 +23,6 @@ normal = Vector2(-1, 0)
 
 [node name="LogoSceneIO" type="Node2D"]
 script = ExtResource("1_qii1y")
-showTestBackground = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_04x4y")
