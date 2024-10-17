@@ -3,6 +3,8 @@
 # class_name Settings
 extends Node
 
+# TODO: Better comments & documentation
+
 
 #region Project-Specific Settings
 
@@ -143,8 +145,8 @@ func loadProjectUserSettings() -> void:
 func loadAudioSettings() -> void:
 	var musicBus: int = AudioServer.get_bus_index(Global.AudioBuses.music)
 	var sfxBus:   int = AudioServer.get_bus_index(Global.AudioBuses.sfx)
-	AudioServer.set_bus_volume_db(musicBus,	getSetting(SettingNames.musicVolume))
-	AudioServer.set_bus_volume_db(sfxBus,	getSetting(SettingNames.sfxVolume))
+	AudioServer.set_bus_volume_db(musicBus,	getSetting(SettingNames.musicVolume, 0.0))
+	AudioServer.set_bus_volume_db(sfxBus,	getSetting(SettingNames.sfxVolume, 0.0))
 
 #endregion
 
@@ -167,31 +169,38 @@ func _get_property_list() -> Array[Dictionary]:
 
 ## Dynamic properties
 func _get(propertyName: StringName) -> Variant:
-	if settingsDictionary.has(propertyName):
-		return self.getSetting(propertyName)
-	else:
-		return null # Returning `null` means the property should be handled normally.
+	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
+		Debug.printDebug(str("_get() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file"), str(self))
+
+	# NOTE: Try reading the setting from file even if it has not been defined as a property.
+	return self.getSetting(propertyName)
+
+	# return null # Returning `null` means the property should be handled normally.
 
 
 ## Dynamic properties
 func _set(propertyName: StringName, value: Variant) -> bool:
-	if settingsDictionary.has(propertyName):
-		self.saveSetting(propertyName, value)
-		return true
-	return false # Returning `false` means the property should be handled normally.
+	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
+		Debug.printDebug(str("_set() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", value), str(self))
+
+	# NOTE: Save the setting to file even if it has not been defined as a property.
+	self.saveSetting(propertyName, value)
+	return true
+
+	# return false # Returning `false` means the property should be handled normally.
 
 #endregion
 
 
 #region Configuration File Management
 
-func getSetting(propertyName: StringName) -> Variant:
+func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) -> Variant:
 	var setting: Setting = settingsDictionary.get(propertyName)
 	if setting:
 		return getSettingFromFile(setting.section, setting.name, setting.default)
 	else:
-		Debug.printWarning("getSetting() No Setting with propertyName: " + propertyName, str(self))
-		return null
+		Debug.printWarning(str("getSetting() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file anyway with defaultIfUndefined: ", defaultIfUndefined), str(self))
+		return getSettingFromFile(SectionNames.default, propertyName, defaultIfUndefined)
 
 
 func getSettingFromFile(section: StringName, key: StringName, default: Variant = null) -> Variant:
@@ -204,7 +213,7 @@ func getSettingFromFile(section: StringName, key: StringName, default: Variant =
 
 	# Verify that the value retrieved from the config file is the correct type
 	if not validateType(key, value):
-		if default: value = default
+		if default != null: value = default # NOTE: Check for `null` specifically to allow defaults of 0.
 		else: return null
 
 	if shouldShowDebugInfo:
@@ -217,6 +226,11 @@ func getSettingFromFile(section: StringName, key: StringName, default: Variant =
 ## Checks the [member allowedTypes] [Dictionary] to make sure that the value for a setting stored in the config file is of the correct type, such as numbers or text.
 func validateType(settingName: StringName, value: Variant) -> bool:
 	var setting: Setting = settingsDictionary.get(settingName)
+
+	if not setting:
+		Debug.printWarning(str("validateType() No Setting defined with name: " + settingName), str(self))
+		return false
+
 	var allowedType: Variant.Type = setting.type
 
 	if not allowedType:
@@ -238,10 +252,11 @@ func saveSetting(propertyName: StringName, newValue: Variant) -> void:
 			saveSettingToFile(setting.section, setting.name, newValue)
 			self.didChange.emit(setting.name, newValue)
 		else:
-			printLog(str("saveSetting() value already set, not saving: ", setting.name, " == ", newValue))
+			printLog(str("saveSetting() value already in file, not saving: ", setting.name, " == ", newValue))
 
 	else:
-		Debug.printWarning("saveSetting() No Setting with propertyName: " + propertyName, str(self))
+		Debug.printWarning(str("saveSetting() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", newValue), str(self))
+		saveSettingToFile(SectionNames.default, propertyName, newValue)
 
 
 func saveSettingToFile(section: String, key: String, value: Variant) -> void:
