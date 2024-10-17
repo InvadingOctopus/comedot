@@ -1,7 +1,5 @@
-[gd_scene load_steps=9 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=7 format=3 uid="uid://celt7hx1gstld"]
 
-[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_suk02"]
-[ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_agfhx"]
 [ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
@@ -16,8 +14,6 @@ glow_blend_mode = 0
 
 [node name="GameFrame" type="Node2D"]
 editor_description = "The Main Menu"
-script = ExtResource("1_suk02")
-mainGameScene = ExtResource("2_agfhx")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ljcfk")
