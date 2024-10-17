@@ -23,6 +23,7 @@ var logoTween:  Tween
 func _ready() -> void:
 	super._ready()
 	if Debug.debugBackground: Debug.debugBackground.visible = false # Hide the debug background during the logo
+	GlobalInput.isPauseShortcutAllowed = false
 	animateText()
 	animateLogo()
 
@@ -65,3 +66,4 @@ func displayNextScene() -> void:
 
 func _exit_tree() -> void:
 	if Debug.debugBackground: Debug.debugBackground.visible = self.showDebugBackground # Hide the debug background during the logo
+	GlobalInput.isPauseShortcutAllowed = true

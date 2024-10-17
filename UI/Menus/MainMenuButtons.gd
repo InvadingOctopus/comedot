@@ -5,6 +5,10 @@ extends Control
 var didSetInitialFocus: bool = false
 
 
+func _ready() -> void:
+	GlobalInput.isPauseShortcutAllowed = false
+
+
 func setInitialFocus() -> void:
 	if not didSetInitialFocus:
 		$StartButton.grab_focus()
@@ -28,6 +32,7 @@ func startGame() -> void:
 		
 	var mainGameScene: PackedScene = load(Settings.mainGameScene.resource_path)
 	Global.transitionToScene(mainGameScene)
+	GlobalInput.isPauseShortcutAllowed = true
 
 
 func onQuitButton_pressed() -> void:
