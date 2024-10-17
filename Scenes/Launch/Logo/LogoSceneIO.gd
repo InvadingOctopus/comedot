@@ -12,7 +12,7 @@ var textLines: Array[String] = [
 	str("LOAD\"", ProjectSettings.get_setting("application/config/name", "Comedot"), "\"").to_upper(),
 	"READY © MMXXIV",
 	"RUN",
-]
+	]
 
 var isSkipping: bool
 var logoTween:  Tween
@@ -22,6 +22,7 @@ var logoTween:  Tween
 
 func _ready() -> void:
 	super._ready()
+	if Debug.debugBackground: Debug.debugBackground.visible = false # Hide the debug background during the logo
 	animateText()
 	animateLogo()
 
@@ -31,7 +32,8 @@ func animateText() -> void:
 		var label: Label = GlobalOverlay.createTemporaryLabel(text)
 		label.modulate = Color(1,1,1,0)
 		Animations.tweenProperty(label, ^"modulate", Color.WHITE, 0.5)
-		await get_tree().create_timer(0.5).timeout
+		if not isSkipping: await get_tree().create_timer(0.5).timeout
+		else: break
 
 
 func animateLogo() -> void:
@@ -59,3 +61,7 @@ func scatterLogo() -> void:
 
 func displayNextScene() -> void:
 	Global.transitionToScene(nextScene, false) # Don't pauseSceneTree during the transition, so that the cool physics keep physicsing~
+
+
+func _exit_tree() -> void:
+	if Debug.debugBackground: Debug.debugBackground.visible = self.showDebugBackground # Hide the debug background during the logo

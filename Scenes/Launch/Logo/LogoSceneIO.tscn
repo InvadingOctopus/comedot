@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvqp4ygq6w82"]
+[gd_scene load_steps=9 format=3 uid="uid://cvqp4ygq6w82"]
 
 [ext_resource type="Script" path="res://Scenes/Launch/Logo/LogoSceneIO.gd" id="1_qii1y"]
 [ext_resource type="PackedScene" uid="uid://dgk7tlglaif5h" path="res://Scenes/Launch/Logo/LogoInvader.tscn" id="2_4hmw6"]
+[ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_uw4pw"]
 [ext_resource type="PackedScene" uid="uid://csq2lekj41v32" path="res://Scenes/Launch/Logo/LogoOctopus.tscn" id="3_p8yrm"]
 
 [sub_resource type="Environment" id="Environment_04x4y"]
@@ -23,6 +24,7 @@ normal = Vector2(-1, 0)
 
 [node name="LogoSceneIO" type="Node2D"]
 script = ExtResource("1_qii1y")
+mainGameScene = ExtResource("2_uw4pw")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_04x4y")
