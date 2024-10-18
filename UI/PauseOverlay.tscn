@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3o0h88u2yifr"]
+[gd_scene load_steps=11 format=3 uid="uid://b3o0h88u2yifr"]
 
 [ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_jwxdq"]
 [ext_resource type="Script" path="res://UI/PauseOverlay.gd" id="1_sck66"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_k0ue2"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="3_7sumf"]
+[ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="5_8n3qq"]
 [ext_resource type="PackedScene" uid="uid://cysctd14jlutm" path="res://UI/Menus/OptionsUI.tscn" id="5_bo3ty"]
 [ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
 
@@ -65,11 +66,12 @@ vertical_alignment = 1
 autowrap_mode = 3
 max_lines_visible = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer"]
+[node name="UINavigationContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 4
+size_flags_vertical = 3
+script = ExtResource("5_8n3qq")
 
-[node name="OptionsUI" parent="MarginContainer/VBoxContainer/CenterContainer" instance=ExtResource("5_bo3ty")]
+[node name="OptionsUI" parent="MarginContainer/VBoxContainer/UINavigationContainer" instance=ExtResource("5_bo3ty")]
 layout_mode = 2
 
 [node name="ExtraLabel" type="Label" parent="MarginContainer/VBoxContainer"]
