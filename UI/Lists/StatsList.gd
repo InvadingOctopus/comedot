@@ -38,7 +38,7 @@ func _ready() -> void:
 		if player: self.statsComponent = player.statsComponent
 
 	if statsComponent: buildLabels()
-	else: Debug.printWarning("Missing statsComponent", str(self))
+	else: Debug.printWarning("Missing statsComponent", self)
 
 
 ## Creates a [StatLabel] for each of the [Stat] in the [member statsComponent].

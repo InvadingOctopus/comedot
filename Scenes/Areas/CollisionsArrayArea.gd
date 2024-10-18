@@ -49,20 +49,20 @@ func readdAllAreas() -> void:
 	if not isEnabled: return
 
 	for overlappingArea in self.get_overlapping_areas():
-		if shouldShowDebugInfo: Debug.printDebug(str("Adding ", overlappingArea), str(self))
+		if shouldShowDebugInfo: Debug.printDebug(str("Adding ", overlappingArea), self)
 		self.areasInContact.append(overlappingArea)
 
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	# TBD: Make sure no area is added twice?
 	if not isEnabled: return
-	if shouldShowDebugInfo: Debug.printDebug(str("Entered ", areaEntered), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("Entered ", areaEntered), self)
 	areasInContact.append(areaEntered)
 
 
 func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
-	if shouldShowDebugInfo: Debug.printDebug(str("Exited ", areaExited), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("Exited ", areaExited), self)
 	areasInContact.erase(areaExited)
 
 #endregion

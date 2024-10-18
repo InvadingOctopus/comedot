@@ -74,7 +74,7 @@ func _ready() -> void:
 		updateUI(false) # Display the initial value, without animation
 		stat.changed.connect(self.onStat_changed)
 	else:
-		Debug.printWarning("Missing stat", str(self))
+		Debug.printWarning("Missing stat", self)
 
 
 func applyInitialFlags() -> void:

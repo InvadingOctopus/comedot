@@ -19,7 +19,7 @@ extends TileMapLayer
 
 
 func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), self)
 
 	# NOTE: Do NOT assign an entire dictionary here or that will overrite all other keys!
 
@@ -38,5 +38,5 @@ func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 	else:
 		value = null
 
-	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, " ", key, ": ", value), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, " ", key, ": ", value), self)
 	return value

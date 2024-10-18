@@ -49,10 +49,10 @@ var player: PlayerEntity:
 func _ready() -> void:
 	if not entity:
 		entity = player
-		if not entity: Debug.printWarning("Missing entity", str(self))
+		if not entity: Debug.printWarning("Missing entity", self)
 
 	if actionsComponent: readdAllActions()
-	else: Debug.printWarning("Missing actionsComponent", str(self))
+	else: Debug.printWarning("Missing actionsComponent", self)
 
 
 ## Removes all children and adds all choices again.
@@ -78,6 +78,6 @@ func createActionButton(action: Action) -> Button:
 
 
 func onActionButton_pressed(action: Action) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onActionButton_pressed() ", action.logName), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onActionButton_pressed() ", action.logName), self)
 	self.lastActionChosen = action
 	self.didChooseAction.emit(action)

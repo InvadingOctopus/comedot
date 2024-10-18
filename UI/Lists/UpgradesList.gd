@@ -50,10 +50,10 @@ var player: PlayerEntity:
 func _ready() -> void:
 	if not targetEntity:
 		targetEntity = player
-		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
+		if not targetEntity: Debug.printWarning("Missing targetEntity", self)
 
 	if targetUpgradesComponent: readdAllChoices()
-	else: Debug.printWarning("Missing targetUpgradesComponent", str(self))
+	else: Debug.printWarning("Missing targetUpgradesComponent", self)
 
 
 ## Removes all children and adds all choices again.
@@ -79,6 +79,6 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 
 
 func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), self)
 	self.lastUpgradeChosen = upgrade
 	self.didChooseUpgrade.emit(upgrade)

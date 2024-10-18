@@ -19,7 +19,7 @@ func clampToBoundary() -> void:
 	var rect: Rect2 = Tools.getShapeGlobalBounds(boundary)
 
 	if not rect:
-		Debug.printWarning("Cannot get a Rect2 from Area2D: " + str(boundary), str(self))
+		Debug.printWarning("Cannot get a Rect2 from Area2D: " + str(boundary), self)
 
 	self.limit_left   = int(rect.position.x)
 	self.limit_right  = int(rect.end.x)

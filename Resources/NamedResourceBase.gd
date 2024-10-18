@@ -12,7 +12,7 @@ extends Resource
 @export var name: StringName:
 	set(newValue):
 		if newValue.is_empty():
-			Debug.printWarning("Rejected attempt to set name to empty string", str(self))
+			Debug.printWarning("Rejected attempt to set name to empty string", self)
 			return
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?

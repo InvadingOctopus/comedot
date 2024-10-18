@@ -16,12 +16,12 @@ extends Node
 
 func setCellData(x: int, y: int, value: Variant) -> void:
 	var coordinates: Vector2i = Vector2i(x, y)
-	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " = ", value), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " = ", value), self)
 	gridDictionary[coordinates] = value
 
 
 func getCellData(x: int, y: int) -> Variant:
 	var coordinates: Vector2i = Vector2i(x, y)
 	var value: Variant = gridDictionary.get(coordinates)
-	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, ": ", value), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, ": ", value), self)
 	return value

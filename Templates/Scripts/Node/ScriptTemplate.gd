@@ -29,7 +29,7 @@ var player: PlayerEntity:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if shouldShowDebugInfo: Debug.printLog("_ready()", "white", str(self))
+	if shouldShowDebugInfo: Debug.printLog("_ready()", "white", self)
 	pass # Replace with function body.
 
 

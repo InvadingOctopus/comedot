@@ -50,7 +50,7 @@ signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that an
 func addPlayer(newPlayer: PlayerEntity) -> int:
 	if not newPlayer in self.players:
 		self.players.append(newPlayer)
-		Debug.printLog("addPlayer(): [b]" + str(newPlayer.logFullName) + "[/b] → GameState.players → size: " + str(GameState.players.size()), "", str(self))
+		Debug.printLog("addPlayer(): [b]" + str(newPlayer.logFullName) + "[/b] → GameState.players → size: " + str(GameState.players.size()), "", self)
 		playerAdded.emit(newPlayer)
 		playersChanged.emit()
 	else:
@@ -67,12 +67,12 @@ func removePlayer(playerToRemove: PlayerEntity) -> bool:
 	# Therefore, compare with `-1` which is returned if [Array.find] fails.
 
 	if indexToRemove != -1:
-		Debug.printLog("removePlayer(): " + str(playerToRemove.logFullName) + " | Removing from GameState.players → size: " + str(GameState.players.size() - 1), "", str(self))
+		Debug.printLog("removePlayer(): " + str(playerToRemove.logFullName) + " | Removing from GameState.players → size: " + str(GameState.players.size() - 1), "", self)
 		self.players.remove_at(indexToRemove)
 		playerRemoved.emit(playerToRemove)
 		playersChanged.emit()
 		return true
 	elif indexToRemove == -1:
-		Debug.printWarning("removePlayer(): Player to remove not found in GameState.players: " + str(playerToRemove), str(self))
+		Debug.printWarning("removePlayer(): Player to remove not found in GameState.players: " + str(playerToRemove), self)
 
 	return false

@@ -138,7 +138,7 @@ func loadConfig() -> bool:
 	if error == Error.OK:
 		return true
 	else:
-		Debug.printError(str("Error ", error, " — Cannot load settings file: ", self.configFilePath), str(self))
+		Debug.printError(str("Error ", error, " — Cannot load settings file: ", self.configFilePath), self)
 		return false
 
 
@@ -281,8 +281,8 @@ func saveSettingToFile(section: String, key: String, value: Variant) -> void:
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(message, str(self))
+	if shouldShowDebugInfo: Debug.printDebug(message, self)
 
 
 func printWarning(message: String) -> void:
-	Debug.printWarning(message, str(self))
+	Debug.printWarning(message, self)

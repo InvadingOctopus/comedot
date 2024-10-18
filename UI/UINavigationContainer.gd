@@ -22,7 +22,7 @@ var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
 func _ready() -> void:
 	resetHistory()
 	if backButton: connectBackButton()
-	else: Debug.printWarning("Missing backButton", str(self))
+	else: Debug.printWarning("Missing backButton", self)
 
 
 func connectBackButton() -> void:
@@ -74,7 +74,7 @@ func displayNavigationDestination(newDestination: String) -> bool:
 	var result: bool
 
 	if newDestinationScene is not Control:
-		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestination), str(self))
+		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestination), self)
 		return false
 
 	if self.replaceFirstChildControl(newDestinationScene):

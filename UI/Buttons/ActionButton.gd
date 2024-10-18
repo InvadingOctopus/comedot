@@ -52,7 +52,7 @@ var statsComponent: StatsComponent:
 func _ready() -> void:
 	if not entity:
 		entity = player
-		if not entity: Debug.printWarning("Missing entity", str(self))
+		if not entity: Debug.printWarning("Missing entity", self)
 
 	if action: updateUI()
 
@@ -70,7 +70,7 @@ func checkUsability() -> bool:
 
 
 func onPressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug("onPressed()", str(self))
+	if shouldShowDebugInfo: Debug.printDebug("onPressed()", self)
 	generateInputEvent()
 
 

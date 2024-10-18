@@ -76,7 +76,7 @@ func _ready() -> void:
 	# Reset if not enabled
 	if not isEnabled: modulate = Color.WHITE
 
-	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), str(self))
+	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -113,7 +113,7 @@ func _process(delta: float) -> void:
 
 	# Apply
 
-	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), str(self))
+	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
 
 	self.modulate = Color.from_hsv(hue, saturation, value, alpha)
 

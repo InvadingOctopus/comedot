@@ -28,11 +28,11 @@ func _ready() -> void:
 
 
 func onPressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onPressed(): navigationDestination: ", navigationDestination), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onPressed(): navigationDestination: ", navigationDestination), self)
 	if not navigationDestination: return
 
 	var parentContainer: UINavigationContainer = parentOverride if parentOverride else Tools.findFirstParentOfType(self, UINavigationContainer)
-	if shouldShowDebugInfo: Debug.printDebug(str("parentContainer: ", parentContainer), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("parentContainer: ", parentContainer), self)
 	if not parentContainer: return
 
 	parentContainer.displayNavigationDestination(navigationDestination)

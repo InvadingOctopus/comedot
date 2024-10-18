@@ -63,7 +63,7 @@ var player: PlayerEntity:
 func _ready() -> void:
 	if not targetEntity:
 		targetEntity = player
-		if not targetEntity: Debug.printWarning("Missing targetEntity", str(self))
+		if not targetEntity: Debug.printWarning("Missing targetEntity", self)
 
 
 func updateUI(_entity: Entity = self.targetEntity) -> void: # The entity argument is needed to match the signature of the Upgrade's signals.
@@ -127,7 +127,7 @@ func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
 
 
 func onUpgradeButton_pressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), str(self))
+	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), self)
 	self.didChooseUpgrade.emit(self.upgrade)
 
 #endregion

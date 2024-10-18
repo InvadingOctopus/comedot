@@ -88,7 +88,7 @@ func _ready() -> void:
 func populate() -> void:
 
 	if not sceneToCopy:
-		Debug.printError("No sceneToCopy", str(self))
+		Debug.printError("No sceneToCopy", self)
 		return
 
 	var sceneResource := load(sceneToCopy.resource_path)
@@ -207,7 +207,7 @@ func clearAllNodes() -> void:
 			child.queue_free()
 			totalCopiesCreated -= 1
 			if totalCopiesCreated < 0:
-				Debug.printWarning("clearAllNodes(): totalCopiesCreated went < 0: " + str(totalCopiesCreated), str(self))
+				Debug.printWarning("clearAllNodes(): totalCopiesCreated went < 0: " + str(totalCopiesCreated), self)
 
 	totalCopiesCreated = 0
 

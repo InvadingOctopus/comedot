@@ -58,7 +58,7 @@ signal didBecomeUnusable
 ## WARNING: May decrease performance if used with rapidly-changing Stats.
 func connectToStatSignals() -> void:
 	if not is_instance_valid(costStat):
-		Debug.printWarning("connectToStatSignals() costStat is null", str(self))
+		Debug.printWarning("connectToStatSignals() costStat is null", self)
 		return
 
 	costStat.changed.connect(self.onCostStat_changed)

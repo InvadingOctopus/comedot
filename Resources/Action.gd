@@ -44,7 +44,7 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 	printLog(str("perform() source: ", source, ", target: ", target))
 
 	if not self.payload:
-		Debug.printWarning("Missing payload", str(self))
+		Debug.printWarning("Missing payload", self)
 		return false
 	
 	# Check for target

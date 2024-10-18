@@ -40,7 +40,7 @@ func _ready() -> void:
 	if InputMap.has_action(self.inputAction):
 		updateUI()
 	else:
-		Debug.printWarning(str("Invalid inputAction: ", inputAction), str(self))
+		Debug.printWarning(str("Invalid inputAction: ", inputAction), self)
 
 
 func updateUI() -> void:

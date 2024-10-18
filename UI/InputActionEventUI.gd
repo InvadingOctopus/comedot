@@ -33,7 +33,7 @@ signal didDeleteInputEvent(inputAction: StringName, inputEvent: InputEvent) ## A
 
 func _ready() -> void:
 	if inputEvent: updateUI()
-	else: Debug.printWarning("No inputEvent", str(self))
+	else: Debug.printWarning("No inputEvent", self)
 
 
 func updateUI() -> void:
@@ -44,7 +44,7 @@ func updateUI() -> void:
 
 func deleteEvent() -> void:
 	if not inputAction:
-		Debug.printWarning("Missing inputAction", str(self))
+		Debug.printWarning("Missing inputAction", self)
 		return
 	
 	InputMap.action_erase_event(self.inputAction, self.inputEvent)

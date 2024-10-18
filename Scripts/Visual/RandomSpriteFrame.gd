@@ -40,7 +40,7 @@ func checkSelfType() -> bool:
 	if isSprite or isAnimatedSprite:
 		return true
 	else:
-		Debug.printWarning("Not Sprite2D or AnimatedSprite2D", str(self))
+		Debug.printWarning("Not Sprite2D or AnimatedSprite2D", self)
 		return false
 
 
