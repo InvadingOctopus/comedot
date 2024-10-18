@@ -17,10 +17,16 @@ const inputActionEventUIScene := preload("res://UI/InputActionEventUI.tscn")
 
 
 #region State
-var isAddingNewControl: bool = false
+
+var isAddingNewControl: bool = false:
+	set(newValue):
+		if newValue != isAddingNewControl:
+			isAddingNewControl = newValue
+			updateLabel()
 
 @onready var label: Label = %Label
 @onready var eventsList: Container = $EventsList
+
 #endregion
 
 
@@ -38,8 +44,17 @@ func _ready() -> void:
 
 
 func updateUI() -> void:
-	label.text = self.inputAction.capitalize() # Format the names to be more palatable
+	updateLabel()
 	buildEventsList()
+
+
+func updateLabel() -> void:
+	label.text = self.inputAction.capitalize() # Format the names to be more palatable
+	if isAddingNewControl:
+		label.text += " <Enter New Input>"
+		label.modulate = Color.YELLOW # NOTE: Don't modify the `label_settings.font_color` because that will change ALL labels.
+	else:
+		label.modulate = Color.WHITE
 
 
 # Rebuilds the [InputEvent]s list.
@@ -70,10 +85,11 @@ func receiveNewControl() -> void:
 	isAddingNewControl = true
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void: # TBD: Use `_input()` or `_unhandled_input()`?
 	if not isAddingNewControl: return
 	if event.is_pressed():
-		addNewControl(event)
+		if not event.is_action(&"ui_cancel", true): # Cancel if ESCape on exact_match
+			addNewControl(event)
 		isAddingNewControl = false
 
 
