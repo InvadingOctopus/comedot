@@ -351,7 +351,7 @@ var logFullName: String:
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
-	Debug.printLog(message, "lightGreen", object, "green")
+	Debug.printLog(message, object, "lightGreen", "green")
 
 
 ## Affected by [member shouldShowDebugInfo], but not affected by [member isLoggingEnabled].

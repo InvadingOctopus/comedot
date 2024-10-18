@@ -202,7 +202,7 @@ class CustomLogKeys:
 	const className	= &"classname"
 	const parent	= &"parent"
 
-func printLog(message: String = "", messageColor: String = "", object: Variant = null, objectColor: String = "") -> void:
+func printLog(message: String = "", object: Variant = null, messageColor: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich(str("[color=", objectColor, "]", object, "[/color] [color=", messageColor, "]", message, "[/color]"))
 
@@ -248,7 +248,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
 		var string: String = str(previousValue, " → ", newValue)
-		if not logAsDebug: printLog(string, "dimgray", variableName, "gray")
+		if not logAsDebug: printLog(string, variableName, "dimgray", "gray")
 		else: printDebug(string)
 		return string
 	else:

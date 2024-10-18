@@ -70,4 +70,4 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, "", str(self.logName), "pink")
+	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName), "", "pink")

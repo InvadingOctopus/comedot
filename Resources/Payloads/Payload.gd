@@ -55,5 +55,5 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, "", self.logName, "pink")
+	if shouldShowDebugInfo: Debug.printLog(message, self.logName, "", "pink")
 

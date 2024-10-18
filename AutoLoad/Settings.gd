@@ -122,7 +122,7 @@ class Setting:
 #region Initialization
 
 func _ready() -> void:
-	Debug.printLog("_ready() Loading user preferences from configuration file...", "", "Settings.gd")
+	Debug.printLog("_ready() Loading user preferences from configuration file...", "Settings.gd")
 	loadConfig()
 	loadProjectUserSettings()
 	loadAudioSettings()

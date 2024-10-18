@@ -78,8 +78,8 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		printChange("currentTurn", currentTurn, newValue)
 
 		# Warnings for abnormal behavior
-		if newValue < currentTurn: Debug.printWarning("currentTurn decrementing!", "", self)
-		elif newValue > currentTurn + 1: Debug.printWarning("currentTurn incrementing by more than 1!", "", self)
+		if newValue < currentTurn: Debug.printWarning("currentTurn decrementing!", self)
+		elif newValue > currentTurn + 1: Debug.printWarning("currentTurn incrementing by more than 1!", self)
 
 		currentTurn = newValue
 		showDebugInfo()
@@ -90,7 +90,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		printChange("currentTurnState", currentTurnState, newValue)
 
 		# Warnings for abnormal behavior
-		if newValue > currentTurnState + 1: Debug.printWarning("currentTurnState incrementing by more than 1!", "", self)
+		if newValue > currentTurnState + 1: Debug.printWarning("currentTurnState incrementing by more than 1!", self)
 
 		currentTurnState = newValue
 		showDebugInfo()
@@ -103,8 +103,8 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		printChange("turnsProcessed", turnsProcessed, newValue)
 
 		# Warnings for abnormal behavior
-		if newValue < turnsProcessed: Debug.printWarning("turnsProcessed decrementing!", "", self)
-		elif newValue > turnsProcessed + 1: Debug.printWarning("turnsProcessed incrementing by more than 1!", "", self)
+		if newValue < turnsProcessed: Debug.printWarning("turnsProcessed decrementing!", self)
+		elif newValue > turnsProcessed + 1: Debug.printWarning("turnsProcessed incrementing by more than 1!", self)
 
 		turnsProcessed = newValue
 		showDebugInfo()
@@ -144,7 +144,7 @@ signal didEndTurn
 
 
 func _ready() -> void:
-	if shouldShowDebugInfo: Debug.printLog("_ready()", "white", self)
+	if shouldShowDebugInfo: Debug.printLog("_ready()", self, "white")
 	currentTurnState = TurnBasedState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates
@@ -195,12 +195,12 @@ func dummyTimerFunction() -> void:
 ## The beginning of processing 1 full turn and its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("startTurnProcess() currentTurn: ", currentTurn), "white", self)
+	if shouldShowDebugInfo: Debug.printLog(str("startTurnProcess() currentTurn: ", currentTurn), self, "white")
 
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 
 	if not self.isReadyToStartTurn:
-		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when not isReadyToStartTurn", "", self)
+		if shouldShowDebugInfo: Debug.printWarning("startTurnProcess() called when not isReadyToStartTurn", self)
 		return
 
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
@@ -211,7 +211,7 @@ func startTurnProcess() -> void:
 ## Cycles through all the [enum TurnBasedState]s until the next turn's [constant TurnBasedState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
 	# TODO: A less complex/ambiguous implementation
-	if shouldShowDebugInfo: Debug.printLog("cycleStatesUntilNextTurn()", "", self)
+	if shouldShowDebugInfo: Debug.printLog("cycleStatesUntilNextTurn()", self)
 
 	# If we're already at `turnBegin`, advance the state once.
 	if self.currentTurnState == TurnBasedState.turnBegin:
@@ -231,28 +231,28 @@ func cycleStatesUntilNextTurn() -> void:
 
 
 func onStateTimer_timeout() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer), self)
 	functionToCallOnStateTimer.call()
 	functionToCallOnStateTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
 func processState() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", currentTurnState), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", currentTurnState), self)
 
 	match currentTurnState:
 		# `await` for Entity delays & animations etc.
 		TurnBasedState.turnBegin:	await processTurnBeginSignals()
 		TurnBasedState.turnUpdate:	await processTurnUpdateSignals()
 		TurnBasedState.turnEnd:		await processTurnEndSignals()
-		_:							Debug.printError("Invalid State!", "", self) # TBD: Should this be an Error or Warning?
+		_:							Debug.printError("Invalid State!", self) # TBD: Should this be an Error or Warning?
 
 
 ## Increments the [member currentTurnState], warping to `turnBegin` after the `turnEnd` state.
 ## Stops the [member stateTimer] before returning to `turnBegin`
 ## Returns: The new state
 func incrementState() -> TurnBasedState:
-	if shouldShowDebugInfo: Debug.printLog("incrementState()", "", self)
+	if shouldShowDebugInfo: Debug.printLog("incrementState()", self)
 	if currentTurnState < TurnBasedState.turnEnd:
 		@warning_ignore("int_as_enum_without_cast")
 		currentTurnState += 1 # IGNORE Godot Warning; How else to increment an enum?
@@ -269,7 +269,7 @@ func incrementState() -> TurnBasedState:
 ## Called by [method processState] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", entities: ", turnBasedEntities.size()), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", entities: ", turnBasedEntities.size()), self)
 
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
 	currentTurnState = TurnBasedState.turnBegin
@@ -284,7 +284,7 @@ func processTurnBeginSignals() -> void:
 ## Called by [method processState] and calls [method processTurnUpdate].
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), self)
 
 	currentTurnState = TurnBasedState.turnUpdate
 
@@ -296,7 +296,7 @@ func processTurnUpdateSignals() -> void:
 ## Called by [method processState] and calls [method processTurnEnd].
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("processTurnEndSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("processTurnEndSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()), self)
 
 	currentTurnState = TurnBasedState.turnEnd
 
@@ -320,7 +320,7 @@ func waitForEntityTimer() -> void:
 
 
 func onEntityTimer_timeout() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer), "", self)
+	if shouldShowDebugInfo: Debug.printLog(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer), self)
 	functionToCallOnEntityTimer.call()
 	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
