@@ -103,6 +103,8 @@ func _enter_tree() -> void:
 		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
 		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
 		printLog("􀈅 [b]_enter_tree() → parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
+
+		self.checkRequiredComponents()
 	else:
 		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
