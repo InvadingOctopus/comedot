@@ -8,7 +8,7 @@ extends Node
 # but we cannot elegantly do that because of dynamic properties, signals etc. :()
 
 
-#region Godot Project Settings
+#region Comedot Project Settings
 
 ## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
 static var mainGameScene:		PackedScene
@@ -20,7 +20,7 @@ static var saveFilePath:		StringName = &"user://SaveGame.scn"
 #endregion
 
 
-#region Game-specific Settings / Player Preferences
+#region Player Preferences / Game-specific Settings
 
 # NOTE: Properties will be handled dynamically via the `settingsDictionary` Dictionary and the `_get_property_list()`, `_get()` and `_set()` methods.
 # Dynamic/implicit settings will be saved/loaded via `getSetting()` and `saveSetting()` which may also be called manually.
@@ -31,18 +31,15 @@ var settingsDictionary: Dictionary[StringName, Setting] = {
 	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
 	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
 
-	SettingNames.gravity:		Setting.new(SettingNames.gravity,		SectionNames.projectSettings,	TYPE_FLOAT,	ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity])),
-
 	SettingNames.musicVolume:	Setting.new(SettingNames.musicVolume,	SectionNames.audio,	TYPE_FLOAT,	0.0),
 	SettingNames.sfxVolume:		Setting.new(SettingNames.sfxVolume,		SectionNames.audio,	TYPE_FLOAT,	0.0),
 	}
 
 # Explicit properties for settings with customized behavior
 
-var gravity: int:
-	get: return getSetting(SettingNames.gravity)
-	set(newValue): # Do not save gravity to file
-		ProjectSettings.set_setting(projectSettingsPaths[SettingNames.gravity], newValue)
+var gravity: int: # Not accessed via file. An example of an "abstraction" for a value from [ProjectSettings].
+	get: return    ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity], 980.0)
+	set(newValue): ProjectSettings.set_setting(projectSettingsPaths[SettingNames.gravity], newValue)
 
 #endregion
 
