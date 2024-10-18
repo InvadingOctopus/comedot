@@ -1,15 +1,21 @@
 # Comedot - How To Do Basic Stuff
 
-* 🏠 [Setup Your Main Game Scene](#-your-main-game-scene)
+* 🏠 [Organize Your Project](#-organize-your-project)
 * 👤 [Make a Player Entity](#-make-a-player-entity)
 * 🕹️ [Add Player Control](#%EF%B8%8F-add-player-control-and-movement)
 * ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
 * 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
 
-## 🏠 Your Main Game Scene
+## 🏠 Organize Your Project
 
-❗️ Must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and flags etc.
+1. Create a new git branch for your game (say `game-of-the-year-2069`) in your local repository, and
+
+2. Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
+
+* 💡 You could also use a single `/Comedot/Game/` subfolder for multiple game projects: Create a new git repository in the `/Game/` subfolder, and use multiple git branches for each game. This may help experiment with different ideas while keeping the Comedot framework separate, so that any updates or modifications to the framework may be used for all your games.
+
+❗️ Your main game scene must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and apply global flags etc.
 
 ## 👤 Make a Player Entity
 
