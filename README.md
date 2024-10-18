@@ -57,9 +57,9 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 _Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
 
 1. Create a new `Entity` node: a Node2D/Sprite2D/CharacterBody2D/etc. with the `Entity.gd` script attached.
-2. Add `Component` child nodes to the entity. A component is also a Node/Node2D/Area2D/etc. with a script that `extends` the `Component` class.
+2. Add `Component` child nodes to the entity. A component is also a Node/Area2D/etc. with a script that `extends` the `Component` class.
 3. Modify component parameters in the editor's Inspector.
-4. Save the entity + components group/subtree as a standalone scene to organize it separately from the main scene and quickly create copies of it anywhere.
+4. Save the entity + components group/subtree as a standalone `".tscn"` scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
 
 ⚡️ When you need more game-specific functionality, you can do one of the following, in order of ease → power:
 
