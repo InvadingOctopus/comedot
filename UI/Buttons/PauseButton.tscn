@@ -4,9 +4,9 @@
 
 [node name="PauseButton" type="Button"]
 process_mode = 3
-custom_minimum_size = Vector2(24, 24)
-offset_right = 24.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(18, 18)
+offset_right = 18.0
+offset_bottom = 18.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 0.76, 0.2, 1)

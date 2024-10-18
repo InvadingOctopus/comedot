@@ -15,8 +15,12 @@ func updateState() -> void:
 	
 	# TBD: The Great Conundrum: Should the visual of a toggle-able control represent the CURRENT state or the NEXT state that will happen upon using the control?
 	# i.e. Should the Pause Button show the "PLAY >" icon when it's PAUSED? or should it show the "PAUSED ||" icon?
-	if self.button_pressed: self.text = ">"
-	else: self.text = "||"
+	if self.button_pressed:
+		self.text = ">"
+		self.modulate = Color(0.5, 1, 0.5)
+	else:
+		self.text = "||"
+		self.modulate = Color(1, 1, 0.5)
 
 
 func onToggled(toggled_on: bool) -> void:
