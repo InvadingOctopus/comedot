@@ -21,11 +21,12 @@ var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	resetHistory()
-	connectBackButton()
+	if backButton: connectBackButton()
+	else: Debug.printWarning("Missing backButton", str(self))
 
 
 func connectBackButton() -> void:
-	backButton.pressed.connect(self.onBackButton_pressed)
+	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
 
 
 ## Clears the [member navigationHistory] array and re-adds the first child as the first member.
