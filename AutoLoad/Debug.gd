@@ -204,7 +204,7 @@ class CustomLogKeys:
 
 func printLog(message: String = "", messageColor: String = "", objectName: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	print_rich("[color=" + objectColor + "]" + objectName + "[/color] [color=" + messageColor + "]" + message + "[/color]")
+	print_rich(str("[color=", objectColor, "]", objectName, "[/color] [color=", messageColor, "]", message, "[/color]"))
 
 
 ## Prints a faded message to reduce visual clutter.
@@ -219,19 +219,19 @@ func printDebug(message: String = "", objectName: String = "", _objectColor: Str
 ## Prints the message in bold and a bright color, with empty lines on each side.
 ## For finding important messages quickly in the debug console.
 func printHighlight(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
-	print_rich("\n[indent]􀢒 [b][color=white]" + objectName + " " + message + "[/color][/b]\n")
+	print_rich(str("\n[indent]􀢒 [b][color=white]", objectName, " ", message, "[/color][/b]\n"))
 
 
 func printWarning(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	push_warning("Frame " + str(lastFrameLogged) + " ⚠️ " + objectName + " " + message)
-	print_rich("[indent]􀇿 [color=yellow]" + objectName + " " + message + "[/color]")
+	push_warning(str("Frame ", lastFrameLogged, " ⚠️ ", objectName, " ", message))
+	print_rich(str("[indent]􀇿 [color=yellow]", objectName, " ", message, "[/color]"))
 
 
 ## NOTE: In release builds, if [member Settings.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
 func printError(message: String = "", objectName: String = "", _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	var plainText: String = "Frame " + str(lastFrameLogged) + " ❗️ " + objectName + " " + message
+	var plainText: String = str("Frame ", lastFrameLogged, " ❗️ ", objectName, " ", message)
 	push_error(plainText)
 	printerr(plainText)
 	# Don't print a duplicate line, to reduce clutter.
