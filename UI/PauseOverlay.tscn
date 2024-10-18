@@ -3,8 +3,8 @@
 [ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_jwxdq"]
 [ext_resource type="Script" path="res://UI/PauseOverlay.gd" id="1_sck66"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_k0ue2"]
-[ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/BusVolumeUI.tscn" id="2_ryoqm"]
 [ext_resource type="Script" path="res://Scripts/Visual/CycleColor.gd" id="3_7sumf"]
+[ext_resource type="PackedScene" uid="uid://cysctd14jlutm" path="res://UI/Menus/OptionsUI.tscn" id="5_bo3ty"]
 [ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
 
 [sub_resource type="Theme" id="Theme_xpd01"]
@@ -69,26 +69,8 @@ max_lines_visible = 2
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="VolumeContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CenterContainer"]
+[node name="OptionsUI" parent="MarginContainer/VBoxContainer/CenterContainer" instance=ExtResource("5_bo3ty")]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 46
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer"]
-layout_mode = 2
-
-[node name="SoundVolumeUI" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer/VBoxContainer" instance=ExtResource("2_ryoqm")]
-layout_mode = 2
-busIndex = 1
-busTitle = "SFX"
-settingsKey = &"sfxVolume"
-
-[node name="MusicVolumeUI" parent="MarginContainer/VBoxContainer/CenterContainer/VolumeContainer/VBoxContainer" instance=ExtResource("2_ryoqm")]
-layout_mode = 2
-busTitle = "TUNES"
-settingsKey = &"musicVolume"
 
 [node name="ExtraLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
