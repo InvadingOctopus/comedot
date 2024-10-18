@@ -244,7 +244,7 @@ static func getShapeGlobalBounds(area: Area2D) -> Rect2:
 
 static func getRandomPositionInArea(area: Area2D) -> Vector2:
 
-	var areaBounds := getShapeBoundsInArea(area)
+	var areaBounds: Rect2 = getShapeBoundsInArea(area)
 
 	# Generate a random position within the area.
 
@@ -253,18 +253,15 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 
 	#randomize() # TBD: Do we need this?
 
-	var x := randf_range(areaBounds.position.x, areaBounds.end.x)
-	var y := randf_range(areaBounds.position.y, areaBounds.end.y)
-	var randomPosition := Vector2(x, y)
+	var x: float = randf_range(areaBounds.position.x, areaBounds.end.x)
+	var y: float = randf_range(areaBounds.position.y, areaBounds.end.y)
+	var randomPosition: Vector2 = Vector2(x, y)
 
 	#if shouldVerifyWithinArea: isWithinArea = ... # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
 	#else: isWithinArea = true
 
-	#Debug.printDebug(str(self) + " shapeNode position: " + str(shapeNodePositionInArea) +", shapeBoundingRect: " + str(shapeBoundingRect) + ", random position: " + str(randomSpawnPosition))
-	#Debug.printDebug(str(shapeNodePositionInArea))
-	#Debug.printDebug(str(shapeBoundingRect))
-	#Debug.printDebug(str(shapeNodeTopLeftCorner))
-
+	#Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
+	
 	return randomPosition
 
 #endregion
