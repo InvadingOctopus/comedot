@@ -241,9 +241,9 @@ var logFullName: String:
 	get: return str("􀥭 ", self, ":", self.get_script().get_global_name())
 
 
-func printLog(message: String = "", objectName: String = self.logName) -> void:
+func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
-	Debug.printLog(message, "lightBlue", objectName, "cyan")
+	Debug.printLog(message, "lightBlue", object, "cyan")
 
 
 ## Affected by [member shouldShowDebugInfo], but not affected by [member isLoggingEnabled].
