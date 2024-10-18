@@ -23,7 +23,7 @@ var animatedSprite: AnimatedSprite2D:
 		if not animatedSprite: animatedSprite = parentEntity.findFirstChildOfType(AnimatedSprite2D)
 		return animatedSprite
 
-func getRequiredcomponents() -> Array[Script]:
+func getRequiredComponents()() -> Array[Script]:
 	return [TileBasedPositionComponent]
 
 #endregion

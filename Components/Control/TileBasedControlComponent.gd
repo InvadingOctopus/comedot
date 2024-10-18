@@ -23,7 +23,7 @@ var recentInputVector: Vector2i:
 #endregion
 
 
-func getRequiredcomponents() -> Array[Script]:
+func getRequiredComponents()() -> Array[Script]:
 	return [TileBasedPositionComponent]
 
 

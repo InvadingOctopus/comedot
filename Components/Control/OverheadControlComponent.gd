@@ -17,7 +17,7 @@ extends Component
 #region Dependencies
 @onready var overheadPhysicsComponent: OverheadPhysicsComponent = coComponents.OverheadPhysicsComponent # TBD: Static or dynamic?
 
-func getRequiredcomponents() -> Array[Script]:
+func getRequiredComponents() -> Array[Script]:
 	return [OverheadPhysicsComponent]
 #endregion
 
@@ -34,4 +34,3 @@ func _physics_process(_delta: float) -> void: # TBD: CHECK: Should this be `_phy
 		GlobalInput.Actions.moveRight,
 		GlobalInput.Actions.moveUp,
 		GlobalInput.Actions.moveDown)
-
