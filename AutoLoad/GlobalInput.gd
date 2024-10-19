@@ -69,6 +69,10 @@ signal didDeleteInputEvent(inputAction: StringName, inputEvent: InputEvent) ## E
 #endregion
 
 
+func _ready() -> void:
+	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+
+
 ## Global keyboard shortcuts
 func _input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?

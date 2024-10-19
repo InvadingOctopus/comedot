@@ -83,6 +83,23 @@ func togglePause() -> bool: # NOTE: Cannot be `static` because of `self.get_tree
 #endregion
 
 
+#region Initialization
+
+static func _static_init() -> void:
+	print_rich("[color=WHITE]Global.gd[/color] _static_init()")
+	printInitializationMessage()
+
+
+static func printInitializationMessage() -> void:
+	print_rich("[color=white][b]" + Global.frameworkTitle)
+
+	var projectTitle: String = ProjectSettings.get_setting("application/config/name", "Comedot")
+	if projectTitle.to_upper() != Global.frameworkTitle.to_upper():
+		print_rich("[color=white]Project: " + projectTitle)
+
+#endregion
+
+
 #region Save & Load
 
 ## A very rudimentary implementation of saving the entire game state.

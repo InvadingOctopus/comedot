@@ -46,6 +46,10 @@ signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that an
 #endregion
 
 
+func _ready() -> void:
+	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+
+
 ## Adds a player if it is not already in the [member GameState.players] array, emits the related signals, and returns the new size of the [member players] array.
 func addPlayer(newPlayer: PlayerEntity) -> int:
 	if not newPlayer in self.players:

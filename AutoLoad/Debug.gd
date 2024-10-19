@@ -55,6 +55,7 @@ static var customLog: Array[Dictionary]
 #region Initialization
 
 func _ready() -> void:
+	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
 	initializeLogWindow()
 	initializeDebugWindow()
 	resetLabels()
@@ -104,13 +105,15 @@ func performFrameworkChecks() -> void:
 
 
 func displayInitializationMessage() -> void:
-	# TODO: Get input keys/buttons dynamically
-	var message: String = str("Debug.displayInitializationMessage():\n\
-	F12: Toggle Debug Window\n\
-	See Input Map for more shortcuts")
 
-	print_rich(str("[color=white][b]Comdedot\n", message))
+	# Get the actual input key
+	var debugWindowInput: String = InputMap.action_get_events(GlobalInput.Actions.debugWindow).front().as_text().trim_suffix(" (Physical)")
 
+	var message: String = \
+	debugWindowInput + ": Toggle Debug Window\n" + \
+	" See Input Map for more shortcuts" # Space for indentation to match initial space because of no object title :')
+
+	Debug.printLog(message, "", "", "WHITE")
 	self.addTemporaryLabel(Global.frameworkTitle, message)
 
 #endregion
@@ -136,7 +139,7 @@ func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> 
 	watchList[key] = text
 
 	# Create a temporary timer to remove the key
-	await get_tree().create_timer(duration, false, false, true).timeout
+	await self.get_tree().create_timer(duration, false, false, true).timeout
 	watchList.erase(key)
 
 #endregion
@@ -201,6 +204,7 @@ class CustomLogKeys:
 	const baseScript = &"basescript"
 	const className	= &"classname"
 	const parent	= &"parent"
+
 
 func printLog(message: String = "", object: Variant = null, messageColor: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()

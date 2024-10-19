@@ -144,7 +144,8 @@ signal didEndTurn
 
 
 func _ready() -> void:
-	if shouldShowDebugInfo: Debug.printLog("_ready()", self, "white")
+	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+	
 	currentTurnState = TurnBasedState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates

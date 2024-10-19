@@ -119,7 +119,7 @@ class Setting:
 #region Initialization
 
 func _ready() -> void:
-	Debug.printLog("_ready() Loading user preferences from configuration file...", "Settings.gd")
+	Debug.printLog("_ready(): Loading user preferences from configuration file...", self.get_script().resource_path.get_file(), "", "WHITE")
 	loadConfig()
 	loadProjectUserSettings()
 	loadAudioSettings()
@@ -278,8 +278,8 @@ func saveSettingToFile(section: String, key: String, value: Variant) -> void:
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(message, self)
+	if shouldShowDebugInfo: Debug.printDebug(message, self.get_script().resource_path.get_file())
 
 
 func printWarning(message: String) -> void:
-	Debug.printWarning(message, self)
+	Debug.printWarning(message, self.get_script().resource_path.get_file())
