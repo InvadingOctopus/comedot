@@ -22,7 +22,7 @@ var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
 func _ready() -> void:
 	resetHistory()
 	if backButton: connectBackButton()
-	else: Debug.printWarning("Missing backButton", self)
+	elif shouldShowDebugInfo: Debug.printWarning("Missing backButton", self) # Suppress warning in case there is a different way to close, such as the PauseButton.
 
 
 func connectBackButton() -> void:
