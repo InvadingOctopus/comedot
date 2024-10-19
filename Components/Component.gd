@@ -56,16 +56,17 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func checkRequiredComponents() -> bool:
-	if not parentEntity or parentEntity.components.keys().is_empty(): return true # Nothing to do if there are no other components!
-
-	var haveAllRequirements: bool = true # Start true then make it false if there is any missing requirement.
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
 	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
 
+	if not parentEntity or parentEntity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :()
+	
+	var haveAllRequirements: bool = true # Start `true` then make it `false` if there is any missing requirement.
+	
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
-		if not parentEntity.components.keys().has(requirement):
-			printWarning(str("? Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
+		if not parentEntity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
+			printWarning(str("Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
 			haveAllRequirements = false
 
 	return haveAllRequirements
