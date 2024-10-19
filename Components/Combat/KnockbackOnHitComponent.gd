@@ -1,5 +1,5 @@
 ## Pushes the entity back when a [DamageReceivingComponent] takes damage.
-## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away. 
+## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away.
 ## WARNING: The knockback may not be applied if [member PlatformerMovementParameters.shouldStopInstantlyOnFloor] or [member PlatformerMovementParameters.shouldStopInstantlyInAir] is `true`.
 ## Requirements: [CharacterBodyComponent], [DamageReceivingComponent], AFTER [PlatformerPhysicsComponent]
 
@@ -31,7 +31,7 @@ extends CharacterBodyManipulatingComponentBase
 
 
 func getRequiredComponents() -> Array[Script]:
-	return super.getRequiredComponents() + [DamageReceivingComponent]
+	return [CharacterBodyComponent, DamageReceivingComponent] # Cannot easily join with `super.getRequiredComponents()` because Godot goes dumb and treats it as an untyped Array
 
 
 func _ready() -> void:
