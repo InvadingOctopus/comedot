@@ -17,7 +17,7 @@ config/tags=PackedStringArray("components", "framework", "plugin", "template")
 run/main_scene="res://Scenes/Launch/Logo/LogoSceneIO.tscn"
 config/features=PackedStringArray("4.4")
 run/max_fps=60
-boot_splash/bg_color=Color(0.15, 0.15, 0.25, 1)
+boot_splash/bg_color=Color(0.086, 0.004, 0.2, 1)
 boot_splash/image="res://Assets/Logos/Comedot.png"
 boot_splash/fullsize=false
 config/icon="res://Assets/Icons/Comedot.svg"
@@ -280,7 +280,7 @@ common/physics_interpolation=true
 
 textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_clear_color=Color(0.05, 0.05, 0.1, 1)
+environment/defaults/default_clear_color=Color(0.06, 0.01, 0.12, 1)
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
 viewport/size/always_on_top=false
