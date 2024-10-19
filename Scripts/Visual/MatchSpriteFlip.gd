@@ -1,11 +1,10 @@
-## Flips this node to match the flip of a [Sprite2D] or [AnimatedSprite2D] node.
-## Useful for placing child nodes at front of or behind a sprite, for example.
+## Flips this node's [member Node2D.scale] to match the flip of a [Sprite2D] or [AnimatedSprite2D] node.
+## Useful for placing child nodes at front of or behind a sprite in a platformer game, for example.
 
 #class_name FlipToMatchSprite
 extends Node2D
 
 # TODO: PERFORMANCE: Update only when the flip property changes; not every frame!
-# TODO: Vertical flipping
 # TODO: How to best support both [Sprite2D] & [AnimatedSprite2D]? They're not related by inheritance...
 
 
@@ -21,17 +20,33 @@ extends Node2D
 		if not spriteToMatch: spriteToMatch = self.get_parent() as Sprite2D
 		return spriteToMatch
 
+## The base scale which to multiply by the [member xScalar] and [member yScalar] to flip the axes.
+## If 0, it is initialized to this node's [member Node2D.scale].
+@export var baseScale: Vector2 = Vector2(1, 1)
+
 @export var isEnabled: bool = true
 
 #endregion
 
 
+#region State
+var xScalar: int = 1 ## If the [member Sprite2D.flip_h] is `true`, this is set to -1, and this node's [member Node2D.scale.x] is set to [member baseScale.x] * -1, achieving a horizontal flip.
+var yScalar: int = 1 ## If the [member Sprite2D.flip_v] is `true`, this is set to -1, and this node's [member Node2D.scale.y] is set to [member baseScale.y] * -1, achieving a vertical flip.
+#endregion
+
+
+func _ready() -> void:
+	if is_zero_approx(self.baseScale.x): self.baseScale.x = self.scale.x
+	if is_zero_approx(self.baseScale.y): self.baseScale.y = self.scale.y
+
+
 func _process(_delta: float) -> void:
-	# TODO: flip_v
-	# TODO: A more accurate and reliable implementation
+	# TBD: A more accurate and reliable implementation
 	if not isEnabled or not spriteToMatch: return
 
-	if spriteToMatch.flip_h:
-		self.rotation = PI
-	else:
-		self.rotation = 0
+	xScalar = -1 if spriteToMatch.flip_h else 1
+	yScalar = -1 if spriteToMatch.flip_v else 1
+	
+	self.scale = Vector2(
+		self.baseScale.x * xScalar,
+		self.baseScale.y * yScalar)
