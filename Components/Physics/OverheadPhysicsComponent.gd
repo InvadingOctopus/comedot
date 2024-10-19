@@ -1,5 +1,6 @@
 ## Processes the friction and other physics for overhead-view (i.e. "top-down") movement for the parent [Entity]'s [CharacterBodyComponent].
 ## NOTE: Does NOT handle player control; Input is provided by [OverheadControlComponent] or AI agents.
+## Requirements: BEFORE [CharacterBodyComponent]
 
 class_name OverheadPhysicsComponent
 extends CharacterBodyManipulatingComponentBase
