@@ -7,14 +7,6 @@ extends Container
 # TODO: Implement saving
 
 
-#region Constnats
-# Replacements for certain strings in the text representations of InputEvent control names.
-const textReplacements: Dictionary[String, String] = {
-	"Physical": "Keyboard",
-	}
-#endregion
-
-
 #region Parameters
 @export var inputEvent:  InputEvent
 @export var inputAction: StringName
@@ -38,7 +30,7 @@ func _ready() -> void:
 
 func updateUI() -> void:
 	var eventControlText: String = inputEvent.as_text()
-	eventControlText = Tools.replaceStrings(eventControlText, self.textReplacements)
+	eventControlText = Tools.replaceStrings(eventControlText, GlobalInput.eventTextReplacements)
 	label.text = eventControlText
 
 

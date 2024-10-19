@@ -107,7 +107,7 @@ func performFrameworkChecks() -> void:
 func displayInitializationMessage() -> void:
 
 	# Get the actual input key
-	var debugWindowInput: String = InputMap.action_get_events(GlobalInput.Actions.debugWindow).front().as_text().trim_suffix(" (Physical)")
+	var debugWindowInput: String = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow).front()
 
 	var message: String = \
 	debugWindowInput + ": Toggle Debug Window\n" + \

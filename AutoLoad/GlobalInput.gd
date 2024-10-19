@@ -4,7 +4,7 @@
 extends Node
 
 
-#region Input Action Constants
+#region Input Actions & Events Constants
 
 ## Input event labels.
 ## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each action.
@@ -50,6 +50,12 @@ class Actions:
 	const debugWindow	:= &"debugWindow" ## Toggles the Debug Info Window.
 	const debugTest		:= &"debugTest"   ## Activates [TestMode]
 	const debugBreak	:= &"debugBreak"  ## Causes a debugging breakpoint.
+
+
+## Replacements for certain strings in the text representations of InputEvent control names, such as "Keyboard" instead of "Physical".
+const eventTextReplacements: Dictionary[String, String] = {
+	"Physical": "Keyboard",
+	}
 
 #endregion
 
@@ -128,6 +134,24 @@ func _input(event: InputEvent) -> void:
 
 
 #region Helper Functions
+
+## Returns a list of the textual representation of keys, buttons or other controls specified for an Input Action, such as "Space" for "jump".
+## Trims redundant text such as " (Physical)"
+func getInputEventText(action: StringName) -> Array[String]:
+	var strings: Array[String]
+	for event: InputEvent in InputMap.action_get_events(action):
+		strings.append(event.as_text().trim_suffix(" (Physical)"))
+	return strings
+
+
+## Returns a list of the textual representation of keys, buttons or other controls specified for an Input Action, such as "Space" for "jump".
+## Replaces redundant text such as "(Physical)" with "(Keyboard)" using the [const eventTextReplacements] [Dictionary].
+func getInputEventReplacedText(action: StringName) -> Array[String]:
+	var strings: Array[String]
+	for event: InputEvent in InputMap.action_get_events(action):
+		strings.append(Tools.replaceStrings(event.as_text(), GlobalInput.eventTextReplacements))
+	return strings
+
 
 ## Returns: `true` if [method Input.is_action_just_pressed] or [method Input.is_action_just_released].
 func hasActionTransitioned(action: StringName) -> bool:
