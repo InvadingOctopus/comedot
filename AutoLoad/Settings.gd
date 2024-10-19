@@ -79,7 +79,7 @@ var configFile: ConfigFile:
 		if not configFile: loadConfig()
 		return configFile
 
-var shouldShowDebugInfo: bool = OS.is_debug_build()
+var shouldShowDebugInfo: bool = false # OS.is_debug_build()
 
 #endregion
 
