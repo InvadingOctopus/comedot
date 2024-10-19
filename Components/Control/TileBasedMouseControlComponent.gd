@@ -16,7 +16,7 @@ extends Component
 #region Dependencies
 @onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 
-func getRequiredComponents()() -> Array[Script]:
+func getRequiredComponents() -> Array[Script]:
 	return [TileBasedPositionComponent]
 #endregion
 

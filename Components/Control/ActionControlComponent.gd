@@ -27,7 +27,7 @@ extends Component
 
 @onready var actionsComponent: ActionsComponent = coComponents.ActionsComponent # TBD: Static or dynamic?
 
-func getRequiredComponents()() -> Array[Script]:
+func getRequiredComponents() -> Array[Script]:
 	return [ActionsComponent]
 
 #endregion
