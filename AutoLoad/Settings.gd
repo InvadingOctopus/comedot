@@ -15,7 +15,7 @@ static var mainGameScene:		PackedScene
 
 static var shouldAlertOnError:	bool = OS.is_debug_build() # TODO: Add toggle in Start.gd
 
-static var saveFilePath:		StringName = &"user://SaveGame.scn"
+static var saveFilePath:		StringName = "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "SavedState.scn" # Include game/project name in save filename
 
 #endregion
 
@@ -46,7 +46,7 @@ var gravity: int: # Not accessed via file. An example of an "abstraction" for a 
 
 #region Constants
 
-const configFilePath	:= "user://Settings.cfg"
+var configFilePath: String = "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "Settings.cfg" # Include game/project name in settings filename
 
 ## A static list of names for settings, to prevent typing mistakes.
 class SettingNames:
