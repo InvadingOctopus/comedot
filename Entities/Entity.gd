@@ -153,7 +153,13 @@ func unregisterComponent(componentToRemove: Component) -> void:
 
 #region External Component Management Interface
 
-## Checks the [member Entity.components] dictionary after converting the [param type] to a [StringName] key.
+
+## Checks the [member Entity.components] [Dictionary] for a key matching the [param type] [Script]'s [method Script.get_global_name] `class_name`.
+func hasComponent(type: Script) -> bool:
+	return self.components.keys().has(type.get_global_name())
+
+
+## Checks the [member Entity.components] [Dictionary] after converting the [param type] to a [StringName] key.
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
 func getComponent(type: Script) -> Component:
 	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
