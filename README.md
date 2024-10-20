@@ -4,7 +4,7 @@
 
 ![Godot+Comedot Logo][logo]
 
-The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes which modify other nodes, so you can mix this framework with any other architecture or programming paradigm, even for 2D scenes in a 3D game!
+The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes that modify other nodes, so you can mix this framework with any other architecture or programming paradigm, even for 2D scenes in a 3D game!
 
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and **no backwards compatibility is guaranteed!**
@@ -62,7 +62,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 4. Save the entity + components group/subtree as a standalone scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
 
 > [!TIP]
-> 📜 **Read [HowTo.md][howto] to see how to do common tasks** like player movement and combat.
+> 📜 **Read [HowTo.md][howto] to see how to do common tasks** like player movement and combat or adding entirely new functionality.
 >
 > 💬 For more deets, ping Syntaks.io on Discord.
 
