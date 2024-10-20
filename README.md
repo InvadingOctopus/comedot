@@ -49,7 +49,7 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 
 > [!NOTE]
 > As a simplified definition: 
-> * A "component" is a Godot Node which reacts to events, moves its parent Node, or contains data for other components to use.
+> * A "component" is a Godot Node that reacts to events, moves its parent Node, or contains data for other components to use.
 > * An "entity" is a Node whose children are components.
 
 🧩 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive items or collectible powerups:
@@ -59,15 +59,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 1. Create a new `Entity` node: a Node2D/Sprite2D/CharacterBody2D/etc. with the `Entity.gd` script attached.
 2. Add `Component` child nodes to the entity. A component is also a Node/Area2D/etc. with a script that `extends` the `Component` class.
 3. Modify component parameters in the editor's Inspector.
-4. Save the entity + components group/subtree as a standalone `".tscn"` scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
-
-⚡️ When you need more game-specific functionality, you can do one of the following, in order of ease → power:
-
-* Enable "Editable Children" to modify the sub-nodes of a component, such as a `GunComponent`'s pivot point, or collision shapes and timers. Those modifications will only apply to that one specific instance.
-* Create a new scene which inherits a component's scene, then add new child nodes to it.
-* Make a subclass of a component's script, e.g. `extends DamageComponent` and add your own features on top of the existing functionality. Override any `func` and call `super.funcName()` to run the original code before or after your code.
-* Modify the original scene and script of a component to permanently modify or replace the default functionality. Those modifications will affect all instances of that component.
-* Create your own entirely new components, by creating a new scene and attaching the `Component.gd` script to the root node.
+4. Save the entity + components group/subtree as a standalone scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
 
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do common tasks** like player movement and combat.

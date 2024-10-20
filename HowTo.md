@@ -4,6 +4,7 @@
 * 👤 [Make a Player Entity](#-make-a-player-entity)
 * 🕹️ [Add Player Control](#%EF%B8%8F-add-player-control-and-movement)
 * ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
+* ⚡️ [Add New Functionality](#-add-new-functionality)
 * 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
 
@@ -57,9 +58,23 @@
 
 * 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
 
-## 🧩 Create New Components
+## ⚡️ Add New Functionality
 
-❕ Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall or do a dash, a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets — you must make a new Component:
+When you need more game-specific functionality, you have the following options, in order of ease → power:
+
+* Select a component in your Scene Tree and enable "Editable Children" to modify its internal sub-nodes, such as a `GunComponent`'s pivot point, or collision shapes and timers. Those modifications will only apply to *that one specific instance.*
+
+* Create a new scene which inherits an existing component's scene, then add new child nodes to it, such as additional graphics for a `GunComponent`.
+
+* Make a subclass of a component's script, e.g. `extends DamageComponent` and add your own features on top of the existing functionality. Override any `func` and call `super.funcName()` to run the original code before or after your code.
+
+* Modify the original scene/script of a component to permanently modify or replace the default functionality. Those modifications will affect *all instances* of that component.
+
+* Create your own entirely new components, by creating a new scene and attaching the `Component.gd` script to the root node.
+
+### 🧩 Create New Components
+
+❕ Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
 
 1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **Root Type** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **Root Type** should be `Node`.
 
