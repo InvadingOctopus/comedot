@@ -118,8 +118,8 @@ class Setting:
 
 #region Initialization
 
-func _ready() -> void:
-	Debug.printLog("_ready(): Loading user preferences from configuration file...", self.get_script().resource_path.get_file(), "", "WHITE")
+func _enter_tree() -> void:
+	Debug.printAutoLoadLog("_enter_tree(): Loading user preferences from configuration file…")
 	loadConfig()
 	loadProjectUserSettings()
 	loadAudioSettings()

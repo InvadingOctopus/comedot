@@ -142,9 +142,12 @@ signal didEndTurn
 
 #endregion
 
+func _enter_tree() -> void:
+	Debug.printAutoLoadLog("_enter_tree()")
+
 
 func _ready() -> void:
-	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
 	
 	currentTurnState = TurnBasedState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities

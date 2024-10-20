@@ -46,8 +46,8 @@ signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that an
 #endregion
 
 
-func _ready() -> void:
-	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+func _enter_tree() -> void:
+	Debug.printAutoLoadLog("_enter_tree()")
 
 
 ## Adds a player if it is not already in the [member GameState.players] array, emits the related signals, and returns the new size of the [member players] array.

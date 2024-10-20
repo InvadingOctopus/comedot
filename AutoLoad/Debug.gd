@@ -54,6 +54,10 @@ static var customLog: Array[Dictionary]
 
 #region Initialization
 
+func _enter_tree() -> void:
+	displayInitializationMessage()
+
+
 func _ready() -> void:
 	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
 	initializeLogWindow()
@@ -61,7 +65,6 @@ func _ready() -> void:
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
-	displayInitializationMessage()
 
 
 func initializeLogWindow() -> void:
@@ -105,15 +108,15 @@ func performFrameworkChecks() -> void:
 
 
 func displayInitializationMessage() -> void:
-
 	# Get the actual input key
 	var debugWindowInput: String = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow).front()
 
 	var message: String = \
-	debugWindowInput + ": Toggle Debug Window\n" + \
-	" See Input Map for more shortcuts" # Space for indentation to match initial space because of no object title :')
+		"_enter_tree()\n" + \
+		"\t" + debugWindowInput + ": Toggle Debug Window\n" + \
+		"\tSee Input Map for more shortcuts"
 
-	Debug.printLog(message, "", "", "WHITE")
+	Debug.printAutoLoadLog(message)
 	self.addTemporaryLabel(Global.frameworkTitle, message)
 
 #endregion
@@ -209,6 +212,13 @@ class CustomLogKeys:
 func printLog(message: String = "", object: Variant = null, messageColor: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich(str("[color=", objectColor, "]", object, "[/color] [color=", messageColor, "]", message)) # [/color] not necessary
+
+
+## Prints a log message for an AutoLoad script without using any state variables such as the current frame.
+## Useful for logging entries before the framework is completely ready.
+func printAutoLoadLog(message: String = "") -> void:
+	var caller: String = get_stack()[1].source.get_file()
+	print_rich(str("[color=WHITE]", caller, "[/color] ", message))
 
 
 ## Prints a faded message to reduce visual clutter.

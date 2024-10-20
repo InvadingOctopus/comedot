@@ -36,8 +36,8 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 #endregion
 
 
-func _ready() -> void:
-	print_rich("[color=WHITE]" + self.get_script().resource_path.get_file() + "[/color] _ready()")
+func _enter_tree() -> void:
+	Debug.printAutoLoadLog("_enter_tree()")
 
 
 func showPauseVisuals(isPaused: bool) -> void:

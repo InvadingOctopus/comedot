@@ -33,6 +33,7 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	printLog("_ready()")
 	GameState.addPlayer(self)
 	GameState.playerReady.emit(self)
 
