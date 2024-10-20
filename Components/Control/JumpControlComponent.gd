@@ -1,5 +1,6 @@
-## Handles jumping. Applies velocity when the player provides jump control input.
-## Requirements: Entity with [CharacterBody2D], NOTE: Gravity is handled by [GravityComponent], and friction in air is handled by [PlatformerControlComponent]
+## Handles jumping. Applies velocity when the player inputs the jump control.
+## NOTE: Gravity and friction in air is handled by [PlatformerPhysicsComponent].
+## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
 
 class_name JumpControlComponent
 extends CharacterBodyManipulatingComponentBase

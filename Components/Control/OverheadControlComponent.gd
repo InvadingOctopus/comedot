@@ -1,5 +1,5 @@
 ## Provides player control input to an [OverheadPhysicsComponent].
-## Requirements: BEFORE [OverheadPhysicsComponent]
+## Requirements: BEFORE [OverheadPhysicsComponent] & [CharacterBodyComponent]
 
 class_name OverheadControlComponent
 extends Component

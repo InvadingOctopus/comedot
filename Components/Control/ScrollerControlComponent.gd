@@ -1,6 +1,6 @@
 ## Applies a constant horizontal and/or vertical thrust and maintains a minimum velocity separetly for the X and Y axes.
 ## For games like scrolling shoot-em-ups or running.
-## Requirements: [Characterbody2D], [Camera2D] optional
+## Requirements: BEFORE [CharacterBodyComponent], [Camera2D] optional
 
 class_name ScrollerControlComponent
 extends CharacterBodyManipulatingComponentBase

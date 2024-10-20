@@ -1,11 +1,11 @@
 ## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [PlatformerControlComponent]'s movement.
-## Requirements: AnimatedSprite2D, CharacterBody2D, PlatformerControlComponent (preceding this)
-
+## Requirements: [AnimatedSprite2D], AFTER [PlatformerControlComponent] & [CharacterBodyComponent]
 
 class_name PlatformerAnimationComponent
 extends Component
 
-# TODO: A better name :)
+# TBD: A better name? :)
+
 
 #region Parameters
 @export var idleAnimation: StringName = &"idle"
@@ -14,7 +14,7 @@ extends Component
 @export var fallAnimation: StringName = &"fall"
 
 @export var flipWhenWalkingLeft: bool = true
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 

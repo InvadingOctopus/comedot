@@ -1,7 +1,7 @@
 ## Lets the player move by rotating left or right, and thrust forward, and brake.
 ## Similar to Asteroids; a common control scheme for spaceships or "tank"-like movement.
 ## NOTE: This component is an independent and more advanced alternative to combining [TurningControlComponent] + [ThrustControlComponent], and it does not depend on [PlayerInputComponent].
-## Requirements: [CharacterBody2D]
+## Requirements: BEFORE [CharacterBodyComponent]
 ## @experimental
 
 class_name AsteroidsControlComponent
@@ -85,8 +85,7 @@ func processInput(delta: float) -> void:
 	
 	return
 	
-	# TBD:
-	# Minimum velocity?
+	# TODO: TBD: Minimum velocity?
 
 	if parameters.shouldMaintainMinimumVelocity:
 		if body.velocity.length() < parameters.minimumSpeed:
@@ -105,7 +104,7 @@ func processInput(delta: float) -> void:
 	#Debug.watchList.lastDirection = lastDirection
 
 
-## NOTE: Not implemented
+## TODO: Not implemented
 func processFriction(_delta: float) -> void:
 	pass
 

@@ -1,7 +1,7 @@
 ## Allows the player to rotate a node with left & right input actions.
 ## May be combined with the [ThrustControlComponent] to provide "tank-like" controls, similar to Asteroids.
 ## NOTE: Mutually exclusive with [MouseRotationComponent].
-## Requirements: [PlayerInputComponent]
+## Requirements: AFTER [PlayerInputComponent]
 
 class_name TurningControlComponent
 extends Component
