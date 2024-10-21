@@ -1,4 +1,7 @@
 ## Manages user settings and saves them in a configuration file.
+## You can add a manual list of settings to the [member settingsDictionary],
+## or simply access the configuration file dynamically by typing `Settings.anySetting` etc.
+## and the property will be used as the name of a setting (its "key") to attempt reading/writing from the file.
 
 # class_name Settings
 extends Node
@@ -27,7 +30,7 @@ static var saveFilePath:		StringName = "user://" + ProjectSettings.get_setting("
 # Settings with customized behavior must be added manually as explicit normal properties.
 
 ## A [Dictionary] where the key is the name of a setting and the property via which it will be accessed, and the value is an instance of the [Setting] inner class.
-var settingsDictionary: Dictionary[StringName, Setting] = {
+static var settingsDictionary: Dictionary[StringName, Setting] = {
 	SettingNames.windowWidth:	Setting.new(SettingNames.windowWidth,	SectionNames.projectSettings,	TYPE_INT,	1920),
 	SettingNames.windowHeight:	Setting.new(SettingNames.windowHeight,	SectionNames.projectSettings,	TYPE_INT,	1080),
 
@@ -37,7 +40,7 @@ var settingsDictionary: Dictionary[StringName, Setting] = {
 
 # Explicit properties for settings with customized behavior
 
-var gravity: int: # Not accessed via file. An example of an "abstraction" for a value from [ProjectSettings].
+static var gravity: int: # Not accessed via file. An example of an "abstraction" for a value from [ProjectSettings].
 	get: return    ProjectSettings.get_setting(projectSettingsPaths[SettingNames.gravity], 980.0)
 	set(newValue): ProjectSettings.set_setting(projectSettingsPaths[SettingNames.gravity], newValue)
 
@@ -46,7 +49,7 @@ var gravity: int: # Not accessed via file. An example of an "abstraction" for a 
 
 #region Constants
 
-var configFilePath: String = "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "Settings.cfg" # Include game/project name in settings filename
+static var configFilePath: String = "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "Settings.cfg" # Include game/project name in settings filename
 
 ## A static list of names for settings, to prevent typing mistakes.
 class SettingNames:
@@ -74,12 +77,12 @@ const projectSettingsPaths: Dictionary[StringName, String] = {
 
 #region State
 
-var configFile: ConfigFile:
+static var configFile: ConfigFile:
 	get:
 		if not configFile: loadConfig()
 		return configFile
 
-var shouldShowDebugInfo: bool = false # OS.is_debug_build()
+static var shouldShowDebugInfo: bool = true # OS.is_debug_build()
 
 #endregion
 
@@ -125,17 +128,17 @@ func _enter_tree() -> void:
 	loadAudioSettings()
 
 
-func loadConfig() -> bool:
-	printLog("loadConfig() " + configFilePath)
-	self.configFile = ConfigFile.new()
+static func loadConfig() -> bool:
+	if shouldShowDebugInfo: Debug.printAutoLoadLog("loadConfig(): " + configFilePath)
+	configFile = ConfigFile.new()
 
 	# Load data from the file.
-	var error: Error = configFile.load(self.configFilePath)
+	var error: Error = configFile.load(configFilePath)
 
 	if error == Error.OK:
 		return true
 	else:
-		Debug.printError(str("Error ", error, " — Cannot load settings file: ", self.configFilePath), self)
+		Debug.printError(str("Error ", error, " — Cannot load settings file: ", configFilePath), "Settings.gd")
 		return false
 
 
@@ -157,6 +160,7 @@ func loadAudioSettings() -> void:
 
 ## Dynamic properties
 func _get_property_list() -> Array[Dictionary]:
+	# TODO: Support implicit keys?
 	var propertyDictionaries: Array[Dictionary]
 
 	for propertyName: StringName in settingsDictionary.keys():
@@ -231,8 +235,8 @@ func getSettingFromFile(section: StringName, key: StringName, default: Variant =
 		printWarning("No default specified for setting: " + key)
 
 	var value: Variant = configFile.get_value(section, key, default)
-
-	# Verify that the value retrieved from the config file is the correct type
+	
+	# Verify that the value retrieved from the config file is the correct type.
 	if not validateType(key, value):
 		if default != null: value = default # NOTE: Check for `null` specifically to allow defaults of 0.
 		else: return null
@@ -249,8 +253,9 @@ func validateType(settingName: StringName, value: Variant) -> bool:
 	var setting: Setting = settingsDictionary.get(settingName)
 
 	if not setting:
-		printWarning(str("validateType() No Setting defined with name: " + settingName))
-		return false
+		# NOTE: Allow undefined Settings to be implicitly loaded from file without overriding with `defaultIfUndefined`
+		printWarning(str("validateType() No Setting defined with name: " + settingName + " — Allowing all types"))
+		return true
 
 	var allowedType: Variant.Type = setting.type
 
