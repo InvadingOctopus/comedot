@@ -331,7 +331,7 @@ func onComponentsTree_buttonClicked(item: TreeItem, _column: int, id: int, _mous
 			var newComponentPath: String = createNewComponentOnDisk(item.get_metadata(0))
 			# Add the new component to the Tree
 			if not newComponentPath.is_empty():
-				createComponentTreeItem(newComponentPath, newComponentPath, item) # TODO: Get the shortened name
+				createComponentTreeItem(newComponentPath, newComponentPath.get_file(), item) # TODO: Get the shortened name
 
 		TreeItemButtons.editComponent:
 			editSelectedComponent()
