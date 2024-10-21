@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://3ousmbcfyuac"]
 
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_rqrwr"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_fpdkc"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_fpdkc"]
 [ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_m0kev"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_ogryl"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_qww6u"]

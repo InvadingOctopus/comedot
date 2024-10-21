@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clox863hbl6dx"
-path="res://.godot/imported/Kenney1Bit-Monochrome-Transparent-Packed.png-7f5ce02c5333d370871bec18bdb5373c.ctex"
+uid="uid://2pkst6hcbtlp"
+path="res://.godot/imported/Kenney1Bit-Colored-Transparent.png-4a848605ed3aca925fbd6534203c117c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png"
-dest_files=["res://.godot/imported/Kenney1Bit-Monochrome-Transparent-Packed.png-7f5ce02c5333d370871bec18bdb5373c.ctex"]
+source_file="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png"
+dest_files=["res://.godot/imported/Kenney1Bit-Colored-Transparent.png-4a848605ed3aca925fbd6534203c117c.ctex"]
 
 [params]
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Entities/Entity.gd" id="1_5a21o"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
-[ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent-Packed.png" id="2_gepur"]
+[ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_gepur"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="3_1r4r1"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="3_wtegg"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="4_5bs4y"]

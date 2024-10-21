@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dgk7tlglaif5h"]
 
 [ext_resource type="Script" path="res://Scripts/Visual/RandomModulate.gd" id="1_dchd7"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="2_wt2s4"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_wt2s4"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6utrp"]
 bounce = 0.5

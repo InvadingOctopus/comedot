@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Components/Combat/GunComponent.gd" id="1_q51oq"]
 [ext_resource type="Script" path="res://Resources/Stat.gd" id="2_dmw2s"]
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="2_m76jp"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="3_snrc7"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_snrc7"]
 
 [sub_resource type="Resource" id="Resource_tr7v4"]
 resource_local_to_scene = true

@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" load_steps=13 format=3 uid="uid://hyd7g0kfm3k8"]
 
-[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored-Packed.png" id="1_bojn3"]
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_bojn3"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bojn3"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)

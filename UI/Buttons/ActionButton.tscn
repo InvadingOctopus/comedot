@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cjfhwed5p7b6h"]
 
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent-Packed.png" id="1_uybhw"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_uybhw"]
 [ext_resource type="Script" path="res://UI/Buttons/ActionButton.gd" id="2_5a242"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hnvq4"]
