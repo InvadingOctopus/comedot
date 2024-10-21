@@ -40,9 +40,9 @@ const entityBaseScene			:= "res://Entities/Entity.tscn"
 const entityBaseScript			:= "res://Entities/Entity.gd"
 const entityScriptTemplate		:= "res://Templates/Scripts/Entity/EntityTemplate.gd"
 
-const areaEntityTemplate		:= "res://Templates/Scripts/Entity/AreaEntityTemplate.tscn"
-const bodyEntityTemplate		:= "res://Templates/Scripts/Entity/CharacterBodyEntityTemplate.tscn"
-const spriteEntityTemplate		:= "res://Templates/Scripts/Entity/SpriteEntityTemplate.tscn"
+const areaEntityTemplate		:= "res://Templates/Entities/AreaEntityTemplate.tscn"
+const bodyEntityTemplate		:= "res://Templates/Entities/CharacterBodyEntityTemplate.tscn"
+const spriteEntityTemplate		:= "res://Templates/Entities/SpriteEntityTemplate.tscn"
 
 const componentBaseScene		:= "res://Components/Component.tscn"
 const componentScriptTemplate	:= "res://Templates/Scripts/Component/ComponentTemplate.gd"
