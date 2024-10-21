@@ -7,7 +7,7 @@ extends Entity
 
 #region Shortcuts
 # Quick access to common components
-# NOTE: Not cached, because components may change during runtime. 
+# NOTE: Not cached, because components may change during runtime.
 
 var bodyComponent: CharacterBodyComponent:
 	get: return getComponent(CharacterBodyComponent)
