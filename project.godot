@@ -69,7 +69,6 @@ folder_colors={
 "res://Assets/": "purple",
 "res://AutoLoad/": "orange",
 "res://Components/": "blue",
-"res://Components/Parameters/": "red",
 "res://Entities/": "green",
 "res://Game/": "pink",
 "res://Games/": "orange",
