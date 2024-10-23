@@ -48,7 +48,6 @@ editor_draw_limits = true
 script = ExtResource("4_uf5dw")
 
 [node name="PointLight2D" type="PointLight2D" parent="Camera2D"]
-shadow_enabled = true
 shadow_filter = 1
 shadow_filter_smooth = 4.0
 texture = ExtResource("3_r7qai")
