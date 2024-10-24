@@ -1,4 +1,4 @@
-## Builds a list of [StatLabel]s for all the stats in a [StatsComponent].
+## Builds a list of [StatUI]s for all the stats in a [StatsComponent].
 ## Attach this script to any [Container] [Control] such as a [GridContainer] or [HBoxContainer].
 
 class_name StatsList
@@ -7,28 +7,28 @@ extends Container
 
 #region Parameters
 
-## The [StatsComponent] to build [StatLabel]s from.
+## The [StatsComponent] to build [StatUI]s from.
 ## If `null`, then the [member GameState.players] Player Entity will be searched.
 ## NOTE: Does NOT monitor the addition or removal of Stats at runtime.
 @export var statsComponent: StatsComponent
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
-## Will apply to all [StatLabels].
+## Will apply to all [StatUIs].
 @export var minimumDigits: int = 2
 
 @export var horizontalAlignment: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT ## The aligment for all newly created [Label]s.
 @export var verticalAlignment:	 VerticalAlignment   = VERTICAL_ALIGNMENT_CENTER ## The aligment for all newly created [Label]s
 
 
-@export var shouldUppercase: bool = false ## Make all [StatLabel]s [member Label.uppercase].
-@export var shouldShowText:  bool = true  ## Only affects newly created [StatLabel]s.
-@export var shouldShowIcon:  bool = true  ## Only affects newly created [StatLabel]s.
+@export var shouldUppercase: bool = false ## Make all [StatUI]s [member Label.uppercase].
+@export var shouldShowText:  bool = true  ## Only affects newly created [StatUI]s.
+@export var shouldShowIcon:  bool = true  ## Only affects newly created [StatUI]s.
 
 #endregion
 
 
 #region Dependencies
-const statLabelScene: PackedScene = preload("res://UI/Views/StatLabel.tscn")
+const statLabelScene: PackedScene = preload("res://UI/Views/StatUI.tscn")
 #endregion
 
 
@@ -41,16 +41,16 @@ func _ready() -> void:
 	else: Debug.printWarning("Missing statsComponent", self)
 
 
-## Creates a [StatLabel] for each of the [Stat] in the [member statsComponent].
+## Creates a [StatUI] for each of the [Stat] in the [member statsComponent].
 ## Removes all existing child nodes.
 func buildLabels() -> void:
 	Tools.removeAllChildren(self)
 	for stat in statsComponent.stats:
-		createStatLabel(stat)
+		createStatUI(stat)
 
 
-func createStatLabel(stat: Stat) -> StatLabel:
-	var newLabel: StatLabel = statLabelScene.instantiate()
+func createStatUI(stat: Stat) -> StatUI:
+	var newLabel: StatUI = statLabelScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
 	newLabel.shouldShowText				= self.shouldShowText

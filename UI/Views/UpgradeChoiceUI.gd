@@ -28,7 +28,7 @@ extends Control
 #region State
 
 @onready var costAmountLabel:	Label  = %CostAmountLabel
-@onready var costStatLabel:		Label  = %CostStatLabel
+@onready var costStatUI:		Label  = %CostStatUI
 @onready var upgradeButton:		Button = %UpgradeButton
 
 ## The [UpgradesComponent] to check for the Upgrade's [member Upgrade.requiredUpgrades] and [member Upgrade.mutuallyExclusiveUpgrades].
@@ -74,7 +74,7 @@ func updateUI(_entity: Entity = self.targetEntity) -> void: # The entity argumen
 ## Shows the cost for the Upgrade's current level.
 func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
-	costStatLabel.text = upgrade.costStat.displayName if upgrade.costStat else ""
+	costStatUI.text = upgrade.costStat.displayName if upgrade.costStat else ""
 	costAmountLabel.text = str(upgrade.getCost(self.getLevelToPurchase()))
 
 

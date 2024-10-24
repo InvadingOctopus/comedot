@@ -25,7 +25,7 @@ extends Resource
 
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 
-@export var icon: Texture2D ## An optional image to display in UI elements such as [StatLabel].
+@export var icon: Texture2D ## An optional image to display in UI views such as [StatUI].
 
 #endregion
 

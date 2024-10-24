@@ -1,6 +1,6 @@
 ## A [Label] linked to an [Upgrade] which automatically updates its text when the Upgrade changes.
 
-class_name UpgradeLabel
+class_name UpgradeUI
 extends Label
 
 

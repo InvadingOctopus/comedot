@@ -1,41 +1,41 @@
 [gd_scene load_steps=17 format=3 uid="uid://bdryp1672xdf7"]
 
-[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_76ioq"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_k6mhc"]
-[ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_l7ter"]
-[ext_resource type="Script" path="res://Resources/Stat.gd" id="4_mjt0o"]
-[ext_resource type="Script" path="res://Resources/Action.gd" id="4_nf74m"]
-[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="5_7l7or"]
-[ext_resource type="Resource" uid="uid://hfn0hhrpo6ui" path="res://Tests/Actions/TestActionZoom.tres" id="5_7nov2"]
-[ext_resource type="Script" path="res://UI/Lists/ActionButtonsList.gd" id="6_krrkd"]
-[ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="6_y2hnj"]
-[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_1xgho"]
-[ext_resource type="PackedScene" uid="uid://sh78hf5wicm6" path="res://Components/Gameplay/ActionsComponent.tscn" id="8_0lcoa"]
-[ext_resource type="PackedScene" uid="uid://dkejn1qlbxsa2" path="res://Components/Control/ActionControlComponent.tscn" id="8_gohqm"]
-[ext_resource type="Script" path="res://UI/Lists/StatsList.gd" id="12_11orm"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="12_hwxn7"]
-[ext_resource type="Resource" uid="uid://bryqvy7gb2xaj" path="res://Tests/Actions/TestActionLook.tres" id="12_lngrr"]
-[ext_resource type="PackedScene" uid="uid://c6sthnygmcwpg" path="res://Components/Gameplay/ActionTargetableComponent.tscn" id="14_tuk3h"]
+[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_baond"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_020ow"]
+[ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_c1c8v"]
+[ext_resource type="Script" path="res://Resources/Stat.gd" id="4_tue7k"]
+[ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="5_tl03x"]
+[ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="6_ahkry"]
+[ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_8gufy"]
+[ext_resource type="PackedScene" uid="uid://sh78hf5wicm6" path="res://Components/Gameplay/ActionsComponent.tscn" id="8_fib85"]
+[ext_resource type="Script" path="res://Resources/Action.gd" id="9_0lnki"]
+[ext_resource type="Resource" uid="uid://hfn0hhrpo6ui" path="res://Tests/Actions/TestActionZoom.tres" id="10_faxyp"]
+[ext_resource type="Resource" uid="uid://bryqvy7gb2xaj" path="res://Tests/Actions/TestActionLook.tres" id="11_suttq"]
+[ext_resource type="PackedScene" uid="uid://dkejn1qlbxsa2" path="res://Components/Control/ActionControlComponent.tscn" id="12_jynvc"]
+[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="13_558mi"]
+[ext_resource type="PackedScene" uid="uid://c6sthnygmcwpg" path="res://Components/Gameplay/ActionTargetableComponent.tscn" id="14_1cwln"]
+[ext_resource type="Script" path="res://UI/Lists/StatsList.gd" id="15_lia1s"]
+[ext_resource type="Script" path="res://UI/Lists/ActionButtonsList.gd" id="16_lbcpr"]
 
 [node name="ActionsTest" type="Node2D"]
-script = ExtResource("1_76ioq")
+script = ExtResource("1_baond")
 
-[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_k6mhc")]
+[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_020ow")]
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_l7ter")]
-stats = Array[ExtResource("4_mjt0o")]([ExtResource("5_7l7or"), ExtResource("6_y2hnj"), ExtResource("7_1xgho")])
+[node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_c1c8v")]
+stats = Array[ExtResource("4_tue7k")]([ExtResource("5_tl03x"), ExtResource("6_ahkry"), ExtResource("7_8gufy")])
 
-[node name="ActionsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_0lcoa")]
-actions = Array[ExtResource("4_nf74m")]([ExtResource("5_7nov2"), ExtResource("12_lngrr")])
+[node name="ActionsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_fib85")]
+actions = Array[ExtResource("9_0lnki")]([ExtResource("10_faxyp"), ExtResource("11_suttq")])
 targetingComponentPath = "res://Components/Control/ActionTargetingMouseComponent.tscn"
 shouldShowDebugInfo = true
 
-[node name="ActionControlComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_gohqm")]
+[node name="ActionControlComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("12_jynvc")]
 
-[node name="SpriteEntity" parent="." instance=ExtResource("12_hwxn7")]
+[node name="SpriteEntity" parent="." instance=ExtResource("13_558mi")]
 position = Vector2(72, 56)
 
-[node name="ActionTargetableComponent" parent="SpriteEntity" instance=ExtResource("14_tuk3h")]
+[node name="ActionTargetableComponent" parent="SpriteEntity" instance=ExtResource("14_1cwln")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -46,7 +46,7 @@ theme_override_constants/margin_top = 24
 
 [node name="StatsList" type="GridContainer" parent="CanvasLayer/MarginContainer" node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
-script = ExtResource("12_11orm")
+script = ExtResource("15_lia1s")
 statsComponent = NodePath("../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
 
 [node name="ActionsList" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("entity")]
@@ -56,6 +56,6 @@ anchor_bottom = 1.0
 offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
-script = ExtResource("6_krrkd")
+script = ExtResource("16_lbcpr")
 entity = NodePath("../../PlayerEntityTemplate-OverheadBasic")
 shouldShowDebugInfo = true

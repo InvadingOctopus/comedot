@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://hydpkxd84sfq"]
 
 [ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="1_b10o6"]
-[ext_resource type="Script" path="res://UI/Views/UpgradeLabel.gd" id="2_caaia"]
+[ext_resource type="Script" path="res://UI/Views/UpgradeUI.gd" id="2_caaia"]
 
-[node name="UpgradeLabel" type="Label"]
+[node name="UpgradeUI" type="Label"]
 editor_description = "View for an Upgrade Resource"
 offset_right = 21.0
 offset_bottom = 8.0

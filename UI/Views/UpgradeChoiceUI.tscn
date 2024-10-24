@@ -19,7 +19,7 @@ shouldShowDebugInfo = null
 layout_mode = 2
 size_flags_horizontal = 10
 
-[node name="CostStatLabel" type="Label" parent="HBoxContainer"]
+[node name="CostStatUI" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2

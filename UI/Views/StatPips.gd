@@ -1,9 +1,9 @@
-## A variant of [StatLabel] that shows multiple "pips"/symbols to represent a [Stat]'s [member Stat.value].
+## A variant of [StatUI] that shows multiple "pips"/symbols to represent a [Stat]'s [member Stat.value].
 ## For example, a series of heart symbols to represent the number of a player's lives.
 ## TIP: Optimal for [Stat]s with a small [member Stat.max] number, such as 5-10.
 
 class_name StatPips
-extends StatLabel
+extends StatUI
 
 
 #region Parameters

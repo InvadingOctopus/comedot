@@ -1,7 +1,7 @@
 ## Displays the name and icon of a [NamedResourceBase] and uses the [member NamedResourceBase.description] as the tooltip.
 
 @tool
-class_name NamedResourceLabel
+class_name NamedResourceUI
 extends Container
 
 # TBD: Should it be named "-Label" or "-UI"?

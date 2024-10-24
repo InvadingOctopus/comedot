@@ -1,7 +1,7 @@
-## A variant of a [StatLabel] combined with a [ProgressBar].
+## A variant of a [StatUI] combined with a [ProgressBar].
 
 class_name StatBar
-extends StatLabel
+extends StatUI
 
 # TODO: Constant animation duration, independent of value difference?
 
