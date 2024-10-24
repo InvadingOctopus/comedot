@@ -28,7 +28,12 @@ extends Container
 
 
 #region Dependencies
-const statLabelScene: PackedScene = preload("res://UI/Views/StatUI.tscn")
+
+static var statsUIScene: PackedScene:
+	get:
+		if not statsUIScene: statsUIScene = load("res://UI/Views/StatUI.tscn")
+		return statsUIScene
+
 #endregion
 
 
@@ -50,7 +55,7 @@ func buildLabels() -> void:
 
 
 func createStatUI(stat: Stat) -> StatUI:
-	var newLabel: StatUI = statLabelScene.instantiate()
+	var newLabel: StatUI = statUIScene.instantiate()
 	newLabel.stat = stat
 	newLabel.minimumDigits = self.minimumDigits
 	newLabel.shouldShowText				= self.shouldShowText
