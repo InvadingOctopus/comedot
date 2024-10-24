@@ -19,6 +19,9 @@ var healthComponent: HealthComponent:
 var statsComponent: StatsComponent:
 	get: return self.components.get(&"StatsComponent")
 
+var inventoryComponent: InventoryComponent:
+	get: return self.components.get(&"InventoryComponent")
+
 var actionsComponent: ActionsComponent:
 	get: return self.components.get(&"ActionsComponent")
 
