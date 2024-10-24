@@ -18,7 +18,7 @@ extends InteractionComponent
 
 
 #region State
-var currentModalView: ModalView
+var currentModalUI: ModalUI
 #endregion
 
 
@@ -27,7 +27,7 @@ var currentModalView: ModalView
 
 
 ## NOTE: Subclasses MUST call `super.performInteraction(...)`
-## Returns [member ModalView.lastResult]
+## Returns [member ModalUI.lastResult]
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	
@@ -36,7 +36,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		return false
 		
 	var sceneTree: SceneTree = self.get_tree()
-	var modalView: ModalView = modalScene.instantiate() # Didn't name it `currentModalView` to preserve the beautiful alignment :')
+	var modalView: ModalUI   = modalScene.instantiate()
 	
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	modalView.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -54,7 +54,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	modalView.owner = sceneTree.current_scene # INFO: Necessary for persistence to a [PackedScene] for save/load.
 	modalView.didFinish.connect(self.modalView_didFinish)
 	
-	self.currentModalView = modalView
+	self.currentModalUI = modalView
 	return modalView.lastResult
 
 
@@ -63,7 +63,7 @@ func modalView_didFinish(result: Variant) -> void:
 	
 	var sceneTree: SceneTree = self.get_tree()
 	
-	sceneTree.current_scene.remove_child(currentModalView)
-	currentModalView.queue_free()
+	sceneTree.current_scene.remove_child(currentModalUI)
+	currentModalUI.queue_free()
 	
 	sceneTree.paused = false
