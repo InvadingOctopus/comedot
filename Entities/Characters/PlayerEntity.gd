@@ -8,21 +8,22 @@ extends Entity
 #region Shortcuts
 # Quick access to common components
 # NOTE: Not cached, because components may change during runtime.
+# INFO: Use direct access on Dictionary for better performance instead of `getComponent()`
 
 var bodyComponent: CharacterBodyComponent:
-	get: return getComponent(CharacterBodyComponent)
+	get: return self.components.get(&"CharacterBodyComponent")
 
 var healthComponent: HealthComponent:
-	get: return getComponent(HealthComponent)
+	get: return self.components.get(&"HealthComponent")
 
 var statsComponent: StatsComponent:
-	get: return getComponent(StatsComponent)
+	get: return self.components.get(&"StatsComponent")
 
 var actionsComponent: ActionsComponent:
-	get: return getComponent(ActionsComponent)
+	get: return self.components.get(&"ActionsComponent")
 
 var upgradesComponent: UpgradesComponent:
-	get: return getComponent(UpgradesComponent)
+	get: return self.components.get(&"UpgradesComponent")
 
 #endregion
 
