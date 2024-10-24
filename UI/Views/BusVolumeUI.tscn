@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdj4v68mvmp1u"]
 
-[ext_resource type="Script" path="res://UI/BusVolumeUI.gd" id="1_06fqj"]
+[ext_resource type="Script" path="res://UI/Views/BusVolumeUI.gd" id="1_06fqj"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ior2c"]
 resource_local_to_scene = true

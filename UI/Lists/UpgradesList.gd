@@ -28,7 +28,7 @@ signal didChooseUpgrade(upgrade: Upgrade)
 
 #region Dependencies
 
-const choiceUIScene: PackedScene = preload("res://UI/Buttons/UpgradeChoiceUI.tscn") # TBD: load or preload?
+const choiceUIScene: PackedScene = preload("res://UI/Views/UpgradeChoiceUI.tscn") # TBD: load or preload?
 
 var targetUpgradesComponent: UpgradesComponent:
 	get:

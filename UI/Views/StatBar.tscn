@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c7lv5qv211x8k"]
 
-[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Labels/StatLabel.tscn" id="1_iaydn"]
-[ext_resource type="Script" path="res://UI/Labels/StatBar.gd" id="1_u04ku"]
+[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Views/StatLabel.tscn" id="1_iaydn"]
+[ext_resource type="Script" path="res://UI/Views/StatBar.gd" id="1_u04ku"]
 
 [node name="StatBar" instance=ExtResource("1_iaydn")]
 columns = 3

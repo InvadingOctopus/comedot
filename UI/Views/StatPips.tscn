@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://6wsqxkjc6csy"]
 
-[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Labels/StatLabel.tscn" id="1_bgnbj"]
-[ext_resource type="Script" path="res://UI/Labels/StatPips.gd" id="2_2gygj"]
+[ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Views/StatLabel.tscn" id="1_bgnbj"]
+[ext_resource type="Script" path="res://UI/Views/StatPips.gd" id="2_2gygj"]
 
 [node name="StatPips" instance=ExtResource("1_bgnbj")]
 theme_override_constants/h_separation = 0
