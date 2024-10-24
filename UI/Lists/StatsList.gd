@@ -29,10 +29,10 @@ extends Container
 
 #region Dependencies
 
-static var statsUIScene: PackedScene:
+static var statUIScene: PackedScene:
 	get:
-		if not statsUIScene: statsUIScene = load("res://UI/Views/StatUI.tscn")
-		return statsUIScene
+		if not statUIScene: statUIScene = load("res://UI/Views/StatUI.tscn")
+		return statUIScene
 
 #endregion
 
@@ -55,16 +55,16 @@ func buildLabels() -> void:
 
 
 func createStatUI(stat: Stat) -> StatUI:
-	var newLabel: StatUI = statUIScene.instantiate()
-	newLabel.stat = stat
-	newLabel.minimumDigits = self.minimumDigits
-	newLabel.shouldShowText				= self.shouldShowText
-	newLabel.shouldShowIcon				= self.shouldShowIcon
-	newLabel.shouldUppercase			= self.shouldUppercase
+	var newStatUI: StatUI = statUIScene.instantiate()
+	newStatUI.stat = stat
+	newStatUI.minimumDigits		= self.minimumDigits
+	newStatUI.shouldShowText	= self.shouldShowText
+	newStatUI.shouldShowIcon	= self.shouldShowIcon
+	newStatUI.shouldUppercase	= self.shouldUppercase
 
-	Tools.addChildAndSetOwner(newLabel, self)
-	newLabel.label.horizontal_alignment = self.horizontalAlignment
-	newLabel.label.vertical_alignment   = self.verticalAlignment
+	Tools.addChildAndSetOwner(newStatUI, self)
+	newStatUI.label.horizontal_alignment = self.horizontalAlignment
+	newStatUI.label.vertical_alignment   = self.verticalAlignment
 
-	# newLabel.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
-	return newLabel
+	# newStatUI.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
+	return newStatUI

@@ -1,9 +1,7 @@
-## A [Label] linked to a [Stat] which automatically updates its text when the Stat's value changes.
+## A [Container] with a [Label] and other [Control]s linked to a [Stat] which automatically updates its text when the Stat's value changes.
 
 class_name StatUI
 extends Container
-
-# TBD: Choose a different name since the root node is no longer a Label?
 
 
 #region Parameters
