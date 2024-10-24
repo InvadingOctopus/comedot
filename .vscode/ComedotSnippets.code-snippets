@@ -125,6 +125,17 @@
 		"description": "A property setter which only updates a variable if the new value is different."
 	},
 
+	"Lazy Property": {
+		"prefix": "lazyVar",
+		"body": [
+			"var ${1:lazyProperty}: ${2:PackedScene}:",
+			"\tget:",
+			"\t\tif not ${1:lazyProperty}: ${1:lazyProperty} = ${3:load(\"res://$0Scene.tscn\")}",
+			"\t\treturn ${1:lazyProperty}\n"
+		],
+		"description": "A property which is initialized only when it is accessed."
+	},
+
 	"Signal Connection": {
 		"prefix": "connect",
 		"body": [ 
