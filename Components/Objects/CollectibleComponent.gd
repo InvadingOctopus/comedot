@@ -50,7 +50,7 @@ func onAreaEntered(area: Area2D) -> void:
 ## If the transfer is successful, this [CollectibleComponent] may then remove itself from the scene, or it may choose to enter a cooldown recovery state.
 func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not isEnabled: return false
-	printDebug(str("requestToCollect() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+	printDebug(str("requestToCollect() collectorEntity: ", collectorEntity.logName, ", collectorComponent: ", collectorComponent))
 
 	var isCollectionApproved: bool = checkCollectionConditions(collectorEntity, collectorComponent)
 
@@ -80,7 +80,7 @@ func collect(collectorComponent: CollectorComponent) -> Variant:
 ## Default: `isEnabled`
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	# CHECK: Maybe a better name? :p
-	printDebug(str("checkCollectionConditions() collectorEntity: ", collectorEntity, ", collectorComponent: ", collectorComponent))
+	printDebug(str("checkCollectionConditions() collectorEntity: ", collectorEntity.logName, ", collectorComponent: ", collectorComponent))
 	return isEnabled
 
 
@@ -96,7 +96,7 @@ func checkRemovalConditions() -> bool:
 ## May optionally return any value.
 ## MUST be overridden by subclasses.
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> Variant:
-	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity))
+	printWarning(str("onCollectible_didCollect() must be overridden by a subclass! collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity.logName))
 	return null
 
 #endregion

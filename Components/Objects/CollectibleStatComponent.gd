@@ -17,6 +17,7 @@ extends CollectibleComponent
 
 
 func _ready() -> void:
+	# Override the Payload
 	self.payload = CallablePayload.new()
 	(self.payload as CallablePayload).payloadCallable = self.onCollectible_didCollect
 
@@ -42,7 +43,7 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 	var randomizedModifier: int = getRandomModifier()
 
 	if shouldShowDebugInfo:
-		printLog(str("onCollectible_didCollect() collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity, ", randomizedModifier: ", randomizedModifier))
+		printLog(str("onCollectible_didCollect() collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity.logName, ", randomizedModifier: ", randomizedModifier))
 
 	stat.value += randomizedModifier
 
