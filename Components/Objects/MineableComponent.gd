@@ -1,6 +1,6 @@
 ## A subclass of [InteractionComponent] that contains a [Stat] which is "consumed" with each interaction, limiting the number of interactions. 
 ## May be used for objects such as trees or rocks that may be "mined" by the player,
-## where the [member payload] may be a [NodePayload] that produces another Entity with a [StatCollectibleComponent] for the player to collect game-specific resources.
+## where the [member payload] may be a [NodePayload] that produces another Entity with a [CollectibleStatComponent] for the player to collect game-specific resources.
 
 class_name MineableComponent
 extends InteractionComponent
@@ -30,7 +30,7 @@ extends InteractionComponent
 
 
 #region State
-## The value of the [StatCollectibleComponent] in the [Entity] created by the [payload], if it is a [NodePayload].
+## The value of the [CollectibleStatComponent] in the [Entity] created by the [payload], if it is a [NodePayload].
 ## Equal to the cost that was deducted from [member contents], which will be between [member minimumContentDeduction] and [member maximumContentDeduction].
 var collectibleValue: int
 #endregion
@@ -71,7 +71,7 @@ func deductCost() -> bool:
 
 	if self.contents.value   >= randomCost:
 		self.contents.value  -= randomCost
-		## Remember the value to add to StatCollectibleComponent of the Entity created by the `payload`
+		## Remember the value to add to CollectibleStatComponent of the Entity created by the `payload`
 		self.collectibleValue = randomCost
 		return true	
 
@@ -94,13 +94,13 @@ func onDidPerformInteraction(result: Variant) -> void:
 	# TBD: Apply collectibleValue even if 0?
 
 	if result is Entity:
-		var statCollectibleComponent: StatCollectibleComponent = result.getComponent(StatCollectibleComponent)
+		var statCollectibleComponent: CollectibleStatComponent = result.getComponent(CollectibleStatComponent)
 		if statCollectibleComponent:
 			statCollectibleComponent.statModifierMinimum = self.collectibleValue
 			statCollectibleComponent.statModifierMaximum = self.collectibleValue
 			self.collectibleValue = 0 # Reset the value to avoid subsequent reuse
 		else:
-			printDebug("Entity created by Payload missing StatCollectibleComponent")
+			printDebug("Entity created by Payload missing CollectibleStatComponent")
 	else:
 		printDebug("Result is not an Entity")
 

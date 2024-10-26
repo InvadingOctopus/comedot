@@ -1,6 +1,6 @@
 ## A subclass of [CollectibleComponent] which increments or decrements a [Stat] when collected.
 
-class_name StatCollectibleComponent
+class_name CollectibleStatComponent
 extends CollectibleComponent
 
 
