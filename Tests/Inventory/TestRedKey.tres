@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://g0b8g0pccipy"]
+
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_yeh6f"]
+[ext_resource type="Script" path="res://Resources/InventoryItem.gd" id="2_fxxv2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvfwh"]
+atlas = ExtResource("1_yeh6f")
+region = Rect2(544, 176, 16, 16)
+
+[resource]
+script = ExtResource("2_fxxv2")
+weight = 0.69
+name = &"keyRed"
+displayName = "Red Key"
+description = "A crimson key"
+icon = SubResource("AtlasTexture_bvfwh")

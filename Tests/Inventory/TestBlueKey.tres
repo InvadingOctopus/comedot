@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://b5bjb7ftispv6"]
+
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_qfg62"]
+[ext_resource type="Script" path="res://Resources/InventoryItem.gd" id="2_txntc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvfwh"]
+atlas = ExtResource("1_qfg62")
+region = Rect2(528, 176, 16, 16)
+
+[resource]
+script = ExtResource("2_txntc")
+weight = 0.69
+name = &"keyBlue"
+displayName = "Blue Key"
+description = "An azure key"
+icon = SubResource("AtlasTexture_bvfwh")

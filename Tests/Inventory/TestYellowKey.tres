@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://bjyppdv5f7xa8"]
+
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_kkpmy"]
+[ext_resource type="Script" path="res://Resources/InventoryItem.gd" id="2_h2jcq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvfwh"]
+atlas = ExtResource("1_kkpmy")
+region = Rect2(512, 176, 16, 16)
+
+[resource]
+script = ExtResource("2_h2jcq")
+weight = 0.69
+name = &"keyYellow"
+displayName = "Yellow Key"
+description = "A golden key"
+icon = SubResource("AtlasTexture_bvfwh")
