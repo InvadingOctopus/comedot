@@ -24,7 +24,7 @@ var totalWeight: float
 
 
 #region Signals
-# TBD: Should the signals be emitted per item or for arrays of items only? 
+# TBD: Should the signals be emitted per item or for arrays of items only?
 signal didAddItem(item: InventoryItem)
 signal didRemovetem(item: InventoryItem)
 #endregion
@@ -34,7 +34,7 @@ func _init() -> void:
 	self.recalculateWeight()
 
 
-#region Interface 
+#region Interface
 
 ## Returns a list of the items that were successfully added.
 func addItems(newItems: Array[InventoryItem]) -> Array[InventoryItem]:
@@ -44,14 +44,14 @@ func addItems(newItems: Array[InventoryItem]) -> Array[InventoryItem]:
 
 	for newItem in newItems:
 		if self.addItem(newItem): itemsAdded.append(newItem)
-	
+
 	return itemsAdded
 
 
 ## Adds the new item if the inventory is not full or overloaded.
 func addItem(newItem: InventoryItem) -> bool:
 	if not isEnabled: return false
-	
+
 	if self.items.size() >= self.maximumItems:
 		if shouldShowDebugInfo: printDebug(str("Inventory full (", self.maximumItems, ") — Cannot add: ", newItem.logName))
 		return false
@@ -77,7 +77,7 @@ func removeItems(itemsToRemove: Array[InventoryItem]) -> Array[InventoryItem]:
 
 	for itemToRemove in itemsToRemove:
 		if self.removeItem(itemToRemove): itemsRemoved.append(itemToRemove)
-	
+
 	return itemsRemoved
 
 
@@ -99,8 +99,8 @@ func removeItem(itemToRemove: InventoryItem) -> bool:
 
 func recalculateWeight() -> float:
 	self.totalWeight = 0
-	
-	if not self.items.is_empty(): 
+
+	if not self.items.is_empty():
 		for item in self.items:
 			self.totalWeight += item.weight
 
