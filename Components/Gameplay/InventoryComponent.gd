@@ -12,6 +12,7 @@ extends Component
 @export_range(1, 1000) var maximumItems:  int   = 100 # NOTE: Decrease this value will NOT automatically remove excess items.
 @export_range(1, 1000) var maximumWeight: float = 100 # NOTE: Decrease this value will NOT automatically remove excess items.
 
+@export var shouldPreventDuplicates: bool = false
 @export var isEnabled: bool = true
 
 #endregion
@@ -41,27 +42,30 @@ func addItems(newItems: Array[InventoryItem]) -> Array[InventoryItem]:
 
 	var itemsAdded: Array[InventoryItem]
 
-	for itemToRemove in newItems:
-		if self.addItem(itemToRemove): itemsAdded.append(itemToRemove)
+	for newItem in newItems:
+		if self.addItem(newItem): itemsAdded.append(newItem)
 	
 	return itemsAdded
 
 
 ## Adds the new item if the inventory is not full or overloaded.
-func addItem(itemToRemove: InventoryItem) -> bool:
+func addItem(newItem: InventoryItem) -> bool:
 	if not isEnabled: return false
 	
 	if self.items.size() >= self.maximumItems:
-		if shouldShowDebugInfo: printDebug(str("Inventory full (", self.maximumItems, ") — Cannot add: ", itemToRemove.logName))
+		if shouldShowDebugInfo: printDebug(str("Inventory full (", self.maximumItems, ") — Cannot add: ", newItem.logName))
 		return false
-	elif self.totalWeight + itemToRemove.weight > self.maximumWeight:
-		if shouldShowDebugInfo: printDebug(str("Inventory overloaded (", self.maximumWeight, ") — Cannot add: ", itemToRemove.logName))
+	elif self.totalWeight + newItem.weight > self.maximumWeight:
+		if shouldShowDebugInfo: printDebug(str("Inventory overloaded (", self.maximumWeight, ") — Cannot add: ", newItem.logName))
+		return false
+	elif shouldPreventDuplicates and self.items.has(newItem):
+		if shouldShowDebugInfo: printDebug(str("shouldPreventDuplicates and item already in inventory: ", newItem.logName))
 		return false
 	else:
-		self.items.append(itemToRemove)
-		self.totalWeight += itemToRemove.weight
-		if shouldShowDebugInfo: printDebug(str("Added: ", itemToRemove.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
-		self.didAddItem.emit(itemToRemove)
+		self.items.append(newItem)
+		self.totalWeight += newItem.weight
+		if shouldShowDebugInfo: printDebug(str("Added: ", newItem.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
+		self.didAddItem.emit(newItem)
 		return true
 
 
