@@ -28,7 +28,7 @@ func getRandomModifier() -> int:
 	return randi_range(statModifierMinimum, statModifierMaximum) if statModifierMinimum != statModifierMaximum else statModifierMaximum
 
 
-## Prevent collection if `preventCollectionIfStatIsMax` and the Stat is already at its [member Stat.max].
+## Prevents collection if `preventCollectionIfStatIsMax` and the Stat is already at its [member Stat.max].
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not super.checkCollectionConditions(collectorEntity, collectorComponent): return false
 	if preventCollectionIfStatIsMax and stat.value >= stat.max: 
