@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnxkdh3cul0q3"]
+
+[ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/NamedResourceUI.tscn" id="1_g7y03"]
+[ext_resource type="Script" path="res://UI/Views/InventoryItemUI.gd" id="2_ihf84"]
+
+[node name="InventoryItemUI" instance=ExtResource("1_g7y03")]
+offset_right = 16.0
+offset_bottom = 16.0
+script = ExtResource("2_ihf84")
+inventoryItem = null
+shouldShowText = false
+
+[node name="Label" parent="." index="1"]
+visible = false
