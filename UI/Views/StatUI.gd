@@ -22,12 +22,6 @@ extends Container
 ## If greater than 1, then smaller values will be padded with leading 0s.
 @export var minimumDigits:   int = 2
 
-@export var shouldUppercase: bool = false:
-	set(newValue):
-		if newValue != shouldUppercase:
-			shouldUppercase = newValue
-			if label: label.uppercase = shouldUppercase
-
 @export var shouldAnimate:   bool = true
 
 ## Affects the prefix and suffix labels, not the actual Stat value numbers.
@@ -35,14 +29,20 @@ extends Container
 	set(newValue):
 		if newValue != shouldShowText:
 			shouldShowText = newValue
-			if label: updateStatText(false) # Update the label, without animation
+			if label: updateText(false) # Update the label, without animation
 
 ## Affects the actual Stat value numbers, NOT the prefix and suffix labels. Useful if showing multiple symbols/icons or "pips" to represent the value, as with [StatPips].
 @export var shouldShowValue: bool = true:
 	set(newValue):
 		if newValue != shouldShowValue:
 			shouldShowValue = newValue
-			if label: updateStatText(false) # Update the label, without animation
+			if label: updateText(false) # Update the label, without animation
+
+@export var shouldUppercase: bool = false:
+	set(newValue):
+		if newValue != shouldUppercase:
+			shouldUppercase = newValue
+			if label: label.uppercase = shouldUppercase
 
 @export var shouldShowIcon:  bool = true:
 	set(newValue):
@@ -91,21 +91,21 @@ func arrangeControls() -> void:
 
 
 func onStat_changed() -> void:
-	updateStatText()
+	updateText()
 
 
 func updateUI(animate: bool = self.shouldAnimate) -> void:
-	updateIcon()
-	updateStatText(animate)
+	updateText(animate)
+	updateIcon(animate)
 	self.tooltip_text = stat.description
 
 
 ## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value].
-func updateIcon() -> void:
+func updateIcon(_animate: bool = self.shouldAnimate) -> void:
 	icon.texture = stat.icon
 
 
-func updateStatText(animate: bool = self.shouldAnimate) -> void:
+func updateText(animate: bool = self.shouldAnimate) -> void:
 	self.label.text = self.buildLabelText()
 	if animate: Animations.animateNumberLabel(self.label, stat.value, stat.previousValue)
 
