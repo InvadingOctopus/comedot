@@ -4,6 +4,8 @@
 class_name NamedResourceBase
 extends Resource
 
+# TBD: A better name? ViewableResource? :')
+
 
 #region Common Parameters
 

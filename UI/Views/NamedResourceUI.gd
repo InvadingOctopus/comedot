@@ -6,6 +6,7 @@ class_name NamedResourceUI
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')
+# TBD: A better name? ViewableResource? :')
 
 
 #region Parameters
