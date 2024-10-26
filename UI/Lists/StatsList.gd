@@ -66,5 +66,5 @@ func createStatUI(stat: Stat) -> StatUI:
 	newStatUI.label.horizontal_alignment = self.horizontalAlignment
 	newStatUI.label.vertical_alignment   = self.verticalAlignment
 
-	# newStatUI.updateStatText() # Is this necessary? Won't it be called on the label's _ready()?
+	# newStatUI.updateText() # Is this necessary? Won't it be called on the label's _ready()?
 	return newStatUI

@@ -41,7 +41,7 @@ func arrangeControls() -> void:
 
 
 func onStat_changed() -> void:
-	updateStatText()
+	updateText()
 	updatePips()
 
 
