@@ -64,7 +64,7 @@ func updatePips(_animate: bool = self.shouldAnimate) -> void:
 	# TODO: animate
 
 	# The remaining pips
-	
+
 	var value: int = stat.value
 
 	if symbol != null and value > 0:
@@ -73,7 +73,7 @@ func updatePips(_animate: bool = self.shouldAnimate) -> void:
 		availablePips.visible = true
 	else:
 		availablePips.visible = false
-	
+
 	# The depleted pips
 
 	var depletedValue: int = (stat.max - value)
