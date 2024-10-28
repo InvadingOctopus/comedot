@@ -5,9 +5,9 @@
 class_name ComponentsDock
 extends Panel
 
-# TODO: Allow naming of new Components
-# TODO: Add option to duplicate an existing Component?
 # TODO: More robust scanning; not just filenames ending in "Component" :')
+# TODO: Search field
+# TODO: Add option to duplicate an existing Component?
 
 
 enum EntityTypes {
@@ -61,9 +61,9 @@ const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's backgroun
 const createNewItemButtonColor	:= Color.LAWN_GREEN
 const editComponentButtonColor	:= categoryColor
 
-const defaultHelpLabelText := "Select an Entity node in the Scene and double-click a Component from this list to add it to the entity."
+const defaultHelpLabelText := "Select an Entity node in the scene to add Components."
 
-const editComponentButtonTooltipPrefix := "Open the original source scene of "
+const editComponentButtonTooltipPrefix := "Open the source scene of "
 
 @export var shouldShowDebugInfo: bool = false
 
@@ -73,7 +73,7 @@ const editComponentButtonTooltipPrefix := "Open the original source scene of "
 #region State
 
 var selectedComponentRow: TreeItem
-var selectedComponentCateogry: TreeItem
+var selectedComponentCategory: TreeItem
 
 var selectedComponentName: String:
 	get: return selectedComponentRow.get_text(0) if selectedComponentRow else ""
@@ -82,7 +82,12 @@ var selectedComponentPath: String:
 	get: return selectedComponentRow.get_metadata(0) if selectedComponentRow else ""
 
 var selectedComponentCategoryName: String:
-	get: return selectedComponentCateogry.get_text(0) if selectedComponentCateogry else ""
+	get: return selectedComponentCategory.get_text(0) if selectedComponentCategory else ""
+
+# TBD: A better way to handle Dialog state?
+var newComponentDialog_chosenFolderPath:	String
+var newComponentDialog_chosenComponentName:	String
+var newComponentDialog_parentTreeItem:		TreeItem
 
 # var isMouseInLogo: bool # TBD: For any future animations
 
@@ -105,6 +110,9 @@ var fileSystem: EditorFileSystem:
 var inspector:  EditorInspector
 
 @onready var componentsTree: Tree = %ComponentsTree
+@onready var newComponentDialog: ConfirmationDialog = $NewComponentDialog
+@onready var newComponentNameTextBox: LineEdit = %NewComponentNameTextBox
+@onready var newComponentFolderLabel: Label	   = %NewComponentFolderLabel
 
 #endregion
 
@@ -130,14 +138,14 @@ func printError(message: String) -> void:
 func setupUI() -> void:
 	%DebugReloadButton.visible = shouldShowDebugInfo
 	%AddEntityMenuButton.modulate  = createNewItemButtonColor
-
+	$NewComponentDialog.register_text_enter(newComponentNameTextBox)
 	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
 
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 
 	# NOTE: The first access to the `res://Components` sometimes seems to fail,
 	# so maybe we need to let the Godot Editor have some time to finish scanning the file system?
-	printLog("Waiting to scan the Components folder...")
+	printLog("Waiting to scan the Components folder…")
 	await get_tree().create_timer(1).timeout
 	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
 
@@ -198,6 +206,14 @@ func buildComponentsDirectory() -> void:
 		printLog("If the list is empty, try the \"Rescan Folders\" button or check the \"\\Components\\\" subfolder of this Godot project.")
 
 
+## NOT IMPLEMENTED
+## @experimental
+func findCategoryTreeItemForComponentPath(componentPath: String) -> TreeItem:
+	# TODO: Implement
+	if componentPath.is_empty(): return null
+	return null
+
+
 func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeItem:
 	var categoryRow:  TreeItem = componentsTree.create_item()
 	var categoryName: String   = categoryFolder.get_name()
@@ -215,31 +231,38 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryRow.set_expand_right(0, true)
 	categoryRow.set_selectable(0, false)
 
-	# TODO: Add a button
+	# Add a button for creating a new component
 	var buttonTooltip := "Create a new Component in the " + categoryName + " folder."
 	categoryRow.add_button(1, createComponentIcon, 0, false, buttonTooltip)
 	categoryRow.set_text(1, "+")
-	categoryRow.set_tooltip_text(1, buttonTooltip)
 	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	categoryRow.set_expand_right(1, false)
+	categoryRow.set_tooltip_text(1, buttonTooltip)
 	categoryRow.set_custom_color(1, createNewItemButtonColor)
 	categoryRow.set_button_color(1, 0, createNewItemButtonColor)
 	categoryRow.set_custom_bg_color(1, categoryBackgroundColor)
-	categoryRow.set_expand_right(1, false)
 
 	return categoryRow
 
 
 func createComponentTreeItem(componentPath: String, componentName: String, categoryTreeItem: TreeItem) -> TreeItem:
-	var componentItem: TreeItem = componentsTree.create_item(categoryTreeItem)
+	# Sanitize the component name
+	# TODO: Get only the last dot "."
+	var startOfExtension: int = componentName.findn(".")
+	if startOfExtension >= 1: componentName = componentName.substr(0, startOfExtension)
+	
+	# Create the Tree row item
+	var componentItem: TreeItem = componentsTree.create_item(categoryTreeItem) # CHECK: ? Does `create_item()` return existing items if they're already in the Tree?
 	componentItem.set_text(0, componentName)
 	componentItem.set_metadata(0, componentPath)
 
 	# Customize the Tree row
-	# NOTE: PERFORMANE: Adding icons here seems to slow things down
-	#componentItem.set_icon(1, componentIcon)
-	#componentItem.set_icon_modulate(1, Color.CORNFLOWER_BLUE) # I am Jack's buggy code :')
-	#componentItem.set_icon_max_width(1, 32)
+	# NOTE: PERFORMANCE: Adding icons here seems to slow things down
+		#componentItem.set_icon(1, componentIcon)
+		#componentItem.set_icon_modulate(1, Color.CORNFLOWER_BLUE) # I am Jack's buggy code :')
+		#componentItem.set_icon_max_width(1, 32)
 	componentItem.set_expand_right(0, true)
+	componentItem.set_text_overrun_behavior(0, TextServer.OVERRUN_NO_TRIMMING) # Prevent the damn 2nd column from obscuring the component names.
 
 	return componentItem
 
@@ -250,12 +273,13 @@ func createComponentRowButtons(componentRow: TreeItem) -> void:
 
 	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
 	componentRow.set_text(1, "Edit")
-	componentRow.set_tooltip_text(1, %EditComponentButton.tooltip_text)
 	componentRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	componentRow.set_text_overrun_behavior(1, TextServer.OVERRUN_TRIM_ELLIPSIS)
+	componentRow.set_expand_right(1, false)
+	componentRow.set_tooltip_text(1, %EditComponentButton.tooltip_text)
 	componentRow.set_custom_color(1, editComponentButtonColor)
 	componentRow.set_button_color(1, 0, editComponentButtonColor)
-	#componentRow.set_custom_bg_color(1, componentBackgroundColor) # Makes it different from the selected row background
-	componentRow.set_expand_right(1, false)
+	#componentRow.set_custom_bg_color(1, componentBackgroundColor) # DISABLED: Makes it different from the selected row background
 
 
 func removeComponentRowButtons(componentRow: TreeItem) -> void:
@@ -269,7 +293,6 @@ func removeComponentRowButtons(componentRow: TreeItem) -> void:
 
 #region UI Events
 
-
 func onComponentsTree_itemSelected() -> void:
 	var selection: TreeItem = componentsTree.get_selected()
 
@@ -278,9 +301,8 @@ func onComponentsTree_itemSelected() -> void:
 	# Remove the buttons from any previous selection
 	removeComponentRowButtons(selectedComponentRow)
 
-
 	selectedComponentRow = null
-	selectedComponentCateogry = null
+	selectedComponentCategory = null
 	%EditComponentButton.disabled = true
 	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its original source scene."
 
@@ -288,11 +310,10 @@ func onComponentsTree_itemSelected() -> void:
 
 	if selection.get_text(0).to_lower().ends_with("component"): # TODO: A less crude way of checking for component rows :')
 		selectedComponentRow = selection
-		selectedComponentCateogry = selection.get_parent()
+		selectedComponentCategory = selection.get_parent()
 		%EditComponentButton.disabled = false
 		%EditComponentButton.tooltip_text = editComponentButtonTooltipPrefix + selectedComponentName
 		createComponentRowButtons(selectedComponentRow)
-
 
 
 ## Called when a row is double-clicked
@@ -328,13 +349,43 @@ func onComponentsTree_buttonClicked(item: TreeItem, _column: int, id: int, _mous
 	# NOTE: Check the button ID because this signal may be emitted by different buttons in different rows
 	match id:
 		TreeItemButtons.createNewComponent:
-			var newComponentPath: String = createNewComponentOnDisk(item.get_metadata(0))
-			# Add the new component to the Tree
-			if not newComponentPath.is_empty():
-				createComponentTreeItem(newComponentPath, newComponentPath.get_file(), item) # TODO: Get the shortened name
-
+			showNewComponentDialog(item.get_metadata(0), "NewComponent", item)
+		
 		TreeItemButtons.editComponent:
 			editSelectedComponent()
+
+
+func showNewComponentDialog(initialFolder: String, initialName: String = "NewComponent", parentTreeItem: TreeItem = null) -> void:
+	# Reset the choices
+	newComponentDialog_chosenFolderPath = initialFolder
+	newComponentDialog_chosenComponentName = ""
+	newComponentDialog_parentTreeItem = parentTreeItem
+
+	newComponentFolderLabel.text = "Folder: " + initialFolder
+	newComponentNameTextBox.text = initialName
+	
+	newComponentDialog.popup_centered()
+	newComponentNameTextBox.grab_focus()
+	
+	# Select the text before "Component" in the name
+	var startOfComponentWord: int = newComponentNameTextBox.text.findn("Component")
+	if startOfComponentWord >= 1: newComponentNameTextBox.select(0, startOfComponentWord)
+	else: newComponentNameTextBox.select_all()
+
+
+func onNewComponentDialog_confirmed() -> void:
+	# Apply the new choices (the folder choide is not modifiable)
+	newComponentDialog_chosenComponentName = newComponentNameTextBox.text
+
+	if shouldShowDebugInfo: 
+		printLog(str("onNewComponentDialog_confirmed() newComponentDialog_chosenFolderPath: ", newComponentDialog_chosenFolderPath, ", newComponentDialog_chosenComponentName: ", newComponentDialog_chosenComponentName))
+
+	# Create the new component
+	var newComponentPath: String = createNewComponentOnDisk(newComponentDialog_chosenFolderPath, newComponentDialog_chosenComponentName)
+	
+	# Add the new component to the Tree UI
+	if newComponentDialog_parentTreeItem and not newComponentPath.is_empty():
+		createComponentTreeItem(newComponentPath, newComponentPath.get_file(), newComponentDialog_parentTreeItem)
 
 
 func onComponentsTree_itemEdited() -> void:
@@ -427,100 +478,6 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 		newEntity.get_parent().set_editable_instance(newEntity, true)
 
 
-## Calls [method createNewComponentOnDisk] on the first selected folder in the Godot Editor's FileSystem Dock, if any.
-func createNewComponentInSelectedFolder() -> String:
-	var selectedPaths: PackedStringArray = EditorInterface.get_selected_paths()	
-	
-	if selectedPaths.is_empty():
-		printLog("No folder selected.")
-		return ""
-	
-	var selectedFolderPath: String
-	
-	for path in selectedPaths:
-		if DirAccess.dir_exists_absolute(path):
-			selectedFolderPath = path
-			break
-
-	if selectedFolderPath.is_empty():
-		printLog("No folder selected.")
-		return ""
-
-	return createNewComponentOnDisk(selectedFolderPath)
-
-
-func createNewComponentOnDisk(destinationFolderPath: String) -> String:
-	# TODO: More reliable file/path naming and operations with no room for errors. File system work is nasty business!
-	# TODO: A dialog for naming and more settings
-
-	# Validate
-
-	if destinationFolderPath.is_empty(): return ""
-
-	printLog("createNewComponentOnDisk() destinationFolderPath: " + destinationFolderPath)
-
-	if not DirAccess.dir_exists_absolute(destinationFolderPath):
-		printError("Invalid path")
-		return ""
-
-	if not FileAccess.file_exists(componentBaseScene):
-		printError("Missing base Component Scene: " + componentBaseScene)
-		return ""
-
-	# Get the directory manager & set the paths
-	var _componentsFolder: DirAccess = DirAccess.open(componentsRootPath)
-	var newComponentName: String = "NewComponent" # TODO: Unique name
-	var newComponentPath: String = destinationFolderPath + newComponentName + ".tscn"
-	var newScriptPath:    String = destinationFolderPath + newComponentName + ".gd"
-
-	# ALERT: MAKE SURE NOT TO OVERWRITE ANY EXISTING FILES! Or there may be doom!
-	if not ensureFileDoesNotExist(newComponentPath) \
-	or not ensureFileDoesNotExist(newScriptPath):
-		# Error messages logged by other functions
-		return ""
-
-	# Create a new vanilla Component and save a copy of it at the new destination.
-	# NOTE: Using the EditorInterface to save a new instance instead of copying the scene file prevents duplicate UID conflicts.
-	EditorInterface.open_scene_from_path(componentBaseScene)
-	EditorInterface.save_scene_as(newComponentPath)
-
-	# Verify that the new scene file exists.
-	if not FileAccess.file_exists(newComponentPath):
-		printError(str("Could not save a copy of componentBaseScene: ", componentBaseScene, " at: ", newComponentPath))
-		return ""
-	
-	# Copy the script template
-	if not copyFile(componentScriptTemplate, newScriptPath):
-		# Error messages logged by other functions
-		return ""
-
-	# TODO: TBD: The Editor/UI operations should be in the calling function
-
-	# Open it in the Editor
-	EditorInterface.select_file(newComponentPath)
-	EditorInterface.open_scene_from_path(newComponentPath)
-
-	# Attach the new script file
-	var rootNode:  Node = EditorInterface.get_edited_scene_root()
-	var newScript: Script = load(newScriptPath)
-	rootNode.set_script(newScript)
-	EditorInterface.set_script(newScript)
-
-	# Save the scene with the new script
-	EditorInterface.save_scene()
-
-	# Register the newly-created files with Godot
-	fileSystem.update_file(newScriptPath)
-	fileSystem.update_file(newComponentPath)
-	fileSystem.scan() # TBD: Is this necessary?
-	# GODOT: Calling `EditorFileSystem.reimport_files()` raises error: "BUG: File queued for import, but can't be imported, importer for type '' not found."
-
-	# Edit the new script
-	EditorInterface.edit_script(newScript)
-
-	return newComponentPath
-
-
 func addComponentToSelectedNode(componentPath: String) -> void:
 	if componentPath.is_empty(): return
 	if shouldShowDebugInfo: printLog("addComponentToSelectedNode() " + componentPath)
@@ -568,6 +525,131 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
+
+#endregion
+
+
+#region Component Editing
+
+## Calls [method createNewComponentOnDisk] on the first selected folder in the Godot Editor's FileSystem Dock, if any.
+## Returns: The selected folder path.
+func createNewComponentInSelectedFolder() -> String:
+	var selectedPaths: PackedStringArray = EditorInterface.get_selected_paths()	
+	
+	if selectedPaths.is_empty():
+		printLog("No folder selected.")
+		return ""
+	
+	var selectedFolderPath: String
+	
+	for path in selectedPaths:
+		if DirAccess.dir_exists_absolute(path):
+			selectedFolderPath = path
+			break
+
+	if selectedFolderPath.is_empty():
+		printLog("No folder selected.")
+		return ""
+	
+	showNewComponentDialog(selectedFolderPath)
+	
+	return selectedFolderPath
+
+
+func validateNewComponentPath(folderPath: String, componentName: String) -> bool:
+	# TODO: Trim whitespace
+	if folderPath.is_empty() or componentName.is_empty(): return false
+	elif not DirAccess.dir_exists_absolute(folderPath):
+		printError("folderPath does not exist: " + folderPath)
+		return false
+	elif not folderPath.begins_with("res://"):
+		printError("folderPath must begin with \"res://\": " + folderPath)
+		return false
+	elif componentName.contains(".") or componentName.contains(" ") or not componentName.is_valid_filename():
+		printError("Invalid componentName — Must be alphanumeric with no space or special characters: " + componentName)
+		return false
+	else: return true
+
+
+## Returns the path of the new component's ".tscn" scene file if successful.
+func createNewComponentOnDisk(destinationFolderPath: String, newComponentName: String = "NewComponent") -> String:
+	# TODO: More reliable file/path naming and operations with no room for errors. File system work is nasty business!
+	# TBD:  Enforce valid & unique name
+
+	printLog(str("createNewComponentOnDisk() destinationFolderPath: ", destinationFolderPath, ", newComponentName: ", newComponentName))
+	
+	# Validate
+
+	if not validateNewComponentPath(destinationFolderPath, newComponentName): return "" # Messages will be logged by validation function.
+	
+	if not FileAccess.file_exists(componentBaseScene):
+		printError("Missing base Component Scene: " + componentBaseScene)
+		return ""
+
+	# Get the directory manager & set the paths
+	var newScenePath:		String = destinationFolderPath + newComponentName + ".tscn"
+	var newScriptPath:		String = destinationFolderPath + newComponentName + ".gd"
+
+	# ALERT: MAKE SURE NOT TO OVERWRITE ANY EXISTING FILES! Or there may be doom!
+	if not ensureFileDoesNotExist(newScenePath) \
+	or not ensureFileDoesNotExist(newScriptPath):
+		# Error messages logged by other functions
+		return ""
+
+	# Create a new vanilla Component and save a copy of it at the new destination.
+	# NOTE: Using the EditorInterface to save a new instance instead of copying the scene file prevents duplicate UID conflicts.
+	EditorInterface.open_scene_from_path(componentBaseScene)
+	EditorInterface.save_scene_as(newScenePath)
+
+	# Verify that the new scene file exists.
+	if not FileAccess.file_exists(newScenePath):
+		printError(str("Could not save a copy of componentBaseScene: ", componentBaseScene, " at: ", newScenePath))
+		return ""
+	
+	# Copy the script template
+	if not copyFile(componentScriptTemplate, newScriptPath):
+		# Error messages logged by other functions
+		return ""
+
+	# TODO: TBD: The Editor/UI operations should be in the calling function
+
+	# Open it in the Editor
+	EditorInterface.select_file(newScenePath)
+	EditorInterface.open_scene_from_path(newScenePath)
+
+	# Rename the root Node to the chosen component name
+	var rootNode: Node = EditorInterface.get_edited_scene_root()
+	rootNode.name = newComponentName
+
+	# Attach the new script file
+	# TODO: Find a way to hide the "parse editor" before fixing the template script
+	
+	var newScript:  Script = load(newScriptPath)
+	var sourceCode: String = newScript.source_code
+	
+	sourceCode = sourceCode.replacen("# meta-default: true\n\n", "") # Replace the script template text
+	sourceCode = sourceCode.replacen("class_name _CLASS_", "class_name " + newComponentName) # Use the chosen component name as the class name
+	
+	newScript.source_code = sourceCode
+	ResourceSaver.save(newScript, newScriptPath) # TBD: CHECK: A better way to save a modified script?
+	newScript.reload() # TBD: CHECK: `reload()` before or after save?
+
+	rootNode.set_script(newScript)
+	EditorInterface.set_script(newScript)
+
+	# Save the new scene with the new script
+	EditorInterface.save_scene()
+
+	# Register the newly-created files with Godot
+	fileSystem.update_file(newScriptPath)
+	fileSystem.update_file(newScenePath)
+	fileSystem.scan() # TBD: Is this necessary?
+	# GODOT: Calling `EditorFileSystem.reimport_files()` raises error: "BUG: File queued for import, but can't be imported, importer for type '' not found."
+
+	# Edit the new script
+	EditorInterface.edit_script(newScript)
+
+	return newScenePath
 
 
 func editSelectedComponent() -> void:

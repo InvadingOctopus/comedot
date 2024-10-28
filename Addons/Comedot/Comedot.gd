@@ -21,6 +21,7 @@ const componentMenuItem := "New Component in Selected Folder"
 
 
 func _enter_tree() -> void:
+	printLog("Plugin _enter_tree()")
 	addCustomTypes()
 	call_deferred(&"addDock") # `call_deferred` because Godot seems to be loading this "too soon" and raising errors.
 
@@ -32,6 +33,10 @@ func _exit_tree() -> void:
 
 func _get_plugin_icon() -> Texture2D:
 	return componentIcon
+
+
+func printLog(message: String) -> void:
+	print(str("Comedot:  ", message)) # Extra space to align with "Comedock: " :)
 
 
 #region Custom Types
@@ -55,12 +60,15 @@ func removeCustomTypes() -> void:
 
 var componentsDock: ComponentsDock
 
+
 func addDock() -> void:
 	componentsDock = preload("res://Addons/Comedot/ComponentsDock.tscn").instantiate()
 	componentsDock.plugin = self as EditorPlugin
 	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 	self.set_dock_tab_icon(componentsDock, componentIcon)
 	self.add_tool_menu_item(componentMenuItem, componentsDock.createNewComponentInSelectedFolder)
+	printLog("Added menu item: Project → Tools → " + componentMenuItem)
+
 
 func removeDock() -> void:
 	self.remove_tool_menu_item(componentMenuItem)
