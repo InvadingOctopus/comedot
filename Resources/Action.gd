@@ -6,6 +6,8 @@
 class_name Action
 extends StatDependentResourceBase
 
+# TODO: Limited number of uses
+# TODO: Cooldowns
 # TBD: A less ambiguous name, like Ability? Because "action" is a Godot term for all input events.
 
 
