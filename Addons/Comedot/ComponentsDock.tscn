@@ -127,7 +127,7 @@ text = "Components"
 
 [node name="HelpLabel" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
@@ -136,12 +136,11 @@ autowrap_mode = 3
 
 [node name="HelpLabel2" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "For more commands, see the Project → Tools menu."
-autowrap_mode = 3
+text_overrun_behavior = 3
 
 [node name="TreeScrollContainer" type="ScrollContainer" parent="GridContainer"]
 layout_mode = 2

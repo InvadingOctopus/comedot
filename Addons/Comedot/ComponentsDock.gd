@@ -137,9 +137,12 @@ func printError(message: String) -> void:
 
 func setupUI() -> void:
 	%DebugReloadButton.visible = shouldShowDebugInfo
-	%AddEntityMenuButton.modulate  = createNewItemButtonColor
+	%AddEntityMenuButton.modulate = createNewItemButtonColor
 	$NewComponentDialog.register_text_enter(newComponentNameTextBox)
 	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
+
+	componentsTree.set_column_expand(0, true)
+	componentsTree.set_column_expand(1, false) # Prevent the button column from obscuring the component names.
 
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 
@@ -236,6 +239,7 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryRow.add_button(1, createComponentIcon, 0, false, buttonTooltip)
 	categoryRow.set_text(1, "+")
 	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
+	categoryRow.set_text_overrun_behavior(1, TextServer.OVERRUN_NO_TRIMMING)
 	categoryRow.set_expand_right(1, false)
 	categoryRow.set_tooltip_text(1, buttonTooltip)
 	categoryRow.set_custom_color(1, createNewItemButtonColor)
@@ -262,7 +266,7 @@ func createComponentTreeItem(componentPath: String, componentName: String, categ
 		#componentItem.set_icon_modulate(1, Color.CORNFLOWER_BLUE) # I am Jack's buggy code :')
 		#componentItem.set_icon_max_width(1, 32)
 	componentItem.set_expand_right(0, true)
-	componentItem.set_text_overrun_behavior(0, TextServer.OVERRUN_NO_TRIMMING) # Prevent the damn 2nd column from obscuring the component names.
+	componentItem.set_text_overrun_behavior(0, TextServer.OVERRUN_TRIM_ELLIPSIS)
 
 	return componentItem
 
@@ -274,7 +278,7 @@ func createComponentRowButtons(componentRow: TreeItem) -> void:
 	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
 	componentRow.set_text(1, "Edit")
 	componentRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
-	componentRow.set_text_overrun_behavior(1, TextServer.OVERRUN_TRIM_ELLIPSIS)
+	componentRow.set_text_overrun_behavior(1, TextServer.OVERRUN_NO_TRIMMING)
 	componentRow.set_expand_right(1, false)
 	componentRow.set_tooltip_text(1, %EditComponentButton.tooltip_text)
 	componentRow.set_custom_color(1, editComponentButtonColor)
