@@ -61,9 +61,9 @@ const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's backgroun
 const createNewItemButtonColor	:= Color.LAWN_GREEN
 const editComponentButtonColor	:= categoryColor
 
-const defaultHelpLabelText := "Select an Entity node in the scene to add Components."
-
-const editComponentButtonTooltipPrefix := "Open the source scene of "
+const defaultHelpLabelText		:= "Select 1 Entity node in the scene to add Components."
+const defaultAddEntityTip		:= "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
+const editComponentTipPrefix	:= "Open the source scene of "
 
 @export var shouldShowDebugInfo: bool = false
 
@@ -75,13 +75,13 @@ const editComponentButtonTooltipPrefix := "Open the source scene of "
 var selectedComponentRow: TreeItem
 var selectedComponentCategory: TreeItem
 
-var selectedComponentName: String:
+var selectedComponentName: String: ## Returns the text of the first column of the selected [member componentsTree] row.
 	get: return selectedComponentRow.get_text(0) if selectedComponentRow else ""
 
-var selectedComponentPath: String:
+var selectedComponentPath: String: ## Returns the metadata of the first column of the selected [member componentsTree] row.
 	get: return selectedComponentRow.get_metadata(0) if selectedComponentRow else ""
 
-var selectedComponentCategoryName: String:
+var selectedComponentCategoryName: String: ## Returns the text of the first column of the selected [member componentsTree] row if it is a folder/category header row..
 	get: return selectedComponentCategory.get_text(0) if selectedComponentCategory else ""
 
 # TBD: A better way to handle Dialog state?
@@ -137,9 +137,14 @@ func printError(message: String) -> void:
 
 func setupUI() -> void:
 	%DebugReloadButton.visible = shouldShowDebugInfo
+	
 	%AddEntityMenuButton.modulate = createNewItemButtonColor
+	%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
+
 	$NewComponentDialog.register_text_enter(newComponentNameTextBox)
 	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
+
+	%HelpLabel.text = defaultHelpLabelText
 
 	componentsTree.set_column_expand(0, true)
 	componentsTree.set_column_expand(1, false) # Prevent the button column from obscuring the component names.
@@ -273,7 +278,7 @@ func createComponentTreeItem(componentPath: String, componentName: String, categ
 
 func createComponentRowButtons(componentRow: TreeItem) -> void:
 	if not componentRow: return
-	# var tooltipText: String = editComponentButtonTooltipPrefix + selectedComponentName
+	# var tooltipText: String = editComponentTipPrefix + selectedComponentName
 
 	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
 	componentRow.set_text(1, "Edit")
@@ -302,13 +307,12 @@ func onComponentsTree_itemSelected() -> void:
 
 	# Clear the previous selection. These values must be reset in any case.
 
-	# Remove the buttons from any previous selection
-	removeComponentRowButtons(selectedComponentRow)
+	removeComponentRowButtons(selectedComponentRow) # Remove the buttons from any previous selection
 
 	selectedComponentRow = null
 	selectedComponentCategory = null
 	%EditComponentButton.disabled = true
-	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its original source scene."
+	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its source scene."
 
 	# Is a component row selected?
 
@@ -316,21 +320,13 @@ func onComponentsTree_itemSelected() -> void:
 		selectedComponentRow = selection
 		selectedComponentCategory = selection.get_parent()
 		%EditComponentButton.disabled = false
-		%EditComponentButton.tooltip_text = editComponentButtonTooltipPrefix + selectedComponentName
+		%EditComponentButton.tooltip_text = editComponentTipPrefix + selectedComponentName
 		createComponentRowButtons(selectedComponentRow)
 
 
 ## Called when a row is double-clicked
 func onComponentsTree_itemActivated() -> void:
-	if not selectedComponentPath.ends_with(acceptedFileExtension): return
-	if shouldShowDebugInfo: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
-
-	# Convert script paths to scenes, just in case
-	var componentScenePath := selectedComponentPath
-	if componentScenePath.to_lower().ends_with(".gd"):
-		componentScenePath = componentScenePath.replace(".gd", ".tscn")
-
-	addComponentToSelectedNode(componentScenePath)
+	getSelectedComponentAndAddToSelectedNode()
 
 
 func onRefreshButton_pressed() -> void:
@@ -396,12 +392,25 @@ func onComponentsTree_itemEdited() -> void:
 	pass #if shouldShowDebugInfo: printLog("onComponentsTree_itemEdited()")
 
 
+## Called when nodes are selected/unselected in the Scene Editor.
 func onInspector_editedObjectChanged() -> void:
-	var editedObject: Object = inspector.get_edited_object()
+	var editedObject:	 Object = inspector.get_edited_object()
+	var editedNode:		 Node   = editedObject as Node
+	var editorSelection: EditorSelection = EditorInterface.get_selection()
+	var selectedNodes:	 Array[Node]     = editorSelection.get_selected_nodes()
+	# TBD: Do we need all these variables?
 
-	# if shouldShowDebugInfo: printLog(str("onInspector_editedObjectChanged() ", editedObject)) # Excessive logging :P
+	# Update the entity-related UI
+	# TBD: Support adding multiple new Entities to more than 1 selected Node?	
 
-	var editedNode: Node = editedObject as Node
+	if selectedNodes.size() > 1:
+		%AddEntityMenuButton.disabled = true
+		%AddEntityMenuButton.tooltip_text = "Cannot add an Entity to more than 1 selected Node in the Scene Editor."
+	else:
+		%AddEntityMenuButton.disabled = false
+		%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
+
+	# Update the component-related UI
 
 	if editedNode is Entity: %HelpLabel.text = str("Double-click a Component from the list to add it to ", editedNode.name)
 	else: %HelpLabel.text = defaultHelpLabelText
@@ -431,8 +440,9 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 
 	# Get the first selected node
 
-	if selectedNodes.is_empty() or selectedNodes.size() != 1:
-		#if shouldShowDebugInfo:
+	if selectedNodes.is_empty():
+		selectedNodes = [EditorInterface.get_edited_scene_root()]
+	elif selectedNodes.size() > 1:
 		printLog("Cannot add Entity to more than 1 selected Node")
 		return
 
@@ -480,6 +490,19 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
 	if %EditableChildrenCheckBox.button_pressed:
 		newEntity.get_parent().set_editable_instance(newEntity, true)
+
+
+func getSelectedComponentAndAddToSelectedNode() -> void:
+	# TODO: A more robust way to verifying component files, instead of with just the name or extension.
+	if not selectedComponentPath.ends_with(acceptedFileExtension): return
+	if shouldShowDebugInfo: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
+
+	# Convert script paths to scenes, just in case
+	var componentScenePath := selectedComponentPath
+	if componentScenePath.to_lower().ends_with(".gd"):
+		componentScenePath = componentScenePath.replace(".gd", ".tscn")
+
+	addComponentToSelectedNode(componentScenePath)
 
 
 func addComponentToSelectedNode(componentPath: String) -> void:
