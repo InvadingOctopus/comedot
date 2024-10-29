@@ -96,7 +96,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
-[comedock]: https://i.imgur.com/SR3shzr.png "Custom Godot Editor Dock Plugin"
+[comedock]: https://i.imgur.com/oY4WymY.png "Custom Godot Editor Dock Plugin"
 [rocks-with-guns]: https://i.imgur.com/wH84m23.mp4 "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
