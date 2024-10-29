@@ -3,9 +3,16 @@
 Asset Name: Comedot - Components Framework
 Description:
 
-A project template and framework for making 2D games by adding components to entities. Includes a library of components for common tasks like player movement and combat, helper functions, UI, and free-to-use 3rd-party assets for prototyping. May be combined with any other framework or architecture.
+A project template and framework for making 2D games by adding components to entities. May be combined with any other framework or architecture.
 
-This is a work in progress. For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
+• A library of components for features needed in most games like: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
+• Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
+• Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
+• Save/Load player preferences in config file with `Settings.any_name`
+• Helper functions & debugging tools like charts for monitoring variables.
+• Free-to-use 3rd-party assets for quick prototyping.
+
+This is a work in constant progress! For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
 ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for textures etc. To fix, just close and reopen the project.
 
@@ -19,11 +26,12 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Commit URL:		6ce2bf6d573c62498793ce7dce5cd87954b8761a 2024-10-26
-Godot Vesion:	4.4
+Godot Vesion:	Custom Build
+Asset Version:	1.69
+Commit URL:		ab2c27c0b7a7541004e50446a7c350bb99352f5e 2024-10-30
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
-Screenshot 1:	https://i.imgur.com/SR3shzr.png
+Screenshot 1:	https://i.imgur.com/oY4WymY.png
 Screenshot 2:	https://i.imgur.com/7M0pH3v.png
 Screenshot 3:	https://i.imgur.com/jgAjmzY.png
