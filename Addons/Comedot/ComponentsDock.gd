@@ -47,13 +47,11 @@ const spriteEntityTemplate		:= "res://Templates/Entities/SpriteEntityTemplate.ts
 const componentBaseScene		:= "res://Components/Component.tscn"
 const componentScriptTemplate	:= "res://Templates/Scripts/Component/ComponentTemplate.gd"
 
-const componentIcon			:= preload("res://Assets/Icons/Component.svg")
+const componentIcon				:= preload("res://Assets/Icons/Component.svg")
+const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
 
-var folderIcon: Texture2D:
-	get: return EditorInterface.get_editor_theme().get_icon("Folder", "EditorIcons") # preload("res://Assets/Icons/Godot/FolderMediumThumb.svg")
-
-var createComponentIcon: Texture2D:
-	get: return preload("res://Assets/Icons/Component.svg") # EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
+var folderIcon: Texture2D		= EditorInterface.get_editor_theme().get_icon("Folder", "EditorIcons")
+var sceneIcon:  Texture2D		= EditorInterface.get_editor_theme().get_icon("InstanceOptions", "EditorIcons")
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
@@ -280,7 +278,7 @@ func createComponentRowButtons(componentRow: TreeItem) -> void:
 	if not componentRow: return
 	# var tooltipText: String = editComponentTipPrefix + selectedComponentName
 
-	componentRow.add_button(1, componentIcon, 1, false, %EditComponentButton.tooltip_text)
+	componentRow.add_button(1, sceneIcon, 1, false, %EditComponentButton.tooltip_text)
 	componentRow.set_text(1, "Edit")
 	componentRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	componentRow.set_text_overrun_behavior(1, TextServer.OVERRUN_NO_TRIMMING)
@@ -486,6 +484,8 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	editorSelection.add_node(newEntity)
 	EditorInterface.edit_node(newEntity)
 	#EditorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
+
+	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
 
 	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
 	if %EditableChildrenCheckBox.button_pressed:
