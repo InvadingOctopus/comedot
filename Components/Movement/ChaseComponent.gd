@@ -36,7 +36,7 @@ var recentChaseDirection: Vector2
 @onready var overheadPhysicsComponent: OverheadPhysicsComponent = coComponents.OverheadPhysicsComponent # TBD: Static or dynamic?
 
 func getRequiredComponents() -> Array[Script]:
-	return [OverheadPhysicsComponent] + super.getRequiredComponents()
+	return [CharacterBodyComponent, OverheadPhysicsComponent] # Cannot easily join with `super.getRequiredComponents()` :(
 #endregion
 
 
@@ -44,7 +44,7 @@ func _ready() -> void:
 	if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
 		printLog("characterBodyComponent.shouldResetVelocityIfZeroMotion = false")
 		characterBodyComponent.shouldResetVelocityIfZeroMotion = false
-	
+
 	if not nodeToChase and shouldChasePlayerIfUnspecified:
 		nodeToChase = GameState.players.front()
 

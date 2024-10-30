@@ -50,7 +50,7 @@ var damageComponentsInContact: Array[DamageComponent]
 #region Dependencies
 
 ## May be a subclass such as [ShieldedHealthComponent].
-@onready var healthComponent:  HealthComponent  = coComponents.HealthComponent  # TBD: Static or dynamic?
+@onready var healthComponent:  HealthComponent  = parentEntity.findFirstComponentSubclass(HealthComponent)
 @onready var factionComponent: FactionComponent = coComponents.FactionComponent # TBD: Static or dynamic?
 #endregion
 
@@ -78,7 +78,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageComponent: DamageComponent = areaExited.get_node(".") as DamageComponent # HACK: TODO: Find better way to cast
 	if  damageComponent: damageComponentsInContact.erase(damageComponent)
-	
+
 	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
 	if damageComponentsInContact.size() <= 0:
 		accumulatedFractionalDamage = 0
