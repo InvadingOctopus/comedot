@@ -263,7 +263,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 	if shouldPrintDebugLogs and previousValue != newValue:
 		var string: String = str(previousValue, " → ", newValue)
 		if not logAsDebug: printLog(string, variableName, "dimgray", "gray")
-		else: printDebug(string)
+		else: printDebug(string, variableName)
 		return string
 	else:
 		return ""
