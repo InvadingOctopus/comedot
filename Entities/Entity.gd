@@ -108,18 +108,50 @@ func childEnteredTree(node: Node) -> void:
 
 ## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards. 
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_PARENTED] Notification.
-func registerComponent(newComponent: Component) -> void:
+## Returns `true` if successfully registered.
+func registerComponent(newComponent: Component) -> bool:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
+
+	if componentType.is_empty():
+		printWarning(str("Component has no class_name, cannot register in dictionary: ", newComponent.logFullName))
+		return false
 
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
+	
 	if existingComponent:
-		printLog(str("Replacing: ", existingComponent, " ← ", newComponent))
+		printLog(str("Replacing: ", existingComponent.logFullName, " ← ", newComponent.logFullName))
 		existingComponent.removeFromEntity(true) # shouldFree
 
-	newComponent.parentEntity = self # TBD: Is this useful?
 	self.components[componentType] = newComponent
-	printDebug(str(componentType, " = ", newComponent))
+	newComponent.parentEntity = self # Is this useful? It will be done anyway by the component.
+
+	if shouldShowDebugInfo: printDebug(str(componentType, " = ", newComponent.logName))
+
+	# TBD: Register the superclass of the component as well, such as [HealthComponent] for [ShieldedHealthComponent],
+	# to make it easier for other dependent components to access the child class via [member Component.coComponents] if they only need the parent class' features.
+	
+	# DESIGN: DISABLED: This is too complicated to implement elegantly/reliably,
+	# because many components share common base classes such as `Component`, `CharacterBodyManipulatingComponentBase`, `CooldownComponent` etc.
+	# WORKAROUND: Just call findFirstComponentSubclass() at the site of use.
+	
+	# var shouldRegisterSuperClass: bool = false
+
+	# if shouldRegisterSuperClass:
+	# 	var superClass: Script = newComponent.get_script().get_base_script()
+		
+	# 	if superClass:
+	# 		var superType: StringName = superClass.get_global_name()
+			
+	# 		# Don't keep registering the core/base types!
+	# 		if not superType.is_empty() and superType.to_upper() != "COMPONENT" and not superType.to_upper().ends_with("BASE"): 
+	# 			if superType not in self.components:
+	# 				self.components[superType] = newComponent
+	# 				printDebug(str("Superclass: ", superType, " = ", newComponent.logName))
+	# 			else:
+	# 				printDebug(str("Superclass: ", superType, " already registered for a different component: ", self.components.get(superType).logFullName))
+
+	return true
 
 
 @warning_ignore("unused_parameter")

@@ -144,11 +144,14 @@ func processTurnEnd() -> void:
 
 #region Component Management
 
-func registerComponent(newComponent: Component) -> void:
-	super.registerComponent(newComponent)
-	# Also register the component in our array if it is turn-based
-	if is_instance_of(newComponent, TurnBasedComponent):
-		self.turnBasedComponents.append(newComponent)
+func registerComponent(newComponent: Component) -> bool:
+	if super.registerComponent(newComponent):
+		# Also register the component in our array if it is turn-based
+		if is_instance_of(newComponent, TurnBasedComponent):
+			self.turnBasedComponents.append(newComponent)
+		return true # Return `true` even if a non-turn-based component was registered by the Entity superclass.
+	else:
+		return false
 
 
 func unregisterComponent(componentToRemove: Component) -> void:
