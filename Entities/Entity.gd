@@ -62,11 +62,13 @@ func _enter_tree() -> void:
 	connectSignals()
 
 
+## WARNING: When overriding in a subclass, do NOT call [method Entity.connectSignals] manually from [method _enter_tree] or [method _ready],
+## and call `super.connectSignals()` to ensure that all signals are connected and ONLY ONCE.
 func connectSignals() -> void:
+	printDebug("connectSignals()")
 	# TBD: Unneeded for now
 	# self.child_entered_tree.connect(childEnteredTree)
 	# self.child_exiting_tree.connect(childExitingTree)
-	pass
 
 
 func _process(_delta: float) -> void:
