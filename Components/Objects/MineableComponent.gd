@@ -94,10 +94,10 @@ func onDidPerformInteraction(result: Variant) -> void:
 	# TBD: Apply collectibleValue even if 0?
 
 	if result is Entity:
-		var statCollectibleComponent: CollectibleStatComponent = result.getComponent(CollectibleStatComponent)
-		if statCollectibleComponent:
-			statCollectibleComponent.statModifierMinimum = self.collectibleValue
-			statCollectibleComponent.statModifierMaximum = self.collectibleValue
+		var collectibleStatComponent: CollectibleStatComponent = result.getComponent(CollectibleStatComponent)
+		if collectibleStatComponent:
+			collectibleStatComponent.statModifierMinimum = self.collectibleValue
+			collectibleStatComponent.statModifierMaximum = self.collectibleValue
 			self.collectibleValue = 0 # Reset the value to avoid subsequent reuse
 		else:
 			printDebug("Entity created by Payload missing CollectibleStatComponent")
