@@ -261,7 +261,7 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 	#else: isWithinArea = true
 
 	#Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
-	
+
 	return randomPosition
 
 #endregion
@@ -554,6 +554,18 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 		return true
 	else:
 		return false
+
+
+## Returns the variable name for an enum value.
+static func getEnumText(enumType: Dictionary, value: int) -> String:
+	## TODO: Verify for non-sequential enums.
+	var keys: Array = enumType.keys()
+	var text: String
+
+	if value >= 0 and value < keys.size(): text = keys[value]
+	else: text = "invalid"
+
+	return str(value, " (", text, ")")
 
 
 ## Iterates over a [String] and replaces all occurrences of text matching the [param substitutions] [Dictionary]'s [method Dictionary.keys] with the values for those keys.
