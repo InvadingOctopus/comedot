@@ -51,18 +51,18 @@ func onDidToggleTestMode() -> void:
 
 func _process(_delta: float) -> void:
 	# Perform any per-frame updates that may help with testing, such as displaying the values of other variables or clamping the physics of entities etc.
-	pass  
+	pass
 
 #endregion
 
 
-#region Setup 
+#region Setup
 # Do NOT modify with project-specific stuff
 
 func _ready() -> void:
 	self.didEnableTestMode.connect(self.onDidToggleTestMode)
 	self.didDisableTestMode.connect(self.onDidToggleTestMode)
-	
+
 	if activateTestModeOnStart: isInTestMode = true # Calls `applyTestMode()`
 	else: setNodesVisibility() # Called by `applyTestMode()` when `activateTestModeOnStart`
 
@@ -90,4 +90,4 @@ func setNodesVisibility() -> void:
 	for node in nodesToHide:
 		node.visible = not isInTestMode
 
-#endregion 
+#endregion
