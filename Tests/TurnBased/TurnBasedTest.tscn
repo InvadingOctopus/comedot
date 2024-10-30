@@ -1,12 +1,13 @@
-[gd_scene load_steps=20 format=4 uid="uid://dkm5w4ukgrpgf"]
+[gd_scene load_steps=21 format=4 uid="uid://dkm5w4ukgrpgf"]
 
 [ext_resource type="Script" path="res://Scripts/Start.gd" id="1_x8hsg"]
-[ext_resource type="Script" path="res://Tests/TurnBasedTestUIEntity.gd" id="3_orv1y"]
+[ext_resource type="Script" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_blwqs"]
+[ext_resource type="Script" path="res://Tests/TurnBased/TurnBasedTestUIEntity.gd" id="3_orv1y"]
 [ext_resource type="Script" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
 [ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedTileBasedControlComponent.tscn" id="4_3bh2s"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="4_k2j6v"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_mkbvj"]
-[ext_resource type="PackedScene" uid="uid://b8evr41o1p0ea" path="res://Tests/TurnBasedTestComponent.tscn" id="5_253pd"]
+[ext_resource type="PackedScene" uid="uid://b8evr41o1p0ea" path="res://Tests/TurnBased/TurnBasedTestComponent.tscn" id="5_253pd"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
 
@@ -147,8 +148,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fujdc"]
 _data = {
-"RESET": SubResource("Animation_ivwxp"),
-"showBeginLabel": SubResource("Animation_tyb1r")
+&"RESET": SubResource("Animation_ivwxp"),
+&"showBeginLabel": SubResource("Animation_tyb1r")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
@@ -162,6 +163,7 @@ modulate = Color(0.5, 1, 1, 0.5)
 position = Vector2(-16, -16)
 tile_map_data = PackedByteArray("AAABAAEAAwAAAAAAAAADAAEAAwAAAAAAAAACAAIAAwAAAAAAAAABAAMAAwAAAAAAAAABAAUAAwAAAAAAAAACAAQAAwAAAAAAAAADAAMAAwAAAAAAAAAEAAIAAwAAAAAAAAAFAAEAAwAAAAAAAAAHAAEAAwAAAAAAAAAGAAIAAwAAAAAAAAAFAAMAAwAAAAAAAAAEAAQAAwAAAAAAAAADAAUAAwAAAAAAAAACAAYAAwAAAAAAAAABAAcAAwAAAAAAAAABAAkAAwAAAAAAAAACAAgAAwAAAAAAAAADAAcAAwAAAAAAAAAEAAYAAwAAAAAAAAAFAAUAAwAAAAAAAAAGAAQAAwAAAAAAAAAHAAMAAwAAAAAAAAAIAAIAAwAAAAAAAAAJAAEAAwAAAAAAAAALAAEAAwAAAAAAAAAKAAIAAwAAAAAAAAAJAAMAAwAAAAAAAAAIAAQAAwAAAAAAAAAHAAUAAwAAAAAAAAAGAAYAAwAAAAAAAAAFAAcAAwAAAAAAAAAEAAgAAwAAAAAAAAADAAkAAwAAAAAAAAACAAoAAwAAAAAAAAABAAsAAwAAAAAAAAADAAsAAwAAAAAAAAAEAAoAAwAAAAAAAAAFAAkAAwAAAAAAAAAGAAgAAwAAAAAAAAAHAAcAAwAAAAAAAAAIAAYAAwAAAAAAAAAJAAUAAwAAAAAAAAAKAAQAAwAAAAAAAAALAAMAAwAAAAAAAAALAAUAAwAAAAAAAAAKAAYAAwAAAAAAAAAJAAcAAwAAAAAAAAAIAAgAAwAAAAAAAAAHAAkAAwAAAAAAAAAGAAoAAwAAAAAAAAAFAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAIAAoAAwAAAAAAAAAJAAkAAwAAAAAAAAAKAAgAAwAAAAAAAAALAAcAAwAAAAAAAAALAAkAAwAAAAAAAAAKAAoAAwAAAAAAAAAJAAsAAwAAAAAAAAALAAsAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_usjrl")
+script = ExtResource("3_blwqs")
 
 [node name="TerrainTileMap" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAD/////AgAAAAAAAAD//wAAAgAAAAAAAAD//wEAAgAAAAAAAAD//wIAAgAAAAAAAAD//wMAAgAAAAAAAAD//wQAAgAAAAAAAAAAAP//AgAAAAAAAAABAP//AgAAAAAAAAACAP//AgAAAAAAAAADAP//AgAAAAAAAAAEAP//AgAAAAAAAAAFAP//AgAAAAAAAAAGAP//AgAAAAAAAAAHAP//AgAAAAAAAAAIAP//AgAAAAAAAAAJAP//AgAAAAAAAAAKAP//AgAAAAAAAAALAP//AgAAAAAAAAALAAAAAgAAAAAAAAALAAEAAgAAAAAAAAALAAIAAgAAAAAAAAALAAMAAgAAAAAAAAALAAQAAgAAAAAAAAALAAUAAgAAAAAAAAALAAYAAgAAAAAAAAALAAcAAgAAAAAAAAALAAgAAgAAAAAAAAALAAkAAgAAAAAAAAALAAoAAgAAAAAAAAALAAsAAgAAAAAAAAAKAAsAAgAAAAAAAAAJAAsAAgAAAAAAAAAIAAsAAgAAAAAAAAAHAAsAAgAAAAAAAAAGAAsAAgAAAAAAAAAFAAsAAgAAAAAAAAAEAAsAAgAAAAAAAAADAAsAAgAAAAAAAAACAAsAAgAAAAAAAAABAAsAAgAAAAAAAAAAAAsAAgAAAAAAAAD//wsAAgAAAAAAAAD//woAAgAAAAAAAAD//wkAAgAAAAAAAAD//wgAAgAAAAAAAAD//wcAAgAAAAAAAAD//wYAAgAAAAAAAAD//wUAAgAAAAAAAAA=")
@@ -241,7 +243,7 @@ one_shot = true
 [node name="UIAnimationPlayer" type="AnimationPlayer" parent="TurnBasedUIEntity/TurnBasedUI"]
 unique_name_in_owner = true
 libraries = {
-"": SubResource("AnimationLibrary_fujdc")
+&"": SubResource("AnimationLibrary_fujdc")
 }
 
 [node name="TurnBasedEntity1" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
