@@ -158,11 +158,9 @@ func _ready() -> void:
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
 
 
-func getStateName(state: TurnBasedState = self.currentTurnState) -> StringName:
-	if state >= TurnBasedState.turnBegin and state <= TurnBasedState.turnEnd:
-		return [&"begin", &"update", &"end"][state]
-	else:
-		return &"invalid"
+## Returns a readable name for the [param state].
+func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
+	return Tools.getEnumText(TurnBasedState, state)
 
 
 #region Coordinator Management
@@ -242,7 +240,7 @@ func onStateTimer_timeout() -> void:
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
 func processState() -> void:
-	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", currentTurnState), self)
+	if shouldShowDebugInfo: Debug.printLog(str("processState(): ", getStateLogText()), self)
 
 	match currentTurnState:
 		# `await` for Entity delays & animations etc.
@@ -340,7 +338,7 @@ func onEntityTimer_timeout() -> void:
 func processTurnBegin() -> void:
 	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
-		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, self)
+		if shouldShowDebugInfo: Debug.printDebug("processTurnBegin(): " + turnBasedEntity.logName, self)
 		await turnBasedEntity.processTurnBeginSignals()
 		await waitForEntityTimer()
 	self.isProcessingEntities = false
@@ -350,7 +348,7 @@ func processTurnBegin() -> void:
 func processTurnUpdate() -> void:
 	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
-		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, self)
+		if shouldShowDebugInfo: Debug.printDebug("processTurnUpdate(): " + turnBasedEntity.logName, self)
 		await turnBasedEntity.processTurnUpdateSignals()
 		await waitForEntityTimer()
 	self.isProcessingEntities = false
@@ -360,7 +358,7 @@ func processTurnUpdate() -> void:
 func processTurnEnd() -> void:
 	self.isProcessingEntities = true
 	for turnBasedEntity in self.turnBasedEntities:
-		if shouldShowDebugInfo: Debug.printDebug(turnBasedEntity.logName, self)
+		if shouldShowDebugInfo: Debug.printDebug("processTurnEnd(): " + turnBasedEntity.logName, self)
 		await turnBasedEntity.processTurnEndSignals()
 		await waitForEntityTimer()
 	self.isProcessingEntities = false

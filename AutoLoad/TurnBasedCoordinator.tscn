@@ -4,6 +4,7 @@
 
 [node name="TurnBasedCoordinator" type="Node2D" groups=["turnBased"]]
 script = ExtResource("1_5qbkx")
+delayBetweenEntities = 0.5
 metadata/_edit_group_ = true
 
 [node name="StateTimer" type="Timer" parent="."]
