@@ -1,5 +1,5 @@
 ## Uses a [TileBasedPositionComponent] to move the entity based on player input, or randomly.
-## Requirements: [TileBasedPositionComponent]
+## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]
 ## @experimental
 
 class_name TurnBasedTileBasedControlComponent

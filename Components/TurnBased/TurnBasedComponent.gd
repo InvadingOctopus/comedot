@@ -5,6 +5,8 @@
 ## NOTE: The begin/update/end methods are NOT executed at once for a single component:
 ## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ...
 ## THEN all components perform "Update" phase, and so on.
+##
+## Requirements: [TurnBasedEntity], [AnimatedSprite2D]
 
 class_name TurnBasedComponent
 extends Component # + TurnBasedObjectBase
@@ -55,6 +57,12 @@ signal didEndTurn
 func _enter_tree() -> void:
 	super._enter_tree()
 	self.add_to_group(Global.Groups.turnBased, true)
+
+
+func registerParent() -> void:
+	super.registerParent()
+	if not is_instance_of(self.parentEntity, TurnBasedEntity):
+		printWarning("Parent Entity is not a TurnBasedEntity! " + parentEntity.logFullName)
 
 
 #region Turn State Cycle
