@@ -60,9 +60,9 @@ func checkRequiredComponents() -> bool:
 	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
 
 	if not parentEntity or parentEntity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :()
-	
+
 	var haveAllRequirements: bool = true # Start `true` then make it `false` if there is any missing requirement.
-	
+
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
 		if not parentEntity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
@@ -193,13 +193,13 @@ func getParentEntity() -> Entity:
 func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	var coComponent: Component = self.coComponents.get(type.get_global_name())
-	
+
 	if not coComponent:
-		
+
 		if includeSubclasses:
 			coComponent = parentEntity.findFirstComponentSubclass(type)
 			printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
-		
+
 		if not coComponent: # Did we still not find any match? :(
 			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName))
 
@@ -234,6 +234,7 @@ func removeSiblingComponentsOfSameType() -> int:
 @export var shouldShowDebugInfo: bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
+## NOTE: Does NOT affect warnings and errors!
 var isLoggingEnabled: bool
 
 var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
@@ -257,13 +258,13 @@ func printDebug(message: String = "") -> void:
 	Debug.printDebug(message, logName, "cyan")
 
 
+# NOTE: Ignores [member isLoggingEnabled]
 func printWarning(message: String = "") -> void:
-	if not isLoggingEnabled: return
 	Debug.printWarning(message, logFullName, "cyan")
 
 
+# NOTE: Ignores [member isLoggingEnabled]
 func printError(message: String = "") -> void:
-	if not isLoggingEnabled: return
 	Debug.printError(message, logFullName, "cyan")
 
 

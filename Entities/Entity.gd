@@ -12,6 +12,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 #region Parameters
 
 ## If `false`, suppresses log messages from this entity and its child [Component]s.
+## NOTE: Does NOT affect warnings and errors!
 @export var isLoggingEnabled: bool = true
 
 ## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
@@ -402,13 +403,13 @@ func printDebug(message: String = "") -> void:
 	Debug.printDebug(message, logName, "green")
 
 
+# NOTE: Ignores [member isLoggingEnabled]
 func printWarning(message: String = "") -> void:
-	if not isLoggingEnabled: return
 	Debug.printWarning(message, logFullName, "green")
 
 
+# NOTE: Ignores [member isLoggingEnabled]
 func printError(message: String = "") -> void:
-	if not isLoggingEnabled: return
 	Debug.printError(message, logFullName, "green")
 
 
