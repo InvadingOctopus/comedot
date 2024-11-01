@@ -85,8 +85,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2f1wb"]
 _data = {
-"RESET": SubResource("Animation_hti3u"),
-"turnBegin": SubResource("Animation_3arox")
+&"RESET": SubResource("Animation_hti3u"),
+&"turnBegin": SubResource("Animation_3arox")
 }
 
 [node name="TurnBasedTestComponent" type="Node2D" groups=["components", "turnBased"]]
@@ -137,7 +137,7 @@ region_rect = Rect2(480, 176, 16, 16)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_2f1wb")
+&"": SubResource("AnimationLibrary_2f1wb")
 }
 
 [node name="Timer" type="Timer" parent="."]

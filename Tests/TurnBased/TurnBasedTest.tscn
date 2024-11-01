@@ -171,6 +171,7 @@ tile_set = SubResource("TileSet_usjrl")
 
 [node name="TurnBasedUIEntity" type="Node2D" parent="."]
 script = ExtResource("3_orv1y")
+shouldShowDebugInfo = true
 
 [node name="TurnBasedUI" type="CanvasLayer" parent="TurnBasedUIEntity"]
 layer = 90

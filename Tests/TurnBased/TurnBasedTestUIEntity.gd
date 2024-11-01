@@ -10,6 +10,11 @@ func _enter_tree() -> void:
 	super._enter_tree()
 
 
+func _ready() -> void:
+	TurnBasedCoordinator.entityTimer.wait_time = 1
+	TurnBasedCoordinator.stateTimer.wait_time = 1
+
+
 func connectSignals() -> void:
 	TurnBasedCoordinator.willBeginTurn.connect(self.onTurnBasedCoordinator_willBeginTurn)
 	TurnBasedCoordinator.didEndTurn.connect(self.onTurnBasedCoordinator_didEndTurn)
