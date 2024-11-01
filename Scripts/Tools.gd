@@ -557,13 +557,12 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 
 
 ## Returns the variable name for an enum value.
+## WARNING: May NOT work as expected for enums with non-sequential values or starting below 0, or if there are multiple identical values, or if there is a 'null' key.
 static func getEnumText(enumType: Dictionary, value: int) -> String:
-	## TODO: Verify for non-sequential enums.
-	var keys: Array = enumType.keys()
 	var text: String
-
-	if value >= 0 and value < keys.size(): text = keys[value]
-	else: text = "invalid"
+	
+	text = str(enumType.find_key(value)) # TBD: Check for `null`?
+	if text.is_empty(): text = "[invalid key/value]"
 
 	return str(value, " (", text, ")")
 
