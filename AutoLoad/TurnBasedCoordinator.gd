@@ -131,6 +131,12 @@ var isReadyToStartTurn: bool:
 # to serve as the insertion point for "injecting" buff/debuff effects and other modifications at specific points in the turn cycle.
 # For example, a poison effect may cause damage at the END of a turn, while a healing effect may increase health at the BEGINNING of a turn.
 
+@warning_ignore("unused_signal")
+signal didAddEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
+
+@warning_ignore("unused_signal")
+signal didRemoveEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
+
 signal willBeginTurn
 signal didBeginTurn
 

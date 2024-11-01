@@ -58,12 +58,15 @@ signal didEndTurn
 
 func _enter_tree() -> void:
 	super._enter_tree()
-	self.add_to_group(Global.Groups.turnBased, true)
 	TurnBasedCoordinator.turnBasedEntities.append(self)
+	TurnBasedCoordinator.didAddEntity.emit(self) # TBD: This should be the responsibility of the TurnBasedCoordinator, but array modifications cannot be monitored :'(
+	self.add_to_group(Global.Groups.turnBased, true)
 
 
 func _exit_tree() -> void:
+	super._exit_tree()
 	TurnBasedCoordinator.turnBasedEntities.erase(self)
+	TurnBasedCoordinator.didRemoveEntity.emit(self) # TBD: This should be the responsibility of the TurnBasedCoordinator, but array modifications cannot be monitored :'(
 
 
 #region Turn State Cycle
