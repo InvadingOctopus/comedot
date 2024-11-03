@@ -172,6 +172,12 @@ func findTurnBasedComponents() -> Array[TurnBasedComponent]:
 #endregion
 
 
+func printLog(message: String = "", object: Variant = self.logName) -> void:
+	if not isLoggingEnabled: return
+	# Customize logs for turn-based entities to include the turn+phase, because it's not related to frames.
+	Debug.printLog(message, str(object, " ", TurnBasedCoordinator.logStateIndicator, self.currentTurn), "lightGreen", "green")
+
+
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.turnsProcessed	= turnsProcessed

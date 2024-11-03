@@ -74,9 +74,11 @@ func registerParent() -> void:
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
+	
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnBegin() # IGNORE Godot Warning; `await` is needed.
+	await self.processTurnBegin() # IGNORE: Godot Warning; `await` is needed for animations etc.
+	
 	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
@@ -86,9 +88,11 @@ func processTurnBeginSignals() -> void:
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
+	
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnUpdate() # IGNORE Godot Warning; `await` is needed.
+	await self.processTurnUpdate() # IGNORE: Godot Warning; `await` is needed for animations etc.
+	
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
@@ -98,9 +102,11 @@ func processTurnUpdateSignals() -> void:
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
+	
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnEnd() # IGNORE Godot Warning; `await` is needed.
+	await self.processTurnEnd() # IGNORE: Godot Warning; `await` is needed for animations etc.
+	
 	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
@@ -129,3 +135,9 @@ func processTurnEnd() -> void:
 	pass
 
 #endregion
+
+
+func printLog(message: String = "", object: Variant = self.logName) -> void:
+	if not isLoggingEnabled: return
+	# Customize logs for turn-based components to include the turn+phase, because it's not related to frames.
+	Debug.printLog(message, str(object, " ", TurnBasedCoordinator.logStateIndicator, self.currentTurn), "lightBlue", "cyan")

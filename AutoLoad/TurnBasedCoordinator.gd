@@ -43,7 +43,13 @@ extends Node # + TurnBasedObjectBase
 		delayBetweenStates = newValue
 		if stateTimer: stateTimer.wait_time = newValue
 
-@export var shouldShowDebugInfo: bool = false
+## NOTE: Disabling this flag also disables `_process()` to avoid calling it each frame and wasting performance,
+## because `_process()` is only used to update debug info.
+@export var shouldShowDebugInfo: bool = false:
+	set(newValue):
+		if newValue != shouldShowDebugInfo:
+			shouldShowDebugInfo = newValue
+			self.set_process(shouldShowDebugInfo)
 
 #region
 
@@ -83,8 +89,15 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 
 		# Warnings for abnormal behavior
 		if newValue > currentTurnState + 1: printWarning("currentTurnState incrementing by more than 1!")
-
 		currentTurnState = newValue
+
+		# Update the state indicator for log messages, only once when the state changes.
+		match currentTurnState:
+			TurnBasedState.turnBegin:  logStateIndicator = "[color=green]T"
+			TurnBasedState.turnUpdate: logStateIndicator = "[color=yellow]T"
+			TurnBasedState.turnEnd:    logStateIndicator = "[color=orange]T"
+			_: logStateIndicator = "[color=darkgray]T"
+
 		showDebugInfo()
 
 ## The total count of turns that have been processed.
@@ -308,7 +321,7 @@ func incrementState() -> TurnBasedState:
 ## Called by [method processState] and calls [method processTurnBegin].
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
-	printDebug(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", entities: ", turnBasedEntities.size()))
+	printDebug(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
 	currentTurnState = TurnBasedState.turnBegin
@@ -324,7 +337,7 @@ func processTurnBeginSignals() -> void:
 ## Called by [method processState] and calls [method processTurnUpdate].
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
-	printDebug(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()))
+	printDebug(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
 	currentTurnState = TurnBasedState.turnUpdate
 
@@ -337,7 +350,7 @@ func processTurnUpdateSignals() -> void:
 ## Called by [method processState] and calls [method processTurnEnd].
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
-	printDebug(str("processTurnEndSignals() currentTurn: ", currentTurn, ", entities: ", turnBasedEntities.size()))
+	printDebug(str("processTurnEndSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
 	currentTurnState = TurnBasedState.turnEnd
 
@@ -392,6 +405,7 @@ func processTurnEnd() -> void:
 
 ## Calls one of the "processTurn…" methods on all turn-based entities based on the [param state].
 func processEntities(state: TurnBasedState) -> void:
+	# TBD: Check for invalid states?
 	self.currentEntityIndex = -1 # Let the loop start from 0
 	self.isProcessingEntities = true
 
@@ -399,9 +413,7 @@ func processEntities(state: TurnBasedState) -> void:
 		self.currentEntityIndex += 1
 		recentEntityIndex = currentEntityIndex
 
-		printDebug(str("processTurn(): ", getStateLogText(state), " Entity #", currentEntityIndex, " ", turnBasedEntity.logName))
-
-		# TBD: Check for invalid states?
+		printDebug(str("processEntities(): #", currentEntityIndex, " ", turnBasedEntity.logName, " ", getStateLogText(state)))
 
 		self.willProcessEntity.emit(turnBasedEntity)
 
@@ -445,24 +457,38 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 #endregion
 
 
-#region Debugging
+#region Logging & Debugging
 
-func _process(_delta: float) -> void: # DEBUG
+var logStateIndicator: String ## Text appended to log entries to indicate the current turn and state/phase.
+
+var logName: String: ## Customizes logs for the turn-based system to include the turn+phase, because it's not related to frames.
+	get: return str("TurnBasedCoordinator ", logStateIndicator, currentTurn)
+
+
+func _process(_delta: float) -> void:
+	# NOTE: `_process()` is disabled by `set_process()` if `shouldShowDebugInfo` is disabled, to avoid wasting performance each frame.
 	showDebugInfo()
 
 
+func getEntityNames() -> String:
+	var names: String = ""
+	for entity in turnBasedEntities:
+		names += entity.name + ", "
+	return names.trim_suffix(", ")
+
+
 func printLog(message: String) -> void:
-	Debug.printLog(message, "TurnBasedCoordinator", "", "white")
+	Debug.printLog(message, logName, "", "white")
 
 
 func printDebug(message: String) -> void:
 	# Even though the caller requests a "debug" log, use the regular `printLog()` but respect the debug flag,
 	# because this is a "master"/controller Autoload.
-	if shouldShowDebugInfo: Debug.printLog(message, "TurnBasedCoordinator", "", "white")
+	if shouldShowDebugInfo: Debug.printLog(message, logName, "", "white")
 
 
 func printWarning(message: String) -> void:
-	Debug.printWarning(message, "TurnBasedCoordinator")
+	Debug.printWarning(message, logName)
 
 
 func printChange(variableName: String, previousValue: Variant, newValue: Variant) -> void:
