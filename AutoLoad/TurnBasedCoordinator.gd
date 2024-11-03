@@ -377,21 +377,21 @@ func onEntityTimer_timeout() -> void:
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
-	processTurn(TurnBasedState.turnBegin)
+	await processEntities(TurnBasedState.turnBegin)
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
-	processTurn(TurnBasedState.turnUpdate)
+	await processEntities(TurnBasedState.turnUpdate)
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
-	processTurn(TurnBasedState.turnEnd)
+	await processEntities(TurnBasedState.turnEnd)
 
 
 ## Calls one of the "processTurn…" methods on all turn-based entities based on the [param state].
-func processTurn(state: TurnBasedState) -> void:
+func processEntities(state: TurnBasedState) -> void:
 	self.currentEntityIndex = -1 # Let the loop start from 0
 	self.isProcessingEntities = true
 
