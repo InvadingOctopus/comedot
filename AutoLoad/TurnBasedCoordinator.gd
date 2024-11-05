@@ -366,7 +366,60 @@ func processTurnEndSignals() -> void:
 #endregion
 
 
-#region Entity Update Cycle
+#region Entity Management
+
+## Inserts a [TurnBasedEntity] into the [member turnBasedEntities] array.
+## Returns the entity's index in the array, or -1 if the insertion fails.
+## IMPORTANT: Use this method to add entities instead of modifying the [member turnBasedEntities] array directly!
+func addEntity(entity: TurnBasedEntity) -> int:
+	# TBD: Construct a "queue" system with dynamic insertions based on the Node's order in the Scene Tree?
+	if not turnBasedEntities.has(entity): # Add only if the entity not already in the array!
+		self.turnBasedEntities.append(entity)
+		self.didAddEntity.emit(entity)
+		entity.add_to_group(Global.Groups.turnBased, true) # Just in case, even though it should be already done by TurnBasedEntity.
+		return turnBasedEntities.size()
+	else:
+		printWarning(str("addEntity(): Entity already in turnBasedEntities: ", entity))
+		return -1
+
+
+## Removes a [TurnBasedEntity] from the [member turnBasedEntities] array.
+## Returns the array's new size, or -1 if the removal fails.
+## IMPORTANT: Use this method to remove entities instead of modifying the [member turnBasedEntities] array directly!
+func removeEntity(entity: TurnBasedEntity) -> int:
+	if turnBasedEntities.has(entity):
+		self.turnBasedEntities.erase(entity)
+		self.didRemoveEntity.emit(entity)
+		return turnBasedEntities.size()
+	else:
+		printWarning(str("removeEntity(): Entity not in turnBasedEntities: ", entity))
+		return -1
+
+
+## Returns an array of all [TurnBasedEntity] nodes in the `turnBased` group.
+## NOTE: May be slow. Use the [member turnBasedEntities] array instead.
+## WARNING: This method relies on entities adding themselves to the `entities` and `turnBased` groups.
+func findTurnBasedEntities() -> Array[TurnBasedEntity]:
+	var turnBasedEntitiesFound: Array[TurnBasedEntity]
+
+	# NOTE: The number of ndoes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
+	# so we start with that first.
+
+	# TODO: Search within children so this code may be used for multiple [TurnBasedCoordinator] parent nodes in the future.
+
+	var entities: Array[Node] = self.get_tree().get_nodes_in_group(Global.Groups.entities)
+
+	for node in entities:
+		if is_instance_of(node, TurnBasedEntity):
+			# TBD: Should we check if it's already in the array?
+			turnBasedEntitiesFound.append(node)
+
+	return turnBasedEntitiesFound
+
+#endregion
+
+
+#region Entity Process Cycle
 
 func waitForEntityTimer() -> void:
 	if not is_zero_approx(delayBetweenEntities):
@@ -428,31 +481,6 @@ func processEntities(state: TurnBasedState) -> void:
 
 	currentEntityIndex = -1 # NOTE: Set an invalid index to specify that no entity is currently being processed.
 	self.isProcessingEntities = false
-
-#endregion
-
-
-#region Entity Management
-
-## Returns an array of all [TurnBasedEntity] nodes in the `turnBased` group.
-## NOTE: May be slow. Use the [member turnBasedEntities] array instead.
-## WARNING: This method relies on entities adding themselves to the `entities` and `turnBased` groups.
-func findTurnBasedEntities() -> Array[TurnBasedEntity]:
-	var turnBasedEntitiesFound: Array[TurnBasedEntity]
-
-	# NOTE: The number of ndoes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
-	# so we start with that first.
-
-	# TODO: Search within children so this code may be used for multiple [TurnBasedCoordinator] parent nodes in the future.
-
-	var entities: Array[Node] = self.get_tree().get_nodes_in_group(Global.Groups.entities)
-
-	for node in entities:
-		if is_instance_of(node, TurnBasedEntity):
-			# TBD: Should we check if it's already in the array?
-			turnBasedEntitiesFound.append(node)
-
-	return turnBasedEntitiesFound
 
 #endregion
 
