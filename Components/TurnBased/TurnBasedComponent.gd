@@ -73,7 +73,7 @@ func registerParent() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
+	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
 	
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
@@ -87,7 +87,7 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
+	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
 	
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
@@ -101,7 +101,7 @@ func processTurnUpdateSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
+	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
 	
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")

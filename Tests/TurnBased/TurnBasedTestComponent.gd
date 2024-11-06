@@ -29,9 +29,11 @@ func processTurnBegin() -> void:
 	$Timer.wait_time = randomDuration
 	%WaitLabel.text = str(snappedf(randomDuration, 0.1), " WAITTIME")
 
+	printDebug("Playing animation…")
 	$AnimationPlayer.play(&"turnBegin")
 	await $AnimationPlayer.animation_finished
 
+	printDebug(str("Starting timer: ", $Timer.wait_time))
 	$Timer.start()
 	await $Timer.timeout
 	$WaitSprite.visible = false

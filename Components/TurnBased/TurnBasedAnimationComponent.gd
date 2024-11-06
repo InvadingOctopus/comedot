@@ -67,6 +67,7 @@ func connectSignals() -> void:
 
 func playAnimation(animationName: StringName = defaultAnimation) -> void:
 	if animationName.is_empty(): return
+	printDebug("playAnimation(): " + animationName)
 	animationNode.play(animationName)
 
 
@@ -97,12 +98,18 @@ func onEntity_didEndTurn() -> void:
 #region Turn Processes
 
 func processTurnBegin() -> void:
-	if shouldWaitForAnimation: await animationNode.animation_finished
+	if shouldWaitForAnimation:
+		if shouldShowDebugInfo: printDebug("processTurnBegin(): Waiting for animation…")
+		await animationNode.animation_finished
 
 func processTurnUpdate() -> void:
-	if shouldWaitForAnimation: await animationNode.animation_finished
+	if shouldWaitForAnimation:
+		if shouldShowDebugInfo: printDebug("processTurnUpdate(): Waiting for animation…")
+		await animationNode.animation_finished
 
 func processTurnEnd() -> void:
-	if shouldWaitForAnimation: await animationNode.animation_finished
+	if shouldWaitForAnimation:
+		if shouldShowDebugInfo: printDebug("processTurnEnd(): Waiting for animation…")
+		await animationNode.animation_finished
 
 #endregion

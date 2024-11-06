@@ -76,11 +76,12 @@ func _exit_tree() -> void:
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo:
-		printLog(str("processTurnBeginSignals() currentTurn: ", currentTurn))
+		printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
 		TextBubble.create(self, str("turnBegin ", currentTurn))
 
 	willBeginTurn.emit()
 	await self.processTurnBegin()
+	
 	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
@@ -90,11 +91,12 @@ func processTurnBeginSignals() -> void:
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo:
-		printLog(str("processTurnUpdateSignals() currentTurn: ", currentTurn))
+		printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
 		TextBubble.create(self, str("turnUpdate ", currentTurn))
 
 	willUpdateTurn.emit()
 	await self.processTurnUpdate()
+	
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
@@ -104,11 +106,12 @@ func processTurnUpdateSignals() -> void:
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo:
-		printLog(str("processTurnEndSignals() currentTurn: ", currentTurn))
+		printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
 		TextBubble.create(self, str("turnEnd ", currentTurn))
 
 	willEndTurn.emit()
 	await self.processTurnEnd()
+	
 	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
