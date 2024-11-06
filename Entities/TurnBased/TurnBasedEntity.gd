@@ -58,8 +58,8 @@ signal didEndTurn
 
 func _enter_tree() -> void:
 	super._enter_tree()
+	self.add_to_group(Global.Groups.turnBased, true) # IMPORTANT: Add to turn-based group BEFORE calling `TurnBasedCoordinator.addEntity()` in case the coordinator operates on that group.
 	TurnBasedCoordinator.addEntity(self)
-	self.add_to_group(Global.Groups.turnBased, true)
 
 
 func _exit_tree() -> void:

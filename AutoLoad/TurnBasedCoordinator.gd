@@ -372,11 +372,10 @@ func processTurnEndSignals() -> void:
 ## Returns the entity's index in the array, or -1 if the insertion fails.
 ## IMPORTANT: Use this method to add entities instead of modifying the [member turnBasedEntities] array directly!
 func addEntity(entity: TurnBasedEntity) -> int:
-	# TBD: Construct a "queue" system with dynamic insertions based on the Node's order in the Scene Tree?
 	if not turnBasedEntities.has(entity): # Add only if the entity not already in the array!
+		entity.add_to_group(Global.Groups.turnBased, true) # Just in case, even though it should be already done by TurnBasedEntity. IMPORTANT: May be required by functions which operate on this group.
 		self.turnBasedEntities.append(entity)
 		self.didAddEntity.emit(entity)
-		entity.add_to_group(Global.Groups.turnBased, true) # Just in case, even though it should be already done by TurnBasedEntity.
 		return turnBasedEntities.size()
 	else:
 		printWarning(str("addEntity(): Entity already in turnBasedEntities: ", entity))
