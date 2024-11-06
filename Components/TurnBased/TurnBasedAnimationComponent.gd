@@ -1,10 +1,12 @@
-## Plays different animations on an [AnimationPlayer] or [AnimatedSprite2D] in response to various turn-based signals from the parent [TurnBasedEntity] such as [signal TurnBasedEntity.willBeginTurn] and [signal TurnBasedEntity.didEndTurn].
+## Plays different animations on an [AnimationPlayer] or [AnimatedSprite2D] in response to various turn-based signals from this [TurnBasedComponent] such as [signal TurnBasedComponent.willBeginTurn] and [signal TurnBasedComponent.didEndTurn].
 ## Leave an animation name empty to skip animation for that signal.
+## NOTE: Animations are played in response to this COMPONENT's signals, NOT the parent [TurnBasedEntity]'s.
 ## Requirements: [TurnBasedEntity], [AnimationPlayer] or [AnimatedSprite2D]
 
 class_name TurnBasedAnimationComponent
 extends TurnBasedComponent
 
+# TBD:  Option to choose entity's signals or component's?
 # NOTE: Lucky that methods and signals like `is_playing()` and `animation_finished` are the same for both AnimationPlayer and AnimatedSprite2D! yAy Godot :)
 
 
@@ -57,12 +59,13 @@ func findAnimationNode() -> void:
 
 
 func connectSignals() -> void:
-	parentEntity.willBeginTurn.connect(self.onEntity_willBeginTurn)
-	parentEntity.didBeginTurn.connect(self.onEntity_didBeginTurn)
-	parentEntity.willUpdateTurn.connect(self.onEntity_willUpdateTurn)
-	parentEntity.didUpdateTurn.connect(self.onEntity_didUpdateTurn)
-	parentEntity.willEndTurn.connect(self.onEntity_willEndTurn)
-	parentEntity.didEndTurn.connect(self.onEntity_didEndTurn)
+	# IMPORTANT: DESIGN: Connect to this COMPONENT's signals, NOT the Entity's, because this respects the scene tree's node order.
+	self.willBeginTurn.connect(self.onWillBeginTurn)
+	self.didBeginTurn.connect(self.onDidBeginTurn)
+	self.willUpdateTurn.connect(self.onWillUpdateTurn)
+	self.didUpdateTurn.connect(self.onDidUpdateTurn)
+	self.willEndTurn.connect(self.onWillEndTurn)
+	self.didEndTurn.connect(self.onDidEndTurn)
 
 
 func playAnimation(animationName: StringName = defaultAnimation) -> void:
@@ -71,25 +74,25 @@ func playAnimation(animationName: StringName = defaultAnimation) -> void:
 	animationNode.play(animationName)
 
 
-#region Parent Entity Signal Handlers
+#region Signal Handlers
 # TIP: Override any of these methods in a subclass to provide more complex animations and effects.
 
-func onEntity_willBeginTurn() -> void:
+func onWillBeginTurn() -> void:
 	playAnimation(animationForTurnWillBegin)
 
-func onEntity_didBeginTurn() -> void:
+func onDidBeginTurn() -> void:
 	playAnimation(animationForTurnDidBegin)
 
-func onEntity_willUpdateTurn() -> void:
+func onWillUpdateTurn() -> void:
 	playAnimation(animationForTurnWillUpdate)
 
-func onEntity_didUpdateTurn() -> void:
+func onDidUpdateTurn() -> void:
 	playAnimation(animationForTurnDidUpdate)
 
-func onEntity_willEndTurn() -> void:
+func onWillEndTurn() -> void:
 	playAnimation(animationForTurnWillEnd)
 
-func onEntity_didEndTurn() -> void:
+func onDidEndTurn() -> void:
 	playAnimation(animationForTurnDidEnd)
 
 #endregion
