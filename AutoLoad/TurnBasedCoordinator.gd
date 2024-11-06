@@ -68,6 +68,15 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	}
 
 
+## A list of all the methods to call on each [TurnBasedEntity] per "tick" of each turn/phase, such as [method TurnBasedEntity.processTurnBeginSignals].
+## @experimental
+var turnCallQueue: Array[Callable] # TBD: UNUSED
+
+## The index of the NEXT method to call from the [member turnCallQueue] array.
+## i.e. at the beginning of a new turn, this index will be 0, meaning the [method TurnBasedEntity.processTurnBeginSignals] of the first [TurnBasedEntity] in the scene tree.
+## @experimental
+var turnCallQueueNextIndex: int # TBD: UNUSED
+
 ## The number of the current ONGOING turn. The first turn is 1.
 ## Incremented BEFORE the [signal willBeginTurn] signal and the [method processTurnBegin] method.
 @export_storage var currentTurn: int:
@@ -244,6 +253,24 @@ func dummyTimerFunction() -> void:
 
 #region Coordinator State Cycle
 
+## Clears and rebuilds an array to store a queue of all the turn processing methods to be called in order, and resets [member turnCallQueueNextIndex].
+## Returns the size of the queue: the total number of all the method calls.
+## @experimental
+func buildTurnQueue() -> int:
+	# TBD: UNUSED
+	self.turnCallQueue.clear()
+	
+	for entity in self.turnBasedEntities:
+		self.turnCallQueue.append_array([
+			entity.processTurnBeginSignals,
+			entity.processTurnUpdateSignals,
+			entity.processTurnEndSignals,
+			])
+	
+	self.turnCallQueueNextIndex = 0
+	return turnCallQueue.size()
+
+
 ## The beginning of processing 1 full turn and its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
@@ -330,7 +357,7 @@ func processTurnBeginSignals() -> void:
 
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnBegin() # `await` for Entity delays & animations etc.
+	await self.processTurnBegin() # `await` for Entity animations & delays etc.
 	didBeginTurn.emit()
 
 
@@ -343,7 +370,7 @@ func processTurnUpdateSignals() -> void:
 
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnUpdate() # `await` for Entity delays & animations etc.
+	await self.processTurnUpdate() # `await` for Entity animations & delays etc.
 	didUpdateTurn.emit()
 
 
@@ -356,7 +383,7 @@ func processTurnEndSignals() -> void:
 
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnEnd() # `await` for Entity delays & animations etc.
+	await self.processTurnEnd() # `await` for Entity animations & delays etc.
 
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates anymore.
 
@@ -401,10 +428,12 @@ func removeEntity(entity: TurnBasedEntity) -> int:
 func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 	var turnBasedEntitiesFound: Array[TurnBasedEntity]
 
-	# NOTE: The number of ndoes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
+	# NOTE: The number of nodes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
 	# so we start with that first.
 
 	# TODO: Search within children so this code may be used for multiple [TurnBasedCoordinator] parent nodes in the future.
+	# NOTE: Cannot search in more than 1 group at once, but there will be more nodes in the "turnBased" than in the "entities" group,
+	# because of components, so get the smaller "entities" group then iterate over it.
 
 	var entities: Array[Node] = self.get_tree().get_nodes_in_group(Global.Groups.entities)
 
