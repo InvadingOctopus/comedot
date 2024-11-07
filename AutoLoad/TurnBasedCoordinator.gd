@@ -192,6 +192,8 @@ signal didEndTurn
 signal willProcessEntity(entity: TurnBasedEntity)
 signal didProcessEntity(entity: TurnBasedEntity) ## NOTE: Emitted BEFORE the [member entityTimer] delay BETWEEN entities.
 
+signal willStartDelay(timer: Timer) ## Emitted when one of the timers between each state or entity is about to start.
+
 #endregion
 
 func _enter_tree() -> void:
@@ -461,6 +463,7 @@ func processEntities(state: TurnBasedState) -> void:
 func waitForStateTimer() -> void:
 	if not is_zero_approx(delayBetweenStates):
 		printDebug(str("[color=dimgray]waitForStateTimer(): ", stateTimer.wait_time))
+		self.willStartDelay.emit(stateTimer)
 		stateTimer.start()
 		await stateTimer.timeout
 	elif shouldShowDebugInfo:
@@ -476,6 +479,7 @@ func onStateTimer_timeout() -> void:
 func waitForEntityTimer() -> void:
 	if not is_zero_approx(delayBetweenEntities):
 		printDebug(str("[color=dimgray]waitForEntityTimer(): ", entityTimer.wait_time))
+		self.willStartDelay.emit(entityTimer)
 		entityTimer.start()
 		await entityTimer.timeout
 	elif shouldShowDebugInfo:
