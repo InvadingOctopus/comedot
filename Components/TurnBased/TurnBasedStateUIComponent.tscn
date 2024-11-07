@@ -1,0 +1,95 @@
+[gd_scene load_steps=4 format=3 uid="uid://dc30psrpymtkr"]
+
+[ext_resource type="Script" path="res://Components/TurnBased/TurnBasedStateUIComponent.gd" id="1_58qnf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bf3js"]
+font_size = 8
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bf3js"]
+bg_color = Color(0.5, 1, 0, 1)
+
+[node name="TurnBasedStateUIComponent" type="Node2D" groups=["components"]]
+script = ExtResource("1_58qnf")
+metadata/_edit_group_ = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -28.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+
+[node name="StateColorRect" type="ColorRect" parent="CanvasLayer/MarginContainer/GridContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+tooltip_text = "The TurnBasedCoordinator state/phase."
+mouse_filter = 1
+color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="StateDoneColorRect" type="ColorRect" parent="CanvasLayer/MarginContainer/GridContainer/HBoxContainer/StateColorRect"]
+unique_name_in_owner = true
+editor_description = "Shown for didBegin, didUpdate, didEnd"
+visible = false
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 2
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 6.0
+offset_bottom = 6.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+color = Color(1, 1, 1, 0.8)
+
+[node name="TurnLabel" type="Label" parent="CanvasLayer/MarginContainer/GridContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TURN#00"
+label_settings = SubResource("LabelSettings_bf3js")
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="EntityTimerBar" type="ProgressBar" parent="CanvasLayer/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "The TurnBasedCoordinator's Entity delay Timer."
+mouse_filter = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_bf3js")
+max_value = 10.0
+value = 5.0
+show_percentage = false
+
+[node name="StateTimerBar" type="ProgressBar" parent="CanvasLayer/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "The TurnBasedCoordinator's State delay Timer."
+mouse_filter = 1
+max_value = 10.0
+value = 5.0
+show_percentage = false
