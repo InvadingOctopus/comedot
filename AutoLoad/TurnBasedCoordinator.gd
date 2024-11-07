@@ -1,5 +1,5 @@
 ## Manages turn-based gameplay and updates [TurnBasedEntity]s.
-## Each turn has 3 phases: Begin, Update, End.
+## Each turn has 3 [enum TurnBasedState]s or phases: Begin, Update, End.
 ## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurnProcess].
 ##
 ## During each phase, the corresponding Begin/Update/End methods are called on all turn-based entities in order:
@@ -57,9 +57,10 @@ extends Node # + TurnBasedObjectBase
 #region State: Turns
 
 ## The "phases" of each turn: the Beginning, the Update, and the End.
-## The different states allow gameplay components to intercept and modify each other at different points during the turn update cycle.
-## For example, a poison damage-over-time component may apply damage at the END of a character's turn,
+## The different states allow gameplay components to intercept and modify each other at different moments during the turn update cycle.
+## Example: A poison damage-over-time component may apply damage at the END of a character's turn,
 ## but a healing-over-time component may increase the health at the START of a turn.
+## The phases can be thought of as analogous to picking up a chess piece → moving it to a new position → and putting it down.
 enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnInvalid	= -1,
 	turnBegin	=  0,
@@ -67,15 +68,6 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnEnd		=  2,
 	}
 
-
-## A list of all the methods to call on each [TurnBasedEntity] per "tick" of each turn/phase, such as [method TurnBasedEntity.processTurnBeginSignals].
-## @experimental
-var turnCallQueue: Array[Callable] # TBD: UNUSED
-
-## The index of the NEXT method to call from the [member turnCallQueue] array.
-## i.e. at the beginning of a new turn, this index will be 0, meaning the [method TurnBasedEntity.processTurnBeginSignals] of the first [TurnBasedEntity] in the scene tree.
-## @experimental
-var turnCallQueueNextIndex: int # TBD: UNUSED
 
 ## The number of the current ONGOING turn. The first turn is 1.
 ## Incremented BEFORE the [signal willBeginTurn] signal and the [method processTurnBegin] method.
@@ -105,7 +97,7 @@ var turnCallQueueNextIndex: int # TBD: UNUSED
 			TurnBasedState.turnBegin:  logStateIndicator = "[color=green]T"
 			TurnBasedState.turnUpdate: logStateIndicator = "[color=yellow]T"
 			TurnBasedState.turnEnd:    logStateIndicator = "[color=orange]T"
-			_: logStateIndicator = "[color=darkgray]T"
+			_: logStateIndicator = "[color=dimgray]T"
 
 		showDebugInfo()
 
@@ -165,6 +157,7 @@ var nextEntityToProcess: TurnBasedEntity:
 
 
 #region State: Timers
+# DESIGN: There are separate timers because a game may choose have no delay between entities but want a delay between states, or vice versa.
 
 @onready var stateTimer:  Timer = $StateTimer
 @onready var entityTimer: Timer = $EntityTimer
@@ -222,7 +215,22 @@ func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
 	return Tools.getEnumText(TurnBasedState, state)
 
 
-#region Coordinator Management
+#region Coordinator External Interface
+
+## The beginning of processing 1 full turn and its 3 states.
+## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
+func startTurnProcess() -> void:
+	printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
+
+	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
+
+	if not self.isReadyToStartTurn:
+		if shouldShowDebugInfo: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
+		return
+
+	# TBD: Should timers be reset here? How to handle game pauses during the timer?
+	cycleStatesUntilNextTurn()
+
 
 ## @experimental
 func pause() -> void:
@@ -237,55 +245,10 @@ func unpause() -> void:
 	stateTimer.paused  = false
 	entityTimer.paused = false
 
-
-## @experimental
-func clearTimerFunctions() -> void:
-	functionToCallOnStateTimer  = dummyTimerFunction
-	functionToCallOnEntityTimer = dummyTimerFunction
-
-
-## @experimental
-func dummyTimerFunction() -> void:
-	return
-
 #endregion
 
 
 #region Coordinator State Cycle
-
-## Clears and rebuilds an array to store a queue of all the turn processing methods to be called in order, and resets [member turnCallQueueNextIndex].
-## Returns the size of the queue: the total number of all the method calls.
-## @experimental
-func buildTurnQueue() -> int:
-	# TBD: UNUSED
-	self.turnCallQueue.clear()
-	
-	for entity in self.turnBasedEntities:
-		self.turnCallQueue.append_array([
-			entity.processTurnBeginSignals,
-			entity.processTurnUpdateSignals,
-			entity.processTurnEndSignals,
-			])
-	
-	self.turnCallQueueNextIndex = 0
-	return turnCallQueue.size()
-
-
-## The beginning of processing 1 full turn and its 3 states.
-## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
-func startTurnProcess() -> void:
-	printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
-
-	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
-
-	if not self.isReadyToStartTurn:
-		if shouldShowDebugInfo: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
-		return
-
-	# TBD: Should timers be reset here? How to handle game pauses during the timer?
-
-	cycleStatesUntilNextTurn()
-
 
 ## Cycles through all the [enum TurnBasedState]s until the next turn's [constant TurnBasedState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
@@ -295,24 +258,14 @@ func cycleStatesUntilNextTurn() -> void:
 	# If we're already at `turnBegin`, advance the state once.
 	if self.currentTurnState == TurnBasedState.turnBegin:
 		await self.processState()
-		if not is_zero_approx(delayBetweenStates):
-			stateTimer.start()
-			await stateTimer.timeout
+		await self.waitForStateTimer()
 		self.incrementState()
 
 	# Cycle through the states until we're at `turnBegin` again
 	while self.currentTurnState != TurnBasedState.turnBegin:
 		await self.processState()
-		if not is_zero_approx(delayBetweenStates):
-			stateTimer.start()
-			await stateTimer.timeout
+		await self.waitForStateTimer() # NOTE: Delay even if it's the last entity/state in the loop, because there should be a delay before the 1st entity/state of the NEXT turn too!
 		self.incrementState()
-
-
-func onStateTimer_timeout() -> void:
-	printDebug(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer))
-	functionToCallOnStateTimer.call()
-	functionToCallOnStateTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
 
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
@@ -449,18 +402,6 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 
 #region Entity Process Cycle
 
-func waitForEntityTimer() -> void:
-	if not is_zero_approx(delayBetweenEntities):
-		entityTimer.start()
-		await entityTimer.timeout
-
-
-func onEntityTimer_timeout() -> void:
-	printDebug(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer))
-	functionToCallOnEntityTimer.call()
-	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
-
-
 # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
 # NOTE: Do NOT `await turnBasedEntity.did…` signals, because they are emitted within `turnBasedEntity.process…`, before the following `await`
 
@@ -494,7 +435,7 @@ func processEntities(state: TurnBasedState) -> void:
 		self.currentEntityIndex += 1
 		recentEntityIndex = currentEntityIndex
 
-		printDebug(str("processEntities(): #", currentEntityIndex, " ", turnBasedEntity.logName, " ", getStateLogText(state)))
+		printDebug(str("processEntities(): #", currentEntityIndex, " ", turnBasedEntity.logName, " S", getStateLogText(state)))
 
 		self.willProcessEntity.emit(turnBasedEntity)
 
@@ -504,11 +445,58 @@ func processEntities(state: TurnBasedState) -> void:
 			TurnBasedState.turnEnd:		await turnBasedEntity.processTurnEndSignals()
 
 		self.didProcessEntity.emit(turnBasedEntity) # NOTE: Emit this signal BEFORE the delay BETWEEN entities.
-
-		await waitForEntityTimer() # Start the delay between entities
+		
+		# Start the delay between entities
+		# NOTE: Delay even if it's the last entity in the loop, because there should be a delay before the 1st entity of the NEXT turn too!
+		await waitForEntityTimer()
 
 	currentEntityIndex = -1 # NOTE: Set an invalid index to specify that no entity is currently being processed.
 	self.isProcessingEntities = false
+
+#endregion
+
+
+#region Timers
+
+func waitForStateTimer() -> void:
+	if not is_zero_approx(delayBetweenStates):
+		printDebug(str("[color=dimgray]waitForStateTimer(): ", stateTimer.wait_time))
+		stateTimer.start()
+		await stateTimer.timeout
+	elif shouldShowDebugInfo:
+		printDebug("[color=dimgray]waitForStateTimer(): 0")
+
+
+func onStateTimer_timeout() -> void:
+	printDebug(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer))
+	functionToCallOnStateTimer.call()
+	functionToCallOnStateTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
+
+
+func waitForEntityTimer() -> void:
+	if not is_zero_approx(delayBetweenEntities):
+		printDebug(str("[color=dimgray]waitForEntityTimer(): ", entityTimer.wait_time))
+		entityTimer.start()
+		await entityTimer.timeout
+	elif shouldShowDebugInfo:
+		printDebug("[color=dimgray]waitForEntityTimer(): 0")
+
+
+func onEntityTimer_timeout() -> void:
+	printDebug(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer))
+	functionToCallOnEntityTimer.call()
+	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
+
+
+## @experimental
+func clearTimerFunctions() -> void:
+	functionToCallOnStateTimer  = dummyTimerFunction
+	functionToCallOnEntityTimer = dummyTimerFunction
+
+
+## @experimental
+func dummyTimerFunction() -> void:
+	return
 
 #endregion
 
