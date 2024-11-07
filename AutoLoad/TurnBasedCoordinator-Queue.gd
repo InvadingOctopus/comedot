@@ -70,21 +70,6 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	}
 
 
-## A list of all the methods to call on each [TurnBasedEntity] per "tick" of each turn/phase, such as [method TurnBasedEntity.processTurnBeginSignals].
-## @experimental
-var turnCallQueue: Array[Callable] # TBD: UNUSED
-
-## The index of the NEXT method to call from the [member turnCallQueue] array.
-## i.e. at the beginning of a new turn, this index will be 0, meaning the [method TurnBasedEntity.processTurnBeginSignals] of the first [TurnBasedEntity] in the scene tree.
-## @experimental
-var turnCallQueueNextIndex: int: # TBD: UNUSED
-	set(newValue):
-		if newValue != turnCallQueueNextIndex:
-			self.printChange("turnCallQueueNextIndex", turnCallQueueNextIndex, newValue)
-			turnCallQueueNextIndex = newValue
-
-var isProcessingCallQueue: bool
-
 ## The number of the current ONGOING turn. The first turn is 1.
 ## Incremented BEFORE the [signal willBeginTurn] signal and the [method processTurnBegin] method.
 @export_storage var currentTurn: int:
@@ -260,64 +245,6 @@ func unpause() -> void:
 	# TODO: Implement more reliable pause/unpause
 	stateTimer.paused  = false
 	entityTimer.paused = false
-
-#endregion
-
-
-#region Coordinator State Cycle
-
-## Clears and rebuilds an array to store a queue of all the turn processing methods to be called in order, and resets [member turnCallQueueNextIndex].
-## Returns the size of the queue: the total number of all the method calls.
-## @experimental
-func buildTurnCallQueue() -> int:
-	# TBD: UNUSED
-	self.turnCallQueue.clear()
-	
-	# NOTE: Process the turn "begin" phase for all entities, then the "update" phase for all entities, and so on...
-
-	# Loop over each state
-	for state: TurnBasedState in [TurnBasedState.turnBegin, TurnBasedState.turnUpdate, TurnBasedState.turnEnd]:
-
-		# Loop over each entity
-		for entity in self.turnBasedEntities:
-			match state:
-				TurnBasedState.turnBegin:
-					self.turnCallQueue.append_array([
-						entity.processTurnBeginSignals,
-						])
-				TurnBasedState.turnUpdate: self.turnCallQueue.append(entity.processTurnUpdateSignals)
-				TurnBasedState.turnEnd:    self.turnCallQueue.append(entity.processTurnEndSignals)
-
-			## NOTE: Wait for the timer even after the last entity, because there should be a delay before the 1st entity of the NEXT turn too!
-			self.turnCallQueue.append(self.waitForEntityTimer)
-	
-		self.turnCallQueue.append(self.waitForStateTimer) ## NOTE: Wait for the timer even after the final state, because there should be a delay before the 1st state of the NEXT turn too!
-	
-	self.turnCallQueueNextIndex = 0
-
-	if shouldShowDebugInfo: printDebug(str("buildTurnCallQueue(): ", self.turnCallQueue))
-
-	return turnCallQueue.size()
-
-
-## @experimental
-func startTurnStateQueue() -> void:
-	self.buildTurnCallQueue()
-	while turnCallQueueNextIndex < self.turnCallQueue.size():
-		await self.advanceTurnStateQueue()
-
-
-## @experimental
-func advanceTurnStateQueue() -> void:
-	var methodToCall: Callable = self.turnCallQueue[turnCallQueueNextIndex]
-	printDebug(str("advanceTurnStateQueue(): ", turnCallQueueNextIndex, ": Calling ", methodToCall))
-	await methodToCall.call()
-	turnCallQueueNextIndex += 1
-
-
-## @experimental
-func resumeTurnStateQueue() -> void:
-	await advanceTurnStateQueue()
 
 #endregion
 
@@ -569,5 +496,79 @@ func showDebugInfo() -> void:
 	Debug.watchList.currentTurnState= currentTurnState
 	Debug.watchList.stateTimer		= stateTimer.time_left
 	Debug.watchList.entityTimer		= entityTimer.time_left
+
+#endregion
+
+
+#region Experimental Queue System
+
+## A list of all the methods to call on each [TurnBasedEntity] per "tick" of each turn/phase, such as [method TurnBasedEntity.processTurnBeginSignals].
+## @experimental
+var turnCallQueue: Array[Callable] # TBD: UNUSED
+
+## The index of the NEXT method to call from the [member turnCallQueue] array.
+## i.e. at the beginning of a new turn, this index will be 0, meaning the [method TurnBasedEntity.processTurnBeginSignals] of the first [TurnBasedEntity] in the scene tree.
+## @experimental
+var turnCallQueueNextIndex: int: # TBD: UNUSED
+	set(newValue):
+		if newValue != turnCallQueueNextIndex:
+			self.printChange("turnCallQueueNextIndex", turnCallQueueNextIndex, newValue)
+			turnCallQueueNextIndex = newValue
+
+var isProcessingCallQueue: bool
+
+
+## Clears and rebuilds an array to store a queue of all the turn processing methods to be called in order, and resets [member turnCallQueueNextIndex].
+## Returns the size of the queue: the total number of all the method calls.
+## @experimental
+func buildTurnCallQueue() -> int:
+	# TBD: UNUSED
+	self.turnCallQueue.clear()
+	
+	# NOTE: Process the turn "begin" phase for all entities, then the "update" phase for all entities, and so on...
+
+	# Loop over each state
+	for state: TurnBasedState in [TurnBasedState.turnBegin, TurnBasedState.turnUpdate, TurnBasedState.turnEnd]:
+
+		# Loop over each entity, once per state
+		for entity in self.turnBasedEntities:
+			match state:
+				TurnBasedState.turnBegin:
+					self.turnCallQueue.append_array([
+						entity.processTurnBeginSignals,
+						])
+				TurnBasedState.turnUpdate: self.turnCallQueue.append(entity.processTurnUpdateSignals)
+				TurnBasedState.turnEnd:    self.turnCallQueue.append(entity.processTurnEndSignals)
+
+			## NOTE: Wait for the timer even after the last entity, because there should be a delay before the 1st entity of the NEXT turn too!
+			self.turnCallQueue.append(self.waitForEntityTimer)
+	
+		self.turnCallQueue.append(self.waitForStateTimer) ## NOTE: Wait for the timer even after the final state, because there should be a delay before the 1st state of the NEXT turn too!
+	
+	self.turnCallQueueNextIndex = 0
+
+	if shouldShowDebugInfo: printDebug(str("buildTurnCallQueue(): ", self.turnCallQueue))
+
+	return turnCallQueue.size()
+
+
+## @experimental
+func startTurnStateQueue() -> void:
+	self.buildTurnCallQueue()
+	while turnCallQueueNextIndex < self.turnCallQueue.size():
+		await self.advanceTurnStateQueue()
+
+
+## @experimental
+func advanceTurnStateQueue() -> void:
+	var methodToCall: Callable = self.turnCallQueue[turnCallQueueNextIndex]
+	printDebug(str("advanceTurnStateQueue(): ", turnCallQueueNextIndex, ": Calling ", methodToCall))
+	await methodToCall.call()
+	turnCallQueueNextIndex += 1
+
+
+## @experimental
+func resumeTurnStateQueue() -> void:
+	await advanceTurnStateQueue()
 
 #endregion
