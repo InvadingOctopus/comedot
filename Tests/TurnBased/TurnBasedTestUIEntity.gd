@@ -11,8 +11,8 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	TurnBasedCoordinator.entityTimer.wait_time = 1
-	TurnBasedCoordinator.stateTimer.wait_time = 1
+	TurnBasedCoordinator.entityTimer.wait_time = 3
+	TurnBasedCoordinator.stateTimer.wait_time  = 3
 
 
 func connectSignals() -> void:
