@@ -6,6 +6,13 @@
 
 The goal is to have an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes that modify other nodes, so you can mix this framework with any other architecture or programming paradigm, even for 2D scenes in a 3D game!
 
+* Includes a library of components for different types of player movement, combat, collectibles, inventory, interactions, upgrades etc.
+* Standard UI controls like a stats HUD, buttons & lists for special skills etc.
+* Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
+* Save/Load player preferences via a config file with just `Settings.any_name = 69`
+* Tons of helper functions & debugging tools.
+* Free-to-use 3rd-party assets for quick prototyping.
+
 > [!IMPORTANT]
 > This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and **no backwards compatibility is guaranteed!**
 
