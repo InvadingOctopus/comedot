@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=10 format=3 uid="uid://16iw8px1vot0"]
+[gd_resource type="Theme" load_steps=14 format=3 uid="uid://16iw8px1vot0"]
 
 [ext_resource type="StyleBox" uid="uid://cn0nasortgjdq" path="res://Assets/Themes/Button/Comedot Default/Disabled StyleBox.tres" id="1_c7sdf"]
 [ext_resource type="StyleBox" uid="uid://bximlchqiv3qx" path="res://Assets/Themes/Button/Comedot Default/Normal StyleBox.tres" id="1_yj4d2"]
@@ -6,6 +6,10 @@
 [ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_qfpu2"]
 [ext_resource type="StyleBox" uid="uid://b8wetmvjllfi1" path="res://Assets/Themes/Button/Comedot Default/Hover StyleBox.tres" id="3_febwk"]
 [ext_resource type="StyleBox" uid="uid://byccvy8tvkt2w" path="res://Assets/Themes/Button/Comedot Default/Pressed StyleBox.tres" id="5_5dpge"]
+[ext_resource type="StyleBox" uid="uid://cqaoplsmfugew" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber.tres" id="6_xf5bp"]
+[ext_resource type="StyleBox" uid="uid://t6eyiakqjmum" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber Highlight.tres" id="7_nylrf"]
+[ext_resource type="StyleBox" uid="uid://cgvwymdjafenq" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber Pressed.tres" id="8_28ssp"]
+[ext_resource type="StyleBox" uid="uid://c5fqq43pdmjg2" path="res://Assets/Themes/ScrollBar/ScrollBar.tres" id="9_450rk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7gpu3"]
 bg_color = Color(1, 1, 1, 0)
@@ -35,7 +39,15 @@ Button/styles/hover = ExtResource("3_febwk")
 Button/styles/hover_pressed = ExtResource("5_5dpge")
 Button/styles/normal = ExtResource("1_yj4d2")
 Button/styles/pressed = ExtResource("5_5dpge")
+HScrollBar/styles/grabber = ExtResource("6_xf5bp")
+HScrollBar/styles/grabber_highlight = ExtResource("7_nylrf")
+HScrollBar/styles/grabber_pressed = ExtResource("8_28ssp")
+HScrollBar/styles/scroll = ExtResource("9_450rk")
 ProgressBar/styles/background = SubResource("StyleBoxFlat_7gpu3")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_nw84h")
 TooltipLabel/font_sizes/font_size = 16
 TooltipPanel/styles/panel = SubResource("StyleBoxEmpty_a5phl")
+VScrollBar/styles/grabber = ExtResource("6_xf5bp")
+VScrollBar/styles/grabber_highlight = ExtResource("7_nylrf")
+VScrollBar/styles/grabber_pressed = ExtResource("8_28ssp")
+VScrollBar/styles/scroll = ExtResource("9_450rk")

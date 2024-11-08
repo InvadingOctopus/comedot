@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://cqaoplsmfugew"]
+
+[resource]
+resource_name = "Scroll Grabber"
+bg_color = Color(0.6, 0.6, 1, 0.8)
+corner_detail = 1
+anti_aliasing = false
