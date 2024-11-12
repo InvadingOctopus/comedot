@@ -1,4 +1,5 @@
 ## Handles jumping. Applies velocity when the player inputs the jump control.
+## The direction of the jump is determined by the [member CharacterBody2D.up_direction] (only the Y axis).
 ## NOTE: Gravity and friction in air is handled by [PlatformerPhysicsComponent].
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
 
@@ -6,7 +7,8 @@ class_name JumpControlComponent
 extends CharacterBodyManipulatingComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TODO: Reduce duplication of flags like `isOnFloor` etc.
+# TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
+# TODO: Stop keyboard input repetition?
 
 
 #region Parameters
@@ -26,43 +28,34 @@ extends CharacterBodyManipulatingComponentBase
 
 enum State { idle, jump }
 
-var currentState: State #:
-	# DEBUG: set(newValue): 
-	# 	Debug.printChange("currentState", currentState, newValue)
-	# 	currentState = newValue
+var currentState: State
 
 ## Cache the input state so we only have to query [Input] once when there is an input event.
 var jumpInput:				bool:
 	set(newValue):
-		if jumpInput == newValue: return # NOTE: Don't trigger other flags' setters if there is no actual change!
-		var oldValue: bool = jumpInput
-		jumpInput = newValue
-		# The "just pressed" & "just released" toggles are needed for "short" jumping etc.
-		jumpInputJustPressed  = (newValue and not oldValue)
-		jumpInputJustReleased = (not newValue and oldValue)
+		if newValue != jumpInput:
+			if shouldShowDebugInfo: Debug.printChange("jumpInput", jumpInput, newValue)
+			jumpInput = newValue
 
-var jumpInputJustPressed:	bool
-	# DEBUG:
-	#set(newValue):
-		#if jumpInputJustPressed == newValue: return
-		#jumpInputJustPressed = newValue
-		#printDebug("jumpInputJustPressed → " + str(jumpInputJustPressed))
+var jumpInputJustPressed:	bool:
+	set(newValue):
+		if newValue != jumpInputJustPressed:
+			if shouldShowDebugInfo: Debug.printChange("jumpInputJustPressed", jumpInputJustPressed, newValue)
+			jumpInputJustPressed = newValue
 
-var jumpInputJustReleased:	bool
-	# DEBUG:
-	#set(newValue):
-		#if jumpInputJustReleased == newValue: return
-		#jumpInputJustReleased = newValue
-		#printDebug("jumpInputJustReleased → " + str(jumpInputJustReleased))
+var jumpInputJustReleased:	bool:
+	set(newValue):
+		if newValue != jumpInputJustReleased:
+			if shouldShowDebugInfo: Debug.printChange("jumpInputJustReleased", jumpInputJustReleased, newValue)
+			jumpInputJustReleased = newValue
 
-var didWallJump:	bool ## Did we just perform a "wall jump"?
+var currentNumberOfJumps:	int:
+	set(newValue):
+		if newValue != currentNumberOfJumps:
+			if shouldShowDebugInfo: Debug.printChange("currentNumberOfJumps", currentNumberOfJumps, newValue)
+			currentNumberOfJumps = newValue
 
-var currentNumberOfJumps: int
-	# DEBUG:
-	#set(newValue):
-		#if currentNumberOfJumps != newValue:
-			#currentNumberOfJumps = newValue
-			#printDebug("currentNumberOfJumps → " + str(currentNumberOfJumps))
+var didWallJump:			bool ## Did we just perform a "wall jump"?
 
 @onready var platformerControlComponent: PlatformerControlComponent = coComponents.PlatformerControlComponent # TBD: Static or dynamic?
 
@@ -82,27 +75,18 @@ func _ready() -> void:
 	wallJumpTimer.wait_time = parameters.wallJumpTimer
 
 
+#region Update Cycle
+
 func _input(event: InputEvent) -> void:
-	if not isEnabled: return
-	if event.is_action(GlobalInput.Actions.jump): processJumpInput()
+	if not isEnabled \
+	or not event.is_action(GlobalInput.Actions.jump): return
 
-
-func processJumpInput() -> void:
-	# Jump
 	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
-	#platformerPhysicsComponent.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
+	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
+	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
-
-func clearInput() -> void:
-	jumpInputJustPressed  = false
-	jumpInputJustReleased = false
-
-
-func _physics_process(_delta: float) -> void:
-	# DEBUG: printLog("_physics_process()")
-	if not isEnabled: return
-
-	updateStateBeforeMovement()
+	if shouldShowDebugInfo:
+		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
 
 	processWallJump()
 	processJump()
@@ -110,56 +94,87 @@ func _physics_process(_delta: float) -> void:
 	characterBodyComponent.queueMoveAndSlide()
 
 
+## Performs updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
 func characterBodyComponent_didMove(_delta: float) -> void:
 	# DEBUG: printLog("characterBodyComponent_didMove()")
-	#updateState()
-
-	# Perform updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
 
 	if characterBodyComponent.wasOnWall: # NOTE: NOT `is_on_wall_only()` CHECK: FORGOT: Why?
 		wallJumpTimer.stop() # TBD: Is this needed?
 
+	resetState()
 	updateCoyoteJumpState()
 	updateWallJumpState()
 
-	# DEBUG:
 	if shouldShowDebugInfo: showDebugInfo()
-
 	clearInput()
 
+
+## Resets the [currentNumberOfJumps] counter & [member coyoteJumpTimer] if the body is on a floor.
+## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput].
+func resetState() -> void:
+	# NOTE: It may be more efficient to check `currentNumberOfJumps` instead of writing these values every frame?
+	if currentNumberOfJumps != 0 and characterBodyComponent.isOnFloor:
+		# DEBUG: printDebug("currentNumberOfJumps = 0")
+		currentNumberOfJumps = 0
+		coyoteJumpTimer.stop()
+
+
+func clearInput() -> void:
+	jumpInputJustPressed  = false
+	jumpInputJustReleased = false
+
+#endregion
+
+
+#region Normal & Mid-Air Jump
 
 func processJump() -> void:
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
 	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
 
-	var shouldJump: bool = false
+	var shouldJump:    bool = false
 	var canCoyoteJump: bool = parameters.allowCoyoteJump and not is_zero_approx(coyoteJumpTimer.time_left)
 
-	# Initial or mid-air jump
-	# TODO: TBD: Allow double-jumping after a wall jump?
+	# The initial or mid-air jump
+	# TBD: Allow double-jumping after a wall jump?
 
 	if self.jumpInputJustPressed:
+
 		if currentNumberOfJumps <= 0: shouldJump = characterBodyComponent.isOnFloor or canCoyoteJump
 		else: shouldJump = (currentNumberOfJumps < parameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
-	
+
+	# Shorten the initial jump if we release the input early while jumping
+	# TBD: Should mid-air jumps also be short-able?
+
+	elif self.jumpInputJustReleased \
+	and not characterBodyComponent.isOnFloor \
+	and currentNumberOfJumps == 1 \
+	and body.velocity.y * body.up_direction.y > parameters.jumpVelocity1stJumpShort * body.up_direction.y:
+
+		# If the current velocity is FASTER than the "short" velocity, clamp it to the short velocity.
+		# NOTE: Do NOT use `absf()` to compare, otherwise an EXTRA short jump may also occur when releasing the input ON THE WAY DOWN from the height! (or whatever the opposing `up_direction` is)
+		# Because, for example, if a short jump is 50 and a normal jump is 100, then when "falling" the `body.velocity.y` may be say 90, which is > 50, triggering ANOTHER jump when resetting the velocity to 50!
+		# But without `absf()`, it will be -90 (assuming `up_direction.y` of -1), which is still < 50.
+		# NOTE: MUST apply `up_direction` to the `body.velocity` side too, because a normal jump velocity of -100 (up) should become 100, meaning > 50 = short jump,
+		# and even in an "inverted gravity" `up_direction`, 100 * 1.0 (`up_direction` = down) = 100 > 50.
+		# CHECK: Verify that we got this understanding correct!
+
+		if shouldShowDebugInfo: printDebug(str("Short Jump! body.velocity.y: ", body.velocity.y, " → ", parameters.jumpVelocity1stJumpShort * body.up_direction.y))
+		body.velocity.y = parameters.jumpVelocity1stJumpShort * body.up_direction.y
+
 	# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
 
-	if shouldJump:
-		if currentNumberOfJumps <= 0:
-			body.velocity.y = parameters.jumpVelocity1stJump
-		else:
-			body.velocity.y = parameters.jumpVelocity2ndJump
-		coyoteJumpTimer.stop() # The "coyote" jump grace period is no longer needed after we jump
+	if shouldJump: # Jump! Jump!
+		# NOTE: Respect the `up_direction` to allow for flipped-gravity situations!
+		if currentNumberOfJumps <= 0: body.velocity.y = parameters.jumpVelocity1stJump * body.up_direction.y
+		else: body.velocity.y = parameters.jumpVelocity2ndJump * body.up_direction.y
 
+		coyoteJumpTimer.stop() # The "coyote" grace period is no longer needed after we actually jump
 		currentNumberOfJumps += 1
 		currentState = State.jump # TBD: Should this be a `jump` state?
 
-	# Shorten the initial jump if we release the input while jumping
+		if shouldShowDebugInfo: printDebug(str("body.velocity.y → ",  body.velocity.y))
 
-	if self.jumpInputJustReleased \
-		and not characterBodyComponent.isOnFloor \
-		and body.velocity.y < parameters.jumpVelocity1stJumpShort:
-			body.velocity.y = parameters.jumpVelocity1stJumpShort
 
 
 ## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
@@ -177,17 +192,7 @@ func updateCoyoteJumpState() -> void:
 		coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
 		coyoteJumpTimer.start() # beep beep!
 
-
-## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput]
-func updateStateBeforeMovement() -> void:
-	# DESIGN: Using `match` here may seem too cluttered and ambiguous
-
-	# Jump
-
-	if characterBodyComponent.isOnFloor and currentNumberOfJumps != 0: # NOTE: It may be more efficient to check `currentNumberOfJumps` instead of writing these values every frame?
-			# DEBUG: printDebug("currentNumberOfJumps = 0")
-			currentNumberOfJumps = 0
-			coyoteJumpTimer.stop()
+#endregion
 
 
 #region Wall Jumping
@@ -208,9 +213,10 @@ func processWallJump() -> void:
 	var wallNormal: Vector2 = characterBodyComponent.previousWallNormal
 
 	if self.jumpInputJustPressed:
+		# NOTE: Respect the `up_direction` to allow for flipped-gravity situations!
 		body.velocity.x = wallNormal.x * parameters.wallJumpVelocityX
-		body.velocity.y = parameters.wallJumpVelocity
-		
+		body.velocity.y = parameters.wallJumpVelocity * body.up_direction.y
+
 		# Allow unlimited jumps between walls?
 		if parameters.decreaseJumpCountOnWallJump and currentNumberOfJumps > 0:
 			currentNumberOfJumps -= 1
@@ -234,6 +240,7 @@ func updateWallJumpState() -> void:
 		wallJumpTimer.start()
 
 #endregion
+
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
