@@ -125,6 +125,17 @@
 		"description": "A property setter which only updates a variable if the new value is different."
 	},
 
+	"Property Setter If New with Log": {
+		"prefix": "setNewLog",
+		"body": [
+			"set(newValue):",
+			"\tif newValue != ${1:property}:",
+			"\t\tif shouldShowDebugInfo: Debug.printChange(\"${1:property}\", ${1:property}, newValue)",
+			"\t\t${1:property} = newValue\n\t\t$0"
+		],
+		"description": "A property setter which only updates a variable if the new value is different and prints a log of the change."
+	},
+	
 	"Lazy Property": {
 		"prefix": "lazyVar",
 		"body": [
