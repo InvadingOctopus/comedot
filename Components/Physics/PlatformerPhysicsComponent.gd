@@ -11,6 +11,10 @@ extends CharacterBodyManipulatingComponentBase
 
 #region Parameters
 
+## Applied to the [member PlatformerMovementParameters.gravityScale].
+## May be used for incidental situations such as flipping the gravity direction without modifying the base parameters.
+@export_range(-10, 10, 0.05) var gravityScaleOverride: float = 1.0
+
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
@@ -127,7 +131,7 @@ func clearInput() -> void:
 func processGravity(delta: float) -> void:
 	# Vertical Slowdown
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
-		body.velocity.y += (gravity * parameters.gravityScale) * delta
+		body.velocity.y += (gravity * parameters.gravityScale * self.gravityScaleOverride) * delta
 
 	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
 
