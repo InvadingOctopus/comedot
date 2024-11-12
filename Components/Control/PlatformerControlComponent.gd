@@ -10,6 +10,10 @@ extends Component
 
 
 #region Parameters
+
+## Flips the controls. For situations like mirrored gameplay or "confusion" effects etc.
+@export var shouldInvertXAxis: bool = false # For when you pick a purple flower :)
+
 @export var isEnabled: bool = true
 #endregion
 
@@ -51,6 +55,8 @@ func processInput() -> void:
 		self.inputDirection = inputDirectionOverride
 	else:
 		self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+
+	if shouldInvertXAxis: self.inputDirection = -self.inputDirection
 
 	# Reset the override.
 	self.inputDirectionOverride = 0
