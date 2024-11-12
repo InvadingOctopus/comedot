@@ -11,13 +11,14 @@ The goal is to have an all-in-one toolkit for 2D games (platformers, shoot-em-up
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.any_name = 69`
 * Tons of helper functions & debugging tools.
+* Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
 > [!IMPORTANT]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API may change frequently and **no backwards compatibility is guaranteed!**
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The opinionated code eschews GDScript conventions like ugly underscores, and the API may change frequently and **no backwards compatibility is guaranteed!**
 
 
-🌳 _An example of a player entity's node tree:_
+🌳 _An example of a player entity:_
 
 ![components-tree]
 
@@ -103,9 +104,9 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
-[comedock]: https://i.imgur.com/oY4WymY.png "Custom Godot Editor Dock Plugin"
+[logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
+[components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
 [rocks-with-guns]: https://i.imgur.com/wH84m23.mp4 "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
-[components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
 [debug-charts]: https://i.imgur.com/jgAjmzY.png "Debug Chart Windows"
-[logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
+[comedock]: https://i.imgur.com/oY4WymY.png "Custom Godot Editor Dock Plugin"
