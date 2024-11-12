@@ -10,7 +10,7 @@ extends Node2D
 
 #region Parameters
 
-@export var nodeToMonitor:		NodePath
+@export var nodeToMonitor:		NodePath ## See [NodePath] documentation for examples of paths.
 @export var propertyToMonitor:	NodePath ## A path to the node's property, beginning with ":"
 
 ## How many instances of values to record for the [member Chart.propertyToMonitor].
@@ -21,7 +21,7 @@ extends Node2D
 		resizeArrays()
 
 ## The height of the Y axis on EACH side, positive and negative.
-const verticalHeight: float = 100 # TODO: Remove hardcoding
+@export_range(100, 200, 5) var verticalHeight: float = 100
 
 # Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis, to better fit the screen.
 @export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5
@@ -139,7 +139,7 @@ func createLine(index: int) -> void:
 
 
 func createGridLines() -> void:
-	# TBD: Export these as paramteres?
+	# TBD: Export these as parameters?
 
 	var gridMinY:	float = -verticalHeight
 	var gridMaxY:	float = verticalHeight

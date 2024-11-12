@@ -1,12 +1,19 @@
 ## Displays debugging information and charts about the entity and other components or nodes.
+## TIP: See [NodePath] documentation for examples of paths.
 
 class_name DebugComponent
 extends Component
 
+# TODO: Use `PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT`?
+
 
 #region Parameters
-@export_node_path var propertiesToChart: Array[NodePath] # TODO: Use `PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT`?
-@export_node_path var propertiesToWatch: Array[NodePath] # TODO: Use `PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT`?
+@export_node_path var propertiesToChart: Array[NodePath]
+@export_node_path var propertiesToWatch: Array[NodePath]
+
+@export_range(100, 200, 5) var chartVerticalHeight: float = 100
+@export_range(0.1, 2.0, 0.05) var chartValueScale:  float = 0.5
+
 @export var isEnabled: bool = true
 #endregion
 
@@ -34,6 +41,7 @@ func convertPathsToAbsolute(relativePaths: Array[NodePath]) -> Array[NodePath]:
 
 	for relativePath: NodePath in relativePaths:
 		absolutePath = Tools.convertRelativePathToAbsolute(self, relativePath)
+		if shouldShowDebugInfo: printDebug(str("convertPathsToAbsolute() relativePath: ", relativePath, " → ", absolutePath))
 		absolutePaths.append(absolutePath)
 
 	return absolutePaths
@@ -45,7 +53,7 @@ func createCharts() -> void:
 	for path: NodePath in propertiesToChartAbsolutePaths:
 		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
-		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1])
+		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartVerticalHeight, self.chartValueScale)
 
 
 func _physics_process(_delta: float) -> void:
