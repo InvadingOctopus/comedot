@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=35 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
@@ -184,6 +184,10 @@ name = &"score"
 displayName = ""
 description = ""
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b23pp"]
+resource_local_to_scene = true
+size = Vector2(12, 12)
+
 [node name="PlayerEntityTemplate-Platformer" type="CharacterBody2D" groups=["entities", "players"]]
 z_index = 10
 collision_layer = 6
@@ -233,6 +237,10 @@ factions = 2
 collision_layer = 4
 collision_mask = 40
 
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_b23pp")
+
 [node name="InvulnerabilityOnHitComponent" parent="." node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
 animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
 
@@ -263,4 +271,5 @@ visible = false
 
 [node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
 
+[editable path="DamageReceivingComponent"]
 [editable path="GunComponent"]
