@@ -15,7 +15,7 @@ extends CooldownComponent
 ## The [Entity] to instantiate a copy of when the Gun shoots.
 @export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
-@export var ammo:Stat
+@export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
 @export var ammoCost: int = 1 ## The ammo used per shot. A negative number will INCREASE the ammo when firing.
 
 ## If `true`, the gun fires automatically without any player input.
@@ -106,9 +106,13 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 
 
 ## Deducts the [member ammoCost] from the [member ammo] [Stat].
-## Returns `false` if there is not enough ammo.
+## If no [member ammo] [Stat] Resource is specified, no ammo is needed and the result is always `true`.
+## Returns `false` if [member ammo] is specified but there is not enough ammo.
 func useAmmo() -> bool:
-	# First, do we have enough ammo?
+	# If no ammo resource is specified, no ammo is needed!
+	if not self.ammo: return true
+
+	# Do we have enough ammo?
 
 	if ammo.value < ammoCost:
 		printDebug("Not enough ammo")
