@@ -3,6 +3,7 @@
 ## For player control & input actions, see [GlobalInput].
 ## For visuals and sounds that must be present in every scene, see [GlobalOverlay].
 
+# class_name Global
 extends Node
 
 

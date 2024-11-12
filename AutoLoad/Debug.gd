@@ -1,4 +1,4 @@
-# AutoLoad
+## AutoLoad
 ## Displays a list of variables updated per frame. To watch a variable, add it to the `watchList` property
 
 #class_name Debug

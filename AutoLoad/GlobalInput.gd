@@ -1,6 +1,7 @@
-# AutoLoad
+## AutoLoad
 ## Input event labels and global keyboard shortcuts
 
+# class_name GlobalInput
 extends Node
 
 

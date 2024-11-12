@@ -560,7 +560,7 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 ## WARNING: May NOT work as expected for enums with non-sequential values or starting below 0, or if there are multiple identical values, or if there is a 'null' key.
 static func getEnumText(enumType: Dictionary, value: int) -> String:
 	var text: String
-	
+
 	text = str(enumType.find_key(value)) # TBD: Check for `null`?
 	if text.is_empty(): text = "[invalid key/value]"
 

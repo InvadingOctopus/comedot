@@ -1,7 +1,8 @@
-# AutoLoad
+## AutoLoad
 ## Global game-specific state and "signal/event bus" available to all scenes and nodes at all times.
 ## May be used to store the "system environment" (like player preferences such as buttons and volume etc.) and also the state of each game "campaign", such as the difficulty level and character class etc.
 
+# class_name GameState
 extends Node
 
 
