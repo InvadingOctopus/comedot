@@ -7,8 +7,9 @@ class_name JumpControlComponent
 extends CharacterBodyManipulatingComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TODO: Stop keyboard input repetition?
+# TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
+# TBD:  A more fail-proof way of handling short jumps. Timers?
 
 
 #region Parameters
@@ -23,7 +24,7 @@ extends CharacterBodyManipulatingComponentBase
 ## May improve the feel of control in some games.
 @onready var coyoteJumpTimer:	Timer = $CoyoteJumpTimer
 
-## The peroid while the player can "wall jump" after just having moved away from a wall.
+## The period while the player can "wall jump" after just having moved away from a wall.
 @onready var wallJumpTimer:		Timer = $WallJumpTimer
 
 enum State { idle, jump }
@@ -148,19 +149,22 @@ func processJump() -> void:
 
 	elif self.jumpInputJustReleased \
 	and not characterBodyComponent.isOnFloor \
-	and currentNumberOfJumps == 1 \
-	and body.velocity.y * body.up_direction.y > parameters.jumpVelocity1stJumpShort * body.up_direction.y:
+	and currentNumberOfJumps == 1:
+	
+		# If the current velocity is FASTER than the short jump velocity, clamp it to the shorter velocity.
+		# IMPORTANT: Also avoid triggering an extraneous short jump if the input is released when FALLING ON THE WAY DOWN! (or whatever the opposing `up_direction` is)
+		# EXAMPLE: If a normal jump is -100 and a short jump is -50, then when falling the `body.velocity.y` would be POSITIVE (down),
+		# so the comparison should be made after taking the `body.up_direction` into account.
 
-		# If the current velocity is FASTER than the "short" velocity, clamp it to the short velocity.
-		# NOTE: Do NOT use `absf()` to compare, otherwise an EXTRA short jump may also occur when releasing the input ON THE WAY DOWN from the height! (or whatever the opposing `up_direction` is)
-		# Because, for example, if a short jump is 50 and a normal jump is 100, then when "falling" the `body.velocity.y` may be say 90, which is > 50, triggering ANOTHER jump when resetting the velocity to 50!
-		# But without `absf()`, it will be -90 (assuming `up_direction.y` of -1), which is still < 50.
-		# NOTE: MUST apply `up_direction` to the `body.velocity` side too, because a normal jump velocity of -100 (up) should become 100, meaning > 50 = short jump,
-		# and even in an "inverted gravity" `up_direction`, 100 * 1.0 (`up_direction` = down) = 100 > 50.
+		if shouldShowDebugInfo: Debug.printVariables([parentEntity.name, body.velocity.y, parameters.jumpVelocity1stJumpShort * body.up_direction.y, body.up_direction.y])
+
 		# CHECK: Verify that we got this understanding correct!
 
-		if shouldShowDebugInfo: printDebug(str("Short Jump! body.velocity.y: ", body.velocity.y, " → ", parameters.jumpVelocity1stJumpShort * body.up_direction.y))
-		body.velocity.y = parameters.jumpVelocity1stJumpShort * body.up_direction.y
+		if (body.up_direction.y < 0 and body.velocity.y < parameters.jumpVelocity1stJumpShort * body.up_direction.y) \
+		or (body.up_direction.y > 0 and body.velocity.y > parameters.jumpVelocity1stJumpShort * body.up_direction.y): # Inverted gravity?
+
+			if shouldShowDebugInfo: printDebug(str("Short Jump! body.velocity.y: ", body.velocity.y, " → ", parameters.jumpVelocity1stJumpShort * body.up_direction.y))
+			body.velocity.y = parameters.jumpVelocity1stJumpShort * body.up_direction.y
 
 	# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
 
