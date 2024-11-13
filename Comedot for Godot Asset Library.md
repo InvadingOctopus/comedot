@@ -5,6 +5,8 @@ Description:
 
 A project template and framework for making 2D games by adding components to entities. May be combined with any other framework or architecture.
 
+Requires the latest Godot 4.4 build!
+
 • A library of components for features needed in most games like: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
 • Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
 • Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
@@ -28,7 +30,7 @@ Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
 Godot Vesion:	Custom Build
 Asset Version:	1.69
-Commit URL:		569ce56ca15e75f8adccac8520331d10a4f7095e 2024-11-12
+Commit URL:		eada1adee0cd0c9132212ea9f58bc33085caf06b 2024-11-13
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
