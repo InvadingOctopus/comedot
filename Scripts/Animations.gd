@@ -48,6 +48,8 @@ static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), durati
 #region Label Animations
 
 ## Plays different animations on a [Label] depending on how the specified number changes.
+## Modifies the [member label.label_settings] if available, otherwise [member label.modulate].
+## WARNING: If the [LabelSettings] is not [member Resource.resource_local_to_scene] then ALL the Labels with that Resource will be modified!
 static func animateNumberLabel(label: Label, value: Variant, previousValue: Variant) -> Tween:
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
@@ -56,14 +58,19 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 	elif  value < previousValue: color = Color.RED
 	else: return
 
-	var defaultColor: Color = Color.WHITE # TODO: CHECK: A better way to reset a property.
-
+	var labelSettings: LabelSettings = label.label_settings
+	var previousColor: Color = Color.WHITE # TODO: A better way to reset a property: Using the current `modulate` won't work if called during another animation.
 	var tween: Tween = label.create_tween()
 	tween.set_trans(Tween.TRANS_BOUNCE)
 	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, ^"modulate", color, duration)
-	tween.tween_property(label, ^"modulate", defaultColor, duration)
 
+	if labelSettings:
+		tween.tween_property(labelSettings, ^"font_color", color, duration)
+		tween.tween_property(labelSettings, ^"font_color", previousColor, duration)
+	else:
+		tween.tween_property(label, ^"modulate", color, duration)
+		tween.tween_property(label, ^"modulate", previousColor, duration)
+	
 	return tween
 
 #endregion
