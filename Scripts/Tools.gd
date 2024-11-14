@@ -83,7 +83,12 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 	child.owner = parent
 
 
-static func findFirstChildOfType(parentNode: Node, type: Variant) -> Node:
+## Returns the first child of [param parentNode] which matches the specified [param type].
+## If [param includeParent] is `true` (which is the default) then the PARENT ITSELF may be returned if it is node of a matching type. This may be useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
+static func findFirstChildOfType(parentNode: Node, type: Variant, includeParent: bool = true) -> Node:
+	if includeParent and is_instance_of(parentNode, type):
+		return parentNode
+	
 	var children: Array[Node] = parentNode.get_children()
 	for child in children:
 		if is_instance_of(child, type): return child # break
