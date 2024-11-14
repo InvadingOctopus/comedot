@@ -17,6 +17,7 @@ metadata/_edit_group_ = true
 [node name="SpawnAreaShape" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_phir2")
+debug_color = Color(0.8, 0.2, 6, 0.42)
 
 [node name="SpawnTimer" type="Timer" parent="."]
 autostart = true
