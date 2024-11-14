@@ -29,6 +29,11 @@ var tween: Tween
 #endregion
 
 
+func _ready() -> void:
+	super._ready()
+	if not symbol: Debug.printWarning("Missing symbol texture!", self)
+
+
 func arrangeControls() -> void:
 	if not shouldShowIconAfterText:
 		self.move_child(icon,  0)
@@ -52,14 +57,21 @@ func updateUI(animate: bool = self.shouldAnimate) -> void:
 
 
 func setPipTextures() -> void:
-	availablePips.texture = symbol
-	availablePips.visible = true
-	symbolWidth = symbol.get_width()
+	# NOTE: The minimum height should always be the texture height, to prevent collapse of the nodes' layout :(
 
-	depletedPips.texture  = depletedSymbol
-	depletedSymbolWidth   = depletedSymbol.get_width()
+	if symbol:
+		availablePips.texture = symbol
+		availablePips.visible = true
+		availablePips.custom_minimum_size.y = symbol.get_height()
+		symbolWidth = symbol.get_width()
+
+	if depletedSymbol:
+		depletedPips.texture = depletedSymbol
+		depletedPips.custom_minimum_size.y = depletedSymbol.get_height()
+		depletedSymbolWidth  = depletedSymbol.get_width()
 
 
+## Ignores [param animate].
 func updatePips(_animate: bool = self.shouldAnimate) -> void:
 	# TODO: animate
 
@@ -72,6 +84,7 @@ func updatePips(_animate: bool = self.shouldAnimate) -> void:
 		availablePips.custom_minimum_size.x = availablePipsNodeWidth
 		availablePips.visible = true
 	else:
+		availablePips.custom_minimum_size.x = 0
 		availablePips.visible = false
 
 	# The depleted pips
@@ -83,4 +96,8 @@ func updatePips(_animate: bool = self.shouldAnimate) -> void:
 		depletedPips.custom_minimum_size.x = depletedPipsNodeWidth
 		depletedPips.visible = true
 	else:
+		depletedPips.custom_minimum_size.x = 0
 		depletedPips.visible = false
+
+	# Tooltip
+	pips.tooltip_text = str(stat.displayName, ": ", value) # TBD: Show Stat.max?
