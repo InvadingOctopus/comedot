@@ -71,9 +71,8 @@ func setPipTextures() -> void:
 		depletedSymbolWidth  = depletedSymbol.get_width()
 
 
-## Ignores [param animate].
-func updatePips(_animate: bool = self.shouldAnimate) -> void:
-	# TODO: animate
+func updatePips(animate: bool = self.shouldAnimate) -> void:
+	# TBD: A different flag for animating pips separately from the text?
 
 	# The remaining pips
 
@@ -101,3 +100,6 @@ func updatePips(_animate: bool = self.shouldAnimate) -> void:
 
 	# Tooltip
 	pips.tooltip_text = str(stat.displayName, ": ", value) # TBD: Show Stat.max?
+
+	# Animate
+	if animate: Animations.modulateNumberDifference(self.pips, stat.value, stat.previousValue)
