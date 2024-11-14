@@ -8,6 +8,9 @@ extends Component
 
 
 #region Parameters
+## If omitted, then the parent Entity is used if it is an [AnimatedSprite2D], or then the first matching child node of the parent Entity is used, if any.
+@export var animatedSprite: AnimatedSprite2D
+
 @export var idleAnimation: StringName = &"idle"
 @export var walkAnimation: StringName = &"walk"
 @export var jumpAnimation: StringName = &"jump"
@@ -19,7 +22,6 @@ extends Component
 
 
 #region Dependencies
-var animatedSprite:				AnimatedSprite2D
 var characterBodyComponent:		CharacterBodyComponent
 var body:						CharacterBody2D
 var platformerControlComponent: PlatformerControlComponent
@@ -30,14 +32,17 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	self.animatedSprite				= parentEntity.findFirstChildOfType(AnimatedSprite2D)
-	self.characterBodyComponent		= parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
+	if not self.animatedSprite:
+		self.animatedSprite	= parentEntity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
+		if not self.animatedSprite: printWarning("Missing AnimatedSprite2D!")
+
+	self.characterBodyComponent		= parentEntity.findFirstComponentSubclass(CharacterBodyComponent) # TBD: Include entity?
 	self.body						= characterBodyComponent.body
 	self.platformerControlComponent	= coComponents.PlatformerControlComponent # TBD: Static or dynamic?
 
 
 func _process(_delta: float) -> void:
-	if not isEnabled: return
+	if not isEnabled or not animatedSprite: return
 
 	# INFO: Animations are checked in order of priority: "walk" overrides "idle"
 
