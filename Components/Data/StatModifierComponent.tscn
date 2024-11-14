@@ -4,7 +4,7 @@
 
 [node name="StatModifierComponent" type="Node" groups=["components"]]
 script = ExtResource("1_ttyqa")
-modifier = -1
+modifier = 1
 metadata/_edit_group_ = true
 
 [node name="Timer" type="Timer" parent="."]

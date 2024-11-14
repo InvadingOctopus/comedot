@@ -1,4 +1,5 @@
 ## Modifies a [Stat] over time at the interval specified on the child [Timer].
+## TIP: Useful for regenerating a Health [Stat] or dealing poison damage-over-time, etc.
 
 class_name StatModifierComponent
 extends Component
@@ -6,7 +7,7 @@ extends Component
 
 #region Parameters
 @export var stat: Stat
-@export_range(-10.0, 10.0, 0.5, "or_greater", "or_less") var modifier: int # HACK: A step of 0.5 to fordibly show the slider :')
+@export_range(-10.0, 10.0, 0.5, "or_greater", "or_less") var modifier: int # HACK: A step of 0.5 to forcibly show the slider :')
 @export var isEnabled: bool = true
 #endregion
 
