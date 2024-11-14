@@ -1,4 +1,5 @@
-## Moves the entity in a straight line in the direction of the entity's rotation.
+## Moves the entity in a straight line in the direction of the entity's [member Node2D.rotation].
+## NOTE: Sets the parent entity's position DIRECTLY; Does NOT use "physics" like [member CharacterBody2D.velocity].
 
 class_name LinearMotionComponent
 extends Component
@@ -6,18 +7,17 @@ extends Component
 
 #region Parameters
 
- ## NOTE: This is not called `inPaused` because that might imply it's not being processed every frame.
-@export var isMoving:							bool = true
+@export_range(-2000, 2000, 5) var initialSpeed:	float = 150
+@export_range(-2000, 2000, 5) var maximumSpeed:	float = 800 ## The limit if [member shouldApplyAcceleration].
 
-@export_range(-1000, 1000, 5) var initialSpeed:	float = 150
-@export_range(-1000, 1000, 5) var maximumSpeed:	float = 800
-
-@export var applyAcceleration := true
-@export_range(-1000, 1000, 5) var acceleration:	float = 800
+@export var shouldApplyAcceleration:			 bool = true
+@export_range(-2000, 2000, 5) var acceleration:	float = 800
 
 @export var shouldStopAtMaximumDistance:		 bool = false
 @export var shouldDeleteParentAtMaximumDistance: bool = false
-@export_range(50, 1000, 5) var maximumDistance: float = 200
+@export_range(50, 2000, 5) var maximumDistance: float = 200
+
+@export var isEnabled:							 bool = true
 
 #endregion
 
@@ -25,6 +25,7 @@ extends Component
 #region State
 var speed:            float = initialSpeed
 var distanceTraveled: float = 0
+var isMoving:		  bool = true ## `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
 #endregion
 
 
@@ -34,7 +35,7 @@ signal didReachMaximumDistance
 
 
 func _physics_process(delta: float) -> void:
-	if not isMoving: return
+	if not isEnabled or not isMoving: return
 
 	# Check the maximum distance limit before moving any further.
 
@@ -42,19 +43,19 @@ func _physics_process(delta: float) -> void:
 		if distanceTraveled > maximumDistance or is_equal_approx(distanceTraveled, maximumDistance):
 			# DEBUG: printDebug("distanceTraveled: " + str(distanceTraveled) + " >= maximumDistance: " + str(maximumDistance))
 			if shouldStopAtMaximumDistance: self.isMoving = false
+			didReachMaximumDistance.emit() # Emit the signal after updating the flag and before we delete the entity!
 			if shouldDeleteParentAtMaximumDistance: parentEntity.queue_free()
-			didReachMaximumDistance.emit()
 			return
 
 	# Get the current direction
 	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation)
 
 	# Accelerate
-
-	if applyAcceleration:
+	if shouldApplyAcceleration:
 		speed += acceleration * delta
 		if speed > maximumSpeed: speed = maximumSpeed
 
+	# Get the upcoming movement
 	var offset: Vector2 = direction * speed * delta
 
 	# Should we stop at a maximum distance?
@@ -75,5 +76,7 @@ func _physics_process(delta: float) -> void:
 
 	parentEntity.translate(offset) # parentEntity.position += offset
 	self.distanceTraveled += offset.length()
+
+	if shouldShowDebugInfo: printDebug(str("offset: ", offset))
 
 	# DEBUG: printDebug("distanceTraveled: " + str(distanceTraveled) + ", maximumDistance: " + str(maximumDistance))
