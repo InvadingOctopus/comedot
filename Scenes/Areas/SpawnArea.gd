@@ -101,7 +101,8 @@ func spawn() -> Node2D:
 			newSpawn.add_to_group(groupToAddTo, true)
 
 		parent.add_child(newSpawn)
-		newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
+		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
+			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 		totalNodesSpawned += 1
 		didSpawn.emit(newSpawn, parent)
 		return newSpawn
