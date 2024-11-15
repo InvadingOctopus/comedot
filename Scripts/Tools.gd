@@ -54,11 +54,12 @@ static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector
 
 
 ## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
+## ALERT: Some situations may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 ## Returns: The new copy of the scene.
 static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var newChild := scene.instantiate()
-	newChild.position = position
-	parent.add_child(newChild)
+	if newChild is Node2D or newChild is Control: newChild.position = position
+	parent.add_child(newChild, true) # force_readable_name
 	newChild.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 	return newChild
 
