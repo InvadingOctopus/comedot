@@ -122,6 +122,9 @@ func _physics_process(delta: float) -> void:
 
 	var previousProgressRatio: float = pathFollower.progress_ratio # Remember this in case the ratio wraps around after a complete circuit.
 
+	# Don't progress further if we are already at the end
+	if not pathFollower.loop and (is_equal_approx(previousProgressRatio, 1.0) or previousProgressRatio > 1.0): return
+
 	pathFollower.progress += self.speed * delta
 
 	var currentProgressRatio: float = pathFollower.progress_ratio
