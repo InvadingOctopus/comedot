@@ -109,7 +109,7 @@ func childEnteredTree(node: Node) -> void:
 	pass
 
 
-## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards. 
+## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards.
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_PARENTED] Notification.
 ## Returns `true` if successfully registered.
 func registerComponent(newComponent: Component) -> bool:
@@ -121,7 +121,7 @@ func registerComponent(newComponent: Component) -> bool:
 
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
-	
+
 	if existingComponent:
 		printLog(str("Replacing: ", existingComponent.logFullName, " ← ", newComponent.logFullName))
 		existingComponent.removeFromEntity(true) # shouldFree
@@ -133,21 +133,21 @@ func registerComponent(newComponent: Component) -> bool:
 
 	# TBD: Register the superclass of the component as well, such as [HealthComponent] for [ShieldedHealthComponent],
 	# to make it easier for other dependent components to access the child class via [member Component.coComponents] if they only need the parent class' features.
-	
+
 	# DESIGN: DISABLED: This is too complicated to implement elegantly/reliably,
 	# because many components share common base classes such as `Component`, `CharacterBodyManipulatingComponentBase`, `CooldownComponent` etc.
 	# WORKAROUND: Just call findFirstComponentSubclass() at the site of use.
-	
+
 	# var shouldRegisterSuperClass: bool = false
 
 	# if shouldRegisterSuperClass:
 	# 	var superClass: Script = newComponent.get_script().get_base_script()
-		
+
 	# 	if superClass:
 	# 		var superType: StringName = superClass.get_global_name()
-			
+
 	# 		# Don't keep registering the core/base types!
-	# 		if not superType.is_empty() and superType.to_upper() != "COMPONENT" and not superType.to_upper().ends_with("BASE"): 
+	# 		if not superType.is_empty() and superType.to_upper() != "COMPONENT" and not superType.to_upper().ends_with("BASE"):
 	# 			if superType not in self.components:
 	# 				self.components[superType] = newComponent
 	# 				printDebug(str("Superclass: ", superType, " = ", newComponent.logName))
@@ -175,7 +175,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 	var existingComponent: Component = self.components.get(componentType)
 
 	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
-	
+
 	if existingComponent == componentToRemove:
 		printLog(str("Unregistering ", existingComponent))
 		self.components.erase(componentType)
@@ -212,21 +212,24 @@ func addComponent(component: Component) -> void:
 
 
 ## Creates a copy of the specified component's scene and adds it as a child node of this entity.
-## Shortcut for [load] and [method PackedScene.instantiate].
+## Shortcut for [method load] and [method PackedScene.instantiate].
+## ALERT: Some situations, such as adding a new component while the entity is being initialized, may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 func addNewComponent(type: Script) -> Component:
-	## NOTICE: This is needed because adding components with `.new()` adds the script ONLY, NOT the scene!
+	## NOTE: This is needed because adding components with `.new()` adds the script ONLY, NOT the scene!
 	## and instantiating a scene is a lot of boilerplate code each time. :(
 
-	## NOTICE: This cannot be a static function on [Component],
+	## NOTE: This cannot be a static function on [Component],
 	## because then GDScript will always run it on the [Component] script, not the subclasses we need. :(
 
 	# First, construct the scene name from the script's name.
-
-	var scenePath: String = Tools.getScenePathFromClass(type)
+	var componentScenePath: String = Tools.getScenePathFromClass(type)
+	if shouldShowDebugInfo: printDebug(str("addNewComponent(", type, "): ", componentScenePath))
 
 	# Load and instantiate the component scene.
+	var newComponent := Tools.loadSceneAndAddInstance(componentScenePath, self)
+	if shouldShowDebugInfo: printDebug(str(newComponent))
 
-	return Tools.loadSceneAndAddInstance(scenePath, self)
+	return newComponent
 
 
 ## Searches all child nodes and returns an array of all nodes which inherit from [Component].
