@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://72f1ii2vh854"]
+
+[ext_resource type="Script" path="res://Components/Movement/PathFollowComponent.gd" id="1_763hx"]
+
+[node name="PathFollowComponent" type="Node" groups=["components"]]
+script = ExtResource("1_763hx")
