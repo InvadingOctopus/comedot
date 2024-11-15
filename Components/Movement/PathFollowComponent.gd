@@ -15,7 +15,7 @@ extends Component
 ## If `false`, then the entity is moved along the path at an OFFSET relative to the entity's starting position.
 @export var shouldSnapEntityToPath: bool = true
 
-## If `true` (default), the [member PathFollow2D.progress] is set to 0 when this component is [method _ready] or p
+## If `true` (default), the [member PathFollow2D.progress] is set to 0 when this component is [method _ready] and on [method Component.unregisterParent].
 @export var shouldResetProgress: bool = true
 
 @export var isEnabled: bool = true
