@@ -63,11 +63,11 @@ static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2
 	return newChild
 
 
-# NOTE: In Tools.gd: func transitionToScene(nextScene: PackedScene) -> void:
+# NOTE: In Global.gd: func transitionToScene(nextScene: PackedScene) -> void:
 
-# NOTE: In Tools.gd: func setPause(paused: bool) -> bool:
+# NOTE: In Global.gd: func setPause(paused: bool) -> bool:
 
-# NOTE: In Tools.gd: func togglePause() -> bool:
+# NOTE: In Global.gd: func togglePause() -> bool:
 
 #endregion
 
@@ -88,7 +88,7 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 static func findFirstChildOfType(parentNode: Node, type: Variant, includeParent: bool = true) -> Node:
 	if includeParent and is_instance_of(parentNode, type):
 		return parentNode
-	
+
 	var children: Array[Node] = parentNode.get_children()
 	for child in children:
 		if is_instance_of(child, type): return child # break
