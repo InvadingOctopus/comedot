@@ -1,5 +1,5 @@
 ## Moves the entity in a straight line in the direction of the entity's [member Node2D.rotation].
-## NOTE: Sets the parent entity's position DIRECTLY; Does NOT use "physics" like [member CharacterBody2D.velocity].
+## NOTE: Sets the parent entity's position DIRECTLY; does NOT use "physics" such as [member CharacterBody2D.velocity].
 
 class_name LinearMotionComponent
 extends Component
