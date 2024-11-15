@@ -16,7 +16,7 @@ const componentTypeName	:= &"Comedot Component"
 const componentScript	:= preload("res://Components/Component.gd")
 const componentIcon		:= preload("res://Assets/Icons/Component.svg")
 
-const componentMenuItem := "New Component in Selected Folder"
+const componentMenuItem := "New Component in Selected Folder..."
 #endregion
 
 

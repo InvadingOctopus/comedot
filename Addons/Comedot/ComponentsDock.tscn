@@ -161,6 +161,8 @@ select_mode = 1
 
 [node name="NewComponentDialog" type="ConfirmationDialog" parent="."]
 title = "New Component"
+initial_position = 2
+size = Vector2i(250, 200)
 ok_button_text = "Create"
 dialog_text = "Choose a name for a new Component as a pair of \".tscn\" and \".gd\" files."
 dialog_autowrap = true
@@ -170,24 +172,30 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -100.0
-offset_right = -151.0
-offset_bottom = -64.0
+offset_left = 8.0
+offset_top = -192.0
+offset_right = -8.0
+offset_bottom = -34.0
 grow_horizontal = 2
 grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Spacer" type="HSeparator" parent="NewComponentDialog/VBoxContainer"]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_7r6gx")
 
 [node name="NewComponentFolderLabel" type="Label" parent="NewComponentDialog/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Folder: "
 
 [node name="NewComponentNameTextBox" type="LineEdit" parent="NewComponentDialog/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 placeholder_text = "NewComponent"
 
