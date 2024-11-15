@@ -10,10 +10,13 @@ extends Component
 
 @export_range(-2000, 2000, 10) var speed: float = 100
 
-## If `true`, the entity is snapped to the nearest point on the path, closest to the entity's position at the time this component is ready.
+## If `true` (default), the entity is snapped to the nearest point on the path, closest to the entity's position at the time this component is ready.
 ## The [member PathFollow2D.progress] is also set according to the snapped position, and the rest of the movement resumes from there.
 ## If `false`, then the entity is moved along the path at an OFFSET relative to the entity's starting position.
 @export var shouldSnapEntityToPath: bool = true
+
+## If `true` (default), the [member PathFollow2D.progress] is set to 0 when this component is [method _ready] or p
+@export var shouldResetProgress: bool = true
 
 @export var isEnabled: bool = true
 
@@ -36,6 +39,9 @@ signal didCompletePath ## Emitted when the [PathFollow2D] completes a circuit ar
 
 func _ready() -> void:
 	setDependencies()
+
+	if self.shouldResetProgress and pathFollower:
+		pathFollower.progress = 0
 
 	if self.shouldSnapEntityToPath and curve:
 		snapEntityToCurve()
@@ -133,5 +139,10 @@ func _physics_process(delta: float) -> void:
 	or (previousProgressRatio >= 0.9 and currentProgressRatio <= 0.1): # Did we wrap around after completing a circuit? TBD: A more reliable way of detectng a full lap? :)
 		printDebug("didCompletePath")
 		self.didCompletePath.emit()
+
+
+func unregisterParent() -> void:
+	if self.shouldResetProgress and pathFollower: pathFollower.progress = 0
+	super.unregisterParent()
 
 #endregion
