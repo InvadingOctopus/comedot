@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://Components/Visual/HealthVisualComponent.gd" id="1_p145s"]
 
-[node name="HealthVisualComponent" type="Node" groups=["components"]]
+[node name="HealthVisualComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_p145s")
