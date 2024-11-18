@@ -72,7 +72,7 @@ var percentage: float: ## The current [member value] as a percentage of the [mem
 	get: return float(value) / float(max) * 100.0
 
 var logName: String:
-	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ", value: ", value, ", range: ", min, "-", max)
+	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ": ", value, " (", min, "-", max, ")")
 #endregion
 
 
