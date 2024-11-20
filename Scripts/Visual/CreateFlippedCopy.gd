@@ -1,6 +1,7 @@
 ## Creates flipped/mirrored copies of a node horizontally (X) and/or vertically (Y).
 ## The flags may be used in conjunction with each other to create 2 copies.
 ## NOTE: The flags do NOT create copies of the flipped copy created by other flags!
+## NOTE: The copies are created WITHOUT duplicating this script, to avoid infinite copies.
 
 class_name CreateFlippedCopy
 extends Node2D
