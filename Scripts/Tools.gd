@@ -321,6 +321,14 @@ static func getScreenTopLeftInCamera(camera: Camera2D) -> Vector2:
 	var cameraCenter := camera.get_screen_center_position()
 	return cameraCenter - camera.get_viewport_rect().size / 2
 
+
+## NOTE: Does NOT add the new copy to the original node's parent. Follow up with [method Tools.addChildAndSetOwner].
+static func createScaledCopy(nodeToDuplicate: Node2D, copyScale: Vector2) -> Node2D:
+	var scaledCopy: Node2D = nodeToDuplicate.duplicate(Node.DuplicateFlags.DUPLICATE_GROUPS && Node.DuplicateFlags.DUPLICATE_SIGNALS && Node.DuplicateFlags.DUPLICATE_USE_INSTANTIATION)
+	scaledCopy.scale = copyScale
+	return scaledCopy
+
+
 #endregion
 
 
