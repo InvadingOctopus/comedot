@@ -2,8 +2,8 @@
 ## NOTE: Sets the parent entity's position DIRECTLY; does NOT use "physics" such as [member CharacterBody2D.velocity].
 ## ALERT: IGNORES the [member path] and overrides it with the parent of [member pathFollower].
 ## WARNING: If multiple entities with a [PathFollowComponent] are on the same [PathFollow2D] parent, then they will ALL overlap the SAME position!
-## TIP: To give each entity it's own path, use the [IndependentPathFollowComponent]
-## Requirements: The parent Entity must be a child node of a [PathFollow2D] which must itself be a child of a [Path2D].
+## TIP: To give each entity its own path, make a separate [PathFollow2D] for each [Entity] under the same [Path2D], or use the [IndependentPathFollowComponent].
+## Requirements: The parent entity must be a child node of a [PathFollow2D] which must itself be a child of a [Path2D].
 
 class_name PathFollowComponent
 extends IndependentPathFollowComponent
