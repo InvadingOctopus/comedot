@@ -150,7 +150,7 @@ func processJump() -> void:
 	elif self.jumpInputJustReleased \
 	and not characterBodyComponent.isOnFloor \
 	and currentNumberOfJumps == 1:
-	
+
 		# If the current velocity is FASTER than the short jump velocity, clamp it to the shorter velocity.
 		# IMPORTANT: Also avoid triggering an extraneous short jump if the input is released when FALLING ON THE WAY DOWN! (or whatever the opposing `up_direction` is)
 		# EXAMPLE: If a normal jump is -100 and a short jump is -50, then when falling the `body.velocity.y` would be POSITIVE (down),
