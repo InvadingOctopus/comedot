@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cp16jaiqg1ypd"]
 
-[ext_resource type="Script" path="res://Scenes/PlayerSpawnPosition.gd" id="1_jc78c"]
+[ext_resource type="Script" path="res://Scenes/Gameplay/PlayerSpawnPosition.gd" id="1_jc78c"]
 
 [node name="PlayerSpawnPosition" type="Marker2D"]
 editor_description = "The marker for the Compass to point to."

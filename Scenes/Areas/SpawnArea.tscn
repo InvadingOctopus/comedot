@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dnj2tewb1jq0n"]
 
-[ext_resource type="Script" uid="uid://bmm8e8qu1dihx" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
-[ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/SpawnTimer.tscn" id="2_8imah"]
+[ext_resource type="Script" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
+[ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/Gameplay/SpawnTimer.tscn" id="2_8imah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_phir2"]
 resource_local_to_scene = true
