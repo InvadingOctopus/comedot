@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dnj2tewb1jq0n"]
+[gd_scene load_steps=4 format=3 uid="uid://dnj2tewb1jq0n"]
 
-[ext_resource type="Script" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
+[ext_resource type="Script" uid="uid://bmm8e8qu1dihx" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
+[ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/SpawnTimer.tscn" id="2_8imah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_phir2"]
 resource_local_to_scene = true
@@ -19,7 +20,6 @@ unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
-[node name="SpawnTimer" type="Timer" parent="."]
-autostart = true
+[node name="SpawnTimer" parent="." instance=ExtResource("2_8imah")]
 
-[connection signal="timeout" from="SpawnTimer" to="." method="onSpawnTimer_timeout"]
+[connection signal="didSpawn" from="SpawnTimer" to="." method="onSpawnTimer_didSpawn"]
