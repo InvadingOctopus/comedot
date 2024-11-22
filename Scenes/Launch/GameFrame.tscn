@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://celt7hx1gstld"]
 
-[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/DebugBackground.tscn" id="1_uhj4x"]
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="1_uhj4x"]
 [ext_resource type="Texture2D" uid="uid://bkhxlpbb5fmqx" path="res://Assets/Images/Checkerboard32.png" id="2_mabn4"]
-[ext_resource type="Script" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
+[ext_resource type="Script" uid="uid://clcpatl5ocq1j" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
-[ext_resource type="Script" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
+[ext_resource type="Script" uid="uid://hsdico266r6c" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://UI/Menus/MainMenuButtons.tscn" id="7_wy4rx"]
 [ext_resource type="Texture2D" uid="uid://dcdkweiett0gs" path="res://Assets/Logos/Comedot.png" id="7_x8oq1"]
 

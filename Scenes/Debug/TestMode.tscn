@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://uuyw2ru1iyng"]
 
-[ext_resource type="Script" path="res://Scenes/TestMode.gd" id="1_2gv51"]
+[ext_resource type="Script" path="res://Scenes/Debug/TestMode.gd" id="1_2gv51"]
 
 [node name="TestMode" type="Node2D"]
 editor_description = "Add child nodes to the TestMode node that should be visible only during a Debugging/Testing Mode."
