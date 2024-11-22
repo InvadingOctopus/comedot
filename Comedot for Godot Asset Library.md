@@ -30,7 +30,7 @@ Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
 Godot Vesion:	Custom Build
 Asset Version:	1.69
-Commit URL:		eada1adee0cd0c9132212ea9f58bc33085caf06b 2024-11-13
+Commit URL:		70aa0e06bdb0633934942d2f01dc1202cca94e1a 2024-11-23
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
