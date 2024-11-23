@@ -11,6 +11,16 @@ extends TurnBasedComponent
 
 
 #region Parameters
+
+## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
+## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenEntities].
+@export_range(0, 10, 0.05) var delayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities
+
+## The delay after each [enum TurnBasedState]. May be used for debugging.
+## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
+## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenStates].
+@export_range(0, 10, 0.05) var delayBetweenStates: float = TurnBasedCoordinator.delayBetweenStates
+
 @export var colorBegin:	 Color = Color.GREEN
 @export var colorUpdate: Color = Color.YELLOW
 @export var colorEnd:	 Color = Color.ORANGE
@@ -33,6 +43,9 @@ var shouldUpdateEntityTimerBar: bool = false
 
 
 func _ready() -> void:
+	TurnBasedCoordinator.delayBetweenEntities = self.delayBetweenEntities
+	TurnBasedCoordinator.delayBetweenStates = self.delayBetweenStates
+
 	updateUI()
 	initializeTimerBars()
 	connectSignals()
