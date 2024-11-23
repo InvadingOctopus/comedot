@@ -31,14 +31,14 @@ extends Node # + TurnBasedObjectBase
 # TBD: Since this is an Autoload, should these values be flags in Start.gd or let the game's main script decide?
 
 ## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
-@export var delayBetweenEntities: float = 1:
+@export_range(0, 10, 0.05) var delayBetweenEntities: float = 1:
 	set(newValue):
 		delayBetweenEntities = newValue
 		if entityTimer: entityTimer.wait_time = newValue
 
 ## The delay after each [enum TurnBasedState]. May be used for debugging.
 ## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
-@export var delayBetweenStates: float = 0.1:
+@export_range(0, 10, 0.05) var delayBetweenStates: float = 0.1:
 	set(newValue):
 		delayBetweenStates = newValue
 		if stateTimer: stateTimer.wait_time = newValue
@@ -222,7 +222,7 @@ func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
 ## The beginning of processing 1 full turn and its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
-	printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
+	if shouldShowDebugInfo: printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
 
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 
