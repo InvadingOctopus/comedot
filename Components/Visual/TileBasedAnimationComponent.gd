@@ -29,8 +29,6 @@ func getRequiredComponents() -> Array[Script]:
 #endregion
 
 
-
-
 func _ready() -> void:
 	tileBasedPositionComponent.willStartMovingToNewCell.connect(onTileBasedPositionComponent_willStartMovingToNewCell)
 	tileBasedPositionComponent.didArriveAtNewCell.connect(onTileBasedPositionComponent_didArriveAtNewCell)

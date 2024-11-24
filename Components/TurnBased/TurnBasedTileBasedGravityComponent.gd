@@ -1,4 +1,5 @@
-## Simulates pseudo-gravity in a turn-based game with tile-based positioning, causing the entity to fall down to the cell below if it is vacant according to [method Tools.checkTileVacancy].
+## Simulates pseudo-gravity in a turn-based game with tile-based positioning. Uses a [Timer] to automatically advance a turn if the entity is in "mid air".
+## The [TileMapLayer] cell below the entity is checked if it is vacant according to [method Tools.checkTileVacancy].
 ## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]
 ## @experimental
 
