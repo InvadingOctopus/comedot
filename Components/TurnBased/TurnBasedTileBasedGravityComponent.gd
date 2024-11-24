@@ -1,5 +1,5 @@
 ## Simulates pseudo-gravity in a turn-based game with tile-based positioning. Uses a [Timer] to automatically advance a turn if the entity is in "mid air".
-## The [TileMapLayer] cell below the entity is checked if it is vacant according to [method Tools.checkTileVacancy].
+## The [TileMapLayer] cell below the entity is checked if it is vacant according to [method TileBasedPositionComponent.validateCoordinates].
 ## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]
 ## @experimental
 
@@ -48,18 +48,18 @@ func onGravityTimer_timeout() -> void:
 	if checkForFall(): TurnBasedCoordinator.startTurnProcess()
 
 
-## Returns `true` if the entity should fall to the TileMap cell below.
+## Returns `true` if the entity should fall to the [TileMapLayer] cell below the current position.
+## Uses [method TileBasedPositionComponent.validateCoordinates].
 ## @experimental
 func checkForFall() -> bool:
 	# TODO: Don't fall while jumping
 
-	var tileMap: TileMapLayerWithCustomCellData = tileBasedPositionComponent.tileMap
 	var currentPosition: Vector2i = tileBasedPositionComponent.currentCellCoordinates
 
 	# Is there a floor below us?
 	var cellBelow: Vector2i = Vector2i(currentPosition.x, currentPosition.y + 1)
-	var shouldFall: bool = Tools.checkTileVacancy(tileMap, cellBelow, self.parentEntity)
-
+	var shouldFall: bool = tileBasedPositionComponent.validateCoordinates(cellBelow)
+	
 	if shouldShowDebugInfo: printDebug(str("shouldFall: ", shouldFall, " → ", cellBelow))
 	return shouldFall
 
