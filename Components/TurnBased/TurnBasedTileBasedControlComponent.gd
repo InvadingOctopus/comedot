@@ -10,18 +10,26 @@ extends TurnBasedComponent
 
 
 #region Parameters
-## Move in a random direction each turn.
-@export var randomMovement: bool = false
+@export var randomMovement: bool = false ## Move in a random direction each turn.
 #region
 
-#region State
 
-@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
+#region State
 
 var recentInputVector: Vector2i:
 	set(newValue):
 		printChange(parentEntity.logName + " recentInputVector", recentInputVector, newValue)
 		recentInputVector = newValue
+
+#endregion
+
+
+#region Dependencies
+
+@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
+
+func getRequiredComponents() -> Array[Script]:
+	return [TileBasedPositionComponent]
 
 #endregion
 
