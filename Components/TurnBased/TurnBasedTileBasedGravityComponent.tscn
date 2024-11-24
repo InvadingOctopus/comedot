@@ -6,6 +6,7 @@
 script = ExtResource("1_81qxg")
 
 [node name="GravityTimer" type="Timer" parent="."]
+wait_time = 0.3
 one_shot = true
 
 [connection signal="timeout" from="GravityTimer" to="." method="onGravityTimer_timeout"]

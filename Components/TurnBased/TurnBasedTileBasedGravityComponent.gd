@@ -10,6 +10,7 @@ extends TurnBasedComponent
 
 
 #region Parameters
+@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin # The turn phase to process gravity in.
 #endregion
 
 
@@ -43,6 +44,7 @@ func startTimer() -> void:
 
 
 func onGravityTimer_timeout() -> void:
+	# If we should fall, advance the turn, but let the actual fall occur during the turn phase process.
 	if checkForFall(): TurnBasedCoordinator.startTurnProcess()
 
 
@@ -74,8 +76,17 @@ func fall() -> void:
 
 
 func processTurnBegin() -> void:
-	if checkForFall(): fall()
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnBegin and checkForFall():
+		fall()
+
+
+func processTurnUPdate() -> void:
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnUpdate and checkForFall():
+		fall()
 
 
 func processTurnEnd() -> void:
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnEnd and checkForFall():
+		fall()
+
 	startTimer()
