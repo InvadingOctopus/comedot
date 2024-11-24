@@ -195,6 +195,12 @@
 		"description": "A function for creating a customizable animation at runtime."
 	},
 	
+	"Experimental Tag": {
+		"prefix": "@experimental",
+		"body": ["## @experimental$0"],
+		"description": "Adds a comment to mark a script, method or property as experimental."
+	},
+
 	"GDScript File Template": {
   	  "isFileTemplate": true,
 		"scope": "gdscript",
