@@ -1,9 +1,9 @@
 [gd_scene load_steps=34 format=4 uid="uid://dkm5w4ukgrpgf"]
 
-[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_x8hsg"]
-[ext_resource type="Script" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_blwqs"]
-[ext_resource type="Script" path="res://Tests/TurnBased/TurnBasedTestUIEntity.gd" id="3_orv1y"]
-[ext_resource type="Script" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
+[ext_resource type="Script" uid="uid://lufij25e2op1" path="res://Scripts/Start.gd" id="1_x8hsg"]
+[ext_resource type="Script" uid="uid://0vpwwg8xg1f7" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_blwqs"]
+[ext_resource type="Script" uid="uid://do6bhiy7qoya6" path="res://Tests/TurnBased/TurnBasedTestUIEntity.gd" id="3_orv1y"]
+[ext_resource type="Script" uid="uid://g321wrppkp4o" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
 [ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedTileBasedControlComponent.tscn" id="4_3bh2s"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="4_k2j6v"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_mkbvj"]
