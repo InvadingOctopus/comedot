@@ -35,7 +35,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _input(event: InputEvent) -> void:
-	if not isEnabled or not event.is_action_type(): return
+	if not isEnabled or randomMovement or not event.is_action_type(): return
 
 	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
 	or event.is_action_pressed(GlobalInput.Actions.moveRight) \
@@ -46,8 +46,18 @@ func _input(event: InputEvent) -> void:
 
 		self.recentInputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 
-		if not is_zero_approx(recentInputVector.length()) and TurnBasedCoordinator.isReadyToStartTurn:
-			TurnBasedCoordinator.startTurnProcess()
+		validateMove()
+
+
+## Calls [method TurnBasedCoordinator.startTurnProcess] if the [TurnBasedCoordinator] is ready to start a new turn and the destination cell is vacant according to [method TileBasedPositionComponent.validateCoordinates].
+func validateMove() -> bool:
+	if not is_zero_approx(recentInputVector.length()) \
+	and TurnBasedCoordinator.isReadyToStartTurn \
+	and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector):
+		TurnBasedCoordinator.startTurnProcess() # TBD: Should the caller start the turn?
+		return true
+	else:
+		return false
 
 
 func processTurnBegin() -> void:
