@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccj2qlixoldhp"]
+
+[ext_resource type="Script" uid="uid://b1qjtvp31yp2g" path="res://Scenes/Launch/CoordinatorScene.gd" id="1_xebyh"]
+[ext_resource type="PackedScene" uid="uid://celt7hx1gstld" path="res://Scenes/Launch/GameFrame.tscn" id="2_vyfib"]
+
+[node name="CoordinatorScene" type="Node2D"]
+position = Vector2(2.08165e-12, 2.08165e-12)
+script = ExtResource("1_xebyh")
+mainGameScene = ExtResource("2_vyfib")
+
+[node name="GameScenePlaceholder" type="Node2D" parent="."]
+unique_name_in_owner = true

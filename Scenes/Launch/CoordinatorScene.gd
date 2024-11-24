@@ -1,16 +1,11 @@
-## The "master" initial scene launched by Godot. Displays the logo and coordinates transitions between game-specific scenes.
+## A prototype for a "master" initial scene that contains other scenes. Displays the logo and coordinates transitions between game-specific scenes.
+## @experimental
 
 class_name CoordinatorScene
-extends Node2D
+extends Start
 
 
 #region Parameters
-
-## The main game-specific scene to load and display after the logos.
-@export var mainGameScene: PackedScene
-
-@export_custom(PROPERTY_HINT_EXPRESSION, "test") var payload: Expression
-
 #endregion
 
 
@@ -28,7 +23,6 @@ signal willStartMainScene
 
 #region Sub-Scene Functions
 
-
 ## Returns: The new scene instance.
 func displaySubscene(scene: PackedScene) -> Node2D:
 	clearScenePlaceholder()
@@ -43,15 +37,23 @@ func clearScenePlaceholder() -> void:
 
 #endregion
 
+
+#region Launch Sequence
+
 func _ready() -> void:
+	super._ready()
+
 	@warning_ignore("redundant_await")
 	await startLogoScene() # TBD: await or not?
 	startMainScene()
 
 
+## @experimental
 func startLogoScene() -> void:
 	willStartLogoScene.emit()
-	pass
+	const logoScene := preload("res://Scenes/Launch/Logo/LogoSceneIO.tscn")
+	displaySubscene(logoScene)
+	# TODO: await logoScene.didFinish
 	didEndLogoScene.emit()
 
 
@@ -59,4 +61,4 @@ func startMainScene() -> void:
 	willStartMainScene.emit()
 	displaySubscene(mainGameScene)
 
-
+#endregion
