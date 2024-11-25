@@ -10,7 +10,7 @@ extends TurnBasedComponent
 
 
 #region Parameters
-@export var randomMovement: bool = false ## Move in a random direction each turn.
+@export var randomMovement: bool = false ## Move in a random direction each turn. NOTE: Ignores player input.
 #region
 
 
