@@ -46,7 +46,7 @@ func _input(event: InputEvent) -> void:
 
 		self.recentInputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 
-		validateMove()
+		validateMove() # May start the turn
 
 
 ## Calls [method TurnBasedCoordinator.startTurnProcess] if the [TurnBasedCoordinator] is ready to start a new turn and the destination cell is vacant according to [method TileBasedPositionComponent.validateCoordinates].
