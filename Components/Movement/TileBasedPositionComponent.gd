@@ -102,6 +102,7 @@ func _ready() -> void:
 	if tileMap: # If this component was loaded dynamically at runtime, then the tileMap may be set later.
 		applyInitialCoordinates()
 	
+	updateIndicator() # Fix the visually-annoying initial snap from the default position
 	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
 
 

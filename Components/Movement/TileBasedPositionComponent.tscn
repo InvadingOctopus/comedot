@@ -10,6 +10,7 @@ metadata/_edit_group_ = true
 [node name="MovementIndicator" type="Sprite2D" parent="."]
 visible = false
 modulate = Color(1, 1, 0, 0.75)
+top_level = true
 z_index = 10
 texture = ExtResource("2_3a7at")
 region_enabled = true
