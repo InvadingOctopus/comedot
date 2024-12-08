@@ -283,12 +283,23 @@ func removeComponents(componentTypes: Array[Script]) -> int:
 #region General Child Node Management
 
 ## Returns the first child node which matches the specified [param type].
-## If [param includeEntity] is `true` (which is the default) then the ENTITY ITSELF may be returned if it is node of a matching type. Useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
+## If [param includeEntity] is `true` (default) then this ENTITY ITSELF may be returned if it is node of a matching type. Useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
 ## NOTE: Also returns any SUBCLASSES which inherit from the specified [param type].
 ## WARNING: TIP: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 	var result: Node = Tools.findFirstChildOfType(self, type, includeEntity)
 	if shouldShowDebugInfo: printDebug(str("findFirstChildOfType(", type, "): ", result))
+	return result
+
+
+## Returns the first child of [param parentNode] which matches ANY of the specified [param types] (searched in the array order).
+## If [param includeEntity] is `true` (default) then this ENTITY ITSELF is returned if none of the requested types are found.
+## This may be useful for choosing certain child nodes to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
+## PERFORMANCE: Should be the same as multiple calls to [method ]indFirstChildOfType] in order of the desired types.
+func findFirstChildOfAnyTypes(types: Array[Variant], includeEntity: bool = true) -> Node:
+	# TBD: Better name
+	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, includeEntity)
+	if shouldShowDebugInfo: printDebug(str("findFirstChildOfAnyTypes(", types, "): ", result))
 	return result
 
 
