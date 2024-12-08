@@ -15,6 +15,10 @@ extends Component
 
 #region Parameters
 
+## The node to display effects on, such as an [AnimatedSprite2D].
+## If omitted, the first [AnimatedSprite2D] or [Sprite2D] sibling is used, if any, otherwise the parent entity is used.
+@export var nodeToAnimate: CanvasItem
+
 ## If `true`, adds a red tint to the entity, increasing in intensity as the health decreases.
 ## @experimental
 @export var shouldTint: bool = false:
@@ -22,9 +26,12 @@ extends Component
 		if newValue != shouldTint:
 			shouldTint = newValue
 			if shouldTint and healthComponent: updateTint()
-			else: self.parentEntity.modulate = Color.WHITE
+			else: nodeToAnimate.modulate = Color.WHITE
 
-@export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the current health value or the difference.
+## Shows a [TextBubble] representing the current health value or the difference.
+## The bubble is set as a child node of the entity, to avoid being affected by the effects on [nodeToAnimate].
+@export var shouldEmitBubble: bool = true
+
 @export var shouldShowRemainingHealth: bool = false ## If `true`, the [TextBubble] shows the REMAINING health instead of the DIFFERENCE.
 
 #endregion
@@ -39,6 +46,9 @@ var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponen
 
 
 func _ready() -> void:
+	if not nodeToAnimate: nodeToAnimate = parentEntity.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
+	if shouldShowDebugInfo: printDebug(str("nodeToAnimate: ", nodeToAnimate))
+
 	connectSignals()
 
 
@@ -55,7 +65,7 @@ func onHealthComponent_healthChanged(difference: int) -> void:
 ## @experimental
 func animate(difference: int) -> void:
 	if difference < 0:
-		Animations.blinkNode(self.parentEntity, 3)
+		Animations.blinkNode(nodeToAnimate, 3)
 
 	updateTint() # Always update tint in case we just got healed.
 
@@ -65,13 +75,13 @@ func updateTint()-> void:
 	if self.shouldTint and healthComponent:
 		var health: Stat  = healthComponent.health
 		var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase redness as health gets lower
-		var targetModulate:  Color = self.parentEntity.modulate
+		var targetModulate:  Color = nodeToAnimate.modulate
 		targetModulate.r = red
 		if shouldShowDebugInfo: Debug.printVariables([health.logName, red, targetModulate])
-		Animations.tweenProperty(self.parentEntity, ^"modulate", targetModulate, 0.1)
+		Animations.tweenProperty(nodeToAnimate, ^"modulate", targetModulate, 0.1)
 
 
 func emitBubble(difference: int) -> void:
 	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else str(difference)
-	var bubble: TextBubble = TextBubble.create(self.parentEntity, text)
+	var bubble: TextBubble = TextBubble.create(self.parentEntity, text) # NOTE: Emit the bubble from the ENTITY, so it's not affected by the effects on `nodeToAnimate`.
 	bubble.label.label_settings.font_color = Color.GREEN if difference > 0 else Color.ORANGE
