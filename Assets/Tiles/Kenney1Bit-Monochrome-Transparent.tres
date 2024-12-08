@@ -1,10 +1,10 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://namsx1wywdb5"]
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://bshjeqon37qc0"]
 
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_6bxqk"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_bd4pt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ay4j7"]
 resource_name = "Monochrome-Transparent"
-texture = ExtResource("1_6bxqk")
+texture = ExtResource("1_bd4pt")
 0:0/next_alternative_id = 2
 0:0/0 = 0
 0:0/0/custom_data_0 = true

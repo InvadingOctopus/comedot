@@ -1,6 +1,6 @@
-[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://hyd7g0kfm3k8"]
+[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://emoyueri5hos"]
 
-[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_bojn3"]
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_ca66c"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bojn3"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -34,7 +34,7 @@ polygon = PackedVector2Array(-8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ay4j7"]
 resource_name = "Colored-Physics"
-texture = ExtResource("1_bojn3")
+texture = ExtResource("1_ca66c")
 0:0/next_alternative_id = 2
 0:0/0 = 0
 0:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_bojn3")

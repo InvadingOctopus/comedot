@@ -1,6 +1,6 @@
-[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://hyd7g0kfm3k8"]
+[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://bsngxcc7r2xu5"]
 
-[ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="1_0geu2"]
+[ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="1_4w7wv"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bojn3"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -34,7 +34,7 @@ polygon = PackedVector2Array(-8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ay4j7"]
 resource_name = "Monochrome-Physics"
-texture = ExtResource("1_0geu2")
+texture = ExtResource("1_4w7wv")
 0:0/next_alternative_id = 2
 0:0/0 = 0
 0:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_bojn3")
