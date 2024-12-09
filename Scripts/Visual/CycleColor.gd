@@ -1,5 +1,5 @@
-## Modifies the HSV components of the [member CanvasItem.Modulate] color every frame.
-## Wraps around at 0.0 and 1.0
+## Modifies the HSV components of the [member CanvasItem.modulate] color every frame.
+## Wraps around at 0.0 and 1.0. If the node is a [Light2D] or subclass, then [member Light2D.color] is modified.
 ## WARNING: The [member CanvasItem.Modulate] property of the node MUST be set in the Godot Editor, otherwise this script will not be able to get the initial HSV components!
 ## WARNING: If the [member CanvasItem.Modulate] saturation component "s" is 0 or very low then the hue component "h" may have NO visible effect.
 
@@ -113,9 +113,11 @@ func _process(delta: float) -> void:
 
 	# Apply
 
+	var colorToApply: Color = Color.from_hsv(hue, saturation, value, alpha)
 	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
 
-	self.modulate = Color.from_hsv(hue, saturation, value, alpha)
+	if is_instance_of(self, Light2D): self.color = colorToApply
+	else: self.modulate = colorToApply
 
 	# DEBUG
 
