@@ -163,7 +163,7 @@ func createGridLines() -> void:
 	# DEBUG: Debug.printLog(str("numberOfGridLines X, Y: ", numberOfGridLinesX, ", ", numberOfGridLinesY))
 
 	var start:	Vector2
-	var end:		Vector2
+	var end:	Vector2
 
 	# Vertical lines (X Axis)
 
