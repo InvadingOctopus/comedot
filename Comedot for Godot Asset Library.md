@@ -3,11 +3,11 @@
 Asset Name: Comedot - Components Framework
 Description:
 
-A project template and framework for making 2D games by adding components to entities. May be combined with any other framework or architecture.
+Project template and framework for making 2D games by adding components to entities.
 
-Requires the latest Godot 4.4 build!
+Requires Godot 4.4-dev6!
 
-• A library of components for features needed in most games like: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
+• Includes a library of components for common features needed in most games: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
 • Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
 • Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 • Save/Load player preferences in config file with `Settings.any_name`
@@ -16,7 +16,7 @@ Requires the latest Godot 4.4 build!
 
 This is a work in constant progress! For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
-ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for textures etc. To fix, just close and reopen the project.
+ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for resources. To fix, just close and reopen the project.
 
 THANKS:
 Tilesets: https://kenney.nl/assets/1-bit-pack  
@@ -28,9 +28,9 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Godot Vesion:	Custom Build
-Asset Version:	1.69
-Commit URL:		70aa0e06bdb0633934942d2f01dc1202cca94e1a 2024-11-23
+Godot Version:	4.4-dev6
+Asset Version:	2.69
+Commit URL:		89c38ca4a77cb8b3458ba81e10961f8df42c4ad9 2024-12-12
 
 Icon URL:		https://i.imgur.com/WuXJpMD.png
 Preview:  		https://i.imgur.com/Np9RyWG.png
