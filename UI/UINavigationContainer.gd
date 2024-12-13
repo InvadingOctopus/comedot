@@ -51,11 +51,13 @@ func addNodeToHistory(path: String) -> int:
 
 
 func findFirstChildControl() -> Control:
-	return Tools.findFirstChildOfType(self, Control)
+	return Tools.findFirstChildOfType(self, Control, false) # not includeParent
 
 
 func replaceFirstChildControl(newControl: Control) -> bool:
 	var childToReplace: Control = self.findFirstChildControl()
+
+	if shouldShowDebugInfo: Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newControl), self)
 
 	if childToReplace:
 		if Tools.replaceChild(self, childToReplace, newControl):
@@ -70,6 +72,7 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 
 
 func displayNavigationDestination(newDestination: String) -> bool:
+	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestination, self)
 	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
 	var result: bool
 
@@ -84,7 +87,9 @@ func displayNavigationDestination(newDestination: String) -> bool:
 		result = false
 
 	updateBackButton()
-	showDebugInfo()
+	if shouldShowDebugInfo:
+		showDebugInfo()
+		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationHistory), self)
 	return result
 
 
