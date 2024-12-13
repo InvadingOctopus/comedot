@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cysctd14jlutm"]
+[gd_scene load_steps=3 format=3 uid="uid://cysctd14jlutm"]
 
-[ext_resource type="Script" path="res://UI/Menus/OptionsUI.gd" id="1_w373j"]
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/Views/BusVolumeUI.tscn" id="2_845vf"]
-[ext_resource type="Script" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
+[ext_resource type="Script" uid="uid://b8bqk55u66syj" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
 
 [node name="OptionsUI" type="CenterContainer"]
 anchors_preset = 15
@@ -12,7 +11,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_w373j")
 metadata/_edit_group_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -56,4 +54,4 @@ focus_next = NodePath("../VolumeContainerShifted/VBoxContainer/SoundVolumeUI")
 focus_previous = NodePath("../VolumeContainerShifted/VBoxContainer/MusicVolumeUI")
 text = "CONTROLS"
 script = ExtResource("3_415it")
-navigationDestination = "res://UI/InputMapUI.tscn"
+navigationDestination = "uid://c0cldnfe77jwf"
