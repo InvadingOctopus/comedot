@@ -25,7 +25,14 @@ extends Timer
 ## NOTE: [member maximumTotalToSpawn] supersedes this value and is checked first.
 @export var maximumLimitInGroup: int = -1
 
-@export var isEnabled: bool = true
+## Stops the [Timer] when set to `false`.
+@export var isEnabled: bool = true: 
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.paused = not isEnabled
+			if not isEnabled: self.stop()
+
 @export var shouldShowDebugInfo: bool = false
 #endregion
 
