@@ -128,7 +128,9 @@ static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 ## NOTE: The child and its sub-children are NOT deleted. To delete a child, use [method Node.queue_free].
 ## Returns: `true` if [param childToReplace] was found and replaced.
 static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> bool:
-	if childToReplace.get_parent() != parentNode: return false
+	if childToReplace.get_parent() != parentNode:
+		Debug.printWarning(str("replaceChild() childToReplace.get_parent(): ", childToReplace.get_parent(), " != parentNode: ", parentNode))
+		return false
 
 	# Is the new child already in another parent?
 	# TODO: Option to remove new child from existing parent
