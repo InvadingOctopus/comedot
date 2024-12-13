@@ -151,7 +151,11 @@ var nextEntityIndex: int: ## Returns the next entity in the turn order, or the f
 	get: return currentEntityIndex + 1 if (currentEntityIndex + 1) < turnBasedEntities.size() else 0
 
 var nextEntityToProcess: TurnBasedEntity:
-	get: return turnBasedEntities[nextEntityIndex]
+	get: 
+		if not turnBasedEntities.is_empty() and nextEntityIndex < turnBasedEntities.size():
+			return turnBasedEntities[nextEntityIndex]
+		else:
+			return null
 
 #endregion
 
