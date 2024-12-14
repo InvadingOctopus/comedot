@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dbwiosb1xulu5"]
 
-[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_xj2di"]
+[ext_resource type="Script" uid="uid://lufij25e2op1" path="res://Scripts/Start.gd" id="1_xj2di"]
 [ext_resource type="PackedScene" uid="uid://convttrcwh6rm" path="res://Templates/HUDTemplate.tscn" id="2_i2yvf"]
 [ext_resource type="PackedScene" uid="uid://cpp83yn2u3txn" path="res://Templates/Scenes/PlatformerMapTemplate.tscn" id="3_cdsxv"]
 [ext_resource type="PackedScene" uid="uid://h3pbo0mlj4je" path="res://Templates/Entities/MonsterEntityTemplate-Platformer.tscn" id="4_a3w4r"]
