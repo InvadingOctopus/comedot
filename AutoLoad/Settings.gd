@@ -144,7 +144,7 @@ static func loadConfig() -> bool:
 
 ## Loads user settings which are counterpart to the Godot [ProjectSettings] such as window size.
 func loadProjectUserSettings() -> void:
-	self.get_window().size = (Vector2i(self.windowWidth, self.windowHeight))
+	Global.setWindowSize(self.windowWidth, self.windowHeight, false) # not showLabel because GlobalOverlay won't be valid yet
 
 
 func loadAudioSettings() -> void:
@@ -235,7 +235,7 @@ func getSettingFromFile(section: StringName, key: StringName, default: Variant =
 		printWarning("No default specified for setting: " + key)
 
 	var value: Variant = configFile.get_value(section, key, default)
-	
+
 	# Verify that the value retrieved from the config file is the correct type.
 	if not validateType(key, value):
 		if default != null: value = default # NOTE: Check for `null` specifically to allow defaults of 0.

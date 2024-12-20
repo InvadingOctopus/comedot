@@ -110,17 +110,11 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	if Input.is_action_just_released(Actions.windowResizeTo720):
-		self.get_window().size = (Vector2i(1280, 720))
-		Settings.windowWidth  = 1280
-		Settings.windowHeight = 720
-		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1280 x 720"))
+		Global.setWindowSize(1280, 720)
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 		
 	elif Input.is_action_just_released(Actions.windowResizeTo1080):
-		self.get_window().size = (Vector2i(1920, 1080))
-		Settings.windowWidth  = 1920
-		Settings.windowHeight = 1080
-		GlobalOverlay.createTemporaryLabel(str("Window Size: ", "1920 x 1080"))
+		Global.setWindowSize(1920, 1080)
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	# Save & Load
