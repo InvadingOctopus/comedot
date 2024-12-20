@@ -9,6 +9,7 @@ extends CharacterBodyManipulatingComponentBase
 # * Check for floor and walls at the left and right corners and edges.
 # * Reverse patrol direction when there is no more room to move in the current direction.
 
+
 #region Parameters
 
 ## Not implemented yet
@@ -16,7 +17,14 @@ extends CharacterBodyManipulatingComponentBase
 
 @export_range(0, 16, 1, "pixels") var detectionGap: float = 0 ## The distance around the edges of the sprite for detecing the floor and walls.
 
-@export var randomizeInitialDirection: bool = false ## If `false`, move in the current direction of the sprite.
+## The initial movement on the X axis: -1 = left, +1 = right
+## If invalid, then [member PlatformerControlComponent.lastInputDirection] will be used.
+## NOTE: Overridden by [member randomizeInitialDirection].
+@export_enum("Left:-1", "Right:1") var initialDirection: int = +1
+
+## If `false`, move in the current direction of the sprite.
+## NOTE: Overrides [member initialDirection].
+@export var randomizeInitialDirection: bool = false
 
 @export var isEnabled: bool = true
 
@@ -67,12 +75,13 @@ func _ready() -> void:
 func setInitialDirection() -> void:
 	if randomizeInitialDirection:
 		self.patrolDirection = [-1.0, 1.0].pick_random()
+	elif self.initialDirection == -1 or self.initialDirection == +1:
+		self.patrolDirection = self.initialDirection
+	# If initialDirection is invalid, use the PlatformerControlComponent's previous direction, otherwise right.
+	elif not is_zero_approx(platformerPhysicsComponent.lastInputDirection):
+		self.patrolDirection = platformerPhysicsComponent.lastInputDirection
 	else:
-		# Use the [PlatformerControlComponent]'s previous direction, otherwise right.
-		if not is_zero_approx(platformerPhysicsComponent.lastInputDirection):
-			self.patrolDirection = platformerPhysicsComponent.lastInputDirection
-		else:
-			self.patrolDirection = Vector2.RIGHT.x
+		self.patrolDirection = Vector2.RIGHT.x
 
 
 func _physics_process(delta: float) -> void:
@@ -122,8 +131,8 @@ func updatePatrolDirection() -> void:
 
 	var newPatrolDirection: float = patrolDirection # Start as equal for comparison later.
 
-	var isLeftBlocked		:= (not isFloorOnLeft)  or isWallOnLeft
-	var isRightBlocked		:= (not isFloorOnRight) or isWallOnRight
+	var isLeftBlocked:  bool = (not isFloorOnLeft)  or isWallOnLeft
+	var isRightBlocked: bool = (not isFloorOnRight) or isWallOnRight
 
 	# Scenario 1.0: If there is no floor in ANY direction, or if there are walls on both sides,
 	# then stay put.
@@ -148,8 +157,8 @@ func updatePatrolDirection() -> void:
 	elif not is_zero_approx(patrolDirection):
 		# Scenario 3.0: Does the floor end, or did we hit a wall, in the direction we are currently patrolling?
 
-		var isPatrollingLeft	:= patrolDirection < 0
-		var isPatrollingRight	:= patrolDirection > 0
+		var isPatrollingLeft:  bool = patrolDirection < 0
+		var isPatrollingRight: bool = patrolDirection > 0
 
 		if isPatrollingLeft and isLeftBlocked:
 			newPatrolDirection = Vector2.RIGHT.x
