@@ -163,6 +163,12 @@
 		"description": "Quick access to a StatsComponent."
 	},
 
+	"Debug Variables": {
+		"prefix": "debugVar",
+		"body": [ "Debug.printVariables([${1:self}]) # TEMP: DONTCOMMIT\n$0" ],
+		"description": "Print multiple variable values for runtime debugging."
+	},
+
 	"Debug Info": {
 		"prefix": "showDebugInfo",
 		"body": [
