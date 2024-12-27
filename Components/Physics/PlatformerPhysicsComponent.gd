@@ -74,7 +74,7 @@ func _physics_process(delta: float) -> void:
 	# Walk the Walk
 	processHorizontalMovement(delta) # = applyAccelerationOnFloor(delta) & applyAccelerationInAir(delta)
 	processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
-#
+
 	# Move Your Body ♪
 	characterBodyComponent.queueMoveAndSlide()
 
@@ -122,7 +122,6 @@ func characterBodyComponent_didMove(_delta: float) -> void:
 func clearInput() -> void:
 	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
 
-
 #endregion
 
 
@@ -158,6 +157,7 @@ func processHorizontalMovement(delta: float) -> void:
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
+## WARNING: May prevent components like [KnockbackOnHitComponent] from working.
 func processAllFriction(delta: float) -> void:
 	# Don't apply friction if the player is trying to move;
 	# only apply friction to slow down when there is no player input, OR
