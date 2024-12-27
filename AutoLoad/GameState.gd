@@ -12,10 +12,11 @@ extends Node
 ## [StringName] is the optimal type to use for keys.
 @export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
-## The list of active players.
+## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
 ## NOTE: To avoid a crash when there is no player, access the first player with `players.front()` NOT `player[0]`.
-var players: Array[PlayerEntity] = []
+var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
+
 
 ## A dictionary of stats and values to display in the HUD UI.
 ## Changes to the dictionary should emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
@@ -28,10 +29,10 @@ var players: Array[PlayerEntity] = []
 #region Signals
 # DESIGN: The names of the signals start with the names of the related types/objects, instead of "did/will" etc., because GameState is a global object.
 signal playersChanged
-signal playerAdded(player: PlayerEntity)
+signal playerAdded(player:   Entity)
 @warning_ignore("unused_signal")
-signal playerReady(player: PlayerEntity) ## Emitted by a [PlayerEntity] at the end of its [method Node._ready], indicating that it has entered a Scene.
-signal playerRemoved(player: PlayerEntity)
+signal playerReady(player:   Entity) ## Emitted by a [PlayerEntity] or [TurnBasedPlayerEntity] at the end of its [method Node._ready], indicating that it has entered a Scene.
+signal playerRemoved(player: Entity)
 #endregion
 
 #region Signal Event Bus
@@ -52,7 +53,7 @@ func _enter_tree() -> void:
 
 
 ## Adds a player if it is not already in the [member GameState.players] array, emits the related signals, and returns the new size of the [member players] array.
-func addPlayer(newPlayer: PlayerEntity) -> int:
+func addPlayer(newPlayer: Entity) -> int:
 	if not newPlayer in self.players:
 		self.players.append(newPlayer)
 		Debug.printLog("addPlayer(): [b]" + str(newPlayer.logFullName) + "[/b] → GameState.players → size: " + str(GameState.players.size()), self)
@@ -65,7 +66,7 @@ func addPlayer(newPlayer: PlayerEntity) -> int:
 
 
 ## Removes a player, emits the related signals, and returns `true` if the removal was successful.
-func removePlayer(playerToRemove: PlayerEntity) -> bool:
+func removePlayer(playerToRemove: Entity) -> bool:
 	var indexToRemove: int = self.players.find(playerToRemove)
 
 	# NOTE: Do NOT use `indexToRemove` as a boolean check, because 0 is a valid index but would be considered `false`!
