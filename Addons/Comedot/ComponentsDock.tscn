@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dn5qx1mv643mq"]
 
-[ext_resource type="Script" path="res://Addons/Comedot/ComponentsDock.gd" id="1_otxly"]
-[ext_resource type="Texture2D" uid="uid://qkdvqrcvoboj" path="res://Assets/Icons/Comedot Transparent.png" id="2_7r6gx"]
+[ext_resource type="Script" uid="uid://biqnuffmy2yty" path="res://Addons/Comedot/ComponentsDock.gd" id="1_otxly"]
+[ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Icons/Comedot Transparent.png" id="2_7r6gx"]
 [ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7r6gx"]
@@ -89,8 +89,7 @@ alignment = 2
 [node name="RefreshButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
 layout_mode = 2
 tooltip_text = "Scan the `\\Components\\` folder's subfolders for all Components."
-text = "Rescan Folders
-"
+text = "Rescan Folders"
 alignment = 2
 
 [node name="DebugReloadButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
