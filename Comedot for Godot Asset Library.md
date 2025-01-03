@@ -5,7 +5,7 @@ Description:
 
 Project template and framework for making 2D games by adding components to entities.
 
-Requires Godot 4.4-dev6!
+Requires Godot 4.4-dev7!
 
 • Includes a library of components for common features needed in most games: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
 • Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
@@ -28,12 +28,12 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Godot Version:	4.4-dev6
+Godot Version:	4.4-dev7
 Asset Version:	2.69
-Commit URL:		89c38ca4a77cb8b3458ba81e10961f8df42c4ad9 2024-12-12
+Commit URL:		ac1eab36deb891a8ba5794c22e0a3bf65a0968d6 2025-01-03
 
-Icon URL:		https://i.imgur.com/WuXJpMD.png
-Preview:  		https://i.imgur.com/Np9RyWG.png
+Icon URL:		https://i.imgur.com/UJnNERn.png
+Preview:  		https://i.imgur.com/tWNQobY.png
 Screenshot 1:	https://i.imgur.com/oY4WymY.png
 Screenshot 2:	https://i.imgur.com/7M0pH3v.png
 Screenshot 3:	https://i.imgur.com/jgAjmzY.png
