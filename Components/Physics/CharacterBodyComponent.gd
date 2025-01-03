@@ -33,7 +33,12 @@ var wasOnFloor:		bool ## Was the body on the floor before the last [method Chara
 var wasOnWall:		bool ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
 var wasOnCeiling:	bool ## Was the body on a ceiling before the last [method CharacterBody2D.move_and_slide]?
 
-var previousVelocity:	Vector2
+var previousVelocity:	Vector2:
+	set(newValue):
+		if newValue != previousVelocity:
+			if shouldShowDebugInfo: self.printChange("previousVelocity", previousVelocity, newValue)
+			previousVelocity = newValue
+
 var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with.
 var lastMotionCached:	Vector2 ## NOTE: Used for and updated ONLY IF [member shouldResetVelocityIfZeroMotion] is `true`.
 
