@@ -30,8 +30,8 @@ var tween: Tween
 
 
 func _ready() -> void:
-	super._ready()
 	if not symbol: Debug.printWarning("Missing symbol texture!", self)
+	super._ready()
 
 
 func arrangeControls() -> void:
