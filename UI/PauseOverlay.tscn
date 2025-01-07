@@ -50,6 +50,7 @@ text = "COMEDOT"
 label_settings = SubResource("LabelSettings_612vj")
 horizontal_alignment = 1
 vertical_alignment = 1
+text_overrun_behavior = 3
 uppercase = true
 script = ExtResource("3_7sumf")
 hueModifier = 0.5
