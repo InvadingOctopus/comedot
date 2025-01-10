@@ -4,33 +4,33 @@
 
 ![Godot+Comedot Logo][logo]
 
-The goal is to have an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities like Lego blocks and tweaking their parameters in the UI. _"Entities"_ are just regular nodes and _"components"_ are also nodes that modify other nodes, so you can mix this framework with any other architecture or programming paradigm, even for 2D scenes in a 3D game!
+The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can mix this framework with any other architecture or system, even for 2D scenes in a 3D game!
 
-* Includes a library of components for different types of player movement, combat, collectibles, inventory, interactions, upgrades etc.
-* Standard UI controls like a stats HUD, buttons & lists for special skills etc.
+* Includes components for different types of player movement, combat, collectibles, interactions, upgrades etc.
+* UI controls like a stats HUD, buttons & lists for special skills etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.any_name = 69`
 * Tons of helper functions & debugging tools.
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
-> [!IMPORTANT]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The opinionated code eschews GDScript conventions like ugly underscores, and the API may change frequently and **no backwards compatibility is guaranteed!**
+> [!WARNING]
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The opinionated style eschews GDScript conventions like ugly underscores, and the API may change frequently and **no backwards compatibility is guaranteed!**
 
 
 🌳 _An example of a player entity:_
 
 ![components-tree]
 
-⭐️ It lets you do neat tricks like put a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
+⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
-⭐️ The [composition architecture][composition-over-inheritance] lets you easily change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/"overhead" movement:
+⭐️ Easily implement dynamic gameplay and change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/"overhead" movement:
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
-📈 There's even sexy charts for debugging variables in real-time!
+📈 There's even kawaii charts for debugging variables in real-time!
 
 ![debug-charts]
 
@@ -39,17 +39,17 @@ _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swappi
 
 ## How To Use
 
-> [!WARNING]  
+> [!Important]  
 > _Requires Godot 4.4 ~Embrace the Future_ ✨  
-> The first time you load this project, there may be errors because Godot will re-import the asset files and set the internal IDs for textures etc. To fix: Just close and reopen the project.
+> The first time you load this project, there may be errors because Godot will re-import the asset files and set the internal IDs for textures etc. To fix: Close and reopen the project.
 
 🚀 **For a quick glance:** See the `/Templates/Scenes/` folder.
 
 ⚙️ **To use this framework for your own games:**
 
-1. Clone this repository; make a local copy of this entire Godot project and rename it for your game.
-2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders to build your scenes.
-	* The `/Templates/` folder contains example scenes and Entities with preset groups of Components to use as a quick starting point for various types of gameplay.
+1. Clone this repository; make a local copy of this entire Godot project.
+2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
+	* The `/Templates/` folder contains example scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* The `/Scripts/` folder contains code for simple non-Entity nodes.
 	* The `/UI/` folder contains common UI elements such as a stats HUD, special action buttons, lists for choosing upgrades etc.
 
@@ -79,7 +79,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 ----
 
-[Comedot][repository] ©? MMXXIV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord]
+[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord]
 
 > 🤍 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
