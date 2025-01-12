@@ -3,11 +3,11 @@
 Asset Name: Comedot - Components Framework
 Description:
 
-Project template and framework for making 2D games by adding components to entities.
+Project template and framework for making 2D games by adding components to entities. Basically Nodes but for gameplay.
 
-Requires Godot 4.4-dev7!
+Requires Godot 4.4 latest dev build!
 
-• Includes a library of components for common features needed in most games: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based gameplay etc.
+• Includes a mix-and-match library for common features needed in most games: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based logic etc.
 • Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
 • Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 • Save/Load player preferences in config file with `Settings.any_name`
