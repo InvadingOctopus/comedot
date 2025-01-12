@@ -37,21 +37,26 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
-[node name="HeaderContainer" type="GridContainer" parent="GridContainer/HeaderMarginContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="GridContainer/HeaderMarginContainer"]
 layout_mode = 2
-columns = 2
 
 [node name="Logo" type="TextureRect" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
-modulate = Color(1, 1, 1, 0.9)
+modulate = Color(1, 1, 1, 0.5)
+texture_filter = 2
 clip_contents = true
-custom_minimum_size = Vector2(184, 184)
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_horizontal = 2
-size_flags_vertical = 6
+size_flags_horizontal = 8
 size_flags_stretch_ratio = 0.5
 texture = ExtResource("2_7r6gx")
-expand_mode = 5
-stretch_mode = 5
+expand_mode = 3
+stretch_mode = 4
+
+[node name="Spacer" type="VSeparator" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/separator = SubResource("StyleBoxEmpty_7r6gx")
 
 [node name="ButtonsContainer" type="VBoxContainer" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
 layout_mode = 2
@@ -64,6 +69,7 @@ layout_mode = 2
 tooltip_text = "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
 text = "Add Entity"
 icon = ExtResource("3_fn551")
+flat = false
 alignment = 2
 icon_alignment = 2
 expand_icon = true
@@ -105,6 +111,7 @@ layout_mode = 2
 tooltip_text = "Expose the sub-nodes of new Entities & Components?"
 button_pressed = true
 text = "Editable Children"
+alignment = 2
 
 [node name="TextMarginContainer" type="MarginContainer" parent="GridContainer"]
 layout_mode = 2
@@ -131,7 +138,7 @@ layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "Select an Entity node in the scene to add Components."
-autowrap_mode = 3
+text_overrun_behavior = 3
 
 [node name="HelpLabel2" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
 unique_name_in_owner = true

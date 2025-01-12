@@ -59,7 +59,7 @@ const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's backgroun
 const createNewItemButtonColor	:= Color.LAWN_GREEN
 const editComponentButtonColor	:= categoryColor
 
-const defaultHelpLabelText		:= "Select 1 Entity node in the scene to add Components."
+const defaultHelpLabelText		:= "Select an Entity node in the scene to add Components."
 const defaultAddEntityTip		:= "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
 const editComponentTipPrefix	:= "Open the source scene of "
 
