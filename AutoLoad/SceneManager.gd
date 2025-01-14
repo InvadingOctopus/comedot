@@ -22,14 +22,23 @@ static var sceneStack: Array[PackedScene]
 
 #region Scene Management Methods
 
-func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+## Transitions to the specified scene with an optional animation.
+## NOTE: Does NOT use the [member sceneStack]; see [method pushSceneToStack] and [method popSceneFromStack].
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
 	var sceneTree: SceneTree = self.get_tree()
-	sceneTree.paused = pauseSceneTree
-	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
+	var sceneBeforeTransition: Node = sceneTree.current_scene
 
+	Debug.printLog(str("transitionToScene(): ", sceneBeforeTransition, " → ", nextScene),  logName)
+
+	# Pause
+	sceneTree.paused = pauseSceneTree
+	if animate: await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
+
+	# Transition
 	sceneTree.change_scene_to_packed(nextScene)
 
-	await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
+	# Unpause
+	if animate: await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
 
@@ -43,8 +52,7 @@ func pushSceneToStack(nextScene: PackedScene, pauseSceneTree: bool = true) -> in
 	self.transitionToScene(nextScene, pauseSceneTree)
 	var sceneAfterTransition: Node = self.get_tree().current_scene
 
-	if sceneAfterTransition == nextScene:
-		
+	if sceneAfterTransition == nextScene:	
 		Debug.printLog(str("sceneStack.size: ", sceneStack.size()),  logName)
 	else:
 		Debug.printWarning(str("SceneTree.current_scene: ", sceneAfterTransition, " != nextScene: ", nextScene), logName)
