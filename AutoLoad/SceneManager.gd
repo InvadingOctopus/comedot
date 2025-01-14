@@ -22,6 +22,17 @@ static var sceneStack: Array[PackedScene]
 
 #region Scene Management Methods
 
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+	var sceneTree: SceneTree = self.get_tree()
+	sceneTree.paused = pauseSceneTree
+	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
+
+	sceneTree.change_scene_to_packed(nextScene)
+
+	await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
+	sceneTree.paused = false
+
+
 ## Transitions to a new scene, adds it to the [member sceneStack] and returns resulting stack size.
 func pushSceneToStack(nextScene: PackedScene, pauseSceneTree: bool = true) -> int:  # NOTE: Cannot be `static` because of `self.get_tree()`
 	# Push the current scene on the stack first
@@ -29,7 +40,7 @@ func pushSceneToStack(nextScene: PackedScene, pauseSceneTree: bool = true) -> in
 	sceneStack.push_back(sceneBeforeTransition) # NOTE: PERFORMANCE: Don't use push_front() because of slower performance.
 
 	# Transition to the specified next scene
-	Global.transitionToScene(nextScene, pauseSceneTree)
+	self.transitionToScene(nextScene, pauseSceneTree)
 	var sceneAfterTransition: Node = self.get_tree().current_scene
 
 	if sceneAfterTransition == nextScene:
@@ -50,7 +61,7 @@ func popSceneFromStack(pauseSceneTree: bool = true) -> PackedScene:  # NOTE: Can
 
 	# Get the last scene from the stack
 	var previousSceneFromStack: PackedScene = sceneStack.pop_back() # NOTE: PERFORMANCE: Don't use pop_front() because of slower performance.
-	Global.transitionToScene(previousSceneFromStack, pauseSceneTree)
+	self.transitionToScene(previousSceneFromStack, pauseSceneTree)
 
 	# Verify the transition
 	
@@ -62,5 +73,20 @@ func popSceneFromStack(pauseSceneTree: bool = true) -> PackedScene:  # NOTE: Can
 		Debug.printWarning(str("SceneTree.current_scene: ", sceneAfterTransition, " != previousSceneFromStack: ", previousSceneFromStack), logName)
 	
 	return previousSceneFromStack
+
+
+## Sets [member SceneTree.paused] and returns the resulting paused status.
+func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
+	var sceneTree: SceneTree = self.get_tree()
+	sceneTree.paused = paused
+
+	GlobalOverlay.showPauseVisuals(sceneTree.paused)
+	return sceneTree.paused
+
+
+## Toggles [member SceneTree.paused] and returns the resulting paused status.
+func togglePause() -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
+	# TBD: Should this be more efficient instead of so many function calls?
+	return setPause(not self.get_tree().paused)
 
 #endregion

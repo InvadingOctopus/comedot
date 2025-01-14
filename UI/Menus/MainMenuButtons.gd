@@ -31,7 +31,7 @@ func startGame() -> void:
 		return
 		
 	var mainGameScene: PackedScene = load(Settings.mainGameScene.resource_path)
-	Global.transitionToScene(mainGameScene)
+	SceneManager.transitionToScene(mainGameScene)
 	GlobalInput.isPauseShortcutAllowed = true
 
 

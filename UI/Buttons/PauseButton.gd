@@ -24,7 +24,7 @@ func updateState() -> void:
 
 
 func onToggled(toggled_on: bool) -> void:
-	Global.setPause(toggled_on)
+	SceneManager.setPause(toggled_on)
 	updateState()
 
 

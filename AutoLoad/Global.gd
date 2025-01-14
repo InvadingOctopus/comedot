@@ -91,32 +91,7 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 
 
 #region Scene Management
-
-func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
-	var sceneTree: SceneTree = self.get_tree()
-	sceneTree.paused = pauseSceneTree
-	await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
-
-	sceneTree.change_scene_to_packed(nextScene)
-
-	await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
-	sceneTree.paused = false
-
-
-## Sets [member SceneTree.paused] and returns the resulting paused status.
-func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
-	var sceneTree: SceneTree = self.get_tree()
-	sceneTree.paused = paused
-
-	GlobalOverlay.showPauseVisuals(sceneTree.paused)
-	return sceneTree.paused
-
-
-## Toggles [member SceneTree.paused] and returns the resulting paused status.
-func togglePause() -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
-	# TBD: Should this be more efficient instead of so many function calls?
-	return setPause(not self.get_tree().paused)
-
+# NOTE: See SceneManager.gd
 #endregion
 
 

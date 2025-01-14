@@ -99,7 +99,7 @@ func _input(event: InputEvent) -> void:
 
 	if isPauseShortcutAllowed and Input.is_action_just_pressed(Actions.pause):
 		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
-		Global.togglePause()
+		SceneManager.togglePause()
 
 	# Window
 
