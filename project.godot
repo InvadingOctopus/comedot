@@ -64,7 +64,7 @@ naming/script_name_casing=1
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://Addons/Comedot/plugin.cfg")
+enabled=PackedStringArray("res://addons/Comedot/plugin.cfg")
 
 [file_customization]
 
