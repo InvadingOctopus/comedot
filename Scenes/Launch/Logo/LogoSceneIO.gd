@@ -40,15 +40,16 @@ func animateText() -> void:
 func animateLogo() -> void:
 	self.logoTween = Animations.tweenProperty(self, ^"modulate", Color(0,0,0,0), 3.0)
 	await logoTween.finished
-	if not isSkipping: displayNextScene() # If skipping, let the key release trigger the scene transition.
+	if not isSkipping: await displayNextScene() # If skipping, let the key release trigger the scene transition.
 
 
 func _input(event: InputEvent) -> void:
+	if not event is InputEventMouseButton: return
 
 	# Check is_released() before setting `isSkipping`
 	# to ensure that both `if`s don't run during the same frame if multiple keys are pressed/released.
 	if isSkipping and event.is_released():
-		displayNextScene()
+		await displayNextScene()
 
 	if not isSkipping and event.is_pressed():
 		isSkipping = true
@@ -61,7 +62,7 @@ func scatterLogo() -> void:
 
 
 func displayNextScene() -> void:
-	SceneManager.transitionToScene(nextScene, false) # Don't pauseSceneTree during the transition, so that the cool physics keep physicsing~
+	await SceneManager.transitionToScene(nextScene, false) # Don't pauseSceneTree during the transition, so that the cool physics keep physicsing~
 
 
 func _exit_tree() -> void:
