@@ -144,7 +144,7 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> Pac
 	if not scenePathAfterTransition == previousScenePathFromStack:
 		Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
 
-	didPopScene.emit(previousSceneFromStack)
+	didPopScene.emit(previousScenePathFromStack)
 	return previousSceneFromStack
 
 
