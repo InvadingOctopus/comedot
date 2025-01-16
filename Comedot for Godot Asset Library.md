@@ -1,6 +1,6 @@
 # Comedot for the Godot Asset Library
 
-Asset Name: Comedot - Components Framework
+Asset Name: Comedot Components Framework
 Description:
 
 Project template and framework for making 2D games by adding components to entities. Basically Nodes but for gameplay.
@@ -30,7 +30,7 @@ Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
 Godot Version:	4.4 custom
 Asset Version:	2.69
-Commit URL:		7a5dc679b73003316d68fb825da197ff7fbc27f4 2025-01-17
+Commit URL:		f82d479ca827389be9d4a38005b6912cd8e5aaa8 2025-01-17
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		https://i.imgur.com/aW0MHRu.png
