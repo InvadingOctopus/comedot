@@ -27,17 +27,32 @@ var sceneTree: SceneTree:
 #endregion
 
 
+#region Signals
+signal willTransitionToScene(scene: PackedScene)
+signal didTransitionToScene(scene: PackedScene)
+
+signal willPushScene(scenePath: String) ## TIP: May be used to modify the stack before a new scene is pushed.
+signal didPushScene(scenePath: String)
+
+signal willPopScene ## TIP: May be used to modify the stack before a scene is popped, for example, pushing a scene if there is none, to make sure a "Back" Button always works.
+signal didPopScene(scenePath: String)
+
+signal willSetPause(pause: bool) ## TIP: May be used to modify the visuals before the game is paused.
+#endregion
+
+
 #region Scene Management Methods
 
 ## Transitions to the specified scene with an optional animation.
 ## NOTE: Does NOT use the [member sceneStack]; see [method pushCurrentSceneAndTransition] and [method popSceneFromStack].
-func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void:
 	if not is_instance_valid(nextScene):
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
 
 	var sceneBeforeTransition: Node = sceneTree.current_scene
 	Debug.printAutoLoadLog(str("transitionToScene(): ", sceneBeforeTransition, " → ", nextScene, " ", nextScene.resource_path))
+	willTransitionToScene.emit(nextScene)
 
 	# Pause
 	sceneTree.paused = pauseSceneTree
@@ -50,19 +65,23 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 	if animate: await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
+	didTransitionToScene.emit(nextScene)
+
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].
 ## Call [method popSceneFromStack] from the [param nextScene] to return to the previous scene.
-func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void: # NOTE: Cannot be `static` because of `self.get_tree()`
+func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void:
 	self.pushCurrentSceneToStack()
 	await self.transitionToScene(nextScene, pauseSceneTree, animate) # IMPORTANT: await for animations
 
 
 ## Adds a scene path to the [member sceneStack] and returns the resulting stack size.
-static func pushSceneToStack(scenePath: String) -> int:
+func pushSceneToStack(scenePath: String) -> int:
 	if scenePath.is_empty():
 		Debug.printWarning("pushSceneToStack(): Path empty!", logName)
 		return sceneStack.size()
+
+	willPushScene.emit(scenePath)
 
 	# Check if we're pushing the same scene more than once
 	if not sceneStack.is_empty() and sceneStack.back() == scenePath:
@@ -73,11 +92,12 @@ static func pushSceneToStack(scenePath: String) -> int:
 	if Debug.shouldPrintDebugLogs:
 		Debug.printDebug(str("pushSceneToStack(): ", scenePath, " → ", sceneStack.size(), ": ", sceneStack), logName)
 
+	didPushScene.emit(scenePath)
 	return sceneStack.size()
 
 
 ## Pushes the current scene's path to [member sceneStack] and returns the stack size.
-func pushCurrentSceneToStack() -> int:  # NOTE: Cannot be `static` because of `self.get_tree()`
+func pushCurrentSceneToStack() -> int:
 	var currentScene: Node = sceneTree.current_scene
 
 	if not is_instance_valid(currentScene):
@@ -96,13 +116,15 @@ func pushCurrentSceneToStack() -> int:  # NOTE: Cannot be `static` because of `s
 
 ## Transitions to the PREVIOUS scene from the top/end of the [member sceneStack], if any, and returns it.
 ## NOTE: Returns the previous scene from the stack EVEN IF the transition was NOT successful.
-func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> PackedScene:  # NOTE: Cannot be `static` because of `self.get_tree()`
+func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> PackedScene:
 
 	if sceneStack.is_empty(): # Can't pop if there are no scenes on the stack.
 		Debug.printWarning("popSceneFromStack(): sceneStack is empty!", logName)
 		return null
 
 	# Get the previous scene from the top of the stack
+
+	willPopScene.emit()
 
 	var previousScenePathFromStack: String  = sceneStack.pop_back() # NOTE: PERFORMANCE: Don't use pop_front() because of slower performance.
 	var previousSceneFromStack: PackedScene = load(previousScenePathFromStack)
@@ -111,6 +133,7 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> Pac
 		Debug.printAutoLoadLog(str("popSceneFromStack() → ", previousScenePathFromStack, " → stack size: ", sceneStack.size()))
 	else:
 		Debug.printError("popSceneFromStack(): Cannot load path: " + previousScenePathFromStack, logName)
+		return null
 
 	await self.transitionToScene(previousSceneFromStack, pauseSceneTree, animate)# IMPORTANT: await for animations
 
@@ -121,11 +144,13 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> Pac
 	if not scenePathAfterTransition == previousScenePathFromStack:
 		Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
 
+	didPopScene.emit(previousSceneFromStack)
 	return previousSceneFromStack
 
 
 ## Sets [member SceneTree.paused] and returns the resulting paused status.
-func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
+func setPause(paused: bool) -> bool:
+	willSetPause.emit(paused)
 	sceneTree.paused = paused
 
 	GlobalOverlay.showPauseVisuals(sceneTree.paused)
@@ -133,7 +158,7 @@ func setPause(paused: bool) -> bool: # NOTE: Cannot be `static` because of `self
 
 
 ## Toggles [member SceneTree.paused] and returns the resulting paused status.
-func togglePause() -> bool: # NOTE: Cannot be `static` because of `self.get_tree()`
+func togglePause() -> bool:
 	# TBD: Should this be more efficient instead of so many function calls?
 	return setPause(not sceneTree.paused)
 
