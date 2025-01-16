@@ -33,7 +33,7 @@ Asset Version:	2.69
 Commit URL:		74756680764b2912f577689546e4e8ffbad6a9f3 2025-01-13
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
-Preview:  		https://i.imgur.com/tWNQobY.png
+Preview:  		https://i.imgur.com/aW0MHRu.png
 Screenshot 1:	https://i.imgur.com/oY4WymY.png
 Screenshot 2:	https://i.imgur.com/7M0pH3v.png
 Screenshot 3:	https://i.imgur.com/jgAjmzY.png
