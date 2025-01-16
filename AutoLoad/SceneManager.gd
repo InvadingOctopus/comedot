@@ -27,12 +27,18 @@ var sceneTree: SceneTree:
 #endregion
 
 
+#region Parameters
+@export var animateDefault: bool = true ## The default value for the `animate` argument in [method transitionToScene] and other methods.
+#endregion
+
+
+
 #region Signals
 signal willTransitionToScene(scene: PackedScene)
-signal didTransitionToScene(scene: PackedScene)
+signal didTransitionToScene(scene:  PackedScene)
 
 signal willPushScene(scenePath: String) ## TIP: May be used to modify the stack before a new scene is pushed.
-signal didPushScene(scenePath: String)
+signal didPushScene(scenePath:  String)
 
 signal willPopScene ## TIP: May be used to modify the stack before a scene is popped, for example, pushing a scene if there is none, to make sure a "Back" Button always works.
 signal didPopScene(scenePath: String)
@@ -45,7 +51,7 @@ signal willSetPause(pause: bool) ## TIP: May be used to modify the visuals befor
 
 ## Transitions to the specified scene with an optional animation.
 ## NOTE: Does NOT use the [member sceneStack]; see [method pushCurrentSceneAndTransition] and [method popSceneFromStack].
-func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void:
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = animateDefault) -> void:
 	if not is_instance_valid(nextScene):
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
@@ -65,12 +71,13 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 	if animate: await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
+	if Debug.shouldPrintDebugLogs: Debug.printDebug(str("SceneTree.current_scene: ", sceneTree.current_scene), logName)
 	didTransitionToScene.emit(nextScene)
 
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].
 ## Call [method popSceneFromStack] from the [param nextScene] to return to the previous scene.
-func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = true) -> void:
+func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = animateDefault) -> void:
 	self.pushCurrentSceneToStack()
 	await self.transitionToScene(nextScene, pauseSceneTree, animate) # IMPORTANT: await for animations
 
@@ -116,7 +123,7 @@ func pushCurrentSceneToStack() -> int:
 
 ## Transitions to the PREVIOUS scene from the top/end of the [member sceneStack], if any, and returns it.
 ## NOTE: Returns the previous scene from the stack EVEN IF the transition was NOT successful.
-func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> PackedScene:
+func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefault) -> PackedScene:
 
 	if sceneStack.is_empty(): # Can't pop if there are no scenes on the stack.
 		Debug.printWarning("popSceneFromStack(): sceneStack is empty!", logName)
@@ -139,10 +146,12 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = true) -> Pac
 
 	# Verify the transition
 
-	var scenePathAfterTransition: String = sceneTree.current_scene.scene_file_path
-
-	if not scenePathAfterTransition == previousScenePathFromStack:
-		Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
+	# Make sure there IS a scene after the transition.
+	# TODO: BUG: Because if `animate` is false, `current_scene` is `null` here?
+	if sceneTree.current_scene:
+		var scenePathAfterTransition: String = sceneTree.current_scene.scene_file_path
+		if not scenePathAfterTransition == previousScenePathFromStack:
+			Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
 
 	didPopScene.emit(previousScenePathFromStack)
 	return previousSceneFromStack
