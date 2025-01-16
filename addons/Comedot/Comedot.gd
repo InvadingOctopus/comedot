@@ -62,7 +62,7 @@ var componentsDock: ComponentsDock
 
 
 func addDock() -> void:
-	componentsDock = preload("res://Addons/Comedot/ComponentsDock.tscn").instantiate()
+	componentsDock = preload("res://addons/Comedot/ComponentsDock.tscn").instantiate()
 	componentsDock.plugin = self as EditorPlugin
 	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 	self.set_dock_tab_icon(componentsDock, componentIcon)
