@@ -1,12 +1,13 @@
 [gd_scene load_steps=2 format=3 uid="uid://bf1fy8up8a6j2"]
 
-[ext_resource type="Script" path="res://UI/Buttons/PauseButton.gd" id="1_cb8s2"]
+[ext_resource type="Script" uid="uid://cur4c33j7bb56" path="res://UI/Buttons/PauseButton.gd" id="1_cb8s2"]
 
 [node name="PauseButton" type="Button"]
 process_mode = 3
 custom_minimum_size = Vector2(18, 18)
 offset_right = 18.0
 offset_bottom = 18.0
+tooltip_text = "UN/PAUSE"
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 0.76, 0.2, 1)

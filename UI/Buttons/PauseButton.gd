@@ -17,9 +17,11 @@ func updateState() -> void:
 	# i.e. Should the Pause Button show the "PLAY >" icon when it's PAUSED? or should it show the "PAUSED ||" icon?
 	if self.button_pressed:
 		self.text = ">"
+		self.tooltip_text = "UNPAUSE"
 		self.modulate = Color(0.5, 1, 0.5)
 	else:
 		self.text = "||"
+		self.tooltip_text = "PAUSE"
 		self.modulate = Color(1, 1, 0.5)
 
 
