@@ -24,6 +24,9 @@ var sceneTree: SceneTree:
 		if not sceneTree: sceneTree = self.get_tree()
 		return sceneTree
 
+## Stores the scene from any previous call to [method transitionToScene] to prevent bugs from multiple calls during animations etc.
+var ongoingTransitionScene: PackedScene # CHECK: PERFORMANCE: PackedScene is probably quicker to compare than String, right?
+
 #endregion
 
 
@@ -56,8 +59,17 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
 
+	# Prevent multiple transitions to the same scene
+	if ongoingTransitionScene == nextScene:
+		Debug.printWarning(str("transitionToScene() called for the same scene during a transition: ", nextScene, " ", nextScene.resource_path), logName)
+		return
+
 	var sceneBeforeTransition: Node = sceneTree.current_scene
 	Debug.printAutoLoadLog(str("transitionToScene(): ", sceneBeforeTransition, " → ", nextScene, " ", nextScene.resource_path))
+
+	# Track the scene to prevent bugs from multiple calls to transition to the same scene during animations etc.
+	ongoingTransitionScene = nextScene
+
 	willTransitionToScene.emit(nextScene)
 
 	# Pause
@@ -71,6 +83,7 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 	if animate: await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
+	ongoingTransitionScene = null # Clear the transition tracker
 	if Debug.shouldPrintDebugLogs: Debug.printDebug(str("SceneTree.current_scene: ", sceneTree.current_scene), logName)
 	didTransitionToScene.emit(nextScene)
 
