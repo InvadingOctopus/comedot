@@ -437,3 +437,34 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 		else: printDebug(string)
 
 #endregion
+
+
+#region Debugging
+
+# DEBUG: This region is for debugging [CharacterBody2D] nodes, such as monitoring changes in the [member CharacterBody2D.velocity].
+# To use, temporarily uncomment this block and comment out the normal properties and methods which will be replaced.
+# DONTCOMMIT the uncommented version!
+
+## FOR DEBUGGING ONLY
+## @experimental
+# var body: CharacterBody2D = self
+
+## FOR DEBUGGING ONLY
+## @experimental
+# var previousVelocity: Vector2 = Vector2.ZERO
+
+## FOR DEBUGGING ONLY
+## @experimental
+# func _set(property: StringName, value: Variant) -> bool:
+# 	# Log changes
+# 	if shouldShowDebugInfo and property == "velocity":
+# 		previousVelocity = velocity
+# 		if previousVelocity != value:
+# 			var caller: Dictionary = get_stack()[2]
+# 			var callerFunction: String = caller.source.get_file() + ":" + caller.function + "()"
+# 			print(str(logName, " ", callerFunction, ": velocity ", previousVelocity, " → ", value))
+
+# 	# Access normally
+# 	return false 
+
+#endregion
