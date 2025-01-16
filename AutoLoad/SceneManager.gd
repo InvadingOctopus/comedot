@@ -17,7 +17,7 @@ const logName: String = "SceneManager" # Because we can't have class_name :')
 ## Stores paths instead of [PackedScene] to save memory and improve performance.
 ## IMPORTANT: The END of the array (i.e. the last element) is the TOP of the "stack" and the PREVIOUS scene; [member SceneTree.current_scene] is not stored on the stack.
 ## New items are "pushed" and "popped" from the end/back of the array, NOT the front, to improve performance by not rearranging the rest of the array.
-static var sceneStack: Array[String]
+static var sceneStack: PackedStringArray # Better performance than Array[String]
 
 var sceneTree: SceneTree:
 	get:
@@ -91,10 +91,10 @@ func pushSceneToStack(scenePath: String) -> int:
 	willPushScene.emit(scenePath)
 
 	# Check if we're pushing the same scene more than once
-	if not sceneStack.is_empty() and sceneStack.back() == scenePath:
+	if not sceneStack.is_empty() and sceneStack[sceneStack.size() - 1] == scenePath:
 		Debug.printWarning("pushSceneToStack(): Scene already on top of stack: " + scenePath, logName)
 
-	sceneStack.push_back(scenePath) # NOTE: PERFORMANCE: Don't use push_front() because of slower performance.
+	sceneStack.append(scenePath) # NOTE: PERFORMANCE: Don't use push_front() because of slower performance.
 
 	if Debug.shouldPrintDebugLogs:
 		Debug.printDebug(str("pushSceneToStack(): ", scenePath, " → ", sceneStack.size(), ": ", sceneStack), logName)
@@ -133,7 +133,11 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefau
 
 	willPopScene.emit()
 
-	var previousScenePathFromStack: String  = sceneStack.pop_back() # NOTE: PERFORMANCE: Don't use pop_front() because of slower performance.
+	# GODOT: Why is there no pop_back() for PackedArrays??
+	# PERFORMANCE: Don't use pop_front() because of slower performance.
+	var previousScenePathFromStack: String  = sceneStack[sceneStack.size() - 1]
+	sceneStack.remove_at(sceneStack.size() - 1)
+
 	var previousSceneFromStack: PackedScene = load(previousScenePathFromStack)
 
 	if previousSceneFromStack:

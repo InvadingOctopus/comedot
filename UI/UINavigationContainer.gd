@@ -14,7 +14,9 @@ extends Container
 
 
 #region State
-var navigationHistory: Array[String] # TBD: Is [PackedStringArray] better?
+## A stack of scene paths representing the UI navigation history.
+## NOTE: The END of the array is the TOP of the stack, and is the most recent scene/node/control.
+var navigationStack: PackedStringArray # Better performance than Array[String]
 #endregion
 
 
@@ -29,13 +31,13 @@ func connectBackButton() -> void:
 	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
 
 
-## Clears the [member navigationHistory] array and re-adds the first child as the first member.
+## Clears the [member navigationStack] array and re-adds the first child as the first member.
 ## Returns: The first child of type [Control]
 func resetHistory() -> Control:
-	navigationHistory.clear()
+	navigationStack.clear()
 
 	var firstChild: Control = self.findFirstChildControl()
-	if firstChild: addNodeToHistory(firstChild.scene_file_path)
+	if firstChild:  addNodeToHistory(firstChild.scene_file_path)
 
 	updateBackButton()
 	showDebugInfo()
@@ -44,10 +46,10 @@ func resetHistory() -> Control:
 
 ## Returns: The new size of the history array.
 func addNodeToHistory(path: String) -> int:
-	navigationHistory.append(path)
+	navigationStack.append(path)
 	updateBackButton()
 	showDebugInfo()
-	return navigationHistory.size()
+	return navigationStack.size()
 
 
 func findFirstChildControl() -> Control:
@@ -81,7 +83,7 @@ func displayNavigationDestination(newDestination: String) -> bool:
 		return false
 
 	if self.replaceFirstChildControl(newDestinationScene):
-		navigationHistory.append(newDestination)
+		navigationStack.append(newDestination)
 		result = true
 	else:
 		result = false
@@ -89,7 +91,7 @@ func displayNavigationDestination(newDestination: String) -> bool:
 	updateBackButton()
 	if shouldShowDebugInfo:
 		showDebugInfo()
-		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationHistory), self)
+		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationStack), self)
 	return result
 
 
@@ -98,15 +100,19 @@ func onBackButton_pressed() -> void:
 
 
 func goBack() -> void:
+	# GODOT: Why is there no pop_back() for PackedArrays??
+
 	# Have to have at least 2 nodes to be able to go back in history.
-	if navigationHistory.size() <= 1: return
+	# NOTE: Do not store the size because it will change.
+	if navigationStack.size() <= 1: return
 
 	# Remove the currently displayed node
-	navigationHistory.pop_back()
+	navigationStack.remove_at(navigationStack.size() - 1)
 
 	# Pop again to get the previous node
-	var previousDestination: String = navigationHistory.pop_back()
-	# It will be appended to [navigationHistory] again in [displayNavigationDestination()]
+	var previousDestination: String = navigationStack[navigationStack.size() - 1]
+	navigationStack.remove_at(navigationStack.size() - 1)
+	# It will be appended to [navigationStack] again in displayNavigationDestination()
 
 	self.displayNavigationDestination(previousDestination)
 
@@ -114,10 +120,10 @@ func goBack() -> void:
 func updateBackButton() -> void:
 	if not is_instance_valid(backButton): return
 	# Show the button if there is more than 1 node in the history.
-	backButton.visible = navigationHistory.size() > 1
+	backButton.visible = navigationStack.size() > 1
 
 
 func showDebugInfo() -> void:
 	if not shouldShowDebugInfo: return
 	Debug.watchList.firstChild = self.findFirstChildControl()
-	Debug.watchList.navigationHistory = "\n⬆ ".join(self.navigationHistory)
+	Debug.watchList.navigationStack = "\n⬆ ".join(self.navigationStack)
