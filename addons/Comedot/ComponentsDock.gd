@@ -206,7 +206,7 @@ func buildComponentsDirectory() -> void:
 				componentsCount += 1
 
 	#if shouldShowDebugInfo:
-	printLog(str(componentsCount, " Components found & added to Comedock"))
+	printLog(str(componentsCount, " Components found & added to list"))
 
 	if componentsCount <= 0:
 		printLog("If the list is empty, try the \"Rescan Folders\" button or check the \"\\Components\\\" subfolder of this Godot project.")
