@@ -1,6 +1,7 @@
-## ATTENTION: This script MUST be attached to the root node of the main scene of your game.
 ## "Boots" and initializes the Comedot Framework and applies global flags.
-## NOTE: If you need a custom functionality for your main scene's root node, such as initializing the game-specific environment, then your script must extend [Start] and call [super._ready()]
+## ATTENTION: This script MUST be attached to the root node of the main scene of your game.
+## NOTE: If you need custom functionality for your main scene's root node, such as initializing the game-specific environment,
+## then your script must `extends Start` and if you override `_ready()`, your method MUST also call [method Start._ready].
 
 class_name Start
 extends CanvasItem
@@ -9,6 +10,7 @@ extends CanvasItem
 #region Framework Settings
 
 @export_category("Comedot")
+
 
 #region Main Menu
 @export_group("Main Menu")
@@ -20,6 +22,7 @@ extends CanvasItem
 		Settings.mainGameScene = newValue
 
 #endregion
+
 
 #region Debugging Flags
 @export_group("Debugging Flags")
@@ -51,13 +54,16 @@ extends CanvasItem
 
 #endregion
 
-
 #endregion
 
 
 ## Called when the scene enters the tree for the first time.
 ## IMPORTANT: A subclass which `extends Start` and overrides [method _ready] MUST call `super_ready()`
 func _ready() -> void:
+	startComedot()
+
+
+func startComedot() -> void:
 	Debug.printLog("[b]_ready()[/b]", str("[b]", self.get_script().resource_path.get_file(), "[/b] ", self), "WHITE", "WHITE")
 	Global.hasStartScript = true
 	Debug.performFrameworkChecks() # Update the warning about missing Start script
