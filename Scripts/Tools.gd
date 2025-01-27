@@ -670,4 +670,19 @@ static func reconnect(sourceSignal: Signal, targetCallable: Callable, flags: int
 	else:
 		return 0
 
+
+## Returns a copy of a number after adding/subtracting an [param offset] (default: increment by 1), and wraps it around to the [param minimum] or [param maximum] value if it exceeds or goes below either (inclusive).
+## Example usage: Repeatedly cycle through a range, such as an [Array] or `enum` states or wrapping a sprite around the screen Pac-Man-style.
+static func cycleInteger(minimum: int, current: int, maximum: int, offset: int = +1) -> int:
+	if minimum > maximum:
+		Debug.printWarning(str("cycleInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
+		return current
+	elif minimum == maximum: # If there is no difference between the range, just return either.
+		return minimum
+	
+	# NOTE: Do NOT clamp first! So that an already-offset value may be provided for `current`
+
+	# THANKS: rubenverg@Discord, lololol__@Discord
+	return posmod(current - minimum + offset, maximum - minimum + 1) + minimum # +1 to make limits inclusive
+
 #endregion
