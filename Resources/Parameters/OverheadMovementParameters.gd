@@ -8,10 +8,10 @@ extends Resource
 
 @export_subgroup("Movement") # ----
 
-@export_range(50, 1000, 5) var speed:			float = 300.0
+@export_range(0, 1000, 5) var speed:			float = 300.0
 
 @export var shouldApplyAcceleration:			bool  = true
-@export_range(50, 2000, 5) var acceleration:	float = 800.0
+@export_range(0, 2000, 5) var acceleration:		float = 800.0
 
 ## Completely disables slowdown from friction by reapplying the velocity from the previous frame.
 ## Use for scenarios like slippery surfaces such as ice.
