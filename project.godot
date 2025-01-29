@@ -267,6 +267,7 @@ debugBreak={
 2d_physics/layer_4="enemies"
 2d_physics/layer_5="terrain"
 2d_physics/layer_6="hazards"
+2d_physics/layer_7="props"
 2d_physics/layer_10="zones"
 2d_physics/layer_11="combat"
 2d_physics/layer_12="collectibles"
