@@ -2,12 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bkmvfkojdc0it" path="res://Entities/Entity.gd" id="1_3cwn3"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_op0dp"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_frfcy"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="3_ppngh"]
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="5_nfokn"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vwijj"]
-atlas = ExtResource("2_op0dp")
-region = Rect2(64, 32, 16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8iuf5"]
 size = Vector2(14, 14)
@@ -21,13 +18,24 @@ script = ExtResource("1_3cwn3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0, 1, 0, 1)
-texture = SubResource("AtlasTexture_vwijj")
+texture = ExtResource("2_op0dp")
+region_enabled = true
+region_rect = Rect2(64, 32, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_8iuf5")
 
+[node name="FactionComponent" parent="." instance=ExtResource("3_frfcy")]
+factions = 6
+
 [node name="GunComponent" parent="." instance=ExtResource("3_ppngh")]
+cooldown = 0.1
+
+[node name="BulletEmissionLocation" parent="GunComponent/Pivot/GunSprite" index="0"]
+position = Vector2(12, 0)
 
 [node name="MouseRotationComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_nfokn")]
 nodeToRotate = NodePath("../GunComponent")
 targetingCursor = null
+
+[editable path="GunComponent"]

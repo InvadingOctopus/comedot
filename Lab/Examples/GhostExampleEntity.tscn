@@ -1,0 +1,79 @@
+[gd_scene load_steps=15 format=3 uid="uid://ks8fhlam1j34"]
+
+[ext_resource type="Script" uid="uid://bkmvfkojdc0it" path="res://Entities/Entity.gd" id="1_cgfg7"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_8pjcr"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_r0lki"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="4_vyhga"]
+[ext_resource type="Script" uid="uid://42cnsnkq7wiu" path="res://Resources/Stat.gd" id="5_kedlw"]
+[ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="6_70ylv"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_8kkjp"]
+[ext_resource type="PackedScene" uid="uid://5cmrvf33lh2r" path="res://Components/Movement/ChaseComponent.tscn" id="8_gm12m"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="9_pwf4a"]
+[ext_resource type="Script" uid="uid://cwajer0sv2k5q" path="res://Resources/Parameters/OverheadMovementParameters.gd" id="10_cn3to"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="11_kuh66"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_icn6w"]
+size = Vector2(12, 14)
+
+[sub_resource type="Resource" id="Resource_wtfba"]
+resource_local_to_scene = true
+resource_name = "health"
+script = ExtResource("5_kedlw")
+min = 0
+max = 100
+value = 100
+logChanges = false
+name = &"health"
+displayName = "Health"
+description = ""
+
+[sub_resource type="Resource" id="Resource_u3ofw"]
+script = ExtResource("10_cn3to")
+speed = 25.0
+shouldApplyAcceleration = true
+acceleration = 100.0
+shouldMaintainPreviousVelocity = false
+shouldMaintainMinimumVelocity = false
+minimumSpeed = 100.0
+shouldApplyFriction = true
+friction = 1000.0
+metadata/_custom_type_script = ExtResource("10_cn3to")
+
+[node name="Ghost" type="CharacterBody2D"]
+collision_layer = 10
+collision_mask = 88
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_cgfg7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.8)
+texture = ExtResource("2_8pjcr")
+region_enabled = true
+region_rect = Rect2(416, 96, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_icn6w")
+
+[node name="FactionComponent" parent="." instance=ExtResource("3_r0lki")]
+factions = 8
+
+[node name="HealthComponent" parent="." instance=ExtResource("4_vyhga")]
+health = SubResource("Resource_wtfba")
+
+[node name="HealthVisualComponent" parent="." instance=ExtResource("6_70ylv")]
+shouldShowRemainingHealth = true
+
+[node name="DamageReceivingComponent" parent="." instance=ExtResource("7_8kkjp")]
+
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+shape = SubResource("RectangleShape2D_icn6w")
+
+[node name="ChaseComponent" parent="." instance=ExtResource("8_gm12m")]
+
+[node name="OverheadPhysicsComponent" parent="." instance=ExtResource("9_pwf4a")]
+parameters = SubResource("Resource_u3ofw")
+
+[node name="CharacterBodyComponent" parent="." instance=ExtResource("11_kuh66")]
+
+[editable path="DamageReceivingComponent"]
