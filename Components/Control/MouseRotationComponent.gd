@@ -5,6 +5,8 @@
 class_name MouseRotationComponent
 extends Component
 
+# BUG: Custom mouse cursor disappears after mouse moves (macOS?)
+
 
 #region Parameters
 
@@ -53,7 +55,7 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# Supress the turning control if we also have a TurningControlComponent and there was a `turn` event.
+	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \
 		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
