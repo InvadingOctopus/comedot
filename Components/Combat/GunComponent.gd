@@ -16,7 +16,7 @@ extends CooldownComponent
 @export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
 @export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
-@export var ammoCost: int = 1 ## The ammo used per shot. A negative number will INCREASE the ammo when firing.
+@export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
 
 ## If `true`, the gun fires automatically without any player input.
 @export var autoFire: bool = false
@@ -52,6 +52,8 @@ var wasFireActionJustPressed: bool = false
 #region
 
 
+#region Process Input
+
 func _unhandled_input(_event: InputEvent) -> void:
 	# NOTE: Using [_unhandled_input] allows UI buttons etc. to trap mouse clicks
 	# without causing the gun to fire, which looks janky.
@@ -67,6 +69,8 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
+	# TBD: PERFORMANCE: Should per-frame updates be conditionally-enabled based on flags and input?
+
 	# NOTE: Input actions are handled in [_unhandled_input]
 	# to allow UI buttons etc. to handle mouse clicks,
 	# because it looks janky if the gun fires when the player clicks on an unrelated UI button.
@@ -81,6 +85,10 @@ func _process(_delta: float) -> void:
 		fire()
 		wasFireActionJustPressed = false
 
+#endregion
+
+
+#region Pew Pew
 
 ## Returns the bullet that was fired.
 func fire(ignoreCooldown: bool = false) -> Entity:
@@ -110,7 +118,7 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 ## Returns `false` if [member ammo] is specified but there is not enough ammo.
 func useAmmo() -> bool:
 	# If no ammo resource is specified, no ammo is needed!
-	if not self.ammo: return true
+	if not self.ammoCost or not self.ammo: return true
 
 	# Do we have enough ammo?
 
@@ -166,3 +174,5 @@ func createNewBullet() -> Entity:
 		newBullet.add_child(factionComponentCopy, true) # force_readable_name
 
 	return newBullet
+
+#endregion
