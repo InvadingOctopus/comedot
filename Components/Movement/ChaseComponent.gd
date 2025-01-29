@@ -1,13 +1,10 @@
-## Moves the parent entity to chase after another [Node2D].
-## NOTE: characterBodyComponent.shouldResetVelocityIfZeroMotion = false
+## Moves the parent entity to chase after another [Node2D] by manipulating the entity's [member OverheadPhysicsComponent.inputDirection].
+## Speed, acceleration and friction are determined by the [OverheadPhysicsComponent] and its [OverheadMovementParameters].
+## NOTE: Set [member CharacterBodyComponent.shouldResetVelocityIfZeroMotion] to `false`
 ## Requirements: BEFORE [OverheadPhysicsComponent]
-
 
 class_name ChaseComponent
 extends CharacterBodyManipulatingComponentBase
-
-# TODO: Implement friction slowdown
-# TBD:  Manipulate existing Control components?
 
 
 #region Parameters
@@ -17,11 +14,6 @@ extends CharacterBodyManipulatingComponentBase
 
 ## If `true` amd [member nodeToChase] is `null`, the first [PlayerEntity] from [member GameState.players] will be chased.
 @export var shouldChasePlayerIfUnspecified: bool = true
-
-@export_range(10, 1000, 5) var speed: float = 300
-
-@export var applyAcceleration: bool = false
-@export_range(10, 1000, 5) var acceleration: float = 800
 
 @export var isEnabled: bool = true
 #endregion
