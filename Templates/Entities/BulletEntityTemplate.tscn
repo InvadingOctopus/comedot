@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://3ousmbcfyuac"]
 
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_rqrwr"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_fpdkc"]
+[ext_resource type="Script" uid="uid://bkmvfkojdc0it" path="res://Entities/Entity.gd" id="1_rqrwr"]
+[ext_resource type="Texture2D" uid="uid://cxq0ri0ydsc3l" path="res://Assets/Images/Solid4.png" id="2_s7agm"]
 [ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_m0kev"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_ogryl"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_qww6u"]
@@ -9,11 +9,11 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lt4cn"]
 resource_local_to_scene = true
-size = Vector2(8, 8)
+size = Vector2(4, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u74jj"]
 resource_local_to_scene = true
-size = Vector2(8, 8)
+size = Vector2(4, 4)
 
 [node name="Bullet" type="Area2D" groups=["entities"]]
 collision_layer = 1024
@@ -23,9 +23,7 @@ metadata/_edit_group_ = true
 
 [node name="BulletSprite" type="Sprite2D" parent="."]
 modulate = Color(1, 0.5, 0, 1)
-texture = ExtResource("2_fpdkc")
-region_enabled = true
-region_rect = Rect2(432, 336, 16, 16)
+texture = ExtResource("2_s7agm")
 
 [node name="NonDamageCollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_lt4cn")
