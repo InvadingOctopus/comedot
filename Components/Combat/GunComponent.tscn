@@ -22,7 +22,7 @@ region_rect = Rect2(592, 144, 16, 16)
 
 [node name="BulletEmissionLocation" type="Marker2D" parent="Pivot/GunSprite"]
 unique_name_in_owner = true
-position = Vector2(16, 0)
+position = Vector2(8, 0)
 gizmo_extents = 20.0
 
 [node name="CooldownTimer" type="Timer" parent="."]
