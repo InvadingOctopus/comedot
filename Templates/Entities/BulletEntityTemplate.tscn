@@ -34,6 +34,8 @@ shape = SubResource("RectangleShape2D_lt4cn")
 shape = SubResource("RectangleShape2D_u74jj")
 
 [node name="LinearMotionComponent" parent="." instance=ExtResource("3_m0kev")]
+initialSpeed = 175.0
+shouldApplyAcceleration = false
 shouldDeleteParentAtMaximumDistance = true
 maximumDistance = 500.0
 
