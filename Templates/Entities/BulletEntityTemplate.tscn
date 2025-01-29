@@ -29,6 +29,7 @@ texture = ExtResource("2_s7agm")
 shape = SubResource("RectangleShape2D_lt4cn")
 
 [node name="DamageComponent" parent="." instance=ExtResource("5_qww6u")]
+removeEntityOnCollisionWithDamageReceiver = true
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 shape = SubResource("RectangleShape2D_u74jj")
