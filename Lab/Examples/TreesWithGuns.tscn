@@ -1,0 +1,78 @@
+[gd_scene load_steps=13 format=4 uid="uid://dk8auhx4xrnqp"]
+
+[ext_resource type="Script" uid="uid://lufij25e2op1" path="res://Scripts/Start.gd" id="1_oy7v2"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_8iuf5"]
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_icn6w"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_1r2ol"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_wd4fn"]
+[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="6_vwijj"]
+[ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="7_ax4ov"]
+[ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="8_8iuf5"]
+[ext_resource type="PackedScene" uid="uid://dyxwb73c1uv7v" path="res://Components/Physics/PushRigidBodyComponent.tscn" id="10_wd4fn"]
+[ext_resource type="PackedScene" uid="uid://cfw867i3q122v" path="res://Lab/Examples/TreeWithGun.tscn" id="11_icn6w"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wvs7v"]
+atlas = ExtResource("3_1r2ol")
+region = Rect2(384, 64, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1r2ol"]
+size = Vector2(14, 14)
+
+[node name="TreesWithGuns" type="Node2D"]
+script = ExtResource("1_oy7v2")
+showDebugBackground = false
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
+color = Color(0.7, 0.7, 0.8, 1)
+
+[node name="DebugBackground" parent="." instance=ExtResource("2_icn6w")]
+modulate = Color(0.4, 0.4, 0.4, 1)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+modulate = Color(0.8, 0.8, 0.8, 1)
+tile_map_data = PackedByteArray("AAAFAP//AAAHAA8AAAAFAAAAAAAHAA8AAAD6/wAAAAAHAA8AAAD6////AAAHAA8AAAAAAAUAAAAHAA8AAAD//wUAAAAHAA8AAAD///r/AAAHAA8AAAAAAPr/AAAHAA8AAAAAAAsAAAARABUAAAD//wsAAAARABUAAAD+/wsAAAARABUAAAD9/wsAAAARABUAAAD8/wsAAAARABUAAAD7/wsAAAARABUAAAD6/wsAAAARABUAAAD5/wsAAAARABUAAAABAAsAAAARABUAAAACAAsAAAARABUAAAADAAsAAAARABUAAAAEAAsAAAARABUAAAAFAAsAAAARABUAAAAGAAsAAAARABUAAAAHAAsAAAARABUAAAD4/wsAAAARABUAAAAAAPT/AAARABMAAAD///T/AAARABMAAAD+//T/AAARABMAAAD9//T/AAARABMAAAD8//T/AAARABMAAAD7//T/AAARABMAAAD6//T/AAARABMAAAD5//T/AAARABMAAAABAPT/AAARABMAAAACAPT/AAARABMAAAADAPT/AAARABMAAAAEAPT/AAARABMAAAAFAPT/AAARABMAAAAGAPT/AAARABMAAAAHAPT/AAARABMAAAAIAPT/AAARABMAAAAJAPT/AAARABMAAAALAP//AAASABQAAAALAP7/AAASABQAAAALAP3/AAASABQAAAALAPz/AAASABQAAAALAPv/AAASABQAAAALAPr/AAASABQAAAALAPn/AAASABQAAAALAPj/AAASABQAAAALAPf/AAASABQAAAALAPb/AAASABQAAAALAPX/AAASABQAAAALAPT/AAASABMAAAAKAPT/AAARABMAAAALAAAAAAASABQAAAALAAEAAAASABQAAAALAAIAAAASABQAAAALAAMAAAASABQAAAALAAQAAAASABQAAAALAAUAAAASABQAAAALAAYAAAASABQAAAALAAcAAAASABQAAAALAAgAAAASABQAAAAIAAsAAAARABUAAAAJAAsAAAARABUAAAAKAAsAAAARABUAAAALAAkAAAASABQAAAALAAoAAAASABQAAAALAAsAAAASABUAAAD0/wAAAAAQABQAAAD0////AAAQABQAAAD0//7/AAAQABQAAAD0//3/AAAQABQAAAD0//z/AAAQABQAAAD0//v/AAAQABQAAAD0//r/AAAQABQAAAD0//n/AAAQABQAAAD0//j/AAAQABQAAAD0//f/AAAQABQAAAD0//b/AAAQABQAAAD0//X/AAAQABQAAAD4//T/AAARABMAAAD3//T/AAARABMAAAD2//T/AAARABMAAAD1//T/AAARABMAAAD0//T/AAAQABMAAAD0/wsAAAAQABUAAAD1/wsAAAARABUAAAD2/wsAAAARABUAAAD3/wsAAAARABUAAAD0/woAAAAQABQAAAD0/wkAAAAQABQAAAD0/wgAAAAQABQAAAD0/wcAAAAQABQAAAD0/wYAAAAQABQAAAD0/wUAAAAQABQAAAD0/wQAAAAQABQAAAD0/wMAAAAQABQAAAD0/wIAAAAQABQAAAD0/wEAAAAQABQAAAA=")
+tile_set = ExtResource("7_ax4ov")
+
+[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_8iuf5")]
+
+[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="0"]
+modulate = Color(0, 1, 1, 1)
+texture = SubResource("AtlasTexture_wvs7v")
+
+[node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
+shape = SubResource("RectangleShape2D_1r2ol")
+
+[node name="GunComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_wd4fn")]
+
+[node name="GunSprite" parent="PlayerEntityTemplate-OverheadBasic/GunComponent/Pivot" index="0"]
+position = Vector2(16, 0)
+
+[node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadBasic" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("6_vwijj")]
+nodeToRotate = NodePath("../GunComponent")
+rotationSpeed = 20.0
+
+[node name="PushRigidBodyComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("10_wd4fn")]
+
+[node name="PointLight2D" type="PointLight2D" parent="PlayerEntityTemplate-OverheadBasic"]
+shadow_enabled = true
+shadow_filter = 1
+shadow_filter_smooth = 1.0
+texture = ExtResource("8_8iuf5")
+
+[node name="Trees" type="Node" parent="."]
+
+[node name="TreeEntity1" parent="Trees" instance=ExtResource("11_icn6w")]
+position = Vector2(0, -64)
+
+[node name="TreeEntity2" parent="Trees" instance=ExtResource("11_icn6w")]
+position = Vector2(64, 0)
+
+[node name="TreeEntity3" parent="Trees" instance=ExtResource("11_icn6w")]
+position = Vector2(-64, 0)
+
+[node name="TreeEntity4" parent="Trees" instance=ExtResource("11_icn6w")]
+position = Vector2(0, 64)
+
+[editable path="PlayerEntityTemplate-OverheadBasic"]
+[editable path="PlayerEntityTemplate-OverheadBasic/GunComponent"]

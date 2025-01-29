@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://cfw867i3q122v"]
+
+[ext_resource type="Script" uid="uid://bkmvfkojdc0it" path="res://Entities/Entity.gd" id="1_3cwn3"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_op0dp"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="3_ppngh"]
+[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="5_nfokn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vwijj"]
+atlas = ExtResource("2_op0dp")
+region = Rect2(64, 32, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8iuf5"]
+size = Vector2(14, 14)
+
+[node name="TreeEntity" type="RigidBody2D"]
+collision_layer = 80
+collision_mask = 83
+gravity_scale = 0.0
+linear_damp = 5.0
+script = ExtResource("1_3cwn3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 0, 1)
+texture = SubResource("AtlasTexture_vwijj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_8iuf5")
+
+[node name="GunComponent" parent="." instance=ExtResource("3_ppngh")]
+
+[node name="MouseRotationComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_nfokn")]
+nodeToRotate = NodePath("../GunComponent")
+targetingCursor = null
