@@ -23,9 +23,10 @@ extends Component
 
 
 #region State
-var speed:            float = initialSpeed
+@onready var speed:   float = initialSpeed # NOTE: Must be @onready to actually get the value after the @export!
+
 var distanceTraveled: float = 0
-var isMoving:		  bool = true ## `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
+var isMoving:		  bool  = true ## `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
 #endregion
 
 
@@ -53,10 +54,10 @@ func _physics_process(delta: float) -> void:
 	# Accelerate
 	if shouldApplyAcceleration:
 		speed += acceleration * delta
-		if speed > maximumSpeed: speed = maximumSpeed
+		if abs(speed) > abs(maximumSpeed): speed = maximumSpeed
 
 	# Get the upcoming movement
-	var offset: Vector2 = direction * speed * delta
+	var offset: Vector2 = direction * (speed * delta)
 
 	# Should we stop at a maximum distance?
 
@@ -73,10 +74,8 @@ func _physics_process(delta: float) -> void:
 			offset = direction * remainingDistance
 
 	# Move
-
 	parentEntity.translate(offset) # parentEntity.position += offset
 	self.distanceTraveled += offset.length()
 
-	if shouldShowDebugInfo: printDebug(str("offset: ", offset))
+	if shouldShowDebugInfo: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))
 
-	# DEBUG: printDebug("distanceTraveled: " + str(distanceTraveled) + ", maximumDistance: " + str(maximumDistance))
