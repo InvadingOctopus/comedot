@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6c5d68ty35va"]
 
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
+[ext_resource type="Script" uid="uid://coiawtu3jeggo" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_at8ff"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_3awaj"]
 [ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="3_x16dg"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="4_4iijy"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2p0qb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_xljij"]
 atlas = ExtResource("2_at8ff")
 region = Rect2(560, 224, 16, 16)
 
@@ -20,8 +20,8 @@ script = ExtResource("1_gtqja")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
-modulate = Color(0, 1, 0.5, 1)
-texture = SubResource("AtlasTexture_2p0qb")
+modulate = Color(0, 1, 0, 1)
+texture = SubResource("AtlasTexture_xljij")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sg2kd")
