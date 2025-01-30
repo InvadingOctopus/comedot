@@ -19,6 +19,12 @@ extends Component
 ## If omitted, the first [AnimatedSprite2D] or [Sprite2D] sibling is used, if any, otherwise the parent entity is used.
 @export var nodeToAnimate: CanvasItem
 
+## The number of times to "blink" (hide then show) the entity sprite.
+@export var blinkCount: int = 3
+
+## The speed of the "blinking" animation (repeatedly hide and show).
+@export var blinkDuration: float = 0.05
+
 ## If `true`, adds a red tint to the entity, increasing in intensity as the health decreases.
 ## @experimental
 @export var shouldTint: bool = false:
@@ -65,7 +71,7 @@ func onHealthComponent_healthChanged(difference: int) -> void:
 ## @experimental
 func animate(difference: int) -> void:
 	if difference < 0:
-		Animations.blinkNode(nodeToAnimate, 3)
+		Animations.blinkNode(nodeToAnimate, self.blinkCount, self.blinkDuration)
 
 	updateTint() # Always update tint in case we just got healed.
 
