@@ -12,7 +12,8 @@ extends Component
 #region Parameters
 
 ## Number of seconds after shooting before another bullet can be emitted.
-@export_range(0.01, 100, 0.1, "suffix:seconds") var cooldown: float = 3:
+## WARNING: A value of 0.0 may cause issues with [Timer].
+@export_range(0.05, 100, 0.05, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
 		cooldown = newValue
 		if cooldownTimer: cooldownTimer.wait_time = newValue
