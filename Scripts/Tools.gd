@@ -556,7 +556,7 @@ static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary
 ## For a script to attach to a UI [Container], use "PrintPropertiesToLabels.gd"
 static func printPropertiesToLabels(object: Object, labels: Array[Label], shouldShowPropertyNames: bool = true, shouldHideNullProperties: bool = true, shouldUnhideAvailableLabels: bool = true) -> int:
 	var value: Variant # NOTE: Should not be String so we can explicitly check for `null`
-	var matchCount: int
+	var matchCount: int = 0
 
 	# Go through all our Labels
 	for label in labels:
@@ -679,7 +679,7 @@ static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
 		return current
 	elif minimum == maximum: # If there is no difference between the range, just return either.
 		return minimum
-	
+
 	# NOTE: Do NOT clamp first! So that an already-offset value may be provided for `current`
 
 	# THANKS: rubenverg@Discord, lololol__@Discord
