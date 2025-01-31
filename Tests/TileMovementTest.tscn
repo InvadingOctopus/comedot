@@ -1,38 +1,28 @@
-[gd_scene load_steps=14 format=3 uid="uid://dptnl2r7a6q1a"]
+[gd_scene load_steps=11 format=4 uid="uid://dptnl2r7a6q1a"]
 
-[ext_resource type="Script" path="res://Scripts/Start.gd" id="1_2ybn1"]
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_3qr72"]
-[ext_resource type="Script" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
+[ext_resource type="Script" uid="uid://lufij25e2op1" path="res://Scripts/Start.gd" id="1_2ybn1"]
+[ext_resource type="Script" uid="uid://coiawtu3jeggo" path="res://Entities/Characters/PlayerEntity.gd" id="1_3qr72"]
+[ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="2_foo43"]
+[ext_resource type="Script" uid="uid://boal4f0qjxuca" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_fnve7"]
-[ext_resource type="Script" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="4_vhgyu"]
-[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="5_8jneb"]
-[ext_resource type="Script" path="res://Resources/Stat.gd" id="5_87ms1"]
+[ext_resource type="Script" uid="uid://0vpwwg8xg1f7" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="4_vhgyu"]
 [ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="5_kihht"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
-[ext_resource type="PackedScene" uid="uid://br6psm0falw4" path="res://Templates/Scenes/OverheadMapTemplate.tscn" id="7_f5htu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_esh4c"]
 size = Vector2(14, 12)
 
-[sub_resource type="Resource" id="Resource_wtn0n"]
-resource_local_to_scene = true
-resource_name = "ammo"
-script = ExtResource("5_87ms1")
-name = &"ammo"
-min = 0
-max = 100
-value = 100
-logChanges = false
-
 [node name="TileMovementTest" type="Node2D"]
 script = ExtResource("1_2ybn1")
 
-[node name="OverheadMapTemplate" parent="." instance=ExtResource("7_f5htu")]
+[node name="TerrainContainer" type="Node2D" parent="."]
 script = ExtResource("2_gqr1m")
 speed = 0.1
 
-[node name="TileMapLayer" parent="OverheadMapTemplate" index="0"]
+[node name="TerrainTileMapLayer" type="TileMapLayer" parent="TerrainContainer"]
+tile_map_data = PackedByteArray("AAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAAAAEAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAUAAwAAAAAAAAADAAMAAwAAAAAAAAADAAkAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAgAAwAAAAAAAAAAAAkAAwAAAAAAAAAAAAoAAwAAAAAAAAAAAAsAAwAAAAAAAAAAAAwAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAwAAAAAAAAANAAAAAwAAAAAAAAAEAAoAAwAAAAAAAAADAAoAAwAAAAAAAAANAA0AAwAAAAAAAAAMAA0AAwAAAAAAAAALAA0AAwAAAAAAAAAKAA0AAwAAAAAAAAAJAA0AAwAAAAAAAAAHAA0AAwAAAAAAAAAGAA0AAwAAAAAAAAAFAA0AAwAAAAAAAAAEAA0AAwAAAAAAAAADAA0AAwAAAAAAAAACAA0AAwAAAAAAAAABAA0AAwAAAAAAAAAAAA0AAwAAAAAAAAAHAAgAAwAAAAAAAAAHAAcAAwAAAAAAAAAHAAYAAwAAAAAAAAAHAAUAAwAAAAAAAAAJAAgAAwAAAAAAAAAJAAcAAwAAAAAAAAAJAAYAAwAAAAAAAAAJAAUAAwAAAAAAAAANAAkAAwAAAAAAAAANAAoAAwAAAAAAAAAMAAoAAwAAAAAAAAANAAMAAwAAAAAAAAAOAAAAAwAAAAAAAAAPAAAAAwAAAAAAAAAQAAAAAwAAAAAAAAAQAAEAAwAAAAAAAAAQAAIAAwAAAAAAAAAQAAMAAwAAAAAAAAAQAAQAAwAAAAAAAAAQAAUAAwAAAAAAAAAQAAYAAwAAAAAAAAAQAAcAAwAAAAAAAAAQAAgAAwAAAAAAAAAQAAkAAwAAAAAAAAAQAAoAAwAAAAAAAAAQAAsAAwAAAAAAAAAOAA0AAwAAAAAAAAAPAA0AAwAAAAAAAAAQAA0AAwAAAAAAAAAQAAwAAwAAAAAAAAAHAAQAAwAAAAAAAAAJAAQAAwAAAAAAAAA=")
+tile_set = ExtResource("2_foo43")
 collision_enabled = false
 script = ExtResource("4_vhgyu")
 shouldShowDebugInfo = true
@@ -52,13 +42,10 @@ shape = SubResource("RectangleShape2D_esh4c")
 shouldShowDebugInfo = true
 
 [node name="TileBasedPositionComponent" parent="CharacterBody2D" node_paths=PackedStringArray("tileMap", "visualIndicator") instance=ExtResource("6_73iom")]
-tileMap = NodePath("../../OverheadMapTemplate/TileMapLayer")
+tileMap = NodePath("../../TerrainContainer/TerrainTileMapLayer")
 visualIndicator = NodePath("MovementIndicator")
 shouldShowDebugInfo = true
 
 [node name="GunComponent" parent="CharacterBody2D" instance=ExtResource("4_6v6op")]
-bulletEntity = ExtResource("5_8jneb")
-ammo = SubResource("Resource_wtn0n")
 
-[editable path="OverheadMapTemplate"]
 [editable path="CharacterBody2D/TileBasedPositionComponent"]
