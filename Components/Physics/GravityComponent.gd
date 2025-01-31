@@ -30,11 +30,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
 	if not isEnabled: return
-	processGravity(delta)
-	characterBodyComponent.queueMoveAndSlide()
 
-
-func processGravity(delta: float) -> void:
-	# Vertical Slowdown
 	if not characterBodyComponent.isOnFloor:
 		body.velocity.y += (gravity * gravityScale) * delta
+
+	characterBodyComponent.queueMoveAndSlide()
