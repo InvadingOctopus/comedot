@@ -1,7 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ccsoh7ro7xqlb"]
 
-[ext_resource type="Script" path="res://Components/Control/PlatformerControlComponent.gd" id="1_elhx8"]
+[ext_resource type="Script" uid="uid://d1ikhbsbwlge8" path="res://Components/Control/PlatformerControlComponent.gd" id="1_elhx8"]
 
 [node name="PlatformerControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_elhx8")
-metadata/_edit_group_ = true

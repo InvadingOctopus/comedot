@@ -1,10 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://bck0vjn8mg1aw"]
 
-[ext_resource type="Script" path="res://Components/Control/JumpControlComponent.gd" id="1_58ydu"]
+[ext_resource type="Script" uid="uid://ddy3sibq0siiv" path="res://Components/Control/JumpControlComponent.gd" id="1_58ydu"]
 
 [node name="JumpControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_58ydu")
-metadata/_edit_group_ = true
 
 [node name="CoyoteJumpTimer" type="Timer" parent="."]
 wait_time = 0.1
