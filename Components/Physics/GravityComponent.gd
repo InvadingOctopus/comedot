@@ -1,5 +1,5 @@
 ## Applies gravity to the parent entity's [CharacterBody2D] every frame.
-## WARNING: Do NOT use in conjuction with [PlatformerPhysicsComponent], as that component also processes gravity.
+## WARNING: Do NOT use in conjunction with [PlatformerPhysicsComponent] because that component also processes gravity.
 ## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
@@ -22,6 +22,9 @@ func _ready() -> void:
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+
+	if coComponents.get("PlatformerPhysicsComponent"):
+		printWarning("GravityComponent & PlatformerPhysicsComponent both process gravity; Remove one!")
 
 
 func _physics_process(delta: float) -> void:

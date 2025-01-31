@@ -1,6 +1,7 @@
 ## Handles the physics for gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
 ## This allows player characters as well as monsters to share the same movement logic.
 ## NOTE: Does NOT handle player input. Control is provided by [PlatformerControlComponent], [PlatformerJumpComponent] and AI components etc.
+## WARNING: Do NOT use in conjunction with [GravityComponent] because this component also processes gravity.
 ## Requirements: BEFORE [CharacterBodyComponent], AFTER [PlatformerControlComponent] and other physics modifying components.
 
 class_name PlatformerPhysicsComponent
@@ -54,6 +55,9 @@ func _ready() -> void:
 		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
+
+	if coComponents.get("GravityComponent"):
+		printWarning("PlatformerPhysicsComponent & GravityComponent both process gravity; Remove one!")
 
 
 #region Update Cycle
