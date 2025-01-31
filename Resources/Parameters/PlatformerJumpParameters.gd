@@ -13,7 +13,7 @@ extends Resource
 
 @export_subgroup("Jump")
 
-@export_range(0, 10, 1) var maxNumberOfJumps:				int = 2
+@export_range(0, 10, 1) var maxNumberOfJumps: int = 2
 
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
 @export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity1stJump: float = 350 
@@ -30,14 +30,14 @@ extends Resource
 ## Allows a "grace period" to let the player to jump just after walking off a platform floor.
 ## This may provide a better feel of control in some games.
 ## Named after Wile E. Coyote from Road Runner :>
-@export var allowCoyoteJump:								bool  = true
+@export var allowCoyoteJump: bool = true
 
 ## The "grace period" for allowing the player to jump just after walking off a platform floor.
-@export_range(0, 10, 0.05, "seconds") var coyoteJumpTimer:	float = 0.15
+@export_range(0, 10, 0.05, "seconds") var coyoteJumpTimer: float = 0.15
 
 @export_subgroup("Wall Jump")
 
-@export var allowWallJump:									bool  = true
+@export var allowWallJump: bool = true
 
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
 @export_range(-1000, 1000, 10, "or_greater", "or_less") var wallJumpVelocity: float = 300
@@ -46,8 +46,8 @@ extends Resource
 @export_range(10, 1000, 10, "or_greater") var wallJumpVelocityX: float = 150
 
 ## The "grace period" for allowing the player to jump just after leaving a wall.
-@export_range(0, 10, 0.05, "seconds") var wallJumpTimer:	float = 0.1
+@export_range(0, 10, 0.05, "seconds") var wallJumpTimer: float = 0.1
 
 ## If `true`, then wall jumps do not count towards [member maxNumberOfJumps], allowing the player to jump between walls indefinitely.
-@export var decreaseJumpCountOnWallJump:					bool = true
+@export var decreaseJumpCountOnWallJump: bool = true
 #endregion
