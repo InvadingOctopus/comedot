@@ -21,7 +21,7 @@ extends Resource
 ## A shorter maximum velocity for the 1st jump if the player releases the Jump button quickly.
 ## NOTE: Does NOT apply to mid-air or wall jumps.
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
-@export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity1stJumpShort: float = 175
+@export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity1stJumpShort: float = 150
 
 ## The velocity of the 2nd and all subsequent jumps in a single chain (before touching the ground).
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
