@@ -103,7 +103,7 @@ func _enter_tree() -> void:
 		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
 		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
 		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
-		printLog("􀈅 [b]_enter_tree() → parentEntity: " + parentEntity.logName + "[/b]", self.logFullName)
+		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 
 		self.checkRequiredComponents()
 	else:
