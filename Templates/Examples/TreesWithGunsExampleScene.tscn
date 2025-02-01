@@ -49,6 +49,7 @@ factions = 2
 
 [node name="TargetCursorEntity" parent="." instance=ExtResource("8_2t0s4")]
 modulate = Color(1, 1, 0, 0.5)
+z_index = 100
 position = Vector2(0, 24)
 texture = ExtResource("5_351p7")
 region_enabled = true
@@ -73,6 +74,7 @@ position = Vector2(0, 64)
 [node name="Monsters" type="Node" parent="."]
 
 [node name="Ghost" parent="Monsters" instance=ExtResource("11_xlksg")]
-position = Vector2(-160, -160)
+position = Vector2(-184, -184)
+collision_mask = 72
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
