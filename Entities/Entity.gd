@@ -277,7 +277,7 @@ func findFirstComponentSubclass(type: Script) -> Component:
 	return null
 
 
-## Removes a component that has been registered in the [member components] Dictionary and frees (deletes) the component unless specified.
+## Removes a component that has been registered in the [member components] Dictionary and frees (deletes) the component unless [param shouldFree] is `false`  (useful for temporarily swapping components).
 ## NOTE: Removes only a SINGLE component of the specified type. To remove multiple children of the same type, use [method removeChildrenOfType].
 func removeComponent(componentType: Script, shouldFree: bool = true) -> bool:
 	var componentToRemove := self.getComponent(componentType)
@@ -290,11 +290,12 @@ func removeComponent(componentType: Script, shouldFree: bool = true) -> bool:
 
 
 ## Calls [method removeComponent] on each of the component types passed in the array.
+## [method Node.queue_free] will be called on each matching instance unless [param shouldFree] is `false` (useful for temporarily swapping components).
 ## Returns: The number of components that were found and removed.
-func removeComponents(componentTypes: Array[Script]) -> int:
+func removeComponents(componentTypes: Array[Script], shouldFree: bool = true) -> int:
 	var removalCount: int = 0
 	for componentType in componentTypes:
-		if self.removeComponent(componentType): removalCount += 1
+		if self.removeComponent(componentType, shouldFree): removalCount += 1
 	return removalCount
 
 #endregion
