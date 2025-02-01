@@ -46,8 +46,9 @@ func _ready() -> void:
 
 func connectSignals() -> void:
 	if not areaOverride: return
-	areaOverride.area_entered.connect(self.onAreaEntered)
-	areaOverride.area_exited.connect(self.onAreaExited)
+	# TBD: CHECK: Should it CONNECT_PERSIST?
+	Tools.reconnectSignal(areaOverride.area_entered, self.onAreaEntered, CONNECT_PERSIST)
+	Tools.reconnectSignal(areaOverride.area_exited,  self.onAreaExited,  CONNECT_PERSIST)
 
 
 ## Returns: The number of overlapping [Area2D]s which belong to the "zones" group, and adds them to the [member currentZones] array.
