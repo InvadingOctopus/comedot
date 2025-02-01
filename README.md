@@ -26,7 +26,7 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 
 https://github.com/user-attachments/assets/bc76f0b2-62f7-4fd5-8d26-fef27b182e22
 
-⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead" movement:
+⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead movement:
 
 https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
