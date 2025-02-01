@@ -6,6 +6,8 @@
 
 The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can mix this framework with any other architecture or system, even for 2D scenes in a 3D game!
 
+![components-tree]
+
 * Includes components for different types of player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls like a stats HUD, buttons & lists for special skills etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
@@ -15,18 +17,16 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 * Free-to-use 3rd-party assets for quick prototyping.
 
 > [!WARNING]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The opinionated style eschews GDScript conventions like ugly underscores, and the API may change frequently and **no backwards compatibility is guaranteed!**
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews GDScript conventions like ugly underscores and may change frequently: **No backwards compatibility is guaranteed!**
 
 
-🌳 _An example of a player entity:_
-
-![components-tree]
+## Examples 
 
 ⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
 
 https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
 
-⭐️ Easily implement dynamic gameplay and change abilities/buffs/debuffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/"overhead" movement:
+⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead" movement:
 
 https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
 
@@ -36,26 +36,23 @@ https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb
 
 _(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swapping-components]
 
+These scenes are included in the `/Templates/Examples/` folder.
+
 
 ## How To Use
 
 > [!Important]  
 > _Requires Godot 4.4 ~Embrace the Future_ ✨  
-> The first time you load this project, there may be errors because Godot will re-import the asset files and set the internal IDs for textures etc. To fix: Close and reopen the project.
 
-🚀 **For a quick glance:** See the `/Templates/Scenes/` folder.
-
-⚙️ **To use this framework for your own games:**
-
-1. Clone this repository; make a local copy of this entire Godot project.
+1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
-	* The `/Templates/` folder contains example scenes and Entities with preset Components as a quick starting point for various gameplay.
+	* The `/Templates/` folder contains scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* The `/Scripts/` folder contains code for simple non-Entity nodes.
 	* The `/UI/` folder contains common UI elements such as a stats HUD, special action buttons, lists for choosing upgrades etc.
 
 ![Custom Dock Plugin][comedock]
 
-> [!NOTE]
+> [!TIP]
 > 🧩 A "component" is any Godot node that:
 > * Reacts to events (like player input or collisions).
 > * Moves or modifies its parent node or other components.
@@ -105,8 +102,8 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
 [logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
-[components-tree]: https://i.imgur.com/7M0pH3v.png "Example Components Tree for a Player Entity"
+[components-tree]: https://i.imgur.com/7M0pH3v.png "🌳 Example Components Tree for a Player Entity"
 [rocks-with-guns]: https://i.imgur.com/wH84m23.mp4 "Rocks with Guns"
 [swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
 [debug-charts]: https://i.imgur.com/jgAjmzY.png "Debug Chart Windows"
-[comedock]: https://i.imgur.com/oY4WymY.png "Custom Godot Editor Dock Plugin"
+[comedock]: https://i.imgur.com/j5f2xna.png "Godot Dock Plugin"
