@@ -87,13 +87,13 @@ func requestDeletion() -> bool: # TBD: Should this be renamed to `requestDeletio
 
 
 func _exit_tree() -> void:
-	printLog("􀈃 _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
+	printLog("[color=brown]􀈃 _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
 
 
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PREDELETE:
-			if isLoggingEnabled: printLog("􀆄 PreDelete")
+			if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete")
 
 #endregion
 
@@ -177,7 +177,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
 
 	if existingComponent == componentToRemove:
-		printLog(str("Unregistering ", existingComponent))
+		printLog(str("[color=brown]Unregistering ", existingComponent))
 		self.components.erase(componentType)
 	else:
 		printError(str("Component of type ", componentType, " already in dictionary: ", existingComponent, " but not the same as componentToRemove: ", componentToRemove))

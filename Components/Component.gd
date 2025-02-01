@@ -145,7 +145,7 @@ func unregisterParent() -> void:
 		self.coComponents = {}
 		self.parentEntity.unregisterComponent(self)
 		self.parentEntity = null
-		if isLoggingEnabled: printLog("􀆄 Unparented")
+		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
 
 
 func _exit_tree() -> void:
@@ -155,14 +155,14 @@ func _exit_tree() -> void:
 
 	# Since components may be freed without being children of an Entity:
 	var entityName: String = parentEntity.logName if parentEntity else "null"
-	printLog("􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
+	printLog("[color=brown]􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
 
 
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PARENTED:   registerParent()
 		NOTIFICATION_UNPARENTED: unregisterParent()
-		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 
 #endregion
 
