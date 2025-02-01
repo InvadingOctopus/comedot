@@ -211,6 +211,7 @@ func addComponent(component: Component) -> void:
 
 
 ## Calls [method addComponent] on each of the component instances passed in the array.
+## ATTENTION: Components must be added in order of dependencies! A component which depends on another must be listed after the required component in the array.
 ## Returns: The size of the [param componentsToAdd] array.
 func addComponents(componentsToAdd: Array[Component]) -> int:
 	for componentToAdd in componentsToAdd:
@@ -240,6 +241,7 @@ func addNewComponent(type: Script) -> Component:
 
 
 ## Calls [method addNewComponent] on each of the component TYPES passed in the array.
+## ATTENTION: Components must be added in order of dependencies! A component which depends on another must be listed after the required component in the array.
 ## Returns: An array of all the component INSTANCES that were successfully created and added.
 func addNewComponents(componentTypesToAdd: Array[Script]) -> Array[Component]:
 	var newComponents: Array[Component]
