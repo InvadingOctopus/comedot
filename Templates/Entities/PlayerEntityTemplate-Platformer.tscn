@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://coiawtu3jeggo" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
-[ext_resource type="Script" uid="uid://shy6usw3tb3v" path="res://Scripts/Visual/Camera.gd" id="3_3u7hd"]
+[ext_resource type="Script" uid="uid://shy6usw3tb3v" path="res://Scripts/Visual/ClampCameraToArea.gd" id="3_3u7hd"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="5_1y43j"]
 [ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="6_30kxi"]

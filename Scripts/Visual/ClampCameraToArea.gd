@@ -1,3 +1,5 @@
+## Confines a [Camera2D] within a rectangular [Area2D].
+
 extends Camera2D
 
 
@@ -28,7 +30,7 @@ func clampToBoundary() -> void:
 
 
 #func _process(delta):
-	#printDebug()
+	#showDebugInfo()
 
 
 func showDebugInfo() -> void:
