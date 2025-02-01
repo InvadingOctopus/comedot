@@ -24,11 +24,11 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 
 ⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
 
-https://github.com/InvadingOctopus/media/assets/11238708/bb03147b-b4b0-4388-ac35-b31b23519bde
+https://github.com/user-attachments/assets/bc76f0b2-62f7-4fd5-8d26-fef27b182e22
 
 ⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead" movement:
 
-https://github.com/InvadingOctopus/media/assets/11238708/a067368c-489c-42f1-aedb-b210b5549489
+https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
 📈 There's even kawaii charts for debugging variables in real-time!
 
