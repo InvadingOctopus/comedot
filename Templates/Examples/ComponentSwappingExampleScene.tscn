@@ -1,0 +1,100 @@
+[gd_scene load_steps=15 format=4 uid="uid://ce4b6wa8rpqbs"]
+
+[ext_resource type="Script" uid="uid://lufij25e2op1" path="res://Scripts/Start.gd" id="1_4lwh0"]
+[ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_q3rkf"]
+[ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="3_tlaqm"]
+[ext_resource type="Script" uid="uid://coiawtu3jeggo" path="res://Entities/Characters/PlayerEntity.gd" id="4_abo8o"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="5_qn520"]
+[ext_resource type="Script" uid="uid://shy6usw3tb3v" path="res://Scripts/Visual/ClampCameraToArea.gd" id="6_0ievh"]
+[ext_resource type="PackedScene" uid="uid://b7jqxgeo6hi3" path="res://Templates/Examples/ControlSwapperExampleComponent.tscn" id="7_37w12"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="8_dur3v"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kpfqw"]
+atlas = ExtResource("5_qn520")
+region = Rect2(416, 128, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kfu1x"]
+atlas = ExtResource("5_qn520")
+region = Rect2(384, 96, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_li8s4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kpfqw")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kfu1x")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sdyhs"]
+size = Vector2(12, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gwbcc"]
+size = Vector2(320, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_057rm"]
+size = Vector2(224, 112)
+
+[node name="ComponentSwappingExample" type="Node2D"]
+script = ExtResource("1_4lwh0")
+showDebugWindow = false
+shouldPrintDebugLogs = false
+showDebugLabels = false
+showDebugBackground = false
+
+[node name="DebugBackground" parent="." instance=ExtResource("2_q3rkf")]
+modulate = Color(0.4, 0.4, 0.4, 1)
+
+[node name="TerrainTileMapLayer" type="TileMapLayer" parent="."]
+modulate = Color(0.8, 0.8, 0.8, 1)
+tile_map_data = PackedByteArray("AAAAAAsAAAARABUAAAD//wsAAAARABUAAAD+/wsAAAARABUAAAD9/wsAAAARABUAAAD8/wsAAAARABUAAAD7/wsAAAARABUAAAD6/wsAAAARABUAAAD5/wsAAAARABUAAAABAAsAAAARABUAAAACAAsAAAARABUAAAADAAsAAAARABUAAAAEAAsAAAARABUAAAAFAAsAAAARABUAAAAGAAsAAAARABUAAAAHAAsAAAASABUAAAD4/wsAAAARABUAAAAAAPT/AAARABMAAAD///T/AAARABMAAAD+//T/AAARABMAAAD9//T/AAARABMAAAD8//T/AAARABMAAAD7//T/AAARABMAAAD6//T/AAARABMAAAD5//T/AAARABMAAAABAPT/AAARABMAAAACAPT/AAARABMAAAADAPT/AAARABMAAAAEAPT/AAARABMAAAAFAPT/AAARABMAAAAGAPT/AAARABMAAAAHAPT/AAASABMAAAD0/wAAAAAQABQAAAD0////AAAQABQAAAD0//7/AAAQABQAAAD0//3/AAAQABQAAAD0//z/AAAQABQAAAD0//v/AAAQABQAAAD0//r/AAAQABQAAAD0//n/AAAQABQAAAD0//j/AAAQABQAAAD0//f/AAAQABQAAAD0//b/AAAQABQAAAD0//X/AAAQABQAAAD4//T/AAARABMAAAD3//T/AAARABMAAAD2//T/AAARABMAAAD1//T/AAARABMAAAD0//T/AAAQABMAAAD0/wsAAAAQABUAAAD1/wsAAAARABUAAAD2/wsAAAARABUAAAD3/wsAAAARABUAAAD0/woAAAAQABQAAAD0/wkAAAAQABQAAAD0/wgAAAAQABQAAAD0/wcAAAAQABQAAAD0/wYAAAAQABQAAAD0/wUAAAAQABQAAAD0/wQAAAAQABQAAAD0/wMAAAAQABQAAAD0/wIAAAAQABQAAAD0/wEAAAAQABQAAAD0//P/AAAlABIAAAD1//P/AAAkABMAAAD2//P/AAAvABIAAAD3//P/AAAnABIAAAD4//P/AAAmABIAAAD5//P/AAAkABMAAAD6//P/AAApABMAAAAHAPX/AAASABQAAAAHAPb/AAASABQAAAAHAPf/AAASABQAAAAHAPj/AAASABQAAAAHAPn/AAASABQAAAAHAPr/AAASABQAAAAHAPv/AAASABQAAAAHAPz/AAASABQAAAAHAP3/AAASABQAAAAHAP7/AAASABQAAAAHAP//AAASABQAAAAHAAAAAAASABQAAAAHAAEAAAASABQAAAAHAAIAAAASABQAAAAHAAMAAAASABQAAAAHAAQAAAASABQAAAAHAAUAAAASABQAAAAHAAYAAAASABQAAAAHAAcAAAASABQAAAAHAAgAAAASABQAAAAHAAkAAAASABQAAAAHAAoAAAASABQAAAD3/wYAAAAKABEAAAD4/wYAAAAKABEAAAD5/wYAAAAKABEAAAD6/wYAAAAKABEAAAD7/wYAAAAKABEAAAD8/wYAAAAKABEAAAD9/wYAAAAKABEAAAD+/wYAAAAKABEAAAD//wYAAAAKABEAAAAAAAYAAAAKABEAAAABAAYAAAAKABEAAAACAAYAAAAKABEAAAADAAYAAAAKABEAAAAEAAYAAAAKABEAAAD2/wYAAAAKABEAAAAFAAYAAAAKABEAAAAFAAUAAAAKABEAAAAFAAQAAAAKABEAAAAFAAMAAAAKABEAAAAFAAIAAAAKABEAAAD2/wUAAAAKABEAAAD2/wQAAAAKABEAAAADAAUAAAABAAsAAAAEAAQAAAABAAsAAAD4/wUAAAABAAsAABD3/wQAAAABAAsAABD3/wUAAAAHAA8AABAEAAUAAAAHAA8AAAD2/wAAAAAKABEAAAD2/wIAAAAKABEAAAD2/wEAAAAKABEAAAD2/wMAAAAKABEAAAAFAAEAAAAKABEAAAD6/wIAAAATAA8AAAD7/wIAAAAUAA8AAAD8/wIAAAAUAA8AAAD9/wIAAAAUAA8AAAD+/wIAAAAUAA8AAAD//wIAAAAUAA8AAAAAAAIAAAAUAA8AAAABAAIAAAATAA8AABD7////AAAKABEAAAAAAP//AAAKABEAAAAAAP7/AAACAAsAAAD7//7/AAACAAsAAAD/////AAATAA8AAAD8////AAATAA8AABD2//7/AAACAAsAAAD3//7/AAACAAsAAAD4//7/AAACAAsAAAD5//7/AAACAAsAAAD6//7/AAACAAsAAAABAP7/AAACAAsAAAACAP7/AAACAAsAAAADAP7/AAACAAsAAAAEAP7/AAACAAsAAAAFAP//AAAKABEAAAAFAP7/AAACAAsAAAD2////AAAKABEAAAAFAAAAAAAKABEAAAD3////AAAKABEAAAD4////AAAKABEAAAD5////AAAKABEAAAD6////AAAKABEAAAABAP//AAAKABEAAAACAP//AAAKABEAAAADAP//AAAKABEAAAAEAP//AAAKABEAAAA=")
+tile_set = ExtResource("3_tlaqm")
+
+[node name="PlayerEntity" type="CharacterBody2D" parent="." groups=["entities", "players"]]
+position = Vector2(-32, 56)
+collision_layer = 6
+collision_mask = 16
+script = ExtResource("4_abo8o")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerEntity"]
+modulate = Color(0, 1, 1, 1)
+sprite_frames = SubResource("SpriteFrames_li8s4")
+animation = &"walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
+shape = SubResource("RectangleShape2D_sdyhs")
+
+[node name="Camera2D" type="Camera2D" parent="PlayerEntity" node_paths=PackedStringArray("boundary")]
+script = ExtResource("6_0ievh")
+boundary = NodePath("../../CameraBounds")
+
+[node name="ControlSwapperExampleComponent" parent="PlayerEntity" instance=ExtResource("7_37w12")]
+
+[node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("8_dur3v")]
+
+[node name="CameraBounds" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds"]
+position = Vector2(-32, -8)
+shape = SubResource("RectangleShape2D_gwbcc")
+debug_color = Color(0, 0.6, 0.7, 0.1)
+
+[node name="IndoorZone" type="Area2D" parent="." groups=["zones"]]
+collision_layer = 512
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="IndoorZone" groups=["zones"]]
+position = Vector2(-32, 40)
+shape = SubResource("RectangleShape2D_057rm")
+debug_color = Color(0, 0.6, 0.7, 0.1)

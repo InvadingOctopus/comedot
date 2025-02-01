@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7jqxgeo6hi3"]
+
+[ext_resource type="PackedScene" uid="uid://igl5tam71pns" path="res://Components/Gameplay/ZoneComponent.tscn" id="1_cvjcy"]
+[ext_resource type="Script" uid="uid://dhrhglafl70ql" path="res://Templates/Examples/ControlSwapperExampleComponent.gd" id="2_1k7qh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1k7qh"]
+resource_local_to_scene = true
+size = Vector2(12, 14)
+
+[node name="ControlSwapperExampleComponent" instance=ExtResource("1_cvjcy")]
+script = ExtResource("2_1k7qh")
+
+[node name="ZoneDetectorShape" parent="." index="0"]
+shape = SubResource("RectangleShape2D_1k7qh")
