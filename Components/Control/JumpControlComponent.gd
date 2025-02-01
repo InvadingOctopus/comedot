@@ -58,8 +58,6 @@ var currentNumberOfJumps:	int:
 
 var didWallJump:			bool ## Did we just perform a "wall jump"?
 
-@onready var platformerControlComponent: PlatformerControlComponent = coComponents.PlatformerControlComponent # TBD: Static or dynamic?
-
 #endregion
 
 
