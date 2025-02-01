@@ -188,7 +188,6 @@ func unregisterComponent(componentToRemove: Component) -> void:
 
 #region External Component Management Interface
 
-
 ## Checks the [member Entity.components] [Dictionary] for a key matching the [param type] [Script]'s [method Script.get_global_name] `class_name`.
 func hasComponent(type: Script) -> bool:
 	return self.components.keys().has(type.get_global_name())

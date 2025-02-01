@@ -14,13 +14,13 @@ extends Component
 ## Default: `self` or `parentEntity.area`
 @export var areaOverride: Area2D
 
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 
 #region Signals
 signal didEnterZone(zoneArea: Area2D)
-signal didExitZone(zoneArea: Area2D)
+signal didExitZone(zoneArea:  Area2D)
 signal didUpdateZones
 #endregion
 
