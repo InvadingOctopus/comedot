@@ -203,7 +203,7 @@ func getComponent(type: Script) -> Component:
 	return foundComponent
 
 
-## Adds an existing [Component] [Node] to this entity.
+## Adds an existing [Component] [Node] instance to this entity.
 ## The component must not already be a child of another parent node.
 ## This is a convenience method for adding components created and configured in code during runtime.
 func addComponent(component: Component) -> void:
@@ -211,8 +211,16 @@ func addComponent(component: Component) -> void:
 	component.owner = self # For persistence in Save/Load
 
 
-## Creates a copy of the specified component's scene and adds it as a child node of this entity.
-## Shortcut for [method load] and [method PackedScene.instantiate].
+## Calls [method addComponent] on each of the component instances passed in the array.
+## Returns: The size of the [param componentsToAdd] array.
+func addComponents(componentsToAdd: Array[Component]) -> int:
+	for componentToAdd in componentsToAdd:
+		self.addComponent(componentToAdd)
+	return componentsToAdd.size()
+
+
+## Creates a copy of the specified component TYPE's scene and adds and returns an INSTANCE of it as a child node of this entity.
+## Shortcut for [method load] + [method PackedScene.instantiate].
 ## ALERT: Some situations, such as adding a new component while the entity is being initialized, may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 func addNewComponent(type: Script) -> Component:
 	## NOTE: This is needed because adding components with `.new()` adds the script ONLY, NOT the scene!
@@ -230,6 +238,17 @@ func addNewComponent(type: Script) -> Component:
 	if shouldShowDebugInfo: printDebug(str(newComponent))
 
 	return newComponent
+
+
+## Calls [method addNewComponent] on each of the component TYPES passed in the array.
+## Returns: An array of all the component INSTANCES that were successfully created and added.
+func addNewComponents(componentTypesToAdd: Array[Script]) -> Array[Component]:
+	var newComponents: Array[Component]
+	for componentTypeToAdd in componentTypesToAdd:
+		var newComponent := self.addNewComponent(componentTypeToAdd)
+		if is_instance_valid(newComponent):
+			newComponents.append(newComponent)
+	return newComponents
 
 
 ## Searches all child nodes and returns an array of all nodes which inherit from [Component].
