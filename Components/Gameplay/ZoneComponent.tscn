@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://igl5tam71pns"]
 
-[ext_resource type="Script" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
+[ext_resource type="Script" uid="uid://37eqyshlv6t4" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dtk6b"]
 resource_local_to_scene = true
@@ -14,6 +14,7 @@ script = ExtResource("1_shr7o")
 
 [node name="ZoneDetectorShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dtk6b")
+debug_color = Color(0.4, 0.6, 0.7, 0.42)
 
 [connection signal="area_entered" from="." to="." method="onAreaEntered"]
 [connection signal="area_exited" from="." to="." method="onAreaExited"]
