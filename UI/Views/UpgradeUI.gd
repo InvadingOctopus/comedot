@@ -30,10 +30,10 @@ func _ready() -> void:
 
 func connectSignals() -> void:
 	if not upgrade: return
-	Tools.reconnect(upgrade.didAcquire,   self.onUpgrade_didAcquire)
-	Tools.reconnect(upgrade.didDiscard,   self.onUpgrade_didDiscard)
-	Tools.reconnect(upgrade.didLevelUp,	  self.onUpgrade_didLevelChange)
-	Tools.reconnect(upgrade.didLevelDown, self.onUpgrade_didLevelChange)
+	Tools.reconnectSignal(upgrade.didAcquire,   self.onUpgrade_didAcquire)
+	Tools.reconnectSignal(upgrade.didDiscard,   self.onUpgrade_didDiscard)
+	Tools.reconnectSignal(upgrade.didLevelUp,	self.onUpgrade_didLevelChange)
+	Tools.reconnectSignal(upgrade.didLevelDown, self.onUpgrade_didLevelChange)
 
 
 func onUpgrade_didAcquire(_entity: Entity) -> void:
