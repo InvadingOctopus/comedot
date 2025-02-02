@@ -103,7 +103,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 [logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "🌳 Example Components Tree for a Player Entity"
-[rocks-with-guns]: https://i.imgur.com/wH84m23.mp4 "Rocks with Guns"
-[swapping-components]: https://i.imgur.com/iS0xjdI.mp4 "Swapping Control Components"
+[rocks-with-guns]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
+[swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
 [debug-charts]: https://i.imgur.com/jgAjmzY.png "Debug Chart Windows"
 [comedock]: https://i.imgur.com/j5f2xna.png "Godot Dock Plugin"
