@@ -52,6 +52,8 @@ func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
 
+#region Player Management
+
 ## Adds a player if it is not already in the [member GameState.players] array, emits the related signals, and returns the new size of the [member players] array.
 func addPlayer(newPlayer: Entity) -> int:
 	if not newPlayer in self.players:
@@ -63,6 +65,14 @@ func addPlayer(newPlayer: Entity) -> int:
 		Debug.printWarning("Tried to re-add player already in GameState.players: " + str(newPlayer))
 
 	return self.players.size()
+
+
+## Returns the requested entity from the global [member players] array, if present.
+func getPlayer(playerIndex: int = 0) -> Entity:
+	if self.players.is_empty() or not Tools.isValidArrayIndex(self.players, playerIndex):
+		return null
+
+	return GameState.players[playerIndex]
 
 
 ## Removes a player, emits the related signals, and returns `true` if the removal was successful.
@@ -82,3 +92,5 @@ func removePlayer(playerToRemove: Entity) -> bool:
 		Debug.printWarning("removePlayer(): Player to remove not found in GameState.players: " + str(playerToRemove), self)
 
 	return false
+
+#endregion
