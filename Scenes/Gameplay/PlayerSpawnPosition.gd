@@ -21,6 +21,7 @@ extends Marker2D
 var player: PlayerEntity:
 	get:
 		if playerOverride: return playerOverride
+		elif GameState.players.is_empty(): return null
 		elif playerIndex == 0: return GameState.players.front()
 		else: return GameState.players[playerIndex]
 
