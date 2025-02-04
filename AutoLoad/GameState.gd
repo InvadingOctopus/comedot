@@ -1,6 +1,7 @@
 ## AutoLoad
 ## Global game-specific state and "signal/event bus" available to all scenes and nodes at all times.
-## May be used to store the "system environment" (like player preferences such as buttons and volume etc.) and also the state of each game "campaign", such as the difficulty level and character class etc.
+## Extend to manage the state of each game "campaign", such as the difficulty level, character class, and current map etc.
+## NOTE: Use the `Settings.gd` to store the "system environment" (like player preferences such as buttons and volume etc.)
 
 # class_name GameState
 extends Node
@@ -48,6 +49,9 @@ signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that an
 
 @warning_ignore("unused_signal")
 signal gameDidOver ## Emitted when You Died. NOTE: Multiplayer games must check if other players are still "alive".
+
+@warning_ignore("unused_signal")
+signal gameWillRestart ## Emitted when the player chooses to restart the game or level etc.
 #endregion
 
 
@@ -95,7 +99,7 @@ func removePlayer(playerToRemove: Entity) -> bool:
 		if players.size() < 1: gameDidOver.emit()
 
 		return true
-		
+
 	elif indexToRemove == -1:
 		Debug.printWarning("removePlayer(): Player to remove not found in GameState.players: " + str(playerToRemove), self)
 
