@@ -663,12 +663,18 @@ static func findMethodInScript(script: Script, methodName: StringName) -> bool: 
 	return false
 
 
-## Connects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections.
+## Connects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
 static func reconnectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
 	if not sourceSignal.is_connected(targetCallable):
 		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
 	else:
 		return 0
+
+
+## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
+static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
+	if sourceSignal.is_connected(targetCallable):
+		sourceSignal.disconnect(targetCallable)
 
 
 ## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
