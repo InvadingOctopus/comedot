@@ -7,7 +7,6 @@ class_name GameOver
 extends Node
 
 # TODO: Option to restart
-# TODO: Multplayer support; Don't Game Over if other players are still alive.
 
 
 #region Parameters
@@ -27,13 +26,29 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	Tools.reconnectSignal(GameState.gameDidOver, self.gameState_gameDidOver)
+	Tools.reconnectSignal(GameState.playerRemoved, self.gameState_playerRemoved)
+	Tools.reconnectSignal(GameState.gameDidOver,   self.gameState_gameDidOver)
+
+
+func disconnectSignals() -> void:
+	Tools.disconnectSignal(GameState.playerRemoved, self.gameState_playerRemoved)
+	Tools.disconnectSignal(GameState.gameDidOver,   self.gameState_gameDidOver)
+
+
+func gameState_playerRemoved(_player: Entity) -> void:
+	if isEnabled and GameState.players.is_empty():
+		disconnectSignals()
+		if not isDisplayingGameOver: displayGameOver()
 
 
 func gameState_gameDidOver() -> void:
-	if isEnabled and not isDisplayingGameOver: 
-		disconnect(&"gameDidOver", self.gameState_gameDidOver)
-		displayGameOver()
+	if isEnabled:
+		# NOTE: Make sure ALL players are dead before Overing the Game!
+		if GameState.players.is_empty():
+			disconnectSignals()
+			if not isDisplayingGameOver: displayGameOver()
+		else:
+			Debug.printDebug(str("gameState_gameDidOver(): GameState.players remaining: ", GameState.players.size(), " ", GameState.players), self)
 
 
 ## Pauses the gameplay and makes the node visible.

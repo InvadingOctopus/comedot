@@ -13,7 +13,7 @@ extends Node
 @export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
-## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] instead.
+## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] to ensure that signals are emitted and proper cleanup is performerd.
 ## NOTE: To avoid a crash when there is no player, access the first player with `players.front()` NOT `player[0]`.
 var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
 
@@ -90,7 +90,12 @@ func removePlayer(playerToRemove: Entity) -> bool:
 		self.players.remove_at(indexToRemove)
 		playerRemoved.emit(playerToRemove)
 		playersChanged.emit()
+
+		# Did everyone die?
+		if players.size() < 1: gameDidOver.emit()
+
 		return true
+		
 	elif indexToRemove == -1:
 		Debug.printWarning("removePlayer(): Player to remove not found in GameState.players: " + str(playerToRemove), self)
 
