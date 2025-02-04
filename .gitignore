@@ -2,10 +2,10 @@
 .godot/
 
 # Godot-specific ignores
+# *.uid # Required from 4.4 :')
 .import/
 export.cfg
 export_presets.cfg
-*.uid
 
 # Imported translations (automatically generated from CSV files)
 *.translation
