@@ -1,7 +1,7 @@
 ## AutoLoad
-## A scene containing graphics which are overlaid on top of or underneath the actual game content at all times.
-## Used for performing transition effects between scenes such as fade-in and fade-out.
-## The [process_mode] is set to `PROCESS_MODE_ALWAYS` which ignores the [SceneTree.paused] flag in order to perform transition animations while the actual gameplay is paused.
+## A scene containing graphics, UI or audio etc. which are overlaid on top of the game content at all times.
+## Used for performing transition effects between scenes such as fade-in and fade-out, or playing sound effects that are not dependent to any node's lifetime.
+## The [member process_mode] is set to [enum ProcessMode.PROCESS_MODE_ALWAYS] which ignores the [meember SceneTree.paused] flag in order to perform transition animations while the actual gameplay is paused.
 
 #class_name GlobalOverlay
 extends Node
