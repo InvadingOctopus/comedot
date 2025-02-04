@@ -80,7 +80,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	if  damageComponent: damageComponentsInContact.erase(damageComponent)
 
 	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
-	if damageComponentsInContact.size() <= 0:
+	if damageComponentsInContact.is_empty():
 		accumulatedFractionalDamage = 0
 
 

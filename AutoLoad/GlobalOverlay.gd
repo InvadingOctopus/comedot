@@ -135,7 +135,7 @@ func playAudioPlayerPool(
 
 	var audioPlayer: AudioStreamPlayer2D
 
-	if audioPlayers.size() <= 0:
+	if audioPlayers.is_empty():
 		createAudioPlayerPool()
 		# TBD: Debug.printWarning("No AudioStreamPlayer2D in audioPlayers pool", self)
 		# return null

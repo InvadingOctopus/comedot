@@ -96,7 +96,7 @@ func removePlayer(playerToRemove: Entity) -> bool:
 		playersChanged.emit()
 
 		# Did everyone die?
-		if players.size() < 1: gameDidOver.emit()
+		if players.is_empty(): gameDidOver.emit()
 
 		return true
 

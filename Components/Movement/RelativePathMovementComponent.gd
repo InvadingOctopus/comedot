@@ -49,7 +49,7 @@ signal didFinishMove
 
 
 func _ready() -> void:
-	if vectors.size() < 1:
+	if vectors.is_empty():
 		printWarning("No vectors in list")
 		self.hasNoMoreMoves = true
 		return
