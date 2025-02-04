@@ -59,7 +59,7 @@ func _enter_tree() -> void:
 	# so signals like `child_entered_tree` will be missed for the initial components.
 	printDebug("_enter_tree()")
 	self.add_to_group(Global.Groups.entities, true) # persistent
-	printLog("􀈅 [b]_enter_tree() → parent: " + str(self.get_parent()) + "[/b]", self.logFullName)
+	printLog("􀈅 [b]_enter_tree() → " + str(self.get_parent()) + "[/b]", self.logFullName)
 	connectSignals()
 
 
