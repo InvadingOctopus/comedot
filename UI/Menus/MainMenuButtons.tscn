@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://mwsrn6l4gw51"]
 
-[ext_resource type="Script" uid="uid://dul1eb456fc6c" path="res://UI/Menus/MainMenuButtons.gd" id="1_7ifjj"]
+[ext_resource type="Script" uid="uid://bcblbngsna2b3" path="res://UI/Menus/MainMenuButtons.gd" id="1_7ifjj"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="1_x55uw"]
-[ext_resource type="Script" uid="uid://b8bqk55u66syj" path="res://UI/Buttons/UINavigationButton.gd" id="2_phlj7"]
+[ext_resource type="Script" uid="uid://ygfsiorvisq" path="res://UI/Buttons/UINavigationButton.gd" id="2_phlj7"]
 
 [sub_resource type="Theme" id="Theme_xjusq"]
 default_font = ExtResource("1_x55uw")

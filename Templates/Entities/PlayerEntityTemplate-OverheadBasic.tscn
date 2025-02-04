@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6c5d68ty35va"]
 
-[ext_resource type="Script" uid="uid://coiawtu3jeggo" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_at8ff"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_3awaj"]
 [ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="3_x16dg"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cysctd14jlutm"]
 
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/Views/BusVolumeUI.tscn" id="2_845vf"]
-[ext_resource type="Script" uid="uid://b8bqk55u66syj" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
+[ext_resource type="Script" uid="uid://ygfsiorvisq" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
 
 [node name="OptionsUI" type="CenterContainer"]
 anchors_preset = 15

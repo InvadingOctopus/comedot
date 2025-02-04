@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dn5qx1mv643mq"]
 
-[ext_resource type="Script" uid="uid://biqnuffmy2yty" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
+[ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Icons/Comedot Transparent.png" id="2_7r6gx"]
 [ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 

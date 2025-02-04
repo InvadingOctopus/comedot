@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://5lmeyrtksngw"]
 
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="1_eybf8"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_eybf8"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_stfcg"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_q2npt"]
 [ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="3_st57f"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="4_1se31"]
-[ext_resource type="Script" path="res://Resources/Stat.gd" id="5_7e1iu"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="5_7e1iu"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="6_urskl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
@@ -15,11 +15,13 @@ size = Vector2(16, 16)
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("5_7e1iu")
-name = &"health"
 min = 0
 max = 10
 value = 10
 logChanges = true
+name = &"health"
+displayName = ""
+description = ""
 
 [node name="PlayerEntityTemplate-Combat" type="CharacterBody2D" groups=["entities", "players"]]
 collision_layer = 6

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bf1fy8up8a6j2"]
 
-[ext_resource type="Script" uid="uid://cur4c33j7bb56" path="res://UI/Buttons/PauseButton.gd" id="1_cb8s2"]
+[ext_resource type="Script" uid="uid://c05upy427slls" path="res://UI/Buttons/PauseButton.gd" id="1_cb8s2"]
 
 [node name="PauseButton" type="Button"]
 process_mode = 3

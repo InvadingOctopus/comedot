@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cvqp4ygq6w82"]
 
-[ext_resource type="Script" uid="uid://iaa33nr1c3nw" path="res://Scenes/Launch/Logo/LogoSceneIO.gd" id="1_qii1y"]
+[ext_resource type="Script" uid="uid://ch3ob43tamsm8" path="res://Scenes/Launch/Logo/LogoSceneIO.gd" id="1_qii1y"]
 [ext_resource type="PackedScene" uid="uid://dgk7tlglaif5h" path="res://Scenes/Launch/Logo/LogoInvaderSprite.tscn" id="2_4hmw6"]
 [ext_resource type="PackedScene" uid="uid://dbwiosb1xulu5" path="res://Templates/Scenes/PlatformerSceneTemplate.tscn" id="2_uw4pw"]
 [ext_resource type="PackedScene" uid="uid://csq2lekj41v32" path="res://Scenes/Launch/Logo/LogoOctopusSprite.tscn" id="3_p8yrm"]
