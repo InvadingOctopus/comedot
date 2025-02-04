@@ -47,7 +47,7 @@ signal uiActionDidRequestTarget(action: Action, source: Variant) ## Emitted when
 signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that any UI elements which depend on that Stat may be updated.
 
 @warning_ignore("unused_signal")
-signal gameDidOver ## Emitted when You Died.
+signal gameDidOver ## Emitted when You Died. NOTE: Multiplayer games must check if other players are still "alive".
 #endregion
 
 

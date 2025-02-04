@@ -12,6 +12,7 @@ extends Component
 
 ## Enable for the main player entity to emit the global [signal GameState.gameDidOver] signal. Also see: GameOver.gd
 ## Affected by [member isEnabled].
+## WARNING: Should not be used if more than 1 player is in a game.
 @export var shouldGameOverOnZero: bool = false
 
 ## Affected by [member isEnabled].
