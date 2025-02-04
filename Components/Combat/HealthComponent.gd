@@ -9,7 +9,13 @@ extends Component
 #region Parameters
 
 @export var health: Stat
-@export var shouldRemoveEntityOnZero: bool = false ## Affected by [member isEnabled].
+
+## Enable for the main player entity to emit the global [signal GameState.gameDidOver] signal. Also see: GameOver.gd
+## Affected by [member isEnabled].
+@export var shouldGameOverOnZero: bool = false
+
+## Affected by [member isEnabled].
+@export var shouldRemoveEntityOnZero: bool = false
 
 ## If true, [member health] will not decrease (or increase, if the damage is negative) more than [member maximumHealthDamagePerHit] during a single call to [method damage].
 ## This may be used for objects or enemies that require a fixed number of hits to destroy, no matter what the "strength" of the gun or attack is.
@@ -31,7 +37,7 @@ signal healthDidDecrease(difference: int)
 ## [param difference] is always positive, so this signal may be connected to the same function as [signal healthDidDecrease], which always has a negative [param difference].
 signal healthDidIncrease(difference: int)
 
-## May be less than zero.
+## NOTE: Emitted ONLY when the health DECREASES from >0 to <=0, not if it changes from <0 to <0. NOT affected by [member isEnabled].
 signal healthDidZero
 
 ## May be greater than [member health].[member Stat.max].
@@ -54,12 +60,16 @@ func onHealthChanged() -> void:
 		if health.value > health.previousValue: healthDidIncrease.emit(difference)
 		# %DebugIndicator.text = str(health.value) # TBD: ?
 
-		if health.value <= 0:
+		# NOTE: Emit signals and handle "death" ONLY when the health DECREASES from >0 to <=0, not if it changes from <0 to <0. (Why? It just makes sense that way, and to reduce excessive signals.)
+		if difference < 0 and health.value <= 0:
 			healthDidZero.emit()
 			
-			if isEnabled and shouldRemoveEntityOnZero and parentEntity: 
-				willRemoveEntity.emit()
-				parentEntity.requestDeletion()
+			if isEnabled:
+				if shouldRemoveEntityOnZero and parentEntity:
+					willRemoveEntity.emit()
+					parentEntity.requestDeletion()
+				if shouldGameOverOnZero:
+					GameState.gameDidOver.emit()
 
 
 ## [param damageAmount] must be a positive number. Negative values will INCREASE health.
