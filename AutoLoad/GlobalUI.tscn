@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=9 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://UI/Buttons/PauseButton.tscn" id="2_bawob"]
+[ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
 [ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="3_vibvi"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
@@ -101,6 +102,16 @@ script = ExtResource("1_6ujyj")
 [node name="ForegroundOverlay" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
 layer = 120
+
+[node name="NavigationContainer" type="MarginContainer" parent="ForegroundOverlay"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_vibvi")
+shouldShowDebugInfo = null
 
 [node name="GlobalOverlayRect" type="ColorRect" parent="ForegroundOverlay"]
 visible = false

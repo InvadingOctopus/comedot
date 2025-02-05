@@ -28,6 +28,7 @@ signal didHidePauseOverlay
 #region Dependencies
 const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 
+@onready var navigationContainer:UINavigationContainer = %NavigationContainer ## For top-level UI
 @onready var foregroundOverlay	:CanvasLayer = %ForegroundOverlay
 @onready var animationPlayer	:AnimationPlayer = %AnimationPlayer
 @onready var pauseButton		:Button = %PauseButton
@@ -41,8 +42,8 @@ func _enter_tree() -> void:
 
 
 func showPauseVisuals(isPaused: bool) -> void:
-	if isPaused: GlobalUI.fadeIn()
-	else: GlobalUI.fadeOut()
+	if isPaused: self.fadeIn()
+	else: self.fadeOut()
 
 	pauseButton.updateState()
 	pauseButton.visible = isPaused
