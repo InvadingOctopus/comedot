@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3o0h88u2yifr"]
+[gd_scene load_steps=12 format=3 uid="uid://b3o0h88u2yifr"]
 
 [ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_jwxdq"]
 [ext_resource type="Script" uid="uid://dvjnpk58or41e" path="res://UI/PauseOverlay.gd" id="1_sck66"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="5_8n3qq"]
 [ext_resource type="PackedScene" uid="uid://cysctd14jlutm" path="res://UI/Menus/OptionsUI.tscn" id="5_bo3ty"]
 [ext_resource type="LabelSettings" uid="uid://dh6cxqdk70cl5" path="res://Assets/Themes/Label/PauseOverlay ExtraLabel.tres" id="5_su7p3"]
+[ext_resource type="PackedScene" uid="uid://ce5yf1g66vj4o" path="res://UI/Buttons/LongPressButton.tscn" id="8_38uin"]
 
 [sub_resource type="Theme" id="Theme_xpd01"]
 default_font = ExtResource("1_jwxdq")
@@ -88,9 +89,17 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="RestartButton" parent="MarginContainer/VBoxContainer" instance=ExtResource("8_38uin")]
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Return to Main Menu"
+text = "REBOOT"
+
 [node name="TimeLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "TIME"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="longPressed" from="MarginContainer/VBoxContainer/RestartButton" to="." method="onRestartButton_longPressed"]
