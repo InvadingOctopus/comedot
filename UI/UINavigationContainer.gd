@@ -56,6 +56,7 @@ func findFirstChildControl() -> Control:
 	return Tools.findFirstChildOfType(self, Control, false) # not includeParent
 
 
+## Removes the first child, if any, and adds the specified [Control].
 func replaceFirstChildControl(newControl: Control) -> bool:
 	var childToReplace: Control = self.findFirstChildControl()
 
@@ -65,16 +66,17 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 		if Tools.replaceChild(self, childToReplace, newControl):
 			childToReplace.queue_free() # NOTE: Important, as [remove_child()] does not delete the child.
 			return true
-	else:
-		self.add_child(newControl)
+	else: # If there are no children, just add the new one.
+		Tools.addChildAndSetOwner(newControl, self)
 		return true
 
 	showDebugInfo()
 	return false
 
 
-## Replaces the current first child of this container and displays a new child and pushes it onto the [member navigationStack].
+## Replaces the current first child of this container and displays a new control and pushes it onto the [member navigationStack].
 ## [param newDestination]: The path of the new sub-scene (UI container) to display in this container.
+## IMPORTANT: The root node of the new child scene MUST be a [Control].
 func displayNavigationDestination(newDestinationPath: String) -> bool:
 	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestinationPath, self)
 	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestinationPath) #navigationDestination.instantiate()
