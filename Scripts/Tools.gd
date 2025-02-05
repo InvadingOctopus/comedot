@@ -59,8 +59,7 @@ static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector
 static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var newChild := scene.instantiate()
 	if newChild is Node2D or newChild is Control: newChild.position = position
-	parent.add_child(newChild, true) # force_readable_name
-	newChild.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
+	Tools.addChildAndSetOwner(newChild, parent) # Ensure persistence
 	return newChild
 
 
@@ -142,7 +141,7 @@ static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node)
 	var previousChildIndex: int = childToReplace.get_index() # The original index
 	parentNode.remove_child(childToReplace)
 
-	parentNode.add_child(newChild)
+	Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
 	parentNode.move_child(newChild, previousChildIndex)
 	newChild.owner = parentNode # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
