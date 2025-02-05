@@ -151,8 +151,7 @@ static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node)
 ## Removes the first child of the [param parentNode], if any, and adds the specified [param newChild].
 func replaceFirstChild(parentNode: Node, newChild: Node) -> void:
 	var childToReplace: Control = parentNode.findFirstChildControl()
-
-	Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
+	# Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
 
 	if childToReplace:
 		if Tools.replaceChild(parentNode, childToReplace, newChild):
