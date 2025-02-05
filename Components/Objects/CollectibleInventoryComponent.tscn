@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cjl1gxhpykmg3"]
 
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="1_xqgb2"]
-[ext_resource type="Script" uid="uid://cidiqhgulq6lg" path="res://Components/Objects/CollectibleInventoryComponent.gd" id="2_0chgq"]
+[ext_resource type="Script" uid="uid://7c7nb7bxeqx1" path="res://Components/Objects/CollectibleInventoryComponent.gd" id="2_0chgq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0chgq"]
 resource_local_to_scene = true

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dc30psrpymtkr"]
 
-[ext_resource type="Script" uid="uid://dc04c8qxb4ep8" path="res://Components/TurnBased/TurnBasedStateUIComponent.gd" id="1_58qnf"]
+[ext_resource type="Script" uid="uid://bdnjaj1822v6i" path="res://Components/TurnBased/TurnBasedStateUIComponent.gd" id="1_58qnf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_bf3js"]
 font_size = 8

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://igl5tam71pns"]
 
-[ext_resource type="Script" uid="uid://37eqyshlv6t4" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
+[ext_resource type="Script" uid="uid://b4g4nmlwwib4t" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dtk6b"]
 resource_local_to_scene = true

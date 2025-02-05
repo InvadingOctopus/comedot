@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ccj2qlixoldhp"]
 
-[ext_resource type="Script" uid="uid://b1qjtvp31yp2g" path="res://Scenes/Launch/CoordinatorScene.gd" id="1_xebyh"]
+[ext_resource type="Script" uid="uid://c7aq2la2dkglk" path="res://Scenes/Launch/CoordinatorScene.gd" id="1_xebyh"]
 [ext_resource type="PackedScene" uid="uid://celt7hx1gstld" path="res://Scenes/Launch/GameFrame.tscn" id="2_vyfib"]
 
 [node name="CoordinatorScene" type="Node2D"]
