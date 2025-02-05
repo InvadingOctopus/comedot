@@ -149,13 +149,13 @@ static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node)
 
 
 ## Removes the first child of the [param parentNode], if any, and adds the specified [param newChild].
+## NOTE: The child and its sub-children are NOT deleted. To delete a child, use [method Node.queue_free].
 static func replaceFirstChild(parentNode: Node, newChild: Node) -> void:
 	var childToReplace: Control = parentNode.findFirstChildControl()
 	# Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
 
 	if childToReplace:
-		if Tools.replaceChild(parentNode, childToReplace, newChild):
-			childToReplace.queue_free() # NOTE: Important, as [remove_child()] does not delete the child.
+		Tools.replaceChild(parentNode, childToReplace, newChild)
 	else: # If there are no children, just add the new one.
 		Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
 		newChild.owner = parentNode # For persistence
