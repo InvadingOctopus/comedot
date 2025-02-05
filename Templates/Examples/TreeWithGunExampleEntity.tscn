@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://cfw867i3q122v"]
 
-[ext_resource type="Script" uid="uid://bkmvfkojdc0it" path="res://Entities/Entity.gd" id="1_3cwn3"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_3cwn3"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_op0dp"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_frfcy"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="3_ppngh"]

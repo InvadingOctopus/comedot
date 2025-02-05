@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://bjyppdv5f7xa8"]
 
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_kkpmy"]
-[ext_resource type="Script" path="res://Resources/InventoryItem.gd" id="2_h2jcq"]
+[ext_resource type="Script" uid="uid://doed2wnhlpjgb" path="res://Resources/InventoryItem.gd" id="2_h2jcq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bvfwh"]
 atlas = ExtResource("1_kkpmy")
