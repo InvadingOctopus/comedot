@@ -106,3 +106,17 @@ func removePlayer(playerToRemove: Entity) -> bool:
 	return false
 
 #endregion
+
+
+#region Game Cycle
+
+## Called when the user or a condition like Game Over causes the game (or level) to be restarted.
+## By default, returns to the Main Menu.
+## Override for game-specific functionality.
+## @experimental
+func restart() -> void:
+	SceneManager.transitionToScene(load("res://Scenes/Launch/GameFrame.tscn"))
+
+
+#endregion
+
