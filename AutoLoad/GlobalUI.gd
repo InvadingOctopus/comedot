@@ -56,7 +56,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		if pauseOverlay.get_parent() != foregroundOverlay: 
 			foregroundOverlay.add_child(pauseOverlay)
 			pauseOverlay.owner = foregroundOverlay # Necessary for persistence to a [PackedScene] for save/load.
-		foregroundOverlay.move_child(pauseOverlay, 1)  # Put it above the fullscreen overlay effect.
+		foregroundOverlay.move_child(pauseOverlay, -1)  # Put it above the fullscreen overlay effect.
 		pauseOverlay.visible = true # Just in case
 		didShowPauseOverlay.emit()
 
