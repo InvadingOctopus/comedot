@@ -1,7 +1,7 @@
 ## AutoLoad
 ## Global data and code provided by the framework for all games, such as constants, flags and helper functions etc.
 ## For player control & input actions, see [GlobalInput].
-## For visuals and sounds that must be present in every scene, see [GlobalOverlay].
+## For visuals and sounds that must be present in every scene, see [GlobalUI].
 
 # class_name Global
 extends Node
@@ -86,8 +86,8 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 	Settings.windowWidth  = width
 	Settings.windowHeight = height
 
-	if showLabel and GlobalOverlay: # GODOT BUG? Cannot check for `GlobalOverlay` validity in case this is called before the other AutoLoads have loaded :(
-		GlobalOverlay.createTemporaryLabel(str("Window Size: ", width, " x ", height))
+	if showLabel and GlobalUI: # GODOT BUG? Cannot check for `GlobalUI` validity in case this is called before the other AutoLoads have loaded :(
+		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
 
 
 #region Scene Management
@@ -104,7 +104,7 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 	# BUG:  Does not save all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
 
-	GlobalOverlay.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
+	GlobalUI.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
 	@warning_ignore("redundant_await")
 	await Debug.printLog("Saving state → " + Settings.saveFilePath) # TBD: await or not?
 
@@ -128,7 +128,7 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 	# BUG:  Does not restore all state of all nodes
 	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
 
-	GlobalOverlay.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
+	GlobalUI.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
 	@warning_ignore("redundant_await")
 	await Debug.printLog("Loading state ← " + Settings.saveFilePath) # TBD: await or not?
 
@@ -158,6 +158,6 @@ func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` b
 	var screenshotImage := self.get_viewport().get_texture().get_image() # Capture what the player sees
 	screenshotImage.save_jpg(screenshotPath)
 
-	GlobalOverlay.createTemporaryLabel(str("Screenshot ", time + " " + titleSuffix))
+	GlobalUI.createTemporaryLabel(str("Screenshot ", time + " " + titleSuffix))
 
 #endregion

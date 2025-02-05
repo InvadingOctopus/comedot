@@ -196,7 +196,7 @@ func displayMessage(message: String, color: Color = Color.GRAY, outlineSize: int
 	if not shouldShowMessages:   return
 	if shouldRepeatMessageAsLog: self.printLog(message)
 
-	var labelSettings: LabelSettings = GlobalOverlay.createTemporaryLabel(message).label_settings
+	var labelSettings: LabelSettings = GlobalUI.createTemporaryLabel(message).label_settings
 	labelSettings.font_color = color
 	if outlineSize >= 0: labelSettings.outline_size = outlineSize
 

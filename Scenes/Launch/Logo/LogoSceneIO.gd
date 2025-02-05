@@ -30,7 +30,7 @@ func _ready() -> void:
 
 func animateText() -> void:
 	for text in textLines:
-		var label: Label = GlobalOverlay.createTemporaryLabel(text)
+		var label: Label = GlobalUI.createTemporaryLabel(text)
 		label.modulate = Color(1,1,1,0)
 		Animations.tweenProperty(label, ^"modulate", Color.WHITE, 0.5)
 		if not isSkipping: await get_tree().create_timer(0.5).timeout

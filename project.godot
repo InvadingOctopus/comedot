@@ -35,7 +35,7 @@ SceneManager="*res://AutoLoad/SceneManager.gd"
 GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
 TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
-GlobalOverlay="*res://AutoLoad/GlobalOverlay.tscn"
+GlobalOverlay="*res://AutoLoad/GlobalUI.tscn"
 Debug="*res://AutoLoad/Debug.tscn"
 
 [debug]

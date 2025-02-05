@@ -1,6 +1,6 @@
 ## AutoLoad
 ## Manages transitions between different scenes via a "navigation stack".
-## For visuals and sounds that must be present in every scene, see [GlobalOverlay].
+## For visuals and sounds that must be present in every scene, see [GlobalUI].
 
 # class_name SceneManager
 extends Node
@@ -74,13 +74,13 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 
 	# Pause
 	sceneTree.paused = pauseSceneTree
-	if animate: await GlobalOverlay.fadeIn() # Fade the overlay in, fade the game out.
+	if animate: await GlobalUI.fadeIn() # Fade the overlay in, fade the game out.
 
 	# Transition
 	sceneTree.change_scene_to_packed(nextScene)
 
 	# Unpause
-	if animate: await GlobalOverlay.fadeOut() # Fade the overlay out, fade the game in.
+	if animate: await GlobalUI.fadeOut() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
 	ongoingTransitionScene = null # Clear the transition tracker
@@ -179,7 +179,7 @@ func setPause(paused: bool) -> bool:
 	willSetPause.emit(paused)
 	sceneTree.paused = paused
 
-	GlobalOverlay.showPauseVisuals(sceneTree.paused)
+	GlobalUI.showPauseVisuals(sceneTree.paused)
 	return sceneTree.paused
 
 

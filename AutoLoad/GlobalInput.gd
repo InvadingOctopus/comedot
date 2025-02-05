@@ -106,7 +106,7 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_released(Actions.windowToggleAlwaysOnTop):
 		var isAlwaysOnTop := DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, not isAlwaysOnTop) # `not` because it's a toggle.
-		GlobalOverlay.createTemporaryLabel(str("Window Always on Top: ", not isAlwaysOnTop))
+		GlobalUI.createTemporaryLabel(str("Window Always on Top: ", not isAlwaysOnTop))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 
 	if Input.is_action_just_released(Actions.windowResizeTo720):

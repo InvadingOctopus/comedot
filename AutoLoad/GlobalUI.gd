@@ -1,9 +1,9 @@
 ## AutoLoad
 ## A scene containing graphics, UI or audio etc. which are overlaid on top of the game content at all times.
-## Used for performing transition effects between scenes such as fade-in and fade-out, or playing sound effects that are not dependent to any node's lifetime.
+## Used for displaying paused-mode overlays, performing transition effects between scenes such as fade-in and fade-out, or playing sound effects that are not dependent to any node's lifetime.
 ## The [member process_mode] is set to [enum ProcessMode.PROCESS_MODE_ALWAYS] which ignores the [meember SceneTree.paused] flag in order to perform transition animations while the actual gameplay is paused.
 
-#class_name GlobalOverlay
+#class_name GlobalUI
 extends Node
 
 
@@ -41,8 +41,8 @@ func _enter_tree() -> void:
 
 
 func showPauseVisuals(isPaused: bool) -> void:
-	if isPaused: GlobalOverlay.fadeIn()
-	else: GlobalOverlay.fadeOut()
+	if isPaused: GlobalUI.fadeIn()
+	else: GlobalUI.fadeOut()
 
 	pauseButton.updateState()
 	pauseButton.visible = isPaused

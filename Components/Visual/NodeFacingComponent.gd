@@ -56,7 +56,7 @@ func _input(event: InputEvent) -> void:
 		if self.isEnabled \
 		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
 			printDebug("Turn action received. Disabling NodeFacingComponent so TurningControlComponent can be used.")
-			# TBD: GlobalOverlay.createTemporaryLabel("NodeFacingComponent off if turning. Click to reenable")
+			# TBD: GlobalUI.createTemporaryLabel("NodeFacingComponent off if turning. Click to reenable")
 			self.isEnabled = false
 			reenablingTimer.start()
 

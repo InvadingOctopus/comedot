@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
 
-[ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalOverlay.gd" id="1_ym7ug"]
-[ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://UI/Buttons/PauseButton.tscn" id="2_e15vu"]
-[ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="4_bpooc"]
+[ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
+[ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://UI/Buttons/PauseButton.tscn" id="2_bawob"]
+[ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="3_vibvi"]
 
 [sub_resource type="Animation" id="Animation_uq6fe"]
 length = 0.001
@@ -94,9 +94,9 @@ _data = {
 &"overlayFadeOut": SubResource("Animation_7c1si")
 }
 
-[node name="GlobalOverlay" type="Node"]
+[node name="GlobalUI" type="Node"]
 process_mode = 3
-script = ExtResource("1_ym7ug")
+script = ExtResource("1_6ujyj")
 
 [node name="ForegroundOverlay" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
@@ -113,7 +113,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.5, 0, 1, 0.501961)
 
-[node name="PauseButton" parent="ForegroundOverlay" instance=ExtResource("2_e15vu")]
+[node name="PauseButton" parent="ForegroundOverlay" instance=ExtResource("2_bawob")]
 unique_name_in_owner = true
 visible = false
 offset_left = 8.0
@@ -130,7 +130,7 @@ offset_bottom = 48.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
-script = ExtResource("4_bpooc")
+script = ExtResource("3_vibvi")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true

@@ -76,7 +76,7 @@ func _input(event: InputEvent) -> void:
 
 func applyTestMode() -> void:
 	Debug.addTemporaryLabel(&"Test Mode", str(isInTestMode))
-	GlobalOverlay.createTemporaryLabel(str("TEST MODE ", "ON" if isInTestMode else "OFF"))
+	GlobalUI.createTemporaryLabel(str("TEST MODE ", "ON" if isInTestMode else "OFF"))
 
 	setNodesVisibility()
 
