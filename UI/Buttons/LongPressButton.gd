@@ -13,8 +13,9 @@ extends Button
 	set(newValue):
 		if newValue != duration:
 			duration = newValue
-			timer.wait_time = self.duration
-			bar.max_value = timer.wait_time
+			if is_node_ready():
+				timer.wait_time = self.duration
+				bar.max_value = timer.wait_time
 #endregion
 
 
