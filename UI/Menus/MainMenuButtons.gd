@@ -1,3 +1,5 @@
+## Main Menu Buttons Template/Example
+
 #class_name MainMenu
 extends Control
 
@@ -35,7 +37,7 @@ func startGame() -> void:
 	GlobalInput.isPauseShortcutAllowed = true
 
 
-func onQuitButton_pressed() -> void:
+func onQuitButton_longPressed() -> void:
 	quit()
 
 
