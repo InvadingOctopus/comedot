@@ -73,17 +73,19 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 	return false
 
 
-func displayNavigationDestination(newDestination: String) -> bool:
-	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestination, self)
-	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestination) #navigationDestination.instantiate()
+## Replaces the current first child of this container and displays a new child and pushes it onto the [member navigationStack].
+## [param newDestination]: The path of the new sub-scene (UI container) to display in this container.
+func displayNavigationDestination(newDestinationPath: String) -> bool:
+	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestinationPath, self)
+	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestinationPath) #navigationDestination.instantiate()
 	var result: bool
 
 	if newDestinationScene is not Control:
-		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestination), self)
+		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestinationPath), self)
 		return false
 
 	if self.replaceFirstChildControl(newDestinationScene):
-		navigationStack.append(newDestination)
+		navigationStack.append(newDestinationPath)
 		result = true
 	else:
 		result = false
