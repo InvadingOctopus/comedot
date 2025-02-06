@@ -440,12 +440,14 @@ func printDebug(message: String = "") -> void:
 	Debug.printDebug(message, logName, "green")
 
 
-# NOTE: Ignores [member isLoggingEnabled]
+## Calls [method Debug.printWarning]
+## NOTE: Ignores [member isLoggingEnabled]
 func printWarning(message: String = "") -> void:
 	Debug.printWarning(message, logFullName, "green")
 
 
-# NOTE: Ignores [member isLoggingEnabled]
+## Calls [method Debug.printError]
+## NOTE: Ignores [member isLoggingEnabled]
 func printError(message: String = "") -> void:
 	Debug.printError(message, logFullName, "green")
 

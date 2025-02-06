@@ -238,16 +238,18 @@ func printHighlight(message: String = "", object: Variant = null, _objectColor: 
 	print_rich(str("\n[indent]􀢒 [b][color=white]", object, " ", message, "\n")) # [/color][/b] not necessary
 
 
+## Prints a warning message in the Output Log and Godot Debugger Console.
 func printWarning(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	push_warning(str("Frame ", lastFrameLogged, " ⚠️ ", object, " ", message))
 	print_rich(str("[indent]􀇿 [color=yellow]", object, " ", message)) # [/color] not necessary
 
 
+## Prints an error message in the Output Log and Godot Debugger Console. Includes the caller's file and method.
 ## NOTE: In release builds, if [member Settings.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
 func printError(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	var plainText: String = str("Frame ", lastFrameLogged, " ❗️ ", object, " ", message)
+	var plainText: String = str("Frame ", lastFrameLogged, " ", getLogCaller(), " ❗️ ", object, " ", message)
 	push_error(plainText)
 	printerr(plainText)
 	# Don't print a duplicate line, to reduce clutter.
