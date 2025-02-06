@@ -58,6 +58,11 @@ func startLogoScene() -> void:
 
 
 func startMainScene() -> void:
+	var mainGameScene: PackedScene = load(mainGameScenePath)
+	if not mainGameScene:
+		Debug.printWarning("Cannot load mainGameScenePath: " + mainGameScenePath)
+		return
+
 	willStartMainScene.emit()
 	displaySubscene(mainGameScene)
 

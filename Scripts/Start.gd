@@ -15,12 +15,13 @@ extends CanvasItem
 #region Main Menu
 @export_group("Main Menu")
 
-## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
-@export var mainGameScene: PackedScene:
+## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
+## This is not a [PackedScene] Resource to avoid circular references or load()ing before it is needed.
+@export_file("*.tscn") var mainGameScenePath: String:
 	set(newValue):
-		mainGameScene = newValue
-		Settings.mainGameScene = newValue
-
+		if newValue != mainGameScenePath:
+			mainGameScenePath = newValue
+			Settings.mainGameScenePath = newValue
 #endregion
 
 
@@ -76,4 +77,4 @@ func applyGlobalFlags() -> void:
 	Debug.showDebugLabels			= self.showDebugLabels
 	Debug.debugBackground.visible	= self.showDebugBackground
 
-	Settings.mainGameScene = self.mainGameScene
+	Settings.mainGameScenePath		= self.mainGameScenePath

@@ -13,8 +13,9 @@ extends Node
 
 #region Comedot Project Settings
 
-## The main scene of your game to launch when the player chooses "Start" on the Main Menu.
-static var mainGameScene:		PackedScene
+## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
+## This is not a [PackedScene] Resource to avoid circular references or load()ing before it is needed.
+static var mainGameScenePath:	String
 
 static var shouldAlertOnError:	bool = OS.is_debug_build() # TODO: Add toggle in Start.gd
 
