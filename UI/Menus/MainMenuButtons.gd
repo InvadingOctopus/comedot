@@ -24,17 +24,7 @@ func _input(event: InputEvent) -> void: # TBD: Use `_unhandled_input()`
 
 
 func onStartButton_pressed() -> void:
-	startGame()
-
-
-func startGame() -> void:
-	if not Settings.mainGameScene:
-		Debug.printError("Settings.mainGameScene not set!")
-		return
-		
-	var mainGameScene: PackedScene = load(Settings.mainGameScene.resource_path)
-	SceneManager.transitionToScene(mainGameScene)
-	GlobalInput.isPauseShortcutAllowed = true
+	GameState.startMainScene()
 
 
 func onQuitButton_longPressed() -> void:
