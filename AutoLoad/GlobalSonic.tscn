@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ck62neo4okj5o"]
+
+[ext_resource type="Script" uid="uid://cwn8hf36fa1v0" path="res://AutoLoad/GlobalSonic.gd" id="1_cweqa"]
+
+[node name="GlobalSonic" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_cweqa")
+
+[node name="Sounds" type="Node" parent="."]
+unique_name_in_owner = true

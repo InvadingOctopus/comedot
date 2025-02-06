@@ -36,6 +36,7 @@ GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
 TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
 GlobalUI="*res://AutoLoad/GlobalUI.tscn"
+GlobalSonic="*res://AutoLoad/GlobalSonic.tscn"
 Debug="*res://AutoLoad/Debug.tscn"
 
 [debug]
