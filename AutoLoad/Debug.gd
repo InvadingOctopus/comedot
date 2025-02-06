@@ -294,7 +294,7 @@ static func getLogCaller() -> String:
 static func updateLastFrameLogged() -> void:
 	if not lastFrameLogged == Engine.get_frames_drawn():
 		lastFrameLogged = Engine.get_frames_drawn()
-		print(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
+		print_rich(str("\n[right][u][b]Frame ", lastFrameLogged, "[/b] ", float(Time.get_ticks_msec()) / 1000))
 
 #endregion
 
