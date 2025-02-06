@@ -12,4 +12,4 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	# NOTE: Cannot use `_input()` for updating position only on mouse events, because it causes erratic behavior.
-	self.position = self.get_local_mouse_position()
+	self.position = self.get_global_mouse_position() * (0.5) # CHECK: WEIRD: Using the global position and halving it smoothes movement and fixes erratic behavior.
