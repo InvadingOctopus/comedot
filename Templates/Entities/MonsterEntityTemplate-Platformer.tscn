@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=3 uid="uid://h3pbo0mlj4je"]
 
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_5a21o"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_5a21o"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_gepur"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="3_1r4r1"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="3_wtegg"]
-[ext_resource type="Script" path="res://Resources/Stat.gd" id="4_5bs4y"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="4_5bs4y"]
 [ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="4_pvycy"]
 [ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="5_c8kjw"]
 [ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="5_u488s"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://5mtd1vtmen1k"]
 
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_55lcw"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_55lcw"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="1_rjfet"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="3_01lho"]
 

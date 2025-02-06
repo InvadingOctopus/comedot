@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c7yuivfc6ef2k"]
 
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_63kff"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_63kff"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_iiovy"]
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="3_c4vjd"]
 

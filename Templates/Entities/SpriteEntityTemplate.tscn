@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bwo5yflm2rjhw"]
 
-[ext_resource type="Script" path="res://Entities/Entity.gd" id="1_hd7sx"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_hd7sx"]
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_obbkp"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y8ehy"]
