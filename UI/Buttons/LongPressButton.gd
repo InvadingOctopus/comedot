@@ -9,7 +9,7 @@ extends Button
 
 #region Parameters
 ## The duration in seconds for how long the button must be held down before the [signal longPressed] signal can be emitted.
-@export var duration: float = 2.0:
+@export var duration: float = 1.0:
 	set(newValue):
 		if newValue != duration:
 			duration = newValue

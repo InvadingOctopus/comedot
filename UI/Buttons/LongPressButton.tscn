@@ -18,7 +18,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-max_value = 3.0
+max_value = 1.0
 show_percentage = false
 
 [connection signal="button_down" from="." to="." method="onButtonDown"]
