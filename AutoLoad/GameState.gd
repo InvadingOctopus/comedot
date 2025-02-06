@@ -135,3 +135,52 @@ func restart() -> void:
 
 #endregion
 
+
+#region Save & Load
+
+## A very rudimentary implementation of saving the entire game state.
+## @experimental
+func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mode`
+	# TODO: Implement properly :(
+	# BUG:  Does not save all state of all nodes
+	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
+
+	GlobalUI.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
+	@warning_ignore("redundant_await")
+	await Debug.printLog("Saving state → " + Settings.saveFilePath) # TBD: await or not?
+
+	var sceneTree := get_tree()
+	self.process_mode = Node.PROCESS_MODE_ALWAYS
+	sceneTree.paused = true
+
+	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison
+
+	var packedSceneToSave := PackedScene.new()
+	packedSceneToSave.pack(sceneTree.get_current_scene())
+	ResourceSaver.save(packedSceneToSave, Settings.saveFilePath)
+
+	sceneTree.paused = false
+
+
+## A very rudimentary implementation of loading the entire game state.
+## @experimental
+func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mode`
+	# TODO: Implement properly :(
+	# BUG:  Does not restore all state of all nodes
+	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
+
+	GlobalUI.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
+	@warning_ignore("redundant_await")
+	await Debug.printLog("Loading state ← " + Settings.saveFilePath) # TBD: await or not?
+
+	var sceneTree := get_tree()
+	self.process_mode = Node.PROCESS_MODE_ALWAYS
+	sceneTree.paused = true
+
+	var packedSceneLoaded := ResourceLoader.load(Settings.saveFilePath)
+
+	sceneTree.paused = false
+	sceneTree.change_scene_to_packed(packedSceneLoaded)
+	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
+
+#endregion

@@ -1,7 +1,9 @@
 ## AutoLoad
 ## Global data and code provided by the framework for all games, such as constants, flags and helper functions etc.
-## For player control & input actions, see [GlobalInput].
-## For visuals and sounds that must be present in every scene, see [GlobalUI].
+## For scene management & transitions: see SceneManager.gd
+## For player control & input actions: see GlobalInput.gd
+## For window management, & visuals & sounds that must be present in every scene: see GlobalUI.gd
+## To save & load the game state: see GameState.gd
 
 # class_name Global
 extends Node
@@ -71,77 +73,7 @@ static func printInitializationMessage() -> void:
 #endregion
 
 
-func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
-	var viewport: Viewport = self.get_viewport()
-	var window:		Window = viewport.get_window()
-	var newSize:   Vector2 = (Vector2i(width, height))
-
-	# NOTE: BUG: WORKAROUND: It seems `size` has to be set twice to properly resize and position the window,
-	# at least on macOS with non-Retina displays.
-
-	window.size	= newSize
-	window.move_to_center()
-	window.size	= newSize
-	
-	Settings.windowWidth  = width
-	Settings.windowHeight = height
-
-	if showLabel and GlobalUI: # GODOT BUG? Cannot check for `GlobalUI` validity in case this is called before the other AutoLoads have loaded :(
-		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
-
-
-#region Scene Management
-# NOTE: See SceneManager.gd
-#endregion
-
-
 #region Save & Load
-
-## A very rudimentary implementation of saving the entire game state.
-## @experimental
-func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mode`
-	# TODO: Implement properly :(
-	# BUG:  Does not save all state of all nodes
-	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic save?
-
-	GlobalUI.createTemporaryLabel("Saving...") # NOTE: Don't `await` here or it will wait for the animation to finish.
-	@warning_ignore("redundant_await")
-	await Debug.printLog("Saving state → " + Settings.saveFilePath) # TBD: await or not?
-
-	var sceneTree := get_tree()
-	self.process_mode = Node.PROCESS_MODE_ALWAYS
-	sceneTree.paused = true
-
-	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison
-
-	var packedSceneToSave := PackedScene.new()
-	packedSceneToSave.pack(sceneTree.get_current_scene())
-	ResourceSaver.save(packedSceneToSave, Settings.saveFilePath)
-
-	sceneTree.paused = false
-
-
-## A very rudimentary implementation of loading the entire game state.
-## @experimental
-func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mode`
-	# TODO: Implement properly :(
-	# BUG:  Does not restore all state of all nodes
-	# TBD:  Is it necessary to `await` & pause to ensure a reliable & deterministic load?
-
-	GlobalUI.createTemporaryLabel("Loading...")  # NOTE: Don't `await` here or it will wait for the animation to finish.
-	@warning_ignore("redundant_await")
-	await Debug.printLog("Loading state ← " + Settings.saveFilePath) # TBD: await or not?
-
-	var sceneTree := get_tree()
-	self.process_mode = Node.PROCESS_MODE_ALWAYS
-	sceneTree.paused = true
-
-	var packedSceneLoaded := ResourceLoader.load(Settings.saveFilePath)
-
-	sceneTree.paused = false
-	sceneTree.change_scene_to_packed(packedSceneLoaded)
-	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
-
 
 ## Takes a screenshot and saves it as a JPEG file in the "user://" folder.
 ## @experimental

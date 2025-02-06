@@ -34,6 +34,25 @@ func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
 
+func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
+	var viewport: Viewport = self.get_viewport()
+	var window:		Window = viewport.get_window()
+	var newSize:   Vector2 = (Vector2i(width, height))
+
+	# NOTE: BUG: WORKAROUND: It seems `size` has to be set twice to properly resize and position the window,
+	# at least on macOS with non-Retina displays.
+
+	window.size	= newSize
+	window.move_to_center()
+	window.size	= newSize
+	
+	Settings.windowWidth  = width
+	Settings.windowHeight = height
+
+	if showLabel and GlobalUI: # GODOT BUG? Cannot check for `GlobalUI` validity in case this is called before the other AutoLoads have loaded :(
+		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
+
+
 func showPauseVisuals(isPaused: bool) -> void:
 	if isPaused: self.fadeIn()
 	else: self.fadeOut()
