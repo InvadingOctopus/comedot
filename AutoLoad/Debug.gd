@@ -102,7 +102,7 @@ func performFrameworkChecks() -> void:
 	var warnings: PackedStringArray
 
 	if not Global.hasStartScript:
-		warnings.append("! Start.gd script not executed\nAttach to root node of main scene")
+		warnings.append("! Start.gd script missing\nAttach to root node of main scene")
 
 	warningLabel.text = "\n".join(warnings)
 
