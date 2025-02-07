@@ -9,7 +9,7 @@ extends Node2D
 #region State
 static var scenePath: String:
 	get:
-		if not scenePath: scenePath = Tools.getScenePathFromClass(TextBubble)
+		if not scenePath: scenePath = SceneManager.getScenePathFromClass(TextBubble)
 		return scenePath
 
 @onready var label: Label = $Label

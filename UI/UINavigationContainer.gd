@@ -79,7 +79,7 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 ## IMPORTANT: The root node of the new child scene MUST be a [Control].
 func displayNavigationDestination(newDestinationPath: String) -> bool:
 	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestinationPath, self)
-	var newDestinationScene: Node = Tools.instantiateSceneFromPath(newDestinationPath) #navigationDestination.instantiate()
+	var newDestinationScene: Node = SceneManager.instantiateSceneFromPath(newDestinationPath) #navigationDestination.instantiate()
 	var result: bool
 
 	if newDestinationScene is not Control:

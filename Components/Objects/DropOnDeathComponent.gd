@@ -59,7 +59,7 @@ func drop() -> Node:
 	# and add the offset.
 	var position: Vector2 = parentForSpawnedNode.to_local(parentEntity.global_position) + positionOffset
 
-	var spawnedNode := Tools.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
+	var spawnedNode := SceneManager.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
 	
 	if spawnedNode != null:
 		didDrop.emit(spawnedNode)

@@ -230,11 +230,11 @@ func addNewComponent(type: Script) -> Component:
 	## because then GDScript will always run it on the [Component] script, not the subclasses we need. :(
 
 	# First, construct the scene name from the script's name.
-	var componentScenePath: String = Tools.getScenePathFromClass(type)
+	var componentScenePath: String = SceneManager.getScenePathFromClass(type)
 	if shouldShowDebugInfo: printDebug(str("addNewComponent(", type, "): ", componentScenePath))
 
 	# Load and instantiate the component scene.
-	var newComponent := Tools.loadSceneAndAddInstance(componentScenePath, self)
+	var newComponent := SceneManager.loadSceneAndAddInstance(componentScenePath, self)
 	if shouldShowDebugInfo: printDebug(str(newComponent))
 
 	return newComponent
@@ -340,7 +340,7 @@ func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
 ## Shortcut for [load] and [method PackedScene.instantiate].
 func addSceneCopy(path: String) -> Node:
-	return Tools.loadSceneAndAddInstance(path, self)
+	return SceneManager.loadSceneAndAddInstance(path, self)
 
 
 ## Removes all child nodes of the specified type and frees (deletes) them if [param free] is `true`.

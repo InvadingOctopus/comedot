@@ -50,7 +50,7 @@ signal willSetPause(pause: bool) ## TIP: May be used to modify the visuals befor
 #endregion
 
 
-#region Scene Management Methods
+#region Transition & Stack Management
 
 ## Transitions to the specified scene with an optional animation.
 ## NOTE: Does NOT use the [member sceneStack]; see [method pushCurrentSceneAndTransition] and [method popSceneFromStack].
@@ -173,6 +173,10 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefau
 	didPopScene.emit(previousScenePathFromStack)
 	return previousSceneFromStack
 
+#endregion
+
+
+#region Pause/Unpause
 
 ## Sets [member SceneTree.paused] and returns the resulting paused status.
 func setPause(paused: bool) -> bool:
@@ -187,5 +191,57 @@ func setPause(paused: bool) -> bool:
 func togglePause() -> bool:
 	# TBD: Should this be more efficient instead of so many function calls?
 	return setPause(not sceneTree.paused)
+
+#endregion
+
+
+#region General Functions
+
+static func instantiateSceneFromPath(resourcePath: String) -> Node:
+	var scene: PackedScene = load(resourcePath) as PackedScene
+
+	if is_instance_valid(scene):
+		return scene.instantiate()
+	else:
+		Debug.printWarning(str("Cannot instantiateSceneFromPath(): ", resourcePath))
+		return null
+
+
+## Returns the path for a scene from a class type.
+## Convenient for getting the scene for a component.
+## e.g. [JumpControlComponent] returns "res://Components/Control/JumpControlComponent.tscn"
+## WARNING: This assumes that the scene's name is the same as the `class_name`
+static func getScenePathFromClass(type: Script) -> String:
+	# var className   := type.get_global_name()
+	var scriptPath	:= type.resource_path
+	var scenePath 	:= scriptPath.replace(".gd", ".tscn")
+	return scenePath
+
+
+## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
+## Shortcut for [load] and [method PackedScene.instantiate].
+## Returns: The new instance of the scene.
+static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+	var scene: PackedScene = load(path)
+	return addSceneInstance(scene, parent, position)
+
+
+## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
+## ALERT: Some situations may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
+## Returns: The new copy of the scene.
+static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+	if scene == null:
+		Debug.printWarning(str("SceneManager.addSceneInstance(): scene is null!"))
+		return null
+
+	var newChild := scene.instantiate()
+
+	if newChild == null:
+		Debug.printWarning(str("SceneManager.addSceneInstance(): Cannot instantiate ", scene))
+		return null
+
+	if newChild is Node2D or newChild is Control: newChild.position = position
+	Tools.addChildAndSetOwner(newChild, parent) # Ensure persistence
+	return newChild
 
 #endregion
