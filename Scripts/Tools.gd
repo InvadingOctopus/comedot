@@ -57,7 +57,16 @@ static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector
 ## ALERT: Some situations may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 ## Returns: The new copy of the scene.
 static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+	if scene == null:
+		Debug.printWarning(str("Tools.addSceneInstance(): scene is null!"))
+		return null
+
 	var newChild := scene.instantiate()
+
+	if newChild == null:
+		Debug.printWarning(str("Tools.addSceneInstance(): Cannot instantiate ", scene))
+		return null
+
 	if newChild is Node2D or newChild is Control: newChild.position = position
 	Tools.addChildAndSetOwner(newChild, parent) # Ensure persistence
 	return newChild

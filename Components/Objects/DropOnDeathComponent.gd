@@ -60,5 +60,11 @@ func drop() -> Node:
 	var position: Vector2 = parentForSpawnedNode.to_local(parentEntity.global_position) + positionOffset
 
 	var spawnedNode := Tools.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
-	didDrop.emit(spawnedNode)
-	return spawnedNode
+	
+	if spawnedNode != null:
+		didDrop.emit(spawnedNode)
+		return spawnedNode
+	else:
+		printWarning(str("Cannot instantiate sceneToSpawnOnDeath: ", sceneToSpawnOnDeath))
+		return null
+
