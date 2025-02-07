@@ -10,7 +10,7 @@ const nextScene: PackedScene = preload("res://Scenes/Launch/GameFrame.tscn") # p
 
 var textLines: Array[String] = [
 	str("LOAD\"", ProjectSettings.get_setting("application/config/name", "Comedot"), "\"").to_upper(),
-	"READY © MMXXIV",
+	"READY © MMXXV",
 	"RUN",
 	]
 
