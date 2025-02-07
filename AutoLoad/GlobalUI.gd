@@ -35,7 +35,8 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
+	if not OS.has_feature("web"): # BUG: WORKAROUND: Running in a web browser (or at least Safari) doesn't handle window size restoration properly.
+		GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
 
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
