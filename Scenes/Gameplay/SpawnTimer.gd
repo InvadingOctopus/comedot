@@ -84,7 +84,7 @@ func spawn() -> Node2D:
 
 	var parent: Node
 
-	if not parentOverride: parent = self
+	if not parentOverride: parent = self.get_parent() # The [Timer]'s parent because [Timer] is not a [Node2D]
 	else: parent = parentOverride
 
 	# Let the game-specific subclasses, if any, customize the new copies.
