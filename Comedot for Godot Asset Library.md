@@ -14,9 +14,7 @@ Requires Godot 4.4 latest build!
 • Helper functions & debugging tools like charts for monitoring variables.
 • Free-to-use 3rd-party assets for quick prototyping.
 
-This is a work in constant progress! For more deets and the latest version, lookie loo the Develop branch on the GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
-
-ALERT: The first time you load this project, there may be errors because Godot will re-import the asset files and set the IDs for resources. To fix, just close and reopen the project.
+This is a work in constant progress! For more deets & the latest version, lookieloo the Develop branch: https://github.com/InvadingOctopus/comedot/tree/develop
 
 THANKS:
 Tilesets: https://kenney.nl/assets/1-bit-pack  
