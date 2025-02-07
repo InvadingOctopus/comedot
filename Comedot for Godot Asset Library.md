@@ -1,16 +1,16 @@
 # Comedot for the Godot Asset Library
 
-Asset Name: Comedot Components Framework
+Asset Name: Comedot Ultimate Template
 Description:
 
-Project template and framework for making 2D games by adding components to entities. Basically Nodes but for gameplay.
+All-in-one project template and components framework: Basically Nodes but for gameplay. Optimized for 2D pixel art.
 
 Requires Godot 4.4 latest build!
 
-• Includes components for common features needed in most games: Different types of player movement, combat, collectibles, inventory, upgrades, turn-based logic etc.
-• Standard UI controls like a stats HUD, buttons & lists for special skills, etc.
-• Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
-• Save/Load player preferences in config file with `Settings.any_name`
+• Includes components for common stuff needed in most games: Different types of player movement, combat, collectibles, inventory, turn-based logic etc.
+• UI controls like a stats HUD, buttons for special skills, etc.
+• Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay and short example games.
+• Save/Load player preferences in config file with `Settings.anyName = 42`
 • Helper functions & debugging tools like charts for monitoring variables.
 • Free-to-use 3rd-party assets for quick prototyping.
 
@@ -29,11 +29,14 @@ License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
 Godot Version:	4.4 custom
-Asset Version:	4.4.2.666
-Commit URL:		2e310b8109839854047e2bad2cf8f7d5bc29485a 2025-02-07
+Asset Version:	4.4.2.1337
+Commit URL:		8bfd6a78353aa2859a1d3bb71aaf0affa875a0b1 2025-02-07
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
-Preview:  		https://i.imgur.com/aW0MHRu.png
-Screenshot 1:	https://i.imgur.com/j5f2xna.png
-Screenshot 2:	https://i.imgur.com/7M0pH3v.png
-Screenshot 3:	https://i.imgur.com/jgAjmzY.png
+Preview:  		https://i.imgur.com/aW0MHRu.png Logo
+Screenshot 1:	https://i.imgur.com/DW6aeu3.png Main Menu
+Screenshot 2:	https://i.imgur.com/j5f2xna.png Components Dock
+Screenshot 3:	https://i.imgur.com/7M0pH3v.png Components Tree Example
+Screenshot 4:	https://i.imgur.com/rIOpIAr.png Input Map
+Screenshot 5:	https://i.imgur.com/nWJXuiX.png Pause
+Screenshot 6:	https://i.imgur.com/jgAjmzY.png Charts
