@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Comedot"
-config/description="Invading Octopus's Component-based Framework for Godot 2D"
+config/description="Components Framework for Godot"
 config/version="0.69"
 config/tags=PackedStringArray("components", "framework", "plugin", "template")
 run/main_scene="uid://cvqp4ygq6w82"
@@ -21,7 +21,7 @@ run/max_fps=60
 boot_splash/bg_color=Color(0.086, 0.004, 0.2, 1)
 boot_splash/image="res://Assets/Logos/Comedot.png"
 boot_splash/fullsize=false
-config/icon="uid://c0r0mtids70s5"
+config/icon="uid://d2gsh0ym61sdi"
 
 [audio]
 
