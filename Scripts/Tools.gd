@@ -24,6 +24,8 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 
 #region Scene Management
 
+# TIP: See SceneManager.gd for transition and pause functions.
+
 static func instantiateSceneFromPath(resourcePath: String) -> Node:
 	var scene: PackedScene = load(resourcePath) as PackedScene
 
@@ -70,13 +72,6 @@ static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2
 	if newChild is Node2D or newChild is Control: newChild.position = position
 	Tools.addChildAndSetOwner(newChild, parent) # Ensure persistence
 	return newChild
-
-
-# NOTE: In Global.gd: func transitionToScene(nextScene: PackedScene) -> void:
-
-# NOTE: In Global.gd: func setPause(paused: bool) -> bool:
-
-# NOTE: In Global.gd: func togglePause() -> bool:
 
 #endregion
 
