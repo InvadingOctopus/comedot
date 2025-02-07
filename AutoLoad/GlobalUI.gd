@@ -34,10 +34,14 @@ func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
 
+func _ready() -> void:
+	GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
+
+
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
-	var viewport: Viewport = self.get_viewport()
-	var window:		Window = viewport.get_window()
-	var newSize:   Vector2 = (Vector2i(width, height))
+	var viewport:	Viewport = self.get_viewport()
+	var window:		Window   = viewport.get_window()
+	var newSize:	Vector2  = (Vector2i(width, height))
 
 	# NOTE: BUG: WORKAROUND: It seems `size` has to be set twice to properly resize and position the window,
 	# at least on macOS with non-Retina displays.
@@ -45,6 +49,7 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 	window.size	= newSize
 	window.move_to_center()
 	window.size	= newSize
+	window.move_to_center()
 	
 	Settings.windowWidth  = width
 	Settings.windowHeight = height
@@ -59,13 +64,13 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 	pauseButton.updateState()
 	pauseButton.visible = isPaused
-	
+
 	if isPaused:
-		
+
 		if not self.pauseOverlay:
 			self.pauseOverlay = pauseOverlayScene.instantiate() # NOTE: Create only here; not in property getter
-		
-		if pauseOverlay.get_parent() != foregroundOverlay: 
+
+		if pauseOverlay.get_parent() != foregroundOverlay:
 			foregroundOverlay.add_child(pauseOverlay)
 			pauseOverlay.owner = foregroundOverlay # Necessary for persistence to a [PackedScene] for save/load.
 		foregroundOverlay.move_child(pauseOverlay, -1)  # Put it above the fullscreen overlay effect.

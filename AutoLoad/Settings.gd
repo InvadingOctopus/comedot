@@ -145,7 +145,7 @@ static func loadConfig() -> bool:
 
 ## Loads user settings which are counterpart to the Godot [ProjectSettings] such as window size.
 func loadProjectUserSettings() -> void:
-	GlobalUI.setWindowSize(self.windowWidth, self.windowHeight, false) # !showLabel because GlobalUI won't be valid yet
+	pass # Done by GlobalUI.gd: # GlobalUI.setWindowSize(self.windowWidth, self.windowHeight, false) # !showLabel
 
 
 func loadAudioSettings() -> void:
