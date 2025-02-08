@@ -139,7 +139,7 @@ static func loadConfig() -> bool:
 	if error == Error.OK:
 		return true
 	else:
-		Debug.printError(str("Error ", error, " — Cannot load settings file: ", configFilePath), "Settings.gd")
+		Debug.printLog(str("Error ", error, " — Cannot load settings file, creating new: ", configFilePath), "Settings.gd") # Should be a log not an error, in case it's the 1st launch or the file has been removed on purpose.
 		return false
 
 
