@@ -10,7 +10,10 @@ extends TurnBasedComponent
 
 
 #region Parameters
-@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin # The turn phase to process gravity in. # TBD: @export_enum("Begin:1", "Update:2", "End:3")
+# The turn phase to process gravity in.
+# IGNORE: Godot error: "Cannot use simple "@export" annotation because the type of the initialized value can't be inferred." because TurnBasedCoordinator is an AutoLoad?
+# TBD: @export_enum("Begin:1", "Update:2", "End:3")
+@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin
 #endregion
 
 
