@@ -197,7 +197,7 @@ func togglePause() -> bool:
 
 #region General Functions
 
-static func instantiateSceneFromPath(resourcePath: String) -> Node:
+func instantiateSceneFromPath(resourcePath: String) -> Node:
 	var scene: PackedScene = load(resourcePath) as PackedScene
 
 	if is_instance_valid(scene):
@@ -211,7 +211,7 @@ static func instantiateSceneFromPath(resourcePath: String) -> Node:
 ## Convenient for getting the scene for a component.
 ## e.g. [JumpControlComponent] returns "res://Components/Control/JumpControlComponent.tscn"
 ## WARNING: This assumes that the scene's name is the same as the `class_name`
-static func getScenePathFromClass(type: Script) -> String:
+func getScenePathFromClass(type: Script) -> String:
 	# var className   := type.get_global_name()
 	var scriptPath	:= type.resource_path
 	var scenePath 	:= scriptPath.replace(".gd", ".tscn")
@@ -221,7 +221,7 @@ static func getScenePathFromClass(type: Script) -> String:
 ## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
 ## Shortcut for [load] and [method PackedScene.instantiate].
 ## Returns: The new instance of the scene.
-static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var scene: PackedScene = load(path)
 	return addSceneInstance(scene, parent, position)
 
@@ -229,7 +229,7 @@ static func loadSceneAndAddInstance(path: String, parent: Node, position: Vector
 ## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
 ## ALERT: Some situations may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 ## Returns: The new copy of the scene.
-static func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	if scene == null:
 		Debug.printWarning(str("SceneManager.addSceneInstance(): scene is null!"))
 		return null
