@@ -34,9 +34,9 @@ Settings="*res://AutoLoad/Settings.gd"
 SceneManager="*res://AutoLoad/SceneManager.gd"
 GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
-TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
 GlobalUI="*res://AutoLoad/GlobalUI.tscn"
 GlobalSonic="*res://AutoLoad/GlobalSonic.tscn"
+TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
 Debug="*res://AutoLoad/Debug.tscn"
 
 [debug]
