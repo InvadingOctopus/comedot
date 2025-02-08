@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c3q1cgs7p1wma"]
 
-[ext_resource type="Script" path="res://Components/Objects/DropOnDeathComponent.gd" id="1_e7sfk"]
+[ext_resource type="Script" uid="uid://b86qsflv2a8om" path="res://Components/Objects/DropOnDeathComponent.gd" id="1_e7sfk"]
 
 [node name="DropOnDeathComponent" type="Node" groups=["components"]]
 script = ExtResource("1_e7sfk")

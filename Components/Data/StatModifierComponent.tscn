@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dtc44pjtvbcrn"]
 
-[ext_resource type="Script" path="res://Components/Data/StatModifierComponent.gd" id="1_ttyqa"]
+[ext_resource type="Script" uid="uid://6wl2uoukvs4p" path="res://Components/Data/StatModifierComponent.gd" id="1_ttyqa"]
 
 [node name="StatModifierComponent" type="Node" groups=["components"]]
 script = ExtResource("1_ttyqa")

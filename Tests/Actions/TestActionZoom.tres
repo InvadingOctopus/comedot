@@ -2,8 +2,8 @@
 
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="1_cvxns"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_d47mu"]
-[ext_resource type="Script" path="res://Resources/Action.gd" id="1_hcgok"]
-[ext_resource type="Script" path="res://Resources/Payloads/ScriptPayload.gd" id="2_6ij4r"]
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Action.gd" id="1_hcgok"]
+[ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="2_6ij4r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gap3j"]
 resource_name = "testZoom"

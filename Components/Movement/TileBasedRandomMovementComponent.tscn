@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://sy8cxewwchey"]
 
 [ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="1_4r12v"]
-[ext_resource type="Script" path="res://Components/Movement/TileBasedRandomMovementComponent.gd" id="1_6lv8e"]
+[ext_resource type="Script" uid="uid://b3w3xttdxtdom" path="res://Components/Movement/TileBasedRandomMovementComponent.gd" id="1_6lv8e"]
 
 [node name="TileBasedRandomMovementComponent" instance=ExtResource("1_4r12v")]
 script = ExtResource("1_6lv8e")

@@ -1,8 +1,8 @@
 [gd_scene load_steps=12 format=3 uid="uid://b03gxqrqupyqv"]
 
-[ext_resource type="Script" path="res://Scenes/Areas/PopulateArea.gd" id="1_1ktkj"]
+[ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Areas/PopulateArea.gd" id="1_1ktkj"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="3_xp3dq"]
-[ext_resource type="Script" path="res://Entities/Characters/PlayerEntity.gd" id="4_7kaft"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="4_7kaft"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="5_1lnua"]
 [ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="5_jhh4l"]
 [ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="6_m7ekq"]

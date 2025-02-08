@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dgp53lgh8n5p8"]
 
-[ext_resource type="Script" path="res://Components/Visual/OffscreenRemovalComponent.gd" id="1_eukg6"]
+[ext_resource type="Script" uid="uid://bjvftji227wgk" path="res://Components/Visual/OffscreenRemovalComponent.gd" id="1_eukg6"]
 
 [node name="OffscreenRemovalComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_eukg6")

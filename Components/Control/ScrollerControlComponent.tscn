@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://g3q640i28hhr"]
 
-[ext_resource type="Script" path="res://Components/Control/ScrollerControlComponent.gd" id="1_i0vcf"]
+[ext_resource type="Script" uid="uid://bbyfcy5v1yg51" path="res://Components/Control/ScrollerControlComponent.gd" id="1_i0vcf"]
 
 [node name="ScrollerControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_i0vcf")

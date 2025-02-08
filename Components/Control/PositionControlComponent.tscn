@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://4ufxu1c7a85o"]
 
-[ext_resource type="Script" path="res://Components/Control/PositionControlComponent.gd" id="1_ryr7c"]
+[ext_resource type="Script" uid="uid://bvpdarol2ora5" path="res://Components/Control/PositionControlComponent.gd" id="1_ryr7c"]
 
 [node name="PositionControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_ryr7c")

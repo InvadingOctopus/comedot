@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bx6cxxpnw2511"]
 
-[ext_resource type="Script" path="res://Components/Combat/KnockbackOnHitComponent.gd" id="1_3vwo3"]
+[ext_resource type="Script" uid="uid://ddn58mdvbqug8" path="res://Components/Combat/KnockbackOnHitComponent.gd" id="1_3vwo3"]
 
 [node name="KnockbackOnHitComponent" type="Node" groups=["components"]]
 script = ExtResource("1_3vwo3")

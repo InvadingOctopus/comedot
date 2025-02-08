@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://iihqhgqj4bdy"]
 
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_kfts1"]
-[ext_resource type="Script" path="res://Components/Gameplay/TextInteractionComponent.gd" id="2_fi5i1"]
+[ext_resource type="Script" uid="uid://b4l4rlrn4wyha" path="res://Components/Gameplay/TextInteractionComponent.gd" id="2_fi5i1"]
 [ext_resource type="LabelSettings" uid="uid://bumadvcbjs8he" path="res://Assets/Themes/Label/TextInteractionComponent.tres" id="3_g83xl"]
 
 [node name="TextInteractionComponent" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("1_kfts1")]

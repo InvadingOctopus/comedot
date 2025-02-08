@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dgdibp1uqcua5"]
 
-[ext_resource type="Script" path="res://Components/Control/ThrustControlComponent.gd" id="1_ylx6s"]
+[ext_resource type="Script" uid="uid://cvi6fg3brkjp3" path="res://Components/Control/ThrustControlComponent.gd" id="1_ylx6s"]
 
 [node name="ThrustControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_ylx6s")

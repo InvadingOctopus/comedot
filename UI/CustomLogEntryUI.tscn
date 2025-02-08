@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cn21mhevkd8se"]
 
-[ext_resource type="Script" path="res://UI/CustomLogEntryUI.gd" id="1_q7q8k"]
+[ext_resource type="Script" uid="uid://dwmp7disshw6x" path="res://UI/CustomLogEntryUI.gd" id="1_q7q8k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ry82"]
 content_margin_left = 4.0

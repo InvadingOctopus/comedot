@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ln24qhburqma"]
 
-[ext_resource type="Script" path="res://Scenes/Decorations/TextBubble.gd" id="1_ak04i"]
+[ext_resource type="Script" uid="uid://bvnan11g345u5" path="res://Scenes/Decorations/TextBubble.gd" id="1_ak04i"]
 [ext_resource type="LabelSettings" uid="uid://bsh3cla616l6l" path="res://Assets/Themes/Label/TextBubble.tres" id="1_tuxyy"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j8b7p"]

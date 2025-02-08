@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cpfliajqwj4lf"]
 
-[ext_resource type="Script" path="res://UI/InputActionUI.gd" id="1_ehik8"]
+[ext_resource type="Script" uid="uid://do4i6vrght24w" path="res://UI/InputActionUI.gd" id="1_ehik8"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_kmpqn"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xqos3"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dwl0ugf1uvhqt"]
 
-[ext_resource type="Script" path="res://Components/Visual/CompassComponent.gd" id="1_6ha6n"]
+[ext_resource type="Script" uid="uid://diucg6kl1b657" path="res://Components/Visual/CompassComponent.gd" id="1_6ha6n"]
 
 [node name="CompassComponent" type="Node2D" groups=["components"]]
 script = ExtResource("1_6ha6n")

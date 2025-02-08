@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c6sthnygmcwpg"]
 
-[ext_resource type="Script" path="res://Components/Gameplay/ActionTargetableComponent.gd" id="1_bmle7"]
+[ext_resource type="Script" uid="uid://3eb5x88pfvph" path="res://Components/Gameplay/ActionTargetableComponent.gd" id="1_bmle7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gis5n"]
 resource_local_to_scene = true

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://du8utytoiqf1"]
 
-[ext_resource type="Script" path="res://Scenes/Areas/PopulateArea.gd" id="1_gyn4y"]
+[ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Areas/PopulateArea.gd" id="1_gyn4y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_waec2"]
 resource_local_to_scene = true

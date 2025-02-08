@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c3ufwns4q2thw"]
 
-[ext_resource type="Script" path="res://Components/Objects/CollectibleComponent.gd" id="1_356ao"]
+[ext_resource type="Script" uid="uid://3rvhieb0uub8" path="res://Components/Objects/CollectibleComponent.gd" id="1_356ao"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nufh5"]
 resource_local_to_scene = true

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://5tvqunkoa4l7"]
 
-[ext_resource type="Script" path="res://Components/Combat/FactionComponent.gd" id="1_qwcyo"]
+[ext_resource type="Script" uid="uid://c38s4w1tog4px" path="res://Components/Combat/FactionComponent.gd" id="1_qwcyo"]
 
 [node name="FactionComponent" type="Node" groups=["components"]]
 script = ExtResource("1_qwcyo")

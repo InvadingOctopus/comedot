@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cpklu2uieedw7"]
 
-[ext_resource type="Script" path="res://Components/Combat/DamageComponent.gd" id="1_c26d6"]
+[ext_resource type="Script" uid="uid://b3cetyvq4j670" path="res://Components/Combat/DamageComponent.gd" id="1_c26d6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jqapn"]
 resource_local_to_scene = true

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c0cldnfe77jwf"]
 
-[ext_resource type="Script" path="res://UI/Lists/InputActionsList.gd" id="1_cp2cp"]
+[ext_resource type="Script" uid="uid://c6yshcgh6q0w5" path="res://UI/Lists/InputActionsList.gd" id="1_cp2cp"]
 
 [node name="InputMapUi" type="MarginContainer"]
 anchors_preset = 15

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://nd3rpg4n6351"]
 
-[ext_resource type="Script" path="res://Components/Objects/CollectibleStatComponent.gd" id="1_1po3f"]
+[ext_resource type="Script" uid="uid://1jpom8hddq5w" path="res://Components/Objects/CollectibleStatComponent.gd" id="1_1po3f"]
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="1_m4051"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e5puf"]

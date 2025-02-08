@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bujgiieyrjfwd"]
 
-[ext_resource type="Script" path="res://Components/Control/ActionTargetingComponentBase.gd" id="1_wl6nn"]
+[ext_resource type="Script" uid="uid://c87kbb4qfxr8o" path="res://Components/Control/ActionTargetingComponentBase.gd" id="1_wl6nn"]
 
 [node name="ActionTargetingComponentBase" type="Node2D" groups=["components"]]
 script = ExtResource("1_wl6nn")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://wfkhubc60w2e"]
 
-[ext_resource type="Script" path="res://AutoLoad/TurnBasedCoordinator.gd" id="1_5qbkx"]
+[ext_resource type="Script" uid="uid://cyaflmo6hc3d7" path="res://AutoLoad/TurnBasedCoordinator.gd" id="1_5qbkx"]
 
 [node name="TurnBasedCoordinator" type="Node2D" groups=["turnBased"]]
 script = ExtResource("1_5qbkx")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4y03ys0ena7e"]
 
-[ext_resource type="Script" path="res://Components/Visual/LabelComponent.gd" id="1_643xb"]
+[ext_resource type="Script" uid="uid://jbnpf62l2msb" path="res://Components/Visual/LabelComponent.gd" id="1_643xb"]
 
 [sub_resource type="Animation" id="Animation_gi6sf"]
 length = 0.001

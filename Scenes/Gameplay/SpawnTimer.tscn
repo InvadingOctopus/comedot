@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dnrmhhkpx5fxj"]
 
-[ext_resource type="Script" path="res://Scenes/Gameplay/SpawnTimer.gd" id="1_jie15"]
+[ext_resource type="Script" uid="uid://d2ejkdin0pik2" path="res://Scenes/Gameplay/SpawnTimer.gd" id="1_jie15"]
 
 [node name="SpawnTimer" type="Timer"]
 autostart = true

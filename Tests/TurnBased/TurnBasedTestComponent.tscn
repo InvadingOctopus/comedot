@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://b8evr41o1p0ea"]
 
-[ext_resource type="Script" path="res://Tests/TurnBased/TurnBasedTestComponent.gd" id="1_du0w2"]
+[ext_resource type="Script" uid="uid://jke7l2qkoy7e" path="res://Tests/TurnBased/TurnBasedTestComponent.gd" id="1_du0w2"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_f63ty"]
-[ext_resource type="Script" path="res://Scripts/Visual/Spin.gd" id="3_1q1wu"]
+[ext_resource type="Script" uid="uid://2ow1pluircli" path="res://Scripts/Visual/Spin.gd" id="3_1q1wu"]
 [ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="3_omtpf"]
 
 [sub_resource type="Animation" id="Animation_hti3u"]

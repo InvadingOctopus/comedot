@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://1g4ypd7jsctc"]
 
-[ext_resource type="Script" path="res://Components/Control/TileBasedControlComponent.gd" id="1_lmkju"]
+[ext_resource type="Script" uid="uid://dw48iqhtskt0r" path="res://Components/Control/TileBasedControlComponent.gd" id="1_lmkju"]
 
 [node name="TileBasedControlComponent" type="Node" groups=["components"]]
 script = ExtResource("1_lmkju")

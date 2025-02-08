@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ylultcpjxp6"]
 
-[ext_resource type="Script" path="res://Components/Physics/CornerCollisionComponent.gd" id="1_ou10c"]
+[ext_resource type="Script" uid="uid://c3xgjlbxviyrh" path="res://Components/Physics/CornerCollisionComponent.gd" id="1_ou10c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7x1ra"]
 size = Vector2(2, 2)

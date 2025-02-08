@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmcvlfhqc0vbw"]
 
-[ext_resource type="Script" path="res://Components/Combat/DamageTimerComponent.gd" id="1_umsct"]
+[ext_resource type="Script" uid="uid://i17m1x0lvngh" path="res://Components/Combat/DamageTimerComponent.gd" id="1_umsct"]
 
 [node name="DamageTimerComponent" type="Node" groups=["components"]]
 script = ExtResource("1_umsct")
