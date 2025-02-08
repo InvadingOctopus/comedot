@@ -10,7 +10,7 @@ extends TurnBasedComponent
 
 
 #region Parameters
-@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin # The turn phase to process gravity in.
+@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin # The turn phase to process gravity in. # TBD: @export_enum("Begin:1", "Update:2", "End:3")
 #endregion
 
 
