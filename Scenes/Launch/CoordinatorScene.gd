@@ -51,7 +51,7 @@ func _ready() -> void:
 ## @experimental
 func startLogoScene() -> void:
 	willStartLogoScene.emit()
-	const logoScene := preload("res://Scenes/Launch/Logo/LogoSceneIO.tscn")
+	const logoScene := preload("res://Scenes/Launch/Logo/IOLogoScene.tscn")
 	displaySubscene(logoScene)
 	# TODO: await logoScene.didFinish
 	didEndLogoScene.emit()

@@ -1,0 +1,108 @@
+[gd_scene load_steps=8 format=3 uid="uid://7hpq16neqhai"]
+
+[ext_resource type="Script" uid="uid://vpdt63uswi16" path="res://Scenes/Launch/Logo/IOLogoScene.gd" id="1_hl2sk"]
+[ext_resource type="PackedScene" uid="uid://dgk7tlglaif5h" path="res://Scenes/Launch/Logo/IOLogoInvaderSprite.tscn" id="2_0utby"]
+[ext_resource type="PackedScene" uid="uid://csq2lekj41v32" path="res://Scenes/Launch/Logo/IOLogoOctopusSprite.tscn" id="3_he1sp"]
+
+[sub_resource type="Environment" id="Environment_04x4y"]
+background_mode = 3
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 2.0
+glow_strength = 0.5
+glow_bloom = 1.0
+glow_blend_mode = 0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2pj6d"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_6vd1f"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_dy5vu"]
+normal = Vector2(-1, 0)
+
+[node name="IOLogoScene" type="Node2D"]
+script = ExtResource("1_hl2sk")
+mainGameScenePath = "uid://dbwiosb1xulu5"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_04x4y")
+
+[node name="InvadingOctopuses" type="Node2D" parent="."]
+position = Vector2(112, 0)
+
+[node name="Invaders" type="Node2D" parent="InvadingOctopuses"]
+
+[node name="LogoInvader1" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+
+[node name="LogoInvader2" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(16, 0)
+
+[node name="LogoInvader3" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(32, 0)
+
+[node name="LogoInvader4" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(16, 16)
+
+[node name="LogoInvader5" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(16, 32)
+
+[node name="LogoInvader6" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(0, 48)
+
+[node name="LogoInvader7" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(16, 48)
+
+[node name="LogoInvader8" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+position = Vector2(32, 48)
+
+[node name="Octopuses" type="Node2D" parent="InvadingOctopuses"]
+editor_description = "Yes it's \"octopuses\" because we're using it in English.
+"
+position = Vector2(64, 0)
+
+[node name="LogoOctopus1" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+
+[node name="LogoOctopus2" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(16, 0)
+
+[node name="LogoOctopus3" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(32, 0)
+
+[node name="LogoOctopus4" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(32, 16)
+
+[node name="LogoOctopus5" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(32, 32)
+
+[node name="LogoOctopus6" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(32, 48)
+
+[node name="LogoOctopus7" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(16, 48)
+
+[node name="LogoOctopus8" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(0, 48)
+
+[node name="LogoOctopus9" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(0, 32)
+
+[node name="LogoOctopus10" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+position = Vector2(0, 16)
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(0, 180)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("WorldBoundaryShape2D_2pj6d")
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("WorldBoundaryShape2D_6vd1f")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+position = Vector2(320, 0)
+shape = SubResource("WorldBoundaryShape2D_dy5vu")
