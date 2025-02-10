@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ks8fhlam1j34"]
+[gd_scene load_steps=16 format=3 uid="uid://ks8fhlam1j34"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_cgfg7"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_8pjcr"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_8kkjp"]
 [ext_resource type="PackedScene" uid="uid://5cmrvf33lh2r" path="res://Components/Movement/ChaseComponent.tscn" id="8_gm12m"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="9_pwf4a"]
+[ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="9_tfk4d"]
 [ext_resource type="Script" uid="uid://g6spk2uwn3kv" path="res://Resources/Parameters/OverheadMovementParameters.gd" id="10_cn3to"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="11_kuh66"]
 
@@ -70,6 +71,10 @@ shouldShowRemainingHealth = true
 shape = SubResource("RectangleShape2D_icn6w")
 
 [node name="ChaseComponent" parent="." instance=ExtResource("8_gm12m")]
+
+[node name="DamageComponent" parent="." instance=ExtResource("9_tfk4d")]
+collision_layer = 8
+collision_mask = 4
 
 [node name="OverheadPhysicsComponent" parent="." instance=ExtResource("9_pwf4a")]
 parameters = SubResource("Resource_u3ofw")

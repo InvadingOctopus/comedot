@@ -62,7 +62,7 @@ factions = 8
 
 [node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
 collision_layer = 8
-collision_mask = 6
+collision_mask = 4
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 position = Vector2(2.08165e-12, 2.08165e-12)
