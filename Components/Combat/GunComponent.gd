@@ -192,7 +192,8 @@ func createNewBullet() -> Entity:
 		# TODO: Add support for RigidBody2D
 		var bulletLinearMotionComponent: LinearMotionComponent = newBullet.components.get(&"LinearMotionComponent")
 		if bulletLinearMotionComponent:
-			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.velocity.length() # CHECK: Is this the correct way?
+			# TODO: CHECK: BUG: FIXME: This does not seem to be the correct way: Shooting while moving backwards makes bullets faster.
+			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.velocity.length()
 
 	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
 	# TBD: DESIGN: PERFORMANCE: Should our FactionComponent be copied if the bullet is missing one, or will that reduce performance? Maybe it's more intuitive if factionless bullets damage everyone.
