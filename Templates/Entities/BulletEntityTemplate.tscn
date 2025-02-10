@@ -22,7 +22,7 @@ script = ExtResource("1_rqrwr")
 metadata/_edit_group_ = true
 
 [node name="BulletSprite" type="Sprite2D" parent="."]
-modulate = Color(1, 0.5, 0, 1)
+modulate = Color(1, 1, 0, 1)
 texture = ExtResource("2_s7agm")
 
 [node name="NonDamageCollisionShape" type="CollisionShape2D" parent="."]
