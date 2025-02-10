@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
 [ext_resource type="Script" uid="uid://brhfkmfe0g806" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://UI/Menus/MainMenuButtons.tscn" id="7_wy4rx"]
-[ext_resource type="Texture2D" uid="uid://dic4socskiq3t" path="res://Assets/Logos/Comedot.png" id="7_x8oq1"]
+[ext_resource type="Texture2D" uid="uid://dic4socskiq3t" path="res://Assets/Logos/Godot+Comedot.png" id="7_x8oq1"]
 
 [sub_resource type="Environment" id="Environment_ljcfk"]
 background_mode = 3

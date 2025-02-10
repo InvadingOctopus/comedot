@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dic4socskiq3t"
-path="res://.godot/imported/Comedot.png-f637669b3315ecb02feef5d9a037ef1e.ctex"
+path="res://.godot/imported/Godot+Comedot.png-30640c521aff1b655695b54ecc3f325a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Logos/Comedot.png"
-dest_files=["res://.godot/imported/Comedot.png-f637669b3315ecb02feef5d9a037ef1e.ctex"]
+source_file="res://Assets/Logos/Godot+Comedot.png"
+dest_files=["res://.godot/imported/Godot+Comedot.png-30640c521aff1b655695b54ecc3f325a.ctex"]
 
 [params]
 
