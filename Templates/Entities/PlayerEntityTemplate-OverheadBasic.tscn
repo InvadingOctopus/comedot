@@ -27,6 +27,7 @@ texture = SubResource("AtlasTexture_xljij")
 shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+process_callback = 0
 position_smoothing_speed = 100.0
 rotation_smoothing_speed = 10.0
 
