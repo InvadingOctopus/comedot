@@ -1,4 +1,6 @@
 ## Causes damage to a [DamageReceivingComponent] which then passes it on to a [HealthComponent].
+## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
+## If a [FactionComponent] is missing then damage is always dealt.
 ## Requirements: This component should be an [Area2D] node.
 
 class_name DamageComponent

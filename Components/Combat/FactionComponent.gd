@@ -1,6 +1,7 @@
-## Defines the in-game "factions" to which an [Entity] may belongs, such as the players faction or the monsters.
-## Contains functions for comparing 2 [FactionComponent]s against each other,
-## used for deciding damage and potential AI NPC interactions.
+## Defines the in-game "factions" to which an [Entity] may belong, such as the players faction or the monsters.
+## Used by [DamageComponent] and [DamageReceivingComponent] and for potential AI NPC interactions.
+## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
+## Contains functions for comparing 2 [FactionComponent]s against each other.
 
 class_name FactionComponent
 extends Component

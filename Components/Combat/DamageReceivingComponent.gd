@@ -1,4 +1,6 @@
 ## Receives damage from a [DamageComponent] and passes it on to the parent [Entity]'s [HealthComponent].
+## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
+## If a [FactionComponent] is missing then damage is always dealt.
 ## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D]
 
 class_name DamageReceivingComponent
@@ -104,10 +106,11 @@ func getDamageComponent(componentArea: Area2D) -> DamageComponent:
 func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
+	# Not creating an "attackerFactions" or whatever variable to improve performance, maybe?
 	if attackerFactionComponent:
 		self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
-	else:
-		printWarning("No FactionComponent provided with DamageComponent on attacker Entity: " + str(damageComponent.parentEntity))
+	else: # If the attacker has no factions, damage must be dealt to everyone.
+		if shouldShowDebugInfo: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
 		self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
 
 #endregion
