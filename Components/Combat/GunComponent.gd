@@ -1,8 +1,9 @@
 ## Pew Pew
-## WARNING: This component relies on [method _unhandled_input] to process player input,
+## ALERT: This component relies on [method _unhandled_input] to process player input,
 ## in order to allow UI elements to receive input without firing the gun.
 ## If mouse input events are not reaching this component, check the [member Control.mouse_filter] property of any overlaying nodes, and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
-## TIP: For aiming, use [NodeFacingComponent] or [MouseRotationComponent].
+## TIP: For aiming, use [MouseRotationComponent] or [NodeFacingComponent].
+## TIP: To hide the internal sprite, enable "Editable Children" and set the visibility, e.g. to use the player's own sprite.
 
 class_name GunComponent
 extends CooldownComponent
@@ -24,12 +25,16 @@ extends CooldownComponent
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
 @export var pressAgainToShoot: bool = false
 
-## The position in relation to the Pivot where newly spawned bullets are placed.
-@export var bulletEmissionLocation: Vector2:
-	get: return %BulletEmissionLocation.position
-	set(newValue):
-		if %BulletEmissionLocation:
-			%BulletEmissionLocation.position = newValue
+## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
+## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
+@export var shouldAddEntityVelocity: bool = true
+
+## Any node such as a [Marker2D] where newly spawned bullets will be placed placed. Bullets will be added as children of the emitter's parent node.
+## If omitted, this component's internal "BulletEmitter" [Marker2D] node is used by default, and bullets will be added to the entity's parent.
+@export var bulletEmitter: Node2D
+
+## The adjusted position in relation to the [member bulletEmitter] where newly spawned bullets are placed. (0,0) is the position of the emitter.
+@export var bulletPositionOffset: Vector2
 
 ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
 @export var ammoDepletedMessage: String = "AMMO DEPLETED"
@@ -50,6 +55,19 @@ signal ammoInsufficient ## Emitted when attempt to fire the gun while [member am
 var isFireActionPressed: bool = false
 var wasFireActionJustPressed: bool = false
 #region
+
+
+#region Dependencies
+var characterBodyComponent: CharacterBodyComponent:
+	get:
+		if not characterBodyComponent: characterBodyComponent = self.coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
+		return characterBodyComponent
+
+func getRequiredComponents() -> Array[Script]:
+	# GODOT Dumbness: Ternary operator returns untyped array
+	if shouldAddEntityVelocity: return [CharacterBodyComponent]
+	else: return []
+#endregion
 
 
 #region Process Input
@@ -104,8 +122,15 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 	if not newBullet: return null
 
 	# Add the bullet to the scene
-	self.parentEntity.get_parent().add_child(newBullet, true) # force_readable_name
-	newBullet.owner = newBullet.get_parent() # INFO: Necessary for persistence to a [PackedScene] for save/load.
+	# PERFORMANCE: Not using Tools.addChildAndSetOwner() to avoid a large amount of function calls if many bullets are fired each frame.
+
+	# If the default internal emitter is used, then this component's entity's parent should be the bullet's parent.
+	if bulletEmitter == %BulletEmitter or bulletEmitter.get_parent() == self:
+		self.parentEntity.get_parent().add_child(newBullet, false) # not force_readable_name (for performance?)
+	else:
+		bulletEmitter.get_parent().add_child(newBullet, false) # not force_readable_name (for performance?)
+
+	newBullet.owner = newBullet.get_parent() # For persistence to a [PackedScene] for save/load. CHECK: Is this necessary or will it reduce performance?
 
 	didFire.emit(newBullet)
 	startCooldown() # Start the cooldown Timer
@@ -141,10 +166,8 @@ func useAmmo() -> bool:
 
 ## Decreases the [member ammo] [Stat] and creates a new [member bulletEntity] [Entity].
 func createNewBullet() -> Entity:
-	printDebug("createNewBullet()")
-
 	# First, do we have enough ammo?
-	if not useAmmo(): return
+	if not useAmmo(): return null
 
 	# Start forging a new bullet.
 
@@ -155,24 +178,34 @@ func createNewBullet() -> Entity:
 		printError("Cannot instantiate a new bullet: " + str(bulletEntity.resource_path))
 		return null
 
-	newBullet.global_position	= %BulletEmissionLocation.global_position
-	newBullet.global_rotation	= %BulletEmissionLocation.global_rotation
-	newBullet.z_index			= %BulletEmissionLocation.z_index
-	newBullet.top_level			= %BulletEmissionLocation.top_level
+	newBullet.global_position	= bulletEmitter.global_position + self.bulletPositionOffset # CHECK: Should the offset be applied separately to `newBullet.position`?
+	newBullet.global_rotation	= bulletEmitter.global_rotation
+	newBullet.z_index			= bulletEmitter.z_index
+	newBullet.top_level			= bulletEmitter.top_level
 
 	newBullet.isLoggingEnabled	= self.shouldShowDebugInfo
 	newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
 
-	# Does this gun's firing entity have a faction? If so, copy the FactionComponent to the new bullet.
-	# TBD:
+	# Speed: Add the gun's entity's speed to the bullet's speed, so that the attacker doesn't run into its own bullets if they are too slow.
 
-	var factionComponent: FactionComponent = self.coComponents.get(&"FactionComponent") # Use `get()` to avoid crash if `null`
+	if shouldAddEntityVelocity and characterBodyComponent:
+		# TODO: Add support for RigidBody2D
+		var bulletLinearMotionComponent: LinearMotionComponent = newBullet.components.get(&"LinearMotionComponent")
+		if bulletLinearMotionComponent:
+			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.velocity.length() # CHECK: Is this the correct way?
 
-	if factionComponent:
-		printDebug(str("Copying factionComponent to newBullet: ", factionComponent))
-		var factionComponentCopy: FactionComponent = factionComponent.duplicate()
-		newBullet.add_child(factionComponentCopy, true) # force_readable_name
+	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
+	# TBD: DESIGN: PERFORMANCE: Should our FactionComponent be copied if the bullet is missing one, or will that reduce performance? Maybe it's more intuitive if factionless bullets damage everyone.
 
+	# Use `get()` to avoid crash if `null`
+	var factionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
+	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
+
+	if factionComponent and bulletFactionComponent:
+		if shouldShowDebugInfo: printDebug(str("Copying entity factions to newBullet: ", factionComponent.factions))
+		bulletFactionComponent.factions = factionComponent.factions
+
+	if shouldShowDebugInfo: printDebug(str("createNewBullet() → ", newBullet))
 	return newBullet
 
 #endregion

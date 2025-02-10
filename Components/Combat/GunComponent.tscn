@@ -4,9 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="2_m76jp"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_snrc7"]
 
-[node name="GunComponent" type="Node2D" groups=["components"]]
+[node name="GunComponent" type="Node2D" node_paths=PackedStringArray("bulletEmitter") groups=["components"]]
 script = ExtResource("1_q51oq")
 bulletEntity = ExtResource("2_m76jp")
+bulletEmitter = NodePath("Pivot/GunSprite/BulletEmitter")
 cooldown = 0.5
 metadata/_edit_group_ = true
 
@@ -20,7 +21,7 @@ texture = ExtResource("3_snrc7")
 region_enabled = true
 region_rect = Rect2(592, 144, 16, 16)
 
-[node name="BulletEmissionLocation" type="Marker2D" parent="Pivot/GunSprite"]
+[node name="BulletEmitter" type="Marker2D" parent="Pivot/GunSprite"]
 unique_name_in_owner = true
 position = Vector2(8, 0)
 gizmo_extents = 20.0
