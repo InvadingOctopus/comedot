@@ -27,7 +27,8 @@ extends CooldownComponent
 
 ## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
 ## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
-@export var shouldAddEntityVelocity: bool = true
+## @experimental
+@export var shouldAddEntityVelocity: bool = false
 
 ## Any node such as a [Marker2D] where newly spawned bullets will be placed placed. Bullets will be added as children of the emitter's parent node.
 ## If omitted, this component's internal "BulletEmitter" [Marker2D] node is used by default, and bullets will be added to the entity's parent.
