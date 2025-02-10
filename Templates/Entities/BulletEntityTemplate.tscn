@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://3ousmbcfyuac"]
+[gd_scene load_steps=10 format=3 uid="uid://3ousmbcfyuac"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_rqrwr"]
 [ext_resource type="Texture2D" uid="uid://cxq0ri0ydsc3l" path="res://Assets/Images/Solid4.png" id="2_s7agm"]
 [ext_resource type="PackedScene" uid="uid://frr2yhuof6v5" path="res://Components/Movement/LinearMotionComponent.tscn" id="3_m0kev"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_uhpuy"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_ogryl"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_qww6u"]
 [ext_resource type="PackedScene" uid="uid://cla2wtnqyfqtb" path="res://Components/Physics/RemovalOnCollisionComponent.tscn" id="6_ffvs6"]
@@ -27,6 +28,10 @@ texture = ExtResource("2_s7agm")
 
 [node name="NonDamageCollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_lt4cn")
+
+[node name="FactionComponent" parent="." instance=ExtResource("3_uhpuy")]
+editor_description = "Factions will be filled in by a GunComponent."
+factions = 0
 
 [node name="DamageComponent" parent="." instance=ExtResource("5_qww6u")]
 removeEntityOnCollisionWithDamageReceiver = true
