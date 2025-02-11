@@ -4,20 +4,20 @@
 
 ![Godot+Comedot Logo][logo]
 
-The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can mix this framework with any other architecture or system, even for 2D scenes in a 3D game!
+The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other architecture or paradigm or fetish.
 
 ![components-tree]
 
-* Includes components for different types of player movement, combat, collectibles, interactions, upgrades etc.
-* UI controls like a stats HUD, buttons & lists for special skills etc.
+* Includes a library of components for common stuff needed in most 2D games: Different types of player movement, combat, collectibles, interactions, upgrades etc.
+* UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.any_name = 69`
-* Tons of helper functions & debugging tools.
+* A neutron star spoonful of helper functions & debugging tools.
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
 > [!WARNING]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews GDScript conventions like ugly underscores and may change frequently: **No backwards compatibility is guaranteed!**
+> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews certain conventions like ugly underscores and may change frequently: **No backwards compatibility is guaranteed!**
 
 
 ## Examples 
@@ -70,7 +70,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 4. Save the entity + components tree as a standalone scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
 
 > [!TIP]
-> 📜 **Read [HowTo.md][howto] to see how to do common tasks** like player movement and combat or adding entirely new functionality.
+> 📜 **Read [HowTo.md][howto] to see how to do common tasks or fix common issues.**
 >
 > 💬 For more deets, ping Syntaks.io on Discord.
 
