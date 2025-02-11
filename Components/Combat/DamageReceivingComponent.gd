@@ -1,4 +1,4 @@
-## Receives damage from a [DamageComponent] and passes it on to the parent [Entity]'s [HealthComponent].
+## Receives damage from a [DamageComponent] and passes it on to the parent entity's [HealthComponent].
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
 ## If a [FactionComponent] is missing then damage is always dealt.
 ## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D]
