@@ -7,13 +7,13 @@ extends Camera2D
 
 
 #region Parameters
-@export_range(0.0, 10.0, 0.05) var zoomTimerMax: float = 0.2
+@export_range(0.0, 10.0, 0.05) var zoomTimerMax:  float = 0.2
+@export_range(0.0, 10.0, 0.05) var zoomDirection: float = 0.2 ## The distance/intensity of the zoom. Swaps sign/"direction" during runtime.
 #endregion
 
 
 #region State
 var zoomTimer: float = 0.0
-var zoomDirection: float = 0.2
 #endregion
 
 
