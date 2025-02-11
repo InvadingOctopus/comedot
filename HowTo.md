@@ -1,4 +1,4 @@
-# Comedot - How To Do Basic Stuff
+# Comedot - How To Do Shit
 
 * 🏠 [Organize Your Project](#-organize-your-project)
 * 👤 [Make a Player Entity](#-make-a-player-entity)
@@ -7,6 +7,8 @@
 * ⚡️ [Add New Functionality](#-add-new-functionality)
 * 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
+* ❗️ [Fix Common Problems](#-fix-common-problems)
+
 
 ## 🏠 Organize Your Project
 
@@ -17,6 +19,7 @@
 * 💡 You could also use a single `/Comedot/Game/` subfolder for multiple game projects: Create a new git repository in the `/Game/` subfolder, and use multiple git branches for each game. This may help experiment with different ideas while keeping the Comedot framework separate, so that any updates or modifications to the framework may be used for all your games.
 
 ❗️ Your main game scene must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and apply global flags etc.
+
 
 ## 👤 Make a Player Entity
 
@@ -29,6 +32,7 @@
 4. Set the Body's Physics Collision Layer to `players` and the Mask to `terrain`. Add other categories as needed.
 
 * 💡 Try one of the templates in `/Templates/Entities/`
+
 
 ### 🕹️ Add Player Control and Movement
 
@@ -44,6 +48,7 @@
 
 * ❕ If you use the `PlatformerPhysicsComponent` then you must also add the `PlatformerControlComponent` and `JumpControlComponent`.
 
+
 ## ⚔️ Add Combat
 
 1. Add a `FactionComponent` and set the Faction to either `players` or `enemies`
@@ -57,6 +62,7 @@
 * ❕ Remember to set the correct Physics Collision Layers and Masks for all bodies, otherwise they will not be able to detect collisions with each other.
 
 * 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
+
 
 ## ⚡️ Add New Functionality
 
@@ -72,6 +78,7 @@ When you need more game-specific functionality, you have the following options, 
 
 * Create your own entirely new components, by creating a new scene and attaching the `Component.gd` script to the root node.
 
+
 ### 🧩 Create New Components
 
 ❕ Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
@@ -81,6 +88,7 @@ When you need more game-specific functionality, you have the following options, 
 2. Select the root node of your component scene and add it to the `components` group. This makes it easier to manage multiple components. If the Scene is a `Node2D` then also enable `Group Selected Nodes` in the Scene Editor Toolbar. This makes it easier to move your component along with its children in the Entity's scene.
 
 3. Right-click the root node » Attach Script. Type `Component` in **Inherits** and choose one of the base components in **Template**.
+
 
 ## 🎲 Make a Turn-Based Game
 
@@ -96,6 +104,22 @@ When you need more game-specific functionality, you have the following options, 
 
 	Your turn-based components must implement one or more of those methods and may connect to each other's signals to build your gameplay.
 
+
+## ❗️ Fix Common Problems
+
+* ⚠️ The first time you load a copy of this project, there may be errors because Godot will re-import various files and set the internal IDs for assets, textures etc. To fix: Close and reopen the project.
+
+* The icons/emojis used in the log messages require Apple's SF Symbols which may not work on Windows or Linux: https://developer.apple.com/sf-symbols/
+
+#### Common Reasons for Crashes
+
+* Missing component dependencies: Also check the ORDER of components in an entity's node tree.
+
+* Incorrect component parameters: Check all fields in the Godot Editor Inspector and make sure all values are correct.
+
+* I forgor: Check the latest "develop" branch or wait or fix it yourself. 🥲
+
+
 ----
 
-💬 For more questions, @Syntaks.io on Discord
+💬 For more questions, summon @Syntaks.io on Discord on a night of a full moon.
