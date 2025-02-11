@@ -101,7 +101,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
-[logo]: /Assets/Logos/Comedot.png "Godot+Comedot Logo"
+[logo]: /Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "🌳 Example Components Tree for a Player Entity"
 [rocks-with-guns]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
