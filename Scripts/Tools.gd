@@ -555,11 +555,23 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 
 #region File System Functions
 
+## Returns a copy of the specified [param path] with the specified [param prefix] added if the path does not begin with "res://" or "user://".
+## If the path already has a prefix then it is returned unmodified.
+## NOTE: Case-sensitive.
+static func addPathPrefixIfMissing(path: String, prefix: String = "res://") -> String:
+	if  not path.begins_with("res://") \
+	and not path.begins_with("user://"): 
+		return prefix + path
+	else:
+		return path
+
+
 ## Returns an array of all files at the specified path which include [param filter] (case-insensitive) in the filename.
 ## If [param filter] is empty then all files are returned.
+## If the [param folderPath] does not begin with "res://" or "user://" (case-sensitive) then "res://" is added.
 ## NOTE: When used on a "res://" path in an exported project, only the files actually included in the PCK at the given folder level are returned. 
 static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
-	# TODO: Implement filter
+	folderPath = Tools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
 	var folder: DirAccess = DirAccess.open(folderPath)
 	if folder == null: 
 		Debug.printWarning("getFilesFromFolder() cannot open " + folderPath)
