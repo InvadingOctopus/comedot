@@ -10,7 +10,7 @@ extends Node
 #region Parameters
 @export var musicFolder: String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
 @export var maximumNumberOfSounds: int = 10 # TBD:
-@export var shouldShowDebugInfo:  bool = true
+@export var shouldShowDebugInfo:  bool = false
 #endregion
 
 
