@@ -8,19 +8,34 @@ extends Node
 
 
 #region Parameters
-var maximumNumberOfSounds: int = 10 # TBD
+@export var musicFolder: String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
+@export var maximumNumberOfSounds: int = 10 # TBD:
+@export var shouldShowDebugInfo:  bool = true
 #endregion
 
 
 #region State
 var audioPlayers: Array[AudioStreamPlayer2D]
 var currentAudioPlayerIndex: int
+
+var musicFiles: PackedStringArray ## An array that is populated by all the ".mp3" files found in the [const musicFolder] on [method _ready].
+var currentMusicIndex: int ## The index in the [member musicFiles] array of the currently playing song.
 #endregion
 
 
 #region Dependencies
 @onready var sounds: Node = %Sounds
+@onready var musicPlayer: AudioStreamPlayer = $MusicPlayer
 #endregion
+
+
+#region Signals
+
+#endregion
+
+
+func _ready() -> void:
+	self.loadMusicFolder()
 
 
 #region SFX
@@ -86,7 +101,7 @@ func playAudioPlayerPool(
 	position: Vector2 = Vector2.ZERO,
 	_bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
 	
-	# Cycle through the available AudioStremPlayer2D nodes,
+	# Cycle through the available AudioStreamPlayer2D nodes,
 	# so we can have a pool of simultaneous sounds up to a limit.
 
 	var audioPlayer: AudioStreamPlayer2D
@@ -108,5 +123,50 @@ func playAudioPlayerPool(
 	audioPlayer.play() # TBD: Add playback position argument? TBD: Find a way to move along with node and continue playing after the node is destroyed?
 	
 	return audioPlayer
+
+#endregion
+
+
+#region Music
+
+## Replaces and returns the [member musicFiles] array with the list returned by calling [method getMusicFilesFromFolder] on the [member musicFolder].
+func loadMusicFolder() -> PackedStringArray:
+	self.musicFiles = getMusicFilesFromFolder(self.musicFolder)
+	return self.musicFiles
+
+
+## Returns a list of all the ".mp3" files found at [param path], which defaults to [member musicFolder].
+func getMusicFilesFromFolder(path: String = self.musicFolder) -> PackedStringArray:
+	var files: PackedStringArray = Tools.getResourcesInFolder(path, ".mp3") # TBD: Allow other extensions?
+	if shouldShowDebugInfo: Debug.printAutoLoadLog(str("getMusicFilesFromFolder(", path, "): ", files.size(), " ", files))
+	return files
+
+
+## Plays the song found at the specified index in the [member musicFiles] array.
+func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
+	if Tools.isValidArrayIndex(self.musicFiles, index):
+		return self.playMusicFile(self.musicFiles[index])
+	else:
+		Debug.printWarning(str("playMusicIndex() invalid index: ", index, ", musicFiles size: ", musicFiles.size()), self)
+		return null
+
+
+## Plays and returns a random song from the [member musicFiles] array.
+func playRandomMusicIndex() -> AudioStream:
+	return self.playMusicIndex(randi_range(0, self.musicFiles.size() - 1)) # randi_range() is inclusive and size() is +1 > maximum valid array index.
+
+
+## Plays and returns the specified file on the "MusicPlayer" [AudioStreamPlayer] node.
+## The file does not have to be included in the [member musicFiles] array.
+func playMusicFile(path: String) -> AudioStream:
+	var newMusicStream: AudioStream = load(path)
+	if newMusicStream == null:
+		Debug.printWarning("playMusicFile() cannot load " + path, self)
+		return null
+	
+	self.musicPlayer.stream = newMusicStream
+	self.musicPlayer.play()
+	return newMusicStream
+
 
 #endregion

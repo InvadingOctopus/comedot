@@ -6,5 +6,7 @@
 process_mode = 3
 script = ExtResource("1_cweqa")
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+
 [node name="Sounds" type="Node" parent="."]
 unique_name_in_owner = true
