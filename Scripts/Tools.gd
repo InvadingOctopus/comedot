@@ -555,6 +555,41 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 
 #region File System Functions
 
+## Returns an array of all files at the specified path which include [param filter] (case-insensitive) in the filename.
+## If [param filter] is empty then all files are returned.
+## NOTE: When used on a "res://" path in an exported project, only the files actually included in the PCK at the given folder level are returned. 
+static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
+	# TODO: Implement filter
+	var folder: DirAccess = DirAccess.open(folderPath)
+	if folder == null: 
+		Debug.printWarning("getFilesFromFolder() cannot open " + folderPath)
+		return []
+
+	folder.list_dir_begin() # CHECK: Necessary for get_files()?
+	var files: PackedStringArray
+	
+	for fileName: String in folder.get_files():
+		if filter.is_empty() or fileName.containsn(filter):
+			files.append(folder.get_current_dir() + "/" + fileName) # CHECK: Use get_current_dir() instead of folderPath?
+	
+	folder.list_dir_end() # CHECK: Necessary for get_files()?
+	return files
+
+
+## Returns an array of the exported resources in the specified folder which include [param filter] (case-insensitive) in the exported filename.
+## If [param filter] is empty then all resources are returned.
+static func getResourcesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
+	var resources: PackedStringArray = ResourceLoader.list_directory(folderPath)
+	if resources.is_empty(): return []
+	
+	var filteredResources: PackedStringArray
+	for resource: String in filteredResources:
+		if filter.is_empty() or resource.containsn(filter):
+			filteredResources.append(resource)
+	
+	return filteredResources
+
+
 ## Returns the path of the specified object, after replacing its extension with the specified string.
 ## May be used for quickly getting the accompanying `.gd` Script for a `.tscn` Scene or `.tres` Resource, if they share the same file name.
 ## If the resulting file with the replaced extension does not exist, an empty string is returned.
