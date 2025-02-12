@@ -34,7 +34,9 @@ var currentMusicIndex: int ## The index in the [member musicFiles] array of the 
 ## If the music player has finished, then [signal musicPlayerDidStop] is emitted.
 signal musicPlayerDidPlay(fileName: String)
 
-signal musicPlayerDidStop ## Emitted when the [member musicPlayer] [AudioStreamPlayer] node stops playing its current song.
+## Emitted when the [member musicPlayer] [AudioStreamPlayer] node emits its [signal AudioStreamPlayer.finished] signal.
+## WARNING: Calling [method AudioStreamPlayer.stop] directly on [member musicPlayer] does NOT emit these signals, or when the node is removed from the scene tree.
+signal musicPlayerDidStop
 #endregion
 
 
@@ -156,6 +158,7 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 
 
 ## Plays and returns a random song from the [member musicFiles] array.
+## NOTE: The same song as the current/previous song may be played again. Such is the nature of true randomness.
 func playRandomMusicIndex() -> AudioStream:
 	return self.playMusicIndex(randi_range(0, self.musicFiles.size() - 1)) # randi_range() is inclusive and size() is +1 > maximum valid array index.
 
