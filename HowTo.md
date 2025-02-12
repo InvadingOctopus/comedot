@@ -2,26 +2,27 @@
 
 * 🏠 [Organize Your Project](#-organize-your-project)
 * 👤 [Make a Player Entity](#-make-a-player-entity)
-* 🕹️ [Add Player Control](#%EF%B8%8F-add-player-control-and-movement)
+	* 🕹️ [Add Player Control and Movement](#%EF%B8%8F-add-player-control)
+* 🧩 [Add Components to Entities](#-add-components-to-entities)
 * ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
-* ⚡️ [Add New Functionality](#-add-new-functionality)
-* 🧩 [Create New Components](#-create-new-components)
+* ⚡️ [Add New Functionality](#%EF%B8%8F-add-game-specific-functionality)
+	* 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
-* ❗️ [Fix Common Problems](#-fix-common-problems)
+* 🔧 [Fix Common Problems](#-fix-common-problems)
 
 
-## 🏠 Organize Your Project
+# 🏠 Organize Your Project
 
 1. Create a new git branch for your game (say `game-of-the-year-2069`) in your local repository, and
 
 2. Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
 
-* 💡 You could also use a single `/Comedot/Game/` subfolder for multiple game projects: Create a new git repository in the `/Game/` subfolder, and use multiple git branches for each game. This may help experiment with different ideas while keeping the Comedot framework separate, so that any updates or modifications to the framework may be used for all your games.
+💡 _You could also use a single `/Comedot/Game/` subfolder for multiple game projects: Create a new git repository in the `/Game/` subfolder, and use multiple git branches for each game. This may help with experimenting on different ideas while keeping the Comedot framework separate, so that any updates or modifications to the framework can be easily shared between all your games._
 
 ❗️ Your main game scene must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and apply global flags etc.
 
 
-## 👤 Make a Player Entity
+# 👤 Make a Player Entity
 
 1. Create a `CharacterBody2D` node.
 
@@ -31,40 +32,51 @@
 
 4. Set the Body's Physics Collision Layer to `players` and the Mask to `terrain`. Add other categories as needed.
 
-* 💡 Try one of the templates in `/Templates/Entities/`
+💡 _Try one of the templates in `/Templates/Entities/`_
 
 
-### 🕹️ Add Player Control and Movement
+### 🕹️ Add Player Control
 
-1. Select the Player Entity.
+1. Select the Player Entity Node in the Scene Dock of the Godot Editor.
 
-2. Choose `Instantiate Child Scene` from the context menu.
+2. Add components from `/Components/Control/` and `/Components/Physics/` as children of the Entity node.
 
-3. Add components from `/Components/Control/` as children of the Entity node, such as `OverheadControlComponent.tscn`.
+	* For platformer "run and jump" movement: `PlatformerControlComponent` + `JumpControlComponent` + `PlatformerPhysicsComponent`
 
-4. Add `/Components/Physics/CharacterBodyComponent.tscn` as the last component in the Entity's tree. This component takes the velocity updates from other components and applies them to the `CharacterBody2D`.
+	* For "overhead" or flying movement: `OverheadControlComponent` + `OverheadPhysicsComponent`
 
-* 📖 Read the documentation comments in the scripts of each component to see how to use it.
-
-* ❕ If you use the `PlatformerPhysicsComponent` then you must also add the `PlatformerControlComponent` and `JumpControlComponent`.
+3. Add `/Components/Physics/CharacterBodyComponent.tscn` as the _last_ component in the Entity's tree. This component takes the velocity updates from other components and applies them to the Entity's `CharacterBody2D`.
 
 
-## ⚔️ Add Combat
+# 🧩 Add Components to Entities
+
+_Most components require their Scene file, not just the Script, because they may add graphics or depend on internal nodes such as Timer and signals etc._
+
+❌ **Do NOT** use "Add Child Node…" (Control/Command+A)
+
+✅ Use "Instantiate Child Scene…" (SHIFT+Control/Command+A)
+
+❌ **Do NOT** drag a Component's ".gd" Script file to an Entity node; entities should only have a Script which `extends Entity`
+
+✅ Drag the ".tscn" Scene file of a Component to add it as a child node of an Entity.
+
+📖 _Read the documentation comments in the script of each component to see how to use it._
+
+
+# ⚔️ Add Combat
 
 1. Add a `FactionComponent` and set the Faction to either `players` or `enemies`
 
-2. Add a `HealthComponent`
-
-3. Add a `DamageReceivingComponent`
+2. Add a `HealthComponent` + `DamageReceivingComponent`
 
 * For monsters, add a `DamageComponent` to hurt the player on contact.
 
-* ❕ Remember to set the correct Physics Collision Layers and Masks for all bodies, otherwise they will not be able to detect collisions with each other.
+❕ _Remember to set the correct Physics Collision Layers and Masks for all bodies/areas, otherwise they won't be able to detect collisions with each other._
 
-* 💡 For the player, you may also add an `InvulnerabilityOnHitComponent`.
+💡 _You may also add `HealthVisualComponent` + `InvulnerabilityOnHitComponent` etc._
 
 
-## ⚡️ Add New Functionality
+# ⚡️ Add Game-specific Functionality
 
 When you need more game-specific functionality, you have the following options, in order of ease → power:
 
@@ -81,7 +93,7 @@ When you need more game-specific functionality, you have the following options, 
 
 ### 🧩 Create New Components
 
-❕ Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
+📜 Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
 
 1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **Root Type** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **Root Type** should be `Node`.
 
@@ -90,7 +102,7 @@ When you need more game-specific functionality, you have the following options, 
 3. Right-click the root node » Attach Script. Type `Component` in **Inherits** and choose one of the base components in **Template**.
 
 
-## 🎲 Make a Turn-Based Game
+# 🎲 Make a Turn-Based Game
 
 1. Go to Project Settings » Globals. Make sure the `TurnBasedCoordinator` Autoload is enabled.
 
@@ -105,7 +117,7 @@ When you need more game-specific functionality, you have the following options, 
 	Your turn-based components must implement one or more of those methods and may connect to each other's signals to build your gameplay.
 
 
-## ❗️ Fix Common Problems
+# 🔧 Fix Common Problems
 
 * ⚠️ The first time you load a copy of this project, there may be errors because Godot will re-import various files and set the internal IDs for assets, textures etc. To fix: Close and reopen the project.
 
