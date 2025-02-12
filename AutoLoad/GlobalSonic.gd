@@ -30,7 +30,11 @@ var currentMusicIndex: int ## The index in the [member musicFiles] array of the 
 
 
 #region Signals
+## Emits the path of the new file played by the [member musicPlayer] [AudioStreamPlayer] node.
+## If the music player has finished, then [signal musicPlayerDidStop] is emitted.
+signal musicPlayerDidPlay(fileName: String)
 
+signal musicPlayerDidStop ## Emitted when the [member musicPlayer] [AudioStreamPlayer] node stops playing its current song.
 #endregion
 
 
@@ -166,7 +170,13 @@ func playMusicFile(path: String) -> AudioStream:
 	
 	self.musicPlayer.stream = newMusicStream
 	self.musicPlayer.play()
+	self.musicPlayerDidPlay.emit(path)
 	return newMusicStream
 
 
+func onMusicPlayer_finished() -> void:
+	self.musicPlayerDidStop.emit()
+
 #endregion
+
+
