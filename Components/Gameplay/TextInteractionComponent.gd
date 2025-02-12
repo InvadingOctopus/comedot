@@ -7,7 +7,7 @@ extends InteractionComponent
 
 #region Parameters
 ## The list of text strings to display in turn. If the player interacts again after the last string, the index will wrap around and the first string will be shown.
-@export var textStrings: Array[String] = ["String1", "String2", "String3"]
+@export var textStrings: PackedStringArray = ["String1", "String2", "String3"]
 
 ## The color to apply to each string. This array may be a different size than the text array; the list will just wrap around.
 @export var textColors:  Array[Color]  = [Color.WHITE, Color.YELLOW]

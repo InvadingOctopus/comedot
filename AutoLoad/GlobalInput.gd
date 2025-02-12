@@ -132,8 +132,8 @@ func _input(event: InputEvent) -> void:
 
 ## Returns a list of the textual representation of keys, buttons or other controls specified for an Input Action, such as "Space" for "jump".
 ## Trims redundant text such as " (Physical)"
-func getInputEventText(action: StringName) -> Array[String]:
-	var strings: Array[String]
+func getInputEventText(action: StringName) -> PackedStringArray:
+	var strings: PackedStringArray
 	for event: InputEvent in InputMap.action_get_events(action):
 		strings.append(event.as_text().trim_suffix(" (Physical)"))
 	return strings
@@ -141,8 +141,8 @@ func getInputEventText(action: StringName) -> Array[String]:
 
 ## Returns a list of the textual representation of keys, buttons or other controls specified for an Input Action, such as "Space" for "jump".
 ## Replaces redundant text such as "(Physical)" with "(Keyboard)" using the [const eventTextReplacements] [Dictionary].
-func getInputEventReplacedText(action: StringName) -> Array[String]:
-	var strings: Array[String]
+func getInputEventReplacedText(action: StringName) -> PackedStringArray:
+	var strings: PackedStringArray
 	for event: InputEvent in InputMap.action_get_events(action):
 		strings.append(Tools.replaceStrings(event.as_text(), GlobalInput.eventTextReplacements))
 	return strings

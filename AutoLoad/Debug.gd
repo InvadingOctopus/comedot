@@ -109,7 +109,7 @@ func performFrameworkChecks() -> void:
 
 func displayInitializationMessage() -> void:
 	# Get the actual input key
-	var debugWindowInput: String = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow).front()
+	var debugWindowInput: String = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow)[0] # .front() not for PackedStringArray :(
 
 	var message: String = \
 		"_enter_tree()\n" + \

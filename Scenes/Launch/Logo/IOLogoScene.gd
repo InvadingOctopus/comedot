@@ -8,7 +8,7 @@ extends Start
 
 const nextScene: PackedScene = preload("res://Scenes/Launch/GameFrame.tscn") # preload to prevent frame stutter/lag during scene transition or skipping.
 
-var textLines: Array[String] = [
+var textLines: PackedStringArray = [
 	str("LOAD\"", ProjectSettings.get_setting("application/config/name", "Comedot"), "\"").to_upper(),
 	"READY © MMXXV",
 	"RUN",

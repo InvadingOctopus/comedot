@@ -16,7 +16,7 @@ enum Factions {
 	enemies = 4,
 }
 
-const factionStrings: Array[String] = [
+const factionStrings: PackedStringArray = [
 	"neutral", 
 	"players", 
 	"playerAllies", 

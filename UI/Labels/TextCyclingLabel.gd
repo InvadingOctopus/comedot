@@ -7,7 +7,7 @@ extends Label
 #region Parameters
 
 ## The list of text to display in turn when the [Timer] ticks.
-@export var textStrings: Array[String] = [
+@export var textStrings: PackedStringArray = [
 	"Text Cycling Label",
 	"2nd Text",
 	"Final Text"
