@@ -80,7 +80,7 @@ _Most components require their Scene file, not just the Script, because they may
 
 When you need more game-specific functionality, you have the following options, in order of ease → power:
 
-* Select a component in your Scene Tree and enable "Editable Children" to modify its internal sub-nodes, such as a `GunComponent`'s pivot point, or collision shapes and timers. Those modifications will only apply to *that one specific instance.*
+* Select a component in your Scene Tree and enable **"Editable Children"** to modify its internal sub-nodes, such as a `GunComponent`'s pivot point, or collision shapes and timers. Those modifications will only apply to *that one specific instance.*
 
 * Create a new scene which inherits an existing component's scene, then add new child nodes to it, such as additional graphics for a `GunComponent`.
 
@@ -95,11 +95,13 @@ When you need more game-specific functionality, you have the following options, 
 
 📜 Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
 
-1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **Root Type** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **Root Type** should be `Node`.
+1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **"Root Type"** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **"Root Type"** should be `Node`.
 
-2. Select the root node of your component scene and add it to the `components` group. This makes it easier to manage multiple components. If the Scene is a `Node2D` then also enable `Group Selected Nodes` in the Scene Editor Toolbar. This makes it easier to move your component along with its children in the Entity's scene.
+2. Select the root node of your component scene and add it to the `components` group. This makes it easier to manage multiple components. If the Scene is a `Node2D` then also enable **"Group Selected Nodes"** in the Scene Editor Toolbar. This makes it easier to move your component along with its children in the Entity's scene.
 
-3. Right-click the root node » Attach Script. Type `Component` in **Inherits** and choose one of the base components in **Template**.
+3. Right-click the root node » **"Attach Script"**. Type `Component` in **"Inherits"** and choose one of the base components in **"Template"**.
+
+💡 _If you don't like having many small components, you can just create one "monolithic" super-component like a "PlayerComponent" or "MonsterComponent" and put everything specific to your gameplay in that one component. You could also forego components and do things the old Godot way for certain entities: just dump everything in a big "MyPlayerEntity.gd" script which `extends Entity`_
 
 
 # 🎲 Make a Turn-Based Game
