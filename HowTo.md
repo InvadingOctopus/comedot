@@ -52,13 +52,13 @@
 
 _Most components require their Scene file, not just the Script, because they may add graphics or depend on internal nodes such as Timer and signals etc._
 
-❌ **Do NOT** use "Add Child Node…" (Control/Command+A)
+❌ Do **NOT** use "Add Child Node" (Control/Command+A)
 
-✅ Use "Instantiate Child Scene…" (SHIFT+Control/Command+A)
+✅ Use **"Instantiate Child Scene"** (SHIFT+Control/Command+A)
 
-❌ **Do NOT** drag a Component's ".gd" Script file to an Entity node; entities should only have a Script which `extends Entity`
+❌ Do **NOT** drag a Component's `.gd` Script file to an Entity node; entities should only have a Script which `extends Entity` or `TurnBasedEntity`
 
-✅ Drag the ".tscn" Scene file of a Component to add it as a child node of an Entity.
+✅ Drag the `.tscn` Scene file of a Component to add it as a child node of an Entity.
 
 📖 _Read the documentation comments in the script of each component to see how to use it._
 
