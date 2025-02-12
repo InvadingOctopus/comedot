@@ -590,14 +590,18 @@ static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedS
 
 ## Returns an array of the exported resources in the specified folder which include [param filter] (case-insensitive) in the exported filename.
 ## If [param filter] is empty then all resources are returned.
+## If the [param folderPath] does not begin with "res://" or "user://" (case-sensitive) then "res://" is added.
 static func getResourcesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
+	folderPath = Tools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
 	var resources: PackedStringArray = ResourceLoader.list_directory(folderPath)
 	if resources.is_empty(): return []
 	
+	if not folderPath.ends_with("/"): folderPath += "/" # Tack the tail on
+
 	var filteredResources: PackedStringArray
-	for resource: String in filteredResources:
-		if filter.is_empty() or resource.containsn(filter):
-			filteredResources.append(resource)
+	for resourceName: String in resources:
+		if filter.is_empty() or resourceName.containsn(filter):
+			filteredResources.append(folderPath + resourceName)
 	
 	return filteredResources
 
