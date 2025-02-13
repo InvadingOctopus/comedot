@@ -17,7 +17,7 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 * Free-to-use 3rd-party assets for quick prototyping.
 
 > [!WARNING]
-> This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews certain conventions like ugly underscores and may change frequently: **No backwards compatibility is guaranteed!**
+> _This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews certain conventions like ugly underscores and may change frequently:_ **No backwards compatibility is guaranteed!**
 
 
 ## Examples 
@@ -30,11 +30,11 @@ https://github.com/user-attachments/assets/bc76f0b2-62f7-4fd5-8d26-fef27b182e22
 
 https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
-📈 There's even kawaii charts for debugging variables in real-time!
+📈 There's even kawaii charts for monitoring variables in real-time!
 
 ![debug-charts]
 
-_(if the videos don't display, view on imgur):_ [1][rocks-with-guns], [2][swapping-components]
+_(if the videos don't display, view on imgur):_ [1][trees-with-guns], [2][swapping-components]
 
 These scenes are included in the `/Templates/Examples/` folder.
 
@@ -103,7 +103,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 [logo]: /Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "🌳 Example Components Tree for a Player Entity"
-[rocks-with-guns]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
+[trees-with-guns]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
 [debug-charts]: https://i.imgur.com/jgAjmzY.png "Debug Chart Windows"
 [comedock]: https://i.imgur.com/j5f2xna.png "Godot Dock Plugin"
