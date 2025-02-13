@@ -13,7 +13,9 @@
 
 # 🏠 Organize Your Project
 
-1. Create a new git branch for your game (say `game-of-the-year-2069`) in your local repository, and
+Create a separate copy of the entire Comedot project folder for each of your games and modify anything in any way, _or_
+
+1. Create a new git branch for your game (say `game-of-the-year-2069`) in your local Comedot repository, and
 
 2. Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
 
@@ -24,9 +26,9 @@
 
 # 👤 Make a Player Entity
 
-1. Create a `CharacterBody2D` node.
+1. Create a `CharacterBody2D` Node.
 
-2. Attach the `/Entities/Characters/PlayerEntity.gd` script.
+2. Attach the `/Entities/Characters/PlayerEntity.gd` Script.
 
 3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` and set them up.
 
@@ -37,13 +39,13 @@
 
 ### 🕹️ Add Player Control
 
-1. Select the Player Entity Node in the Scene Dock of the Godot Editor.
+1. Select the Player Entity Node in the Godot Scene Editor.
 
 2. Add components from `/Components/Control/` and `/Components/Physics/` as children of the Entity node.
 
-	* For platformer "run and jump" movement: `PlatformerControlComponent` + `JumpControlComponent` + `PlatformerPhysicsComponent`
+	🍄 For platformer "run and jump" movement: `PlatformerControlComponent` + `JumpControlComponent` + `PlatformerPhysicsComponent`
 
-	* For "overhead" or flying movement: `OverheadControlComponent` + `OverheadPhysicsComponent`
+	🛸 For "overhead" RPG or flying movement:  `OverheadControlComponent` + `OverheadPhysicsComponent`
 
 3. Add `/Components/Physics/CharacterBodyComponent.tscn` as the _last_ component in the Entity's tree. This component takes the velocity updates from other components and applies them to the Entity's `CharacterBody2D`.
 
@@ -52,13 +54,13 @@
 
 _Most components require their Scene file, not just the Script, because they may add graphics or depend on internal nodes such as Timer and signals etc._
 
-❌ Do **NOT** use "Add Child Node" (Control/Command+A)
+* Use **"Instantiate Child Scene"** (SHIFT+Control/Command+A)
 
-✅ Use **"Instantiate Child Scene"** (SHIFT+Control/Command+A)
+	❌ Do **NOT** use "Add Child Node" (Control/Command+A): This will not include the component's child nodes or other properties.
 
-❌ Do **NOT** drag a Component's `.gd` Script file to an Entity node; entities should only have a Script which `extends Entity` or `TurnBasedEntity`
+* Drag the `.tscn` Scene file of a Component from the FileSystem Dock to add it as a child node of an Entity.
 
-✅ Drag the `.tscn` Scene file of a Component to add it as a child node of an Entity.
+	❌ Do **NOT** drag a Component's `.gd` Script file to an Entity node; entities should only have a Script which `extends Entity` or `TurnBasedEntity`
 
 📖 _Read the documentation comments in the script of each component to see how to use it._
 
