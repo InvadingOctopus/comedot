@@ -4,7 +4,7 @@
 
 ![Godot+Comedot Logo][logo]
 
-The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other architecture or paradigm or fetish.
+The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
 
 ![components-tree]
 
@@ -45,6 +45,7 @@ These scenes are included in the `/Templates/Examples/` folder.
 > _Requires Godot 4.4 ~Embrace the Future_ ✨  
 
 1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
+	* Or you can selectively choose scenes/scripts from Comedot to use them in other templates.
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
 	* The `/Templates/` folder contains scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* The `/Scripts/` folder contains code for simple non-Entity nodes.
