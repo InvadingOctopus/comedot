@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cve8b3a1vlur"]
+[gd_scene load_steps=3 format=3 uid="uid://cve8b3a1vlur"]
 
 [ext_resource type="PackedScene" uid="uid://d1ayxdi7fyaac" path="res://Components/Objects/PortalInteractionComponent.tscn" id="1_na6w3"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_pv1n1"]
 
 [node name="PortalEntity" type="Node2D" groups=["entities", "interactions"]]
+script = ExtResource("1_pv1n1")
 metadata/_edit_group_ = true
 
 [node name="PortalInteractionComponent" parent="." instance=ExtResource("1_na6w3")]
