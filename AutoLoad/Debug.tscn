@@ -63,7 +63,7 @@ max_size = Vector2i(1600, 1600)
 content_scale_mode = 1
 content_scale_aspect = 1
 content_scale_stretch = 1
-content_scale_factor = 3.0
+content_scale_factor = 2.0
 
 [node name="Canvas" type="CanvasLayer" parent="DebugWindow"]
 layer = 110
