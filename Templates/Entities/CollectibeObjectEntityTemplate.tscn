@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_iiovy"]
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="3_c4vjd"]
 
-[node name="InteractiveObjectEntityTemplate" type="Node2D" groups=["collectibles", "entities"]]
+[node name="CollectibeObjectEntityTemplate" type="Node2D" groups=["collectibles", "entities"]]
 script = ExtResource("1_63kff")
 metadata/_edit_group_ = true
 
