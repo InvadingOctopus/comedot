@@ -21,7 +21,7 @@ static var hasStartScript:		bool = false
 
 # NOTE: Classes containing a list of constants are named plural, so as to be more intuitive and not be confused with a more general type, i.e. "Actions" vs "Action".
 
-const frameworkTitle		:= &"Comedot"
+const frameworkTitle	:= &"Comedot"
 
 
 class Groups:
