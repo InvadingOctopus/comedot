@@ -308,7 +308,7 @@ func onComponentsTree_itemSelected() -> void:
 
 	# Clear the previous selection. These values must be reset in any case.
 
-	removeComponentRowButtons(selectedComponentRow) # Remove the buttons from any previous selection
+	if selectedComponentRow: removeComponentRowButtons(selectedComponentRow) # Remove the buttons from any previous selection
 
 	selectedComponentRow = null
 	selectedComponentCategory = null
