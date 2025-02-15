@@ -37,4 +37,4 @@ Screenshot 2:	https://i.imgur.com/j5f2xna.png Components Dock
 Screenshot 3:	https://i.imgur.com/7M0pH3v.png Components Tree Example
 Screenshot 4:	https://i.imgur.com/rIOpIAr.png Input Map
 Screenshot 5:	https://i.imgur.com/nWJXuiX.png Pause
-Screenshot 6:	https://i.imgur.com/jgAjmzY.png Charts
+Screenshot 6:	https://i.imgur.com/4ZuJGBj.png Charts
