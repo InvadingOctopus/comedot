@@ -22,21 +22,19 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 
 ## Examples 
 
-⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_  
+⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ [(imgur)][pew-pew-plants]  
 
 https://github.com/user-attachments/assets/bc76f0b2-62f7-4fd5-8d26-fef27b182e22
 
-⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead movement:
+⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead movement: [(imgur)][swapping-components]  
 
 https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
-📈 There's even kawaii charts for monitoring variables in real-time!
+⬆️ _These scenes are included in_ `/Templates/Examples/`
+
+📈 There's even kawaii charts for monitoring variables in real-time!  
 
 ![debug-charts]
-
-_(if the videos don't display, view on imgur):_ [1][trees-with-guns], [2][swapping-components]
-
-These scenes are included in the `/Templates/Examples/` folder.
 
 
 ## How To Use
@@ -49,7 +47,7 @@ These scenes are included in the `/Templates/Examples/` folder.
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
 	* The `/Templates/` folder contains scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* The `/Scripts/` folder contains code for simple non-Entity nodes.
-	* The `/UI/` folder contains common UI elements such as a stats HUD, special action buttons, lists for choosing upgrades etc.
+	* The `/UI/` folder contains customizable UI elements for health, ammo, actions, upgrades etc.
 
 ![Custom Dock Plugin][comedock]
 
@@ -66,20 +64,19 @@ These scenes are included in the `/Templates/Examples/` folder.
 _Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
 
 1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
-2. Add **Component** child nodes to the entity. A component is also a `Node/Area2D` etc. with a script that `extends` the `Component.gd` class.
-3. Modify component parameters in the Godot Editor's Inspector.
+2. Add **Component** child nodes to the entity. A component is also a `Node/Area2D` etc. with a script that `extends Component`
+3. Modify component parameters in the Editor Inspector sidebar.
 4. Save the entity + components tree as a standalone scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
 
 > [!TIP]
-> 📜 **Read [HowTo.md][howto] to see how to do common tasks or fix common issues.**
->
-> 💬 For more deets, ping Syntaks.io on Discord.
+> 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**
+
 
 ----
 
 [Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord]
 
-> 🤍 THANKS:  
+> 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
 > * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
@@ -104,7 +101,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 [logo]: /Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://i.imgur.com/7M0pH3v.png "🌳 Example Components Tree for a Player Entity"
-[trees-with-guns]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
+[pew-pew-plants]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
 [debug-charts]: https://i.imgur.com/4ZuJGBj.png "Debug Chart Windows"
 [comedock]: https://i.imgur.com/j5f2xna.png "Godot Dock Plugin"
