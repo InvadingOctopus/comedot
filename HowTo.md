@@ -110,13 +110,13 @@ When you need more game-specific functionality, you have the following options, 
 
 1. Go to Project Settings » Globals. Make sure the `TurnBasedCoordinator` Autoload is enabled.
 
-2. In your scene, add a `TurnBasedEntity`.
+2. In your scene, add a `TurnBasedEntity`
 
-3. Create new components which extend `TurnBasedComponents`.
+3. Create new components which `extend TurnBasedComponent`
 
 4. Connect player input or a UI control such as a "Next Turn" button to the `TurnBasedCoordinator.startTurnProcess()` function.
 
-5. Each turn, all turn-based objects cycle through the following functions: `processTurnBegin()` → `processTurnUpdate()` → `processTurnEnd()`
+5. Each turn, all turn-based objects cycle through the following states/phases: `processTurnBegin()` → `processTurnUpdate()` → `processTurnEnd()`
 
 	Your turn-based components must implement one or more of those methods and may connect to each other's signals to build your gameplay.
 
