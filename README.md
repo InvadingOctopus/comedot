@@ -66,7 +66,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
 2. Add **Component** child nodes to the entity. A component is also a `Node/Area2D` etc. with a script that `extends Component`
 3. Modify component parameters in the Editor Inspector sidebar.
-4. Save the entity + components tree as a standalone scene file to organize it separately from the main "world" scene and quickly create copies of it anywhere.
+4. Save the entity+components subtree as a standalone scene file to organize it separately from the main "world scene" and quickly create copies of it anywhere.
 
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**
