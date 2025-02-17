@@ -74,7 +74,7 @@ _Use the included custom dock plugin (the Comedock :) or perform these steps man
 
 ----
 
-[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord]
+[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • <a rel="me" href="https://mastodon.gamedev.place/@Syntaks">Mastodon</a>
 
 > 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
