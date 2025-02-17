@@ -16,7 +16,6 @@ Requires Godot 4.4 latest build!
 
 This is a work in constant progress! For more deets & the latest version, lookieloo the Develop branch: https://github.com/InvadingOctopus/comedot/tree/develop
 
-THANKS:
 Tilesets: https://kenney.nl/assets/1-bit-pack  
 Font: Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
