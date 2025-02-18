@@ -53,7 +53,7 @@ var damageComponentsInContact: Array[DamageComponent]
 
 ## May be a subclass such as [ShieldedHealthComponent].
 @onready var healthComponent:  HealthComponent  = parentEntity.findFirstComponentSubclass(HealthComponent)
-@onready var factionComponent: FactionComponent = coComponents.FactionComponent # TBD: Static or dynamic?
+@onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Avoid crash if missing
 #endregion
 
 

@@ -16,7 +16,7 @@ var parentEntity: Entity
 
 ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
 ## Access via the shortcut of `coComponents.ComponentClassName` or,
-## TIP: Use `coComponents.get(&"ComponentClassName")` to avoid a crash in case of missing components and return `null`.
+## TIP: Use `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing, and return `null`
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
