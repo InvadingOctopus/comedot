@@ -20,6 +20,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 @export var shouldShowDebugInfo: bool = false
 
 # PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
+# Do not initialize these properties until they are needed, or it may slow performance when lots of entities are being created.
 
 ## The primary visual representation of this [Entity] for [Component]s to manipulate.
 ## If `null`, the [Entity] node itself will be used if it's an [AnimatedSprite2D] or [Sprite2D],
