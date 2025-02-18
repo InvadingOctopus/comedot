@@ -4,6 +4,5 @@
 
 [node name="PlayerSpawnPosition" type="Marker2D"]
 editor_description = "The marker for the Compass to point to."
-position = Vector2(0, -64)
 gizmo_extents = 50.0
 script = ExtResource("1_jc78c")
