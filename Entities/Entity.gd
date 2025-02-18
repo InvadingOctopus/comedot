@@ -19,17 +19,25 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
 @export var shouldShowDebugInfo: bool = false
 
-## The primary [Area2D] represented by this [Entity] for child [Component]s to monitor or manipulate.
+# PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
+
+## The primary visual representation of this [Entity] for [Component]s to manipulate.
+## If `null`, the [Entity] node itself will be used if it's an [AnimatedSprite2D] or [Sprite2D],
+## otherwise it will be the first matching child node.
+## Call [method getSprite] to set.
+@export var sprite: Node2D
+
+## The primary [Area2D] represented by this [Entity] for [Component]s to monitor or manipulate.
 ## If `null`, the [Entity] node itself will be used if it's an [Area2D],
 ## otherwise it will be the first matching child node.
 ## Call [method getArea] to set.
-@export var area: Area2D # Not using `get` to avoid extra calls on each access etc.
+@export var area: Area2D
 
-## The primary [CharacterBody2D] represented by this [Entity] for child [Component]s to monitor or manipulate.
+## The primary [CharacterBody2D] represented by this [Entity] for [Component]s to monitor or manipulate.
 ## If `null`, the [Entity] node itself will be used if it's a [CharacterBody2D],
 ## otherwise it will be the first matching child node.
 ## Call [method getBody] to set.
-@export var body: CharacterBody2D # Not using `get` to avoid extra calls on each access etc.
+@export var body: CharacterBody2D
 
 #endregion
 
@@ -356,6 +364,23 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO
 	printLog("removeChildrenOfType(" + str(type) + "): " + str(childrenRemoved))
 	return childrenRemoved
 
+#endregion
+
+
+#region Lazy Property Initialization
+
+## Returns the [member sprite] property or searches for an [AnimatedSprite2D] or [Sprite2D].
+## The sprite may be this [Entity] node itself, or the first matching child node.
+func getSprite() -> Node2D:
+	if self.sprite == null:
+		self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
+		
+		if self.sprite == self: printLog("getSprite(): self")
+		else: printLog(str("getSprite(): ", sprite))
+
+	if self.sprite == null: printWarning("getSprite(): No AnimatedSprite2D or Sprite2D found!")
+	return self.sprite
+
 
 ## Returns the [member area] property or searches for an [Area2D].
 ## The area may be this [Entity] node itself, or the first matching child node.
@@ -373,6 +398,7 @@ func getArea() -> Area2D:
 			self.area = findFirstChildOfType(Area2D, false) # not includeEntity because already checked
 			printLog(str("getArea(): ", area))
 
+	if self.area == null: printWarning("getArea(): No Area2D found!")
 	return self.area
 
 
@@ -392,8 +418,8 @@ func getBody() -> CharacterBody2D:
 			self.body = findFirstChildOfType(CharacterBody2D, false) # not includeEntity because already checked
 			printLog(str("getBody(): ", body))
 
+	if self.body == null: printWarning("getBody(): No CharacterBody2D found!")
 	return self.body
-
 
 #endregion
 
