@@ -19,17 +19,17 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
 @export var shouldShowDebugInfo: bool = false
 
-## The primary [Area2D] represented by this [Entity] for child [Component]s to manipulate.
-## If left `null`, the [Entity] [Node] itself may be used if it's a [Area2D],
+## The primary [Area2D] represented by this [Entity] for child [Component]s to monitor or manipulate.
+## If `null`, the [Entity] node itself will be used if it's an [Area2D],
 ## otherwise it will be the first matching child node.
-## Call [method getArea] to automatically set this value.
-@export var area: Area2D
+## Call [method getArea] to set.
+@export var area: Area2D # Not using `get` to avoid extra calls on each access etc.
 
-## The primary [CharacterBody2D] represented by this [Entity] for child [Component]s to manipulate.
-## If left `null`, the [Entity] [Node] itself may be used if it's a [CharacterBody2D],
+## The primary [CharacterBody2D] represented by this [Entity] for child [Component]s to monitor or manipulate.
+## If `null`, the [Entity] node itself will be used if it's a [CharacterBody2D],
 ## otherwise it will be the first matching child node.
-## Call [method getBody] to automatically set this value.
-@export var body: CharacterBody2D
+## Call [method getBody] to set.
+@export var body: CharacterBody2D # Not using `get` to avoid extra calls on each access etc.
 
 #endregion
 
@@ -314,12 +314,12 @@ func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 
 
 ## Returns the first child of [param parentNode] which matches ANY of the specified [param types] (searched in the array order).
-## If [param includeEntity] is `true` (default) then this ENTITY ITSELF is returned if none of the requested types are found.
+## If [param includeEntity] is `true` (default) then this ENTITY ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
 ## PERFORMANCE: Should be the same as multiple calls to [method ]indFirstChildOfType] in order of the desired types.
-func findFirstChildOfAnyTypes(types: Array[Variant], includeEntity: bool = true) -> Node:
+func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
-	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, includeEntity)
+	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, returnEntityIfNoMatches)
 	if shouldShowDebugInfo: printDebug(str("findFirstChildOfAnyTypes(", types, "): ", result))
 	return result
 
@@ -358,37 +358,39 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO
 
 
 ## Returns the [member area] property or searches for an [Area2D].
-## The area may be this [Entity] [Node] itself, or the first matching child node.
+## The area may be this [Entity] node itself, or the first matching child node.
 func getArea() -> Area2D:
 	if self.area == null:
 
 		# First, is the entity itself an [Area2D]?
+		# PERFORMANCE: Handle this here before calling Tools.gd
 		var selfAsArea: Area2D = get_node(".") as Area2D # HACK: TODO: Find better way to cast
 
 		if selfAsArea:
 			self.area = selfAsArea
 			printLog("getArea(): self")
 		else:
-			self.area = findFirstChildOfType(Area2D)
-			printLog("getArea(): " + str(area))
+			self.area = findFirstChildOfType(Area2D, false) # not includeEntity because already checked
+			printLog(str("getArea(): ", area))
 
 	return self.area
 
 
 ## Returns the [member body] property or searches for a [CharacterBody2D].
-## The body may be this [Entity] [Node] itself, or the first matching child node.
+## The body may be this [Entity] node itself, or the first matching child node.
 func getBody() -> CharacterBody2D:
 	if self.body == null:
-
+		
 		# First, is the entity itself a [CharacterBody2D]?
+		# PERFORMANCE: Handle this here before calling Tools.gd
 		var selfAsBody: CharacterBody2D = get_node(".") as CharacterBody2D # HACK: TODO: Find better way to cast
 
 		if selfAsBody:
 			self.body = selfAsBody
 			printLog("getBody(): self")
 		else:
-			self.body = findFirstChildOfType(CharacterBody2D)
-			printLog("getBody(): " + str(body))
+			self.body = findFirstChildOfType(CharacterBody2D, false) # not includeEntity because already checked
+			printLog(str("getBody(): ", body))
 
 	return self.body
 
