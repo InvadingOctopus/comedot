@@ -26,10 +26,10 @@ var player: PlayerEntity:
 
 func _ready() -> void:
 	if player: setPlayerPosition()
-	else: GameState.playerReady.connect(self.gameState_playerReady) # If there is no player yet, wait for one to be ready
+	else: GameState.playerReady.connect(self.onGameState_playerReady) # If there is no player yet, wait for one to be ready
 	
 
-func gameState_playerReady(newPlayer: Entity) -> void:
+func onGameState_playerReady(newPlayer: Entity) -> void:
 	# Make sure that the player that just became ready is the one that we were asked to position
 	if newPlayer == self.player: self.setPlayerPosition()
 
