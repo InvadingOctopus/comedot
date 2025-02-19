@@ -1,10 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dta00m01qg728"]
+[gd_scene load_steps=3 format=3 uid="uid://qskvvxdkwgod"]
 
-[ext_resource type="Script" uid="uid://bunosf1onumch" path="res://Components/Combat/DamageRepeatingComponent.gd" id="1_xuf2i"]
+[ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="1_xuf2i"]
+[ext_resource type="Script" uid="uid://bunosf1onumch" path="res://Components/Combat/DamageRepeatingComponent.gd" id="2_l10pg"]
 
-[node name="DamageRepeatingComponent" type="Node" groups=["components"]]
-script = ExtResource("1_xuf2i")
+[node name="DamageRepeatingComponent" instance=ExtResource("1_xuf2i")]
+script = ExtResource("2_l10pg")
 
-[node name="RepetitionTimer" type="Timer" parent="."]
+[node name="RepetitionTimer" type="Timer" parent="." index="2"]
 
 [connection signal="timeout" from="RepetitionTimer" to="." method="onRepetitionTimer_timeout"]
