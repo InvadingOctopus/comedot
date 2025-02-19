@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://bfxsrq5vvp0de"]
+
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="1_mkdep"]
+[ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_02hnx"]
+[ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="3_ywvyn"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="4_02hnx"]
+[ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="5_1id7j"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="6_qdfo0"]
+[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="7_ywvyn"]
+
+[sub_resource type="Resource" id="Resource_cafj2"]
+resource_local_to_scene = true
+resource_name = "health"
+script = ExtResource("4_02hnx")
+min = 0
+max = 10
+value = 10
+logChanges = false
+name = &"health"
+displayName = "Health"
+description = ""
+
+[node name="PlayerEntityTemplate-OverheadCombat" instance=ExtResource("1_mkdep")]
+
+[node name="FactionComponent" parent="." index="6" instance=ExtResource("2_02hnx")]
+factions = 2
+
+[node name="HealthComponent" parent="." index="7" instance=ExtResource("3_ywvyn")]
+health = SubResource("Resource_cafj2")
+
+[node name="DamageReceivingComponent" parent="." index="8" instance=ExtResource("5_1id7j")]
+collision_layer = 4
+collision_mask = 8
+
+[node name="GunComponent" parent="." index="9" instance=ExtResource("6_qdfo0")]
+
+[node name="MouseRotationComponent" parent="." index="10" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("7_ywvyn")]
+nodeToRotate = NodePath("../GunComponent/Pivot/GunSprite")
+
+[editable path="GunComponent"]
