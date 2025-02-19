@@ -191,6 +191,7 @@ func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: 
 func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> bool:
 	# TODO: Signals
 	# TODO: Removal
+	# TBD:  A better way to handle damage-over-time?
 
 	if not checkFactions(damageTimerComponent.attackerFactions, damageTimerComponent.friendlyFire):
 		return false

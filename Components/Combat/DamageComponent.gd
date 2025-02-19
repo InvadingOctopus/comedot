@@ -19,7 +19,8 @@ extends Component
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
 @export_range(0, 1000) var damagePerSecond: float = 0 # NOTE: Should this be an integer or float?
 
-## Optional. A [DamageTimerComponent] to apply to the parent [Entity] of the target [DamageReceivingComponent].
+## Optional. A [DamageTimerComponent] to apply to the "victim", the parent [Entity] of the target [DamageReceivingComponent] to cause repeated damage over time.
+## @experimental
 @export var damageTimerComponent: DamageTimerComponent
 
 ## Should bullets from the same faction hurt?
@@ -160,6 +161,7 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 	damageReceivingComponent.handleFractionalDamage(self, damageForThisFrame, factionComponent.factions, self.friendlyFire)
 
 
+## @experimental
 func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printDebug(str("applyDamageTimerComponent() damageReceivingComponent: ", damageReceivingComponent))
@@ -167,6 +169,7 @@ func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponen
 	# Create a new copy of the provided component.
 
 	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()
+	newDamageTimerComponent.damageReceivingComponent  = damageReceivingComponent
 	newDamageTimerComponent.attackerFactions = self.factionComponent.factions
 	newDamageTimerComponent.friendlyFire 	 = self.friendlyFire
 
