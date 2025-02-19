@@ -71,6 +71,7 @@ propertiesToWatch = Array[NodePath]([NodePath("../OverheadPhysicsComponent:param
 [node name="GunComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("12_vmhuw")]
 visible = false
 ammo = ExtResource("10_fcijy")
+ammoCost = 1
 isEnabled = false
 cooldown = 1.01
 
@@ -109,7 +110,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Label1" type="Label" parent="CanvasLayer/VBoxContainer"]
+[node name="BuyLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
@@ -117,6 +118,7 @@ text = "___ Buy"
 
 [node name="UpgradesList" type="VBoxContainer" parent="CanvasLayer/VBoxContainer" node_paths=PackedStringArray("targetEntity")]
 layout_mode = 2
+size_flags_horizontal = 0
 script = ExtResource("16_xr2h1")
 upgrades = Array[ExtResource("17_mfdhu")]([ExtResource("18_0oqoc"), ExtResource("21_ykf3j"), ExtResource("22_ucsfw"), ExtResource("23_2aq68")])
 targetEntity = NodePath("../../../PlayerEntityTemplate-OverheadBasic")
@@ -129,7 +131,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer"]
+[node name="InstalledLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
