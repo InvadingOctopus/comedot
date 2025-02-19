@@ -3,11 +3,11 @@
 * 🏠 [Organize Your Project](#-organize-your-project)
 * 👀 [See Usage Examples](#-see-usage-examples)
 * 👤 [Make a Player Entity](#-make-a-player-entity)
-	* 🕹️ [Add Player Control and Movement](#%EF%B8%8F-add-player-control)
+* 🕹️ [Add Player Control and Movement](#%EF%B8%8F-add-player-control)
 * 🧩 [Add Components to Entities](#-add-components-to-entities)
 * ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
 * ⚡️ [Add New Functionality](#%EF%B8%8F-add-game-specific-functionality)
-	* 🧩 [Create New Components](#-create-new-components)
+* 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
 * 🔧 [Fix Common Problems](#-fix-common-problems)
 
