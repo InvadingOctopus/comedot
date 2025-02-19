@@ -14,14 +14,16 @@ enum Factions {
 	players = 2,
 	playerAllies = 3,
 	enemies = 4,
-}
+	hazards = 5
+	}
 
 const factionStrings: PackedStringArray = [
 	"neutral", 
 	"players", 
 	"playerAllies", 
 	"enemies",
-]
+	"hazards"
+	]
 
 #endregion
 
@@ -32,7 +34,7 @@ const factionStrings: PackedStringArray = [
 ## Entities that share ANY faction are considered implicit allies.
 ## An Entity belonging to [player, playerAllies] would be considered an ally of an Entity belonging to [playerAllies, enemies].
 ## Entities that have NO matching factions are considered implicit opponents.
-@export_flags(factionStrings[0], factionStrings[1], factionStrings[2], factionStrings[3]) var factions: int = Factions.neutral # TBD: Should the default be 0 or 1?
+@export_flags(factionStrings[0], factionStrings[1], factionStrings[2], factionStrings[3], factionStrings[4]) var factions: int = Factions.neutral # TBD: Should the default be 0 or 1?
 
 # TBD: Add `explicitAllies` and `explicitOpponents`?
 
