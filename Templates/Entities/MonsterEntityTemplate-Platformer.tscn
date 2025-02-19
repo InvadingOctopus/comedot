@@ -57,12 +57,14 @@ shouldShowRemainingHealth = true
 factions = 8
 
 [node name="DamageReceivingComponent" parent="." instance=ExtResource("6_p3b0u")]
+collision_layer = 1032
+collision_mask = 1060
 
 [node name="KnockbackOnHitComponent" parent="." instance=ExtResource("7_qjlrm")]
 
 [node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
-collision_layer = 8
-collision_mask = 4
+collision_layer = 1032
+collision_mask = 1028
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 position = Vector2(2.08165e-12, 2.08165e-12)
