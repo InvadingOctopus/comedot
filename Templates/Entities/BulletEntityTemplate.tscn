@@ -52,7 +52,5 @@ scale = Vector2(0.25, 0.25)
 
 [node name="RemovalOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
 
-[connection signal="didCollideWithReceiver" from="DamageComponent" to="." method="onDamageComponent_didCollideWithReceiver"]
-
 [editable path="DamageComponent"]
 [editable path="OffscreenRemovalComponent"]

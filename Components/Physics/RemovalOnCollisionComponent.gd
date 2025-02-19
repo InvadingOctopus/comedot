@@ -21,8 +21,8 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	area.area_entered.connect(self.onArea_areaEntered)
-	area.body_entered.connect(self.onArea_bodyEntered)
+	Tools.reconnectSignal(area.area_entered, onArea_areaEntered)
+	Tools.reconnectSignal(area.body_entered, onArea_bodyEntered)
 
 
 func onArea_areaEntered(areaEntered: Area2D) -> void:
