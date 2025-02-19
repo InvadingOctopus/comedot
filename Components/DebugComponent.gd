@@ -8,7 +8,13 @@ extends Component
 
 
 #region Parameters
+
+## A list of [NodePaths] of the nodes & their properties to create [Chart] windows for.
+## Example: `../CharacterBodyComponent:body:velocity:x` (use `/` for nodes and `:` for properties)
 @export_node_path var propertiesToChart: Array[NodePath]
+
+## A list of [NodePaths] of the nodes & their properties to show [Label]s for.
+## Example: `../HealthComponent:health:value` (use `/` for nodes and `:` for properties)
 @export_node_path var propertiesToWatch: Array[NodePath]
 
 @export_range(100, 200, 5) var chartVerticalHeight: float = 100
@@ -28,7 +34,7 @@ var propertiesToWatchAbsolutePaths: Array[NodePath]
 func _ready() -> void:
 	label.visible = isEnabled
 	if not isEnabled: return
-	
+
 	propertiesToChartAbsolutePaths = convertPathsToAbsolute(propertiesToChart)
 	propertiesToWatchAbsolutePaths = convertPathsToAbsolute(propertiesToWatch)
 	createCharts()

@@ -12,7 +12,7 @@ extends Resource
 # NOTE: Does not `extend StatDependentResourceBase` because instead of a single `cost`, there is an Array of `costs`, different for each `level`.
 
 # TODO: Create a base superclass for general purchasable items.
-# TBD:  Create an emtpy subclass called "Downgrade" for naming consistency? :P
+# TBD:  Create an empty subclass called "Downgrade" for naming consistency? :P
 # TBD:  Should `acquire` be renamed `install`?
 
 
