@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4cjqm3fuwkub"]
+
+[ext_resource type="Script" uid="uid://d17tk3ljuxs51" path="res://Components/Combat/DamageOverTimeComponent.gd" id="1_q1nbi"]
+
+[node name="DamageOverTimeComponent" type="Node" groups=["components"]]
+script = ExtResource("1_q1nbi")
+
+[node name="DamageTimer" type="Timer" parent="."]
+
+[node name="RemovalTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="timeout" from="DamageTimer" to="." method="onDamageTimer_timeout"]
+[connection signal="timeout" from="RemovalTimer" to="." method="onRemovalTimer_timeout"]

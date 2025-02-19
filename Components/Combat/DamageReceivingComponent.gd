@@ -1,13 +1,15 @@
-## Receives damage from a [DamageComponent] and passes it on to the parent entity's [HealthComponent].
+## Receives damage when this component's [Area2D] "hurtbox" collides with an attacker's [DamageComponent] "hitbox". The damage is passed to the parent entity's [HealthComponent].
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
 ## If a [FactionComponent] is missing then damage is always dealt.
-## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D]
+## ALERT: Remember to set the proper [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] or the combat system may behave unexpectedly!
+## The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
+## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D] representing the "hurtbox". Also a [HealthComponent] or subclass.
 
 class_name DamageReceivingComponent
 extends Component
 
 # CHECK: Dynamically find co-components?
-# NOTE: Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
+# NOTE:  Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
 
 
 #region Parameters
@@ -186,17 +188,5 @@ func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: 
 		# CHECK: Should this signal be emitted regardless of health?
 		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
 
-
-## @experimental
-func handleDamageTimerComponent(damageTimerComponent: DamageTimerComponent) -> bool:
-	# TODO: Signals
-	# TODO: Removal
-	# TBD:  A better way to handle damage-over-time?
-
-	if not checkFactions(damageTimerComponent.attackerFactions, damageTimerComponent.friendlyFire):
-		return false
-
-	self.parentEntity.add_child(damageTimerComponent)
-	return true
 
 #endregion

@@ -1,7 +1,11 @@
-## Causes damage to a [DamageReceivingComponent] which then passes it on to the victim entity's [HealthComponent].
+## Causes damage to when this component's [Area2D] "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox", which then passes it on to the victim entity's [HealthComponent].
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
 ## If a [FactionComponent] is missing then damage is always dealt.
-## Requirements: This component should be an [Area2D] node.
+## ALERT: Remember to set the proper [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] or the combat system may behave unexpectedly!
+## The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
+## TIP: For hazards such as pools of acid or lava that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent].
+## TIP: For attacks such as poison arrows etc. that cause "lingering" damage over time, add a [DamageOverTimeComponent] to the victim entity.
+## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D] representing the "hitbox".
 
 class_name DamageComponent
 extends Component
@@ -18,10 +22,6 @@ extends Component
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
 @export_range(0, 1000) var damagePerSecond: float = 0 # NOTE: Should this be an integer or float?
-
-## Optional. A [DamageTimerComponent] to apply to the "victim", the parent [Entity] of the target [DamageReceivingComponent] to cause repeated damage over time.
-## @experimental
-@export var damageTimerComponent: DamageTimerComponent
 
 ## Should bullets from the same faction hurt?
 @export var friendlyFire: bool = false
@@ -59,7 +59,8 @@ var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
 
 
 #region Signals
-signal didCollideWithReceiver(damageReceivingComponent: DamageReceivingComponent)
+signal didCollideReceiver(damageReceivingComponent: DamageReceivingComponent)
+signal didLeaveReceiver(damageReceivingComponent:   DamageReceivingComponent)
 #endregion
 
 
@@ -74,11 +75,8 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:
 		damageReceivingComponentsInContact.append(damageReceivingComponent)
-		didCollideWithReceiver.emit(damageReceivingComponent)
+		didCollideReceiver.emit(damageReceivingComponent)
 		self.causeCollisionDamage(damageReceivingComponent)
-
-		if damageTimerComponent:
-			applyDamageTimerComponent(damageReceivingComponent)
 
 		if removeEntityOnCollisionWithDamageReceiver:
 			printDebug("removeEntityOnCollisionWithDamageReceiver")
@@ -91,7 +89,9 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
-	if  damageReceivingComponent: damageReceivingComponentsInContact.erase(damageReceivingComponent)
+	if  damageReceivingComponent:
+		damageReceivingComponentsInContact.erase(damageReceivingComponent)
+		didLeaveReceiver.emit(damageReceivingComponent)
 
 
 ## Casts an [Area2D] as a [DamageReceivingComponent].
@@ -109,8 +109,33 @@ func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingCompon
 
 	return damageReceivingComponent
 
+
+## Calls [method DamageReceivingComponent.processCollision]
+func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
+	if not isEnabled: return
+
+	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
+
+	# The signal is emitted in [onAreaEntered]
+
+	# Do we belong to a faction?
+	# will be checked in the `factionComponent` property getter
+
+	# Even if we have no faction, damage must be dealt.
+	printLog("causeCollisionDamage: " + str(damageReceivingComponent))
+	damageReceivingComponent.processCollision(self, factionComponent)
+
+
+## Calls [method DamageReceivingComponent.processCollision] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact]
+## Used by [DamageRepeatingComponent]
+func causeDamageToAllReceivers() -> void:
+	for damageReceivingComponent in self.damageReceivingComponentsInContact:
+		damageReceivingComponent.processCollision(self, factionComponent)
+
 #endregion
 
+
+#region Per-Frame Damage
 
 func _physics_process(delta: float) -> void:
 	if not isEnabled or is_zero_approx(damagePerSecond): return
@@ -125,21 +150,6 @@ func _physics_process(delta: float) -> void:
 	for damageReceivingComponent in damageReceivingComponentsInContact:
 		# DEBUG: printLog("causeFrameDamage: " + str(damageReceivingComponent) + " | damageForThisFrame: " + str(damageForThisFrame))
 		causeFrameDamage(damageReceivingComponent, damageForThisFrame)
-
-
-func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
-	if not isEnabled: return
-
-	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
-
-	# The signal is emitted in [onAreaEntered]
-
-	# Do we belong to a faction?
-	# will be checked in the `factionComponent` property getter
-
-	# Even if we have no faction, damage must be dealt.
-	printLog("causeCollisionDamage: " + str(damageReceivingComponent))
-	damageReceivingComponent.processCollision(self, factionComponent)
 
 
 func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
@@ -160,19 +170,4 @@ func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damage
 	# Let's pretend it's because of performance :')
 	damageReceivingComponent.handleFractionalDamage(self, damageForThisFrame, factionComponent.factions, self.friendlyFire)
 
-
-## @experimental
-func applyDamageTimerComponent(damageReceivingComponent: DamageReceivingComponent) -> DamageTimerComponent:
-	if not isEnabled: return
-	if shouldShowDebugInfo: printDebug(str("applyDamageTimerComponent() damageReceivingComponent: ", damageReceivingComponent))
-
-	# Create a new copy of the provided component.
-
-	var newDamageTimerComponent: DamageTimerComponent = self.damageTimerComponent.duplicate()
-	newDamageTimerComponent.damageReceivingComponent  = damageReceivingComponent
-	newDamageTimerComponent.attackerFactions = self.factionComponent.factions
-	newDamageTimerComponent.friendlyFire 	 = self.friendlyFire
-
-	damageReceivingComponent.handleDamageTimerComponent(newDamageTimerComponent)
-
-	return newDamageTimerComponent
+#endregion
