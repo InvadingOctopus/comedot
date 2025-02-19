@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://l2rxluvwkph8" path="res://UI/Views/UpgradeChoiceUI.gd" id="1_5bd1h"]
 
-[node name="UpgradeChoiceUI" type="GridContainer"]
+[node name="UpgradeChoiceUI" type="HBoxContainer"]
 editor_description = "A list item for an UpgradesList"
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,13 +11,25 @@ offset_right = -183.0
 offset_bottom = -156.0
 grow_horizontal = 2
 grow_vertical = 2
-columns = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
 script = ExtResource("1_5bd1h")
 shouldShowDebugInfo = null
+
+[node name="UpgradeButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+mouse_default_cursor_shape = 2
+text = "UPGRADE"
+alignment = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_filter = 2
 
 [node name="CostStatUI" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
@@ -36,13 +48,5 @@ size_flags_horizontal = 0
 text = "000"
 horizontal_alignment = 2
 vertical_alignment = 1
-
-[node name="UpgradeButton" type="Button" parent="."]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(24, 24)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_default_cursor_shape = 2
-text = "UPGRADE"
 
 [connection signal="pressed" from="UpgradeButton" to="." method="onUpgradeButton_pressed"]
