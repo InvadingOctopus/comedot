@@ -3,7 +3,7 @@
 ## NOTE: To use, connect the [signal Area2D.area_entered] or [signal Area2D.body_entered] signal of an [Area2D] to the [method onAreaOrBodyEntered] method of this component.
 
 class_name InjectorComponent
-extends Node
+extends Component
 
 # DESIGN: The component's scene is a Node2D so any visual children can move along with the "injector entity"
 
@@ -32,6 +32,7 @@ var isInjecting: bool = false ## Set to `true` during [method inject] so that su
 
 
 #region Signals
+signal willInject(targetParent: Node)
 signal didInject(node: Node, newParent: Node) ## Emitted for each child node that is transferred to a new parent during [method inject]
 #endregion
 
@@ -49,11 +50,15 @@ func _ready() -> void:
 ## Moves (reparents) all the child [Node]s of this Component to the [param newParentEntity], and returns an array of all the transferred nodes.
 func inject(newParentEntity: Entity, keepGlobalTransform: bool = self.shouldKeepGlobalTransform) -> Array[Node]:
 	if not isEnabled or isInjecting or self.get_child_count() < 1: return []
+	
 	isInjecting = true # Ignore multiple calls while isInjecting
+	willInject.emit(newParentEntity)
 
 	var childrenTransferred: Array[Node]
 	
 	for childToTransfer in self.get_children():
+		if shouldShowDebugInfo: printDebug(str("inject(): ", childToTransfer, " → ", newParentEntity.logName))
+
 		childToTransfer.reparent(newParentEntity, keepGlobalTransform)
 		childToTransfer.owner = newParentEntity # For persistence etc. otherwise reparent() may try to keep the previous `owner`
 		childrenTransferred.append(childToTransfer)
@@ -75,6 +80,7 @@ func inject(newParentEntity: Entity, keepGlobalTransform: bool = self.shouldKeep
 ## NOTE: This method is NOT connected to any [Area2D] or other signals by default.
 ## TIP:  Connect the [signal Area2D.area_entered] or [signal Area2D.body_entered] signal of an [Area2D] to this method.
 func onAreaOrBodyEntered(areaOrBody: Node2D) -> void:
+	if shouldShowDebugInfo: printDebug(str("onAreaOrBodyEntered(): ", areaOrBody, ", isEnabled: ", isEnabled, ", isInjecting: ", isInjecting, ", children: ", self.get_child_count()))
 	if not isEnabled or isInjecting or self.get_child_count() < 1: return # Faster checks first
 	
 	var targetEntity: Entity
