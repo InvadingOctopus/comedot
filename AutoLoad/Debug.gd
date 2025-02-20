@@ -276,7 +276,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 ## Prints a list of variables in a highlighted color.
 ## TIP: Helpful for temporary debugging of bugs currently under attention.
 ## Affected by [member shouldPrintDebugLogs].
-func printVariables(values: Array[Variant], separator: String = "\t", color: String = "orange") -> void:
+func printVariables(values: Array[Variant], separator: String = "\t ", color: String = "orange") -> void:
 	if shouldPrintDebugLogs:
 		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " ", getLogCaller(), " \t[color=", color, "][b]", separator.join(values)))
 
