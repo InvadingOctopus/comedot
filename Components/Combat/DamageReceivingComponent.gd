@@ -27,6 +27,9 @@ extends Component
 
 #region Signals
 
+## Emitted when the factions are opposing or there is friendly fire, EVEN if there is no [HealthComponent].
+## NOTE: The [param amount] may NOT be the ACTUAL amount of "health" deducted, which depends on the implementation of [HealthComponent], if there are any healing effects or "shields" etc.
+## TIP:  To monitor actual changes in entity's "health", connect to [HealthComponent] signals.
 signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int)
 
 ## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
@@ -105,15 +108,16 @@ func getDamageComponent(componentArea: Area2D) -> DamageComponent:
 
 
 ## This function may be called by a colliding [DamageComponent].
-func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> void:
-	if not isEnabled: return
+## Returns `true` if there are opposing factions or friendly fire, or no [FactionComponent] (which means damage is always applied).
+func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> bool:
+	if not isEnabled: return false
 	if shouldShowDebugInfo: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
 	# Not creating an "attackerFactions" or whatever variable to improve performance, maybe?
 	if attackerFactionComponent:
-		self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
+		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else: # If the attacker has no factions, damage must be dealt to everyone.
 		if shouldShowDebugInfo: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
-		self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
+		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
 
 #endregion
 
@@ -138,18 +142,22 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 
 #region Damage
 
-## NOTE: [param damageComponent] may be `null` in case the caller is a [DamageTimerComponent]
-func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
-	if not isEnabled or not checkFactions(attackerFactions, friendlyFire):
-		return
+## Passes the [param damageAmount] to a [HealthComponent] if the damage is from an opposing faction or [param friendlyFire].
+## Returns `true` if there are opposing factions or friendly fire, or no [param attackerFactions] (which means damage is always applied).
+## NOTE: [param damageComponent] may be `null` in case the caller is a different component.
+func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
+	if not isEnabled or not checkFactions(attackerFactions, friendlyFire): return false
 
 	if shouldShowDebugInfo: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
 
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
-
-	# CHECK: Should this signal be emitted regardless of health?
+	
+	# DESIGN: This signal should be emitted regardless of actual health deducted, because this signal is to acknowledge that we received an attempt to cause damage.
+	# TIP: For changes to health, monitor [HealthComponent]
 	didReceiveDamage.emit(damageComponent, damageAmount, attackerFactions)
+
+	return true # There were opposing (or no) factions or friendly fire.
 
 
 ## Converts float damage values to a single integer damage value.

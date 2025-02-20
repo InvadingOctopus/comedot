@@ -165,19 +165,21 @@ func useAmmo() -> bool:
 	return true
 
 
-## Decreases the [member ammo] [Stat] and creates a new [member bulletEntity] [Entity].
+## Decreases the [member ammo] [Stat] and forges a new [member bulletEntity] [Entity].
 func createNewBullet() -> Entity:
 	# First, do we have enough ammo?
 	if not useAmmo(): return null
 
 	# Start forging a new bullet.
 
-	# var bulletResource := load(bulletEntity.resource_path) # TBD
 	var newBullet: Entity = bulletEntity.instantiate() as Entity
 
 	if not newBullet:
-		printError("Cannot instantiate a new bullet: " + str(bulletEntity.resource_path))
+		printError("Cannot instantiate a new bullet: " + bulletEntity.resource_path)
 		return null
+
+	# Prepare the properties
+	# CHECK: PERFORMANCE: Are we checking and setting too many properties here?
 
 	newBullet.global_position	= bulletEmitter.global_position + self.bulletPositionOffset # CHECK: Should the offset be applied separately to `newBullet.position`?
 	newBullet.global_rotation	= bulletEmitter.global_rotation
@@ -196,10 +198,14 @@ func createNewBullet() -> Entity:
 			# TODO: CHECK: BUG: FIXME: This does not seem to be the correct way: Shooting while moving backwards makes bullets faster.
 			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.velocity.length()
 
-	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
-	# TBD: DESIGN: PERFORMANCE: Should our FactionComponent be copied if the bullet is missing one, or will that reduce performance? Maybe it's more intuitive if factionless bullets damage everyone.
-
+	# Who Shot Entity?
 	# Use `get()` to avoid crash if `null`
+
+	var bulletDamageComponent: DamageComponent = newBullet.components.get(&"DamageComponent")
+	if bulletDamageComponent:  bulletDamageComponent.initiatorEntity = self.parentEntity
+
+	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
+	
 	var gunFactionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
 	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
 

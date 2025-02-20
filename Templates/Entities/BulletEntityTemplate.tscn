@@ -34,7 +34,7 @@ editor_description = "Factions will be filled in by a GunComponent."
 factions = 0
 
 [node name="DamageComponent" parent="." instance=ExtResource("5_qww6u")]
-removeEntityOnCollisionWithDamageReceiver = true
+removeEntityOnApplyingDamage = true
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 shape = SubResource("RectangleShape2D_u74jj")
@@ -45,12 +45,12 @@ shouldApplyAcceleration = false
 shouldDeleteParentAtMaximumDistance = true
 maximumDistance = 500.0
 
+[node name="RemovalOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
+
 [node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_ogryl")]
 
 [node name="OnScreenNotifier" parent="OffscreenRemovalComponent" index="0"]
 scale = Vector2(0.25, 0.25)
-
-[node name="RemovalOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
 
 [editable path="DamageComponent"]
 [editable path="OffscreenRemovalComponent"]

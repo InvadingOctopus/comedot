@@ -32,8 +32,8 @@ health = SubResource("Resource_cafj2")
 [node name="HealthVisualComponent" parent="." index="8" instance=ExtResource("5_qdfo0")]
 
 [node name="DamageReceivingComponent" parent="." index="9" instance=ExtResource("5_1id7j")]
-collision_layer = 4
-collision_mask = 40
+collision_layer = 1028
+collision_mask = 1064
 
 [node name="GunComponent" parent="." index="10" instance=ExtResource("6_qdfo0")]
 

@@ -35,7 +35,7 @@ size = Vector2(18, 18)
 
 [node name="MonsterEntity" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 16
+collision_mask = 120
 script = ExtResource("1_5a21o")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

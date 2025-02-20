@@ -27,8 +27,17 @@ extends Component
 @export var friendlyFire: bool = false
 
 ## Should the parent Entity be removed when this [DamageComponent]'s "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox"?
-## Useful for bullets.
+## Useful for "bullet" entities (including arrows etc.) that must be blocked by all receivers.
+## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
+## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use [member removeEntityOnApplyingDamage] instead.
 @export var removeEntityOnCollisionWithReceiver: bool = false
+
+## Should the parent Entity be removed when this [DamageComponent] causes damage to a [DamageReceivingComponent] related to an opposing [FactionComponent]?
+## Useful for "bullet" entities (including arrows etc.) that should NOT be blocked by the entity which fired them.
+## Ignored if the combatants do not have opposing factions or friendly fire.
+## TIP: To always remove a "bullet" etc. on ANY collision with a receiver, use [member removeEntityOnCollisionWithReceiver].
+## WARNING: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
+@export var removeEntityOnApplyingDamage: bool = false
 
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
@@ -45,16 +54,26 @@ extends Component
 
 #region State
 
-## Returns this component as an [Area2D] node.
-var area: Area2D:
-	get: return (self.get_node(".") as Area2D)
-
-## A shortcut that returns the [FactionComponent] of the parent [Entity].
-@onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Use `get()` to avoid crash if `null`. TBD: Static or dynamic?
+## The "attacker" [Entity] that "initiated" the damage or fired the bullet etc. It may be the player entity, a monster, or a "hazard" like a pool of acid.
+## Optional; may be used to handle various situations such as ignoring the collision of a bullet against the entity that fired the bullet (not currently implemented).
+## NOTE: When applied to the [DamageComponent] of a "bullet" entity, this value is NOT the bullet entity: It's the entity that FIRED the bullet.
+## If `null` on [method _ready], it is set to this component's [member parentEntity]
+## @experimental
+@export_storage var initiatorEntity: Entity
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
 
+## Returns this component as an [Area2D] node.
+var area: Area2D:
+	get: return (self.get_node(".") as Area2D)
+
+#endregion
+
+
+#region Dependencies
+## A shortcut that returns the [FactionComponent] of the parent [Entity].
+@onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Use `get()` to avoid crash if `null`. TBD: Static or dynamic?
 #endregion
 
 
@@ -62,6 +81,10 @@ var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
 signal didCollideReceiver(damageReceivingComponent: DamageReceivingComponent)
 signal didLeaveReceiver(damageReceivingComponent:   DamageReceivingComponent)
 #endregion
+
+
+func _ready() -> void:
+	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
 
 
 #region Collisions
@@ -78,8 +101,10 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		didCollideReceiver.emit(damageReceivingComponent)
 		self.causeCollisionDamage(damageReceivingComponent)
 
+		## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
+		## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use `removeEntityOnApplyingDamage` instead.
 		if removeEntityOnCollisionWithReceiver:
-			printDebug("removeEntityOnCollisionWithReceiver")
+			if shouldShowDebugInfo: printDebug("removeEntityOnCollisionWithReceiver")
 			self.requestDeletionOfParentEntity()
 
 
@@ -122,8 +147,12 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	# will be checked in the `factionComponent` property getter
 
 	# Even if we have no faction, damage must be dealt.
-	printLog("causeCollisionDamage: " + str(damageReceivingComponent))
-	damageReceivingComponent.processCollision(self, factionComponent)
+	var didReceiveDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
+	if shouldShowDebugInfo: printLog(str("causeCollisionDamage: ", self.damageOnCollision, " to ", damageReceivingComponent))
+	
+	if removeEntityOnApplyingDamage and didReceiveDamage:
+			if shouldShowDebugInfo: printDebug("removeEntityOnApplyingDamage")
+			self.requestDeletionOfParentEntity()
 
 
 ## Calls [method DamageReceivingComponent.processCollision] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact]
