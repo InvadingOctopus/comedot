@@ -26,9 +26,9 @@ extends Component
 ## Should bullets from the same faction hurt?
 @export var friendlyFire: bool = false
 
-## Should the parent Entity be removed when this [DamageComponent] collides with a [DamageReceivingComponent]?
+## Should the parent Entity be removed when this [DamageComponent]'s "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox"?
 ## Useful for bullets.
-@export var removeEntityOnCollisionWithDamageReceiver: bool = false
+@export var removeEntityOnCollisionWithReceiver: bool = false
 
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
@@ -78,8 +78,8 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		didCollideReceiver.emit(damageReceivingComponent)
 		self.causeCollisionDamage(damageReceivingComponent)
 
-		if removeEntityOnCollisionWithDamageReceiver:
-			printDebug("removeEntityOnCollisionWithDamageReceiver")
+		if removeEntityOnCollisionWithReceiver:
+			printDebug("removeEntityOnCollisionWithReceiver")
 			self.requestDeletionOfParentEntity()
 
 

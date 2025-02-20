@@ -200,12 +200,12 @@ func createNewBullet() -> Entity:
 	# TBD: DESIGN: PERFORMANCE: Should our FactionComponent be copied if the bullet is missing one, or will that reduce performance? Maybe it's more intuitive if factionless bullets damage everyone.
 
 	# Use `get()` to avoid crash if `null`
-	var factionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
+	var gunFactionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
 	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
 
-	if factionComponent and bulletFactionComponent:
-		if shouldShowDebugInfo: printDebug(str("Copying entity factions to newBullet: ", factionComponent.factions))
-		bulletFactionComponent.factions = factionComponent.factions
+	if gunFactionComponent and bulletFactionComponent:
+		if shouldShowDebugInfo: printDebug(str("Copying entity factions to newBullet: ", gunFactionComponent.factions))
+		bulletFactionComponent.factions = gunFactionComponent.factions
 
 	if shouldShowDebugInfo: printDebug(str("createNewBullet() → ", newBullet))
 	return newBullet
