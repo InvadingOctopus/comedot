@@ -40,12 +40,8 @@ signal playerRemoved(player: Entity)
 # These signals may be emitted by any object and connected to any object at any time, usually via scripts.
 # IGNORE Godot Warning; these signals are used by other classes.
 
-## @experimental
 @warning_ignore("unused_signal")
-signal uiActionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
-
-@warning_ignore("unused_signal")
-signal uiStatUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that any UI elements which depend on that Stat may be updated.
+signal statUpdated(stat: Stat) ## Emitted when a [Stat] is changed, so that any UI elements which depend on that Stat may be updated, such as a [ManualStatsList]
 
 @warning_ignore("unused_signal")
 signal gameDidOver ## Emitted when You Died. NOTE: Multiplayer games must check if other players are still "alive".

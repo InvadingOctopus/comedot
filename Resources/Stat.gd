@@ -56,7 +56,7 @@ extends NamedResourceBase
 				if value <= min: didMin.emit()
 				if value <= 0:	 didZero.emit()
 
-			GameState.uiStatUpdated.emit(self) # TBD: Should this be optional?
+			GameState.statUpdated.emit(self) # TBD: Should this be optional?
 
 @export var logChanges: bool = false # WARNING: May reduce performance if used for very frequently-changing stats.
 

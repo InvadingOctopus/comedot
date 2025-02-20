@@ -14,8 +14,18 @@ var pauseOverlay: PauseOverlay
 
 
 #region Signals
+
 signal didShowPauseOverlay
 signal didHidePauseOverlay
+
+# Signal Event Bus
+# These signals may be emitted by any object and connected to any object at any time, usually via scripts.
+# IGNORE Godot Warning; these signals are used by other classes.
+
+## @experimental
+@warning_ignore("unused_signal")
+signal uiActionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
+
 #endregion
 
 

@@ -1,6 +1,6 @@
-## A script for [Container] controls which manage a HUD UI to display the values of [Stat] Resources.
+## A script for [Container] controls which manage a HUD UI to display the values of [Stat] Resources when they emit the [signal GameState.statUpdated] signal.
 ## To use, add [Label] child nodes and name them with the convention: "[Stat's name]Label" e.g. "healthLabel"
-## NOTE: The case should be exactly the same as the [member Stat.name] of the [Stat] which should be displayed via that label! Do NOT use the [member Stat.displatName].
+## NOTE: The case should be exactly the same as the [member Stat.name] of the [Stat] which should be displayed via that label! Do NOT use the [member Stat.displayName].
 ## TIP: If you have [Stat]s saved as ".tres" Resource files, use the newer [StatsList] and [StatUI] instead for automatic UI creation and updates.
 
 class_name ManualStatsList
@@ -33,7 +33,7 @@ extends Container
 
 func _ready() -> void:
 	updateInitialStats()
-	GameState.uiStatUpdated.connect(self.onGameState_uiStatUpdated)
+	Tools.reconnectSignal(GameState.statUpdated, self.onGameState_statUpdated) # Use Tools method to avoid error on multiple connections
 
 
 func updateInitialStats() -> void:
@@ -42,7 +42,7 @@ func updateInitialStats() -> void:
 		updateStatUI(stat, false)
 
 
-func onGameState_uiStatUpdated(stat: Stat) -> void:
+func onGameState_statUpdated(stat: Stat) -> void:
 	updateStatUI(stat)
 
 
