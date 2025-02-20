@@ -1,6 +1,6 @@
 ## Uses a [SpawnTimer] to creates copies of the specified Scene at a random position within an [Area2D] on regular intervals.
 ## Currently only optimized for rectangular area shapes.
-## NOTE: To modify the spawn parameters, enable "Editable Children" and edit the [SpawnTimer] child node.
+## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer] child node to choose which scene to copy and modify spawn parameters.
 
 class_name SpawnArea
 extends Area2D

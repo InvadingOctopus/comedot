@@ -8,6 +8,7 @@ resource_local_to_scene = true
 size = Vector2(192, 64)
 
 [node name="SpawnArea" type="Area2D"]
+editor_description = "An Area2D region to randomly spawn scenes in. Enable \"Editable Children\" and edit SpawnTimer to choose scene."
 collision_layer = 512
 collision_mask = 0
 monitoring = false
