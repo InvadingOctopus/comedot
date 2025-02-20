@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://kqv1vxo06kf6"]
+
+[ext_resource type="Script" uid="uid://u2k6ndi0t3bg" path="res://Components/Gameplay/InjectorComponent.gd" id="1_6x3w2"]
+
+[node name="InjectorComponent" type="Node2D" groups=["components"]]
+editor_description = "Transfers all of its children to the Entity that collides with it."
+script = ExtResource("1_6x3w2")
+metadata/_edit_group_ = true
