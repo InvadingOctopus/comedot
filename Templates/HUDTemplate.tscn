@@ -41,10 +41,10 @@ columns = 2
 script = ExtResource("1_yk82h")
 prefixes = Dictionary[StringName, String]({
 &"ammo": "AMMO:",
-&"health": "HP:"
+&"playerHealth": "HP:"
 })
 
-[node name="healthLabel" type="Label" parent="TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
+[node name="playerHealthLabel" type="Label" parent="TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "HP:10"

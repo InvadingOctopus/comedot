@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=36 format=3 uid="uid://83osop4fb38w"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
@@ -184,6 +184,19 @@ name = &"score"
 displayName = ""
 description = ""
 
+[sub_resource type="Resource" id="Resource_b23pp"]
+resource_local_to_scene = true
+resource_name = "playerHealth"
+script = ExtResource("9_g0ayb")
+min = 0
+max = 10
+value = 10
+logChanges = false
+name = &"playerHealth"
+displayName = "HP"
+description = ""
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b23pp"]
 resource_local_to_scene = true
 size = Vector2(12, 12)
@@ -226,7 +239,7 @@ script = ExtResource("3_3u7hd")
 stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_puhqw"), SubResource("Resource_kl6l5")])
 
 [node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
-health = SubResource("Resource_cei4g")
+health = SubResource("Resource_b23pp")
 
 [node name="HealthVisualComponent" parent="." instance=ExtResource("7_kh44k")]
 

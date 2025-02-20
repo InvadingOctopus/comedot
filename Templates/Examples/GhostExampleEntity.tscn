@@ -16,17 +16,18 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_icn6w"]
 size = Vector2(12, 14)
 
-[sub_resource type="Resource" id="Resource_wtfba"]
+[sub_resource type="Resource" id="Resource_tfk4d"]
 resource_local_to_scene = true
-resource_name = "health"
+resource_name = "monsterHealth"
 script = ExtResource("5_kedlw")
 min = 0
 max = 20
 value = 20
 logChanges = false
-name = &"health"
-displayName = "Health"
+name = &"monsterHealth"
+displayName = "Monster HP"
 description = ""
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="Resource" id="Resource_u3ofw"]
 script = ExtResource("10_cn3to")
@@ -60,7 +61,7 @@ shape = SubResource("RectangleShape2D_icn6w")
 factions = 8
 
 [node name="HealthComponent" parent="." instance=ExtResource("4_vyhga")]
-health = SubResource("Resource_wtfba")
+health = SubResource("Resource_tfk4d")
 
 [node name="HealthVisualComponent" parent="." instance=ExtResource("6_70ylv")]
 shouldShowRemainingHealth = true

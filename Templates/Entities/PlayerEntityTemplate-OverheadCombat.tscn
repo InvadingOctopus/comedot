@@ -9,17 +9,18 @@
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="6_qdfo0"]
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="7_ywvyn"]
 
-[sub_resource type="Resource" id="Resource_cafj2"]
+[sub_resource type="Resource" id="Resource_1id7j"]
 resource_local_to_scene = true
-resource_name = "health"
+resource_name = "playerHealth"
 script = ExtResource("4_02hnx")
 min = 0
 max = 10
 value = 10
 logChanges = false
-name = &"health"
-displayName = "Health"
+name = &"playerHealth"
+displayName = "HP"
 description = ""
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="PlayerEntityTemplate-OverheadCombat" instance=ExtResource("1_mkdep")]
 
@@ -27,7 +28,7 @@ description = ""
 factions = 2
 
 [node name="HealthComponent" parent="." index="7" instance=ExtResource("3_ywvyn")]
-health = SubResource("Resource_cafj2")
+health = SubResource("Resource_1id7j")
 
 [node name="HealthVisualComponent" parent="." index="8" instance=ExtResource("5_qdfo0")]
 
