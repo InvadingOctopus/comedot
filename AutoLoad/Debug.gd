@@ -249,7 +249,7 @@ func printWarning(message: String = "", object: Variant = null, _objectColor: St
 ## NOTE: In release builds, if [member Settings.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
 func printError(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	var plainText: String = str("Frame ", lastFrameLogged, " ", getLogCaller(), " ❗️ ", object, " ", message)
+	var plainText: String = str("Frame ", lastFrameLogged, " ", getCaller(3), " ❗️ ", object, " ", message)
 	push_error(plainText)
 	printerr(plainText)
 	# Don't print a duplicate line, to reduce clutter.
@@ -278,15 +278,15 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 ## Affected by [member shouldPrintDebugLogs].
 func printVariables(values: Array[Variant], separator: String = "\t ", color: String = "orange") -> void:
 	if shouldPrintDebugLogs:
-		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " ", getLogCaller(), " \t[color=", color, "][b]", separator.join(values)))
+		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " ", getCaller(), " \t[color=", color, "][b]", separator.join(values)))
 
 
-## Returns a string denoting the script file & function which called the CALLER of this [method getLastCaller()].
-## Example: If `_ready()` in `Component.gd` calls [method Debug.printDebug], then `printDebug()` calls `getLastCaller()`, then `Component.gd:_ready()`
+## Returns a string denoting the script file & function name from the specified [param stackPosition] on the call stack.
+## Default: 2 which is the function that called the CALLER of this method.
+## Example: If `_ready()` in `Component.gd` calls [method Debug.printDebug], then `printDebug()` calls `getCaller()`, then `Component.gd:_ready()`
 ## NOTE: Does NOT include function arguments.
-## @experimental
-static func getLogCaller() -> String:
-	var caller: Dictionary = get_stack()[2] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
+static func getCaller(stackPosition: int = 2) -> String:
+	var caller: Dictionary = get_stack()[stackPosition] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
 	return caller.source.get_file() + ":" + caller.function + "()"
 
 
