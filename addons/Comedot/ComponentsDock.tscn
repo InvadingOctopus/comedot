@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dn5qx1mv643mq"]
+[gd_scene load_steps=9 format=3 uid="uid://dn5qx1mv643mq"]
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Logos/ComedotLogo.png" id="2_7r6gx"]
 [ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
+[ext_resource type="Script" uid="uid://cybqq1hjwci3e" path="res://addons/Comedot/KeywordLineEdit.gd" id="5_6vyr6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7r6gx"]
 
@@ -14,6 +15,13 @@ keycode = 69
 
 [sub_resource type="Shortcut" id="Shortcut_3crsp"]
 events = [SubResource("InputEventKey_x0w7g")]
+
+[sub_resource type="GDScript" id="GDScript_3crsp"]
+script/source = "@tool
+extends ScrollContainer
+
+@onready var keyword_input: LineEdit = $VBoxContainer/KeywordInput
+"
 
 [node name="Comedot" type="Panel"]
 clip_contents = true
@@ -164,8 +172,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 follow_focus = true
+script = SubResource("GDScript_3crsp")
 
-[node name="ComponentsTree" type="Tree" parent="GridContainer/TreeScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GridContainer/TreeScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="KeywordLineEdit" type="LineEdit" parent="GridContainer/TreeScrollContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "filter"
+script = ExtResource("5_6vyr6")
+
+[node name="ComponentsTree" type="Tree" parent="GridContainer/TreeScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -219,8 +238,9 @@ placeholder_text = "NewComponent"
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/EditComponentButton" to="." method="onEditComponentButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
-[connection signal="button_clicked" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
-[connection signal="item_activated" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
-[connection signal="item_edited" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemEdited"]
-[connection signal="item_selected" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]
+[connection signal="text_changed" from="GridContainer/TreeScrollContainer/VBoxContainer/KeywordLineEdit" to="GridContainer/TreeScrollContainer/VBoxContainer/KeywordLineEdit" method="onTextChanged"]
+[connection signal="button_clicked" from="GridContainer/TreeScrollContainer/VBoxContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
+[connection signal="item_activated" from="GridContainer/TreeScrollContainer/VBoxContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
+[connection signal="item_edited" from="GridContainer/TreeScrollContainer/VBoxContainer/ComponentsTree" to="." method="onComponentsTree_itemEdited"]
+[connection signal="item_selected" from="GridContainer/TreeScrollContainer/VBoxContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]
 [connection signal="confirmed" from="NewComponentDialog" to="." method="onNewComponentDialog_confirmed"]
