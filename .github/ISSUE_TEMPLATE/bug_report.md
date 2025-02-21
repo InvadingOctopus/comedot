@@ -1,7 +1,8 @@
 ---
-name: Bug report
+name: Bug Report
 about: Report an error, crash or weird ass behavior
-
+title: "[BUG]"
+labels: 'bug'
 ---
 
 **Category:** {Behavior/Warning/Error/Crash}

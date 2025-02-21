@@ -1,7 +1,8 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest an awesome idea
-
+title: "[BEG]"
+labels: 'request'
 ---
 
 - Category: {Component/AutoLoad/Script/UI/Template/Asset/other}
