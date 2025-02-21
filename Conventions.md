@@ -16,7 +16,7 @@ This is the Truth of the Universe.
 > [!TIP]
 > Most of this is the opinion of the sole maintainer @ShinryakuTako on GitHub but if you're smart it should be yours too.
 
-I come from Swift and I love it so this framework attempts to adhere to the Swift API Design Guidelines unless when it's highly inconvenient within Godot: https://www.swift.org/documentation/api-design-guidelines/
+I come from Swift and I love it so this framework attempts to follow the Swift API Design Guidelines unless when it's highly inconvenient within Godot: https://www.swift.org/documentation/api-design-guidelines/
 
 
 ## Voidspace
