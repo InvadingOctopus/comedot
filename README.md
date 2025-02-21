@@ -8,7 +8,7 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 
 ![components-tree]
 
-* Includes a library of components for common stuff needed in most 2D games: Different types of player movement, combat, collectibles, interactions, upgrades etc.
+* Includes a library of components for common stuff needed in most games: Different types of player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.any_name = 69`
@@ -43,11 +43,11 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 > _Requires Godot 4.4 ~Embrace the Future_ ✨  
 
 1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
-	* Or you can selectively choose scenes/scripts from Comedot to use them in other templates.
+	* Or you can selectively pick files from Comedot to use in other templates.
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
-	* The `/Templates/` folder contains scenes and Entities with preset Components as a quick starting point for various gameplay.
-	* The `/Scripts/` folder contains code for simple non-Entity nodes.
-	* The `/UI/` folder contains customizable UI elements for health, ammo, actions, upgrades etc.
+	* `/Templates/` contains scenes and Entities with preset Components as a quick starting point for various gameplay.
+	* `/Scripts/` contains code for non-Entity nodes.
+	* `/UI/` contains customizable UI elements for health, ammo, actions, upgrades etc.
 
 ![Custom Dock Plugin][comedock]
 
