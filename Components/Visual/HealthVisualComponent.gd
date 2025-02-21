@@ -31,8 +31,9 @@ extends Component
 	set(newValue):
 		if newValue != shouldTint:
 			shouldTint = newValue
-			if shouldTint and healthComponent: updateTint()
-			else: nodeToAnimate.modulate = Color.WHITE
+			if self.is_node_ready(): # Avoid crash before _ready()
+				if shouldTint and healthComponent: updateTint()
+				else: nodeToAnimate.modulate = Color.WHITE
 
 ## Shows a [TextBubble] representing the current health value or the difference.
 ## The bubble is set as a child node of the entity, to avoid being affected by the effects on [nodeToAnimate].

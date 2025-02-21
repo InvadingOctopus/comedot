@@ -15,7 +15,7 @@ extends Container
 		if newValue != objectToMonitor:
 			objectToMonitor = newValue
 			objectToMonitor.property_list_changed.connect(self.onObjectToMonitor_PropertyListChanged)
-			if self.is_inside_tree(): updateLabels()
+			if self.is_node_ready(): updateLabels()
 
 ## Append the [Label]/property names before the value?
 @export var shouldShowPropertyNames:  		bool = true
@@ -70,7 +70,7 @@ func rebuildLabelsArray() -> void:
 
 
 func updateLabels() -> void:
-	if not self.is_inside_tree(): return
+	if not self.is_node_ready(): return
 	Tools.printPropertiesToLabels(self.objectToMonitor, self.labels, self.shouldShowPropertyNames, self.shouldHideNullProperties, self.shouldUnhideAvailableLabels)
 
 

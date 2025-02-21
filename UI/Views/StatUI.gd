@@ -54,7 +54,7 @@ extends Container
 	set(newValue):
 		if newValue != shouldShowIconAfterText:
 			shouldShowIconAfterText = newValue
-			if self.is_inside_tree(): arrangeControls()
+			if self.is_node_ready(): arrangeControls()
 
 #endregion
 
