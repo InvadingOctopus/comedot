@@ -81,7 +81,7 @@ func processTurnBeginSignals() -> void:
 
 	willBeginTurn.emit()
 	await self.processTurnBegin()
-	
+
 	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
@@ -96,7 +96,7 @@ func processTurnUpdateSignals() -> void:
 
 	willUpdateTurn.emit()
 	await self.processTurnUpdate()
-	
+
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
@@ -111,7 +111,7 @@ func processTurnEndSignals() -> void:
 
 	willEndTurn.emit()
 	await self.processTurnEnd()
-	
+
 	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
@@ -158,11 +158,14 @@ func registerComponent(newComponent: Component) -> bool:
 		return false
 
 
-func unregisterComponent(componentToRemove: Component) -> void:
-	super.unregisterComponent(componentToRemove)
+func unregisterComponent(componentToRemove: Component) -> bool:
+	var didUnregister: bool = super.unregisterComponent(componentToRemove)
 	# Also remove the component from our array if it is turn-based
-	if is_instance_of(componentToRemove, TurnBasedComponent):
+	if didUnregister and is_instance_of(componentToRemove, TurnBasedComponent):
 		self.turnBasedComponents.erase(componentToRemove)
+		return true
+	else:
+		return didUnregister
 
 
 ## Searches all children and returns an array of all nodes that extend [TurnBasedComponent].

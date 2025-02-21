@@ -177,20 +177,26 @@ func childExitingTree(node: Node) -> void:
 
 ## Adds a [Component] from the [member components] [Dictionary].
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_UNPARENTED] Notification.
-func unregisterComponent(componentToRemove: Component) -> void:
+## Returns `true` if the component was found and unregistered.
+func unregisterComponent(componentToRemove: Component) -> bool:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 
 	# Does the dictionary have a component of the same type?
+	# NOTE: Make sure the component in the dictionary which matches the same type, is also the same INSTANCE that has been requested to be removed.
+	
 	var existingComponent: Component = self.components.get(componentType)
 
-	# NOTE: Make sure the component in the dictionary which matches the same type, is the same one that is being removed.
-
-	if existingComponent == componentToRemove:
-		printLog(str("[color=brown]Unregistering ", existingComponent))
+	if existingComponent == null:
+		printWarning(str("unregisterComponent(): ", componentType, " not found!"))
+		return false
+	elif existingComponent == componentToRemove:
+		printLog(str("[color=brown]unregisterComponent(): ", existingComponent))
 		self.components.erase(componentType)
+		return true
 	else:
 		printError(str("Component type key \"", componentType, "\" in dictionary but value: ", existingComponent, " is not the same as componentToRemove: ", componentToRemove))
 		# NOTE: TBD: This is a weird situation which should not happen, so it must be considered an error.
+		return false
 
 #endregion
 
