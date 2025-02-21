@@ -186,8 +186,9 @@ func createNewBullet() -> Entity:
 	newBullet.z_index			= bulletEmitter.z_index
 	newBullet.top_level			= bulletEmitter.top_level
 
-	newBullet.isLoggingEnabled	= self.shouldShowDebugInfo
-	newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
+	# Copy debugging flags only if bullet's are off
+	if not newBullet.isLoggingEnabled: newBullet.isLoggingEnabled = self.shouldShowDebugInfo
+	if not newBullet.shouldShowDebugInfo: newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
 
 	# Speed: Add the gun's entity's speed to the bullet's speed, so that the attacker doesn't run into its own bullets if they are too slow.
 
