@@ -1,10 +1,17 @@
-## Abstract base class for Resources with a named identity and a visual representation including optionally displayed name, description and icon.
+## Abstract base class for [Resource]s that represent gameplay-related resources such as health/ammo or skills etc. with a named identity and a visual representation including optionally displayed name, description and icon.
 
 @tool
 class_name NamedResourceBase
 extends Resource
 
 # TBD: A better name? ViewableResource? :')
+
+# NOTE: WATCHOUT: Understand the order of initialazion to avoid unexpected behavior:
+# If a Resource such as a Stat is added to a Component like HealthComponent, and `name` is set to &"health",
+# then the HealthComponent is added to a MonsterEntity.tscn scene, and the Stat is renamed to &"monsterHealth" and other values are also changed,
+# then at runtime, the values of the Stat in HealthComponent.tscn will be applied first, via the property setters, and THEN the MonsterEntity's values for HealthComponent will be applied,
+# which may cause unwanted emissions of signals like GameStat.statUpdated and unexpected behavior in scripts like ManualStatsList
+# SOLUTION: DELETE the default HealthComponent Stat in MonsterEntity.tscn, and recreate a new Stat with a different name.
 
 
 #region Common Parameters
