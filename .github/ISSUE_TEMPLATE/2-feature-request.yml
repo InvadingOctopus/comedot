@@ -1,0 +1,47 @@
+name: Feature Request
+description: Suggest an awesome idea
+labels: "enhancement"
+body:
+
+  - type: dropdown
+    attributes:
+      label: Category
+      options:
+        - Anything
+        - Assets
+        - AutoLoad
+        - Component
+        - Entity
+        - Script
+        - Template
+        - UI
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Intro
+      description: 1 or 2 short sentences about what you think would be cool to have in this project.
+      placeholder: A button to convert my Idea.txt file to a game executable.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Details
+      description: A more detailed description of your idea or request.
+    
+  - type: checkboxes
+    attributes:
+      label: Have you made sure this feature isn't already in Comedot?
+      description: Or if there is something similar but it could be better.
+      options:
+        - label: Yeah I'm sure this doesn't already exist.
+          required: true
+  
+  - type: input
+    attributes:
+      label: What's your favorite anime?
+      description: This decides if we can be friends.
+      placeholder: Ranma ½

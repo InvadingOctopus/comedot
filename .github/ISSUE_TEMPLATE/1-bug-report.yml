@@ -1,0 +1,86 @@
+name: Bug Report
+description: Report an error, crash or weird ass behavior
+labels: "bug"
+body:
+
+  - type: dropdown
+    attributes:
+      label: Category
+      description: Is it an error, crash or some other funky shit?
+      options:
+        - Annoyance
+        - Weird Shit
+        - Warning
+        - Error
+        - Crash
+        - Corruption
+        - Security
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Description
+      description: What's happening that you think should not happen?
+      placeholder: Player is walking funny
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Expected Behavior
+      description: What do you think should happen instead?
+      placeholder: Player should walk cool
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Godot Version
+      description: "**Comedot is always developed for the latest Godot beta version**, sometimes compiled directly from the master source branch. Which version are you using?"
+      placeholder: "6.9"
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: "Is the code or feature you're trying to use marked `@experimental`?"
+      description: That means there are no guarantees about it and it has a very low priority of getting fixed.
+      options:
+        - label: "`@experimental`"
+
+  - type: textarea
+    attributes:
+      label: More Information
+      description: List the exact steps to recreate this bug, or any other details, such as links to screenshots/videos.
+      placeholder: |
+        1. Start with a new copy of the Comedot repository
+        2. Edit or create this scene/node: …
+        3. Add the following script/code: …
+        5. Play the scene and perform these actions: …
+        6. If it's a crash or error, include the file and line number: …
+
+  - type: textarea
+    attributes:
+      label: Godot Output Log
+      description: Enable "Show Debug Info" on the relevant Entities/Components, and copy any relevant log text from the Output panel of the Godot Editor.
+      render: gdscript
+
+  - type: dropdown
+    attributes:
+      label: Your Coomputer
+      description: Which operating system are you testing your game on?
+      options:
+        - Doesn't Matter
+        - Linux
+        - macOS
+        - Windows
+        - Web
+      default: 0
+    
+  - type: input
+    attributes:
+      label: What's your favorite anime?
+      description: This decides if we can be friends.
+      placeholder: Ranma ½
