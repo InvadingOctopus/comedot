@@ -189,7 +189,7 @@ func unregisterComponent(componentToRemove: Component) -> void:
 		printLog(str("[color=brown]Unregistering ", existingComponent))
 		self.components.erase(componentType)
 	else:
-		printError(str("Component of type ", componentType, " already in dictionary: ", existingComponent, " but not the same as componentToRemove: ", componentToRemove))
+		printError(str("Component type key \"", componentType, "\" in dictionary but value: ", existingComponent, " is not the same as componentToRemove: ", componentToRemove))
 		# NOTE: TBD: This is a weird situation which should not happen, so it must be considered an error.
 
 #endregion
