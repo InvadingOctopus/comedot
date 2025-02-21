@@ -1,6 +1,9 @@
 ---
 name: Bug report
 about: Report an error, crash or weird ass behavior
+title: "[BUG]"
+labels: ''
+assignees: ShinryakuTako
 
 ---
 
