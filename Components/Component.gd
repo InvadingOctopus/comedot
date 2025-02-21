@@ -12,7 +12,11 @@ extends Node
 
 #region Core Properties
 
-var parentEntity: Entity
+var parentEntity: Entity:			
+	set(newValue):
+		if newValue != parentEntity:
+			if shouldShowDebugInfo: printDebug(str("parentEntity: ", parentEntity, " → ", newValue))
+			parentEntity = newValue
 
 ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
 ## Access via the shortcut of `coComponents.ComponentClassName` or,
@@ -175,14 +179,13 @@ func getParentEntity() -> Entity:
 	var parent: Node = self.get_parent() # parentOrGrandparent
 
 	if not is_instance_of(parent, Entity):
-		printWarning("Parent is not an Entity! This may prevent sibling components from finding this component. Parent: " + str(parent))
+		printWarning(str("getParentEntity(): Parent node is not an Entity: ", parent, " ／ This may prevent sibling components from finding this component."))
 
 	# If parent is null or not an Entity, get the grandparent (parent's parent) and keep searching up the tree.
 	while not (parent is Entity) and not (parent == null):
-		if shouldShowDebugInfo: printDebug(str("getParentEntity() searching non-Entity parent: ", parent))
+		if shouldShowDebugInfo: printDebug(str("getParentEntity() checking parent of non-Entity node: ", parent))
 		parent = parent.get_parent()
 
-	#DEBUG printDebug("getParentEntity(): " + str(parent))
 	return parent
 
 

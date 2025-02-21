@@ -125,20 +125,20 @@ func registerComponent(newComponent: Component) -> bool:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
 
 	if componentType.is_empty():
-		printWarning(str("Component has no class_name, cannot register in dictionary: ", newComponent.logFullName))
+		printWarning(str("registerComponent(): Component has no class_name, cannot register in dictionary: ", newComponent.logFullName))
 		return false
 
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
 
 	if existingComponent:
-		printLog(str("Replacing: ", existingComponent.logFullName, " ← ", newComponent.logFullName))
+		printLog(str("registerComponent(): Replacing ", existingComponent.logFullName, " ← ", newComponent.logFullName))
 		existingComponent.removeFromEntity(true) # shouldFree
 
 	self.components[componentType] = newComponent
 	newComponent.parentEntity = self # Is this useful? It will be done anyway by the component.
 
-	if shouldShowDebugInfo: printDebug(str(componentType, " = ", newComponent.logName))
+	if shouldShowDebugInfo: printDebug(str("registerComponent(): \"", componentType, "\" = ", newComponent.logFullName))
 
 	# TBD: Register the superclass of the component as well, such as [HealthComponent] for [ShieldedHealthComponent],
 	# to make it easier for other dependent components to access the child class via [member Component.coComponents] if they only need the parent class' features.
