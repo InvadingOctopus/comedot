@@ -1,87 +1,131 @@
-# Comedot Code & Framework Conventions
+# Comedot Coding Conventions & Design Philosophilizy
 
-I come from Swift so I hate underscores and love camelCase. This framework follows the Swift API Design Guidelines unless when it's highly inconvenient within Godot:
+## Axioms of Goom
 
-https://www.swift.org/documentation/api-design-guidelines/
+1. Underscores == ugly
 
-# Whitespace
+2. Tabs > Spaces
 
-* TABS instead of Spaces
+3. camelCase == bestCase
+
+This is the Truth of the Universe.
+
+----
+
+
+> [!TIP]
+> Most of this is the opinion of the sole maintainer @ShinryakuTako on GitHub but if you're smart it should be yours too.
+
+I come from Swift and I love it so this framework attempts to adhere to the Swift API Design Guidelines unless when it's highly inconvenient within Godot: https://www.swift.org/documentation/api-design-guidelines/
+
+
+## Voidspace
+
+* Tabs instead of Spaces
 	- Because GDScript is an indentation-based language :)
 	- A single missing or extra space could cause errors.
-	- Easier to navigate, and to view, with visible tabs etc.
+	- Visual representation can be customized per user and easier to view with visible tabs etc.
+	- Easier to navigate.
 
-* 2 empty lines between functions and different "categories" of code, such as parameters, signals, state properties etc.
+* 2 empty lines between functions and different regions of code, such as parameters, signals, state properties etc.
 	- This is what the default Godot script templates start with.
-	- Adds a bit more clear visual separation between different regions of code.
+	- Adds more clear visual separation between distinct sections.
 
-# Case
 
-* camelCase == bestCase
+## Case
 
-* Underscores == ugly
+* NO underscores whenever possible!
+	- Less clutter
+	- Fewer keystrokes  
+	(Thanks Stannis!)
+
+* camelCase for everything, even constants.
+	- No extra SHIFT press needed to start autocomplete etc.
 
 * Capitalized names for Types only.
 
 * Short acronyms may be fully capitalized.
 	- Examples: UINode, HUDColor
 
-* Names should make grammatical sense wherever possible.
-	- Functions should read like a verb/action, or a question if their job is to check something and return a boolean.
-	- Booleans should start with `is`, `has`, `should` etc. This may make autocompletion easier by listing all booleans.
-
 * Text names/IDs such as for node groups, input actions and animations should be camelCase, to match the convention of enums: `GlobalInput.Actions.yeet = &"yeet"`
 
-# Functions & Methods
 
-* Functions that perform a quick retrieval operation, like returning a member from an Array or Dictionary, should be named starting with `get`: e.g. `getComponent(...)`
+## Names
 
-* Functions that need to do a slower _search_ operation, like scanning a list of all child nodes, should be named starting with `find`: e.g. `findComponent(...)`
+* Names should make grammatical sense wherever possible.
 
-* Functions that add an existing object to a parent, container or list, should be named starting with `add`: e.g. `addText(...)`
+* Booleans should start with `is`, `has`, `should` etc.
+	- This may make autocompletion easier by listing all booleans together.
+	- Avoid ambiguity with "verbs" e.g.`showDebugInfo` could be a function name.
 
-* Functions that _create_ a new object and then add it to a parent, should be named starting with `create`: e.g. `createLabel(...)`
 
-# Signals
+### Functions & Methods
 
-* Signals should be named in this form: [object/category][event]
-* or, if the ACTION is more important: [action][object]
-* or, if the OBJECT is more important: [object][action]
+* Function names should read like a verb/command/action: e.g. `doSomething()` or `checkValidity()`
+
+* Functions that perform a quick & "cheap" retrieval operation, like returning a member from an Array or Dictionary, should be named starting with `get`: e.g. `getComponent(…)`
+
+* Functions that need to do a slower _search_ operation, like scanning a list of all child nodes, should be named starting with `find`: e.g. `findComponent(…)`
+
+* Functions that add an _existing_ object to a parent, container or list, should be named starting with `add`: e.g. `addText(…)`
+
+* Functions that _create_ a new object and then add it to a parent, should be named starting with `create`: e.g. `createLabel(…)`
+
+
+### Signals
+
+* Signals should generally be named in this form: {object/category}{tense}{event} e.g. `healthDidDecrease`
+* or, if the ACTION is the focus: {action}{object} e.g. `didSpawnEntity`
+* or, if the OBJECT is the focus: {object}{action} e.g. `entityDidSpawn`
 * Signal names should begin with a `did` or `will` wherever it makes sense.
-	- This ensure consistency in words by avoiding English plural jankery: `didDecrease` vs `decreased`, `didRunOut` vs `ranOut`.
+	- This ensure consistency in words by avoiding English plural jankery: `didDecrease` vs `decreased`, `didRunOut` vs `ranOut`
 	- `ammoInsufficient` does not make sense in a past or future tense, so it is exempt.
 
-Examples:
+_Examples:_
 ```
-healthDecreased
-ammoDepleted
-entityWillBeRemoved
-spawnedEnemy
+signal healthDidZero
+signal didFire(bullet: Entity)
+signal didSpawn(newSpawn: Node2D, parent: Node2D)
+signal willRemoveFromEntity
 ```
 
-* Functions that handle signals should be named in this form: `on[ObjectEmittingSignal]_[signal]`
+* Functions that handle signals should be named in this form: `on[ObjectThatEmittedSignal]_[signal]`
 	- If the script is attached to the node which emits the signal, then simply: `on[Signal]`
 	- If the object name is short enough or a single word, then the _ underscore may be omitted.
+	- Yes, this is the ONLY place where underscores are used, because we can't use a — dash etc. :')
 
-Examples:
+_Examples:_
 ```
-func onCollectibleComponent_didCollideWithCollector()
+func onCollectibleComponent_didCollideWithCollector(…)
 func onGunComponent_ammoDepleted()
-func onHealthChanged()
-func onTimeout() # in a script on a Timer node
+func onHealthChanged(…)
+func onTimeout() # in the script of a Timer node
 ```
 
-# Resources
+## Resources
 
 * Resources like [Stat] and [Upgrade] should ONLY CONTAIN INFORMATION and validation functions.
 * Resources should NOT contain WHERE THEY ARE USED; an Upgrade should NOT hold a reference to the [UpgradesComponent] where it's "installed"; that should be the job of the component.
 * "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between UpgradesComponents, should be done via signals.
 
-# Miscellaneous
+
+## Design
+
+The core soul of this project is the library of Components: Everything else is just scaffolding to support a workflow based on components.
+
+HOW those components are actually implemented behind-the-scenes may always keep changing, but the components themselves will always be present: e.g. there will always be a HealthComponent, a DamageComponent, a DamageReceivingComponent and so on.
+
+I try to design from the "outside-in": i.e. first decide on what the front-end "interface" or USAGE should look like. It should be as close to how the rest of Godot works out of the box: Creating nodes, scripts, and throwing them together and putting numbers in the Inspector sidebar. Components should also work similar to that.
+
+Components are created based on abstractions in terms of _gameplay_ NOT coding abstractions, as in, how the actual play of most games can be broken down into distinct events and behaviors that could be reused even in different genres.
+
+
+## Miscellaneous
 
 * Do not try to use `-1` etc as an indicator of whether some numerical value is invalid or should be ignored. It complicates ALL other calculations down the road. Just use a separate flag.
 	- e.g. `allowInfiniteLevels = true` instead of `maxLevel = -1`
 
-# Git Workflow
+
+## Git Workflow
 
 * TBD: The `develop` branch should be merged into `main` only on a weekend, I guess?
