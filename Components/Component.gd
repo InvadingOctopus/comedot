@@ -1,7 +1,8 @@
 ## The core of the composition framework. A node which represents a distinct behavior or property of a game character or object.
-## A parent node made up of component child nodes is an [Entity].
+## A parent node made up of Component child nodes is an [Entity]. The Entity is the "scaffolding" and Components do the actual work (play).
 ## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
-## Components may directly modify the parent entity or interact with other sibling components, such as a [DamageReceivingComponent] modifying a [HealthComponent].
+## Components may directly modify the parent entity or interact with other components,
+## such as a [DamageComponent] communicating with another Entity's [DamageReceivingComponent] which then modifies a [HealthComponent].
 
 #@tool # Not useful because it's not inherited :(
 @icon("res://Assets/Icons/Component.svg")

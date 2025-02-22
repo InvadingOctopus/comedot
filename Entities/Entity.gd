@@ -1,5 +1,5 @@
 ## The core of the composition framework. Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
-## Provides methods for managing components and other common tasks.
+## Provides methods for managing components and other common tasks. The Entity is the "scaffolding" and Components do the actual work (play).
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
 ## TIP: If the entity is a [CharacterBody2D] then a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components may queue their updates through it.
 
@@ -16,7 +16,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 @export var isLoggingEnabled: bool = true
 
 ## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
-## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
+## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` with functions such as `str()` that might reduce performance.
 @export var shouldShowDebugInfo: bool = false
 
 # PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
@@ -62,7 +62,8 @@ func _ready() -> void:
 	printDebug("_ready()")
 
 
-# Called when the node enters the scene tree for the first time.
+## Called when the Entity enters the Scene Tree for the first time.
+## NOTE: Called BEFORE Components and child nodes are loaded from the Scene.
 func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
@@ -72,13 +73,13 @@ func _enter_tree() -> void:
 	connectSignals()
 
 
-## WARNING: When overriding in a subclass, do NOT call [method Entity.connectSignals] manually from [method _enter_tree] or [method _ready],
-## and call `super.connectSignals()` to ensure that all signals are connected and ONLY ONCE.
+## WARNING: When overriding in a subclass, call `super.connectSignals()`,
+## but do NOT call [method Entity.connectSignals] manually from [method _enter_tree] or [method _ready], to ensure that all signals are connected and ONLY ONCE.
 func connectSignals() -> void:
 	printDebug("connectSignals()")
-	# TBD: Unneeded for now
-	# self.child_entered_tree.connect(childEnteredTree)
-	# self.child_exiting_tree.connect(childExitingTree)
+	# TBD: UNUSED: Unneeded for now
+	# Tools.reconnectSignal(self.child_entered_tree, self.childEnteredTree)
+	# Tools.reconnectSignal(self.child_exiting_tree, self.childExitingTree)
 
 
 func _process(_delta: float) -> void:
@@ -107,13 +108,13 @@ func _notification(what: int) -> void:
 #endregion
 
 
-#region Internal Component Management Functions
+#region Internal Component Management
 
 @warning_ignore("unused_parameter")
 func childEnteredTree(node: Node) -> void:
 	# NOTE: A child node will `_enter_tree()` even when this Entity is added to the SCENE,
 	# so this method does not necessarily mean that a Component was added to the ENTITY.
-	# So do not call `registerComponent()` here!
+	# AVOID: So do NOT call `registerComponent()` here!
 	# A Component itself should call `parentEntity.registerComponent()` when it receives its `NOTIFICATION_PARENTED` Notification.
 	pass
 
@@ -140,42 +141,24 @@ func registerComponent(newComponent: Component) -> bool:
 
 	if shouldShowDebugInfo: printDebug(str("registerComponent(): \"", componentType, "\" = ", newComponent.logFullName))
 
-	# TBD: Register the superclass of the component as well, such as [HealthComponent] for [ShieldedHealthComponent],
-	# to make it easier for other dependent components to access the child class via [member Component.coComponents] if they only need the parent class' features.
-
-	# DESIGN: DISABLED: This is too complicated to implement elegantly/reliably,
+	# DESIGN: Do NOT register the superclass of the component, such as [HealthComponent] for [ShieldedHealthComponent].
+	# REASON: This is too complicated to implement elegantly/reliably,
 	# because many components share common base classes such as `Component`, `CharacterBodyManipulatingComponentBase`, `CooldownComponent` etc.
 	# WORKAROUND: Just call findFirstComponentSubclass() at the site of use.
-
-	# var shouldRegisterSuperClass: bool = false
-
-	# if shouldRegisterSuperClass:
-	# 	var superClass: Script = newComponent.get_script().get_base_script()
-
-	# 	if superClass:
-	# 		var superType: StringName = superClass.get_global_name()
-
-	# 		# Don't keep registering the core/base types!
-	# 		if not superType.is_empty() and superType.to_upper() != "COMPONENT" and not superType.to_upper().ends_with("BASE"):
-	# 			if superType not in self.components:
-	# 				self.components[superType] = newComponent
-	# 				printDebug(str("Superclass: ", superType, " = ", newComponent.logName))
-	# 			else:
-	# 				printDebug(str("Superclass: ", superType, " already registered for a different component: ", self.components.get(superType).logFullName))
 
 	return true
 
 
+## NOTE: A child node will [method Node._exit_tree] even when this Entity is removed from the SCENE,
+## so this method does not necessarily mean that a Component was removed from the ENTITY.
 @warning_ignore("unused_parameter")
 func childExitingTree(node: Node) -> void:
-	# NOTE: A child node will `_exit_tree()` even when this Entity is removed from the SCENE,
-	# so this method does not necessarily mean that a Component was removed from the ENTITY.
-	# So do not call `unregisterComponent()` here!
+	# AVOID: Do not call `unregisterComponent()` here!
 	# A Component itself should call `parentEntity.unregisterComponent()` when it receives its `NOTIFICATION_UNPARENTED` Notification.
 	pass
 
 
-## Adds a [Component] from the [member components] [Dictionary].
+## Removes a [Component] from the [member components] [Dictionary].
 ## May be called by a [Component] when it receives the [const Node.NOTIFICATION_UNPARENTED] Notification.
 ## Returns `true` if the component was found and unregistered.
 func unregisterComponent(componentToRemove: Component) -> bool:
@@ -431,6 +414,8 @@ func getBody() -> CharacterBody2D:
 #endregion
 
 
+#region Miscellaneous Methods
+
 ## Used to call any function only once during a single frame, such as [method CharacterBody2D.move_and_slide] on the [Entity]'s [CharacterBody2D].
 ## This ensures that multiple components which interact with the same node do not perform excessive updates, such as a [PlatformerControlComponent[ and a [JumpControlComponent].
 ## The `Callable` is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, which is cleared during each [method _physics_process] of this entity.
@@ -449,6 +434,8 @@ func displayLabel(text: String, animation: StringName = Animations.blink) -> voi
 	var labelComponent: LabelComponent = self.getComponent(LabelComponent)
 	if not labelComponent: return
 	labelComponent.display(text, animation)
+
+#endregion
 
 
 #region Logging
