@@ -42,7 +42,7 @@ const customLogMaximumEntries: int = 100
 
 var previousChartWindowInitialPosition: Vector2i
 
-static var lastFrameLogged:		 int = -1 # Start at -1 so the first frame 0 can be printed.
+static var lastFrameLogged:		 int  = -1 # Start at -1 so the first frame 0 can be printed.
 static var alternateTraceLogRow: bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
 static var customLogColorFlag:	 bool
 
