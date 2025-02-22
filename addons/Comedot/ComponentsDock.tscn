@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dn5qx1mv643mq"]
+[gd_scene load_steps=8 format=3 uid="uid://dn5qx1mv643mq"]
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Logos/ComedotLogo.png" id="2_7r6gx"]
@@ -15,13 +15,6 @@ keycode = 69
 
 [sub_resource type="Shortcut" id="Shortcut_3crsp"]
 events = [SubResource("InputEventKey_x0w7g")]
-
-[sub_resource type="GDScript" id="GDScript_3crsp"]
-script/source = "@tool
-extends ScrollContainer
-
-@onready var keyword_input: LineEdit = $VBoxContainer/KeywordInput
-"
 
 [node name="Comedot" type="Panel"]
 clip_contents = true
@@ -172,7 +165,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 follow_focus = true
-script = SubResource("GDScript_3crsp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GridContainer/TreeScrollContainer"]
 layout_mode = 2
