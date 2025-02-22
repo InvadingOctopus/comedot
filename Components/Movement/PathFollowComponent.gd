@@ -11,8 +11,8 @@ extends IndependentPathFollowComponent
 
 #region Parameters
 
-## If `true` (default), the [member PathFollow2D.progress] is set to 0 when this component is [method _ready] and on [method Component.unregisterParent].
-## WARNING: This overrides [member shouldSnapEntityToPath].
+## If `true` (default), the [member PathFollow2D.progress] is set to 0 when this component is [method _ready] and on [method Component.unregisterEntity]
+## WARNING: This overrides [member shouldSnapEntityToPath]
 @export var shouldResetProgress: bool = true
 
 #endregion
@@ -126,8 +126,8 @@ func _physics_process(delta: float) -> void:
 		self.didCompletePath.emit()
 
 
-func unregisterParent() -> void:
+func unregisterEntity() -> void:
 	if self.shouldResetProgress and pathFollower: pathFollower.progress = 0
-	super.unregisterParent()
+	super.unregisterEntity()
 
 #endregion
