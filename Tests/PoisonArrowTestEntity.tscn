@@ -28,11 +28,10 @@ shape = SubResource("RectangleShape2D_ibfmm")
 shape = SubResource("RectangleShape2D_nuc6d")
 
 [node name="InjectorComponent" parent="." index="7" instance=ExtResource("3_m01pb")]
-shouldShowDebugInfo = true
 
 [node name="DamageOverTimeComponent" parent="InjectorComponent" index="0" instance=ExtResource("4_mrnfw")]
 attackerFactions = 8
-shouldShowDebugInfo = true
+allowNonEntityParent = true
 
 [connection signal="didCollideReceiver" from="DamageComponent" to="InjectorComponent" method="onAreaOrBodyEntered"]
 
