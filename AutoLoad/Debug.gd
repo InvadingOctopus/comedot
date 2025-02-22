@@ -42,8 +42,9 @@ const customLogMaximumEntries: int = 100
 
 var previousChartWindowInitialPosition: Vector2i
 
-static var lastFrameLogged: int = -1 # Start at -1 so the first frame 0 can be printed.
-static var customLogColorFlag: bool
+static var lastFrameLogged:		 int = -1 # Start at -1 so the first frame 0 can be printed.
+static var alternateTraceLogRow: bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
+static var customLogColorFlag:	 bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
 ## @experimental
@@ -136,8 +137,8 @@ func _process(_delta: float) -> void:
 
 
 ## Adds a temporary entry to the [member watchList] for the specified number of seconds.
-## TIP: For gameplay related messages, use [method GlobalUI.createTemporaryLabel].
-## NOTE: Does NOT use [TemporaryLabel].
+## TIP: For gameplay related messages, use [method GlobalUI.createTemporaryLabel]
+## NOTE: Does NOT use [TemporaryLabel]
 func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> void:
 	watchList[key] = text
 
@@ -224,18 +225,12 @@ func printAutoLoadLog(message: String = "") -> void:
 
 
 ## Prints a faded message to reduce visual clutter.
-## Affected by [member shouldPrintDebugLogs].
+## Affected by [member shouldPrintDebugLogs]
 func printDebug(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	if Debug.shouldPrintDebugLogs:
 		#updateLastFrameLogged() # OMIT: Do not print frames on a separate line, to reduce clutter.
 		#print_debug(str(Engine.get_frames_drawn()) + " " + message) # OMIT: Not useful because it will always say it was called from this Debug script.
 		print_rich(str("[right][color=dimgray]F", Engine.get_frames_drawn(), " ", object, " ", message)) # [/color] not necessary
-
-
-## Prints the message in bold and a bright color, with empty lines on each side.
-## For finding important messages quickly in the debug console.
-func printHighlight(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
-	print_rich(str("\n[indent]􀢒 [b][color=white]", object, " ", message, "\n")) # [/color][/b] not necessary
 
 
 ## Prints a warning message in the Output Log and Godot Debugger Console.
@@ -260,8 +255,8 @@ func printError(message: String = "", object: Variant = null, _objectColor: Stri
 		OS.alert(message, "Framework Error")
 
 
-## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs].
-## Affected by [member shouldPrintDebugLogs].
+## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
+## Affected by [member shouldPrintDebugLogs]
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
@@ -273,19 +268,39 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 		return ""
 
 
-## Prints a list of variables in a highlighted color.
-## TIP: Helpful for temporary debugging of bugs currently under attention.
-## Affected by [member shouldPrintDebugLogs].
+## Prints the message in bold and a bright color, with empty lines on each side.
+## Helpful for finding important messages quickly in the debug console.
+func printHighlight(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
+	print_rich(str("\n[indent]􀢒 [b][color=white]", object, " ", message, "\n")) # [/color][/b] not necessary
+
+
+## Prints an array of variables in a highlighted color.
+## Affected by [member shouldPrintDebugLogs]
 func printVariables(values: Array[Variant], separator: String = "\t ", color: String = "orange") -> void:
 	if shouldPrintDebugLogs:
-		print_rich(str("[indent]F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " ", getCaller(), " \t[color=", color, "][b]", separator.join(values)))
+		print_rich(str("[color=", color, "][b]", separator.join(values)))
+
+
+## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before this method was called.
+## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
+## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
+func printTrace(values: Array[Variant] = [], separator: String = " [color=orange]／[/color] ", color: String = "orange") -> void:
+	if OS.is_debug_build():
+		var backgroundColor: String = "[bgcolor=002020]" if alternateTraceLogRow else "[bgcolor=001030]"
+		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
+		print_rich(str(backgroundColor, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [color=white]", getCaller(2), "[/color] ← ", getCaller(3), " ← ", getCaller(4)))
+		if not values.is_empty(): print_rich(str(backgroundColor, " 　 [color=", color, "][b]", separator.join(values)))
+		alternateTraceLogRow = not alternateTraceLogRow
 
 
 ## Returns a string denoting the script file & function name from the specified [param stackPosition] on the call stack.
 ## Default: 2 which is the function that called the CALLER of this method.
-## Example: If `_ready()` in `Component.gd` calls [method Debug.printDebug], then `printDebug()` calls `getCaller()`, then `Component.gd:_ready()`
+## Example: If `_ready()` in `Component.gd` calls [method Debug.printError], then `printError()` calls `getCaller()`, then `get_stack()[2]` is `Component.gd:_ready()`
+## [0] is `getCaller()` itself, [1] would be `printError()` and so on.
+## If the position is larger than the stack, a "?" is returned.
 ## NOTE: Does NOT include function arguments.
 static func getCaller(stackPosition: int = 2) -> String:
+	if stackPosition > get_stack().size() - 1: return "?" # TBD: Return an empty string or what?
 	var caller: Dictionary = get_stack()[stackPosition] # CHECK: Get the caller of the caller (function that wants to log → log function → this function)
 	return caller.source.get_file() + ":" + caller.function + "()"
 
@@ -338,7 +353,7 @@ func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
 	# TBD: Return newLogEntryUI?
 
 
-## Returns a dictionary of almost all details about an object, using the [Debug.CustomLogKeys].
+## Returns a dictionary of almost all details about an object, using the [Debug.CustomLogKeys]
 static func getObjectDetails(object: Variant) -> Dictionary[StringName, Variant]:
 	# TBD: Should the values be actual variables or Strings?
 
