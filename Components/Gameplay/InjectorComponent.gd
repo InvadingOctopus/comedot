@@ -1,10 +1,12 @@
 ## Transfers all of its child nodes (which may be other Components) to the first Entity that collides with it.
 ## Useful for applying buffs/debuffs, for example: a "bullet" entity representing a poison arrow etc. that adds a [DamageOverTimeComponent] to the victim entity.
 ## NOTE: To use, connect the [signal Area2D.area_entered] or [signal Area2D.body_entered] signal of an [Area2D] to the [method onAreaOrBodyEntered] method of this component.
+## TIP: If adding other Components as child nodes of this component, enable the [member allowNonEntityParent] flag on those Components.
 
 class_name InjectorComponent
 extends Component
 
+# TODO: Automatically set/unset allowNonEntityParent
 # DESIGN: The component's scene is a Node2D so any visual children can move along with the "injector entity"
 
 
@@ -45,6 +47,10 @@ func _ready() -> void:
 				child.visible = false
 			if shouldSetProcessModeBeforeTransfer:
 				child.process_mode = processModeBeforeTransfer
+			
+			if child is Component:
+				if not child.allowNonEntityParent:
+					printWarning(str("`allowNonEntityParent` is not set on a child component added to InjectorComponent: ", child))
 
 
 ## Moves (reparents) all the child [Node]s of this Component to the [param newParentEntity], and returns an array of all the transferred nodes.
