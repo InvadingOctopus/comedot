@@ -86,7 +86,9 @@ func _process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
 	# TBD: Assess performance impact
-	functionsAlreadyCalledOnceThisFrame.clear()
+	if not functionsAlreadyCalledOnceThisFrame.is_empty(): 
+		functionsAlreadyCalledOnceThisFrame.clear()
+	self.set_process(false) # No need to check every frame again. CHECK: Does this mess up anything unexpected?
 
 
 ## May be called by a child component such as a [HealthComponent] when this parent [Entity] is supposed to be removed from the scene.
@@ -422,10 +424,12 @@ func getBody() -> CharacterBody2D:
 func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 	# Has the function already been called this frame?
 	if not functionsAlreadyCalledOnceThisFrame.has(str(function)):
+		# NOTE: TBD: We're not checking if the key matches the function we got now, just that the key exists?
 		# DEBUG: printDebug("callOnceThisFrame(" + str(function) + ")")
 		# First add it to the list so it doesn't get called again; this should avoid any recursion.
 		self.functionsAlreadyCalledOnceThisFrame[str(function)] = function
 		function.callv(arguments)
+		self.set_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
 
 ## Uses a [LabelComponent], if available, to display the specified text.
