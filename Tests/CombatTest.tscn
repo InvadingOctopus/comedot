@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://dafge0n7l43qm"]
+[gd_scene load_steps=24 format=4 uid="uid://dafge0n7l43qm"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2lgxf"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="2_a6r0q"]
@@ -6,15 +6,25 @@
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="3_a6r0q"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="4_a6r0q"]
 [ext_resource type="PackedScene" uid="uid://h3pbo0mlj4je" path="res://Templates/Entities/MonsterEntityTemplate-Platformer.tscn" id="5_l6t3l"]
+[ext_resource type="PackedScene" uid="uid://dnj2tewb1jq0n" path="res://Scenes/Areas/SpawnArea.tscn" id="7_q70sy"]
 [ext_resource type="PackedScene" uid="uid://c8l4oj33xh2qa" path="res://Entities/Entity.tscn" id="7_s6bpi"]
+[ext_resource type="PackedScene" uid="uid://ks8fhlam1j34" path="res://Templates/Examples/GhostExampleEntity.tscn" id="8_js8sm"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="9_lvn5x"]
 [ext_resource type="PackedScene" uid="uid://qskvvxdkwgod" path="res://Components/Combat/DamageRepeatingComponent.tscn" id="10_lvn5x"]
 [ext_resource type="TileSet" uid="uid://bshjeqon37qc0" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.tres" id="10_s8cv2"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="11_s8cv2"]
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="13_jt7ij"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="13_lbdmr"]
+[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="15_jt7ij"]
+[ext_resource type="PackedScene" uid="uid://d24663limqvmn" path="res://Tests/PoisonArrowTestEntity.tscn" id="15_lbdmr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s8cv2"]
 resource_local_to_scene = true
 size = Vector2(48, 144)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2n8r"]
+resource_local_to_scene = true
+size = Vector2(16, 48)
 
 [sub_resource type="Resource" id="Resource_cafj2"]
 resource_local_to_scene = true
@@ -44,9 +54,14 @@ description = ""
 resource_local_to_scene = true
 size = Vector2(18, 18)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_y8ehy"]
+atlas = ExtResource("13_jt7ij")
+region = Rect2(400, 112, 16, 16)
+
 [node name="CombatTest" type="Node2D"]
 script = ExtResource("1_2lgxf")
 mainGameScenePath = "uid://dafge0n7l43qm"
+shouldPrintDebugLogs = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAAAAAAAAARABEAAAABAAAAAAARABEAAAACAAAAAAARABEAAAADAAAAAAARABEAAAAEAAAAAAARABEAAAAFAAAAAAARABEAAAAGAAAAAAARABEAAAAHAAAAAAARABEAAAAIAAAAAAARABEAAAAJAAAAAAARABEAAAAKAAAAAAARABEAAAALAAAAAAARABEAAAAMAAAAAAARABEAAAANAAAAAAARABEAAAAOAAAAAAARABEAAAAPAAAAAAARABEAAAAQAAAAAAARABEAAAARAAAAAAARABEAAAASAAAAAAARABEAAAATAAAAAAARABEAAAATAAEAAAARABEAAAATAAIAAAARABEAAAATAAMAAAARABEAAAATAAQAAAARABEAAAATAAUAAAARABEAAAATAAYAAAARABEAAAATAAcAAAARABEAAAATAAgAAAARABEAAAATAAkAAAARABEAAAATAAoAAAARABEAAAASAAoAAAARABEAAAARAAoAAAARABEAAAAQAAoAAAARABEAAAAPAAoAAAARABEAAAAOAAoAAAARABEAAAANAAoAAAARABEAAAAMAAoAAAARABEAAAALAAoAAAARABEAAAAKAAoAAAARABEAAAAJAAoAAAARABEAAAAIAAoAAAARABEAAAAHAAoAAAARABEAAAAGAAoAAAARABEAAAAFAAoAAAARABEAAAAEAAoAAAARABEAAAADAAoAAAARABEAAAACAAoAAAARABEAAAABAAoAAAARABEAAAAAAAoAAAARABEAAAAAAAkAAAARABEAAAAAAAgAAAARABEAAAAAAAcAAAARABEAAAAAAAYAAAARABEAAAAAAAUAAAARABEAAAAAAAQAAAARABEAAAAAAAMAAAARABEAAAAAAAIAAAARABEAAAAAAAEAAAARABEAAAA=")
@@ -71,6 +86,19 @@ modulate = Color(1, 0, 0, 0.5)
 tile_map_data = PackedByteArray("AAAAAAAAAAAmAAsAAAAAAAEAAAAmAAsAAAAAAAIAAAAmAAsAAAAAAAMAAAAmAAsAAAAAAAQAAAAmAAsAAAAAAAUAAAAmAAsAAAAAAAYAAAAmAAsAAAAAAAcAAAAmAAsAAAAAAAgAAAAmAAsAAAABAAAAAAAmAAsAAAABAAEAAAAmAAsAAAABAAIAAAAmAAsAAAABAAMAAAAmAAsAAAABAAQAAAAmAAsAAAABAAUAAAAmAAsAAAABAAYAAAAmAAsAAAABAAcAAAAmAAsAAAABAAgAAAAmAAsAAAACAAAAAAAmAAsAAAACAAEAAAAmAAsAAAACAAIAAAAmAAsAAAACAAMAAAAmAAsAAAACAAQAAAAmAAsAAAACAAUAAAAmAAsAAAACAAYAAAAmAAsAAAACAAcAAAAmAAsAAAACAAgAAAAmAAsAAAA=")
 tile_set = ExtResource("10_s8cv2")
 
+[node name="SpawnArea" parent="." instance=ExtResource("7_q70sy")]
+position = Vector2(288, 64)
+
+[node name="SpawnAreaShape" parent="SpawnArea" index="0"]
+position = Vector2(8, 24)
+shape = SubResource("RectangleShape2D_v2n8r")
+
+[node name="SpawnTimer" parent="SpawnArea" index="1"]
+wait_time = 10.0
+sceneToSpawn = ExtResource("8_js8sm")
+groupToAddTo = &"ghosts"
+maximumLimitInGroup = 2
+
 [node name="PlayerEntityTemplate-OverheadCombat" parent="." instance=ExtResource("2_f2vu7")]
 position = Vector2(160, 88)
 collision_mask = 3640
@@ -87,7 +115,7 @@ health = SubResource("Resource_cafj2")
 propertiesToWatch = Array[NodePath]([NodePath("../FactionComponent:factions"), NodePath("../HealthComponent:health:value")])
 
 [node name="MonsterEntity" parent="." instance=ExtResource("5_l6t3l")]
-position = Vector2(32, 32)
+position = Vector2(32, 48)
 
 [node name="Sprite2D" parent="MonsterEntity" index="0"]
 texture = ExtResource("11_s8cv2")
@@ -101,9 +129,30 @@ shape = SubResource("RectangleShape2D_lvn5x")
 [node name="DebugComponent" parent="MonsterEntity" instance=ExtResource("4_a6r0q")]
 propertiesToWatch = Array[NodePath]([NodePath("../FactionComponent:factions"), NodePath("../HealthComponent:health:value")])
 
+[node name="ArmedMonsterEntity" type="Sprite2D" parent="." groups=["entities"]]
+modulate = Color(1, 0.5, 0, 1)
+position = Vector2(32, 32)
+texture = SubResource("AtlasTexture_y8ehy")
+script = ExtResource("13_lbdmr")
+metadata/_edit_group_ = true
+
+[node name="FactionComponent" parent="ArmedMonsterEntity" instance=ExtResource("9_lvn5x")]
+factions = 8
+
+[node name="GunComponent" parent="ArmedMonsterEntity" instance=ExtResource("15_jt7ij")]
+bulletEntity = ExtResource("15_lbdmr")
+autoFire = true
+cooldown = 3.0
+
+[node name="GunSprite" parent="ArmedMonsterEntity/GunComponent/Pivot" index="0"]
+position = Vector2(16, 0)
+region_rect = Rect2(592, 80, 16, 16)
+
 [editable path="RadiationZoneEntity"]
 [editable path="RadiationZoneEntity/DamageRepeatingComponent"]
+[editable path="SpawnArea"]
 [editable path="PlayerEntityTemplate-OverheadCombat"]
 [editable path="PlayerEntityTemplate-OverheadCombat/GunComponent"]
 [editable path="MonsterEntity"]
 [editable path="MonsterEntity/DamageComponent"]
+[editable path="ArmedMonsterEntity/GunComponent"]
