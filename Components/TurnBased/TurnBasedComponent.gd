@@ -59,8 +59,8 @@ func _enter_tree() -> void:
 	self.add_to_group(Global.Groups.turnBased, true)
 
 
-func registerParent() -> void:
-	super.registerParent()
+func registerEntity(newParentEntity: Entity) -> void:
+	super.registerEntity(newParentEntity)
 	if not is_instance_of(self.parentEntity, TurnBasedEntity):
 		printWarning("Parent Entity is not a TurnBasedEntity! " + parentEntity.logFullName)
 
@@ -74,11 +74,11 @@ func registerParent() -> void:
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
-	
+
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnBegin() # IGNORE: Godot Warning; `await` is needed for animations etc.
-	
+
 	if shouldShowDebugInfo: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
@@ -88,11 +88,11 @@ func processTurnBeginSignals() -> void:
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
-	
+
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnUpdate() # IGNORE: Godot Warning; `await` is needed for animations etc.
-	
+
 	if shouldShowDebugInfo: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
@@ -102,11 +102,11 @@ func processTurnUpdateSignals() -> void:
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
-	
+
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnEnd() # IGNORE: Godot Warning; `await` is needed for animations etc.
-	
+
 	if shouldShowDebugInfo: printLog("didEndTurn")
 	didEndTurn.emit()
 
