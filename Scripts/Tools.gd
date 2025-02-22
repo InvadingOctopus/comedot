@@ -548,10 +548,33 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 #endregion
 
 
+#region Text Functions
+
+## Returns the variable name for an enum value.
+## WARNING: May NOT work as expected for enums with non-sequential values or starting below 0, or if there are multiple identical values, or if there is a 'null' key.
+static func getEnumText(enumType: Dictionary, value: int) -> String:
+	var text: String
+
+	text = str(enumType.find_key(value)) # TBD: Check for `null`?
+	if text.is_empty(): text = "[invalid key/value]"
+
+	return str(value, " (", text, ")")
+
+
+## Iterates over a [String] and replaces all occurrences of text matching the [param substitutions] [Dictionary]'s [method Dictionary.keys] with the values for those keys.
+## Example: A Dictionary of { "Apple":"Banana", "Cat":"Dog" } would replace all "Apple" in [param sourceString] with "Banana" and all "Cat" with "Dog".
+## NOTE: Does NOT modify the [param sourceString], instead returns a modified string.
+static func replaceStrings(sourceString: String, substitutions: Dictionary[String, String]) -> String:
+	var modifiedString: String = sourceString
+	for key: String in substitutions.keys():
+		modifiedString = modifiedString.replace(key, substitutions[key])
+	return modifiedString
+
+#endregion
+
+
 #region Maths Functions
-
 ## INFO: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
-
 #endregion
 
 
@@ -635,27 +658,6 @@ static func isValidArrayIndex(array: Array, index: int) -> bool:
 		return true
 	else:
 		return false
-
-
-## Returns the variable name for an enum value.
-## WARNING: May NOT work as expected for enums with non-sequential values or starting below 0, or if there are multiple identical values, or if there is a 'null' key.
-static func getEnumText(enumType: Dictionary, value: int) -> String:
-	var text: String
-
-	text = str(enumType.find_key(value)) # TBD: Check for `null`?
-	if text.is_empty(): text = "[invalid key/value]"
-
-	return str(value, " (", text, ")")
-
-
-## Iterates over a [String] and replaces all occurrences of text matching the [param substitutions] [Dictionary]'s [method Dictionary.keys] with the values for those keys.
-## Example: A Dictionary of { "Apple":"Banana", "Cat":"Dog" } would replace all "Apple" in [param sourceString] with "Banana" and all "Cat" with "Dog".
-## NOTE: Does NOT modify the [param sourceString], instead returns a modified string.
-static func replaceStrings(sourceString: String, substitutions: Dictionary[String, String]) -> String:
-	var modifiedString: String = sourceString
-	for key: String in substitutions.keys():
-		modifiedString = modifiedString.replace(key, substitutions[key])
-	return modifiedString
 
 
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
