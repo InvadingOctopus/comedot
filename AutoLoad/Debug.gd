@@ -255,19 +255,6 @@ func printError(message: String = "", object: Variant = null, _objectColor: Stri
 		OS.alert(message, "Framework Error")
 
 
-## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
-## Affected by [member shouldPrintDebugLogs]
-func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
-	# TODO: Optional charting? :)
-	if shouldPrintDebugLogs and previousValue != newValue:
-		var string: String = str(previousValue, " → ", newValue)
-		if not logAsDebug: printLog(string, variableName, "dimgray", "gray")
-		else: printDebug(string, variableName)
-		return string
-	else:
-		return ""
-
-
 ## Prints the message in bold and a bright color, with empty lines on each side.
 ## Helpful for finding important messages quickly in the debug console.
 func printHighlight(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
@@ -291,6 +278,19 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), " ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
 		if not values.is_empty(): print_rich(str(backgroundColor, " 　 [color=", color, "][b]", separator.join(values)))
 		alternateTraceLogRow = not alternateTraceLogRow
+
+
+## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
+## Affected by [member shouldPrintDebugLogs]
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
+	# TODO: Optional charting? :)
+	if shouldPrintDebugLogs and previousValue != newValue:
+		var string: String = str(previousValue, " → ", newValue)
+		if not logAsDebug: printLog(string, variableName, "dimgray", "gray")
+		else: printDebug(string, variableName)
+		return string
+	else:
+		return ""
 
 
 ## Returns a string denoting the script file & function name from the specified [param stackPosition] on the call stack.
