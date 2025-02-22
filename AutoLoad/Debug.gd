@@ -286,9 +286,9 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
 func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=orange]／[/color] ", color: String = "orange") -> void:
 	if OS.is_debug_build():
-		var backgroundColor: String = "[bgcolor=002020]" if alternateTraceLogRow else "[bgcolor=001030]"
+		var backgroundColor: String = "[bgcolor=101020]" if alternateTraceLogRow else "[bgcolor=001030]"
 		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
-		print_rich(str(backgroundColor, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ [color=white]", getCaller(stackPosition), "[/color] ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
+		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), " ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
 		if not values.is_empty(): print_rich(str(backgroundColor, " 　 [color=", color, "][b]", separator.join(values)))
 		alternateTraceLogRow = not alternateTraceLogRow
 
