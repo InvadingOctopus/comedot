@@ -281,14 +281,14 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 		print_rich(str("[color=", color, "][b]", separator.join(values)))
 
 
-## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before this method was called.
+## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before the log method was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
-func printTrace(values: Array[Variant] = [], separator: String = " [color=orange]／[/color] ", color: String = "orange") -> void:
+func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=orange]／[/color] ", color: String = "orange") -> void:
 	if OS.is_debug_build():
 		var backgroundColor: String = "[bgcolor=002020]" if alternateTraceLogRow else "[bgcolor=001030]"
 		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
-		print_rich(str(backgroundColor, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [color=white]", getCaller(2), "[/color] ← ", getCaller(3), " ← ", getCaller(4)))
+		print_rich(str(backgroundColor, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ [color=white]", getCaller(stackPosition), "[/color] ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
 		if not values.is_empty(): print_rich(str(backgroundColor, " 　 [color=", color, "][b]", separator.join(values)))
 		alternateTraceLogRow = not alternateTraceLogRow
 
