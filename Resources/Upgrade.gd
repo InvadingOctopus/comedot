@@ -41,6 +41,7 @@ extends Resource
 ## See [Payload] for explanation and available options.
 @export var payloadOnDiscard: Payload
 
+@export var icon: Texture2D ## An optional image to display in UI views such as [UpgradeChoiceUI].
 @export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
 
