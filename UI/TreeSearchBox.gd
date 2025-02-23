@@ -23,6 +23,10 @@ var treeRoot: TreeItem:
 
 #region Events
 
+func _ready() -> void:
+	self.right_icon = self.get_theme_icon(&"Search", &"EditorIcons")
+
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not self.has_focus(): return
 	

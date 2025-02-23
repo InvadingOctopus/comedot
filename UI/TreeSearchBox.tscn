@@ -14,7 +14,6 @@ keep_editing_on_text_submit = true
 expand_to_text_length = true
 emoji_menu_enabled = false
 clear_button_enabled = true
-flat = true
 select_all_on_focus = true
 script = ExtResource("1_mg701")
 

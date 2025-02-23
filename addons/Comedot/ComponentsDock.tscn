@@ -1,11 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://dn5qx1mv643mq"]
+[gd_scene load_steps=9 format=3 uid="uid://dn5qx1mv643mq"]
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
-[ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Logos/ComedotLogo.png" id="2_7r6gx"]
+[ext_resource type="Texture2D" uid="uid://busecy5ufg0x1" path="res://Assets/Logos/ComedotLogo-Grayscale.png" id="2_3crsp"]
 [ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 [ext_resource type="PackedScene" uid="uid://jt8bd2lsvtyp" path="res://UI/TreeSearchBox.tscn" id="4_3crsp"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7r6gx"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3crsp"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_3crsp"]
+blend_mode = 1
 
 [sub_resource type="InputEventKey" id="InputEventKey_x0w7g"]
 device = -1
@@ -25,10 +28,27 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_3crsp")
 script = ExtResource("1_otxly")
 metadata/_edit_group_ = true
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="Logo" type="TextureRect" parent="."]
+modulate = Color(0.8, 0.9, 1, 0.1)
+texture_filter = 2
+material = SubResource("CanvasItemMaterial_3crsp")
+clip_contents = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+offset_left = 10.0
+offset_right = 116.19
+offset_bottom = 80.0
+size_flags_horizontal = 8
+size_flags_stretch_ratio = 0.5
+texture = ExtResource("2_3crsp")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="MainGridContainer" type="GridContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,47 +56,47 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HeaderMarginContainer" type="MarginContainer" parent="GridContainer"]
-texture_filter = 2
+[node name="ToolbarContainer" type="VBoxContainer" parent="MainGridContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer1" type="HBoxContainer" parent="MainGridContainer/ToolbarContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+alignment = 2
+
+[node name="Spacer" type="VSeparator" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-size_flags_stretch_ratio = 0.5
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
+size_flags_vertical = 4
+theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
 
-[node name="HeaderContainer" type="HBoxContainer" parent="GridContainer/HeaderMarginContainer"]
+[node name="EditableChildrenCheckBox" type="CheckBox" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1"]
+unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Expose the sub-nodes of new Entities & Components?"
+focus_next = NodePath("../RefreshButton")
+button_pressed = true
+text = "Editable Children"
+alignment = 2
 
-[node name="Logo" type="TextureRect" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
-modulate = Color(1, 1, 1, 0.5)
-texture_filter = 2
-clip_contents = true
-custom_minimum_size = Vector2(32, 32)
+[node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_stretch_ratio = 0.5
-texture = ExtResource("2_7r6gx")
-expand_mode = 3
-stretch_mode = 4
+tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components."
+focus_next = NodePath("../AddEntityMenuButton")
+focus_previous = NodePath("../EditableChildrenCheckBox")
+text = "Rescan Folders"
+alignment = 2
 
-[node name="Spacer" type="VSeparator" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 0
-theme_override_styles/separator = SubResource("StyleBoxEmpty_7r6gx")
-
-[node name="ButtonsContainer" type="VBoxContainer" parent="GridContainer/HeaderMarginContainer/HeaderContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-
-[node name="AddEntityMenuButton" type="MenuButton" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+[node name="AddEntityMenuButton" type="MenuButton" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1"]
 unique_name_in_owner = true
 modulate = Color(0.486275, 0.988235, 0, 1)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 tooltip_text = "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
+focus_next = NodePath("../../../TreeSearchBox")
+focus_previous = NodePath("../RefreshButton")
+focus_mode = 2
+toggle_mode = false
 shortcut = SubResource("Shortcut_3crsp")
 text = "Add Entity"
 icon = ExtResource("3_fn551")
@@ -94,88 +114,85 @@ popup/item_2/id = 2
 popup/item_3/text = "Sprite2D"
 popup/item_3/id = 3
 
-[node name="EditComponentButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
-unique_name_in_owner = true
+[node name="ButtonsContainer2" type="HBoxContainer" parent="MainGridContainer/ToolbarContainer"]
 visible = false
 layout_mode = 2
+alignment = 2
+
+[node name="Spacer" type="VSeparator" parent="MainGridContainer/ToolbarContainer/ButtonsContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
+
+[node name="DebugReloadButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reload the Comedot plugin and refresh the Comedock."
+focus_next = NodePath("../EditComponentButton")
+text = "Reload Plugin"
+alignment = 2
+
+[node name="EditComponentButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
 tooltip_text = "Open the original source scene of the Component currently selected in this Dock."
+focus_previous = NodePath("../DebugReloadButton")
 disabled = true
 text = "Edit Component"
 alignment = 2
 
-[node name="RefreshButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
+[node name="TextMarginContainer" type="MarginContainer" parent="MainGridContainer"]
 layout_mode = 2
-tooltip_text = "Scan the `\\Components\\` folder's subfolders for all Components."
-text = "Rescan Folders"
-alignment = 2
+theme_override_constants/margin_bottom = 10
 
-[node name="DebugReloadButton" type="Button" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
-unique_name_in_owner = true
+[node name="LabelsContainer" type="VBoxContainer" parent="MainGridContainer/TextMarginContainer"]
 layout_mode = 2
-tooltip_text = "Reload the Comedot plugin and refresh the Comedock."
-text = "Reload Plugin"
-alignment = 2
-
-[node name="EditableChildrenCheckBox" type="CheckBox" parent="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Expose the sub-nodes of new Entities & Components?"
-button_pressed = true
-text = "Editable Children"
-alignment = 2
-
-[node name="TextMarginContainer" type="MarginContainer" parent="GridContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GridContainer/TextMarginContainer"]
-layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="TitleLabel" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_type_variation = &"HeaderSmall"
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Components"
-
-[node name="HelpLabel" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
+[node name="HelpLabel" type="Label" parent="MainGridContainer/TextMarginContainer/LabelsContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "Select an Entity node in the scene to add Components."
+horizontal_alignment = 2
 text_overrun_behavior = 3
 
-[node name="HelpLabel2" type="Label" parent="GridContainer/TextMarginContainer/VBoxContainer"]
+[node name="HelpLabel2" type="Label" parent="MainGridContainer/TextMarginContainer/LabelsContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "For more commands, see the Project → Tools menu."
+horizontal_alignment = 2
 text_overrun_behavior = 3
 
-[node name="TreeFilterBox" parent="GridContainer" node_paths=PackedStringArray("tree") instance=ExtResource("4_3crsp")]
+[node name="TreeSearchBox" parent="MainGridContainer" node_paths=PackedStringArray("tree") instance=ExtResource("4_3crsp")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../ToolbarContainer/ButtonsContainer1/EditableChildrenCheckBox")
+focus_next = NodePath("../TreeScrollContainer/ComponentsTree")
+focus_previous = NodePath("../ToolbarContainer/ButtonsContainer1/AddEntityMenuButton")
+placeholder_text = "Filter Components"
 tree = NodePath("../TreeScrollContainer/ComponentsTree")
 
-[node name="TreeScrollContainer" type="ScrollContainer" parent="GridContainer"]
+[node name="TreeScrollContainer" type="ScrollContainer" parent="MainGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 follow_focus = true
 
-[node name="ComponentsTree" type="Tree" parent="GridContainer/TreeScrollContainer"]
+[node name="ComponentsTree" type="Tree" parent="MainGridContainer/TreeScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
+focus_previous = NodePath("../../TreeSearchBox")
 columns = 2
 hide_root = true
 select_mode = 1
@@ -206,7 +223,7 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_7r6gx")
+theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
 
 [node name="NewComponentFolderLabel" type="Label" parent="NewComponentDialog/VBoxContainer"]
 unique_name_in_owner = true
@@ -220,12 +237,12 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 placeholder_text = "NewComponent"
 
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/AddEntityMenuButton" to="." method="onAddEntityButton_pressed"]
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/EditComponentButton" to="." method="onEditComponentButton_pressed"]
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/RefreshButton" to="." method="onRefreshButton_pressed"]
-[connection signal="pressed" from="GridContainer/HeaderMarginContainer/HeaderContainer/ButtonsContainer/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
-[connection signal="button_clicked" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
-[connection signal="item_activated" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
-[connection signal="item_edited" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemEdited"]
-[connection signal="item_selected" from="GridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/RefreshButton" to="." method="onRefreshButton_pressed"]
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/AddEntityMenuButton" to="." method="onAddEntityButton_pressed"]
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/EditComponentButton" to="." method="onEditComponentButton_pressed"]
+[connection signal="button_clicked" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
+[connection signal="item_activated" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemActivated"]
+[connection signal="item_edited" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemEdited"]
+[connection signal="item_selected" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_itemSelected"]
 [connection signal="confirmed" from="NewComponentDialog" to="." method="onNewComponentDialog_confirmed"]

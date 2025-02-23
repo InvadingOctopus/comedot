@@ -6,7 +6,7 @@ class_name ComponentsDock
 extends Panel
 
 # TODO: More robust scanning; not just filenames ending in "Component" :')
-# TODO: Search field
+# TODO: Update node name in help label when a selected Entity is renamed.
 # TODO: Add option to duplicate an existing Component?
 
 
@@ -53,8 +53,8 @@ const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # Edit
 # Access built-in Godot icons as per the documentation: https://docs.godotengine.org/en/stable/classes/class_editorinterface.html#class-editorinterface-method-get-editor-theme
 # > When creating custom editor UI, prefer accessing theme items directly from your GUI nodes using the get_theme_* methods.
 # Instead of: EditorInterface.get_editor_theme().get_icon()
-@onready var folderIcon: Texture2D = self.get_theme_icon("Folder", "EditorIcons")
-@onready var sceneIcon:  Texture2D = self.get_theme_icon("InstanceOptions", "EditorIcons")
+@onready var folderIcon: Texture2D = self.get_theme_icon(&"Folder", &"EditorIcons")
+@onready var sceneIcon:  Texture2D = self.get_theme_icon(&"InstanceOptions", &"EditorIcons")
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
