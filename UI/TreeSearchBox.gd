@@ -61,7 +61,6 @@ func filter(searchQuery: String) -> void:
 	# Sift through all categories
 	for category in treeRoot.get_children():
 		var childCount: int = category.get_child_count()
-		if childCount <= 0: break
 
 		for item in category.get_children():
 			var itemName: String = item.get_text(0)
