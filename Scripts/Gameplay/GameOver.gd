@@ -2,15 +2,23 @@
 ## such as when the player entity's [HealthComponent] drops to 0.
 ## Add game-specific nodes/labels/etc. for the Game Over visuals as children of this node; this script automatically hides the node on [method _ready] and makes it visible when the game is over.
 ## For other game-specific animations or conditions, extend from this script and override the [method displayGameOver] method. IMPORTANT: `super.displayGameOver()` MUST Be called.
+## @experimental
 
 class_name GameOver
 extends Node
 
 # TODO: Option to restart
+# TODO: Avoid Game Over during transitions
 
 
 #region Parameters
+
+## Triggers Game Over after receiving the [signal GameState.playerRemoved] signal if the [member GameState.players] array is empty, i.e. after the last player [Entity] has been removed.
+## WARNING: This may trigger an unintended Game Over during scene TRANSITIONS! Such as when calling [method SceneManager.transitionToScene] because of course it removes all existing nodes.
+@export var shouldGameOverAfterAllPlayersRemoved: bool = false
+
 @export var isEnabled: bool = true
+@export var shouldShowDebugInfo: bool = false
 #endregion
 
 
@@ -35,13 +43,15 @@ func disconnectSignals() -> void:
 	Tools.disconnectSignal(GameState.gameDidOver,   self.gameState_gameDidOver)
 
 
-func gameState_playerRemoved(_player: Entity) -> void:
-	if isEnabled and GameState.players.is_empty():
+func gameState_playerRemoved(player: Entity) -> void:
+	if isEnabled and shouldGameOverAfterAllPlayersRemoved and GameState.players.is_empty():
+		if shouldShowDebugInfo: Debug.printDebug(str("gameState_playerRemoved() last player Entity: ", player), self)
 		disconnectSignals()
 		if not isDisplayingGameOver: displayGameOver()
 
 
 func gameState_gameDidOver() -> void:
+	if shouldShowDebugInfo: Debug.printDebug(str("gameState_gameDidOver(): GameOver.isEnabled: ", isEnabled), self)
 	if isEnabled:
 		# NOTE: Make sure ALL players are dead before Overing the Game!
 		if GameState.players.is_empty():
@@ -55,7 +65,17 @@ func gameState_gameDidOver() -> void:
 ## For other game-specific animations, override this method.
 ## IMPORTANT: `super.displayGameOver()` MUST Be called.
 func displayGameOver() -> void:
-	if isDisplayingGameOver: return
-	self.get_tree().current_scene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay
+	if isDisplayingGameOver: 
+		Debug.printDebug("displayGameOver() called while already isDisplayingGameOver")
+		return
+	
+	Debug.printLog("displayGameOver()", self)
+	
+	var currentScene: Node = self.get_tree().current_scene
+	if not currentScene: # Avoid crash if triggered during scene transitions
+		Debug.printWarning(str("displayGameOver(): SceneTree.current_scene is null! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
+		return 
+
+	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay
 	self.visible = true # Show Game Over graphics
 	self.isDisplayingGameOver = true
