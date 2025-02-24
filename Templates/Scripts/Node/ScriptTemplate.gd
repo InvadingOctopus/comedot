@@ -7,7 +7,7 @@ extends Node
 
 
 #region Parameters
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -29,7 +29,7 @@ var player: PlayerEntity:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if shouldShowDebugInfo: Debug.printLog("_ready()", self, "white")
+	if debugMode: Debug.printLog("_ready()", self, "white")
 	pass # Replace with function body.
 
 

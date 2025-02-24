@@ -10,7 +10,7 @@ extends Resource
 
 
 #region Parameters
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -55,5 +55,5 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, self.logName, "", "pink")
+	if debugMode: Debug.printLog(message, self.logName, "", "pink")
 

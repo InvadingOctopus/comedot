@@ -26,13 +26,13 @@ func connectSignals() -> void:
 
 
 func onArea_areaEntered(areaEntered: Area2D) -> void:
-	if shouldShowDebugInfo: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 	if not isEnabled or areaEntered.owner == self or areaEntered.owner == self.parentEntity: return # Avoid running into ourselves
 	self.onCollide()
 
 
 func onArea_bodyEntered(bodyEntered: Node2D) -> void:
-	if shouldShowDebugInfo: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
 	if not isEnabled or bodyEntered.owner == self or bodyEntered.owner == self.parentEntity: return # Avoid running into ourselves
 	self.onCollide()
 

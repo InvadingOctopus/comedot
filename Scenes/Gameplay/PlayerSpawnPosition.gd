@@ -22,7 +22,7 @@ extends Marker2D
 ## TIP: This option may resolve jumps between the difference in the player's initial position as saved in the scene, and this spawn point, if the player is not [method _ready] before this script.
 @export var shouldCreateCamera: bool = false
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 #endregion
 
@@ -51,7 +51,7 @@ func onGameState_playerReady(newPlayer: Entity) -> void:
 
 func setPlayerPosition() -> void:
 	if player:
-		if shouldShowDebugInfo: Debug.printDebug(str("setPlayerPosition(): ", player.global_position, " → ", playerSpawnPosition.global_position), self)
+		if debugMode: Debug.printDebug(str("setPlayerPosition(): ", player.global_position, " → ", playerSpawnPosition.global_position), self)
 		player.global_position = playerSpawnPosition.global_position
 		if shouldCreateCamera: setCamera()
 
@@ -63,6 +63,6 @@ func setCamera() -> Camera2D:
 		if shouldCreateCamera and camera == null:
 			camera = Camera2D.new()
 			Tools.addChildAndSetOwner(camera, player)
-			if shouldShowDebugInfo: Debug.printDebug(str("setCamera() new: ", camera), self)
+			if debugMode: Debug.printDebug(str("setCamera() new: ", camera), self)
 		
 		return camera

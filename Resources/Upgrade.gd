@@ -27,7 +27,7 @@ extends GameplayResourceBase
 ## See [Payload] for explanation and available options.
 @export var payloadOnDiscard: Payload
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 
 @export_group("Level")
@@ -384,4 +384,4 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName), "", "pink")
+	if debugMode: Debug.printLog(message, str(self.logName), "", "pink")

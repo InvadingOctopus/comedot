@@ -35,25 +35,25 @@ var currentState: State
 var jumpInput:				bool:
 	set(newValue):
 		if newValue != jumpInput:
-			if shouldShowDebugInfo: Debug.printChange("jumpInput", jumpInput, newValue)
+			if debugMode: Debug.printChange("jumpInput", jumpInput, newValue)
 			jumpInput = newValue
 
 var jumpInputJustPressed:	bool:
 	set(newValue):
 		if newValue != jumpInputJustPressed:
-			if shouldShowDebugInfo: Debug.printChange("jumpInputJustPressed", jumpInputJustPressed, newValue)
+			if debugMode: Debug.printChange("jumpInputJustPressed", jumpInputJustPressed, newValue)
 			jumpInputJustPressed = newValue
 
 var jumpInputJustReleased:	bool:
 	set(newValue):
 		if newValue != jumpInputJustReleased:
-			if shouldShowDebugInfo: Debug.printChange("jumpInputJustReleased", jumpInputJustReleased, newValue)
+			if debugMode: Debug.printChange("jumpInputJustReleased", jumpInputJustReleased, newValue)
 			jumpInputJustReleased = newValue
 
 var currentNumberOfJumps:	int:
 	set(newValue):
 		if newValue != currentNumberOfJumps:
-			if shouldShowDebugInfo: Debug.printChange("currentNumberOfJumps", currentNumberOfJumps, newValue)
+			if debugMode: Debug.printChange("currentNumberOfJumps", currentNumberOfJumps, newValue)
 			currentNumberOfJumps = newValue
 
 var didWallJump:			bool ## Did we just perform a "wall jump"?
@@ -84,7 +84,7 @@ func _input(event: InputEvent) -> void:
 	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
-	if shouldShowDebugInfo:
+	if debugMode:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
 
 	processWallJump()
@@ -104,7 +104,7 @@ func characterBodyComponent_didMove(_delta: float) -> void:
 	updateCoyoteJumpState()
 	updateWallJumpState()
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 	clearInput()
 
 
@@ -154,14 +154,14 @@ func processJump() -> void:
 		# EXAMPLE: If a normal jump is -100 and a short jump is -50, then when falling the `body.velocity.y` would be POSITIVE (down),
 		# so the comparison should be made after taking the `body.up_direction` into account.
 
-		if shouldShowDebugInfo: Debug.printVariables([parentEntity.name, body.velocity.y, parameters.jumpVelocity1stJumpShort * body.up_direction.y, body.up_direction.y])
+		if debugMode: Debug.printVariables([parentEntity.name, body.velocity.y, parameters.jumpVelocity1stJumpShort * body.up_direction.y, body.up_direction.y])
 
 		# CHECK: Verify that we got this understanding correct!
 
 		if (body.up_direction.y < 0 and body.velocity.y < parameters.jumpVelocity1stJumpShort * body.up_direction.y) \
 		or (body.up_direction.y > 0 and body.velocity.y > parameters.jumpVelocity1stJumpShort * body.up_direction.y): # Inverted gravity?
 
-			if shouldShowDebugInfo: printDebug(str("Short Jump! body.velocity.y: ", body.velocity.y, " → ", parameters.jumpVelocity1stJumpShort * body.up_direction.y))
+			if debugMode: printDebug(str("Short Jump! body.velocity.y: ", body.velocity.y, " → ", parameters.jumpVelocity1stJumpShort * body.up_direction.y))
 			body.velocity.y = parameters.jumpVelocity1stJumpShort * body.up_direction.y
 
 	# DEBUG: printLog(str("jumpInputJustPressed: ", jumpInputJustPressed, ", isOnFloor: ", isOnFloor, ", currentNumberOfJumps: ", currentNumberOfJumps, ", shouldJump: ", shouldJump))
@@ -175,7 +175,7 @@ func processJump() -> void:
 		currentNumberOfJumps += 1
 		currentState = State.jump # TBD: Should this be a `jump` state?
 
-		if shouldShowDebugInfo: printDebug(str("body.velocity.y → ",  body.velocity.y))
+		if debugMode: printDebug(str("body.velocity.y → ",  body.velocity.y))
 
 
 
@@ -245,7 +245,7 @@ func updateWallJumpState() -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.state		= currentState
 	Debug.watchList.wallTimer	= wallJumpTimer.time_left

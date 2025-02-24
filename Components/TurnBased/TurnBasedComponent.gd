@@ -73,13 +73,13 @@ func registerEntity(newParentEntity: Entity) -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
+	if debugMode: printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
 
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnBegin() # IGNORE: Godot Warning; `await` is needed for animations etc.
 
-	if shouldShowDebugInfo: printLog("didBeginTurn")
+	if debugMode: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
 
@@ -87,13 +87,13 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
+	if debugMode: printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
 
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnUpdate() # IGNORE: Godot Warning; `await` is needed for animations etc.
 
-	if shouldShowDebugInfo: printLog("didUpdateTurn")
+	if debugMode: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
 
@@ -101,13 +101,13 @@ func processTurnUpdateSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
+	if debugMode: printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
 
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
 	await self.processTurnEnd() # IGNORE: Godot Warning; `await` is needed for animations etc.
 
-	if shouldShowDebugInfo: printLog("didEndTurn")
+	if debugMode: printLog("didEndTurn")
 	didEndTurn.emit()
 
 #endregion

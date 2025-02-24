@@ -115,7 +115,7 @@ func processInput() -> void:
 
 
 func characterBodyComponent_didMove(_delta: float) -> void:
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 	# NOTE: PERFORMANCE: There may be a performance impact from using signals every frame,
 	# but the input is cleared after the [CharacterBodyComponent] moves so that other components may inspect and act upon the input of this component for this frame.
 
@@ -136,7 +136,7 @@ func processGravity(delta: float) -> void:
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale * self.gravityScaleOverride) * delta
 
-	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
+	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
 
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.
@@ -156,7 +156,7 @@ func processHorizontalMovement(delta: float) -> void:
 		else:
 			body.velocity.x = inputDirection * parameters.speedInAir
 
-	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
+	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
@@ -178,7 +178,7 @@ func processAllFriction(delta: float) -> void:
 		elif parameters.shouldApplyFrictionInAir:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
-	if shouldShowDebugInfo and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processAllFriction(): ", body.velocity))
+	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processAllFriction(): ", body.velocity))
 
 #endregion
 
@@ -225,7 +225,7 @@ func applyFrictionInAir(delta: float) -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.state = currentState
 	Debug.watchList.input = inputDirection
 

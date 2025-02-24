@@ -31,10 +31,10 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 	var inventoryComponent: InventoryComponent = collectorEntity.components.get(&"InventoryComponent")
 
 	if not inventoryComponent:
-		if shouldShowDebugInfo: printDebug(str("collectorEntity missing InventoryComponent: ", collectorEntity.logName))
+		if debugMode: printDebug(str("collectorEntity missing InventoryComponent: ", collectorEntity.logName))
 		return false
 	elif (preventCollectionIfDuplicateItem or inventoryComponent.shouldPreventDuplicates) and inventoryComponent.items.has(inventoryItem):
-		if shouldShowDebugInfo: printDebug(str("preventCollectionIfDuplicateItem/inventoryComponent.shouldPreventDuplicates and item already in inventory: ", inventoryItem.logName))
+		if debugMode: printDebug(str("preventCollectionIfDuplicateItem/inventoryComponent.shouldPreventDuplicates and item already in inventory: ", inventoryItem.logName))
 		return false
 	else:
 		return true
@@ -42,19 +42,19 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 
 ## Returns: The [InventoryItem].
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> InventoryItem:
-	if shouldShowDebugInfo:
+	if debugMode:
 		printLog(str("onCollectible_didCollect() collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity.logName, ", inventoryItem: ", inventoryItem.logName))
 
 	var inventoryComponent: InventoryComponent = collectorEntity.components.get(&"InventoryComponent")
 
 	if not inventoryComponent:
-		if shouldShowDebugInfo: printDebug("collectorEntity missing InventoryComponent")
+		if debugMode: printDebug("collectorEntity missing InventoryComponent")
 		return null
 
 	var result: bool = inventoryComponent.addItem(self.inventoryItem)
 
 	if not result:
-		if shouldShowDebugInfo: printDebug(str("inventoryComponent.addItem() returned false: ", inventoryItem.logName))
+		if debugMode: printDebug(str("inventoryComponent.addItem() returned false: ", inventoryItem.logName))
 		return null
 
 	# Create a visual indicator

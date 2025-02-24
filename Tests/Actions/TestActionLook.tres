@@ -14,7 +14,7 @@ region = Rect2(592, 208, 16, 16)
 script = ExtResource("2_xc7w0")
 payloadScript = ExtResource("2_to615")
 payloadScriptMethodName = &"onPayload_didExecute"
-shouldShowDebugInfo = true
+debugMode = true
 
 [resource]
 script = ExtResource("1_cr1cv")
@@ -22,7 +22,7 @@ requiresTarget = true
 hasFiniteUses = false
 maximumUses = 0
 payload = SubResource("Resource_7y27b")
-shouldShowDebugInfo = true
+debugMode = true
 usesRemaining = null
 cost = 0
 name = &"testLook"

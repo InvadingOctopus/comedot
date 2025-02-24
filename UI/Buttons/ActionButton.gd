@@ -19,7 +19,7 @@ extends Button
 			action = newValue
 			if self.is_node_ready(): updateUI()
 
-@export var shouldShowDebugInfo: bool
+@export var debugMode: bool
 
 #endregion
 
@@ -87,7 +87,7 @@ func connectSignals() -> void:
 
 
 func onPressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug("onPressed()", self)
+	if debugMode: Debug.printDebug("onPressed()", self)
 	generateInputEvent()
 
 

@@ -6,7 +6,7 @@ extends TurnBasedEntity
 
 
 func _enter_tree() -> void:
-	TurnBasedCoordinator.shouldShowDebugInfo = true
+	TurnBasedCoordinator.debugMode = true
 	super._enter_tree()
 
 

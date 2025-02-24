@@ -64,7 +64,7 @@ func setDependencies() -> bool:
 			printWarning(str("parentEntity's parent is not a Path2D: ", parentEntityParent))
 			return false
 
-	if shouldShowDebugInfo: printDebug(str("path → ", self.path))
+	if debugMode: printDebug(str("path → ", self.path))
 
 	# Get the Curve2D of the Path2D
 
@@ -73,7 +73,7 @@ func setDependencies() -> bool:
 	if self.curve:
 		if curve.point_count <= 0 or is_zero_approx(curve.get_baked_length()):
 			printWarning(str("curve has no length: ", curve))
-		elif shouldShowDebugInfo:
+		elif debugMode:
 			printDebug(str("curve: ", self.curve, " length: ", curve.get_baked_length()))
 		return true # Return `true` even if the curve is zero, because all the dependencies have been set.
 	else:
@@ -117,7 +117,7 @@ func snapEntityToCurve() -> Vector2:
 	# Move the entity
 	self.parentEntity.global_position = snappedPosition
 
-	if shouldShowDebugInfo: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
+	if debugMode: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
 
 	return snappedPosition
 

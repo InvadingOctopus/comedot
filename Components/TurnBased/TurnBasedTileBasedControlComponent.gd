@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
 	or event.is_action_pressed(GlobalInput.Actions.moveUp) \
 	or event.is_action_pressed(GlobalInput.Actions.moveDown):
 
-		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " ", event))
+		if debugMode: printLog(str(parentEntity.logName, " ", event))
 
 		self.recentInputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 
@@ -81,5 +81,5 @@ func processTurnEnd() -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.inputVector = recentInputVector

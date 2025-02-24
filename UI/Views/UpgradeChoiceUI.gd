@@ -20,7 +20,7 @@ extends Control
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var targetEntity: Entity
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 #endregion
 
@@ -127,7 +127,7 @@ func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
 
 
 func onUpgradeButton_pressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), self)
+	if debugMode: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), self)
 	self.didChooseUpgrade.emit(self.upgrade)
 
 #endregion

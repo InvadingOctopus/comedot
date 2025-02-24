@@ -33,7 +33,7 @@ extends Timer
 			self.paused = not isEnabled
 			if not isEnabled: self.stop()
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -60,7 +60,7 @@ func spawn() -> Node2D:
 	# <0 is ignored
 	if maximumTotalToSpawn >= 0 \
 	and totalNodesSpawned >= maximumTotalToSpawn:
-		if shouldShowDebugInfo: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maximumTotalToSpawn: ", maximumTotalToSpawn), self)
+		if debugMode: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maximumTotalToSpawn: ", maximumTotalToSpawn), self)
 		return null
 
 	# <0 is ignored
@@ -68,7 +68,7 @@ func spawn() -> Node2D:
 	and not groupToAddTo.is_empty():
 		var groupCount: int = self.get_tree().get_node_count_in_group(groupToAddTo)
 		if groupCount >= maximumLimitInGroup:
-			if shouldShowDebugInfo: Debug.printDebug(str("maximumLimitInGroup: ", maximumLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
+			if debugMode: Debug.printDebug(str("maximumLimitInGroup: ", maximumLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
 			return null
 
 	if not sceneToSpawn:

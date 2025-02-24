@@ -94,7 +94,7 @@ func _physics_process(delta: float) -> void:
 
 		nodeToRotate.global_rotation = rotate_toward(rotateFrom, rotateTo, rotationSpeed * delta)
 
-		if shouldShowDebugInfo:
+		if debugMode:
 			Debug.watchList.rotateFrom	= rotateFrom
 			Debug.watchList.rotateTo	= rotateTo
 
@@ -103,11 +103,11 @@ func _physics_process(delta: float) -> void:
 	if not is_equal_approx(nodeToRotate.global_rotation, previousRotation):
 		didRotateThisFrame = true
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 func showDebugInfo() -> void:
-	# if not shouldShowDebugInfo: return # Checked above
+	# if not debugMode: return # Checked above
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.nodeRotation		= nodeToRotate.rotation
 	Debug.watchList.localMousePosition	= nodeToRotate.get_local_mouse_position()

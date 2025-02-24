@@ -45,7 +45,7 @@ func _ready() -> void:
 	super._ready()
 
 	if not contents: printWarning("No contents Stat provided")
-	if shouldShowDebugInfo: printDebug(str("_ready() contents: ", contents.logName))
+	if debugMode: printDebug(str("_ready() contents: ", contents.logName))
 	self.didPerformInteraction.connect(self.onDidPerformInteraction)
 
 
@@ -57,7 +57,7 @@ func createMineablePayload() -> NodePayload:
 
 
 func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
-	if shouldShowDebugInfo: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+	if debugMode: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	if not isEnabled: return false
 	# TODO: Check Payload validation
 	return deductCost()
@@ -67,7 +67,7 @@ func deductCost() -> bool:
 	if not isEnabled: return false
 
 	var randomCost: int = randi_range(minimumContentDeduction, maximumContentDeduction)
-	if shouldShowDebugInfo: printDebug(str("deductCost() ", self.contents.value, " - ", randomCost))
+	if debugMode: printDebug(str("deductCost() ", self.contents.value, " - ", randomCost))
 
 	if self.contents.value   >= randomCost:
 		self.contents.value  -= randomCost
@@ -79,7 +79,7 @@ func deductCost() -> bool:
 		## If the cost was greater than our contents, the collectible's value should be equal to our last remaining contents.
 		self.collectibleValue = self.contents.value
 		self.contents.value = 0
-		if shouldShowDebugInfo: printDebug(str("allowCostHigherThanContents collectibleValue: ", collectibleValue))
+		if debugMode: printDebug(str("allowCostHigherThanContents collectibleValue: ", collectibleValue))
 		return true
 
 	else:
@@ -89,7 +89,7 @@ func deductCost() -> bool:
 
 func onDidPerformInteraction(result: Variant) -> void:
 	if not isEnabled and result: return
-	if shouldShowDebugInfo: printDebug(str("onDidPerformInteraction() result: ", result, ", collectibleValue: ", collectibleValue))
+	if debugMode: printDebug(str("onDidPerformInteraction() result: ", result, ", collectibleValue: ", collectibleValue))
 	
 	# TBD: Apply collectibleValue even if 0?
 

@@ -357,7 +357,7 @@ static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinate
 	var cellDataOccupied: Variant = tileMap.getCellData(coordinates, Global.TileMapCustomData.isOccupied) # NOTE: Should not be `bool` so it can be `null` if missing, NOT `false` if missing.
 	var cellDataOccupant: Entity  = tileMap.getCellData(coordinates, Global.TileMapCustomData.occupant)
 
-	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("checkTileVacancy() ", tileMap, " @", coordinates, " cellData[cellDataOccupied]: ", cellDataOccupied, ", occupant: ", cellDataOccupant))
+	if tileMap.debugMode: Debug.printDebug(str("checkTileVacancy() ", tileMap, " @", coordinates, " cellData[cellDataOccupied]: ", cellDataOccupied, ", occupant: ", cellDataOccupant))
 
 	if cellDataOccupied is bool:
 		isCellVacant = not cellDataOccupied or cellDataOccupant == ignoreEntity
@@ -382,7 +382,7 @@ static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinate
 		isWalkable = tileData.get_custom_data(Global.TileMapCustomData.isWalkable)
 		isBlocked  = tileData.get_custom_data(Global.TileMapCustomData.isBlocked)
 
-	if tileMap.shouldShowDebugInfo: Debug.printDebug(str("tileData[isWalkable]: ", isWalkable, ", [isBlocked]: ", isBlocked))
+	if tileMap.debugMode: Debug.printDebug(str("tileData[isWalkable]: ", isWalkable, ", [isBlocked]: ", isBlocked))
 
 	# If there is no data, assume the tile is always vacant.
 	isTileVacant = (isWalkable or isWalkable == null) and (not isBlocked or isWalkable == null)

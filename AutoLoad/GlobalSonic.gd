@@ -10,7 +10,7 @@ extends Node
 #region Parameters
 @export var musicFolder: String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
 @export var maximumNumberOfSounds: int = 10 # TBD:
-@export var shouldShowDebugInfo:  bool = false
+@export var debugMode:  bool = false
 #endregion
 
 
@@ -144,14 +144,14 @@ func loadMusicFolder() -> PackedStringArray:
 ## Returns a list of all the ".mp3" files found at [param path], which defaults to [member musicFolder].
 func getMusicFilesFromFolder(path: String = self.musicFolder) -> PackedStringArray:
 	var files: PackedStringArray = Tools.getResourcesInFolder(path, ".mp3") # TBD: Allow other extensions?
-	if shouldShowDebugInfo: Debug.printAutoLoadLog(str("getMusicFilesFromFolder(", path, "): ", files.size(), " ", files))
+	if debugMode: Debug.printAutoLoadLog(str("getMusicFilesFromFolder(", path, "): ", files.size(), " ", files))
 	return files
 
 
 ## Plays the song found at the specified index in the [member musicFiles] array.
 func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 	if currentMusicIndex == 0 and self.musicFiles.is_empty(): # Silence warning for the default state of new projects: No music files.
-		if shouldShowDebugInfo: Debug.printWarning("playMusicIndex(): musicFiles is empty!", self)
+		if debugMode: Debug.printWarning("playMusicIndex(): musicFiles is empty!", self)
 		return null
 	
 	if Tools.isValidArrayIndex(self.musicFiles, index):

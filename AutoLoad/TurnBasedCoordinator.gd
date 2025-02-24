@@ -45,11 +45,11 @@ extends Node # + TurnBasedObjectBase
 
 ## NOTE: Disabling this flag also disables `_process()` to avoid calling it each frame and wasting performance,
 ## because `_process()` is only used to update debug info.
-@export var shouldShowDebugInfo: bool = false:
+@export var debugMode: bool = false:
 	set(newValue):
-		if newValue != shouldShowDebugInfo:
-			shouldShowDebugInfo = newValue
-			self.set_process(shouldShowDebugInfo)
+		if newValue != debugMode:
+			debugMode = newValue
+			self.set_process(debugMode)
 
 #region
 
@@ -226,12 +226,12 @@ func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
 ## The beginning of processing 1 full turn and its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
-	if shouldShowDebugInfo: printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
+	if debugMode: printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
 
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 
 	if not self.isReadyToStartTurn:
-		if shouldShowDebugInfo: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
+		if debugMode: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
 		return
 
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
@@ -470,7 +470,7 @@ func waitForStateTimer() -> void:
 		self.willStartDelay.emit(stateTimer)
 		stateTimer.start()
 		await stateTimer.timeout
-	elif shouldShowDebugInfo:
+	elif debugMode:
 		printDebug("[color=dimgray]waitForStateTimer(): 0")
 
 
@@ -486,7 +486,7 @@ func waitForEntityTimer() -> void:
 		self.willStartDelay.emit(entityTimer)
 		entityTimer.start()
 		await entityTimer.timeout
-	elif shouldShowDebugInfo:
+	elif debugMode:
 		printDebug("[color=dimgray]waitForEntityTimer(): 0")
 
 
@@ -518,7 +518,7 @@ var logName: String: ## Customizes logs for the turn-based system to include the
 
 
 func _process(_delta: float) -> void:
-	# NOTE: `_process()` is disabled by `set_process()` if `shouldShowDebugInfo` is disabled, to avoid wasting performance each frame.
+	# NOTE: `_process()` is disabled by `set_process()` if `debugMode` is disabled, to avoid wasting performance each frame.
 	showDebugInfo()
 
 
@@ -536,7 +536,7 @@ func printLog(message: String) -> void:
 func printDebug(message: String) -> void:
 	# Even though the caller requests a "debug" log, use the regular `printLog()` but respect the debug flag,
 	# because this is a "master"/controller Autoload.
-	if shouldShowDebugInfo: Debug.printLog(message, logName, "", "white")
+	if debugMode: Debug.printLog(message, logName, "", "white")
 
 
 func printWarning(message: String) -> void:
@@ -544,11 +544,11 @@ func printWarning(message: String) -> void:
 
 
 func printChange(variableName: String, previousValue: Variant, newValue: Variant) -> void:
-	if shouldShowDebugInfo: Debug.printChange(str("[color=white]", self, " [color=gray]", variableName), previousValue, newValue)
+	if debugMode: Debug.printChange(str("[color=white]", self, " [color=gray]", variableName), previousValue, newValue)
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.turnsProcessed	= turnsProcessed
 	Debug.watchList.currentTurn		= currentTurn
 	Debug.watchList.currentTurnState= currentTurnState

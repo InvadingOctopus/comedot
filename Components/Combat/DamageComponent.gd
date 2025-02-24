@@ -91,7 +91,7 @@ func _ready() -> void:
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
-	if shouldShowDebugInfo: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if debugMode: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 
 	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
 
@@ -104,7 +104,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
 		## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use `removeEntityOnApplyingDamage` instead.
 		if removeEntityOnCollisionWithReceiver:
-			if shouldShowDebugInfo: printDebug("removeEntityOnCollisionWithReceiver")
+			if debugMode: printDebug("removeEntityOnCollisionWithReceiver")
 			self.requestDeletionOfParentEntity()
 
 
@@ -148,10 +148,10 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 
 	# Even if we have no faction, damage must be dealt.
 	var didReceiveDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
-	if shouldShowDebugInfo: printLog(str("causeCollisionDamage: ", self.damageOnCollision, " to ", damageReceivingComponent))
+	if debugMode: printLog(str("causeCollisionDamage: ", self.damageOnCollision, " to ", damageReceivingComponent))
 	
 	if removeEntityOnApplyingDamage and didReceiveDamage:
-			if shouldShowDebugInfo: printDebug("removeEntityOnApplyingDamage")
+			if debugMode: printDebug("removeEntityOnApplyingDamage")
 			self.requestDeletionOfParentEntity()
 
 
@@ -183,7 +183,7 @@ func _physics_process(delta: float) -> void:
 
 func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo: printDebug(str("causeFrameDamage() damageReceivingComponent: ", damageReceivingComponent, ", damageForThisFrame: ", damageForThisFrame))
+	if debugMode: printDebug(str("causeFrameDamage() damageReceivingComponent: ", damageReceivingComponent, ", damageForThisFrame: ", damageForThisFrame))
 
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 

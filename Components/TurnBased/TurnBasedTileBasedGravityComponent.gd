@@ -42,7 +42,7 @@ func _ready() -> void:
 
 
 func startTimer() -> void:
-	if shouldShowDebugInfo: printDebug(str("Starting GravityTimer: ", gravityTimer.wait_time))
+	if debugMode: printDebug(str("Starting GravityTimer: ", gravityTimer.wait_time))
 	gravityTimer.start()
 
 
@@ -63,7 +63,7 @@ func checkForFall() -> bool:
 	var cellBelow: Vector2i = Vector2i(currentPosition.x, currentPosition.y + 1)
 	var shouldFall: bool = tileBasedPositionComponent.validateCoordinates(cellBelow)
 	
-	if shouldShowDebugInfo: printDebug(str("shouldFall: ", shouldFall, " → ", cellBelow))
+	if debugMode: printDebug(str("shouldFall: ", shouldFall, " → ", cellBelow))
 	return shouldFall
 
 

@@ -187,8 +187,8 @@ func createNewBullet() -> Entity:
 	newBullet.top_level			= bulletEmitter.top_level
 
 	# Copy debugging flags only if bullet's are off
-	if not newBullet.isLoggingEnabled: newBullet.isLoggingEnabled = self.shouldShowDebugInfo
-	if not newBullet.shouldShowDebugInfo: newBullet.shouldShowDebugInfo = self.shouldShowDebugInfo
+	if not newBullet.isLoggingEnabled: newBullet.isLoggingEnabled = self.debugMode
+	if not newBullet.debugMode: newBullet.debugMode = self.debugMode
 
 	# Speed: Add the gun's entity's speed to the bullet's speed, so that the attacker doesn't run into its own bullets if they are too slow.
 
@@ -211,10 +211,10 @@ func createNewBullet() -> Entity:
 	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
 
 	if gunFactionComponent and bulletFactionComponent:
-		if shouldShowDebugInfo: printDebug(str("Copying entity factions to newBullet: ", gunFactionComponent.factions))
+		if debugMode: printDebug(str("Copying entity factions to newBullet: ", gunFactionComponent.factions))
 		bulletFactionComponent.factions = gunFactionComponent.factions
 
-	if shouldShowDebugInfo: printDebug(str("createNewBullet() → ", newBullet))
+	if debugMode: printDebug(str("createNewBullet() → ", newBullet))
 	return newBullet
 
 #endregion

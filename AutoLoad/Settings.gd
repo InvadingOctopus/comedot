@@ -83,7 +83,7 @@ static var configFile: ConfigFile:
 		if not configFile: loadConfig()
 		return configFile
 
-static var shouldShowDebugInfo: bool = false # OS.is_debug_build()
+static var debugMode: bool = false # OS.is_debug_build()
 
 #endregion
 
@@ -130,7 +130,7 @@ func _enter_tree() -> void:
 
 
 static func loadConfig() -> bool:
-	if shouldShowDebugInfo: Debug.printAutoLoadLog("loadConfig(): " + configFilePath)
+	if debugMode: Debug.printAutoLoadLog("loadConfig(): " + configFilePath)
 	configFile = ConfigFile.new()
 
 	# Load data from the file.
@@ -176,7 +176,7 @@ func _get_property_list() -> Array[Dictionary]:
 
 ## Handles dynamic properties.
 func _get(propertyName: StringName) -> Variant:
-	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
+	if debugMode and not settingsDictionary.has(propertyName):
 		printLog(str("_get() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file"))
 
 	# NOTE: Try reading the setting from file even if it has not been defined as a property.
@@ -198,7 +198,7 @@ func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) ->
 
 ## Handles dynamic properties.
 func _set(propertyName: StringName, value: Variant) -> bool:
-	if shouldShowDebugInfo and not settingsDictionary.has(propertyName):
+	if debugMode and not settingsDictionary.has(propertyName):
 		printLog(str("_set() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", value))
 
 	# NOTE: Save the setting to file even if it has not been defined as a property.
@@ -242,7 +242,7 @@ func getSettingFromFile(section: StringName, key: StringName, default: Variant =
 		if default != null: value = default # NOTE: Check for `null` specifically to allow defaults of 0.
 		else: return null
 
-	if shouldShowDebugInfo:
+	if debugMode:
 		var textForDefault: String = "" if configFile.has_section_key(section, key) else " (default)"
 		printLog(str("getSetting() [", section, "] ", key, ": ", value, textForDefault))
 
@@ -273,7 +273,7 @@ func validateType(settingName: StringName, value: Variant) -> bool:
 
 func saveSettingToFile(section: String, key: String, value: Variant) -> void:
 	if section.is_empty(): section = SectionNames.default
-	if shouldShowDebugInfo: printLog(str("saveSetting() section: ", section, " key: ", key, " ← ", value))
+	if debugMode: printLog(str("saveSetting() section: ", section, " key: ", key, " ← ", value))
 
 	configFile.set_value(section, key, value)
 
@@ -284,7 +284,7 @@ func saveSettingToFile(section: String, key: String, value: Variant) -> void:
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(message, self.get_script().resource_path.get_file())
+	if debugMode: Debug.printDebug(message, self.get_script().resource_path.get_file())
 
 
 func printWarning(message: String) -> void:

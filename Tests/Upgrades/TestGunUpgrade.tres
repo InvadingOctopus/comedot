@@ -14,19 +14,19 @@ region = Rect2(592, 144, 16, 16)
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
 payloadScriptMethodName = &"onPayload_didExecute"
-shouldShowDebugInfo = false
+debugMode = false
 
 [sub_resource type="Resource" id="Resource_xprmf"]
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
 payloadScriptMethodName = &"onPayload_didExecute"
-shouldShowDebugInfo = false
+debugMode = false
 
 [resource]
 script = ExtResource("1_kkrmp")
 payloadOnAcquire = SubResource("Resource_7sewg")
 payloadOnDiscard = SubResource("Resource_xprmf")
-shouldShowDebugInfo = true
+debugMode = true
 level = 0
 maxLevel = 0
 shouldAllowInfiniteLevels = false

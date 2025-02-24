@@ -14,7 +14,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 script = ExtResource("1_5bd1h")
-shouldShowDebugInfo = null
+debugMode = null
 
 [node name="UpgradeButton" type="Button" parent="."]
 unique_name_in_owner = true

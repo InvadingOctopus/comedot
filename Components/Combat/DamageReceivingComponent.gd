@@ -66,7 +66,7 @@ var damageComponentsInContact: Array[DamageComponent]
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
-	if shouldShowDebugInfo: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if debugMode: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 
 	var damageComponent: DamageComponent = getDamageComponent(areaEntered)
 
@@ -111,12 +111,12 @@ func getDamageComponent(componentArea: Area2D) -> DamageComponent:
 ## Returns `true` if there are opposing factions or friendly fire, or no [FactionComponent] (which means damage is always applied).
 func processCollision(damageComponent: DamageComponent, attackerFactionComponent: FactionComponent) -> bool:
 	if not isEnabled: return false
-	if shouldShowDebugInfo: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
+	if debugMode: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
 	# Not creating an "attackerFactions" or whatever variable to improve performance, maybe?
 	if attackerFactionComponent:
 		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else: # If the attacker has no factions, damage must be dealt to everyone.
-		if shouldShowDebugInfo: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
+		if debugMode: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
 		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
 
 #endregion
@@ -136,7 +136,7 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 	else:
 		shouldReceiveDamage = self.factionComponent.checkOpposition(attackerFactions)
 
-	if shouldShowDebugInfo: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
+	if debugMode: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
 	return shouldReceiveDamage
 
 
@@ -148,7 +148,7 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire): return false
 
-	if shouldShowDebugInfo: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
+	if debugMode: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
 
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.

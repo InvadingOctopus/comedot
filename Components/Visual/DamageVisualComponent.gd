@@ -63,7 +63,7 @@ func updateTint()-> void:
 		var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase redness as health gets lower
 		var targetModulate:  Color = self.parentEntity.modulate
 		targetModulate.r = red
-		if shouldShowDebugInfo: Debug.printVariables([health.logName, red, targetModulate])
+		if debugMode: Debug.printVariables([health.logName, red, targetModulate])
 		Animations.tweenProperty(self.parentEntity, ^"modulate", targetModulate, 0.1)
 
 

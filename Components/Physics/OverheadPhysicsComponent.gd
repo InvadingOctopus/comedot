@@ -42,7 +42,7 @@ func _physics_process(delta: float) -> void:
 	characterBodyComponent.queueMoveAndSlide()
 	clearInput() # PERFORMANCE: Done directly instead of via signal for now
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 ## Get the input direction and handle the movement/deceleration.
@@ -92,7 +92,7 @@ func processMovement(delta: float) -> void:
 
 
 # func characterBodyComponent_didMove(_delta: float) -> void:
-# 	if shouldShowDebugInfo: showDebugInfo()
+# 	if debugMode: showDebugInfo()
 # 	# Clear the input so it doesn't carry on over to the next frame.
 # 	clearInput()
 
@@ -102,7 +102,7 @@ func clearInput() -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection

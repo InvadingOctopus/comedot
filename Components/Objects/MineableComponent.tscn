@@ -10,7 +10,7 @@ script = ExtResource("3_ld8mv")
 parentChoice = 3
 randomPositionOffsetMin = Vector2(-16, -16)
 randomPositionOffsetMax = Vector2(16, 16)
-shouldShowDebugInfo = false
+debugMode = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0tho5"]
 size = Vector2(18, 18)

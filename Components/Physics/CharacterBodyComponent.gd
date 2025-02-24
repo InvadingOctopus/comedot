@@ -36,7 +36,7 @@ var wasOnCeiling:	bool ## Was the body on a ceiling before the last [method Char
 var previousVelocity:	Vector2:
 	set(newValue):
 		if newValue != previousVelocity:
-			if shouldShowDebugInfo: self.printChange("previousVelocity", previousVelocity, newValue)
+			if debugMode: self.printChange("previousVelocity", previousVelocity, newValue)
 			previousVelocity = newValue
 
 var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with.
@@ -84,7 +84,7 @@ func _physics_process(delta: float) -> void:
 
 	if self.shouldMoveThisFrame:
 		updateStateBeforeMove(delta)
-		if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
+		if debugMode and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
 
 		# TBD: PERFORMANCE: Should `entity.callOnceThisFrame()` be used, or call `move_and_slide()` directly?
 		# DISABLED FOR PERFORMANCE: parentEntity.callOnceThisFrame(body.move_and_slide)
@@ -94,7 +94,7 @@ func _physics_process(delta: float) -> void:
 		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
 		didMove.emit(delta)
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
@@ -124,12 +124,12 @@ func updateStateAfterMove(_delta: float) -> void:
 		if is_zero_approx(lastMotionCached.x): body.velocity.x = 0
 		if is_zero_approx(lastMotionCached.y): body.velocity.y = 0
 
-	if shouldShowDebugInfo and not body.velocity.is_equal_approx(previousVelocity):
+	if debugMode and not body.velocity.is_equal_approx(previousVelocity):
 		printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.lastVelocity= previousVelocity

@@ -31,13 +31,13 @@ func _enter_tree() -> void:
 
 	# If no override is specified, first, try using this Component itself as an Area2D
 	if not self.area:
-		if shouldShowDebugInfo: printDebug(str("No areaOverride specified. Casting self as Area2D"))
+		if debugMode: printDebug(str("No areaOverride specified. Casting self as Area2D"))
 		self.area = selfAsArea
 	
 	# If this Component is not an Area2D, try using the area specified on the Entity.
 	if not self.area:
 		self.area = parentEntity.getArea()
-		if shouldShowDebugInfo: printDebug(str("Cannot cast self as Area2D. parentEntity.getArea(): ", area))
+		if debugMode: printDebug(str("Cannot cast self as Area2D. parentEntity.getArea(): ", area))
 
 	# Still nothing? :(
 	if not self.area:

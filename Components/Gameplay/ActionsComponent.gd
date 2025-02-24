@@ -64,12 +64,12 @@ func findAction(nameToSearch: StringName) -> Action:
 ## To perform Actions in response to player control, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	var actionToPerform: Action = self.findAction(actionName)
-	if shouldShowDebugInfo: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
+	if debugMode: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
 	if not actionToPerform: return false
 
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
-		if shouldShowDebugInfo: printDebug("Missing target")
+		if debugMode: printDebug("Missing target")
 		createTargetingComponent(actionToPerform) # Create & add a component which prompt the player to choose a target.
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
 		# TBD: ALSO emit the Action's signal?

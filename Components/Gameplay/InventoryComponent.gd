@@ -53,18 +53,18 @@ func addItem(newItem: InventoryItem) -> bool:
 	if not isEnabled: return false
 
 	if self.items.size() >= self.maximumItems:
-		if shouldShowDebugInfo: printDebug(str("Inventory full (", self.maximumItems, ") — Cannot add: ", newItem.logName))
+		if debugMode: printDebug(str("Inventory full (", self.maximumItems, ") — Cannot add: ", newItem.logName))
 		return false
 	elif self.totalWeight + newItem.weight > self.maximumWeight:
-		if shouldShowDebugInfo: printDebug(str("Inventory overloaded (", self.maximumWeight, ") — Cannot add: ", newItem.logName))
+		if debugMode: printDebug(str("Inventory overloaded (", self.maximumWeight, ") — Cannot add: ", newItem.logName))
 		return false
 	elif shouldPreventDuplicates and self.items.has(newItem):
-		if shouldShowDebugInfo: printDebug(str("shouldPreventDuplicates and item already in inventory: ", newItem.logName))
+		if debugMode: printDebug(str("shouldPreventDuplicates and item already in inventory: ", newItem.logName))
 		return false
 	else:
 		self.items.append(newItem)
 		self.totalWeight += newItem.weight
-		if shouldShowDebugInfo: printDebug(str("Added: ", newItem.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
+		if debugMode: printDebug(str("Added: ", newItem.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
 		self.didAddItem.emit(newItem)
 		return true
 
@@ -90,7 +90,7 @@ func removeItem(itemToRemove: InventoryItem) -> bool:
 	if self.items.has(itemToRemove):
 		self.items.erase(itemToRemove)
 		self.totalWeight -= itemToRemove.weight
-		if shouldShowDebugInfo: printDebug(str("Removed: ", itemToRemove.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
+		if debugMode: printDebug(str("Removed: ", itemToRemove.logName, " — Total: ", self.items.size(), " items, weight: ", self.totalWeight))
 		self.didRemovetem.emit(itemToRemove)
 		return true
 	else:
@@ -104,7 +104,7 @@ func recalculateWeight() -> float:
 		for item in self.items:
 			self.totalWeight += item.weight
 
-	if shouldShowDebugInfo: printDebug(str("recalculateWeight(): ", self.totalWeight))
+	if debugMode: printDebug(str("recalculateWeight(): ", self.totalWeight))
 	return self.totalWeight
 
 #endregion

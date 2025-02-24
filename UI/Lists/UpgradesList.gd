@@ -12,7 +12,7 @@ extends Container
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var targetEntity: Entity
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -65,7 +65,7 @@ func readdAllChoices() -> void:
 
 func createChoiceUI(upgrade: Upgrade) -> Control:
 	var newChoiceUI: UpgradeChoiceUI = choiceUIScene.instantiate()
-	newChoiceUI.shouldShowDebugInfo  = self.shouldShowDebugInfo
+	newChoiceUI.debugMode  = self.debugMode
 
 	newChoiceUI.targetEntity = self.targetEntity
 	newChoiceUI.upgrade = upgrade
@@ -79,6 +79,6 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 
 
 func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), self)
+	if debugMode: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), self)
 	self.lastUpgradeChosen = upgrade
 	self.didChooseUpgrade.emit(upgrade)

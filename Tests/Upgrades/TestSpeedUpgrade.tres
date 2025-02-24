@@ -14,19 +14,19 @@ region = Rect2(384, 208, 16, 16)
 script = ExtResource("3_d6b6q")
 payloadScript = ExtResource("2_723c3")
 payloadScriptMethodName = &"onPayload_didExecute"
-shouldShowDebugInfo = true
+debugMode = true
 
 [sub_resource type="Resource" id="Resource_umyfg"]
 script = ExtResource("3_d6b6q")
 payloadScript = ExtResource("2_723c3")
 payloadScriptMethodName = &"onPayload_didExecute"
-shouldShowDebugInfo = true
+debugMode = true
 
 [resource]
 script = ExtResource("1_m1sav")
 payloadOnAcquire = SubResource("Resource_dxtrk")
 payloadOnDiscard = SubResource("Resource_umyfg")
-shouldShowDebugInfo = true
+debugMode = true
 level = 0
 maxLevel = 10
 shouldAllowInfiniteLevels = false

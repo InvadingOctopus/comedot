@@ -12,7 +12,7 @@ extends Container
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var entity: Entity
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -64,7 +64,7 @@ func readdAllActions() -> void:
 
 func createActionButton(action: Action) -> Button:
 	var newActionButton: ActionButton = actionButtonScene.instantiate()
-	newActionButton.shouldShowDebugInfo  = self.shouldShowDebugInfo
+	newActionButton.debugMode  = self.debugMode
 
 	newActionButton.entity = self.entity
 	newActionButton.action = action
@@ -78,6 +78,6 @@ func createActionButton(action: Action) -> Button:
 
 
 func onActionButton_pressed(action: Action) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onActionButton_pressed() ", action.logName), self)
+	if debugMode: Debug.printDebug(str("onActionButton_pressed() ", action.logName), self)
 	self.lastActionChosen = action
 	self.didChooseAction.emit(action)

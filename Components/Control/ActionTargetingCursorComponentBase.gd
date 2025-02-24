@@ -39,7 +39,7 @@ func onCursorArea_areaEntered(area:Area2D) -> void:
 	
 	var actionTargetableComponent: ActionTargetableComponent = area.get_node(^".") as ActionTargetableComponent
 	if not actionTargetableComponent: return
-	if shouldShowDebugInfo: printDebug(str("Entered ", actionTargetableComponent))
+	if debugMode: printDebug(str("Entered ", actionTargetableComponent))
 
 	actionTargetableComponentInContact.append(actionTargetableComponent)
 	actionTargetableComponent.setHighlight(true)
@@ -49,7 +49,7 @@ func onCursorArea_areaExited(area:Area2D) -> void:
 	# NOTE: Exiting should not depend on `isEnabled` or `isChoosing`
 	var actionTargetableComponent: ActionTargetableComponent = area.get_node(^".") as ActionTargetableComponent
 	if not actionTargetableComponent: return
-	if shouldShowDebugInfo: printDebug(str("Exited ", actionTargetableComponent))
+	if debugMode: printDebug(str("Exited ", actionTargetableComponent))
 	
 	actionTargetableComponentInContact.erase(actionTargetableComponent)
 	actionTargetableComponent.setHighlight(false)

@@ -13,13 +13,13 @@ extends TileMapLayer
 ## Each (x,y) [Vector2i] coordinate key contains a Dictionary of {[StringName]: [Variant]}.
 @export var dataDictionary: Dictionary[Vector2i, Dictionary] = { Vector2i(0,0): {&"key": 0} }
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 #endregion
 
 
 func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), self)
+	if debugMode: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), self)
 
 	# NOTE: Do NOT assign an entire dictionary here or that will overrite all other keys!
 
@@ -38,5 +38,5 @@ func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 	else:
 		value = null
 
-	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, " ", key, ": ", value), self)
+	if debugMode: Debug.printDebug(str("getCellData() @", coordinates, " ", key, ": ", value), self)
 	return value

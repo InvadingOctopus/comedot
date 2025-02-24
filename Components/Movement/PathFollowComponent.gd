@@ -103,7 +103,7 @@ func snapEntityToCurve() -> Vector2:
 	# Move the entity
 	self.parentEntity.global_position = snappedPosition
 
-	if shouldShowDebugInfo: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
+	if debugMode: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
 
 	return snappedPosition
 

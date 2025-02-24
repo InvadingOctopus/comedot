@@ -9,7 +9,7 @@ extends Container
 
 #region Parameters
 @export var backButton: Button ## The "Back" button to show and hide depending on the navigation history.
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -24,7 +24,7 @@ var navigationStack: PackedStringArray # Better performance than Array[String]
 func _ready() -> void:
 	resetHistory()
 	if backButton: connectBackButton()
-	elif shouldShowDebugInfo: Debug.printWarning("Missing backButton", self) # Suppress warning in case there is a different way to close, such as the PauseButton.
+	elif debugMode: Debug.printWarning("Missing backButton", self) # Suppress warning in case there is a different way to close, such as the PauseButton.
 
 
 func connectBackButton() -> void:
@@ -60,7 +60,7 @@ func findFirstChildControl() -> Control:
 func replaceFirstChildControl(newControl: Control) -> bool:
 	var childToReplace: Control = self.findFirstChildControl()
 
-	if shouldShowDebugInfo: Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newControl), self)
+	if debugMode: Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newControl), self)
 
 	if childToReplace:
 		if Tools.replaceChild(self, childToReplace, newControl):
@@ -78,7 +78,7 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 ## [param newDestination]: The path of the new sub-scene (UI container) to display in this container.
 ## IMPORTANT: The root node of the new child scene MUST be a [Control].
 func displayNavigationDestination(newDestinationPath: String) -> bool:
-	if  shouldShowDebugInfo: Debug.printDebug("displayNavigationDestination(): " + newDestinationPath, self)
+	if  debugMode: Debug.printDebug("displayNavigationDestination(): " + newDestinationPath, self)
 	var newDestinationScene: Node = SceneManager.instantiateSceneFromPath(newDestinationPath) #navigationDestination.instantiate()
 	var result: bool
 
@@ -93,7 +93,7 @@ func displayNavigationDestination(newDestinationPath: String) -> bool:
 		result = false
 
 	updateBackButton()
-	if shouldShowDebugInfo:
+	if debugMode:
 		showDebugInfo()
 		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationStack), self)
 	return result
@@ -128,6 +128,6 @@ func updateBackButton() -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.firstChild = self.findFirstChildControl()
 	Debug.watchList.navigationStack = "\n⬆ ".join(self.navigationStack)

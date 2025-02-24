@@ -28,7 +28,7 @@ stats = Array[ExtResource("4_tue7k")]([ExtResource("5_tl03x"), ExtResource("6_ah
 [node name="ActionsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_fib85")]
 actions = Array[ExtResource("9_0lnki")]([ExtResource("10_faxyp"), ExtResource("11_suttq")])
 targetingComponentPath = "res://Components/Control/ActionTargetingMouseComponent.tscn"
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="ActionControlComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("12_jynvc")]
 
@@ -57,5 +57,5 @@ offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
 script = ExtResource("16_lbcpr")
-shouldShowDebugInfo = true
+debugMode = true
 entity = NodePath("../../PlayerEntityTemplate-OverheadBasic")

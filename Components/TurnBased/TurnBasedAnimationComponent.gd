@@ -46,14 +46,14 @@ func findAnimationNode() -> void:
 		if not animationNode: animationNode = self.parentEntity.get_node(^".") as AnimatedSprite2D
 
 		if animationNode:
-			if shouldShowDebugInfo: printDebug("animationNode not specified. Using parent Entity: " + parentEntity.logName)
+			if debugMode: printDebug("animationNode not specified. Using parent Entity: " + parentEntity.logName)
 
 		else: # Or search for the first matching sibling node.
 			animationNode = self.parentEntity.findFirstChildOfType(AnimationPlayer)
 			if not animationNode: animationNode = self.parentEntity.findFirstChildOfType(AnimatedSprite2D)
 
 			if animationNode:
-				if shouldShowDebugInfo: printDebug(str("animationNode not specified. Using first sibling found: ", animationNode))
+				if debugMode: printDebug(str("animationNode not specified. Using first sibling found: ", animationNode))
 			else:
 				printWarning("No AnimationPlayer or AnimatedSprite2D!")
 
@@ -102,17 +102,17 @@ func onDidEndTurn() -> void:
 
 func processTurnBegin() -> void:
 	if shouldWaitForAnimation:
-		if shouldShowDebugInfo: printDebug("processTurnBegin(): Waiting for animation…")
+		if debugMode: printDebug("processTurnBegin(): Waiting for animation…")
 		await animationNode.animation_finished
 
 func processTurnUpdate() -> void:
 	if shouldWaitForAnimation:
-		if shouldShowDebugInfo: printDebug("processTurnUpdate(): Waiting for animation…")
+		if debugMode: printDebug("processTurnUpdate(): Waiting for animation…")
 		await animationNode.animation_finished
 
 func processTurnEnd() -> void:
 	if shouldWaitForAnimation:
-		if shouldShowDebugInfo: printDebug("processTurnEnd(): Waiting for animation…")
+		if debugMode: printDebug("processTurnEnd(): Waiting for animation…")
 		await animationNode.animation_finished
 
 #endregion

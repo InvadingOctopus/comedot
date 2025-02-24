@@ -77,5 +77,5 @@ func _physics_process(delta: float) -> void:
 	parentEntity.translate(offset) # parentEntity.position += offset
 	self.distanceTraveled += offset.length()
 
-	if shouldShowDebugInfo: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))
+	if debugMode: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))
 

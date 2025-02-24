@@ -66,7 +66,7 @@ const defaultHelpLabelText		:= "Select an Entity node in the scene to add Compon
 const defaultAddEntityTip		:= "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
 const editComponentTipPrefix	:= "Open the source scene of "
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 #endregion
 
@@ -137,7 +137,7 @@ func printError(message: String) -> void:
 
 
 func setupUI() -> void:
-	%DebugReloadButton.visible = shouldShowDebugInfo
+	%DebugReloadButton.visible = debugMode
 	
 	%AddEntityMenuButton.modulate = createNewItemButtonColor
 	%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
@@ -176,7 +176,7 @@ func updateComponentsTree() -> void:
 
 
 func buildComponentsDirectory() -> void:
-	if shouldShowDebugInfo: printLog("buildComponentsDirectory()")
+	if debugMode: printLog("buildComponentsDirectory()")
 	if not Engine.is_editor_hint():
 		printLog("Not running in editor. Cancelling components scan.")
 		return
@@ -202,13 +202,13 @@ func buildComponentsDirectory() -> void:
 
 			if fileName.to_lower().ends_with(acceptedFileSuffix):
 				var componentName := fileName.trim_suffix(acceptedFileExtension)
-				# if shouldShowDebugInfo:#printLog(componentName + " " + filePath)
+				# if debugMode:#printLog(componentName + " " + filePath)
 
 				# Add the component to the Tree
 				createComponentTreeItem(filePath, componentName, categoryTreeItem)
 				componentsCount += 1
 
-	#if shouldShowDebugInfo:
+	#if debugMode:
 	printLog(str(componentsCount, " Components found & added to list"))
 
 	if componentsCount <= 0:
@@ -340,12 +340,12 @@ func onEditComponentButton_pressed() -> void:
 
 
 func onAddEntityMenu_idPressed(id: int) -> void:
-	if shouldShowDebugInfo: printLog(str("onAddEntityMenu_idPressed() ", id))
+	if debugMode: printLog(str("onAddEntityMenu_idPressed() ", id))
 	addNewEntity(id)
 
 
 func onComponentsTree_buttonClicked(item: TreeItem, _column: int, id: int, _mouse_button_index: int) -> void:
-	if shouldShowDebugInfo: printLog(str("onComponentsTree_buttonClicked() item: ", item, ", button id: ", id))
+	if debugMode: printLog(str("onComponentsTree_buttonClicked() item: ", item, ", button id: ", id))
 
 	# NOTE: Check the button ID because this signal may be emitted by different buttons in different rows
 	match id:
@@ -378,7 +378,7 @@ func onNewComponentDialog_confirmed() -> void:
 	# Apply the new choices (the folder choide is not modifiable)
 	newComponentDialog_chosenComponentName = newComponentNameTextBox.text
 
-	if shouldShowDebugInfo: 
+	if debugMode: 
 		printLog(str("onNewComponentDialog_confirmed() newComponentDialog_chosenFolderPath: ", newComponentDialog_chosenFolderPath, ", newComponentDialog_chosenComponentName: ", newComponentDialog_chosenComponentName))
 
 	# Create the new component
@@ -390,7 +390,7 @@ func onNewComponentDialog_confirmed() -> void:
 
 
 func onComponentsTree_itemEdited() -> void:
-	pass #if shouldShowDebugInfo: printLog("onComponentsTree_itemEdited()")
+	pass #if debugMode: printLog("onComponentsTree_itemEdited()")
 
 
 ## Called when nodes are selected/unselected in the Scene Editor.
@@ -432,7 +432,7 @@ func reloadPlugin() -> void:
 #region Scene Editing
 
 func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
-	if shouldShowDebugInfo: printLog("addNewEntity()")
+	if debugMode: printLog("addNewEntity()")
 
 	var editorSelection: EditorSelection = EditorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
@@ -475,7 +475,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 
 		_: printError(str("Invalid entityType: ", entityType))
 
-	if shouldShowDebugInfo: printLog(str(newEntity))
+	if debugMode: printLog(str(newEntity))
 
 	# Add the component to the selected Entity
 	EditorInterface.edit_node(parentNode)
@@ -498,7 +498,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 func getSelectedComponentAndAddToSelectedNode() -> void:
 	# TODO: A more robust way to verifying component files, instead of with just the name or extension.
 	if not selectedComponentPath.ends_with(acceptedFileExtension): return
-	if shouldShowDebugInfo: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
+	if debugMode: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
 
 	# Convert script paths to scenes, just in case
 	var componentScenePath := selectedComponentPath
@@ -510,7 +510,7 @@ func getSelectedComponentAndAddToSelectedNode() -> void:
 
 func addComponentToSelectedNode(componentPath: String) -> void:
 	if componentPath.is_empty(): return
-	if shouldShowDebugInfo: printLog("addComponentToSelectedNode() " + componentPath)
+	if debugMode: printLog("addComponentToSelectedNode() " + componentPath)
 
 	var editorSelection: EditorSelection = EditorInterface.get_selection()
 	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
@@ -518,7 +518,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	# TBD: Support adding components to more than 1 selected Entity?
 
 	if selectedNodes.is_empty() or selectedNodes.size() != 1:
-		#if shouldShowDebugInfo:
+		#if debugMode:
 		printLog("Cannot add Components to more than 1 selected Node")
 		return
 
@@ -529,7 +529,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 		if parentNode is Component:
 			parentNode = parentNode.get_parent()
 		else:
-			#if shouldShowDebugInfo:
+			#if debugMode:
 			printLog("Cannot add Component to a non-Entity Node")
 			return
 
@@ -537,7 +537,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	var newComponentNode: Node = load(componentPath).instantiate()
 	newComponentNode.name = (newComponentNode.get_script() as Script).get_global_name()
 
-	if shouldShowDebugInfo: printLog(str(newComponentNode))
+	if debugMode: printLog(str(newComponentNode))
 
 	# Add the Component to the selected Entity
 	EditorInterface.edit_node(parentNode)
@@ -684,7 +684,7 @@ func createNewComponentOnDisk(destinationFolderPath: String, newComponentName: S
 
 func editSelectedComponent() -> void:
 	if not selectedComponentRow or selectedComponentPath.is_empty(): return
-	if shouldShowDebugInfo: printLog(str("editSelectedComponent() ", selectedComponentPath))
+	if debugMode: printLog(str("editSelectedComponent() ", selectedComponentPath))
 
 	var scenePath:  String
 	@warning_ignore("unused_variable")
@@ -711,7 +711,7 @@ func editSelectedComponent() -> void:
 func getSubfolders(path: String) -> Array[EditorFileSystemDirectory]:
 	# TODO: Move this to a general tools script, for the good of all :)
 
-	if shouldShowDebugInfo: printLog("getSubfolders() " + path)
+	if debugMode: printLog("getSubfolders() " + path)
 	if not fileSystem: printLog("fileSystem not initialized"); return []
 
 	var parentFolder: EditorFileSystemDirectory = fileSystem.get_filesystem_path(path)
@@ -740,7 +740,7 @@ func copyFile(sourceAbsolutePath: String, destinationAbsolutePath: String) -> bo
 	# ATTENTION: Make sure the path starts with "res://"
 	# because we never want to muck with the user's file system outside the Godot project!
 
-	#if shouldShowDebugInfo:
+	#if debugMode:
 	printLog("copyFile() Attempting to copy: " + sourceAbsolutePath + " → " + destinationAbsolutePath)
 
 	# Validate

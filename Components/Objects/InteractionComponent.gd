@@ -122,7 +122,7 @@ func updateLabel() -> void:
 ## Default: `true`
 func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	# CHECK: Maybe a better name? :p
-	if shouldShowDebugInfo: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+	if debugMode: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	return isEnabled
 
 
@@ -130,7 +130,7 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 ## May be overridden by a subclass to perform custom actions.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	if shouldShowDebugInfo: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled))
+	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled))
 	if not isEnabled: return false
 
 	self.willPerformInteraction.emit(interactorEntity)

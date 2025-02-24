@@ -75,14 +75,14 @@ func _exit_tree() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo:
+	if debugMode:
 		printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
 		TextBubble.create(self, str("turnBegin ", currentTurn))
 
 	willBeginTurn.emit()
 	await self.processTurnBegin()
 
-	if shouldShowDebugInfo: printLog("didBeginTurn")
+	if debugMode: printLog("didBeginTurn")
 	didBeginTurn.emit()
 
 
@@ -90,14 +90,14 @@ func processTurnBeginSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo:
+	if debugMode:
 		printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
 		TextBubble.create(self, str("turnUpdate ", currentTurn))
 
 	willUpdateTurn.emit()
 	await self.processTurnUpdate()
 
-	if shouldShowDebugInfo: printLog("didUpdateTurn")
+	if debugMode: printLog("didUpdateTurn")
 	didUpdateTurn.emit()
 
 
@@ -105,14 +105,14 @@ func processTurnUpdateSignals() -> void:
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
-	if shouldShowDebugInfo:
+	if debugMode:
 		printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
 		TextBubble.create(self, str("turnEnd ", currentTurn))
 
 	willEndTurn.emit()
 	await self.processTurnEnd()
 
-	if shouldShowDebugInfo: printLog("didEndTurn")
+	if debugMode: printLog("didEndTurn")
 	didEndTurn.emit()
 
 #endregion
@@ -183,7 +183,7 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.turnsProcessed	= turnsProcessed
 	Debug.watchList.currentTurn		= currentTurn
 	Debug.watchList.currentTurnState= currentTurnState

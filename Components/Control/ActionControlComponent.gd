@@ -37,7 +37,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _input(event: InputEvent) -> void:
 	if not isEnabled or not event is InputEventAction: return
-	if shouldShowDebugInfo: printDebug(str("_input() ", event))
+	if debugMode: printDebug(str("_input() ", event))
 
 	# Just get an Action's name, if any, and forward it to ActionsComponent.performAction()
 

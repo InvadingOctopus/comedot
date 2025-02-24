@@ -18,10 +18,10 @@ script = ExtResource("1_3wcaw")
 [node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_kwxr1")]
 
 [node name="InventoryComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_fdjm8")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="CollectorComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_hcysf")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -52,7 +52,7 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="RedKey" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_kwxr1")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="RedKey2" type="Sprite2D" parent="."]
 position = Vector2(128, 64)
@@ -63,7 +63,7 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="RedKey2" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_kwxr1")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="YellowKey" type="Sprite2D" parent="."]
 position = Vector2(120, -56)
@@ -74,7 +74,7 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="YellowKey" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_cdyda")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="YellowKey2" type="Sprite2D" parent="."]
 position = Vector2(-256, 0)
@@ -85,7 +85,7 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="YellowKey2" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_cdyda")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="BlueKey" type="Sprite2D" parent="."]
 position = Vector2(0, 128)
@@ -96,7 +96,7 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="BlueKey" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("11_fdjm8")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="BlueKey2" type="Sprite2D" parent="."]
 position = Vector2(0, -88)
@@ -107,4 +107,4 @@ script = ExtResource("7_8ubho")
 
 [node name="CollectibleInventoryComponent" parent="BlueKey2" instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("11_fdjm8")
-shouldShowDebugInfo = true
+debugMode = true

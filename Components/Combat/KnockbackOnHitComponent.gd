@@ -103,7 +103,7 @@ func knockback(damageDirection: Vector2) -> Vector2:
 	var totalForce: Vector2 = ((-damageDirection) * knockbackForce) + additionalVector
 	body.velocity += totalForce
 
-	if shouldShowDebugInfo: printDebug(str("damageDirection: ", damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", totalForce:, ", totalForce, ", body.velocity: ", body.velocity))
+	if debugMode: printDebug(str("damageDirection: ", damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", totalForce:, ", totalForce, ", body.velocity: ", body.velocity))
 
 	characterBodyComponent.queueMoveAndSlide()
 	return totalForce

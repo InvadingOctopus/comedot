@@ -101,7 +101,7 @@ func interact() -> void:
 	for interactionComponent in self.interactionsInRange:
 		if interactionComponent.requestToInteract(self.parentEntity, self):
 			count += 1 # TBD: Increase counter at start or end?
-			if shouldShowDebugInfo: printDebug(str("interact() ", count, " of ", maximumSimultaneousInteractions))
+			if debugMode: printDebug(str("interact() ", count, " of ", maximumSimultaneousInteractions))
 
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)

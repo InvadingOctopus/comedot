@@ -11,7 +11,7 @@ extends Node
 ## May be omitted if the [signal ModalUI.didFinish] signal is used.
 @export var callbackOnFinish: Callable
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 

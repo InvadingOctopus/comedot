@@ -17,7 +17,7 @@ extends Button
 ## If `null`, then the first parent or grandparent of type [UINavigationContainer] is used.
 @export var parentOverride: UINavigationContainer
 
-@export var shouldShowDebugInfo: bool
+@export var debugMode: bool
 
 #endregion
 
@@ -28,11 +28,11 @@ func _ready() -> void:
 
 
 func onPressed() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("onPressed(): navigationDestination: ", navigationDestination), self)
+	if debugMode: Debug.printDebug(str("onPressed(): navigationDestination: ", navigationDestination), self)
 	if not navigationDestination: return
 
 	var parentContainer: UINavigationContainer = parentOverride if parentOverride else Tools.findFirstParentOfType(self, UINavigationContainer)
-	if shouldShowDebugInfo: Debug.printDebug(str("parentContainer: ", parentContainer), self)
+	if debugMode: Debug.printDebug(str("parentContainer: ", parentContainer), self)
 	if not parentContainer: return
 
 	parentContainer.displayNavigationDestination(navigationDestination)

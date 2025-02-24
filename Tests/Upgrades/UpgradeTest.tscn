@@ -31,11 +31,11 @@ script = ExtResource("1_ght07")
 factions = 2
 
 [node name="UpgradesComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("5_3wt1t")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("6_3nle0")]
 stats = Array[ExtResource("7_7nw6f")]([ExtResource("8_157i1"), ExtResource("9_okulf"), ExtResource("10_fcijy")])
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="DebugComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("11_gj3d5")]
 propertiesToWatch = Array[NodePath]([NodePath("../OverheadPhysicsComponent:parameters:speed")])

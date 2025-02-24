@@ -49,11 +49,11 @@ func _process(_delta: float) -> void:
 
 	# TODO: CHECK: Does this work for joystick input?
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 func showDebugInfo() -> void:
-	# if not shouldShowDebugInfo: return # Checked above
+	# if not debugMode: return # Checked above
 	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.inputDirection		= inputDirection
 	Debug.watchList.lastInputDirection	= lastInputDirection

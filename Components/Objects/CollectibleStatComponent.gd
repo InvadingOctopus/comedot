@@ -32,7 +32,7 @@ func getRandomModifier() -> int:
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not super.checkCollectionConditions(collectorEntity, collectorComponent): return false
 	if preventCollectionIfStatIsMax and stat.value >= stat.max: 
-		if shouldShowDebugInfo: printDebug(str("preventCollectionIfStatIsMax and stat.value ", stat.value, " >= stat.max ", stat.max))
+		if debugMode: printDebug(str("preventCollectionIfStatIsMax and stat.value ", stat.value, " >= stat.max ", stat.max))
 		return false
 	else:
 		return true
@@ -42,7 +42,7 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> int:
 	var randomizedModifier: int = getRandomModifier()
 
-	if shouldShowDebugInfo:
+	if debugMode:
 		printLog(str("onCollectible_didCollect() collectibleComponent: ", collectibleComponent, ", collectorEntity: ", collectorEntity.logName, ", randomizedModifier: ", randomizedModifier))
 
 	stat.value += randomizedModifier

@@ -18,7 +18,7 @@ extends Node
 @export var shouldGameOverAfterAllPlayersRemoved: bool = false
 
 @export var isEnabled: bool = true
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
@@ -45,13 +45,13 @@ func disconnectSignals() -> void:
 
 func gameState_playerRemoved(player: Entity) -> void:
 	if isEnabled and shouldGameOverAfterAllPlayersRemoved and GameState.players.is_empty():
-		if shouldShowDebugInfo: Debug.printDebug(str("gameState_playerRemoved() last player Entity: ", player), self)
+		if debugMode: Debug.printDebug(str("gameState_playerRemoved() last player Entity: ", player), self)
 		disconnectSignals()
 		if not isDisplayingGameOver: displayGameOver()
 
 
 func gameState_gameDidOver() -> void:
-	if shouldShowDebugInfo: Debug.printDebug(str("gameState_gameDidOver(): GameOver.isEnabled: ", isEnabled), self)
+	if debugMode: Debug.printDebug(str("gameState_gameDidOver(): GameOver.isEnabled: ", isEnabled), self)
 	if isEnabled:
 		# NOTE: Make sure ALL players are dead before Overing the Game!
 		if GameState.players.is_empty():

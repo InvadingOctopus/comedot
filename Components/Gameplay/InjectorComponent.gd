@@ -63,7 +63,7 @@ func inject(newParentEntity: Entity, keepGlobalTransform: bool = self.shouldKeep
 	var childrenTransferred: Array[Node]
 	
 	for childToTransfer in self.get_children():
-		if shouldShowDebugInfo: printDebug(str("inject(): ", childToTransfer, " → ", newParentEntity.logName))
+		if debugMode: printDebug(str("inject(): ", childToTransfer, " → ", newParentEntity.logName))
 
 		childToTransfer.reparent(newParentEntity, keepGlobalTransform)
 		childToTransfer.owner = newParentEntity # For persistence etc. otherwise reparent() may try to keep the previous `owner`
@@ -86,7 +86,7 @@ func inject(newParentEntity: Entity, keepGlobalTransform: bool = self.shouldKeep
 ## NOTE: This method is NOT connected to any [Area2D] or other signals by default.
 ## TIP:  Connect the [signal Area2D.area_entered] or [signal Area2D.body_entered] signal of an [Area2D] to this method.
 func onAreaOrBodyEntered(areaOrBody: Node2D) -> void:
-	if shouldShowDebugInfo: printDebug(str("onAreaOrBodyEntered(): ", areaOrBody, ", isEnabled: ", isEnabled, ", isInjecting: ", isInjecting, ", children: ", self.get_child_count()))
+	if debugMode: printDebug(str("onAreaOrBodyEntered(): ", areaOrBody, ", isEnabled: ", isEnabled, ", isInjecting: ", isInjecting, ", children: ", self.get_child_count()))
 	if not isEnabled or isInjecting or self.get_child_count() < 1: return # Faster checks first
 	
 	var targetEntity: Entity

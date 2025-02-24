@@ -25,7 +25,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAA
 tile_set = ExtResource("2_foo43")
 collision_enabled = false
 script = ExtResource("4_vhgyu")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
 script = ExtResource("1_3qr72")
@@ -39,12 +39,12 @@ shape = SubResource("RectangleShape2D_esh4c")
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 
 [node name="TileBasedControlComponent" parent="CharacterBody2D" instance=ExtResource("5_kihht")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TileBasedPositionComponent" parent="CharacterBody2D" node_paths=PackedStringArray("tileMap", "visualIndicator") instance=ExtResource("6_73iom")]
 tileMap = NodePath("../../TerrainContainer/TerrainTileMapLayer")
 visualIndicator = NodePath("MovementIndicator")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="GunComponent" parent="CharacterBody2D" instance=ExtResource("4_6v6op")]
 

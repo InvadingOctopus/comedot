@@ -51,10 +51,10 @@ func _physics_process(_delta: float) -> void:
 	overheadPhysicsComponent.inputDirection = self.recentChaseDirection
 
 	# characterBodyComponent.queueMoveAndSlide() # Unneeded; will be called by OverheadPhysicsComponent
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.chaseVector = self.recentChaseDirection

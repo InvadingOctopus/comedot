@@ -95,7 +95,7 @@ signal didArriveAtNewCell(newDestination: Vector2i)
 func _ready() -> void:
 	validateTileMap()
 
-	if shouldShowDebugInfo:
+	if debugMode:
 		self.willStartMovingToNewCell.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewCell.connect(self.onDidArriveAtNewTile)
 
@@ -139,7 +139,7 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 	var isValidBounds: bool = Tools.checkTileMapBounds(tileMap, coordinates)
 	var isTileVacant:  bool = self.checkTileVacancy(coordinates)
 
-	if shouldShowDebugInfo: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
+	if debugMode: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkTileVacancy(): ", isTileVacant))
 
 	return isValidBounds and isTileVacant
 
@@ -276,7 +276,7 @@ func _physics_process(delta: float) -> void:
 		# to ensure alignment in case the TileMap node is moving.
 		snapEntityPositionToTile()
 
-	if shouldShowDebugInfo: showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 func moveTowardsDestinationTile(delta: float) -> void:
@@ -311,7 +311,7 @@ func updateIndicator() -> void:
 #region Debugging
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList.entityPosition		= parentEntity.global_position
 	Debug.watchList.currentTile			= currentCellCoordinates
 	Debug.watchList.vector				= inputVector

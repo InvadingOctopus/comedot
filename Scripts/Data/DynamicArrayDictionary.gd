@@ -10,18 +10,18 @@ extends Node
 ## Each (x,y) [Vector2i] coordinate key contains an arbitrary value.
 @export var gridDictionary: Dictionary[Vector2i, Variant] = { Vector2i(0, 0): null }
 
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 #endregion
 
 
 func setCellData(x: int, y: int, value: Variant) -> void:
 	var coordinates: Vector2i = Vector2i(x, y)
-	if shouldShowDebugInfo: Debug.printDebug(str("setCellData() @", coordinates, " = ", value), self)
+	if debugMode: Debug.printDebug(str("setCellData() @", coordinates, " = ", value), self)
 	gridDictionary[coordinates] = value
 
 
 func getCellData(x: int, y: int) -> Variant:
 	var coordinates: Vector2i = Vector2i(x, y)
 	var value: Variant = gridDictionary.get(coordinates)
-	if shouldShowDebugInfo: Debug.printDebug(str("getCellData() @", coordinates, ": ", value), self)
+	if debugMode: Debug.printDebug(str("getCellData() @", coordinates, ": ", value), self)
 	return value

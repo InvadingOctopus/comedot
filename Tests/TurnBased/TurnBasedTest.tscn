@@ -417,7 +417,7 @@ tile_set = SubResource("TileSet_usjrl")
 
 [node name="TurnBasedUIEntity" type="Node2D" parent="."]
 script = ExtResource("3_orv1y")
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TurnBasedStateUIComponent" parent="TurnBasedUIEntity" instance=ExtResource("5_178cw")]
 
@@ -495,7 +495,7 @@ collision_layer = 2
 collision_mask = 16
 gravity_scale = 1.66533e-16
 script = ExtResource("3_udncs")
-shouldShowDebugInfo = true
+debugMode = true
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity1" groups=["players"]]
@@ -511,16 +511,16 @@ position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
 [node name="TurnBasedTestComponent" parent="TurnBasedEntity1" instance=ExtResource("5_253pd")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity1" instance=ExtResource("4_3bh2s")]
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity1" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(6, 6)
 speed = 50.0
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TurnBasedEntity2" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
 position = Vector2(88, 120)
@@ -528,7 +528,7 @@ collision_layer = 2
 collision_mask = 16
 gravity_scale = 1.66533e-16
 script = ExtResource("3_udncs")
-shouldShowDebugInfo = true
+debugMode = true
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity2" groups=["players"]]
@@ -557,12 +557,12 @@ animationForTurnDidBegin = &""
 
 [node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity2" instance=ExtResource("4_3bh2s")]
 randomMovement = true
-shouldShowDebugInfo = true
+debugMode = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity2" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(8, 8)
 speed = 50.0
-shouldShowDebugInfo = true
+debugMode = true
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]

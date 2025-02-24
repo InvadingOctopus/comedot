@@ -54,7 +54,7 @@ var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponen
 
 func _ready() -> void:
 	if not nodeToAnimate: nodeToAnimate = parentEntity.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
-	if shouldShowDebugInfo: printDebug(str("nodeToAnimate: ", nodeToAnimate))
+	if debugMode: printDebug(str("nodeToAnimate: ", nodeToAnimate))
 
 	connectSignals()
 
@@ -84,7 +84,7 @@ func updateTint()-> void:
 		var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase redness as health gets lower
 		var targetModulate:  Color = nodeToAnimate.modulate
 		targetModulate.r = red
-		if shouldShowDebugInfo: Debug.printVariables([health.logName, red, targetModulate])
+		if debugMode: Debug.printVariables([health.logName, red, targetModulate])
 		Animations.tweenProperty(nodeToAnimate, ^"modulate", targetModulate, 0.1)
 
 

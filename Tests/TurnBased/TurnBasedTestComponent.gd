@@ -62,5 +62,5 @@ func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) 
 
 
 func _process(_delta: float) -> void:
-	if shouldShowDebugInfo and $WaitSprite.visible:
+	if debugMode and $WaitSprite.visible:
 		%WaitLabel.text = str("WAIT:", snappedf($Timer.time_left, 0.001))

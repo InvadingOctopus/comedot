@@ -33,7 +33,7 @@ extends Node
 var parentEntity: Entity:
 	set(newValue):
 		if newValue != parentEntity:
-			if shouldShowDebugInfo: printDebug(str("parentEntity: ", parentEntity, " → ", newValue))
+			if debugMode: printDebug(str("parentEntity: ", parentEntity, " → ", newValue))
 			parentEntity = newValue
 
 ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
@@ -106,7 +106,7 @@ func validateParent() -> void:
 	# Initialization Order: 1: This seems to be called before any other methods, via the notification, at least when creating a new instance e.g. by a GunComponent
 	
 	var newParent: Node = self.get_parent()
-	if shouldShowDebugInfo: printDebug(str("validateParent(): ", newParent))
+	if debugMode: printDebug(str("validateParent(): ", newParent))
 	
 	# If the parent node is not an Entity, print a warning if needed
 	if not is_instance_of(newParent, Entity):
@@ -151,7 +151,7 @@ func _enter_tree() -> void:
 		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
 		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
 		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
-		self.shouldShowDebugInfo = self.shouldShowDebugInfo or parentEntity.shouldShowDebugInfo
+		self.debugMode = self.debugMode or parentEntity.debugMode
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 
 		self.checkRequiredComponents()
@@ -167,11 +167,11 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 	# If parent is null or not an Entity, check the grandparent (parent's parent) and keep searching up the tree.
 	if checkGrandparents:
 		while not (parentOrGrandparent is Entity) and not (parentOrGrandparent == null):
-			if shouldShowDebugInfo: printDebug(str("findParentEntity() checking parent of non-Entity node: ", parentOrGrandparent))
+			if debugMode: printDebug(str("findParentEntity() checking parent of non-Entity node: ", parentOrGrandparent))
 			parentOrGrandparent = parentOrGrandparent.get_parent()
 
 	if parentOrGrandparent is Entity:
-		if shouldShowDebugInfo: printDebug(str("findParentEntity() result: ", parentOrGrandparent))
+		if debugMode: printDebug(str("findParentEntity() result: ", parentOrGrandparent))
 		return parentOrGrandparent
 	else:
 		printWarning(str("findParentEntity() found no Entity! checkGrandparents: ", checkGrandparents))
@@ -179,7 +179,7 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 
 
 func registerEntity(newParentEntity: Entity) -> void:
-	if shouldShowDebugInfo: printDebug(str("registerEntity(): ", newParentEntity))
+	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
 	if not newParentEntity: return
 	self.parentEntity = newParentEntity
 	self.parentEntity.registerComponent(self) # NOTE: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
@@ -207,14 +207,14 @@ func requestDeletion() -> bool:
 
 func requestDeletionOfParentEntity() -> bool:
 	if parentEntity:
-		if shouldShowDebugInfo: printDebug(str("requestDeletionOfParentEntity(): ", parentEntity.logName))
+		if debugMode: printDebug(str("requestDeletionOfParentEntity(): ", parentEntity.logName))
 		if parentEntity.requestDeletion():
 			return true
 		else:
-			if shouldShowDebugInfo: printDebug(str("requestDeletionOfParentEntity(): requestDeletion() refused by ", parentEntity.logName))
+			if debugMode: printDebug(str("requestDeletionOfParentEntity(): requestDeletion() refused by ", parentEntity.logName))
 			return false
 	else:
-		if shouldShowDebugInfo: printWarning("requestDeletionOfParentEntity(): parentEntity already null!")
+		if debugMode: printWarning("requestDeletionOfParentEntity(): parentEntity already null!")
 		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 
@@ -224,7 +224,7 @@ func requestDeletionOfParentEntity() -> bool:
 func unregisterEntity() -> void:
 	# Deinitialization Order: 2: After Entity._exit_tree()
 	# CHECK: Is there still a parent reference available at this point?
-	if shouldShowDebugInfo: printDebug(str("unregisterEntity() ", get_parent()))
+	if debugMode: printDebug(str("unregisterEntity() ", get_parent()))
 	if parentEntity:
 		willRemoveFromEntity.emit()
 		self.coComponents = {}
@@ -297,9 +297,9 @@ func removeSiblingComponentsOfSameType() -> int:
 
 ## Enables more detailed debugging information for this component, such as verbose log messages, visual indicators, the [member Debug.watchList] live property labels, or chart windows etc.
 ## NOTE: Subclasses may add their own information or may not respect this flag.
-## Defaults to the entity's [member Entity.shouldShowDebugInfo] if initially `false`.
+## Defaults to the entity's [member Entity.debugMode] if initially `false`.
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
-@export var shouldShowDebugInfo: bool
+@export var debugMode: bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 ## NOTE: Does NOT affect warnings and errors!
@@ -318,11 +318,11 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 	Debug.printLog(message, object, "lightBlue", "cyan")
 
 
-## Affected by [member shouldShowDebugInfo], but NOT affected by [member isLoggingEnabled].
-## TIP: Even though this method checks for [member shouldShowDebugInfo], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
+## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
+## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.printDebug(message, logName, "cyan")
 
 
@@ -340,15 +340,15 @@ func printError(message: String = "") -> void:
 
 ## Prints an array of variables in a highlighted color, along with a short "stack trace" of recent functions and their filenames before [method Debug.printTrace] was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
-## Affected by [member shouldShowDebugInfo] and only printed in debug builds.
+## Affected by [member debugMode] and only printed in debug builds.
 func printTrace(values: Array[Variant] = []) -> void:
 	if self is InjectorComponent or self is DamageOverTimeComponent:
 		Debug.printTrace(values, self, 3)
 
 
-## Logs an entry showing a variable's previous and new values, IF there is a change and [member shouldShowDebugInfo].
+## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> void:
-	if shouldShowDebugInfo and previousValue != newValue:
+	if debugMode and previousValue != newValue:
 		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
 		if not logAsDebug: printLog("[color=gray]" + string)
 		else: printDebug(string)

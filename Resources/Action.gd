@@ -17,8 +17,8 @@ extends StatDependentResourceBase
 @export var maximumUses:	int: ## The number of times this Action may be performed, if [member hasFiniteUses]. Setting this property resets [member usesRemaining].
 	set(newValue):
 		if newValue != maximumUses:
-			if shouldShowDebugInfo: Debug.printChange("maximumUses", maximumUses, newValue)
-			if shouldShowDebugInfo: Debug.printChange("usesRemaining", usesRemaining, newValue)
+			if debugMode: Debug.printChange("maximumUses", maximumUses, newValue)
+			if debugMode: Debug.printChange("usesRemaining", usesRemaining, newValue)
 			maximumUses = newValue
 			usesRemaining = maximumUses
 
@@ -27,7 +27,7 @@ extends StatDependentResourceBase
 ## The code to execute when this Action is performed. See [Payload] for explanation and available options.
 @export var payload:		Payload
 
-@export var shouldShowDebugInfo: bool
+@export var debugMode: bool
 
 #endregion
 
@@ -91,7 +91,7 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 
 	# Check number of uses remaining
 	if self.hasFiniteUses and usesRemaining < 1:
-		if shouldShowDebugInfo: Debug.printDebug("hasFiniteUses, usesRemaining < 1", self)
+		if debugMode: Debug.printDebug("hasFiniteUses, usesRemaining < 1", self)
 		return false
 
 	# Check cooldown
@@ -118,7 +118,7 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 		if self.hasFiniteUses:
 			self.usesRemaining -= 1
 			didDecreaseUses.emit()
-			if shouldShowDebugInfo: Debug.printDebug(str("hasFiniteUses, usesRemaining: ", usesRemaining), self)
+			if debugMode: Debug.printDebug(str("hasFiniteUses, usesRemaining: ", usesRemaining), self)
 			if usesRemaining < 1: didDepleteUses.emit() # TBD: == 0 or < 1?
 
 		# Start cooling down
@@ -132,4 +132,4 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 
 
 func printLog(message: String) -> void:
-	if shouldShowDebugInfo: Debug.printLog(message, str(self.logName), "", "pink")
+	if debugMode: Debug.printLog(message, str(self.logName), "", "pink")

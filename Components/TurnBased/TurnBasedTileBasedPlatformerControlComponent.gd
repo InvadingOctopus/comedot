@@ -29,7 +29,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
 	or event.is_action_pressed(GlobalInput.Actions.moveRight):
 
-		if shouldShowDebugInfo: printLog(str(parentEntity.logName, " ", event))
+		if debugMode: printLog(str(parentEntity.logName, " ", event))
 
 		self.recentInputVector = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		self.recentInputVector.y = 0 # NOTE: Negate the direct Y input; only allow vertical movement via jumps and gravity.

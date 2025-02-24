@@ -17,7 +17,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 ## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` with functions such as `str()` that might reduce performance.
-@export var shouldShowDebugInfo: bool = false
+@export var debugMode: bool = false
 
 # PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
 # Do not initialize these properties until they are needed, or it may slow performance when lots of entities are being created.
@@ -141,7 +141,7 @@ func registerComponent(newComponent: Component) -> bool:
 	self.components[componentType] = newComponent
 	newComponent.parentEntity = self # Is this useful? It will be done anyway by the component.
 
-	if shouldShowDebugInfo: printDebug(str("registerComponent(): \"", componentType, "\" = ", newComponent.logFullName))
+	if debugMode: printDebug(str("registerComponent(): \"", componentType, "\" = ", newComponent.logFullName))
 
 	# DESIGN: Do NOT register the superclass of the component, such as [HealthComponent] for [ShieldedHealthComponent].
 	# REASON: This is too complicated to implement elegantly/reliably,
@@ -231,11 +231,11 @@ func addNewComponent(type: Script) -> Component:
 
 	# First, construct the scene name from the script's name.
 	var componentScenePath: String = SceneManager.getScenePathFromClass(type)
-	if shouldShowDebugInfo: printDebug(str("addNewComponent(", type, "): ", componentScenePath))
+	if debugMode: printDebug(str("addNewComponent(", type, "): ", componentScenePath))
 
 	# Load and instantiate the component scene.
 	var newComponent := SceneManager.loadSceneAndAddInstance(componentScenePath, self)
-	if shouldShowDebugInfo: printDebug(str(newComponent))
+	if debugMode: printDebug(str(newComponent))
 
 	return newComponent
 
@@ -309,7 +309,7 @@ func removeComponents(componentTypes: Array[Script], shouldFree: bool = true) ->
 ## WARNING: TIP: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 	var result: Node = Tools.findFirstChildOfType(self, type, includeEntity)
-	if shouldShowDebugInfo: printDebug(str("findFirstChildOfType(", type, "): ", result))
+	if debugMode: printDebug(str("findFirstChildOfType(", type, "): ", result))
 	return result
 
 
@@ -320,7 +320,7 @@ func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
 	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, returnEntityIfNoMatches)
-	if shouldShowDebugInfo: printDebug(str("findFirstChildOfAnyTypes(", types, "): ", result))
+	if debugMode: printDebug(str("findFirstChildOfAnyTypes(", types, "): ", result))
 	return result
 
 
@@ -458,11 +458,11 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 	Debug.printLog(message, object, "lightGreen", "green")
 
 
-## Affected by [member shouldShowDebugInfo], but NOT affected by [member isLoggingEnabled].
-## TIP: Even though this method checks for [member shouldShowDebugInfo], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
+## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
+## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.printDebug(message, logName, "green")
 
 
@@ -478,9 +478,9 @@ func printError(message: String = "") -> void:
 	Debug.printError(message, logFullName, "green")
 
 
-## Logs an entry showing a variable's previous and new values, IF there is a change and [member shouldShowDebugInfo].
+## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> void:
-	if shouldShowDebugInfo and previousValue != newValue:
+	if debugMode and previousValue != newValue:
 		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
 		if not logAsDebug: printLog("[color=gray]" + string)
 		else: printDebug(string)
@@ -506,7 +506,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 ## @experimental
 # func _set(property: StringName, value: Variant) -> bool:
 # 	# Log changes
-# 	if shouldShowDebugInfo and property == "velocity":
+# 	if debugMode and property == "velocity":
 # 		previousVelocity = velocity
 # 		if previousVelocity != value:
 # 			var caller: Dictionary = get_stack()[2]

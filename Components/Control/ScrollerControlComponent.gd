@@ -145,7 +145,7 @@ func clampVelocity(_delta: float) -> void:
 	
 
 func showDebugInfo() -> void:
-	if not shouldShowDebugInfo: return
+	if not debugMode: return
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.lastInput		= lastInputDirection
 	Debug.watchList.lastDirection	= lastDirection
