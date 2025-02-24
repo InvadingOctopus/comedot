@@ -18,4 +18,16 @@ icon_alignment = 1
 vertical_icon_alignment = 0
 script = ExtResource("2_5a242")
 
+[node name="CooldownBar" type="ProgressBar" parent="."]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 1.0
+fill_mode = 3
+show_percentage = false
+
 [connection signal="pressed" from="." to="." method="onPressed"]

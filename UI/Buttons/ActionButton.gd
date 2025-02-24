@@ -17,7 +17,7 @@ extends Button
 	set(newValue):
 		if newValue != action:
 			action = newValue
-			updateUI()
+			if self.is_node_ready(): updateUI()
 
 @export var shouldShowDebugInfo: bool
 
@@ -45,6 +45,8 @@ var statsComponent: StatsComponent:
 	get:
 		if not statsComponent: statsComponent = entity.getComponent(StatsComponent)
 		return statsComponent
+
+@onready var cooldownBar: ProgressBar = $CooldownBar
 #endregion
 
 
@@ -58,25 +60,31 @@ func _ready() -> void:
 		connectSignals()
 		updateUI()
 
-
-func connectSignals() -> void:
-	Tools.reconnectSignal(action.didDecreaseUses, self.onAction_didDecreaseUses)
+	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
 
 
 func updateUI() -> void:
-	self.text = action.displayName + (str("\n[", action.usesRemaining, "]") if action.hasFiniteUses else "")
+	self.text = action.displayName \
+		+ (str("\n[", action.usesRemaining, "]") if action.hasFiniteUses else "")
 	self.icon = action.icon
 	self.tooltip_text = action.description
 	self.disabled = not checkUsability()
+	cooldownBar.visible = action.cooldownRemaining > 0 or not is_zero_approx(action.cooldownRemaining) # Multiple checks in case of float funkery
 
 
 ## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
 func checkUsability() -> bool:
 	return action.isUsable \
-		and action.validateStatsComponent(statsComponent) 
+		and action.validateStatsComponent(statsComponent)
 
 
 #region Events
+
+func connectSignals() -> void:
+	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
+	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
+	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
+
 
 func onPressed() -> void:
 	if shouldShowDebugInfo: Debug.printDebug("onPressed()", self)
@@ -94,5 +102,25 @@ func generateInputEvent() -> void:
 
 func onAction_didDecreaseUses() -> void:
 	updateUI()
+
+
+func onAction_didStartCooldown() -> void:
+	cooldownBar.max_value = action.cooldown
+	cooldownBar.value	= action.cooldownRemaining
+	cooldownBar.visible	= true
+	self.disabled		= true
+	self.set_process(true) # PERFORMANCE: Update per-frame only when needed
+
+
+func onAction_didFinishCooldown() -> void:
+	cooldownBar.value	= 0
+	cooldownBar.visible	= false
+	self.disabled		= false
+	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
+
+
+func _process(_delta: float) -> void:
+	if action.cooldownRemaining > 0:
+		cooldownBar.value = action.cooldownRemaining
 
 #endregion
