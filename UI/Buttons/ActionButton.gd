@@ -54,11 +54,17 @@ func _ready() -> void:
 		entity = player
 		if not entity: Debug.printWarning("Missing entity", self)
 
-	if action: updateUI()
+	if action:
+		connectSignals()
+		updateUI()
+
+
+func connectSignals() -> void:
+	Tools.reconnectSignal(action.didDecreaseUses, self.onAction_didDecreaseUses)
 
 
 func updateUI() -> void:
-	self.text = action.displayName
+	self.text = action.displayName + (str("\n[", action.usesRemaining, "]") if action.hasFiniteUses else "")
 	self.icon = action.icon
 	self.tooltip_text = action.description
 	self.disabled = not checkUsability()
@@ -66,8 +72,11 @@ func updateUI() -> void:
 
 ## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
 func checkUsability() -> bool:
-	return action.validateStatsComponent(statsComponent)
+	return action.isUsable \
+		and action.validateStatsComponent(statsComponent) 
 
+
+#region Events
 
 func onPressed() -> void:
 	if shouldShowDebugInfo: Debug.printDebug("onPressed()", self)
@@ -81,3 +90,9 @@ func generateInputEvent() -> void:
 	actionEvent.action  = GlobalInput.Actions.specialActionPrefix + self.action.name
 	actionEvent.pressed = true
 	Input.parse_input_event(actionEvent)
+
+
+func onAction_didDecreaseUses() -> void:
+	updateUI()
+
+#endregion
