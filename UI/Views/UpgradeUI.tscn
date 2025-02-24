@@ -1,13 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://hydpkxd84sfq"]
+[gd_scene load_steps=3 format=3 uid="uid://damq04335casd"]
 
-[ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="1_b10o6"]
-[ext_resource type="Script" uid="uid://bwceey4rmvjrq" path="res://UI/Views/UpgradeUI.gd" id="2_caaia"]
+[ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/NamedResourceUI.tscn" id="1_esckq"]
+[ext_resource type="Script" uid="uid://bwceey4rmvjrq" path="res://UI/Views/UpgradeUI.gd" id="2_fhd43"]
 
-[node name="UpgradeUI" type="Label"]
+[node name="UpgradeUI" instance=ExtResource("1_esckq")]
 editor_description = "View for an Upgrade Resource"
-offset_right = 21.0
-offset_bottom = 8.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+columns = 2
+script = ExtResource("2_fhd43")
+upgrade = null
+shouldBeHiddenUntilAcquired = false
+
+[node name="Label" parent="." index="1"]
 text = "UPGRADE"
-label_settings = ExtResource("1_b10o6")
 vertical_alignment = 1
-script = ExtResource("2_caaia")

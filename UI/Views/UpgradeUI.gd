@@ -1,7 +1,8 @@
-## A [Label] linked to an [Upgrade] which automatically updates its text when the Upgrade changes.
+## A label & icon linked to an [Upgrade] which automatically updates its text when the Upgrade changes.
 
+@warning_ignore("missing_tool")
 class_name UpgradeUI
-extends Label
+extends NamedResourceUI
 
 
 #region Parameters
@@ -23,9 +24,10 @@ var player: PlayerEntity:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	self.visible = not shouldBeHiddenUntilAcquired
+	super._ready() # TBD: First or last?
 	if upgrade: connectSignals()
-	updateLabel()
+	self.visible = not shouldBeHiddenUntilAcquired
+	updateUI()
 
 
 func connectSignals() -> void:
@@ -37,26 +39,40 @@ func connectSignals() -> void:
 
 
 func onUpgrade_didAcquire(_entity: Entity) -> void:
-	self.label_settings.font_color = Color.GREEN_YELLOW
-	updateLabel()
+	label.label_settings.font_color = Color.GREEN_YELLOW
+	icon.modulate = Color.WHITE
+	updateUI()
 	if self.shouldBeHiddenUntilAcquired: self.visible = true
 
 
 func onUpgrade_didDiscard(_entity: Entity) -> void:
-	self.label_settings.font_color = Color.GRAY
-	updateLabel()
+	label.label_settings.font_color = Color.GRAY
+	updateUI()
+
+
+func updateUI(animate: bool = self.shouldAnimate) -> void:
+	super.updateUI(animate)
+	if self.shouldBeHiddenUntilAcquired:
+		self.visible = upgrade.isAcquired
+	else:
+		self.visible = true
+		self.modulate = Color.WHITE if upgrade.isAcquired else Color(1.0, 1.0, 1.0, 0.5)
 
 
 func onUpgrade_didLevelChange() -> void:
-	updateLabel()
+	updateText()
 
 
-func updateLabel() -> void:
-	if not upgrade: 
-		self.text = "" # TBD: Should there be some text when there is no Upgrade?
+func updateIcon(_animate: bool = self.shouldAnimate) -> void:
+	icon.texture = upgrade.icon
+
+
+func updateText(_animate: bool = self.shouldAnimate) -> void:
+	if not upgrade:
+		label.text = "" # TBD: Should there be some text when there is no Upgrade?
 		return
 
 	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels:
-		self.text = str(upgrade.displayName, " L", upgrade.level)
+		label.text = str(upgrade.displayName, " L", upgrade.level)
 	else:
-		self.text = upgrade.displayName
+		label.text = upgrade.displayName
