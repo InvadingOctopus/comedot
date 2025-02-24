@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://damq04335casd"]
 
-[ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/NamedResourceUI.tscn" id="1_esckq"]
+[ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/GameplayResourceUI.tscn" id="1_esckq"]
 [ext_resource type="Script" uid="uid://bwceey4rmvjrq" path="res://UI/Views/UpgradeUI.gd" id="2_fhd43"]
 
 [node name="UpgradeUI" instance=ExtResource("1_esckq")]

@@ -8,7 +8,7 @@
 
 @warning_ignore("missing_tool") # @tool is useless here
 class_name Upgrade
-extends NamedResourceBase
+extends GameplayResourceBase
 
 # NOTE: Does not `extend StatDependentResourceBase` because instead of a single `cost`, there is an Array of `costs`, different for each `level`.
 

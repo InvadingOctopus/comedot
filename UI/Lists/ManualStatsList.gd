@@ -2,7 +2,7 @@
 ## To use, add [Label] child nodes and name them with the convention: "[Stat's name]Label" e.g. "healthLabel"
 ## NOTE: The case should be exactly the same as the [member Stat.name] of the [Stat] which should be displayed via that label! Do NOT use the [member Stat.displayName].
 ## TIP: If you have [Stat]s saved as ".tres" Resource files, use the newer [StatsList] and [StatUI] instead for automatic UI creation and updates.
-## ALERT: Order of Resource initialization may cause unexpected updates. For example, the Health Stat saved in HealthComponent.tscn will have its values applied first, and then the modified Stat values saved in an Entity scene which uses that component will be applied. See documentation notes in NamedResourceBase.gd
+## ALERT: Order of Resource initialization may cause unexpected updates. For example, the Health Stat saved in HealthComponent.tscn will have its values applied first, and then the modified Stat values saved in an Entity scene which uses that component will be applied. See documentation notes in GameplayResourceBase.gd
 
 class_name ManualStatsList
 extends Container

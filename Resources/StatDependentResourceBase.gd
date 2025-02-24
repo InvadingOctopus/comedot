@@ -3,7 +3,7 @@
 
 @warning_ignore("missing_tool")
 class_name StatDependentResourceBase
-extends NamedResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
+extends GameplayResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 
 #region Common Parameters

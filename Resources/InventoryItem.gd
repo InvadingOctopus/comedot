@@ -2,7 +2,7 @@
 
 @warning_ignore("missing_tool")
 class_name InventoryItem
-extends NamedResourceBase
+extends GameplayResourceBase
 
 
 #region Parameters

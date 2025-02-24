@@ -2,7 +2,7 @@
 
 @warning_ignore("missing_tool")
 class_name UpgradeUI
-extends NamedResourceUI
+extends GameplayResourceUI
 
 
 #region Parameters

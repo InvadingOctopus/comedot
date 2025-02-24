@@ -1,8 +1,8 @@
-## An abstract base cass for [Container] [Controls] that represent a [NamedResourceBase]-derived Resource.
-## Displays the name and icon, and uses the [member NamedResourceBase.description] as the tooltip.
+## An abstract base cass for [Container] [Controls] that represent a [GameplayResourceBase]-derived Resource.
+## Displays the name and icon, and uses the [member GameplayResourceBase.description] as the tooltip.
 
 @tool
-class_name NamedResourceUI
+class_name GameplayResourceUI
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')
@@ -11,7 +11,7 @@ extends Container
 
 #region Parameters
 
-# @export var resource: NamedResourceBase # PLACEHOLDER: Replace with actual Resource class name & type.
+# @export var resource: GameplayResourceBase # PLACEHOLDER: Replace with actual Resource class name & type.
 # 	set(newValue):
 # 		if newValue != resource:
 # 			resource = newValue

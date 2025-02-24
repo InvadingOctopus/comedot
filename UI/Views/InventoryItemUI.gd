@@ -1,7 +1,7 @@
 ## A [Container] with an icon and other [Control]s to represent an [InventoryItem].
 
 class_name InventoryItemUI
-extends NamedResourceUI
+extends GameplayResourceUI
 
 
 
