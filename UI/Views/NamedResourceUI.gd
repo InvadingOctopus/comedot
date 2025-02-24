@@ -11,8 +11,12 @@ extends Container
 
 #region Parameters
 
-#@export var resource: NamedResourceBase
-
+# @export var resource: NamedResourceBase # PLACEHOLDER: Replace with actual Resource class name & type.
+# 	set(newValue):
+# 		if newValue != resource:
+# 			resource = newValue
+# 			if self.is_node_ready(): updateUI()
+		
 @export var shouldAnimate:   bool = true
 
 @export var shouldShowText:  bool = true: 
