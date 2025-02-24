@@ -120,10 +120,10 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 		self.upgradesDictionary[newUpgrade.name] = newUpgrade
 
 		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
-		# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the acquire signal.
+		# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the `didAcquire` signal.
 		self.didAcquire.emit(newUpgrade)
-		newUpgrade.didAcquire.emit(self.parentEntity)
-
+		newUpgrade.setAcquisition(self.parentEntity) ## Let the Upgrade emit its signal and set its flags etc.
+		
 		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
@@ -173,7 +173,7 @@ func discardUpgrade(nameToDiscard: StringName) -> bool:
 		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
 		# because any handlers connected to the Upgrade will except the Upgrade to not be in any component when they receive the discard signal.
 		self.didDiscard.emit(upgradeToDiscard)
-		upgradeToDiscard.didDiscard.emit(self.parentEntity)
+		upgradeToDiscard.discard(parentEntity) # Let the Upgrade perform its cleanup.
 		return true
 	else:
 		return false

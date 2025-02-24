@@ -111,12 +111,20 @@ var costStatName: StringName:
 
 
 #region State
+
 var logName: String:
 	get: return str(self, " ", self.name, " L", self.level)
 
 ## Returns `true` if [member shouldAllowInfiniteLevels] is false and [member level] == [member maxLevel]
 var isMaxLevel: bool:
 	get: return not shouldAllowInfiniteLevels and level >= maxLevel
+
+## Has the Upgrade been acquired by an [UpgradesComponent]?
+var isAcquired: bool = false
+
+## The most recent entity that acquired this Upgrade. Set to `null` when this Upgrade is discarded by the Entity.
+var acquiringEntity: Entity
+
 #endregion
 
 
@@ -154,9 +162,15 @@ func requestToAcquire(entity: Entity, paymentStat: Stat) -> bool:
 	# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
 	# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the acquire signal.
 	# Even though a class not emitting its own signals is unreliable design :')
-	# Handled by [UpgradesComponent]: self.didAcquire.emit(entity)
-	# TBD: Should we use `await` on the component to be able to emit our signal by ourselves?
+	# Handled by setAcquisition()
 	return true
+
+
+## Called by an [UpgradesComponent] after a successful [method requestToAcquire]
+func setAcquisition(entity: Entity) -> void:
+	self.isAcquired = true
+	self.acquiringEntity = entity
+	self.didAcquire.emit(entity)
 
 
 ## Allows or declines this Upgrade's [member level] to be incremented after deducting the required [method getCost] from the required [Stat].
@@ -244,6 +258,8 @@ func discard(entity: Entity) -> Variant:
 		Debug.printWarning("Missing payloadOnDiscard", self.logName)
 		payloadResult = false
 
+	self.acquiringEntity = null
+	self.isAcquired = false
 	self.didDiscard.emit(entity)
 	return payloadResult
 
