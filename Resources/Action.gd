@@ -6,8 +6,7 @@
 class_name Action
 extends StatDependentResourceBase
 
-# TODO: Cooldowns
-# TBD: A less ambiguous name, like Ability? Because "action" is a Godot term for all input events.
+# TBD: A less ambiguous name, like ExplicitAction or Ability? Because "action" is a Godot term for all input events.
 
 
 #region Parameters
@@ -23,8 +22,10 @@ extends StatDependentResourceBase
 			maximumUses = newValue
 			usesRemaining = maximumUses
 
+@export_range(0, 6000, 0.1) var cooldown: float = 0 ## The time in seconds (or fraction of a second) to wait before this Action may be used again.
+
 ## The code to execute when this Action is performed. See [Payload] for explanation and available options.
-@export var payload: Payload
+@export var payload:		Payload
 
 @export var shouldShowDebugInfo: bool
 
@@ -32,8 +33,18 @@ extends StatDependentResourceBase
 
 
 #region State
+
 ## If [member hasFiniteUses]
 @export_storage var usesRemaining: int = self.maximumUses # BUG: Does not get initialized to `maximumUses`
+
+## The number of seconds remaining before this Action may be used again.
+## NOTE: This must be reduced by an [ActionsComponent] on every frame, because [Resource]s cannot perform any per-frame updates on their own.
+@export_storage var cooldownRemaining: float:
+	set(newValue):
+		cooldownRemaining = newValue
+		if cooldownRemaining < 0 or is_zero_approx(cooldownRemaining):
+			cooldownRemaining = 0
+			didFinishCooldown.emit()
 #endregion
 
 
@@ -42,7 +53,13 @@ var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
 
 var isUsable: bool: ## Returns `true` if this Action is off cooldown and has uses remaining. For [StatDependentResourceBase] validation, call [method StatDependentResourceBase.validateStatsComponent] etc.
-	get: return (not hasFiniteUses or usesRemaining > 0)
+	get: return (not hasFiniteUses or usesRemaining > 0) and not isInCooldown
+
+var isInCooldown: bool:
+	get:
+		# Also return `false` if there is no cooldown at all 
+		return  (cooldown > 0 or not is_zero_approx(cooldown)) \
+			and (cooldownRemaining > 0 or not is_zero_approx(cooldownRemaining)) # Multiple checks in case of floating point funkery
 #endregion
 
 
@@ -55,6 +72,9 @@ signal didRequestTarget(source: Entity)
 
 signal didDecreaseUses ## Emitted when [member usesRemaining] decreases.
 signal didDepleteUses ## Emitted if [member hasFiniteUses] and [member usesRemaining] goes below 1
+
+signal didStartCooldown
+signal didFinishCooldown
 
 #endregion
 
@@ -74,6 +94,9 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 		if shouldShowDebugInfo: Debug.printDebug("hasFiniteUses, usesRemaining < 1", self)
 		return false
 
+	# Check cooldown
+	if isInCooldown: return false # TBD: Log?
+
 	# Check for target
 	if self.requiresTarget and target == null:
 		self.didRequestTarget.emit(source)
@@ -90,11 +113,18 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 	# IMPORTANT: Deduct the cost from the Stat only if the payload was successfully executed!
 	if payloadResult: # Must not be `null` and not `false`
 		self.deductCostFromStat(paymentStat) # TBD: Validate even if the `cost` is negative?
+		
+		# Deduct the number of uses
 		if self.hasFiniteUses:
 			self.usesRemaining -= 1
 			didDecreaseUses.emit()
 			if shouldShowDebugInfo: Debug.printDebug(str("hasFiniteUses, usesRemaining: ", usesRemaining), self)
 			if usesRemaining < 1: didDepleteUses.emit() # TBD: == 0 or < 1?
+
+		# Start cooling down
+		if self.cooldown > 0 and not is_zero_approx(self.cooldown): # Multiple checks in case of floating point funkery
+			self.cooldownRemaining = self.cooldown
+			didStartCooldown.emit()
 
 	return payloadResult
 

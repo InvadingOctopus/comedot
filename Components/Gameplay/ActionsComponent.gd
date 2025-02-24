@@ -23,6 +23,7 @@ extends Component
 
 
 #region State
+@export_storage var actionsOnCooldown: Array[Action]
 #endregion
 
 
@@ -41,6 +42,10 @@ signal didPerformAction(action: Action, result: Variant)
 #region Dependencies
 @onready var statsComponent: StatsComponent = coComponents.StatsComponent # TBD: Static or dynamic?
 #endregion
+
+
+func _ready() -> void:
+	connectSignals()
 
 
 #region Interface
@@ -90,9 +95,36 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 	if not targetingComponent:
 		printWarning(str("Cannot instantiate an instance of ActionTargetingComponentBase: ", targetingComponentPath))
 		return null
+	
 	targetingComponent.action = actionToPerform
 	parentEntity.addComponent(targetingComponent)
 	GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity)
 	return targetingComponent
+
+#endregion
+
+
+#region Cooldowns
+
+func connectSignals() -> void:
+	for action in self.actions:
+		Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown.bind(action))
+		Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown.bind(action))
+	
+
+func onAction_didStartCooldown(action: Action) -> void:
+	self.actionsOnCooldown.append(action)
+	self.set_process(true) # PERFORMANCE: Update per-frame only when needed
+
+
+func onAction_didFinishCooldown(action: Action) -> void:
+	self.actionsOnCooldown.erase(action)
+	if self.actionsOnCooldown.is_empty(): self.set_process(false) # PERFORMANCE: Update per-frame only when needed
+
+
+func _process(delta: float) -> void:
+	if not isEnabled or self.actionsOnCooldown.is_empty(): return
+	for action in actionsOnCooldown:
+		action.cooldownRemaining -= delta
 
 #endregion
