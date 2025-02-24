@@ -1,10 +1,15 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=8 format=3 uid="uid://btyn678insww1"]
+[gd_resource type="Resource" script_class="Upgrade" load_steps=10 format=3 uid="uid://btyn678insww1"]
 
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="1_4bqhh"]
 [ext_resource type="Script" uid="uid://cetucfberg5ss" path="res://Resources/Upgrade.gd" id="1_oo5t5"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_d3538"]
 [ext_resource type="Script" uid="uid://btwabik8y54w1" path="res://Tests/Upgrades/TestCooldownUpgradePayload.gd" id="2_gjaki"]
 [ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="3_n6cja"]
 [ext_resource type="Resource" uid="uid://bsmyby33ll8ok" path="res://Tests/Upgrades/TestGunUpgrade.tres" id="3_nwe6d"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ac5p1"]
+atlas = ExtResource("2_d3538")
+region = Rect2(656, 192, 16, 16)
 
 [sub_resource type="Resource" id="Resource_pjvd3"]
 script = ExtResource("3_n6cja")
@@ -20,11 +25,8 @@ shouldShowDebugInfo = false
 
 [resource]
 script = ExtResource("1_oo5t5")
-name = &"cooldown"
-displayName = "COOLDOWN"
 payloadOnAcquire = SubResource("Resource_pjvd3")
 payloadOnDiscard = SubResource("Resource_y8e5h")
-description = ""
 shouldShowDebugInfo = true
 level = 0
 maxLevel = 10
@@ -34,3 +36,7 @@ costs = Array[int]([10])
 shouldUseLastCostForHigherLevels = true
 requiredUpgrades = Array[ExtResource("1_oo5t5")]([ExtResource("3_nwe6d")])
 mutuallyExclusiveUpgrades = Array[StringName]([&"ammo"])
+name = &"cooldown"
+displayName = "COOLDOWN"
+description = "Faster pew pew!"
+icon = SubResource("AtlasTexture_ac5p1")

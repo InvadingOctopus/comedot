@@ -1,9 +1,14 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=7 format=3 uid="uid://bsmyby33ll8ok"]
+[gd_resource type="Resource" script_class="Upgrade" load_steps=9 format=3 uid="uid://bsmyby33ll8ok"]
 
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="1_ff526"]
 [ext_resource type="Script" uid="uid://cetucfberg5ss" path="res://Resources/Upgrade.gd" id="1_kkrmp"]
 [ext_resource type="Script" uid="uid://s66xmjd432vg" path="res://Tests/Upgrades/TestGunUpgradePayload.gd" id="2_3pfuh"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_ce1k5"]
 [ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="3_q67te"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v334a"]
+atlas = ExtResource("2_ce1k5")
+region = Rect2(592, 144, 16, 16)
 
 [sub_resource type="Resource" id="Resource_7sewg"]
 script = ExtResource("3_q67te")
@@ -19,11 +24,8 @@ shouldShowDebugInfo = false
 
 [resource]
 script = ExtResource("1_kkrmp")
-name = &"gun"
-displayName = "GUN"
 payloadOnAcquire = SubResource("Resource_7sewg")
 payloadOnDiscard = SubResource("Resource_xprmf")
-description = ""
 shouldShowDebugInfo = true
 level = 0
 maxLevel = 0
@@ -33,3 +35,7 @@ costs = Array[int]([500])
 shouldUseLastCostForHigherLevels = false
 requiredUpgrades = Array[ExtResource("1_kkrmp")]([])
 mutuallyExclusiveUpgrades = Array[StringName]([])
+name = &"gun"
+displayName = "GUN"
+description = "Pew Pew!"
+icon = SubResource("AtlasTexture_v334a")

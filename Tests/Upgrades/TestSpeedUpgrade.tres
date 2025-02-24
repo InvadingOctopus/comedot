@@ -1,9 +1,14 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=7 format=3 uid="uid://qnkhwtlbroqg"]
+[gd_resource type="Resource" script_class="Upgrade" load_steps=9 format=3 uid="uid://qnkhwtlbroqg"]
 
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="1_f00qb"]
 [ext_resource type="Script" uid="uid://cetucfberg5ss" path="res://Resources/Upgrade.gd" id="1_m1sav"]
 [ext_resource type="Script" uid="uid://baxyg8a6u55oc" path="res://Tests/Upgrades/TestSpeedUpgradePayload.gd" id="2_723c3"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_af3hj"]
 [ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="3_d6b6q"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_erpcm"]
+atlas = ExtResource("2_af3hj")
+region = Rect2(384, 208, 16, 16)
 
 [sub_resource type="Resource" id="Resource_dxtrk"]
 script = ExtResource("3_d6b6q")
@@ -19,11 +24,8 @@ shouldShowDebugInfo = true
 
 [resource]
 script = ExtResource("1_m1sav")
-name = &"speed"
-displayName = "SPEED"
 payloadOnAcquire = SubResource("Resource_dxtrk")
 payloadOnDiscard = SubResource("Resource_umyfg")
-description = ""
 shouldShowDebugInfo = true
 level = 0
 maxLevel = 10
@@ -33,3 +35,7 @@ costs = Array[int]([10, 20, 30])
 shouldUseLastCostForHigherLevels = true
 requiredUpgrades = Array[ExtResource("1_m1sav")]([])
 mutuallyExclusiveUpgrades = Array[StringName]([])
+name = &"speed"
+displayName = "SPEED"
+description = "Zoomy!"
+icon = SubResource("AtlasTexture_erpcm")

@@ -6,8 +6,9 @@
 ## and the shop may inspect an [Entity]'s [UpgradesComponent] to keep track of which upgrades have already been purchased and not be offered again.
 ## NOTE: Even though this class is named "upgrade" it may also be used for downgrades/debuffs.
 
+@warning_ignore("missing_tool") # @tool is useless here
 class_name Upgrade
-extends Resource
+extends NamedResourceBase
 
 # NOTE: Does not `extend StatDependentResourceBase` because instead of a single `cost`, there is an Array of `costs`, different for each `level`.
 
@@ -18,21 +19,6 @@ extends Resource
 
 #region Parameters
 
-## NOTE: This name MUST BE UNIQUE across all Upgrades, because [UpgradesComponent] and other classes search Upgrades by their names.
-@export var name: StringName:
-	set(newValue):
-		if newValue.is_empty():
-			Debug.printWarning("Rejected attempt to set name to empty string")
-			return
-		name = newValue
-		self.resource_name = name # CHECK: Does this work without @tool?
-
-## An optional different name for displaying in the HUD and other UI. If empty, returns [member name] capitalized.
-@export var displayName: String:
-	get:
-		if not displayName.is_empty(): return displayName
-		else: return self.name.capitalize()
-
 ## The core functionality of this Upgrade. A [Payload] to execute when this Upgrade is "installed" or "uninstalled" on an [Entity]'s [UpgradesComponent].
 ## See [Payload] for explanation and available options.
 @export var payloadOnAcquire: Payload
@@ -41,8 +27,6 @@ extends Resource
 ## See [Payload] for explanation and available options.
 @export var payloadOnDiscard: Payload
 
-@export var icon: Texture2D ## An optional image to display in UI views such as [UpgradeChoiceUI].
-@export var description: String ## An optional explanation, for internal development notes or to show the player.
 @export var shouldShowDebugInfo: bool = false
 
 
