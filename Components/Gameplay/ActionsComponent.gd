@@ -92,6 +92,7 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 		return null
 	targetingComponent.action = actionToPerform
 	parentEntity.addComponent(targetingComponent)
+	GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity)
 	return targetingComponent
 
 #endregion

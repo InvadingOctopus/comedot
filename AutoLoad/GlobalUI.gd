@@ -24,7 +24,7 @@ signal didHidePauseOverlay
 
 ## @experimental
 @warning_ignore("unused_signal")
-signal uiActionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
+signal actionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
 
 #endregion
 
