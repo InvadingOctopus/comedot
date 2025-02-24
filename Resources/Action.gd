@@ -6,14 +6,22 @@
 class_name Action
 extends StatDependentResourceBase
 
-# TODO: Limited number of uses
 # TODO: Cooldowns
 # TBD: A less ambiguous name, like Ability? Because "action" is a Godot term for all input events.
 
 
 #region Parameters
 
-@export var requiresTarget: bool
+@export var requiresTarget:	bool
+
+@export var hasFiniteUses:	bool ## If `true`, then this Action may be performed only for a number times equal to [member maximumUses]
+@export var maximumUses:	int: ## The number of times this Action may be performed, if [member hasFiniteUses]. Setting this property resets [member usesRemaining].
+	set(newValue):
+		if newValue != maximumUses:
+			if shouldShowDebugInfo: Debug.printChange("maximumUses", maximumUses, newValue)
+			if shouldShowDebugInfo: Debug.printChange("usesRemaining", usesRemaining, newValue)
+			maximumUses = newValue
+			usesRemaining = maximumUses
 
 ## The code to execute when this Action is performed. See [Payload] for explanation and available options.
 @export var payload: Payload
@@ -23,9 +31,18 @@ extends StatDependentResourceBase
 #endregion
 
 
+#region State
+## If [member hasFiniteUses]
+@export_storage var usesRemaining: int = self.maximumUses # BUG: Does not get initialized to `maximumUses`
+#endregion
+
+
 #region Derived Properties
 var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
+
+var isUsable: bool: ## Returns `true` if this Action is off cooldown and has uses remaining. For [StatDependentResourceBase] validation, call [method StatDependentResourceBase.validateStatsComponent] etc.
+	get: return (not hasFiniteUses or usesRemaining > 0)
 #endregion
 
 
@@ -35,6 +52,9 @@ var logName: String:
 ## May be handled by game-specific UI to prompt the player to choose a target for this Action.
 ## NOTE: If this Action is to be performed via an [ActionsComponent]'s [method ActionsComponent.perform] then this signal will NOT be emitted; ONLY the Component's [signal ActionsComponent.didRequestTarget] is emitted.
 signal didRequestTarget(source: Entity)
+
+signal didDecreaseUses ## Emitted when [member usesRemaining] decreases.
+signal didDepleteUses ## Emitted if [member hasFiniteUses] and [member usesRemaining] goes below 1
 
 #endregion
 
@@ -48,7 +68,12 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 	if not self.payload:
 		Debug.printWarning("Missing payload", self)
 		return false
-	
+
+	# Check number of uses remaining
+	if self.hasFiniteUses and usesRemaining < 1:
+		if shouldShowDebugInfo: Debug.printDebug("hasFiniteUses, usesRemaining < 1", self)
+		return false
+
 	# Check for target
 	if self.requiresTarget and target == null:
 		self.didRequestTarget.emit(source)
@@ -65,6 +90,11 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 	# IMPORTANT: Deduct the cost from the Stat only if the payload was successfully executed!
 	if payloadResult: # Must not be `null` and not `false`
 		self.deductCostFromStat(paymentStat) # TBD: Validate even if the `cost` is negative?
+		if self.hasFiniteUses:
+			self.usesRemaining -= 1
+			didDecreaseUses.emit()
+			if shouldShowDebugInfo: Debug.printDebug(str("hasFiniteUses, usesRemaining: ", usesRemaining), self)
+			if usesRemaining < 1: didDepleteUses.emit() # TBD: == 0 or < 1?
 
 	return payloadResult
 
