@@ -19,4 +19,7 @@ stretch_mode = 2
 [node name="Label" type="Label" parent="."]
 custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 6
+text = "LABEL"
 label_settings = ExtResource("2_61b0x")
