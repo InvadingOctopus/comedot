@@ -71,9 +71,11 @@ func displayGameOver() -> void:
 	
 	Debug.printLog("displayGameOver()", self)
 	
-	var currentScene: Node = self.get_tree().current_scene
+	var currentScene: Node
+	if is_instance_valid(self) and is_instance_valid(self.get_tree()):
+		currentScene = self.get_tree().current_scene
 	if not currentScene: # Avoid crash if triggered during scene transitions
-		Debug.printWarning(str("displayGameOver(): SceneTree.current_scene is null! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
+		Debug.printWarning(str("displayGameOver(): Cannot get SceneTree.current_scene! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
 		return 
 
 	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay
