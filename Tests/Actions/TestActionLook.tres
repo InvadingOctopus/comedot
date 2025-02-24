@@ -19,8 +19,11 @@ shouldShowDebugInfo = true
 [resource]
 script = ExtResource("1_cr1cv")
 requiresTarget = true
+hasFiniteUses = false
+maximumUses = 0
 payload = SubResource("Resource_7y27b")
 shouldShowDebugInfo = true
+usesRemaining = null
 cost = 0
 name = &"testLook"
 displayName = "LOOK"

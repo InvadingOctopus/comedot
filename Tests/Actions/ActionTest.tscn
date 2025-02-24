@@ -57,5 +57,5 @@ offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
 script = ExtResource("16_lbcpr")
-entity = NodePath("../../PlayerEntityTemplate-OverheadBasic")
 shouldShowDebugInfo = true
+entity = NodePath("../../PlayerEntityTemplate-OverheadBasic")
