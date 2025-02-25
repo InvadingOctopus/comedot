@@ -14,8 +14,9 @@ extends Node
 #region Comedot Project Settings
 
 ## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
+## If not specified, then the `application/run/main_scene` Godot Project Setting is used.
 ## This is not a [PackedScene] Resource to avoid circular references or load()ing before it is needed.
-static var mainGameScenePath:	String
+static var mainGameScenePath:	String = ProjectSettings.get_setting("application/run/main_scene")
 
 static var shouldAlertOnError:	bool = OS.is_debug_build() # TODO: Add toggle in Start.gd
 
