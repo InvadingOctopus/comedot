@@ -82,7 +82,7 @@ func _ready() -> void:
 
 
 func startComedot() -> void:
-	Debug.printLog("[b]_ready()[/b]", str("[b]", self.get_script().resource_path.get_file(), "[/b] ", self), "WHITE", "WHITE")
+	printLog("[b]_ready()[/b]")
 	Global.hasStartScript = true
 	Debug.performFrameworkChecks() # Update the warning about missing Start script
 	applyGlobalFlags()
@@ -110,3 +110,6 @@ func applyGlobalFlags() -> void:
 	else:
 		GlobalSonic.playMusicIndex(self.musicIndexToPlayOnStart)
 
+
+func printLog(message: String) -> void:
+	Debug.printLog(message, str("[b]", self.get_script().resource_path.get_file(), "[/b] ", self), "WHITE", "WHITE")
