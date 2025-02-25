@@ -135,6 +135,10 @@ When you need more game-specific functionality, you have the following options, 
 
 * 🪲 The `debugMode` property on Components and many Scripts is your friend! It will print extra debug information in the logs and/or enable extra visual cues.
 
+* 📜 Use the logging methods in the `Debug.gd` AutoLoad to help you track down nasty bugs! `Debug.printTrace()`, `Debug.printHighlight()` etc.
+
+* 📈 Use `DebugComponent`, `ChartWindow`, `Chart` to monitor a real-time graph of any variable or property! e.g. `../CharacterBodyComponent:body:velocity:x` to help with perfecting physics parameters etc.
+
 * The icons/emojis used in the log messages require Apple's SF Symbols which may not work on Windows or Linux: https://developer.apple.com/sf-symbols/
 
 #### Common Reasons for Crashes
