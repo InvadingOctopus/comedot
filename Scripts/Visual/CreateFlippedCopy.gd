@@ -31,8 +31,8 @@ var verticallyFlippedCopy:   Node2D
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# NOTE: Use call_deferred() to avoid error: "Parent node is busy setting up children"
-	if flipHorizontally: call_deferred(&"createHorizontalCopy")
-	if flipVertically:   call_deferred(&"createVerticalCopy")
+	if flipHorizontally: createHorizontalCopy.call_deferred()
+	if flipVertically:   createVerticalCopy.call_deferred()
 
 
 ## Creates and assigns a [member horizontallyFlippedCopy].

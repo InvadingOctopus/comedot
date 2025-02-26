@@ -28,8 +28,8 @@ func _enter_tree() -> void:
 	printLog("Plugin _enter_tree()")
 	addCustomTypes()
 	# `call_deferred` because Godot seems to be loading this "too soon" and raising errors.
-	call_deferred(&"addDock")
-	call_deferred(&"addMenuItems")
+	addDock.call_deferred()
+	addMenuItems.call_deferred()
 
 
 func _exit_tree() -> void:

@@ -156,7 +156,7 @@ func setupUI() -> void:
 	# so maybe we need to let the Godot Editor have some time to finish scanning the file system?
 	printLog("Waiting to scan the Components folder…")
 	await get_tree().create_timer(1).timeout
-	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
+	buildComponentsDirectory.call_deferred() # `call_deferred` to reduce lag?
 
 	# Hook up with Inspector Gadget
 	inspector = EditorInterface.get_inspector()
@@ -172,7 +172,7 @@ func setupUI() -> void:
 func updateComponentsTree() -> void:
 	# TODO: Check for changes?
 	# NOTE: `call_deferred()` to try to avoid weird first-launch bugs, maybe caused by the Godot Editor scanning the file system.
-	call_deferred(&"buildComponentsDirectory")
+	buildComponentsDirectory.call_deferred()
 
 
 func buildComponentsDirectory() -> void:
@@ -332,7 +332,7 @@ func onComponentsTree_itemActivated() -> void:
 
 func onRefreshButton_pressed() -> void:
 	componentsTree.clear()
-	call_deferred(&"buildComponentsDirectory") # `call_deferred` to reduce lag?
+	buildComponentsDirectory.call_deferred() # `call_deferred` to reduce lag?
 
 
 func onEditComponentButton_pressed() -> void:
@@ -418,7 +418,7 @@ func onInspector_editedObjectChanged() -> void:
 
 
 func onDebugReloadButton_pressed() -> void:
-	call_deferred(&"reloadPlugin")
+	reloadPlugin.call_deferred() # Let it chill before reloading?
 
 
 func reloadPlugin() -> void:
