@@ -63,13 +63,30 @@ func _ready() -> void:
 	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
 
 
+func connectSignals() -> void:
+	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
+	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
+	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
+
+
 func updateUI() -> void:
 	self.text = action.displayName \
 		+ (str("\n[", action.usesRemaining, "]") if action.hasFiniteUses else "")
 	self.icon = action.icon
 	self.tooltip_text = action.description
 	self.disabled = not checkUsability()
-	cooldownBar.visible = action.cooldownRemaining > 0 or not is_zero_approx(action.cooldownRemaining) # Multiple checks in case of float funkery
+	updateCooldown()
+
+
+func updateCooldown() -> void:
+	# TBD: PERFORMANCE: Just check action.isInCooldown or avoid property access/temporary variable creation for some reason? :')
+	var isInCooldown: bool = action.cooldownRemaining > 0 or not is_zero_approx(action.cooldownRemaining) # Multiple checks in case of float funkery
+	
+	cooldownBar.max_value = action.cooldown
+	cooldownBar.value	= action.cooldownRemaining if isInCooldown else 0.0 # Snap to 0 to avoid float funkery
+	cooldownBar.visible	= isInCooldown
+	self.disabled		= isInCooldown
+	self.set_process(isInCooldown) # PERFORMANCE: Update per-frame only when needed
 
 
 ## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
@@ -79,12 +96,6 @@ func checkUsability() -> bool:
 
 
 #region Events
-
-func connectSignals() -> void:
-	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
-	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
-	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
-
 
 func onPressed() -> void:
 	if debugMode: Debug.printDebug("onPressed()", self)
@@ -105,21 +116,15 @@ func onAction_didDecreaseUses() -> void:
 
 
 func onAction_didStartCooldown() -> void:
-	cooldownBar.max_value = action.cooldown
-	cooldownBar.value	= action.cooldownRemaining
-	cooldownBar.visible	= true
-	self.disabled		= true
-	self.set_process(true) # PERFORMANCE: Update per-frame only when needed
+	updateCooldown()
 
 
 func onAction_didFinishCooldown() -> void:
-	cooldownBar.value	= 0
-	cooldownBar.visible	= false
-	self.disabled		= false
-	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
+	updateCooldown()
 
 
 func _process(_delta: float) -> void:
+	# PERFORMANCE: Update per-frame only when needed: Call `self.set_process()` whenever the Action starts or ends its cooldown.
 	if action.cooldownRemaining > 0:
 		cooldownBar.value = action.cooldownRemaining
 
