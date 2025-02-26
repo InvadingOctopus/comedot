@@ -45,7 +45,8 @@ signal didPerformAction(action: Action, result: Variant)
 
 
 func _ready() -> void:
-	connectSignals()
+	createCooldownsList() # Check if any Actions were already in cooldown when they were added to this component
+	connectSignals() # Then connect signals for future cooldown updates
 
 
 #region Interface
@@ -106,6 +107,16 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 
 #region Cooldowns
 
+## Resets the [member actionsOnCooldown] array and checks each [Action] in the [member actions] array,
+## adding it to [member actionsOnCooldown] if [member Action.isInCooldown].
+## The cooldowns list is used by [method _process] to countdown the cooldown time of each Action on every frame.
+func createCooldownsList() -> void:
+	self.actionsOnCooldown.clear()
+	for action in self.actions:
+		if action.isInCooldown: self.actionsOnCooldown.append(action)
+	self.set_process(not self.actionsOnCooldown.is_empty()) # PERFORMANCE: Update per-frame only if needed
+
+
 func connectSignals() -> void:
 	for action in self.actions:
 		Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown.bind(action))
@@ -114,15 +125,16 @@ func connectSignals() -> void:
 
 func onAction_didStartCooldown(action: Action) -> void:
 	self.actionsOnCooldown.append(action)
-	self.set_process(true) # PERFORMANCE: Update per-frame only when needed
+	self.set_process(true) # Start per-frame updates
 
 
 func onAction_didFinishCooldown(action: Action) -> void:
 	self.actionsOnCooldown.erase(action)
-	if self.actionsOnCooldown.is_empty(): self.set_process(false) # PERFORMANCE: Update per-frame only when needed
+	if self.actionsOnCooldown.is_empty(): self.set_process(false) # PERFORMANCE: Do not update per-frame anymore
 
 
 func _process(delta: float) -> void:
+	# NOTE: PERFORMANCE: Update per-frame only when needed: Call `self.set_process()` whenever `actionsOnCooldown` is modified.
 	if not isEnabled or self.actionsOnCooldown.is_empty(): return
 	for action in actionsOnCooldown:
 		action.cooldownRemaining -= delta
