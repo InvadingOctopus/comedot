@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b4jo80cbjjjpj" path="res://UI/Buttons/LongPressButton.gd" id="1_0i5vg"]
 
 [node name="LongPressButton" type="Button"]
+editor_description = "A Button that requires confirmation by keeping it pressed for a specified time."
 script = ExtResource("1_0i5vg")
 
 [node name="Timer" type="Timer" parent="."]
