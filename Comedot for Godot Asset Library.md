@@ -26,14 +26,14 @@ License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
 Godot Version:	4.4 custom
-Asset Version:	4.4.0.5.69
-Commit URL:		1ca1ede324ccff5792fd85c73be4d5e61ece1b1c 2025-02-25
+Asset Version:	4.4.0.6.69
+Commit URL:		4b6d81555c7d9f5d530402be9207c6098557d815 2025-02-27
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		https://i.imgur.com/aW0MHRu.png Logo
-Screenshot 1:	https://i.imgur.com/DW6aeu3.png Main Menu
-Screenshot 2:	https://i.imgur.com/j5f2xna.png Components Dock
-Screenshot 3:	https://i.imgur.com/8yMMRPR.png Components Tree Example
-Screenshot 4:	https://i.imgur.com/rIOpIAr.png Input Map
+Screenshot 1:	https://i.imgur.com/j5f2xna.png Components Dock
+Screenshot 2:	https://i.imgur.com/8yMMRPR.png Components Tree Example
+Screenshot 3:	https://i.imgur.com/7XqChTP.png Main Menu
+Screenshot 4:	https://i.imgur.com/eiyfQ3h.png Input Map
 Screenshot 5:	https://i.imgur.com/nWJXuiX.png Pause
 Screenshot 6:	https://i.imgur.com/4ZuJGBj.png Charts
