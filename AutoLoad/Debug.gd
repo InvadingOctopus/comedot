@@ -271,12 +271,23 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 ## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before the log method was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
-func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=orange]／[/color] ", color: String = "orange") -> void:
+func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=dimgray]•[/color] ") -> void:
 	if OS.is_debug_build():
 		var backgroundColor: String = "[bgcolor=101020]" if alternateTraceLogRow else "[bgcolor=001030]"
 		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
-		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), " ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
-		if not values.is_empty(): print_rich(str(backgroundColor, " 　 [color=", color, "][b]", separator.join(values)))
+		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), "[color=0070E0] ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
+		if not values.is_empty(): 
+			# This mess instead of just `separator.join(values)` is so we can alternate color between values for better readability
+			# PERFORMANCE: Watch out for any FPS impact! :')
+			var joinedValues: String = ""
+			var flipColor: bool
+			var color: String 
+			for value: Variant in values:
+				color = "FF00FF" if flipColor else "FF88FF"
+				joinedValues += str("[color=", color, "]") + str(value) + separator
+				flipColor = not flipColor
+			joinedValues.trim_suffix(separator)
+			print_rich(str(backgroundColor, " 　 ", joinedValues))
 		alternateTraceLogRow = not alternateTraceLogRow
 
 
