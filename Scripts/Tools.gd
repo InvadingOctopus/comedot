@@ -293,6 +293,17 @@ static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vecto
 		_: return Vector2.ZERO
 
 
+## Returns the specified "design size" centered on a Node's Viewport.
+## NOTE: The viewport size may different from the scaled screen/window size.
+static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2i:
+	# TBD: Better name?
+	# The "design size" has to be specified because it's hard to get the actual size, accounting for scaling etc.
+	var viewport: Rect2		= node.get_viewport_rect() # First see what the viewport size is
+	var center: Vector2		= Vector2(viewport.size.x / 2.0, viewport.size.y / 2.0) # Get the viewport center
+	var designSize: Vector2	= Vector2(designWidth, designHeight) # Get the node design size
+	return center - (designSize / 2.0) # Center the size on the viewport
+
+
 static func addRandomDistance(position: Vector2, \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
