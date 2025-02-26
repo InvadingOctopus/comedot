@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b6c5d68ty35va"]
+[gd_scene load_steps=9 format=3 uid="uid://b6c5d68ty35va"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_at8ff"]
+[ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="3_2ybp4"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_3awaj"]
 [ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="3_x16dg"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="4_4iijy"]
@@ -28,10 +29,7 @@ texture = SubResource("AtlasTexture_xljij")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-process_callback = 0
-position_smoothing_speed = 100.0
-rotation_smoothing_speed = 10.0
+[node name="CameraComponent" parent="." instance=ExtResource("3_2ybp4")]
 
 [node name="OverheadControlComponent" parent="." instance=ExtResource("3_x16dg")]
 

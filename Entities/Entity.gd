@@ -60,7 +60,7 @@ var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
 
 ## Emitted when the Entity Node receives the [constant NOTIFICATION_PREDELETE] [method _notification]
 ## Used by components and other scripts that must react to the imminent removal of the Entity itself,
-## e.g. when a [CameraComponent] wants to detach itself if [member CameraComponent.shouldDetachOnEntityRemoval] to preserve the current viewing location on screen.
+## e.g. when a [CameraComponent] wants to detach itself if [member CameraComponent.shouldAttachToGrandparentOnEntityRemoval] to preserve the current viewing location on screen.
 ## NOTE: This does NOTE mean that the node has exited the [SceneTree] (yet). This notification is oddly-named because Godot sends it BEFORE [constant NOTIFICATION_UNPARENTED] and the [signal Node.tree_exiting] signal etc.
 signal preDelete
 

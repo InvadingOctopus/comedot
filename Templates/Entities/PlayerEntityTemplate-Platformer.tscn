@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
-[ext_resource type="Script" uid="uid://b237s8k2a44vs" path="res://Scripts/Visual/ClampCameraToArea.gd" id="3_3u7hd"]
+[ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="3_b23pp"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="5_1y43j"]
 [ext_resource type="PackedScene" uid="uid://bwxjqdxf2dqcr" path="res://Components/Visual/PlatformerAnimationComponent.tscn" id="6_30kxi"]
@@ -226,14 +226,11 @@ autoplay = "RESET"
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-process_mode = 3
-process_callback = 0
+[node name="CameraComponent" parent="." instance=ExtResource("3_b23pp")]
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
-script = ExtResource("3_3u7hd")
 
 [node name="StatsComponent" parent="." instance=ExtResource("4_gnvya")]
 stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_puhqw"), SubResource("Resource_kl6l5")])

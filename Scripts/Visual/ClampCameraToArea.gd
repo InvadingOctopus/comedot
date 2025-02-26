@@ -1,4 +1,5 @@
 ## Confines a [Camera2D] within a rectangular [Area2D].
+## TIP: For a camera attached to an [Entity], use [CameraComponent]
 
 extends Camera2D
 

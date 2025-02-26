@@ -1,5 +1,6 @@
 ## "Bounces" or "headbangs" the camera zoom back and forth in and out of the screen.
 ## Useful for inducing dizziness.
+## TIP: For a camera attached to an [Entity], use [CameraComponent]
 
 extends Camera2D
 

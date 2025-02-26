@@ -1,7 +1,7 @@
 ## Moves the [Camera2D] as the mouse moves.
+## TIP: For a camera attached to an [Entity], use [CameraComponent]
 
 extends Camera2D
-
 
 # TODO: TBD: Do something more useful?
 

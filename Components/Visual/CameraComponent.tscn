@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dekgkos84sljm"]
+
+[ext_resource type="Script" uid="uid://e77ee6xrmv6w" path="res://Components/Visual/CameraComponent.gd" id="1_a757b"]
+
+[node name="CameraComponent" type="Camera2D" groups=["components"]]
+process_callback = 0
+script = ExtResource("1_a757b")
+allowNonEntityParent = true
