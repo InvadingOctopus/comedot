@@ -16,7 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="13_jt7ij"]
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="13_lbdmr"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="15_jt7ij"]
-[ext_resource type="PackedScene" uid="uid://d24663limqvmn" path="res://Tests/PoisonArrowTestEntity.tscn" id="15_lbdmr"]
+[ext_resource type="PackedScene" uid="uid://d24663limqvmn" path="res://Tests/Combat/PoisonArrowTestEntity.tscn" id="15_lbdmr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s8cv2"]
 resource_local_to_scene = true
