@@ -56,6 +56,17 @@ var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
 #endregion
 
 
+#region Signals
+
+## Emitted when the Entity Node receives the [constant NOTIFICATION_PREDELETE] [method _notification]
+## Used by components and other scripts that must react to the imminent removal of the Entity itself,
+## e.g. when a [CameraComponent] wants to detach itself if [member CameraComponent.shouldDetachOnEntityRemoval] to preserve the current viewing location on screen.
+## NOTE: This does NOTE mean that the node has exited the [SceneTree] (yet). This notification is oddly-named because Godot sends it BEFORE [constant NOTIFICATION_UNPARENTED] and the [signal Node.tree_exiting] signal etc.
+signal preDelete
+
+#endregion
+
+
 #region Life Cycle
 
 func _ready() -> void:
@@ -104,8 +115,12 @@ func _exit_tree() -> void:
 
 func _notification(what: int) -> void:
 	match what:
-		NOTIFICATION_PREDELETE:
+		NOTIFICATION_PREDELETE: # NOTE: WTF: Odd Godot sends this BEFORE NOTIFICATION_UNPARENTED and the `tree_exiting` signal etc.
 			if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete")
+			preDelete.emit()
+		NOTIFICATION_UNPARENTED: # NOTE: WTF: AFTER NOTIFICATION_PREDELETE! Odd Godot naming.
+			if isLoggingEnabled: printLog("[color=brown]􀆄 UnParented")
+			# UNUSED: unParented.emit() # Not needed yet
 
 #endregion
 
