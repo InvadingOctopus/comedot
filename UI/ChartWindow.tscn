@@ -14,12 +14,12 @@ wrap_controls = true
 transient = true
 unresizable = true
 unfocusable = true
+exclude_from_capture = true
 min_size = Vector2i(80, 80)
 max_size = Vector2i(800, 800)
 content_scale_mode = 2
 content_scale_aspect = 1
 content_scale_stretch = 1
-content_scale_factor = 2.0
 
 [node name="Chart" parent="." instance=ExtResource("1_g7onf")]
 unique_name_in_owner = true

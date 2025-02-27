@@ -4,7 +4,7 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_7qj2e"]
 font_size = 8
-font_color = Color(0, 1, 0.5, 0.5)
+font_color = Color(0.4, 1, 0.8, 0.75)
 
 [node name="Chart" type="Node2D"]
 script = ExtResource("1_ktel2")

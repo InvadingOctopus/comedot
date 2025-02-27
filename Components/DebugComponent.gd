@@ -59,7 +59,8 @@ func createCharts() -> void:
 	for path: NodePath in propertiesToChartAbsolutePaths:
 		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
-		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartVerticalHeight, self.chartValueScale)
+		var newChart: Chart = Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartVerticalHeight, self.chartValueScale)
+		newChart.lineColor  = Color(0.2 * randi_range(1, 4), 0.2 * randi_range(1, 5), 0.2 * randi_range(1, 5), 0.5) # Give a distinct random color to each chart
 
 
 func _physics_process(_delta: float) -> void:

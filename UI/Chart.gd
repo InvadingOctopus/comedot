@@ -26,9 +26,9 @@ extends Node2D
 # Multiples the monitored variable's value by this scale, effectively reducing or enlarging the chart's Y axis, to better fit the screen.
 @export_range(0.1, 2.0, 0.05) var valueScale: float = 0.5
 
-@export var lineColor:	Color = Color(0.5, 1.0,  0.5,  0.5)
-@export var gridColor:	Color = Color(0.0, 0.25, 0.25, 0.5)
-@export var headColor:	Color = Color(0.5, 0.5,  0.75, 0.25) ## The color of the vertical "head" or "tracker" line.
+@export var lineColor:	Color = Color(0.0, 1.0, 0.25, 0.5)
+@export var gridColor:	Color = Color(0.0, 0.2, 0.3,  0.5)
+@export var headColor:	Color = Color(0.5, 0.5, 0.75, 0.25) ## The color of the vertical "head" or "tracker" line.
 
 @export var isEnabled:	bool = true
 
