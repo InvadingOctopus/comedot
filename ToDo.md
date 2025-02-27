@@ -2,6 +2,8 @@
 
 ## Major
 
+- [ ] Pathfinding/Navigation Components
+
 - [ ] Standard architecture for game environment state and "current run" state
 
 - [ ] Save/Load ...oh my godot
