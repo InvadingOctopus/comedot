@@ -1,6 +1,7 @@
 ## Moves the parent entity to chase after another [Node2D] by manipulating the entity's [member OverheadPhysicsComponent.inputDirection].
 ## Speed, acceleration and friction are determined by the [OverheadPhysicsComponent] and its [OverheadMovementParameters].
 ## NOTE: Set [member CharacterBodyComponent.shouldResetVelocityIfZeroMotion] to `false`
+## TIP:  For more complex pathfinding based on Godot's Navigation nodes, use [NavigationComponent]
 ## Requirements: BEFORE [OverheadPhysicsComponent]
 
 class_name ChaseComponent
@@ -16,6 +17,7 @@ extends CharacterBodyManipulatingComponentBase
 @export var shouldChasePlayerIfUnspecified: bool = true
 
 @export var isEnabled: bool = true
+
 #endregion
 
 

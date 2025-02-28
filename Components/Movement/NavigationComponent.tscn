@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://cilj7md5n141e"]
+
+[ext_resource type="Script" uid="uid://bmhisv0p7fmwn" path="res://Components/Movement/NavigationComponent.gd" id="1_y74xm"]
+
+[node name="NavigationComponent" type="NavigationAgent2D" groups=["components"]]
+avoidance_enabled = true
+radius = 16.0
+avoidance_mask = 16
+script = ExtResource("1_y74xm")
+
+[node name="DestinationUpdateTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.5
+ignore_time_scale = true
+
+[connection signal="timeout" from="DestinationUpdateTimer" to="." method="onDestinationUpdateTimer_timeout"]
