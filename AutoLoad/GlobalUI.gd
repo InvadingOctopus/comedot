@@ -46,7 +46,11 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	if not OS.has_feature("web"): # BUG: WORKAROUND: Running in a web browser (or at least Safari) doesn't handle window size restoration properly.
-		GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
+		# Do not set the window size if we're starting in fullscreen
+		# TBD: How to handle going to windowed mode for the first time? Should the first size be read from Settings?
+		var windowMode: int = DisplayServer.window_get_mode()
+		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
 
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
