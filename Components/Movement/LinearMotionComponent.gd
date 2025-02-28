@@ -1,5 +1,6 @@
-## Moves the entity in a straight line in the direction of the entity's [member Node2D.rotation].
+## Moves the entity in a straight line in the direction of the entity's [member Node2D.rotation]
 ## NOTE: Sets the parent entity's position DIRECTLY; does NOT use "physics" such as [member CharacterBody2D.velocity].
+## Ideal for bullets and similar projectiles to improve performance.
 
 class_name LinearMotionComponent
 extends Component
@@ -7,11 +8,12 @@ extends Component
 
 #region Parameters
 
-@export_range(-2000, 2000, 5) var initialSpeed:	float = 150
-@export_range(-2000, 2000, 5) var maximumSpeed:	float = 800 ## The limit if [member shouldApplyAcceleration].
+@export_range(-2000, 2000, 5) var initialSpeed:	float = 150  ## The initial value for [member speed]
+@export_range(-2000, 2000, 5) var maximumSpeed:	float = 800  ## The maximum limit if [member shouldApplyModifier] is positive (i.e. acceleration)
+@export_range(-2000, 2000, 5) var minimumSpeed:	float = 10   ## The minimum limit if [member shouldApplyModifier] is negative (i.e. friction)
 
-@export var shouldApplyAcceleration:			 bool = true
-@export_range(-2000, 2000, 5) var acceleration:	float = 800
+@export var shouldApplyModifier:				 bool = true ## If `true` then the acceleration/friction [member modifier] is applied to [member speed] every frame.
+@export_range(-2000, 2000, 5) var modifier:		float = 800  ## The acceleration (if positive) or friction (if negative) added to [member speed] every frame if [member shouldApplyModifier]
 
 @export var shouldStopAtMaximumDistance:		 bool = false
 @export var shouldDeleteParentAtMaximumDistance: bool = false
@@ -23,16 +25,23 @@ extends Component
 
 
 #region State
-@onready var speed:   float = initialSpeed # NOTE: Must be @onready to actually get the value after the @export!
-
-var distanceTraveled: float = 0
-var isMoving:		  bool  = true ## `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
+@export_storage var speed: float = initialSpeed ## Set to [member initialSpeed] on [method _ready]
+@export_storage var distanceTraveled: float = 0
+var isMoving: bool = true ## Set to `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
 #endregion
 
 
 #region signals
 signal didReachMaximumDistance
 #endregion
+
+
+func _ready() -> void:
+	self.speed = self.initialSpeed # Can't make @onready because of @export_storage
+	
+	if shouldStopAtMaximumDistance \
+	and distanceTraveled > maximumDistance or is_equal_approx(distanceTraveled, maximumDistance):
+		self.isMoving = false
 
 
 func _physics_process(delta: float) -> void:
@@ -51,10 +60,10 @@ func _physics_process(delta: float) -> void:
 	# Get the current direction
 	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation)
 
-	# Accelerate
-	if shouldApplyAcceleration:
-		speed += acceleration * delta
-		if abs(speed) > abs(maximumSpeed): speed = maximumSpeed
+	# Acceleration or Friction
+	if shouldApplyModifier:
+		speed += modifier * delta
+		speed = clampf(speed, minimumSpeed, maximumSpeed)
 
 	# Get the upcoming movement
 	var offset: Vector2 = direction * (speed * delta)
