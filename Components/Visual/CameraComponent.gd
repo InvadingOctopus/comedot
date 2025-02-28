@@ -23,7 +23,7 @@ extends Component
 	set(newValue):
 		if boundary != newValue:
 			boundary = newValue
-			clampToBoundary()
+			if self.is_node_ready(): clampToBoundary()
 
 ## Moves the camera to the mouse position on every frame.
 @export var shouldTrackMouse: bool = false:
