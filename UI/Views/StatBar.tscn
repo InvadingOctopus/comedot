@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://ce5c5eqoeiw0d" path="res://UI/Views/StatBar.gd" id="1_u04ku"]
 
 [node name="StatBar" instance=ExtResource("1_iaydn")]
+size_flags_horizontal = 3
 columns = 3
 script = ExtResource("1_u04ku")
 animationDuration = 0.25

@@ -77,7 +77,7 @@ func _ready() -> void:
 
 func applyInitialFlags() -> void:
 	if label: label.uppercase	= shouldUppercase
-	if icon:  icon.visible		= shouldShowIcon
+	if icon:  icon.visible		= shouldShowIcon and stat.icon # NOTE: Don't let the TextureRect take up space if the Stat has no icon.
 	if shouldShowIconAfterText: arrangeControls()
 
 
