@@ -263,17 +263,33 @@ debugBreak={
 [layer_names]
 
 2d_physics/layer_1="default"
+2d_navigation/layer_1="default"
 2d_physics/layer_2="characters"
+2d_navigation/layer_2="characters"
 2d_physics/layer_3="players"
+2d_navigation/layer_3="players"
 2d_physics/layer_4="enemies"
+2d_navigation/layer_4="enemies"
 2d_physics/layer_5="terrain"
+2d_navigation/layer_5="terrain"
 2d_physics/layer_6="hazards"
+2d_navigation/layer_6="hazards"
 2d_physics/layer_7="props"
+2d_navigation/layer_7="props"
 2d_physics/layer_10="zones"
+2d_navigation/layer_10="zones"
 2d_physics/layer_11="combat"
 2d_physics/layer_12="collectibles"
 2d_physics/layer_13="interactions"
 2d_physics/layer_14="targetables"
+avoidance/layer_1="default"
+avoidance/layer_2="characters"
+avoidance/layer_3="players"
+avoidance/layer_4="enemeis"
+avoidance/layer_5="terrain"
+avoidance/layer_6="hazards"
+avoidance/layer_7="props"
+avoidance/layer_10="zones"
 
 [physics]
 
