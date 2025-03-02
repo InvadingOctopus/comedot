@@ -3,7 +3,7 @@
 ## TIP: In the case of arrow-like projectiles, remove the [DamageComponent] and [LinearMotionComponent] to have the arrow get "stuck" in the ground or other objects,
 ## or add a hypothetical [ExplosionComponent] to animate an explosion and THEN remove the projectile entity.
 
-class_name RemovalOnCollisionComponent
+class_name ModifyOnCollisionComponent
 extends AreaComponentBase
 
 # TODO: Add delay Timer
