@@ -33,4 +33,4 @@ func onCollide(_collidingNode: Node2D) -> void:
 		self.requestDeletionOfParentEntity()
 	else:
 		parentEntity.removeComponents(componentsToRemove)
-		didAddComponents.emit(parentEntity.addNewComponents(componentsToCreate))
+		didAddComponents.emit(parentEntity.createNewComponents(componentsToCreate))

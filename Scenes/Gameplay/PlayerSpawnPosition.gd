@@ -66,7 +66,7 @@ func setPlayerPosition() -> void:
 func setCamera() -> Camera2D:
 		var camera: Node = player.findFirstChildOfAnyTypes([Camera2D, CameraComponent], false) # !returnEntityIfNoMatches
 		if shouldCreateCamera and camera == null:
-			camera = player.addNewComponent(CameraComponent)
+			camera = player.createNewComponent(CameraComponent)
 			if debugMode: Debug.printDebug(str("setCamera() new: ", camera), self)
 		
 		return camera

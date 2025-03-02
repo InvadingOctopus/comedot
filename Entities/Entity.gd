@@ -237,7 +237,7 @@ func addComponents(componentsToAdd: Array[Component]) -> int:
 ## Creates a copy of the specified component TYPE's scene and adds and returns an INSTANCE of it as a child node of this entity.
 ## Shortcut for [method load] + [method PackedScene.instantiate].
 ## ALERT: Some situations, such as adding a new component while the entity is being initialized, may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
-func addNewComponent(type: Script) -> Component:
+func createNewComponent(type: Script) -> Component:
 	## NOTE: This is needed because adding components with `.new()` adds the script ONLY, NOT the scene!
 	## and instantiating a scene is a lot of boilerplate code each time. :(
 
@@ -246,7 +246,7 @@ func addNewComponent(type: Script) -> Component:
 
 	# First, construct the scene name from the script's name.
 	var componentScenePath: String = SceneManager.getScenePathFromClass(type)
-	if debugMode: printDebug(str("addNewComponent(", type, "): ", componentScenePath))
+	if debugMode: printDebug(str("createNewComponent(", type, "): ", componentScenePath))
 
 	# Load and instantiate the component scene.
 	var newComponent := SceneManager.loadSceneAndAddInstance(componentScenePath, self)
@@ -255,13 +255,13 @@ func addNewComponent(type: Script) -> Component:
 	return newComponent
 
 
-## Calls [method addNewComponent] on each of the component TYPES passed in the array.
+## Calls [method createNewComponent] on each of the component TYPES passed in the array.
 ## ATTENTION: Components must be added in order of dependencies! A component which depends on another must be listed after the required component in the array.
 ## Returns: An array of all the component INSTANCES that were successfully created and added.
-func addNewComponents(componentTypesToAdd: Array[Script]) -> Array[Component]:
+func createNewComponents(componentTypesToAdd: Array[Script]) -> Array[Component]:
 	var newComponents: Array[Component]
 	for componentTypeToAdd in componentTypesToAdd:
-		var newComponent := self.addNewComponent(componentTypeToAdd)
+		var newComponent := self.createNewComponent(componentTypeToAdd)
 		if is_instance_valid(newComponent):
 			newComponents.append(newComponent)
 	return newComponents

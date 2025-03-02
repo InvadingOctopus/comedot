@@ -36,11 +36,11 @@ func switchComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
 		parentEntity.removeComponents([JumpControlComponent,  PlatformerControlComponent, PlatformerPhysicsComponent]) # Types
-		parentEntity.addNewComponents([OverheadPhysicsComponent, OverheadControlComponent]) # Instances
+		parentEntity.createNewComponents([OverheadPhysicsComponent, OverheadControlComponent]) # Instances
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
 	else:
 		parentEntity.removeComponents([OverheadControlComponent, OverheadPhysicsComponent]) # Types
-		parentEntity.addNewComponents([PlatformerPhysicsComponent, PlatformerControlComponent, JumpControlComponent]) # Instances
+		parentEntity.createNewComponents([PlatformerPhysicsComponent, PlatformerControlComponent, JumpControlComponent]) # Instances
 		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so PlatformerControlComponent can control it each frame
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 
