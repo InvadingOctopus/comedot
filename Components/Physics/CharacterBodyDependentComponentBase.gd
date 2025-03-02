@@ -2,14 +2,10 @@
 ## Components which need to perform updates AFTER [method CharacterBody2D.move_and_slide] must connect to the [signal CharacterBodyComponent.didMove] signal.
 ## NOTE: This is NOT the base class for the [CharacterBodyComponent] itself.
 
-class_name CharacterBodyManipulatingComponentBase
+class_name CharacterBodyDependentComponentBase
 extends Component
 
 # TBD: Better name? :')
-
-
-#region Parameters
-#endregion
 
 
 #region State

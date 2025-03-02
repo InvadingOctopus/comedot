@@ -4,7 +4,7 @@
 ## Description
 
 class_name _CLASS_
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # Manipulates an [CharacterBody2D]. NOTE: This does NOT necessarily mean that this component HAS a body or must BE a body.
 

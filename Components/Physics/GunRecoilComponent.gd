@@ -2,7 +2,7 @@
 ## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away when too many bullets are fired too quickly.
 
 class_name GunRecoilComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # TODO: Better physics
 # TODO: Option to apply dynamic knockback based on the bullet's velocity.

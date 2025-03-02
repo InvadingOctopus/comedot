@@ -3,7 +3,7 @@
 ## Requirements: BEFORE [CharacterBodyComponent]
 
 class_name OverheadPhysicsComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 
 #region Parameters

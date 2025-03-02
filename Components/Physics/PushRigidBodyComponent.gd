@@ -2,7 +2,7 @@
 ## NOTE: This component should be processed AFTER all other components which call [method CharacterBody2D.move_and_slide]
 
 class_name PushRigidBodyComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # CREDIT: KidsCanCode@YouTube https://www.youtube.com/watch?v=SJuScDavstM
 

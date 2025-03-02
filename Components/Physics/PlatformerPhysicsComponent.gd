@@ -5,7 +5,7 @@
 ## Requirements: BEFORE [CharacterBodyComponent], AFTER [PlatformerControlComponent] and other physics modifying components.
 
 class_name PlatformerPhysicsComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
 

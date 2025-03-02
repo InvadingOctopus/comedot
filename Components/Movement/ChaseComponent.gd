@@ -5,7 +5,7 @@
 ## Requirements: BEFORE [OverheadPhysicsComponent]
 
 class_name ChaseComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 
 #region Parameters

@@ -5,7 +5,7 @@
 ## Requirements: BEFORE [CharacterBodyComponent], [DamageReceivingComponent], AFTER [PlatformerPhysicsComponent]
 
 class_name KnockbackOnHitComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 
 #region Parameters

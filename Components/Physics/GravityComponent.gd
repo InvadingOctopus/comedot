@@ -3,7 +3,7 @@
 ## Requirements: Entity with [CharacterBody2D]. Must precede -ControlComponents
 
 class_name GravityComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 
 #region Parameters

@@ -4,7 +4,7 @@
 ## Requirements: BEFORE [CharacterBodyComponent], AFTER control components
 
 class_name VelocityClampComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # TODO: Fix minimum velocity. Currently can only have positive values and travel right/down.
 # TODO: Correct for diagonal movement; should not reach the same max velocity as movement on only 1 axis.

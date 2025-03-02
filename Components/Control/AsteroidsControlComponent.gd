@@ -5,7 +5,7 @@
 ## @experimental
 
 class_name AsteroidsControlComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 
 #region Parameters

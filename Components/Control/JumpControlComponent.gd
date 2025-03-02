@@ -4,7 +4,7 @@
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
 
 class_name JumpControlComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
 # TODO: Stop keyboard input repetition?

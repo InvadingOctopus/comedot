@@ -4,7 +4,7 @@
 ## Requirements: AFTER [PlayerInputComponent], BEFORE [CharacterBodyComponent]
 
 class_name ThrustControlComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # TODO: Add braking
 # TODO: Add support for `shouldResetVelocityOnCollision` similar to [OverheadControlComponent]

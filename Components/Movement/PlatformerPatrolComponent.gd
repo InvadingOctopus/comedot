@@ -2,7 +2,7 @@
 ## Requirements: BEFORE [PlatformerPhysicsComponent], After [CornerCollisionComponent]
 
 class_name PlatformerPatrolComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # PLAN:
 # * If we are not on the floor, do nothing.

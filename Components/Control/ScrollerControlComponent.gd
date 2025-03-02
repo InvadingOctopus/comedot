@@ -3,7 +3,7 @@
 ## Requirements: BEFORE [CharacterBodyComponent], [Camera2D] optional
 
 class_name ScrollerControlComponent
-extends CharacterBodyManipulatingComponentBase
+extends CharacterBodyDependentComponentBase
 
 # TODO: Deceleration when letting go of input
 # TODO: Camera "spring"
