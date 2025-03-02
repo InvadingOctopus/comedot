@@ -45,7 +45,7 @@ var recentDirection: Vector2
 
 
 func _ready() -> void:
-	selfAsAgent = self.get_node(".") as NavigationAgent2D
+	selfAsAgent = self.get_node(^".") as NavigationAgent2D
 	# if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
 	# 	printLog("characterBodyComponent.shouldResetVelocityIfZeroMotion = false")
 	# 	characterBodyComponent.shouldResetVelocityIfZeroMotion = false

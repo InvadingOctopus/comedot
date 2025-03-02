@@ -45,7 +45,7 @@ extends Component
 
 var selfAsArea: Area2D:
 	get:
-		if not selfAsArea: selfAsArea = self.get_node(".") as Area2D
+		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
 		return selfAsArea
 
 #endregion
@@ -69,7 +69,7 @@ func _ready() -> void:
 
 
 func onArea_entered(area: Area2D) -> void:
-	var interactionControlComponent: InteractionControlComponent = area.get_node(".") as InteractionControlComponent # HACK: TODO: Find better way to cast
+	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: TODO: Find better way to cast
 	if not interactionControlComponent: return
 
 	# Display the indicators and labels, if any.
@@ -81,7 +81,7 @@ func onArea_entered(area: Area2D) -> void:
 
 
 func onArea_exited(area: Area2D) -> void:
-	var interactionControlComponent: InteractionControlComponent = area.get_node(".") as InteractionControlComponent # HACK: TODO: Find better way to cast
+	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: TODO: Find better way to cast
 	if not interactionControlComponent: return
 
 	# Hide the indicators and labels.

@@ -35,7 +35,7 @@ var haveInteracionsInRange: bool:
 
 var selfAsArea: Area2D:
 	get:
-		if not selfAsArea: selfAsArea = self.get_node(".") as Area2D
+		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
 		return selfAsArea
 
 #endregion
@@ -57,7 +57,7 @@ func _ready() -> void:
 
 
 func onArea_entered(area: Area2D) -> void:
-	var interactionComponent: InteractionComponent = area.get_node(".") as InteractionComponent # HACK: TODO: Find better way to cast
+	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: TODO: Find better way to cast
 	if not interactionComponent: return
 
 	printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
@@ -68,7 +68,7 @@ func onArea_entered(area: Area2D) -> void:
 
 
 func onArea_exited(area: Area2D) -> void:
-	var interactionComponent: InteractionComponent = area.get_node(".") as InteractionComponent # HACK: TODO: Find better way to cast
+	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: TODO: Find better way to cast
 	if not interactionComponent: return
 
 	printDebug(self.logName + " onArea_exited: " + str(interactionComponent))

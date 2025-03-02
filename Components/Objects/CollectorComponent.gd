@@ -12,7 +12,7 @@ signal didCollect(collectibleComponent: CollectibleComponent, payload: Variant, 
 
 
 func onAreaEntered(area: Area2D) -> void:
-	var collectibleComponent: CollectibleComponent = area.get_node(".") as CollectibleComponent # HACK: TODO: Find better way to cast
+	var collectibleComponent: CollectibleComponent = area.get_node(^".") as CollectibleComponent # HACK: TODO: Find better way to cast
 	if not collectibleComponent: return
 
 	printDebug(str("onAreaEntered() CollectibleComponent: ", collectibleComponent))

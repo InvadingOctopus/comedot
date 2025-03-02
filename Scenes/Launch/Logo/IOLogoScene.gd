@@ -25,7 +25,7 @@ func _ready() -> void:
 	if Debug.debugBackground: Debug.debugBackground.visible = false # Hide the debug background during the logo
 	GlobalInput.isPauseShortcutAllowed = false
 	
-	var selfAsNode: Node2D = self.get_node(".") as Node2D
+	var selfAsNode: Node2D = self.get_node(^".") as Node2D
 	selfAsNode.global_position = Tools.getCenteredPositionOnViewport(selfAsNode, 320, 180)
 	
 	animateText()

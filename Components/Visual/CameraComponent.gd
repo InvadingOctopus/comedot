@@ -53,7 +53,7 @@ var zoomFlipTimer: float
 
 
 func _ready() -> void:
-	self.selfAsCamera = self.get_node(".") as Camera2D
+	self.selfAsCamera = self.get_node(^".") as Camera2D
 
 	if selfAsCamera:
 		if boundary: clampToBoundary()

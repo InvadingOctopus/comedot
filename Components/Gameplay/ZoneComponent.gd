@@ -33,7 +33,7 @@ var currentZones: Array[Area2D]
 
 func _ready() -> void:
 	if not areaOverride:
-		areaOverride = self.get_node(".") as Area2D # HACK: TODO: Find better way to cast
+		areaOverride = self.get_node(^".") as Area2D # HACK: TODO: Find better way to cast
 
 	# If we still have no area, check if the parent [Entity] has an area.
 
