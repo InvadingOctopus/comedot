@@ -209,11 +209,14 @@ func hasComponent(type: Script) -> bool:
 
 
 ## Checks the [member Entity.components] [Dictionary] after converting the [param type] to a [StringName] key.
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
-func getComponent(type: Script) -> Component:
+## NOTE: Set [param findSubclasses] to `true` to find subclasses which inherit the specified type, by calling [method Entity.findFirstComponentSubclass]
+func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
 	var typeName: StringName = type.get_global_name()
 	var foundComponent: Component = self.components.get(typeName)
+	if not foundComponent and findSubclasses:
+		if debugMode: printDebug(str("getComponent(): ", typeName, " not found, trying findFirstComponentSubclass()"))
+		foundComponent = self.findFirstComponentSubclass(type)
 	return foundComponent
 
 
