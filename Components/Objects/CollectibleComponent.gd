@@ -36,7 +36,7 @@ signal willBeFreed
 func onAreaEntered(area: Area2D) -> void:
 	if not isEnabled: return
 
-	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: TODO: Find better way to cast
+	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
 	if not collectorComponent: return
 
 	printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))

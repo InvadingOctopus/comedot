@@ -43,7 +43,7 @@ signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: f
 #region State
 
 var area: Area2D:
-	get: return self.get_node(^".") as Area2D # HACK: TODO: Find better way to cast
+	get: return self.get_node(^".") as Area2D # HACK: Find better way to cast self?
 
 ## To eliminate any possibility of bugs or inaccuracies arising from floating point math imprecision.
 var accumulatedFractionalDamage: float
@@ -83,7 +83,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 	# NOTE: Even though we don't need to use a [DamageComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
-	var damageComponent: DamageComponent = areaExited.get_node(^".") as DamageComponent # HACK: TODO: Find better way to cast
+	var damageComponent: DamageComponent = areaExited.get_node(^".") as DamageComponent # HACK: Find better way to cast self?
 	if  damageComponent: damageComponentsInContact.erase(damageComponent)
 
 	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
@@ -93,7 +93,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 ## Casts an [Area2D] as a [DamageComponent].
 func getDamageComponent(componentArea: Area2D) -> DamageComponent:
-	var damageComponent: DamageComponent = componentArea.get_node(^".") as DamageComponent # HACK: TODO: Find better way to cast
+	var damageComponent: DamageComponent = componentArea.get_node(^".") as DamageComponent # HACK: Find better way to cast self?
 
 	if not damageComponent:
 		## NOTE: This warning may help to set collision masks properly.

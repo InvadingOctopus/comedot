@@ -396,7 +396,7 @@ func getArea() -> Area2D:
 
 		# First, is the entity itself an [Area2D]?
 		# PERFORMANCE: Handle this here before calling Tools.gd
-		var selfAsArea: Area2D = get_node(".") as Area2D # HACK: TODO: Find better way to cast
+		var selfAsArea: Area2D = get_node(".") as Area2D # HACK: Find better way to cast self?
 
 		if selfAsArea:
 			self.area = selfAsArea
@@ -416,7 +416,7 @@ func getBody() -> CharacterBody2D:
 		
 		# First, is the entity itself a [CharacterBody2D]?
 		# PERFORMANCE: Handle this here before calling Tools.gd
-		var selfAsBody: CharacterBody2D = get_node(".") as CharacterBody2D # HACK: TODO: Find better way to cast
+		var selfAsBody: CharacterBody2D = get_node(".") as CharacterBody2D # HACK: Find better way to cast self?
 
 		if selfAsBody:
 			self.body = selfAsBody

@@ -113,7 +113,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
-	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(^".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
+	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
 	if  damageReceivingComponent:
 		damageReceivingComponentsInContact.erase(damageReceivingComponent)
 		didLeaveReceiver.emit(damageReceivingComponent)
@@ -121,7 +121,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 ## Casts an [Area2D] as a [DamageReceivingComponent].
 func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingComponent:
-	var damageReceivingComponent: DamageReceivingComponent = componentArea.get_node(^".") as DamageReceivingComponent # HACK: TODO: Find better way to cast
+	var damageReceivingComponent: DamageReceivingComponent = componentArea.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
 
 	if not damageReceivingComponent:
 		## NOTE: This warning may help to set collision masks properly.
