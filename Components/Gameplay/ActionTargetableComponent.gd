@@ -8,25 +8,12 @@ extends AreaManipulatingComponentBase
 
 
 #region Parameters
-
 ## Highlight even when not being targeted by an [ActionTargetingComponent]?
 @export var shouldAlwaysHighlightOnMouseHover: bool = false:
 	set(newValue):
 		if newValue != shouldAlwaysHighlightOnMouseHover:
 			shouldAlwaysHighlightOnMouseHover = newValue
 			updateMouseHover()
-
-@export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
-	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			selfAsArea.monitorable = isEnabled
-			# selfAsArea.monitoring  = isEnabled # Should be always disabled
-
-#endregion
-
-
-#region State
 #endregion
 
 
@@ -35,19 +22,15 @@ signal wasChosen
 #endregion
 
 
-#region Dependencies
-#endregion
-
-
 func _ready() -> void:
 	if self.get_node(^".") is not Node2D:
 		printWarning("Component is not Node2D")
-	
+
 	selfAsArea.monitoring = false # This [Area2D] does not need to monitor any other areas; it only needs to be `monitorable`
 
 	self.add_to_group(Global.Groups.targetables)
 	parentEntity.add_to_group(Global.Groups.targetables)
-	connectSignals()
+	super.connectSignals()
 	updateMouseHover()
 
 
@@ -87,23 +70,13 @@ func updateMouseHover() -> void:
 
 
 func connectMouseSignals() -> void:
-	var collisionObject: CollisionObject2D = self.get_node(^".") as CollisionObject2D
-
-	if not collisionObject.mouse_entered.is_connected(setHighlight.bind(true)):
-		collisionObject.mouse_entered.connect(setHighlight.bind(true))
-
-	if not collisionObject.mouse_exited.is_connected(setHighlight.bind(false)):
-		collisionObject.mouse_exited.connect(setHighlight.bind(false))
+	Tools.reconnectSignal(selfAscollisionObject.mouse_entered, setHighlight.bind(true))
+	Tools.reconnectSignal(selfAscollisionObject.mouse_exited, setHighlight.bind(false))
 
 
 func disconnectMouseSignals() -> void:
-	var collisionObject: CollisionObject2D = self.get_node(^".") as CollisionObject2D
-
-	if collisionObject.mouse_entered.is_connected(setHighlight.bind(true)):
-		collisionObject.mouse_entered.disconnect(setHighlight.bind(true))
-
-	if collisionObject.mouse_exited.is_connected(setHighlight.bind(false)):
-		collisionObject.mouse_exited.disconnect(setHighlight.bind(false))
+	Tools.disconnectSignal(selfAscollisionObject.mouse_entered, setHighlight.bind(true))
+	Tools.disconnectSignal(selfAscollisionObject.mouse_exited, setHighlight.bind(false))
 
 
 func setHighlight(highlight: bool = true) -> void:
