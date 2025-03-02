@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cla2wtnqyfqtb"]
+
+[ext_resource type="Script" uid="uid://kiluh3ud42k3" path="res://Components/Physics/ModifyOnCollisionComponent.gd" id="1_m5i6h"]
+
+[node name="ModifyOnCollisionComponent" type="Node" groups=["components"]]
+script = ExtResource("1_m5i6h")

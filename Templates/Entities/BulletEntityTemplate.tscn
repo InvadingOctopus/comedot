@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_uhpuy"]
 [ext_resource type="PackedScene" uid="uid://dgp53lgh8n5p8" path="res://Components/Visual/OffscreenRemovalComponent.tscn" id="4_ogryl"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_qww6u"]
-[ext_resource type="PackedScene" uid="uid://cla2wtnqyfqtb" path="res://Components/Physics/RemovalOnCollisionComponent.tscn" id="6_ffvs6"]
+[ext_resource type="PackedScene" uid="uid://cla2wtnqyfqtb" path="res://Components/Physics/ModifyOnCollisionComponent.tscn" id="6_ffvs6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lt4cn"]
 resource_local_to_scene = true
@@ -41,11 +41,11 @@ shape = SubResource("RectangleShape2D_u74jj")
 
 [node name="LinearMotionComponent" parent="." instance=ExtResource("3_m0kev")]
 initialSpeed = 175.0
-shouldApplyAcceleration = false
 shouldDeleteParentAtMaximumDistance = true
 maximumDistance = 500.0
 
-[node name="RemovalOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
+[node name="ModifyOnCollisionComponent" parent="." instance=ExtResource("6_ffvs6")]
+shouldRemoveEntity = true
 
 [node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_ogryl")]
 
