@@ -10,8 +10,9 @@ extends AreaComponentBase
 
 
 #region Parameters
-@export var shouldRemoveEntity: bool = false  ## Prevents the addition or removal of components.
-@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToAdd]. Overridden by [member shouldRemoveEntity]
+@export var shouldRemoveEntity: bool		  ## Removes the entity itself. NOTE: Prevents the addition or removal of components or nodes.
+@export var nodesToRemove:		Array[Node]   ## Occurs BEFORE [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
+@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToAdd] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
 @export var componentsToCreate: Array[Script] ## Occurs AFTER [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
 #endregion
 
@@ -32,5 +33,10 @@ func onCollide(_collidingNode: Node2D) -> void:
 		self.willRemoveEntity.emit()
 		self.requestDeletionOfParentEntity()
 	else:
-		parentEntity.removeComponents(componentsToRemove)
-		didAddComponents.emit(parentEntity.createNewComponents(componentsToCreate))
+		# NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! Which invalidates parentEntity
+		var entity: Entity = self.parentEntity
+		for node in nodesToRemove:
+			node.get_parent().remove_child(node)
+			node.queue_free() # TBD: Should this be optional?
+		entity.removeComponents(componentsToRemove)
+		didAddComponents.emit(entity.createNewComponents(componentsToCreate))
