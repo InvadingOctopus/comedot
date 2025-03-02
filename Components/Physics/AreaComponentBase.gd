@@ -1,7 +1,7 @@
-## Base class for components which depend on an [Area2D].
+## Base class for components which depend on, monitor or manipulate an [Area2D].
 ## The [Component] or its parent [Entity] ITSELF may BE an [Area2D] node, or a different [Area2D] that already exists may be specified.
 
-class_name AreaManipulatingComponentBase
+class_name AreaComponentBase
 extends Component
 
 # TBD: Better name? :')
@@ -64,7 +64,7 @@ func _enter_tree() -> void:
 #region Signals
 
 ## Connects collision signals like [signal Area2D.area_entered] & [signal Area2D.body_entered] etc.
-## NOTE: NOT called by the default/superclass implementation. Must be called manually by any class that `extends` [AreaManipulatingComponentBase]
+## NOTE: NOT called by the default/superclass implementation. Must be called manually by any class that `extends` [AreaComponentBase]
 func connectSignals() -> void:
 	Tools.reconnectSignal(area.area_entered, onArea_areaEntered)
 	Tools.reconnectSignal(area.body_entered, onArea_bodyEntered)

@@ -4,7 +4,7 @@
 ## @experimental
 
 class_name ActionTargetableComponent
-extends AreaManipulatingComponentBase
+extends AreaComponentBase
 
 
 #region Parameters

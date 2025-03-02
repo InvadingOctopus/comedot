@@ -1,7 +1,7 @@
 ## Removes or "stops" the parent Entity when the specified [Area2D] collides with another area or [PhysicsBody2D] which matches the physics masks.
 
 class_name RemovalOnCollisionComponent
-extends AreaManipulatingComponentBase
+extends AreaComponentBase
 
 # TODO: Add delay Timer
 

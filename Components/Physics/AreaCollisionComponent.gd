@@ -4,7 +4,7 @@
 ## Requirements: Component Node must be Area2D
 
 class_name AreaCollisionComponent
-extends AreaManipulatingComponentBase
+extends AreaComponentBase
 
 # TBD: Handle [PhysicsBody2D] in this component or a separate component?
 # TBD: Allow an `areaOverride` as in [ZoneComponent]?
