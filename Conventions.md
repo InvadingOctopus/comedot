@@ -111,13 +111,15 @@ func onTimeout() # in the script of a Timer node
 
 ## Design
 
-The core soul of this project is the library of Components: Everything else is just scaffolding to support a workflow based on components.
+* The core soul of this project is the library of components: Everything else is just scaffolding to support a workflow based on components (or conveniences like UI).
 
-HOW those components are actually implemented behind-the-scenes may always keep changing, but the components themselves will always be present: e.g. there will always be a HealthComponent, a DamageComponent, a DamageReceivingComponent and so on.
+* HOW components are actually implemented behind-the-scenes may always keep changing, but the components themselves will always be present: e.g. there will always be a HealthComponent, a DamageComponent, a DamageReceivingComponent and so on.
 
-I try to design from the "outside-in": i.e. first decide on what the front-end "interface" or USAGE should look like. It should be as close to how the rest of Godot works out of the box: Creating nodes, scripts, and throwing them together and putting numbers in the Inspector sidebar. Components should also work similar to that.
+* Try to design from the "outside-in": i.e. first decide on what the front-end "interface" or USAGE should look like. Components should work similar to how the rest of Godot works out of the box: Creating nodes, scripts, and throwing them together and putting numbers in the Inspector sidebar.
 
-Components are created based on abstractions in terms of _gameplay_ NOT coding abstractions, as in, how the actual play of most games can be broken down into distinct events and behaviors that could be reused even in different genres.
+* Components are created based on abstractions in terms of _gameplay_ NOT coding abstractions, as in, how the actual play of most games can be broken down into distinct events and behaviors that could be reused even in different genres.
+
+* You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
 
 ## Miscellaneous
