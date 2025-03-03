@@ -78,6 +78,6 @@ func displayGameOver() -> void:
 		Debug.printWarning(str("displayGameOver(): Cannot get SceneTree.current_scene! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
 		return 
 
-	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay
+	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay. FIXME: Weird Godot error: "Condition "!is_inside_tree()" is true. Returning: false"
 	self.visible = true # Show Game Over graphics
 	self.isDisplayingGameOver = true
