@@ -2,11 +2,10 @@
 ## May be used for bullets to remove the bullet on collision with terrain etc.
 ## TIP: In the case of arrow-like projectiles, remove the [DamageComponent] and [LinearMotionComponent] to have the arrow get "stuck" in the ground or other objects,
 ## or add a hypothetical [ExplosionComponent] to animate an explosion and THEN remove the projectile entity.
+## TIP: To remove the entity or add/remove components after a specific period of time, use [ModifyOnTimerComponent]
 
 class_name ModifyOnCollisionComponent
 extends AreaComponentBase
-
-# TODO: Add delay Timer
 
 
 #region Parameters
@@ -27,8 +26,9 @@ func _ready() -> void:
 	super.connectSignals()
 
 
-func onCollide(_collidingNode: Node2D) -> void:
+func onCollide(collidingNode: Node2D) -> void:
 	if not isEnabled: return
+	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", shouldRemoveEntity: ", shouldRemoveEntity, ", nodesToRemove: ", nodesToRemove, ", componentsToRemove: ", componentsToRemove, ", componentsToCreate: ", componentsToCreate))
 	if shouldRemoveEntity:
 		self.willRemoveEntity.emit()
 		self.requestDeletionOfParentEntity()
