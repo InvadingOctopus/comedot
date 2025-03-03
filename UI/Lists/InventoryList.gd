@@ -43,12 +43,12 @@ func connectSignals() -> void:
 	inventoryComponent.didRemovetem.connect(self.inventoryComponent_didRemovetem)
 
 
-func inventoryComponent_didAddItem(item: InventoryItem) -> void:
+func inventoryComponent_didAddItem(_item: InventoryItem) -> void:
 	# TODO: PERFORMANCE: Only update the new item!
 	buildListItems()
 
 
-func inventoryComponent_didRemovetem(item: InventoryItem) -> void:
+func inventoryComponent_didRemovetem(_item: InventoryItem) -> void:
 	# TODO: PERFORMANCE: Only update the removed item!
 	buildListItems()
 

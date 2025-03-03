@@ -1,17 +1,12 @@
 ## A [Container] with an icon and other [Control]s to represent an [InventoryItem].
 
+@warning_ignore("missing_tool")
 class_name InventoryItemUI
 extends GameplayResourceUI
 
 
-
 #region Parameters
-
 @export var inventoryItem: InventoryItem
-#endregion
-
-
-#region State
 #endregion
 
 
