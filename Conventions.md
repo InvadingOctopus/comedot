@@ -119,11 +119,13 @@ func onTimeout() # in the script of a Timer node
 
 * Components are created based on abstractions in terms of _gameplay_ NOT coding abstractions, as in, how the actual play of most games can be broken down into distinct events and behaviors that could be reused even in different genres.
 
+* General over Specific: Components and scripts in Comedot's library should be designed for customization and reusability in as many different games and situations as convenient. Specialized single-purpose components should be a private part of a game project (i.e. not a shared framework). Examples:
+	* ModifyOnCollisionComponent instead of RemovalOnCollisionComponent.
+	* TreeSearchBox instead of a search feature built into ComponentsDock.
+	* Wiring multiple components via signals: Using ModifyOnCollisionComponent to add a ModifyOnTimerComponent and connecting them to implement arrows which get stuck in walls then automatically removed, instead of creating a separate ArrowComponent.
+
 * You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
-* General over Specific: Components and scripts in Comedot's library should be designed for customization and reusability in as many different games and situations as convenient. Specialized single-purpose components should be a private part of a game project (i.e. not a shared framework). Examples:
-	* ModifyOnCollisionComponent instead of RemovalOnCollisionComponent
-	* TreeSearchBox instead of a search feature built into ComponentsDock
 
 ## Miscellaneous
 
