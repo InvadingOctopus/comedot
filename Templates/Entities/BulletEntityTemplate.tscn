@@ -20,6 +20,7 @@ size = Vector2(4, 4)
 collision_layer = 1024
 collision_mask = 16
 script = ExtResource("1_rqrwr")
+isLoggingEnabled = false
 metadata/_edit_group_ = true
 
 [node name="BulletSprite" type="Sprite2D" parent="."]

@@ -14,6 +14,7 @@ resource_local_to_scene = true
 size = Vector2(8, 8)
 
 [node name="PoisonArrow" instance=ExtResource("1_5xvy3")]
+isLoggingEnabled = true
 
 [node name="BulletSprite" parent="." index="0"]
 modulate = Color(0.5, 1, 0, 1)
