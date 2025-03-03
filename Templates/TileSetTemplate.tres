@@ -7,9 +7,14 @@ texture = ExtResource("1_cnbby")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+0:0/0/custom_data_0 = true
 
 [resource]
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 16
 physics_layer_0/collision_mask = 0
+custom_data_layer_0/name = "isWalkable"
+custom_data_layer_0/type = 1
+custom_data_layer_1/name = "isBlocked"
+custom_data_layer_1/type = 1
 sources/3 = SubResource("TileSetAtlasSource_mkx33")

@@ -1,12 +1,13 @@
-extends Node2D
+extends Start
 
 
 @onready var area: Area2D = %Area
 @onready var shapeNode: CollisionShape2D = %ShapeNode
 
-# Called when the node enters the scene tree for the first time.
+
+
 func _ready() -> void:
-	pass
+	super._ready()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

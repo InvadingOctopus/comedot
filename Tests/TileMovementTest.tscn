@@ -37,6 +37,7 @@ texture = ExtResource("4_fnve7")
 shape = SubResource("RectangleShape2D_esh4c")
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+process_callback = 0
 
 [node name="TileBasedControlComponent" parent="CharacterBody2D" instance=ExtResource("5_kihht")]
 debugMode = true

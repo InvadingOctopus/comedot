@@ -17,14 +17,20 @@
 texture = ExtResource("4_mkbvj")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:0/0/custom_data_0 = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3hkm5"]
 texture = ExtResource("4_mkbvj")
 0:0/0 = 0
+0:0/0/custom_data_0 = true
 
 [sub_resource type="TileSet" id="TileSet_usjrl"]
 physics_layer_0/collision_layer = 0
 physics_layer_0/collision_mask = 0
+custom_data_layer_0/name = "isWalkable"
+custom_data_layer_0/type = 1
+custom_data_layer_1/name = "isBlocked"
+custom_data_layer_1/type = 1
 sources/2 = SubResource("TileSetAtlasSource_36c63")
 sources/3 = SubResource("TileSetAtlasSource_3hkm5")
 
@@ -507,6 +513,7 @@ region_rect = Rect2(560, 288, 16, 16)
 shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Camera2D" type="Camera2D" parent="TurnBasedEntity1"]
+process_callback = 0
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
