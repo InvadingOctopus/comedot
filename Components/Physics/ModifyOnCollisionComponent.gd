@@ -5,7 +5,7 @@
 ## TIP: To remove the entity or add/remove components after a specific period of time, use [ModifyOnTimerComponent]
 
 class_name ModifyOnCollisionComponent
-extends AreaComponentBase
+extends AreaCollisionComponent
 
 
 #region Parameters

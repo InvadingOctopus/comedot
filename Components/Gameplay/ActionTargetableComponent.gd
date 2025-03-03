@@ -14,6 +14,8 @@ extends AreaComponentBase
 		if newValue != shouldAlwaysHighlightOnMouseHover:
 			shouldAlwaysHighlightOnMouseHover = newValue
 			updateMouseHover()
+
+@export var isEnabled: bool = true
 #endregion
 
 
@@ -30,7 +32,7 @@ func _ready() -> void:
 
 	self.add_to_group(Global.Groups.targetables)
 	parentEntity.add_to_group(Global.Groups.targetables)
-	super.connectSignals()
+	connectSignals()
 	updateMouseHover()
 
 

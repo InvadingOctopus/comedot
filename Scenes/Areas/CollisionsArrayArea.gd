@@ -5,7 +5,7 @@
 class_name CollisionsArrayArea
 extends Area2D
 
-# TBD: Handle [PhysicsBody2D] collisions?
+# TODO: Handle [PhysicsBody2D] collisions
 # TBD: Allow an `areaOverride` as in [ZoneComponent]?
 # TBD: Reduce code duplication between [AreaCollisionComponent]?
 
