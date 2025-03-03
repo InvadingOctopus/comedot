@@ -104,6 +104,7 @@ func attachToGrandparent() -> void:
 	if debugMode: printDebug(str("Reattaching to new parent: ", newParent, " @ global position: ", selfAsCamera.global_position))
 
 	selfAsCamera.position_smoothing_enabled = false # TODO: FIXME: HACK: Fix jump/hitter :(
+	self.owner = null
 	self.reparent(newParent, true) # keep_global_transform
 	self.set_owner(newParent)
 	selfAsCamera.reset_smoothing()
