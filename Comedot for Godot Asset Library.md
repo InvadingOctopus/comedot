@@ -5,8 +5,6 @@ Description:
 
 All-in-one project template and components framework: Basically Nodes but for gameplay. Optimized for 2D pixel art.
 
-Requires Godot 4.4 latest build!
-
 • Includes components for common stuff needed in most games: Different types of player movement, combat, collectibles, inventory, turn-based logic etc.
 • UI controls like a stats HUD, buttons for special skills, etc.
 • Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay and short example games.
@@ -25,9 +23,9 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/InvadingOctopus/comedot
 Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Godot Version:	4.4 custom
-Asset Version:	4.4.0.6.69
-Commit URL:		4b6d81555c7d9f5d530402be9207c6098557d815 2025-02-27
+Godot Version:	4.4
+Asset Version:	4.4.0.10.69
+Commit URL:		b761bd12f418727152acb36e5ba79707d9560473 2025-03-03
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		https://i.imgur.com/aW0MHRu.png Logo
