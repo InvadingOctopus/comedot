@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://dk8auhx4xrnqp"]
+[gd_scene load_steps=14 format=4 uid="uid://dk8auhx4xrnqp"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_sy48a"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
@@ -14,6 +14,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1r2ol"]
 size = Vector2(12, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sy48a"]
+size = Vector2(384, 400)
 
 [node name="TreesWithGunsExample" type="Node2D"]
 script = ExtResource("1_sy48a")
@@ -41,6 +44,10 @@ region_rect = Rect2(384, 64, 16, 16)
 
 [node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
 shape = SubResource("RectangleShape2D_1r2ol")
+
+[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadBasic" index="2" node_paths=PackedStringArray("boundary")]
+shouldClampToBoundary = true
+boundary = NodePath("../../CameraBounds")
 
 [node name="FactionComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("6_kpabc")]
 factions = 2
@@ -76,5 +83,13 @@ position = Vector2(0, 64)
 [node name="Ghost" parent="Monsters" instance=ExtResource("11_xlksg")]
 position = Vector2(-184, -184)
 collision_mask = 72
+
+[node name="CameraBounds" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_sy48a")
+debug_color = Color(0, 0.6, 0.7, 0.1)
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
