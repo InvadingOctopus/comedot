@@ -121,6 +121,9 @@ func onTimeout() # in the script of a Timer node
 
 * You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
+* General over Specific: Components and scripts in Comedot's library should be designed for customization and reusability in as many different games and situations as convenient. Specialized single-purpose components should be a private part of a game project (i.e. not a shared framework). Examples:
+	* ModifyOnCollisionComponent instead of RemovalOnCollisionComponent
+	* TreeSearchBox instead of a search feature built into ComponentsDock
 
 ## Miscellaneous
 
