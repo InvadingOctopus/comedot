@@ -13,6 +13,9 @@ extends AreaComponentBase
 
 
 #region Parameters
+## If `false`, no new areas are added.
+## NOTE: Does NOT affect the removal of areas that exit contact with this component.
+# @export var isEnabled: bool = true # Already in superclass
 #endregion
 
 
