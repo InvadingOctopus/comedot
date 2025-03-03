@@ -155,7 +155,7 @@ func _enter_tree() -> void:
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 
 		self.checkRequiredComponents()
-	else:
+	elif not allowNonEntityParent:
 		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
 
@@ -173,9 +173,10 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 	if parentOrGrandparent is Entity:
 		if debugMode: printDebug(str("findParentEntity() result: ", parentOrGrandparent))
 		return parentOrGrandparent
-	else:
+	elif not allowNonEntityParent:
 		printWarning(str("findParentEntity() found no Entity! checkGrandparents: ", checkGrandparents))
-		return null
+	
+	return null
 
 
 func registerEntity(newParentEntity: Entity) -> void:
