@@ -21,7 +21,7 @@ extends AreaComponentBase
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			selfAsArea.monitorable = isEnabled
+			if selfAsArea: selfAsArea.monitorable = isEnabled
 			# selfAsArea.monitoring  = isEnabled # Should be always disabled; WHY? To detect exits?
 
 #endregion
@@ -42,6 +42,7 @@ signal didExitBody(body:  Node2D)
 
 
 func _ready() -> void:
+	if selfAsArea: selfAsArea.monitorable = isEnabled
 	connectSignals()
 	readdAllContacts()
 
@@ -59,7 +60,7 @@ func readdAllContacts() -> void:
 	for overlappingArea in selfAsArea.get_overlapping_areas():
 		self.areasInContact.append(overlappingArea)
 		self.didEnterArea.emit(overlappingArea) # TBD: Should this be emitted here?
-	
+
 	for overlappingBody in selfAsArea.get_overlapping_bodies():
 		self.bodiesInContact.append(overlappingBody)
 		self.didEnterBody.emit(overlappingBody) # TBD: Should this be emitted here?
@@ -74,7 +75,7 @@ func connectSignals() -> void:
 	Tools.reconnectSignal(area.area_entered, self.onArea_areaEntered)
 	Tools.reconnectSignal(area.area_exited,  self.onArea_areaExited)
 	Tools.reconnectSignal(area.body_entered, self.onArea_bodyEntered)
-	Tools.reconnectSignal(area.body_exited,  self.onArea_bodyExited)	
+	Tools.reconnectSignal(area.body_exited,  self.onArea_bodyExited)
 
 
 func onArea_areaEntered(areaEntered: Area2D) -> void:
