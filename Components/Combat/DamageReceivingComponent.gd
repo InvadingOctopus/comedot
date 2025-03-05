@@ -13,6 +13,8 @@ extends Component
 
 
 #region Parameters
+@export var shouldRemoveEntityIfNoHealthComponent: bool = true ## Lets this component be usable without a [THealthComponent], as a single solution for basic gameplay and entities that don't need to have "health".
+
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
 		isEnabled = newValue
@@ -37,6 +39,7 @@ signal didCollideWithDamage(damageComponent: DamageComponent)
 
 signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: float, attackerFactions: int) ## @experimental
 
+signal willRemoveEntity ## Emitted if there is no [HealthComponent] and [member shouldRemoveEntityIfNoHealthComponent]
 #endregion
 
 
@@ -156,6 +159,10 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 	# DESIGN: This signal should be emitted regardless of actual health deducted, because this signal is to acknowledge that we received an attempt to cause damage.
 	# TIP: For changes to health, monitor [HealthComponent]
 	didReceiveDamage.emit(damageComponent, damageAmount, attackerFactions)
+
+	if not healthComponent and shouldRemoveEntityIfNoHealthComponent:
+		self.willRemoveEntity.emit()
+		self.requestDeletionOfParentEntity()
 
 	return true # There were opposing (or no) factions or friendly fire.
 
