@@ -1,6 +1,6 @@
 # Comedot for the Godot Asset Library
 
-Asset Name: Comedot Ultimate Template
+Asset Name: Comedot Ultimate Template [4.4]
 Description:
 
 All-in-one project template and components framework: Basically Nodes but for gameplay. Optimized for 2D pixel art.

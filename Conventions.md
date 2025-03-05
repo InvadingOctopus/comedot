@@ -26,6 +26,7 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 	- A single missing or extra space could cause errors.
 	- Visual representation can be customized per user and easier to view with visible tabs etc.
 	- Easier to navigate.
+	- Fewer bytes to store.
 
 * 2 empty lines between functions and different regions of code, such as parameters, signals, state properties etc.
 	- This is what the default Godot script templates start with.
