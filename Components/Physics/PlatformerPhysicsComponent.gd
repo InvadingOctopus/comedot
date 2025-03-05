@@ -220,7 +220,6 @@ func applyFrictionInAir(delta: float) -> void:
 		elif parameters.shouldApplyFrictionInAir:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
-
 #endregion
 
 
