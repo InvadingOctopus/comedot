@@ -2,6 +2,7 @@
 ## TIP: Useful for regenerating a Health [Stat] or dealing poison damage-over-time, etc.
 ## For example, you may connect the [signal ShieldedHealthComponent.shieldDidDecrease] to [method Timer.start] on this [StatModifierComponent].
 ## TIP: Rename this component's node to "ManaRegenerationComponent" etc. to keep track of its purpose in the Scene Tree.
+## TIP: To modify Stats such as the player's score or XP when monsters die etc., use [StatModifierOnDeathComponent]
 
 class_name StatModifierComponent
 extends Component

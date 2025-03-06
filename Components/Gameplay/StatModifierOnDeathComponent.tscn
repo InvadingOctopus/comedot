@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://blho33b615coc"]
+
+[ext_resource type="Script" uid="uid://bn247qjda5mqq" path="res://Components/Gameplay/StatModifierOnDeathComponent.gd" id="1_flc4r"]
+
+[node name="StatModifierOnDeathComponent" type="Node" groups=["components"]]
+script = ExtResource("1_flc4r")
