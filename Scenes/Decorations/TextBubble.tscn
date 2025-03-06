@@ -7,6 +7,7 @@
 light_mode = 1
 
 [node name="TextBubble" type="Node2D"]
+z_index = 100
 position = Vector2(0, -16)
 script = ExtResource("1_ak04i")
 
