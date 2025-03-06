@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_phir2"]
 resource_local_to_scene = true
-size = Vector2(192, 64)
+size = Vector2(64, 64)
 
 [node name="SpawnArea" type="Area2D"]
 editor_description = "An Area2D region to randomly spawn copies of a scene in. Enable \"Editable Children\" and edit SpawnTimer to choose scene.
@@ -19,6 +19,7 @@ metadata/_edit_group_ = true
 
 [node name="SpawnAreaShape" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
+position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
