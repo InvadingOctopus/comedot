@@ -49,9 +49,9 @@ func onDidToggleTestMode() -> void:
 	pass
 
 
-func _process(_delta: float) -> void:
+# func _process(_delta: float) -> void: # UNUSED: Commented out to prevent wasting per-frame calls until needed.
 	# Perform any per-frame updates that may help with testing, such as displaying the values of other variables or clamping the physics of entities etc.
-	pass
+	# pass
 
 #endregion
 
