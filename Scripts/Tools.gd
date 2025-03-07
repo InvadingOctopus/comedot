@@ -1,4 +1,6 @@
 ## Helper functions for built-in Godot nodes and types to assist with common tasks.
+## Most of this is stuff that should be built-in Godot but isn't :')
+## and can't be injected into the base types such as Node etc. :(
 
 class_name Tools
 extends GDScript
