@@ -150,11 +150,10 @@
 	"Signal Connection": {
 		"prefix": "connect",
 		"body": [ 
-			"connect(self.${3:on${1}_${2}})\n\n",
-			"${4:func $3() -> void:}",
-			"\t${5:pass}"
+			"Tools.reconnectSignal(${1}.${2}, self.${3:on${1}_${2}})\n\n",
+			"${0:func $3() -> void:\n\tpass}"
 		],
-		"description": "A signal connector and a function to handle the signal."
+		"description": "A safe signal connector and a function to handle the signal."
 	},
 
 	"Stat": {
