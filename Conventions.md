@@ -130,6 +130,8 @@ func onTimeout() # in the script of a Timer node
 
 ## Miscellaneous
 
+* Comments don't use BBCode. It's dumb and ugly in 2025. Waiting for Godot to just implement Markdown already.
+
 * Do not try to use `-1` etc as an indicator of whether some numerical value is invalid or should be ignored. It complicates ALL other calculations down the road. Just use a separate flag.
 	- e.g. `allowInfiniteLevels = true` instead of `maxLevel = -1`
 
