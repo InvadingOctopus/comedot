@@ -10,7 +10,7 @@ extends GDScript
 #region Constants
 
 class CompassDirections: ## A list of unit vectors representing 8 compass directions.
-	# TBD: SHould this be in `Tools.gd` or in `Global.gd`? :')
+	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
 	const none		:= Vector2i.ZERO
 	const northWest	:= Vector2i(-1, -1)
 	const north		:= Vector2i.UP
@@ -667,10 +667,7 @@ static func getPathWithDifferentExtension(sourcePath: String, replacementExtensi
 #region Miscellaneous Functions
 
 static func isValidArrayIndex(array: Array, index: int) -> bool:
-	if array.size() > 0 and index >= 0 and index < array.size():
-		return true
-	else:
-		return false
+	return index >= 0 and index < array.size()
 
 
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
