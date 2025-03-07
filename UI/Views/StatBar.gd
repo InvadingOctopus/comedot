@@ -1,4 +1,5 @@
 ## A variant of a [StatUI] combined with a [ProgressBar].
+## TIP: For smoother animations instead of integer-only steps, set the [member Range.step] property of the [ProgressBar] to a fractional value like 0.1
 
 class_name StatBar
 extends StatUI
@@ -8,6 +9,7 @@ extends StatUI
 
 #region Parameters
 @export var animationDuration: float = 0.25
+@export var shouldAnimateBar:	bool = true
 #endregion
 
 
@@ -46,5 +48,6 @@ func updateBar(animate: bool = self.shouldAnimate) -> void:
 		if tween: tween.kill()
 		tween = bar.create_tween()
 		tween.tween_property(bar, "value", stat.value, animationDuration)
+		if shouldAnimateBar: Animations.modulateNumberDifference(bar, stat.value, stat.previousValue)
 	else:
 		bar.value = stat.value
