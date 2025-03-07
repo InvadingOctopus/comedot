@@ -79,12 +79,12 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 #region Data-based Animations
 
 ## Plays different animations on a [NODE] depending on how the specified number changes.
-static func modulateNumberDifference(node: CanvasItem, value: Variant, previousValue: Variant) -> Tween:
+static func modulateNumberDifference(node: CanvasItem, value: Variant, previousValue: Variant, colorForIncrement: Color = Color.GREEN, colorForDecrement: Color = Color.RED) -> Tween:
 	var color: Color
 	const duration: float = 0.25 # TBD: Should this be an argument?
 
-	if    value > previousValue: color = Color.GREEN
-	elif  value < previousValue: color = Color.RED
+	if    value > previousValue: color = colorForIncrement
+	elif  value < previousValue: color = colorForDecrement
 	else: return
 
 	var previousColor: Color = Color.WHITE # TODO: A better way to reset a property: Using the current `modulate` won't work if called during another animation.
