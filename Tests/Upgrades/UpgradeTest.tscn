@@ -53,82 +53,91 @@ isEnabled = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 145.0
-offset_bottom = 232.0
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
 
-[node name="StatsUI" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" node_paths=PackedStringArray("statsComponent")]
+[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+
+[node name="StatsUI" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
 script = ExtResource("15_648xx")
-statsComponent = NodePath("../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
+statsComponent = NodePath("../../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
 layout_mode = 2
 
-[node name="RechargeButton" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+[node name="RechargeButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
 text = "RECHARGE"
 
-[node name="LoanButton" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+[node name="LoanButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
 text = "GET LOAN"
 
-[node name="Spacer1" type="Control" parent="CanvasLayer/VBoxContainer"]
+[node name="Spacer1" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="BuyLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+[node name="BuyLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Buy"
 
-[node name="UpgradesList" type="VBoxContainer" parent="CanvasLayer/VBoxContainer" node_paths=PackedStringArray("targetEntity")]
+[node name="UpgradesList" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" node_paths=PackedStringArray("targetEntity")]
 layout_mode = 2
 size_flags_horizontal = 0
 script = ExtResource("16_xr2h1")
 upgrades = Array[ExtResource("17_mfdhu")]([ExtResource("18_0oqoc"), ExtResource("21_ykf3j"), ExtResource("22_ucsfw"), ExtResource("23_2aq68")])
-targetEntity = NodePath("../../../PlayerEntityTemplate-OverheadBasic")
+targetEntity = NodePath("../../../../PlayerEntityTemplate-OverheadBasic")
 
-[node name="TemporaryUpgradeChoiceUI" parent="CanvasLayer/VBoxContainer/UpgradesList" instance=ExtResource("17_dh703")]
+[node name="TemporaryUpgradeChoiceUI" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" instance=ExtResource("17_dh703")]
 layout_mode = 2
 
-[node name="Spacer2" type="Control" parent="CanvasLayer/VBoxContainer"]
+[node name="Spacer2" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="InstalledContainer" type="VBoxContainer" parent="CanvasLayer/VBoxContainer"]
+[node name="InstalledListContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="InstalledLabel" type="Label" parent="CanvasLayer/VBoxContainer/InstalledContainer"]
+[node name="InstalledLabel" type="Label" parent="CanvasLayer/MarginContainer/InstalledListContainer"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Installed"
 
-[node name="UpgradeUISpeed" parent="CanvasLayer/VBoxContainer/InstalledContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUISpeed" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("18_0oqoc")
 
-[node name="UpgradeUIGun" parent="CanvasLayer/VBoxContainer/InstalledContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUIGun" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("21_ykf3j")
 
-[node name="UpgradeUICooldown" parent="CanvasLayer/VBoxContainer/InstalledContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUICooldown" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("22_ucsfw")
 
-[node name="UpgradeUIAmmo" parent="CanvasLayer/VBoxContainer/InstalledContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUIAmmo" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("23_2aq68")
 
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
-[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
-[connection signal="didChooseUpgrade" from="CanvasLayer/VBoxContainer/UpgradesList" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
+[connection signal="didChooseUpgrade" from="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]
