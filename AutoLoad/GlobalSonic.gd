@@ -154,7 +154,7 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 		if debugMode: Debug.printWarning("playMusicIndex(): musicFiles is empty!", self)
 		return null
 	
-	if Tools.isValidArrayIndex(self.musicFiles, index):
+	if Tools.validateArrayIndex(self.musicFiles, index):
 		return self.playMusicFile(self.musicFiles[index])
 	else:
 		Debug.printWarning(str("playMusicIndex() invalid index: ", index, ", musicFiles size: ", musicFiles.size()), self)

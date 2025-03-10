@@ -72,7 +72,7 @@ func addPlayer(newPlayer: Entity) -> int:
 
 ## Returns the requested entity from the global [member players] array, if present.
 func getPlayer(playerIndex: int = 0) -> Entity:
-	if self.players.is_empty() or not Tools.isValidArrayIndex(self.players, playerIndex):
+	if self.players.is_empty() or not Tools.validateArrayIndex(self.players, playerIndex):
 		return null
 
 	return GameState.players[playerIndex]

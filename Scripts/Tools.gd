@@ -666,7 +666,7 @@ static func getPathWithDifferentExtension(sourcePath: String, replacementExtensi
 
 #region Miscellaneous Functions
 
-static func isValidArrayIndex(array: Array, index: int) -> bool:
+static func validateArrayIndex(array: Array, index: int) -> bool:
 	return index >= 0 and index < array.size()
 
 
