@@ -112,6 +112,8 @@ func onTimeout() # in the script of a Timer node
 
 ## Design
 
+* The ultimate goal is to have minimal time between getting a new gameplay idea and seeing it on screen. And be easy to modify later. The focus is on 2D games.
+
 * The core soul of this project is the library of components: Everything else is just scaffolding to support a workflow based on components (or conveniences like UI).
 
 * HOW components are actually implemented behind-the-scenes may always keep changing, but the components themselves will always be present: e.g. there will always be a HealthComponent, a DamageComponent, a DamageReceivingComponent and so on.
