@@ -59,9 +59,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
@@ -71,22 +72,11 @@ layout_mode = 2
 script = ExtResource("15_648xx")
 statsComponent = NodePath("../../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
-layout_mode = 2
-
-[node name="RechargeButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer"]
-layout_mode = 2
-mouse_filter = 1
-text = "RECHARGE"
-
-[node name="LoanButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer"]
-layout_mode = 2
-mouse_filter = 1
-text = "GET LOAN"
-
 [node name="Spacer1" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
-custom_minimum_size = Vector2(32, 32)
+visible = false
+custom_minimum_size = Vector2(4, 4)
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 1
 
 [node name="BuyLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
@@ -138,6 +128,21 @@ upgrade = ExtResource("22_ucsfw")
 layout_mode = 2
 upgrade = ExtResource("23_2aq68")
 
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
-[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainerLeft/HBoxContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
+[node name="ButtonsContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="RechargeButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+mouse_filter = 1
+text = "RECHARGE"
+
+[node name="LoanButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer"]
+layout_mode = 2
+mouse_filter = 1
+text = "GET LOAN"
+
 [connection signal="didChooseUpgrade" from="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/ButtonsContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/ButtonsContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
