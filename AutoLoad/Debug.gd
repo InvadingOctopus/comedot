@@ -286,8 +286,7 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 				color = "FF00FF" if flipColor else "FF88FF"
 				joinedValues += str("[color=", color, "]") + str(value) + separator
 				flipColor = not flipColor
-			joinedValues.trim_suffix(separator)
-			print_rich(str(backgroundColor, " 　 ", joinedValues))
+			print_rich(str(backgroundColor, " 　 ", joinedValues.trim_suffix(separator)))
 		alternateTraceLogRow = not alternateTraceLogRow
 
 
