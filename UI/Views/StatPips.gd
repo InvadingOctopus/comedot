@@ -1,6 +1,6 @@
 ## A variant of [StatUI] that shows multiple "pips"/symbols to represent a [Stat]'s [member Stat.value].
 ## For example, a series of heart symbols to represent the number of a player's lives.
-## TIP: Optimal for [Stat]s with a small [member Stat.max] number, such as 5-10.
+## TIP: Optimal for [Stat]s with a small [member Stat.max] number, such as 5-10. For larger ranges, consider [StatBar]
 
 class_name StatPips
 extends StatUI

@@ -1,5 +1,6 @@
 ## A variant of a [StatUI] combined with a [ProgressBar].
 ## TIP: For smoother animations instead of integer-only steps, set the [member Range.step] property of the [ProgressBar] to a fractional value like 0.1
+## TIP: For [Stats] with a small range of values like the player's lives, consider [StatPips]
 
 class_name StatBar
 extends StatUI

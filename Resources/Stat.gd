@@ -1,4 +1,5 @@
 ## Represents a statistic on a character or object, such as the player's health or an enemy's attack power.
+## TIP: Use [StatUI], [StatBar], [StatPips] to display a game character's [Stats] in the UI.
 ## TIP: Use the `UI/Lists/[StatsList].gd` script to automatically display and update these values in a HUD during runtime.
 
 #@tool # To clamp values when editing stats in the editor. # WARNING: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
