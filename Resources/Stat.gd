@@ -31,35 +31,53 @@ extends GameplayResourceBase
 ## The current value of the stat. Clamped between [member min] and [member max].
 ## NOTE: The default initial value is set equal to [member min].
 @export var value: int = min: # DESIGN: Default to `min` because it is almost always 0, but `max` is usually different for most Stats, which causes a redundant `value` change from the default `max` of 10 to the new `max`.
-	set(newValue):
-		previousValue = value
-		value = clamp(newValue, min, max)
+	set = setValue # Use a separate function for the property setter so that it may be overridden in subclasses. The getter should not be overridden as that causes problems in cases like `value = value - 1` etc.
 
-		if value != previousValue:
-			previousChange = value - previousValue # NOTE: A decrease should be a negative change.
+## Logs changes.
+## WARNING: May reduce performance if used for very frequently-changing stats.
+@export var debugMode: bool = false
 
-			if logChanges:
-				# NOTE: PERFORMANCE: We don't use `Debug.printChange()` or other calls because we already checked for changes.
-				Debug.printDebug(str(previousValue, " → ", value, " (%+d" % previousChange, ")"), str(self.get_script().get_global_name(), " ", self, " ", name))
+#endregion
 
-			# Signals
-			# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
 
-			emit_changed()
+#region Value Getter/Setter
 
-			# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
+## Returns the [member value]. This method may be overridden in a subclass such as [StatWithModifiers] to provide a dynamically modifiable value i.e via gameplay buffs/debuffs etc.
+# func getValue() -> int:
+#	# NOTE: UNUSED: Overriding the getter causes innumerable issues such as infinite recursion and conflicts with min/max clamps etc. specially in cases like `value = value - 1` so just modify the value once in the setter.
+#	# CHECK: PERFORMANCE: Is this bad for frequently accessed Stats?
+#	return value
 
-			if previousChange > 0: # Were we rising?
-				if value >= max: didMax.emit()
-				if value >= 0:	 didZero.emit()
 
-			if previousChange < 0: # Were we falling?
-				if value <= min: didMin.emit()
-				if value <= 0:	 didZero.emit()
+## Sets the [member value] while clamping it between [member min] and [member max]. This method may be overridden in a subclass such as [StatWithModifiers] to provide custom validation or restrictions i.e. via gameplay buffs/debuffs etc.
+func setValue(newValue: int) -> void:
+	previousValue = value
+	value = clampi(newValue, min, max)
 
-			GameState.statUpdated.emit(self) # TBD: Should this be optional?
+	if value != previousValue:
+		previousChange = value - previousValue # NOTE: A decrease should be a negative change.
 
-@export var logChanges: bool = false # WARNING: May reduce performance if used for very frequently-changing stats.
+		if debugMode:
+			# NOTE: PERFORMANCE: We don't use `Debug.printChange()` or other calls because we already checked for changes.
+			Debug.printDebug(str(previousValue, " → ", value, " (%+d" % previousChange, ")"), str(self.get_script().get_global_name(), " ", self, " ", name))
+
+		# Signals
+		# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
+
+		emit_changed()
+
+		# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
+
+		if previousChange > 0: # Were we rising?
+			if value >= max: didMax.emit()
+			if value >= 0:	 didZero.emit()
+
+		if previousChange < 0: # Were we falling?
+			if value <= min: didMin.emit()
+			if value <= 0:	 didZero.emit()
+
+		valueWithModifiers = value # TBD: Should this be here?
+		GameState.statUpdated.emit(self) # TBD: Should this be optional?
 
 #endregion
 
@@ -69,11 +87,16 @@ extends GameplayResourceBase
 var previousValue:  int
 var previousChange: int ## [member value] - [member previousValue] so a decrease is a negative number.
 
+## A property used by subclasses such as [StatWithModifiers] to denote dynamic buffs/debuffs during gameplay.
+## @experimental
+var valueWithModifiers: int
+
 var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
 	get: return float(value) / float(max) * 100.0
 
 var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ": ", value, " (", min, "-", max, ")")
+
 #endregion
 
 
