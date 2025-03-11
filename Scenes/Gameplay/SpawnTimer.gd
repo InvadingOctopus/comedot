@@ -43,4 +43,3 @@ func onTimeout() -> void:
 func spawn() -> Node2D:
 	if not isEnabled: return null
 	return super.spawn()
-
