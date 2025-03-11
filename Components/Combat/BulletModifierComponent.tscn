@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://yoaxy3e6hqba"]
+
+[ext_resource type="Script" uid="uid://bhvx8k0mhupq6" path="res://Components/Combat/BulletModifierComponent.gd" id="1_1wjt3"]
+
+[node name="BulletModifierComponent" type="Node" groups=["components"]]
+script = ExtResource("1_1wjt3")
