@@ -9,62 +9,9 @@
 ## and UNBIND 1 signal argument so that the collision event's `body` argument does not get passed to the Timer's `time` float parameter.
 
 class_name ModifyOnTimerComponent
-extends Component
-
-
-#region Parameters
-@export var shouldRemoveEntity: bool		  ## Removes the entity itself. NOTE: Prevents the addition or removal of components or nodes.
-@export var nodesToRemove:		Array[Node]   ## Occurs BEFORE [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
-@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToAdd] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
-@export var componentsToCreate: Array[Script] ## Occurs AFTER [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
-@export var isEnabled:			bool = true
-#endregion
-
-
-#region Signals
-signal willRemoveEntity
-signal didAddComponents(components: Array[Component])
-#endregion
-
-
-#region State
-var savedParentEntity: Entity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! because that invalidates parentEntity
-#endregion
-
-
-func createComponents() -> void:
-	if debugMode: printDebug(str("createComponents(): ", componentsToCreate, ", isEnabled" if isEnabled else ""))
-	if not isEnabled or componentsToCreate.is_empty(): return
-	didAddComponents.emit(savedParentEntity.createNewComponents(componentsToCreate))
-
-
-func removeNodes() -> void:
-	if debugMode: printDebug(str("removeNodes(): ", nodesToRemove, ", isEnabled: " if isEnabled else ""))
-	if not isEnabled or nodesToRemove.is_empty(): return
-	if parentEntity: savedParentEntity = self.parentEntity
-	for node in nodesToRemove:
-		node.get_parent().remove_child(node)
-		node.queue_free() # TBD: Should this be optional?
-
-
-func removeComponents() -> void:
-	if debugMode: printDebug(str("removeComponents(): ", componentsToRemove, ", isEnabled: " if isEnabled else ""))
-	if not isEnabled or componentsToRemove.is_empty(): return
-	if parentEntity: savedParentEntity = self.parentEntity
-	savedParentEntity.removeComponents(componentsToRemove)
-	
-
-func removeEntity() -> void:
-	if debugMode: printDebug(str("removeEntity(): ", shouldRemoveEntity, ", isEnabled: " if isEnabled else ""))
-	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(parentEntity): return
-	savedParentEntity = self.parentEntity
-	self.willRemoveEntity.emit()
-	self.requestDeletionOfParentEntity()
+extends NodeModifierComponentBase
 
 
 func onInternalTimer_timeout() -> void:
-	removeEntity() # shouldRemoveEntity checked in method
-	removeNodes()
-	removeComponents()
-	createComponents()
+	super.performAllModifications()
  
