@@ -33,7 +33,7 @@ extends Payload
 
 ## Returns the result of the called method.
 func executeImplementation(source: Variant, target: Variant) -> Variant:
-	printLog(str("executeImplementation() script: ", payloadScript, " ", payloadScript.get_global_name(), ", source: ", source, " target: ", target))
+	printLog(str("executeImplementation() script: ", payloadScript, " ", payloadScript.get_global_name(), ", source: ", source, ", target: ", target))
 
 	if self.payloadScript:
 		if not Tools.findMethodInScript(payloadScript, payloadScriptMethodName):

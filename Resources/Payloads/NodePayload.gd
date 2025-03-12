@@ -33,7 +33,7 @@ enum ParentOptions {
 
 ## Returns the [Node] instance that was created from the [member payloadScene].
 func executeImplementation(source: Variant, target: Variant) -> Node:
-	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, " target: ", target))
+	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, ", target: ", target))
 	
 	if not self.payloadScene:
 		Debug.printWarning("Missing payloadScene", self.logName)

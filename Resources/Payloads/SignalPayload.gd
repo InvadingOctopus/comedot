@@ -15,7 +15,7 @@ extends Payload
 
 ## Returns `true` if the signal was found and emitted.
 func executeImplementation(source: Variant, target: Variant) -> bool:
-	printLog(str("executeImplementation() signal: GameState.", payloadSignalName, ", source: ", source, " target: ", target))
+	printLog(str("executeImplementation() signal: GameState.", payloadSignalName, ", source: ", source, ", target: ", target))
 
 	if not self.payloadSignalName.is_empty() and GameState.has_signal(payloadSignalName):
 		self.willExecute.emit(source, target)
