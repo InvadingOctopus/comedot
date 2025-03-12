@@ -10,7 +10,7 @@ extends Component
 #region Parameters
 @export var shouldRemoveEntity: bool		  ## Removes the entity itself. NOTE: Prevents the addition or removal of components or nodes.
 @export var nodesToRemove:		Array[Node]   ## Occurs BEFORE [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
-@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToAdd] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
+@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToCreate] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
 @export var componentsToCreate: Array[Script] ## Occurs AFTER [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
 @export var isEnabled:			bool = true
 #endregion

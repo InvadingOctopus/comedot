@@ -10,7 +10,7 @@ extends Component
 
 #region Parameters
 @export_range(-1000, 1000, 1) var damageModifier: int = 0
-@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToAdd]
+@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToCreate]
 @export var componentsToCreate: Array[Script] ## Occurs AFTER [member componentsToRemove]
 @export var isEnabled:			bool = true
 #endregion

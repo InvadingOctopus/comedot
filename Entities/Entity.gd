@@ -261,9 +261,9 @@ func createNewComponent(type: Script) -> Component:
 ## Calls [method createNewComponent] on each of the component TYPES passed in the array.
 ## ATTENTION: Components must be added in order of dependencies! A component which depends on another must be listed after the required component in the array.
 ## Returns: An array of all the component INSTANCES that were successfully created and added.
-func createNewComponents(componentTypesToAdd: Array[Script]) -> Array[Component]:
+func createNewComponents(componentTypesToCreate: Array[Script]) -> Array[Component]:
 	var newComponents: Array[Component]
-	for componentTypeToAdd in componentTypesToAdd:
+	for componentTypeToAdd in componentTypesToCreate:
 		var newComponent := self.createNewComponent(componentTypeToAdd)
 		if is_instance_valid(newComponent):
 			newComponents.append(newComponent)
