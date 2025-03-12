@@ -17,7 +17,7 @@ const minimumTimerWaitTime: float = 0.05
 
 ## Number of seconds after shooting before another bullet can be emitted.
 ## WARNING: A value of 0.0 may cause issues with [Timer]
-@export_range(0.05, 100, 0.05, "suffix:seconds") var cooldown: float = 3:
+@export_range(0.05, 120, 0.05, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
 		if is_zero_approx(newValue) or newValue < 0:
 			newValue = 0
