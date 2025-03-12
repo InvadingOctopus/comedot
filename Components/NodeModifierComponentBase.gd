@@ -27,10 +27,12 @@ signal didAddComponents(components: Array[Component])
 #endregion
 
 
-func createComponents(entityOverride: Entity = self.savedParentEntity) -> void:
-	if debugMode: printDebug(str("createComponents(): ", componentsToCreate, ", isEnabled" if isEnabled else ""))
-	if not isEnabled or componentsToCreate.is_empty(): return
-	didAddComponents.emit(entityOverride.createNewComponents(componentsToCreate))
+func removeEntity() -> void:
+	if debugMode: printDebug(str("removeEntity(): ", shouldRemoveEntity, ", isEnabled: " if isEnabled else ""))
+	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(parentEntity): return
+	savedParentEntity = self.parentEntity
+	self.willRemoveEntity.emit()
+	self.requestDeletionOfParentEntity()
 
 
 func removeNodes() -> void:
@@ -49,12 +51,13 @@ func removeComponents() -> void:
 	savedParentEntity.removeComponents(componentsToRemove)
 	
 
-func removeEntity() -> void:
-	if debugMode: printDebug(str("removeEntity(): ", shouldRemoveEntity, ", isEnabled: " if isEnabled else ""))
-	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(parentEntity): return
-	savedParentEntity = self.parentEntity
-	self.willRemoveEntity.emit()
-	self.requestDeletionOfParentEntity()
+## Returns an array of the newly created [Component]s.
+func createComponents(entityOverride: Entity = self.savedParentEntity) -> Array[Component]:
+	if debugMode: printDebug(str("createComponents(): ", componentsToCreate, ", isEnabled" if isEnabled else ""))
+	if not isEnabled or componentsToCreate.is_empty(): return []
+	var newComponents: Array[Component] = entityOverride.createNewComponents(componentsToCreate)
+	didAddComponents.emit(newComponents)
+	return newComponents
 
 
 ## Calls all the other methods in order: If [member shouldRemoveEntity] then only [method removeEntity], otherwise: [method removeNodes] → [method removeComponents] → [method createComponents]
