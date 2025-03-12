@@ -276,12 +276,12 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 		var backgroundColor: String = "[bgcolor=101020]" if alternateTraceLogRow else "[bgcolor=001030]"
 		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
 		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), "[color=0070E0] ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
-		if not values.is_empty(): 
+		if not values.is_empty():
 			# This mess instead of just `separator.join(values)` is so we can alternate color between values for better readability
 			# PERFORMANCE: Watch out for any FPS impact! :')
 			var joinedValues: String = ""
 			var flipColor: bool
-			var color: String 
+			var color: String
 			for value: Variant in values:
 				color = "FF00FF" if flipColor else "FF88FF"
 				joinedValues += str("[color=", color, "]") + str(value) + separator
