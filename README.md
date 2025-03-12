@@ -17,7 +17,7 @@ The goal is to be an all-in-one toolkit for 2D games (platformers, shoot-em-ups,
 * Free-to-use 3rd-party assets for quick prototyping.
 
 > [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot and GDScript as I go. The API eschews certain conventions like ugly underscores and may change frequently:_ **No backwards compatibility is guaranteed!**
+> _This is still mostly a private personal project; it's what I'm using to make [my own epic games][itch] while learning Godot as I go. The API eschews certain conventions like ugly underscores and may change frequently:_ **No backwards compatibility is guaranteed!**
 
 
 ## Examples 
