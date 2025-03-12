@@ -40,7 +40,7 @@ func execute(source: Variant, target: Variant) -> Variant:
 
 	# NOTE: The `willExecute` signal must be emitted by subclasses, if their requirements are met.
 	
-	if result: # Must not be `null` and not `false`
+	if Tools.checkResult(result): # Must not be `null` and not `false` and not an empty Array or Dictionary.
 		self.didExecute.emit(source, target, result)
 		return result
 	else:

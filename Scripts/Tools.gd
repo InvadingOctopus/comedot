@@ -670,6 +670,19 @@ static func validateArrayIndex(array: Array, index: int) -> bool:
 	return index >= 0 and index < array.size()
 
 
+## Checks whether a [Variant] value may be considered a "success", for example the return of a function.
+## If [param value] is a [bool], then it is returned as is.
+## If the value is an [Array] or [DIctionary], `true` is returned if it's not empty.
+## For all other types, `true` is returned if the value is not `null`.
+## TIP: Use for verifying whether a [Payload]'s [method executeImplementation] executed successfully.
+static func checkResult(value: Variant) -> bool:
+	# Because GDScript doesn't have Tuples :')
+	if    value is bool: return value
+	elif  value is Array or value is Dictionary: return not value.is_empty()
+	elif  value != null: return true
+	else: return false
+
+
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
 ## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
