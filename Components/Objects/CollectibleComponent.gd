@@ -25,6 +25,12 @@ extends Component
 #endregion
 
 
+#region State
+## Stores the most recent result, if any, of the [Payload]'s [method Payload.execute] method, to allow removal of the Entity representing the collectible item after it has been successfully collected.
+var previousPayloadResult: bool = false
+#endregion
+
+
 #region Signals
 signal didCollideWithCollector(collectorComponent: CollectorComponent)
 signal willBeCollected(collectorEntity: Entity)
@@ -71,7 +77,8 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 ## by calling [method Payload.execute] and passing this [CollectibleComponent] as the `source` and the [CollectorComponent]'s parent [Entity] as the `target`.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func collect(collectorComponent: CollectorComponent) -> Variant:
-	return payload.execute(self, collectorComponent.parentEntity) if payload else false
+	self.previousPayloadResult = payload.execute(self, collectorComponent.parentEntity) if payload else false
+	return previousPayloadResult
 
 
 #region Virtual Methods
@@ -84,15 +91,15 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 	return isEnabled
 
 
+## Returns `true` if [member previousPayloadResult] is `true` to approve removal of the item after it has been collected.
 ## May be overridden in a subclass to approve or deny the removal of this item after it has been collected by a [CollectorComponent].
-## Default: `true`
 func checkRemovalConditions() -> bool:
 	# CHECK: Maybe a better name? :p
 	printDebug("checkRemovalConditions()")
-	return isEnabled
+	return previousPayloadResult # NOTE: TBD: Should removal also depend on isEnabled?
 
 
-## If the [Payload] type os [CallablePayload], this function may be called when a [CollectorComponent] picks up this [CollectibleComponent]. 
+## If the [Payload] type os [CallablePayload], this function may be called when a [CollectorComponent] picks up this [CollectibleComponent].
 ## May optionally return any value.
 ## MUST be overridden by subclasses.
 func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collectorEntity: Entity) -> Variant:
