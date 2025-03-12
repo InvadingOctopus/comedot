@@ -12,6 +12,10 @@ extends Container
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var targetEntity: Entity
 
+## If `false` this UI will not automatically install upgrades into the [UpgradesComponent].
+## So another script such as the [UpgradeChoiceUI] buttons or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
+@export var shouldInstallUpgrades: bool = true
+
 @export var debugMode: bool = false
 #endregion
 
@@ -69,6 +73,7 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 
 	newChoiceUI.targetEntity = self.targetEntity
 	newChoiceUI.upgrade = upgrade
+	newChoiceUI.shouldInstallUpgrades = not self.shouldInstallUpgrades # Who should install the Upgrades?
 
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 
@@ -82,3 +87,4 @@ func onChoiceUI_didChooseUpgrade(upgrade: Upgrade) -> void:
 	if debugMode: Debug.printDebug(str("onChoiceUI_didChooseUpgrade() ", upgrade.logName), self)
 	self.lastUpgradeChosen = upgrade
 	self.didChooseUpgrade.emit(upgrade)
+	if self.shouldInstallUpgrades: targetUpgradesComponent.addOrLevelUpUpgrade(upgrade)

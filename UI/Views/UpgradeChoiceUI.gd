@@ -1,6 +1,8 @@
 ## A [Control] representing an [Upgrade] for the player to choose.
 ## If the Upgrade is already "installed" in an Entity's [UpgradesComponent], then the UI will represent a Level Up for the Upgrade, if available.
 ## TIP: To hide the Stat name labels, enable "Editable Children" in the Godot Editor and manually set the visibility of the [Label] node.
+## TIP: To show a list of Upgrades to the player to choose from, use the [UpgradesList] script on any UI [Container].
+## TIP: To display the status of an Upgrade, use [UpgradeUI].
 
 class_name UpgradeChoiceUI
 extends Control
@@ -14,11 +16,17 @@ extends Control
 	set(newValue):
 		if newValue != upgrade:
 			upgrade = newValue
-			connectSignals()
+			if self.is_node_ready():
+				connectSignals()
+				updateUI()
 
 ## The [Entity] which will be receiving the [Upgrade].
 ## If `null`, the first [member GameState.players] Entity will be used.
 @export var targetEntity: Entity
+
+## If `false` this button will not automatically install upgrades into the [UpgradesComponent].
+## So another script such as the [UpgradesList] UI or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
+@export var shouldInstallUpgrades: bool = true
 
 @export var debugMode: bool = false
 
@@ -64,6 +72,9 @@ func _ready() -> void:
 	if not targetEntity:
 		targetEntity = player
 		if not targetEntity: Debug.printWarning("Missing targetEntity", self)
+	if upgrade:
+		connectSignals()
+		updateUI()
 
 
 func updateUI(_entity: Entity = self.targetEntity) -> void: # The entity argument is needed to match the signature of the Upgrade's signals.
@@ -83,6 +94,7 @@ func updateButton() -> void:
 	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", self.getLevelToPurchase())
 	else: upgradeButton.text = upgrade.displayName
 	upgradeButton.icon = upgrade.icon
+	upgradeButton.tooltip_text = upgrade.description
 	upgradeButton.disabled = not self.validateChoice()
 
 
@@ -105,15 +117,15 @@ func validateChoice() -> bool:
 func connectSignals() -> void:
 	# TBD: Disconnect signals if Upgrade is null'ed?
 	if not upgrade: return
-	upgrade.didLevelUp.connect(self.updateUI)
-	upgrade.didLevelDown.connect(self.updateUI)
+	Tools.reconnectSignal(upgrade.didLevelUp,   self.updateUI)
+	Tools.reconnectSignal(upgrade.didLevelDown, self.updateUI)
 
 	# IMPORTANT: NOTE: Connect to the [UpgradesComponent] for these signals, because the component adds the Upgrade AFTER the Upgrade emits its signal!
-	targetUpgradesComponent.didAcquire.connect(self.onUpgradesComponent_didChange) 
-	targetUpgradesComponent.didDiscard.connect(self.onUpgradesComponent_didChange)
+	Tools.reconnectSignal(targetUpgradesComponent.didAcquire, self.onUpgradesComponent_didChange)
+	Tools.reconnectSignal(targetUpgradesComponent.didDiscard, self.onUpgradesComponent_didChange)
 
 	var paymentStat: Stat = upgrade.findCostStatInStatsComponent(targetStatsComponent)
-	if paymentStat: paymentStat.changed.connect(self.updateUI)
+	if paymentStat: Tools.reconnectSignal(paymentStat.changed, self.updateUI)
 
 
 func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
@@ -129,6 +141,6 @@ func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:
 func onUpgradeButton_pressed() -> void:
 	if debugMode: Debug.printDebug(str("onUpgradeButton_pressed() ", upgrade.logName), self)
 	self.didChooseUpgrade.emit(self.upgrade)
+	if self.shouldInstallUpgrades: targetUpgradesComponent.addOrLevelUpUpgrade(self.upgrade)
 
 #endregion
-
