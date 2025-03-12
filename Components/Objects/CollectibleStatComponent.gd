@@ -3,6 +3,8 @@
 class_name CollectibleStatComponent
 extends CollectibleComponent
 
+# TBD: Use StatModifierPayload?
+
 
 #region Parameters
 @export var stat: Stat
