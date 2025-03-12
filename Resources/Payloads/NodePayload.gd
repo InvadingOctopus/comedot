@@ -1,5 +1,6 @@
 ## A [Payload] which creates a new copy of a specified [PackedScene] and attaches it to a receiving target Node.
 ## May be used for adding new [Component]s to a player [Entity] or other character, or for spawning new objects or characters in the game world.
+## TIP: To create or remove [Component]s on an [Entity], use [ComponentPayload]
 
 class_name NodePayload
 extends Payload
@@ -20,7 +21,7 @@ enum ParentOptions {
 ## A Scene whose copy (instance) will be added to the receiving [Node] that is the target of this Payload.
 ## May be used for adding new components to an Entity.
 ## [method executeImplementation] will return an instance of this scene.
-@export var payloadScene: PackedScene # TBD: Which type to use here for instantiating copies from?
+@export var payloadScene: PackedScene # TBD: Which type to use here for instantiating copies from? Should this be a path String?
 
 ## The parent [Node] to add a new instance of [member payloadScene] to.
 @export var parentChoice: ParentOptions = ParentOptions.payloadTarget
