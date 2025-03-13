@@ -30,6 +30,11 @@ extends Node
 ## NOTE: [member maximumTotalToSpawn] supersedes this value and is checked first.
 @export var maximumLimitInGroup: int = -1
 
+## If [member sceneToSpawn] is an [Entity] and this flag is `true` then [member Entity.isLoggingEnabled] is set to `false`, in order to reduce log clutter.
+## NOTE: Does NOT disable [member Entity.debugMode]
+@export var suppressEntityLogs: bool = true
+
+## If [member sceneToSpawn] is an [Entity] and this flag is `true` AND [member suppressEntityLogs] is `false` then [member Entity.debugMode] is also set to `true`
 @export var debugMode: bool = false
 
 @export var isEnabled: bool = true
@@ -88,6 +93,17 @@ func spawn() -> Node2D:
 		Debug.printWarning("Unable to instantiate scene: " + sceneToSpawn, self)
 		return null
 	
+	# Prep the newborn
+
+	if newSpawn is Entity:
+		if self.suppressEntityLogs:
+			newSpawn.isLoggingEnabled = false
+			# NOTE: Do NOT suppress `Entity.debugMode` because that is an explicit decision when debugging so it should be left as is.
+		elif self.debugMode: 
+			# If we're not explicitly silencing Entity logs and the spawner is in debugMode, log the spawned Entity too!
+			newSpawn.isLoggingEnabled = true
+			newSpawn.debugMode = true
+
 	# Add the new node to the parent
 	
 	var parent: Node
