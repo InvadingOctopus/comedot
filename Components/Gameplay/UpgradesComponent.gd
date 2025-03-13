@@ -1,4 +1,5 @@
 ## Keeps track of which [Upgrade]s an [Entity] has.
+## TIP: To offer the player a UI to choose Upgrades from, see [UpgradeChoiceUI] and [UpgradeChoiceList].
 
 class_name UpgradesComponent
 extends Component

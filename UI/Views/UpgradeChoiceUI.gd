@@ -1,7 +1,7 @@
 ## A [Control] representing an [Upgrade] for the player to choose.
 ## If the Upgrade is already "installed" in an Entity's [UpgradesComponent], then the UI will represent a Level Up for the Upgrade, if available.
 ## TIP: To hide the Stat name labels, enable "Editable Children" in the Godot Editor and manually set the visibility of the [Label] node.
-## TIP: To show a list of Upgrades to the player to choose from, use the [UpgradesList] script on any UI [Container].
+## TIP: To show a list of Upgrades to the player to choose from, use the [UpgradeChoicesList] script on any UI [Container].
 ## TIP: To display the status of an Upgrade, use [UpgradeUI].
 
 class_name UpgradeChoiceUI
@@ -25,7 +25,7 @@ extends Control
 @export var targetEntity: Entity
 
 ## If `false` this button will not automatically install upgrades into the [UpgradesComponent].
-## So another script such as the [UpgradesList] UI or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
+## So another script such as the [UpgradeChoicesList] UI or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
 @export var shouldInstallUpgrades: bool = true
 
 @export var debugMode: bool = false
