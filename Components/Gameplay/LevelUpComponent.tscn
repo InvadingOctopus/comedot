@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3i1053xp3g4g"]
+
+[ext_resource type="Script" uid="uid://bv2yfhtmhfjsd" path="res://Components/Gameplay/LevelUpComponent.gd" id="1_llor6"]
+
+[node name="LevelUpComponent" type="Node2D" groups=["components"]]
+script = ExtResource("1_llor6")
+metadata/_edit_group_ = true
