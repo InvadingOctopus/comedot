@@ -8,7 +8,8 @@
 class_name GunComponent
 extends CooldownComponent
 
-# TBD: Optional toggle for only `_unhandled_input()` or accepting all `_input()`?
+# NOTE: The .tscn Scene file cannot inherit from CooldownComponent because CooldownComponent is a Node, but GunComponent needs to be a Node2D for positioning :')
+# TBD:  Optional toggle for only `_unhandled_input()` or accepting all `_input()`?
 
 
 #region Parameters
@@ -18,6 +19,16 @@ extends CooldownComponent
 
 @export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
+
+## An OPTIONAL alternative way to specify the delay between shots, by overriding the [member cooldown] property with a shared [Stat].
+## IMPORTANT: Since [Stats] are integers only, the cooldown time represented by this Stat must be in MILLISECONDS, i.e. 1000 = 1 second, 500 = 0.5 seconds.
+## TIP: This allows [Upgrade]s with a [StatModifierPayload] or debuffs etc. to easily increase/decrease the player's fire rate.
+## @experimental
+@export var cooldownMillisecondsStat: Stat:
+	set(newValue):
+		if newValue != cooldownMillisecondsStat:
+			cooldownMillisecondsStat = newValue
+			self.cooldown = cooldownMillisecondsStat.value / 1000.0
 
 ## If `true`, the gun fires automatically without any player input.
 @export var autoFire: bool = false
@@ -149,7 +160,7 @@ func useAmmo() -> bool:
 	# Do we have enough ammo?
 
 	if ammo.value < ammoCost:
-		printDebug("Not enough ammo")
+		if debugMode: printDebug("Not enough ammo")
 		ammoInsufficient.emit()
 		return false
 
@@ -158,7 +169,7 @@ func useAmmo() -> bool:
 	# Did we just deplete the ammo with this shot?
 
 	if ammo.previousValue > 0 and ammo.value <= 0:
-		printDebug("ammo depleted")
+		if debugMode: printDebug("ammo depleted")
 		didDepleteAmmo.emit()
 		if not self.ammoDepletedMessage.is_empty(): parentEntity.displayLabel(self.ammoDepletedMessage)
 
@@ -206,7 +217,7 @@ func createNewBullet() -> Entity:
 	if bulletDamageComponent:  bulletDamageComponent.initiatorEntity = self.parentEntity
 
 	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
-	
+
 	var gunFactionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
 	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
 
@@ -216,5 +227,13 @@ func createNewBullet() -> Entity:
 
 	if debugMode: printDebug(str("createNewBullet() → ", newBullet))
 	return newBullet
+
+
+## Applies the [member cooldownMillisecondsStat] to the [CooldownComponent] superclass.
+## @experimental
+func startCooldown(_overrideTime: float = self.cooldown) -> void:
+	# NOTE: Ignore `overrideTime` because it defaults to `self.cooldown` anyway
+	if cooldownMillisecondsStat: self.cooldown = cooldownMillisecondsStat.value / 1000.0
+	super.startCooldown(self.cooldown)
 
 #endregion
