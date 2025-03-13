@@ -234,6 +234,7 @@ func createNewBullet() -> Entity:
 func startCooldown(_overrideTime: float = self.cooldown) -> void:
 	# NOTE: Ignore `overrideTime` because it defaults to `self.cooldown` anyway
 	if cooldownMillisecondsStat: self.cooldown = cooldownMillisecondsStat.value / 1000.0
+	if debugMode: printTrace(["cooldownMillisecondsStat", cooldownMillisecondsStat.value, "cooldown", cooldown])
 	super.startCooldown(self.cooldown)
 
 #endregion
