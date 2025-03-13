@@ -18,6 +18,7 @@ extends Container
 
 ## If `false` this UI will not automatically install upgrades into the [UpgradesComponent].
 ## So another script such as the [UpgradeChoiceUI] buttons or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
+## Supersedes [member UpgradeChoiceUI.shouldInstallUpgrades]
 @export var shouldInstallUpgrades: bool = true
 
 @export var debugMode: bool = false
