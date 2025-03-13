@@ -14,6 +14,7 @@ extends GameplayResourceBase
 
 @warning_ignore("shadowed_global_identifier")
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
+## TIP: Call [method setToMin] instead of setting [member value] to 0 directly.
 @export var min: int = 0: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
 	set(newValue):
 		min     = newValue
@@ -128,5 +129,6 @@ func setToMax() -> void:
 	self.value = self.max
 
 
+## This method should be used instead of setting [member value] to 0 directly.
 func setToMin() -> void:
 	self.value = self.min
