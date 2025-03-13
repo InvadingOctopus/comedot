@@ -73,7 +73,6 @@ script = ExtResource("15_648xx")
 statsComponent = NodePath("../../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
 
 [node name="Spacer1" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
-visible = false
 custom_minimum_size = Vector2(4, 4)
 layout_mode = 2
 size_flags_vertical = 3
@@ -91,11 +90,13 @@ size_flags_horizontal = 0
 script = ExtResource("16_xr2h1")
 upgrades = Array[ExtResource("17_mfdhu")]([ExtResource("18_0oqoc"), ExtResource("21_ykf3j"), ExtResource("22_ucsfw"), ExtResource("23_2aq68")])
 targetEntity = NodePath("../../../../PlayerEntityTemplate-OverheadBasic")
+debugMode = true
 
-[node name="TemporaryUpgradeChoiceUI" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" instance=ExtResource("17_dh703")]
+[node name="PlaceholderUpgradeChoiceUI" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" instance=ExtResource("17_dh703")]
 layout_mode = 2
 
 [node name="Spacer2" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 1
@@ -143,6 +144,5 @@ layout_mode = 2
 mouse_filter = 1
 text = "GET LOAN"
 
-[connection signal="didChooseUpgrade" from="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" to="PlayerEntityTemplate-OverheadBasic/UpgradesComponent" method="addOrLevelUpUpgrade"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/ButtonsContainer/RechargeButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testMana", 50]]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/ButtonsContainer/LoanButton" to="PlayerEntityTemplate-OverheadBasic/StatsComponent" method="changeStatValue" binds= [&"testGold", 100]]
