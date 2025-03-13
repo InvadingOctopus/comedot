@@ -15,7 +15,7 @@ extends Node
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] to ensure that signals are emitted and proper cleanup is performerd.
-## NOTE: To avoid a crash when there is no player, access the first player with `players.front()` NOT `player[0]`.
+## NOTE: To avoid an error or crash when there is no player, access players with [method getPlayer] NOT `players.front()` or `player[0]`
 var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
 
 
@@ -72,7 +72,7 @@ func addPlayer(newPlayer: Entity) -> int:
 
 ## Returns the requested entity from the global [member players] array, if present.
 func getPlayer(playerIndex: int = 0) -> Entity:
-	if self.players.is_empty() or not Tools.validateArrayIndex(self.players, playerIndex):
+	if self.players.is_empty() or not Tools.validateArrayIndex(self.players, playerIndex): # TBD: Remove is_empty() because it's checked by validateArrayIndex() anyway?
 		return null
 
 	return GameState.players[playerIndex]
