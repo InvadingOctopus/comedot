@@ -43,7 +43,7 @@ signal didExitBody(body:  Node2D)
 
 func _ready() -> void:
 	if selfAsArea: selfAsArea.monitorable = isEnabled
-	connectSignals()
+	# connectSignals() # TBD: PERFORMANCE: Should be opted-in by subclasses.
 	readdAllContacts()
 
 
