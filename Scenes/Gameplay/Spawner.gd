@@ -124,13 +124,16 @@ func spawn() -> Node2D:
 		if not groupToAddTo.is_empty():
 			newSpawn.add_to_group(groupToAddTo, true)
 
-		willAddSpawn.emit(newSpawn, parent)
+		willAddSpawn.emit(newSpawn, parent) # TBD: Should this be emitted before adding to a group?
 		parent.add_child(newSpawn)
+
 		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
+		
 		totalNodesSpawned += 1
 		didSpawn.emit(newSpawn, parent)
 		return newSpawn
+	
 	else:
 		return null
 

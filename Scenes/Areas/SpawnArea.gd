@@ -21,5 +21,5 @@ extends Area2D
 #region
 
 
-func onSpawnTimer_willAddSpawn(newSpawn: Node2D, _parent: Node2D) -> void:
-	newSpawn.position = Tools.getRandomPositionInArea(self)
+func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node2D) -> void:
+	newSpawn.position = parent.to_local(Tools.getRandomPositionInArea(self))

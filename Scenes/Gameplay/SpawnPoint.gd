@@ -10,5 +10,5 @@ extends Marker2D
 #region
 
 
-func onSpawnTimer_willAddSpawn(newSpawn: Node2D, _parent: Node2D) -> void:
-	newSpawn.position = self.position
+func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node2D) -> void:
+	newSpawn.position = parent.to_local(self.global_position)
