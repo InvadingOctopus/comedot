@@ -59,6 +59,8 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
 
+	GlobalInput.isPauseShortcutAllowed = false # Disable the Pause Overlay during transitions
+
 	# Prevent multiple transitions to the same scene
 	if ongoingTransitionScene == nextScene:
 		Debug.printWarning(str("transitionToScene() called for the same scene during a transition: ", nextScene, " ", nextScene.resource_path), logName)
@@ -86,6 +88,8 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 	ongoingTransitionScene = null # Clear the transition tracker
 	if Debug.shouldPrintDebugLogs: Debug.printDebug(str("SceneTree.current_scene: ", sceneTree.current_scene), logName)
 	didTransitionToScene.emit(nextScene)
+
+	GlobalInput.isPauseShortcutAllowed = true # Reenable the Pause Overlay
 
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].

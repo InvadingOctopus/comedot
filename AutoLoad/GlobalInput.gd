@@ -62,7 +62,7 @@ const eventTextReplacements: Dictionary[String, String] = {
 
 
 #region State
-## May be set to `false` to dsiable the pause/unpause shortcut specific situations, such as during a Game Over screen or network UI.
+## May be set to `false` to disable the pause/unpause shortcut specific situations, such as during a Game Over screen or network UI.
 var isPauseShortcutAllowed: bool = true
 #endregion
 
@@ -97,7 +97,7 @@ func _input(event: InputEvent) -> void:
 
 	# Game
 
-	if isPauseShortcutAllowed and Input.is_action_just_pressed(Actions.pause):
+	if isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
 		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
 		SceneManager.togglePause()
 
