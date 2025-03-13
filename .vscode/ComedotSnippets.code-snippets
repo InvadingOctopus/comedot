@@ -162,6 +162,12 @@
 		"description": "Quick access to a StatsComponent."
 	},
 
+	"SelfCast": {
+		"prefix": "selfAs",
+		"body": [ "var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}$0" ],
+		"description": "Store reference to self casted as a different type."
+	},
+
 	"Debug Variables": {
 		"prefix": "debugVar",
 		"body": [ "Debug.printVariables([${1:self}]) # TEMP: DONTCOMMIT\n$0" ],
