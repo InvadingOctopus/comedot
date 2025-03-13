@@ -80,10 +80,14 @@ func findUpgrade(nameToSearch: StringName) -> Upgrade:
 	# TODO: Reduce multiple calls to this function from other Upgrade-handling classes when adding a new Upgrade
 	return null
 
+
 ## Searches the entity's [StatsComponent] for the [Stat] required to purchase or level-up the specified [Upgrade]
 func findPaymentStat(upgradeToBuy: Upgrade) -> Stat:
-	var statToOffer: Stat = statsComponent.getStat(upgradeToBuy.costStatName)
-	return statToOffer
+	if not upgradeToBuy.costStatName.is_empty():
+		var statToOffer: Stat = statsComponent.getStat(upgradeToBuy.costStatName)
+		return statToOffer
+	else:
+		return null
 
 #endregion
 
