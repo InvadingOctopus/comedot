@@ -3,6 +3,7 @@
 class_name CollectibleStatComponent
 extends CollectibleComponent
 
+# TODO: Allow collection when Stat decreases from max WHILE still in collision contact; have to "walk out" and collide again to pick :')
 # TBD: Use StatModifierPayload?
 
 
