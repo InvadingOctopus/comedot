@@ -89,7 +89,6 @@ func onstat_changed() -> void:
 	# Monitor changes to allow collection when the Stat decreases from its max WHILE still in collision contact; otherwise we would have to "walk out" and collide again to pick it up.
 	if preventCollectionIfStatIsMax and previouslyDeniedCollector and stat.value < stat.max:
 		# NOTE: PERFORMANCE: No need to recheck collisions, because previouslyDeniedCollector is removed in onAreaExited()
-		didCollideWithCollector.emit(previouslyDeniedCollector)
 		previouslyDeniedCollector.handleCollection(self) # This is a little jank, controlling the Collector from the Collectible :')
 
 
