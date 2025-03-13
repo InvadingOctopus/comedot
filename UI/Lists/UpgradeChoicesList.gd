@@ -1,5 +1,6 @@
 ## Builds and shows a list of [Upgrade] choices each represented by an [UpgradeChoiceUI].
 ## Attach this script to any [Container] [Control] such as a [GridContainer] or [HBoxContainer].
+## NOTE: If this control is instantiated by some other script, such as a hypothetical LevelUpComponent, then [method readdAllChoices] must be called manually after setting all the properties.
 
 class_name UpgradeChoicesList
 extends Container
@@ -10,7 +11,10 @@ extends Container
 
 ## An [Entity] with an [UpgradesComponent] and a [StatsComponent] which will be used for validating and displaying each [Upgrade].
 ## If `null`, the first [member GameState.players] Entity will be used.
-@export var targetEntity: Entity
+@export var targetEntity: Entity:
+	get:
+		if not targetEntity: targetEntity = player
+		return targetEntity
 
 ## If `false` this UI will not automatically install upgrades into the [UpgradesComponent].
 ## So another script such as the [UpgradeChoiceUI] buttons or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
@@ -36,16 +40,16 @@ const choiceUIScene: PackedScene = preload("res://UI/Views/UpgradeChoiceUI.tscn"
 
 var targetUpgradesComponent: UpgradesComponent:
 	get:
-		if not targetUpgradesComponent: targetUpgradesComponent = targetEntity.getComponent(UpgradesComponent)
+		if not targetUpgradesComponent and targetEntity: targetUpgradesComponent = targetEntity.getComponent(UpgradesComponent)
 		return targetUpgradesComponent
 
 var targetStatsComponent: StatsComponent:
 	get:
-		if not targetStatsComponent: targetStatsComponent = targetEntity.getComponent(StatsComponent)
+		if not targetStatsComponent and targetEntity: targetStatsComponent = targetEntity.getComponent(StatsComponent)
 		return targetStatsComponent
 
 var player: PlayerEntity:
-	get: return GameState.players.front()
+	get: return GameState.getPlayer(0)
 
 #endregion
 
@@ -53,8 +57,8 @@ var player: PlayerEntity:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if not targetEntity:
-		targetEntity = player
-		if not targetEntity: Debug.printWarning("Missing targetEntity", self)
+		# targetEntity = player # Assigned automatically by getter
+		Debug.printWarning("Missing targetEntity", self)
 
 	if targetUpgradesComponent: readdAllChoices()
 	else: Debug.printWarning("Missing targetUpgradesComponent", self)
