@@ -129,6 +129,8 @@ func onTimeout() # in the script of a Timer node
 
 * You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
+* Try not add too many new features before perfecting or at least solidifying the existing stuff!
+
 
 ## Miscellaneous
 
