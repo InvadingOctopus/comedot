@@ -234,6 +234,7 @@ func printDebug(message: String = "", object: Variant = null, _objectColor: Stri
 
 
 ## Prints a warning message in the Output Log and Godot Debugger Console.
+## TIP: To see the chain of recent function calls which led to a warning, use [method Debug.printTrace]
 func printWarning(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	push_warning(str("Frame ", lastFrameLogged, " ⚠️ ", object, " ", message))
@@ -242,6 +243,7 @@ func printWarning(message: String = "", object: Variant = null, _objectColor: St
 
 ## Prints an error message in the Output Log and Godot Debugger Console. Includes the caller's file and method.
 ## NOTE: In release builds, if [member Settings.shouldAlertOnError] is true, displays an OS alert which blocks engine execution.
+## TIP: To see the chain of recent function calls which led to an error, use [method Debug.printTrace]
 func printError(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	var plainText: String = str("Frame ", lastFrameLogged, " ", getCaller(3), " ❗️ ", object, " ", message)
