@@ -14,6 +14,8 @@ extends Component
 # This component should only contain data about the collectible.
 # The pickup process should be covered by a [CollectorComponent].
 
+# TBD: PERFORMANCE: Inherit AreaCollisionComponent or would that be excessive bloat?
+
 
 #region Parameters
 

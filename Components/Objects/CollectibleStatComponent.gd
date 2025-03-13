@@ -3,12 +3,17 @@
 class_name CollectibleStatComponent
 extends CollectibleComponent
 
-# TODO: Allow collection when Stat decreases from max WHILE still in collision contact; have to "walk out" and collide again to pick :')
+# TBD: Inherit CollectibleComponent from AreaCollisionComponent to make rechecks easier?
 # TBD: Use StatModifierPayload?
 
-
 #region Parameters
-@export var stat: Stat
+
+@export var stat: Stat:
+	set(newValue):
+		if newValue != stat:
+			stat = newValue
+			if stat: connectSignals()
+
 
 @export var statModifierMinimum: int = 1 ## The minimum amount of change, inclusive. To always apply a fixed amount, set both minimum and maximum to the same number.
 @export var statModifierMaximum: int = 1 ## The maximum amount of change, inclusive. To always apply a fixed amount, set both minimum and maximum to the same number.
@@ -16,6 +21,14 @@ extends CollectibleComponent
 @export var preventCollectionIfStatIsMax: bool = true # TBD: Better name? :')
 
 @export var shouldDisplayIndicator: bool = true
+
+#endregion
+
+
+#region State
+## Used to recheck collision with a [CollectorComponent] that was denied collection while [member preventCollectionIfStatIsMax]
+## NOTE: This will recheck only ONE collector: the most recent one!
+@export_storage var previouslyDeniedCollector: CollectorComponent
 #endregion
 
 
@@ -23,6 +36,7 @@ func _ready() -> void:
 	# Override the Payload
 	self.payload = CallablePayload.new()
 	(self.payload as CallablePayload).payloadCallable = self.onCollectible_didCollect
+	if stat: connectSignals()
 
 
 ## Returns a random integer between [member statModifierMinimum] and [member statModifierMaximum], inclusive.
@@ -34,8 +48,10 @@ func getRandomModifier() -> int:
 ## Prevents collection if `preventCollectionIfStatIsMax` and the Stat is already at its [member Stat.max].
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not super.checkCollectionConditions(collectorEntity, collectorComponent): return false
+	# Is it pointless to pick up the Stat?
 	if preventCollectionIfStatIsMax and stat.value >= stat.max: 
-		if debugMode: printDebug(str("preventCollectionIfStatIsMax and stat.value ", stat.value, " >= stat.max ", stat.max))
+		if debugMode: printDebug(str("preventCollectionIfStatIsMax: stat.value ", stat.value, " >= stat.max ", stat.max))
+		previouslyDeniedCollector = collectorComponent # Remember the collector in case it is still in contact after the Stat decreases.
 		return false
 	else:
 		return true
@@ -61,3 +77,32 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 		TextBubble.create(collectorEntity, str(stat.displayName.capitalize(), symbol, randomizedModifier))
 	
 	return randomizedModifier
+
+
+#region Rechecks
+
+func connectSignals() -> void:
+	Tools.reconnectSignal(stat.changed, self.onstat_changed)
+
+
+func onstat_changed() -> void:
+	# Monitor changes to allow collection when the Stat decreases from its max WHILE still in collision contact; otherwise we would have to "walk out" and collide again to pick it up.
+	if preventCollectionIfStatIsMax and previouslyDeniedCollector and stat.value < stat.max:
+		# NOTE: PERFORMANCE: No need to recheck collisions, because previouslyDeniedCollector is removed in onAreaExited()
+		didCollideWithCollector.emit(previouslyDeniedCollector)
+		previouslyDeniedCollector.handleCollection(self) # This is a little jank, controlling the Collector from the Collectible :')
+
+
+func onAreaExited(area: Area2D) -> void:
+	# PERFORMANCE: Remove the `previouslyDeniedCollector` on leaving contact, so we don't have to recheck collisions each time the Stat decreases.
+	# NOTE: Removals should NOT depend on `isEnabled`
+	if not previouslyDeniedCollector: return
+
+	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
+	if not collectorComponent: return
+
+	if debugMode: printDebug(str("onAreaExited() CollectorComponent: ", collectorComponent, ", previouslyDeniedCollector: ", previouslyDeniedCollector))
+	if previouslyDeniedCollector == collectorComponent: previouslyDeniedCollector = null
+
+#endregion
+

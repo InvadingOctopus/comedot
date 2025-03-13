@@ -14,6 +14,9 @@ statModifierMinimum = 1
 statModifierMaximum = 1
 preventCollectionIfStatIsMax = true
 shouldDisplayIndicator = true
+previouslyDeniedCollector = null
 
 [node name="CollectibleCollisionShape" parent="." index="0"]
 shape = SubResource("RectangleShape2D_e5puf")
+
+[connection signal="area_exited" from="." to="." method="onAreaExited"]
