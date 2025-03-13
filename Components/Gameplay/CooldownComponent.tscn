@@ -8,3 +8,6 @@ metadata/_edit_group_ = true
 
 [node name="CooldownTimer" type="Timer" parent="."]
 wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]

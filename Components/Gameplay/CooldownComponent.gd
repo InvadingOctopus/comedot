@@ -1,12 +1,10 @@
 ## Represents a delay for any action the player may not perform too quickly, such as firing a gun or mining resources.
-## Recommended subclass for other components like [GunComponent] or [InteractionControlComponent].
-
-## BUG: NOTE: When this component is subclassed and a Cooldown [Timer] is connected to the subclass,
-## Godot [as of 4.3 Dev 3] will not show the [method onCooldownTimer_timeout] in the existing methods list for the new connection.
-## But you can connect a new [Timer] to the `onCooldownTimer_timeout` method even if it is not overridden in the subclass.
+## Recommended base class for other Components to extend such as [GunComponent] or [InteractionControlComponent].
 
 class_name CooldownComponent
 extends Component
+
+# NOTE: The Component Node itself should NOT be a [Timer] in order to allow other types of Nodes to extend this script, such as GunComponent which is Node2D
 
 
 #region Parameters
@@ -24,7 +22,7 @@ const minimumTimerWaitTime: float = 0.05
 
 		if newValue != cooldown:
 			cooldown = newValue
-			if cooldownTimer: 
+			if cooldownTimer:
 				if newValue > 0 and not is_zero_approx(newValue): # Avoid the annoying Godot error: "Time should be greater than zero."
 					cooldownTimer.wait_time = newValue
 				else:
@@ -47,10 +45,15 @@ signal didFinishCooldown
 #endregion
 
 
+func _ready() -> void:
+	# Also connect the signal via code to make it more convenient for subclasses which don't inherit the .tscn scene, such as GunComponent
+	Tools.reconnectSignal(cooldownTimer.timeout, self.finishCooldown)
+
+
 #region Cooldown
 
 func startCooldown(overrideTime: float = self.cooldown) -> void:
-	printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime))
+	if debugMode: printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime))
 	hasCooldownCompleted = false
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		cooldownTimer.wait_time = overrideTime
@@ -61,14 +64,9 @@ func startCooldown(overrideTime: float = self.cooldown) -> void:
 
 
 func finishCooldown() -> void:
-	printDebug("finishCooldown()")
+	if debugMode: printDebug("finishCooldown()")
 	cooldownTimer.stop()
 	hasCooldownCompleted = true
 	didFinishCooldown.emit()
-
-
-func onCooldownTimer_timeout() -> void:
-	printDebug("onCooldownTimer_timeout()")
-	finishCooldown()
 
 #endregion
