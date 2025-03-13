@@ -10,3 +10,5 @@ script = ExtResource("1_ophw8")
 
 [node name="SpawnTimer" parent="." node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_bxqa7")]
 parentOverride = NodePath("..")
+
+[connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]

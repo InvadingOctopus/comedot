@@ -53,6 +53,12 @@ var totalNodesSpawned: int
 ## TIP: This allows a signal handler to conditionally choose a different scene if needed.
 signal willSpawn(scenePathToSpawn: String)
 
+## Emitted before the newly-instantiated scene copy is added to the parent node.
+## TIP: This allows the position etc. to be modified before the child node is made visible.
+signal willAddSpawn(newSpawn: Node2D, parent: Node2D)
+
+## Emitted after [signal willAddSpawn]
+## TIP: To modify positioning, use the earlier signal to prevent visually-jarring jumps etc.
 signal didSpawn(newSpawn: Node2D, parent: Node2D)
 
 #endregion
@@ -118,6 +124,7 @@ func spawn() -> Node2D:
 		if not groupToAddTo.is_empty():
 			newSpawn.add_to_group(groupToAddTo, true)
 
+		willAddSpawn.emit(newSpawn, parent)
 		parent.add_child(newSpawn)
 		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
