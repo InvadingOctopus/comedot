@@ -26,6 +26,12 @@ func _input(event: InputEvent) -> void:
 
 func chooseTargetsUnderCursor() -> Array[ActionTargetableComponent]:
 	# TODO: Set limits on concurrent targets
+
+	# If there are no eligible targets, the selection should be cancelled
+	if self.actionTargetableComponentInContact.is_empty():
+		super.cancelTargetSelection()
+		return []
+
 	var chosenTargets: Array[ActionTargetableComponent]
 	for target in self.actionTargetableComponentInContact:
 		self.chooseTarget(target)
