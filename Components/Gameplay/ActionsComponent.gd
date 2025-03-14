@@ -3,22 +3,14 @@
 ## such as a special skill/spell like "Fireball", or a trivial command like "Examine".
 ## To perform an Action in response to player control, use [ActionControlComponent].
 ## Requirements: [StatsComponent] to perform Actions which have a Stat cost.
-## @experimental
 
 class_name ActionsComponent
 extends Component
 
 
 #region Parameters
-
-## The list of available actions that the Entity may choose to perform.
-@export var actions: Array[Action]
-
-## A subclass of [ActionTargetingComponentBase] to add to the parent [Entity] to present a UI to the player for choosing a target for [Action]s which require a target, such as a "Fireball" spell or a "Talk" command.
-@export_file("*ActionTargeting*Component.tscn") var targetingComponentPath: String # Exclude the abstract "Base" components.
-
+@export var actions: Array[Action] ## The list of available actions that the Entity may choose to perform.
 @export var isEnabled: bool = true
-
 #endregion
 
 
@@ -30,12 +22,13 @@ extends Component
 #region Signals
 
 ## Emitted if the [Action] [member Action.requiresTarget] but a target has not been provided for [method perform].
-## May be handled by game-specific UI to prompt the player to choose a target for the Action.
+## Handled by [ActionControlComponent] to provide game-specific UI for prompting the player to choose a target for the Action.
 ## NOTE: If an Action is to be performed via this component's [method perform] then this signal is emitted by the [ActionsComponent] ONLY; [signal Action.didRequestTarget] will NOT be emitted.
 signal didRequestTarget(action: Action, source: Entity)
 
 signal willPerformAction(action: Action)
 signal didPerformAction(action: Action, result: Variant)
+
 #endregion
 
 
@@ -62,7 +55,7 @@ func findAction(nameToSearch: StringName) -> Action:
 
 
 ## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
-## To perform Actions in response to player control, use [ActionControlComponent].
+## To perform Actions in response to player control and handle targeting, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	var actionToPerform: Action = self.findAction(actionName)
 	if debugMode: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
@@ -71,12 +64,11 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# Check for target
 	if actionToPerform.requiresTarget and target == null:
 		if debugMode: printDebug("Missing target")
-		createTargetingComponent(actionToPerform) # Create & add a component which prompt the player to choose a target.
-		self.didRequestTarget.emit(actionToPerform, self.parentEntity)
+		self.didRequestTarget.emit(actionToPerform, self.parentEntity) # To be handled by ActionControlComponent
 		# TBD: ALSO emit the Action's signal?
-		# What would be the behavior expected by objects connecting to these signals? If an ActionsComponent is used, then it is the ActionsComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
+		# What would be the behavior expected by objects connecting to these signals? If an ActionControlComponent is used, then it is the ActionControlComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
-
+	
 	# Get the Stat to pay the Action's cost with, if any,
 	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
 
@@ -87,20 +79,6 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 		self.didPerformAction.emit(actionToPerform, result)
 
 	return result
-
-
-func createTargetingComponent(actionToPerform: Action) -> ActionTargetingComponentBase:
-	var componentScene: PackedScene = load(targetingComponentPath)
-	var targetingComponent: ActionTargetingComponentBase = componentScene.instantiate()
-	
-	if not targetingComponent:
-		printWarning(str("Cannot instantiate an instance of ActionTargetingComponentBase: ", targetingComponentPath))
-		return null
-	
-	targetingComponent.action = actionToPerform
-	parentEntity.addComponent(targetingComponent)
-	GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity)
-	return targetingComponent
 
 #endregion
 
