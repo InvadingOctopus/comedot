@@ -76,7 +76,7 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 
 	targetingComponent.action = actionToPerform
 	parentEntity.addComponent(targetingComponent)
-	GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity)
+	# GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity) # This should be emitted by ActionsComponent next to its `didRequestTarget` as that's the first point where a target is requested.
 	return targetingComponent
 
 #endregion
