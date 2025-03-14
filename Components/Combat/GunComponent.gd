@@ -75,6 +75,11 @@ var characterBodyComponent: CharacterBodyComponent:
 		if not characterBodyComponent: characterBodyComponent = self.coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
 		return characterBodyComponent
 
+var labelComponent: LabelComponent:
+	get:
+		if not labelComponent: labelComponent = self.coComponents.get(&"LabelComponent")
+		return labelComponent
+
 func getRequiredComponents() -> Array[Script]:
 	# GODOT Dumbness: Ternary operator returns untyped array
 	if shouldAddEntityVelocity: return [CharacterBodyComponent]
@@ -171,7 +176,8 @@ func useAmmo() -> bool:
 	if ammo.previousValue > 0 and ammo.value <= 0:
 		if debugMode: printDebug("ammo depleted")
 		didDepleteAmmo.emit()
-		if not self.ammoDepletedMessage.is_empty(): parentEntity.displayLabel(self.ammoDepletedMessage)
+		if not self.ammoDepletedMessage.is_empty() and labelComponent:
+			labelComponent.display(self.ammoDepletedMessage)
 
 	return true
 

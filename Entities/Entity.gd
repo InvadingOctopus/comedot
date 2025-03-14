@@ -449,14 +449,6 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 		function.callv(arguments)
 		self.set_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
-
-## Uses a [LabelComponent], if available, to display the specified text.
-func displayLabel(text: String, animation: StringName = Animations.blink) -> void:
-	# TBD: Should this be a part of the base `Entity` class?
-	var labelComponent: LabelComponent = self.getComponent(LabelComponent)
-	if not labelComponent: return
-	labelComponent.display(text, animation)
-
 #endregion
 
 
