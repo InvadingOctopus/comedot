@@ -16,7 +16,7 @@ static var scenePath: String:
 #endregion
 
 
-static func create(parentNode: Node2D, bubbleText: String) -> TextBubble:
+static func create(parentNode: Node, bubbleText: String) -> TextBubble:
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
 	parentNode.add_child(newBubble)
 	newBubble.label.text = bubbleText
