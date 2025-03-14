@@ -63,12 +63,6 @@ func _ready() -> void:
 	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
 
 
-func connectSignals() -> void:
-	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
-	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
-	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
-
-
 func updateUI() -> void:
 	self.text = action.displayName \
 		+ (str("\n[", action.usesRemaining, "]") if action.hasFiniteUses else "")
@@ -97,6 +91,16 @@ func checkUsability() -> bool:
 
 #region Events
 
+func connectSignals() -> void:
+	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
+	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
+	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
+
+	Tools.reconnectSignal(GlobalUI.actionIsChoosingTarget, self.onGlobalUI_actionIsChoosingTarget)
+	Tools.reconnectSignal(GlobalUI.actionDidChooseTarget,  self.onGlobalUI_actionDidChooseTarget)
+	Tools.reconnectSignal(GlobalUI.actionDidCancelTarget,  self.onGlobalUI_actionDidCancelTarget)
+
+
 func onPressed() -> void:
 	if debugMode: Debug.printDebug("onPressed()", self)
 	generateInputEvent()
@@ -121,6 +125,18 @@ func onAction_didStartCooldown() -> void:
 
 func onAction_didFinishCooldown() -> void:
 	updateCooldown()
+
+
+func onGlobalUI_actionIsChoosingTarget(eventAction: Action, _source: Entity) -> void:
+	if eventAction == self.action: self.disabled = true
+
+
+func onGlobalUI_actionDidChooseTarget(eventAction: Action, _source: Entity, _target: Variant) -> void:
+	if eventAction == self.action: self.disabled = false
+
+
+func onGlobalUI_actionDidCancelTarget(eventAction: Action, _source: Entity) -> void:
+	if eventAction == self.action: self.disabled = false
 
 
 func _process(_delta: float) -> void:

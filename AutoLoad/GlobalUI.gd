@@ -20,12 +20,16 @@ signal didHidePauseOverlay
 
 # Signal Event Bus
 # These signals may be emitted by any object and connected to any object at any time, usually via scripts.
-# IGNORE Godot Warning; these signals are used by other classes.
 
-## @experimental
-@warning_ignore("unused_signal")
-signal actionDidRequestTarget(action: Action, source: Variant) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
+@warning_ignore_start("unused_signal") # IGNORE Godot Warning; these signals are used by other classes.
 
+# TBD: Should these signals be moved to Action itself?
+signal actionDidRequestTarget(action: Action, source: Entity) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
+signal actionIsChoosingTarget(action: Action, source: Entity) ## Emitted when an [ActionTargetingComponentBase] prompts the player for an [Action] target. This signal may be used by UI such as [ActionButton] to update its visual state until a target is chosen.
+signal actionDidCancelTarget(action:  Action, source: Entity) ## Emitted when an [ActionTargetingComponentBase] cancels target selection.
+signal actionDidChooseTarget(action:  Action, source: Entity, target: Variant) ## Emitted when an [ActionTargetingComponentBase] chooses a target for an [Action]. This signal may be used by UI such as [ActionButton] to update its visual state.
+
+@warning_ignore_restore("unused_signal")
 #endregion
 
 
