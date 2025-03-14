@@ -16,8 +16,9 @@ static var scenePath: String:
 #endregion
 
 
-static func create(parentNode: Node, bubbleText: String) -> TextBubble:
+static func create(parentNode: Node, bubbleText: String, offset: Vector2 = Vector2(0, -16)) -> TextBubble:
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
+	newBubble.position += offset # The default offset is above a 16-pixel sprite.
 	parentNode.add_child(newBubble)
 	newBubble.label.text = bubbleText
 	# newBubble.owner = parentNode # TBD: No need for persistence across Save/Load, right?
