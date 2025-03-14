@@ -5,6 +5,8 @@
 class_name TextBubble
 extends Node2D
 
+# TODO: Support fitting within the screen; i.e. when emitted from a node at the left/right edges of the screen, the text is outside the screen.
+
 
 #region State
 static var scenePath: String:
