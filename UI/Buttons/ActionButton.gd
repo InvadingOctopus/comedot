@@ -19,6 +19,7 @@ extends Button
 			action = newValue
 			if self.is_node_ready(): updateUI()
 
+@export var shouldShowTargetPrompt: bool = true
 @export var debugMode: bool
 
 #endregion
@@ -128,7 +129,9 @@ func onAction_didFinishCooldown() -> void:
 
 
 func onGlobalUI_actionIsChoosingTarget(eventAction: Action, _source: Entity) -> void:
-	if eventAction == self.action: self.disabled = true
+	if eventAction == self.action:
+		self.disabled = true
+		if shouldShowTargetPrompt: TextBubble.create(self, "Choose target", Vector2(self.size.x / 2, 0)) # Position the Bubble at the center of this Button
 
 
 func onGlobalUI_actionDidChooseTarget(eventAction: Action, _source: Entity, _target: Variant) -> void:
