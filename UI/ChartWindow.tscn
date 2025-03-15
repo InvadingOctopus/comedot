@@ -14,7 +14,6 @@ wrap_controls = true
 transient = true
 unresizable = true
 unfocusable = true
-exclude_from_capture = true
 min_size = Vector2i(80, 80)
 max_size = Vector2i(800, 800)
 content_scale_mode = 2
