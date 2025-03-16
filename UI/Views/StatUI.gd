@@ -8,6 +8,10 @@ extends Container
 
 @export var stat: Stat
 
+@export var shouldAnimate:   bool = true
+
+@export_group("Text")
+
 ## An optional string to write before the stat's [member Stat.displayName], e.g. "Player" to make "Player Lives:".
 @export var prefix: String
 @export var shouldAddSpaceAfterPrefix:		bool = true
@@ -20,17 +24,21 @@ extends Container
 @export var suffix: String
 @export var shouldAddSpaceBeforeSuffix:		bool = true
 
-## If greater than 1, then smaller values will be padded with leading 0s.
-@export var minimumDigits:   int = 2
-
-@export var shouldAnimate:   bool = true
-
 ## Affects the prefix and suffix labels, not the actual Stat value numbers.
 @export var shouldShowText:  bool = true: 
 	set(newValue):
 		if newValue != shouldShowText:
 			shouldShowText = newValue
 			if label: updateText(false) # Update the label, without animation
+
+@export var shouldUppercase: bool = false:
+	set(newValue):
+		if newValue != shouldUppercase:
+			shouldUppercase = newValue
+			if label: label.uppercase = shouldUppercase
+
+
+@export_group("Number Value")
 
 ## Affects the actual Stat value numbers, NOT the prefix and suffix labels. Useful if showing multiple symbols/icons or "pips" to represent the value, as with [StatPips].
 @export var shouldShowValue: bool = true:
@@ -39,11 +47,11 @@ extends Container
 			shouldShowValue = newValue
 			if label: updateText(false) # Update the label, without animation
 
-@export var shouldUppercase: bool = false:
-	set(newValue):
-		if newValue != shouldUppercase:
-			shouldUppercase = newValue
-			if label: label.uppercase = shouldUppercase
+## If greater than 1, then smaller values will be padded with leading 0s.
+@export var minimumDigits:   int = 2
+
+
+@export_group("Icon")
 
 @export var shouldShowIcon:  bool = true:
 	set(newValue):

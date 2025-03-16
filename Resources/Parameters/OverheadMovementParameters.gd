@@ -6,7 +6,7 @@ extends Resource
 
 #region Parameters
 
-@export_subgroup("Movement") # ----
+@export_group("Movement")
 
 @export_range(0, 1000, 5) var speed:			float = 300.0
 
@@ -20,7 +20,7 @@ extends Resource
 @export var shouldMaintainMinimumVelocity:		bool  = false
 @export_range(10, 1000, 50) var minimumSpeed:	float = 100.0
 
-@export_subgroup("Friction") # ----
+@export_group("Friction")
 
 ## Slow the velocity down each frame.
 @export var shouldApplyFriction:				bool  = true

@@ -6,7 +6,7 @@ extends Resource
 
 #region Parameters
 
-@export_subgroup("Movement on Floor")
+@export_group("Movement on Floor")
 
 @export_range(0, 1000, 5) var speedOnFloor:			float = 100
 
@@ -22,7 +22,8 @@ extends Resource
 @export var shouldApplyFrictionOnFloor:				bool  = true
 @export_range(5, 5000, 5) var frictionOnFloor:		float = 1000
 
-@export_subgroup("Movement in Air")
+
+@export_group("Movement in Air")
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
 @export_range(-10, 10, 0.05) var gravityScale:		float = 1

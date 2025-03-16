@@ -11,7 +11,7 @@ extends Resource
 
 #region Parameters
 
-@export_subgroup("Jump")
+@export_group("Jump")
 
 @export_range(0, 10, 1) var maxNumberOfJumps: int = 2
 
@@ -35,7 +35,8 @@ extends Resource
 ## The "grace period" for allowing the player to jump just after walking off a platform floor.
 @export_range(0, 10, 0.05, "seconds") var coyoteJumpTimer: float = 0.15
 
-@export_subgroup("Wall Jump")
+
+@export_group("Wall Jump")
 
 @export var allowWallJump: bool = true
 
@@ -50,4 +51,5 @@ extends Resource
 
 ## If `true`, then wall jumps do not count towards [member maxNumberOfJumps], allowing the player to jump between walls indefinitely.
 @export var decreaseJumpCountOnWallJump: bool = true
+
 #endregion
