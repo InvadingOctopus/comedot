@@ -6,7 +6,11 @@ extends Component
 
 
 #region Parameters
-@export var stats: Array[Stat]
+@export var stats: Array[Stat]:
+	set(newValue):
+		if newValue != stats:
+			stats = newValue
+			cacheStats()
 
 ## May be used for automatically resetting stats in situations like restarting the game etc.
 @export var shouldResetResourcesOnReady: bool = false
@@ -14,13 +18,17 @@ extends Component
 
 
 #region State
-var statsDictionary: Dictionary[StringName, Stat] = {} ## Caches stats accessed by [StringName] keys.
+## Caches Stats by their [StringName] [member Stat.name] keys. See [method getStat]
+var statsDictionary:	Dictionary[StringName, Stat] = {}
+## Caches Stats by their [ResourceUID] ID for name-independent access via their UIDs like "uid://bah69kvu0xeae". See [method getStatByUID].
+## NOTE: The "uid://" prefix is stripped so that the Dictionary may be accessed via dot notation: `statsUIDDictionary.bah69kvu0xeae`
+var statsUIDDictionary:	Dictionary[StringName, Stat] = {}
 #endregion
 
 
 func _ready() -> void:
 	if shouldResetResourcesOnReady: resetStats()
-	cacheStats()
+	if not self.stats.is_empty():   cacheStats()
 
 
 ## Saves each [Stat] in the [member stats] array to the [member statsDictionary] with the [member Stat.name] as its key, for quicker access.
@@ -28,12 +36,22 @@ func _ready() -> void:
 ## WARNING: May override previously cached stats.
 ## Returns: The number of stats saved in the dictionary.
 func cacheStats() -> int:
-	# CHECK: Should the dictionary be cleared before re-caching?
+	if debugMode: printDebug(str("cacheStats() ", stats))
+	
+	# Clear the dictionaries before re-caching, to remove Stats that are no longer present.
+	self.statsDictionary.clear()
+	self.statsUIDDictionary.clear()
+
 	for stat in self.stats:
 		statsDictionary[stat.name] = stat
+		# Also store the UID for name-independent access.
+		# NOTE: Trim "uid://" prefix for brevity and to access the Dictionary via dot notation.
+		if stat.uid != -1 or stat.uid != 0: statsUIDDictionary[stat.uidString.trim_prefix("uid://")] = stat # Because 0 and -1 are invalid UIDs.
+		if debugMode: printDebug(str(stat.name, " ", stat.uidString.trim_prefix("uid://")))
 	return statsDictionary.size()
 
 
+## Resets all Stats to their default values.
 func resetStats() -> void:
 	for stat in stats:
 		stat = stat.duplicate() # TBD: CHECK: Is there a better way?
@@ -45,6 +63,17 @@ func resetStats() -> void:
 func getStat(statName: StringName) -> Stat:
 	var stat: Stat = statsDictionary.get(statName)
 	if not stat: stat = findStat(statName)
+	return stat
+
+
+## Accesses Stats from [member statsUIDDictionary] by a name-independent [ResourceUID] string such as "uid://bah69kvu0xeae".
+## Helpful for referencing Stats via an ID which does not change even after the [member Stat.name] or filename changes.
+## NOTE: The "uid://" prefix is stripped.
+## NOTE: Does NOT scan the whole [member stats] array for matching UIDs.
+func getStatByUID(uidPath: StringName) -> Stat:
+	uidPath = uidPath.to_lower().trim_prefix("uid://")
+	var stat: Stat = statsUIDDictionary.get(uidPath)
+	if not stat: printWarning("getStatByUID() Cannot find Stat with UID " + uidPath)
 	return stat
 
 
