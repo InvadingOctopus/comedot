@@ -2,16 +2,14 @@
 
 [ext_resource type="Script" uid="uid://bvnan11g345u5" path="res://Scenes/Decorations/TextBubble.gd" id="1_ak04i"]
 [ext_resource type="LabelSettings" uid="uid://bsh3cla616l6l" path="res://Assets/Themes/Label/TextBubble.tres" id="1_tuxyy"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_j8b7p"]
-light_mode = 1
+[ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="2_cw8ty"]
 
 [node name="TextBubble" type="Node2D"]
 z_index = 100
 script = ExtResource("1_ak04i")
 
 [node name="Label" type="Label" parent="."]
-material = SubResource("CanvasItemMaterial_j8b7p")
+material = ExtResource("2_cw8ty")
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 8.0

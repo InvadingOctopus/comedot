@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
 [ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
 [ext_resource type="PackedScene" uid="uid://c5rfeug8xxxho" path="res://Components/TurnBased/TurnBasedAnimationComponent.tscn" id="12_178cw"]
+[ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="12_s804s"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36c63"]
 texture = ExtResource("4_mkbvj")
@@ -162,10 +163,6 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 size = Vector2(16, 16)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_s804s"]
-blend_mode = 1
-light_mode = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2l622"]
 atlas = ExtResource("4_k2j6v")
@@ -544,7 +541,7 @@ region_enabled = true
 region_rect = Rect2(576, 288, 16, 16)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="TurnBasedEntity2"]
-material = SubResource("CanvasItemMaterial_s804s")
+material = ExtResource("12_s804s")
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_nwalo")
 animation = &"RESET"
