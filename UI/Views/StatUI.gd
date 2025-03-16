@@ -10,14 +10,15 @@ extends Container
 
 ## An optional string to write before the stat's [member Stat.displayName], e.g. "Player" to make "Player Lives:".
 @export var prefix: String
-@export var shouldAddSpaceAfterPrefix:  bool = true
+@export var shouldAddSpaceAfterPrefix:		bool = true
 
 ## Appends the stat's [member Stat.displayName] + a colon, AFTER the [member prefix] and before the value, e.g. "Lives:"
-@export var shouldShowStatDisplayName:  bool = true
+@export var shouldShowStatDisplayName:		bool = true
+@export var shouldAddColonAfterDisplayName:	bool = true
 
 ## An optional string to add after the stat's value.
 @export var suffix: String
-@export var shouldAddSpaceBeforeSuffix: bool = true
+@export var shouldAddSpaceBeforeSuffix:		bool = true
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
 @export var minimumDigits:   int = 2
@@ -117,13 +118,14 @@ func buildLabelText() -> String:
 	var fullPrefix: String
 	var fullSuffix: String
 
-	# The pre/suf fixes
+	# The pre/suf -fixes
 
 	if shouldShowText:
-		fullPrefix = prefix + " " if shouldAddSpaceAfterPrefix  else prefix
-		fullSuffix = " " + suffix if shouldAddSpaceBeforeSuffix else suffix
+		# Add spaces only if there is any actual text, to avoid phantom spacing issues.
+		fullPrefix = prefix + " " if shouldAddSpaceAfterPrefix  and not prefix.is_empty() else prefix
+		fullSuffix = " " + suffix if shouldAddSpaceBeforeSuffix and not suffix.is_empty() else suffix
 
-		if shouldShowStatDisplayName: fullPrefix += stat.displayName + ":"
+		if shouldShowStatDisplayName: fullPrefix += stat.displayName + (":" if shouldAddColonAfterDisplayName else "")
 
 	# The value numbers
 
@@ -136,4 +138,5 @@ func buildLabelText() -> String:
 		else:
 			valueText = str(stat.value)
 	
+	# DEBUG: Debug.printTrace([fullPrefix, valueText, fullSuffix], self)
 	return str(fullPrefix, valueText, fullSuffix)

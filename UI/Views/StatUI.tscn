@@ -4,10 +4,8 @@
 [ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="1_q4sdu"]
 
 [node name="StatUI" type="GridContainer"]
-offset_right = 33.0
-offset_bottom = 8.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 73.0
+offset_bottom = 16.0
 size_flags_vertical = 3
 tooltip_text = "Stat"
 columns = 2
@@ -26,7 +24,6 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
-text = "000"
+text = "STAT:000"
 label_settings = ExtResource("1_q4sdu")
-horizontal_alignment = 1
 vertical_alignment = 1
