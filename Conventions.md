@@ -97,7 +97,7 @@ signal willRemoveFromEntity
 
 _Examples:_
 ```
-func onCollectibleComponent_didCollideWithCollector(…)
+func onCollectibleComponent_didCollideCollector(…)
 func onGunComponent_ammoDepleted()
 func onHealthChanged(…)
 func onTimeout() # in the script of a Timer node

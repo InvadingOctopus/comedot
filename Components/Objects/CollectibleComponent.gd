@@ -34,7 +34,7 @@ var previousPayloadResult: bool = false # TBD: Should this be a Variant to remem
 
 
 #region Signals
-signal didCollideWithCollector(collectorComponent: CollectorComponent)
+signal didCollideCollector(collectorComponent: CollectorComponent)
 signal willBeCollected(collectorEntity: Entity)
 signal didDenyCollection(collectorEntity: Entity) ## When this component declines or cancels the collection.
 signal willBeFreed
@@ -48,7 +48,7 @@ func onAreaEntered(area: Area2D) -> void:
 	if not collectorComponent: return
 
 	if debugMode: printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))
-	didCollideWithCollector.emit(collectorComponent)
+	didCollideCollector.emit(collectorComponent)
 
 
 ## Called by a [CollectorComponent].

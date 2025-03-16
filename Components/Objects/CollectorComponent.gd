@@ -6,7 +6,7 @@ extends Component
 
 
 #region Signals
-signal didCollideWithCollectible(collectibleComponent: CollectibleComponent)
+signal didCollideCollectible(collectibleComponent: CollectibleComponent)
 signal didCollect(collectibleComponent: CollectibleComponent, payload: Variant, result: Variant)
 #endregion
 
@@ -16,7 +16,7 @@ func onAreaEntered(area: Area2D) -> void:
 	if not collectibleComponent: return
 
 	printDebug(str("onAreaEntered() CollectibleComponent: ", collectibleComponent))
-	didCollideWithCollectible.emit(collectibleComponent)
+	didCollideCollectible.emit(collectibleComponent)
 
 	handleCollection(collectibleComponent)
 
