@@ -39,7 +39,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
 ## How To Use
 
-> [!Important]  
+> [!IMPORTANT]  
 > _Requires Godot 4.4 ~Embrace the Future_ ✨  
 
 1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
@@ -74,7 +74,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
 ----
 
-[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • <a rel="me" href="https://mastodon.gamedev.place/@Syntaks">Mastodon</a>
+[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • [Syntaks@Mastodon][mastodon]
 
 > 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
@@ -87,6 +87,8 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 [discord]: https://discord.gg/jZG3cBFt7u
 [github]:  https://github.com/ShinryakuTako
 [itch]:    https://syntaks.itch.io
+[twitter]: https://twitter.com/invadingoctopus
+[mastodon]:https://mastodon.gamedev.place/@Syntaks
 
 [howto]:		HowTo.md
 [conventions]:	Conventions.md
