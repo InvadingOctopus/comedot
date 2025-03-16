@@ -1,4 +1,6 @@
 ## Stores an array of [Stat]s such as health and ammo for an [Entity].
+## Stats can be accessed via `statsComponent.statsDictionary.health.value` or a name-independent UID such as `statsComponent.statsUIDDictionary.bah69kvu0xeae.value`.
+## To avoid runtime crashes in case of missing Stats, use the [method getStat], [method getStatByUID] or [method findStat] methods.
 ## TIP: Use the `UI/Lists/[StatsList].gd` script to automatically display and update these values in a HUD during runtime.
 
 class_name StatsComponent
@@ -18,10 +20,10 @@ extends Component
 
 
 #region State
-## Caches Stats by their [StringName] [member Stat.name] keys. See [method getStat]
+## Caches Stats by their [StringName] [member Stat.name] keys. Access via `statsDictionary.health.value` or [method getStat] to avoid crashes if the Stat is missing.
 var statsDictionary:	Dictionary[StringName, Stat] = {}
-## Caches Stats by their [ResourceUID] ID for name-independent access via their UIDs like "uid://bah69kvu0xeae". See [method getStatByUID].
-## NOTE: The "uid://" prefix is stripped so that the Dictionary may be accessed via dot notation: `statsUIDDictionary.bah69kvu0xeae`
+## Caches Stats by their [ResourceUID] ID for name-independent access via their UIDs like "uid://bah69kvu0xeae". Access via `statsUIDDictionary.health.value` or [method getStatByUID] to avoid crashes if the Stat is missing.
+## NOTE: The "uid://" prefix is stripped so that the Dictionary may be accessed via dot notation.
 var statsUIDDictionary:	Dictionary[StringName, Stat] = {}
 #endregion
 
