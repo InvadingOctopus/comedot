@@ -38,3 +38,25 @@ extends Resource
 
 #endregion
 
+
+#region Derived Parameters
+
+## Stores the [ResourceUID] ID for name-independent access.
+## May be 0 or -1 if there is no valid UID.
+var uid: int:
+	get:
+		# MEH: Can't set this once in _init() because it's not available there yet, and Godot in its infinite dummyness does not provide a _ready()-like setup point for Resources.
+		if uid == 0 or uid == -1:
+			uid = ResourceLoader.get_resource_uid(self.resource_path) # Returns -1 if no UID
+			uidString = ResourceUID.id_to_text(uid) # Also cache the string version
+			# DEBUG: Debug.printTrace([self.resource_path, uid, uidString], self)
+		return uid
+
+
+## The [ResourceUID] in its text string format with the "uid://" path prefix.
+var uidString: StringName:
+	get:
+		if uidString.is_empty(): uidString = ResourceUID.id_to_text(self.uid)
+		return uidString
+
+#endregion
