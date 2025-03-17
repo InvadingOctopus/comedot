@@ -10,6 +10,7 @@ extends StatUI
 
 #region Parameters
 @export var animationDuration: float = 0.25
+@export var barColor:		   Color = Color.WHITE
 @export var shouldAnimateBar:	bool = true
 #endregion
 
@@ -38,7 +39,7 @@ func onStat_changed() -> void:
 
 func updateUI(animate: bool = self.shouldAnimate) -> void:
 	super.updateUI(animate)
-	
+	bar.self_modulate = self.barColor
 	bar.min_value = stat.min
 	bar.max_value = stat.max
 	updateBar(animate)

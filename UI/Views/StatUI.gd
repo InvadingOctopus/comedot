@@ -8,9 +8,11 @@ extends Container
 
 @export var stat: Stat
 
-@export var shouldAnimate:   bool = true
+@export var shouldAnimate: bool = true
 
 @export_group("Text")
+
+@export var labelColor: Color = Color.WHITE
 
 ## An optional string to write before the stat's [member Stat.displayName], e.g. "Player" to make "Player Lives:".
 @export var prefix: String
@@ -53,11 +55,13 @@ extends Container
 
 @export_group("Icon")
 
-@export var shouldShowIcon:  bool = true:
+@export var shouldShowIcon: bool = true:
 	set(newValue):
 		if newValue != shouldShowIcon:
 			shouldShowIcon = newValue
 			if icon: icon.visible = shouldShowIcon
+
+@export var iconColor: Color = Color.WHITE
 
 @export var shouldShowIconAfterText: bool = false:
 	set(newValue):
@@ -104,6 +108,8 @@ func onStat_changed() -> void:
 
 
 func updateUI(animate: bool = self.shouldAnimate) -> void:
+	label.label_settings.font_color = self.labelColor
+	icon.self_modulate = self.iconColor
 	updateText(animate)
 	updateIcon(animate)
 	self.tooltip_text = stat.description
@@ -115,8 +121,8 @@ func updateIcon(_animate: bool = self.shouldAnimate) -> void:
 
 
 func updateText(animate: bool = self.shouldAnimate) -> void:
-	self.label.text = self.buildLabelText()
-	if animate: Animations.animateNumberLabel(self.label, stat.value, stat.previousValue)
+	label.text = self.buildLabelText()
+	if animate: Animations.animateNumberLabel(label, stat.value, stat.previousValue, self.labelColor)
 
 
 ## Combines the prefix + [member Stat.displayName] + value of the stat + the suffix.
