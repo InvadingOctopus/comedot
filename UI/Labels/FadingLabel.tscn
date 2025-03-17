@@ -52,11 +52,11 @@ _data = {
 &"fadeOut": SubResource("Animation_p7665")
 }
 
-[node name="TemporaryLabel" type="Label"]
+[node name="FadingLabel" type="Label"]
 offset_right = 1.0
 offset_bottom = 1.0
 size_flags_horizontal = 3
-text = "COMEDOT"
+text = "Fading Label"
 label_settings = ExtResource("1_r25na")
 
 [node name="Timer" type="Timer" parent="."]

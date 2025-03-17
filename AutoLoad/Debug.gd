@@ -138,7 +138,7 @@ func _process(_delta: float) -> void:
 
 ## Adds a temporary entry to the [member watchList] for the specified number of seconds.
 ## TIP: For gameplay related messages, use [method GlobalUI.createTemporaryLabel]
-## NOTE: Does NOT use [TemporaryLabel]
+## NOTE: Does NOT use [FadingLabel.tscn]
 func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> void:
 	watchList[key] = text
 

@@ -1,4 +1,4 @@
-## A [Container] which creates [TemporaryLabel]s and groups them in a list. May be used for logs, alerts, or chat messages etc.
+## A [Container] which creates copies of [FadingLabel.tscn] and groups them in a list. May be used for logs, alerts, or chat messages etc.
 ## NOTE: This script must be attached to a container like [VBoxContainer] or [GridContainer].
 
 class_name TemporaryLabelList
@@ -11,24 +11,10 @@ extends Container
 #endregion
 
 
-#region State
-#endregion
-
-
-#region Signals
-# TODO
-#endregion
-
-
-#region Dependencies
-
-#endregion
-
-
 func createTemporaryLabel(text: String) -> Label:
 	if haveMaximumLabelCount(): deleteOldestLabel()
 
-	var newLabel: Label = load("res://UI/Labels/TemporaryLabel.tscn").instantiate()
+	var newLabel: Label = load("res://UI/Labels/FadingLabel.tscn").instantiate()
 	
 	if newLabel:
 		newLabel.text = text
@@ -36,7 +22,7 @@ func createTemporaryLabel(text: String) -> Label:
 		newLabel.owner = self # INFO: Necessary for persistence to a [PackedScene] for save/load.
 		return newLabel
 	else:
-		Debug.printWarning("Cannot create an instance of TemporaryLabel")
+		Debug.printWarning("Cannot create an instance of FadingLabel")
 		return null
 
 
