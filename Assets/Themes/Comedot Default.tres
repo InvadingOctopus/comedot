@@ -10,6 +10,7 @@
 [ext_resource type="StyleBox" uid="uid://t6eyiakqjmum" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber Highlight.tres" id="7_nylrf"]
 [ext_resource type="StyleBox" uid="uid://cgvwymdjafenq" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber Pressed.tres" id="8_28ssp"]
 [ext_resource type="StyleBox" uid="uid://c5fqq43pdmjg2" path="res://Assets/Themes/ScrollBar/ScrollBar.tres" id="9_450rk"]
+[ext_resource type="StyleBox" uid="uid://dt6n1qgf6fcle" path="res://Assets/Themes/StyleBoxEmpty.tres" id="10_nylrf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7gpu3"]
 bg_color = Color(1, 1, 1, 0)
@@ -27,8 +28,6 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 corner_detail = 1
 anti_aliasing = false
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a5phl"]
-
 [resource]
 default_font = ExtResource("2_qfpu2")
 default_font_size = 8
@@ -43,11 +42,13 @@ HScrollBar/styles/grabber = ExtResource("6_xf5bp")
 HScrollBar/styles/grabber_highlight = ExtResource("7_nylrf")
 HScrollBar/styles/grabber_pressed = ExtResource("8_28ssp")
 HScrollBar/styles/scroll = ExtResource("9_450rk")
+HSeparator/styles/separator = ExtResource("10_nylrf")
 ProgressBar/styles/background = SubResource("StyleBoxFlat_7gpu3")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_nw84h")
 TooltipLabel/font_sizes/font_size = 16
-TooltipPanel/styles/panel = SubResource("StyleBoxEmpty_a5phl")
+TooltipPanel/styles/panel = ExtResource("10_nylrf")
 VScrollBar/styles/grabber = ExtResource("6_xf5bp")
 VScrollBar/styles/grabber_highlight = ExtResource("7_nylrf")
 VScrollBar/styles/grabber_pressed = ExtResource("8_28ssp")
 VScrollBar/styles/scroll = ExtResource("9_450rk")
+VSeparator/styles/separator = ExtResource("10_nylrf")

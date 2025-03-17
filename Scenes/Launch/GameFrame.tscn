@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=12 format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_jd6d7"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="1_uhj4x"]
@@ -23,8 +23,6 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSet" id="TileSet_t25e2"]
 tile_size = Vector2i(32, 32)
 sources/3 = SubResource("TileSetAtlasSource_jd6d7")
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jd6d7"]
 
 [node name="GameFrame" type="Node2D"]
 editor_description = "The Main Menu"
@@ -84,7 +82,6 @@ stretch_mode = 5
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_jd6d7")
 
 [node name="UIMarginContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
