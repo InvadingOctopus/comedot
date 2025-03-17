@@ -99,6 +99,7 @@ collectibles="Objects that may be picked up by the player or other characters."
 interactions="Objects such as doors, chests, lever etc. that the player and other characters may use and interact with."
 turnBased="Nodes which may only take action or be updated on their turn in a turn-based game."
 targetables="May be targeted by an action/command/skill/spell which requires a target to be chosen."
+spawners="Nodes that spawn copies of other Scenes."
 
 [gui]
 
