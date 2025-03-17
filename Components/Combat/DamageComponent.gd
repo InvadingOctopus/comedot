@@ -16,7 +16,15 @@ extends Component
 ## The amount of damage to cause to the target when this [DamageComponent] first collides with a [DamageReceivingComponent].
 ## Suitable for bullets and other nodes that disappear on a collision.
 ## This value may be set to 0 if another script is going to handle the signals and apply the damage.
+## IMPORTANT: Use [member damageOnCollisionWithModifier] to get the actual damage value including the [member damageModifier] if any.
 @export_range(0, 1000, 1) var damageOnCollision: int = 1 # NOTE: Should this be an integer or float?
+
+## An OPTIONAL [Stat] whose [member Stat.value] is added to or subtracted from the base [member damageOnCollision].
+## TIP: This allows [Upgrade]s with a [StatModifierPayload] or debuffs etc. to easily increase/decrease the player's attack power.
+## TIP: [member damageOnCollision] may be set to 0 to use the [Stat] as the base and sole damage value.
+## IMPORTANT: Use [member damageOnCollisionWithModifier] to get the actual damage value.
+## @experimental
+@export var damageModifier: Stat 
 
 ## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
@@ -63,6 +71,11 @@ extends Component
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
 var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
+
+## Returns the total damage value including the base [member damageOnCollision] +/- the [member damageModifier] [Stat] if any.
+## @experimental
+var damageOnCollisionWithModifier: int:
+	get: return self.damageOnCollision + damageModifier.value if damageModifier else 0
 
 ## Returns this component as an [Area2D] node.
 var area: Area2D:
@@ -138,6 +151,7 @@ func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingCompon
 ## Calls [method DamageReceivingComponent.processCollision]
 func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
 	if not isEnabled: return
+	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName, " to ", damageReceivingComponent))
 
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
@@ -148,7 +162,6 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 
 	# Even if we have no faction, damage must be dealt.
 	var didReceiveDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
-	if debugMode: printLog(str("causeCollisionDamage: ", self.damageOnCollision, " to ", damageReceivingComponent))
 	
 	if removeEntityOnApplyingDamage and didReceiveDamage:
 			if debugMode: printDebug("removeEntityOnApplyingDamage")

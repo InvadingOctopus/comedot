@@ -116,11 +116,12 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 	if not isEnabled: return false
 	if debugMode: printDebug(str("processCollision() damageComponent: ", damageComponent, ", attackerFactionComponent: ", attackerFactionComponent))
 	# Not creating an "attackerFactions" or whatever variable to improve performance, maybe?
+	# NOTE: Get damageOnCollisionWithModifier to include the damageModifier Stat from Upgrades/debuffs etc.!
 	if attackerFactionComponent:
-		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, attackerFactionComponent.factions, damageComponent.friendlyFire)
+		return self.handleDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else: # If the attacker has no factions, damage must be dealt to everyone.
 		if debugMode: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
-		return self.handleDamage(damageComponent, damageComponent.damageOnCollision, 0, damageComponent.friendlyFire)
+		return self.handleDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, 0, damageComponent.friendlyFire)
 
 #endregion
 
