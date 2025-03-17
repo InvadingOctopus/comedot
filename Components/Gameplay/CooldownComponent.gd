@@ -23,9 +23,6 @@ const minimumTimerWaitTime: float = 0.05
 		if newValue != cooldown:
 			cooldown = newValue
 
-			# Update the Stat too because that would be the expected behavior of modifying the cooldown, right?
-			if cooldownMillisecondsStat: cooldownMillisecondsStat.value = int(newValue * 1000)
-			
 			if cooldownTimer:
 				if newValue > 0 and not is_zero_approx(newValue): # Avoid the annoying Godot error: "Time should be greater than zero."
 					cooldownTimer.wait_time = newValue
@@ -33,22 +30,25 @@ const minimumTimerWaitTime: float = 0.05
 					cooldownTimer.wait_time = minimumTimerWaitTime # HACK: TODO: Find a better way
 					cooldownTimer.stop()
 
-## An OPTIONAL alternative way to specify the delay between shots, by overriding the [member cooldown] property with a shared [Stat].
+## An OPTIONAL [Stat] whose [member Stat.value] is added to or subtracted from the base [member cooldown].
 ## IMPORTANT: Since [Stats] are integers only, the cooldown time represented by this Stat must be in MILLISECONDS, i.e. 1000 = 1 second, 500 = 0.5 seconds.
-## TIP: This allows [Upgrade]s with a [StatModifierPayload] or debuffs etc. to easily increase/decrease the player's fire rate.
+## TIP: This allows [Upgrade]s with a [StatModifierPayload] or debuffs etc. to easily increase/decrease the player's rate of fire.
+## IMPORTANT: Use [member cooldownWithModifier] to get the actual combined cooldown value.
 ## @experimental
-@export var cooldownMillisecondsStat: Stat:
-	set(newValue):
-		if newValue != cooldownMillisecondsStat:
-			cooldownMillisecondsStat = newValue
-			if cooldownMillisecondsStat: self.cooldown = cooldownMillisecondsStat.value / 1000.0
-			else: self.cooldown = 3 # Use internal default if there is no Stat
+@export var cooldownMillisecondsModifier: Stat
 
 #endregion
 
 
 #region State
 @onready var cooldownTimer: Timer = $CooldownTimer
+
+## Returns the total cooldown value including the base [member cooldown] seconds +/- the [member cooldownMillisecondsModifier] [Stat] if any.
+## @experimental
+var cooldownWithModifier: float:
+	get:
+		if cooldownMillisecondsModifier: return self.cooldown + (float(cooldownMillisecondsModifier.value) / 1000.0) # Convert from milliseconds to seconds
+		else: return cooldown
 
 var hasCooldownCompleted: bool = true # Start with the cooldown off
 #endregion
@@ -67,19 +67,19 @@ func _ready() -> void:
 
 #region Cooldown
 
-## Starts the cooldown delay, applying the [member cooldownMillisecondsStat] if any to the [member cooldown].
-func startCooldown(overrideTime: float = (cooldownMillisecondsStat.value / 1000.0) if cooldownMillisecondsStat else self.cooldown) -> void:
+## Starts the cooldown delay, applying the [member cooldownMillisecondsModifier] if any to the [member cooldown].
+func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 	## The Stat is reapplied above in case its value has changed
-	if debugMode: 
-		if cooldownMillisecondsStat: printTrace(["cooldownMillisecondsStat", cooldownMillisecondsStat.value])
-		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime: ", overrideTime, ", cooldownMillisecondsStat: ", cooldownMillisecondsStat))
+	if debugMode:
+		if cooldownMillisecondsModifier: printTrace(["cooldownMillisecondsModifier", cooldownMillisecondsModifier.value])
+		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", cooldownMillisecondsModifier.logName))
 	hasCooldownCompleted = false
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		cooldownTimer.wait_time = overrideTime
 		cooldownTimer.start(overrideTime)
 		didStartCooldown.emit()
-	else: # If the time is too low, just go straight to the finish
+	else: # If the time is too low, run straight to the finish
 		finishCooldown()
 
 

@@ -15,11 +15,6 @@ extends Resource
 @export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
 
-## An OPTIONAL alternative way to specify the delay between shots, by overriding the [member cooldown] property with a shared [Stat].
-## IMPORTANT: Since [Stats] are integers only, the cooldown time represented by this Stat must be in MILLISECONDS, i.e. 1000 = 1 second, 500 = 0.5 seconds.
-## TIP: This allows [Upgrade]s with a [StatModifierPayload] or debuffs etc. to easily increase/decrease the player's fire rate.
-@export var cooldownMillisecondsStat: Stat
-
 ## If `true`, the gun fires automatically without any player input.
 @export var autoFire: bool = false
 
