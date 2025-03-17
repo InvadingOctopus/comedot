@@ -95,7 +95,7 @@ func updateCostUI() -> void:
 
 func updateButton() -> void:
 	# Write the level if there are any levels, or infinite levels are allowed.
-	if upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " L", self.getLevelToPurchase())
+	if    upgrade.maxLevel > 0 or upgrade.shouldAllowInfiniteLevels: upgradeButton.text = str(upgrade.displayName, " -> L", self.getLevelToPurchase())
 	else: upgradeButton.text = upgrade.displayName
 	upgradeButton.icon = upgrade.icon
 	upgradeButton.tooltip_text = upgrade.description
