@@ -45,7 +45,7 @@ visible = false
 ammo = ExtResource("10_fcijy")
 ammoCost = 1
 isEnabled = false
-cooldown = 1.01
+cooldown = 2.0
 
 [node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadBasic" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_8d8lk")]
 nodeToRotate = NodePath("../GunComponent")
@@ -76,7 +76,7 @@ statsComponent = NodePath("../../../../PlayerEntityTemplate-OverheadBasic/StatsC
 custom_minimum_size = Vector2(4, 4)
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="BuyLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
 layout_mode = 2
@@ -99,7 +99,7 @@ layout_mode = 2
 visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="InstalledListContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
