@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6xnvvpqq4m4g"]
+
+[ext_resource type="LabelSettings" uid="uid://crn5uj0c6san2" path="res://Assets/Themes/Label/TemporaryLabel.tres" id="1_lnrjs"]
+
+[sub_resource type="Animation" id="Animation_lnrjs"]
+resource_name = "RESET"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_eyfb4"]
+resource_name = "blink"
+loop_mode = 1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_eyfb4"]
+_data = {
+&"RESET": SubResource("Animation_lnrjs"),
+&"blink": SubResource("Animation_eyfb4")
+}
+
+[node name="BlinkingLabel" type="Label"]
+offset_right = 1.0
+offset_bottom = 1.0
+size_flags_horizontal = 3
+text = "Blinking Label"
+label_settings = ExtResource("1_lnrjs")
+
+[node name="DeleteTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+ignore_time_scale = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_eyfb4")
+}
+autoplay = "blink"
+
+[connection signal="timeout" from="DeleteTimer" to="." method="queue_free"]
