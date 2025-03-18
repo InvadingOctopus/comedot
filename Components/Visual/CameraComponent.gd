@@ -6,6 +6,7 @@ class_name CameraComponent
 extends Component
 
 # TODO: FIXME: There is still a slight jitter when reattaching to a new parent.
+# TODO: Gamepad joystick look-ahead
 
 
 #region Parameters
@@ -16,7 +17,7 @@ extends Component
 @export var shouldAttachToGrandparentOnEntityRemoval: bool = true # TBD: A shorter name? Yikes!
 
 ## Confines the camera to the rectangular bounds of the [member boundary]
-@export var shouldClampToBoundary: bool = false
+@export var shouldClampToBoundary:	bool = false
 
 ## The [Area2D] to clamp the camera's position within its rectangular bounds, if [member shouldClampToBoundary]
 @export var boundary: Area2D:
@@ -26,15 +27,30 @@ extends Component
 			if self.is_node_ready(): clampToBoundary()
 
 ## Moves the camera to the mouse position on every frame.
-@export var shouldTrackMouse: bool = false:
+## NOTE: Overridden by [member shouldLookAhead]
+## @experimental
+@export var shouldTrackMouse:		bool = false:
 	set(newValue):
 		if newValue != shouldTrackMouse:
 			shouldTrackMouse = newValue
 			self.set_process(shouldTrackMouse or shouldBounceZoom)
 
+## Moves the camera further to the edge of the screen towards the mouse pointer.
+## NOTE: Overrides [member shouldTrackMouse]
+## @experimental
+@export var shouldLookAhead:		bool = false: # TBD: Should this be mouse only?
+	set(newValue):
+		if newValue != shouldLookAhead:
+			shouldLookAhead = newValue
+			self.set_process_input(shouldLookAhead)
+
+## How far the [member shouldLookAhead] target (mouse pointer) should be from the center of the screen for the camera offset to start moving towards the edge of the screen.
+## @experimental
+@export var lookAheadDeadZone:	   float = 64
+
 ## "Bounces" or "headbangs" the camera zoom back and forth in and out of the screen. Useful for inducing dizziness.
 ## @experimental
-@export var shouldBounceZoom: bool = false:
+@export var shouldBounceZoom:		bool = false:
 	set(newValue):
 		if newValue != shouldBounceZoom:
 			shouldBounceZoom = newValue
@@ -60,6 +76,7 @@ func _ready() -> void:
 		if shouldTrackMouse: self.position = selfAsCamera.get_local_mouse_position()
 
 		self.set_process(shouldTrackMouse or shouldBounceZoom) # Update per-frame only if needed
+		self.set_process_input(shouldLookAhead)
 
 	else:
 		printWarning("CameraComponent is not a Camera2D node!")
@@ -146,6 +163,24 @@ func _process(delta: float) -> void:
 		if zoomFlipTimer >= zoomTimerMax:
 			zoomDirection = -zoomDirection
 			zoomFlipTimer = 0
+
+
+## @experimental
+func _input(event: InputEvent) -> void:
+	# Look Ahead
+	# THANKS: Inspired by optionaldev2876@YouTube https://www.youtube.com/watch?v=Wzrw6_KDMl4
+	if shouldLookAhead and event is InputEventMouseMotion:
+		# Get the unscaled Viewport dimensions
+		var viewport: Rect2 = selfAsCamera.get_viewport_rect()
+		# Get the mouse position from the center of the screen
+		var target: Vector2 = event.position - (viewport.size * 0.5)
+
+		if target.length() < lookAheadDeadZone: # Move the camera offset only when the target is far enough from the center.
+			selfAsCamera.offset = Vector2.ZERO
+		else:
+			selfAsCamera.offset = target.normalized() * (target.length() - lookAheadDeadZone) * 0.5
+
+		if debugMode: printDebug(str("event.position: ", event.position, ", viewport.half: ", viewport.size * 0.5, ", target: ", target, ", target.normalized: ", target.normalized(), ", target.length: ", target.length(), ", Camera2D.offset: ", selfAsCamera.offset))
 
 #endregion
 
