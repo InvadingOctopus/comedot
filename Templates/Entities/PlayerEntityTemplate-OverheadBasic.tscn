@@ -12,13 +12,14 @@ atlas = ExtResource("2_at8ff")
 region = Rect2(560, 224, 16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
-size = Vector2(16, 16)
+size = Vector2(15, 15)
 
 [node name="PlayerEntityTemplate-OverheadBasic" type="CharacterBody2D" groups=["entities", "players"]]
 collision_layer = 6
 collision_mask = 120
 motion_mode = 1
 wall_min_slide_angle = 0.0
+platform_on_leave = 2
 script = ExtResource("1_gtqja")
 metadata/_edit_group_ = true
 
