@@ -2,8 +2,9 @@
 ## ALERT: This component relies on [method _unhandled_input] to process player input,
 ## in order to allow UI elements to receive input without firing the gun.
 ## If mouse input events are not reaching this component, check the [member Control.mouse_filter] property of any overlaying nodes, and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
-## TIP: For aiming, use [MouseRotationComponent] or [NodeFacingComponent].
-## TIP: To hide the internal sprite, enable "Editable Children" and set the visibility, e.g. to use the player's own sprite.
+## NOTE: Enable "Editable Children" to access the gun sprite, bullet emission position and pivot point.
+## TIP:  For aiming, use [MouseRotationComponent] or [NodeFacingComponent].
+## TIP:  To hide the internal sprite, enable "Editable Children" and set the visibility, e.g. to use the player's own sprite.
 
 class_name GunComponent
 extends CooldownComponent
