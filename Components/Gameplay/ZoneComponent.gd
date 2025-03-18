@@ -93,6 +93,6 @@ func onAreaExited(area: Area2D) -> void:
 
 
 #region DEBUG
-#func _physics_process(_delta: float):
-	#Debug.watchList.currentZones = self.currentZones
+# func _physics_process(_delta: float) -> void:
+# 	Debug.watchList.currentZones = self.currentZones
 #endregion

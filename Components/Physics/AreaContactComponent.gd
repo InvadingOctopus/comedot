@@ -73,3 +73,17 @@ func onExit(exitingNode: Node2D) -> void:
 	elif exitingNode is PhysicsBody2D or TileMapLayer: bodiesInContact.erase(exitingNode)
 
 #endregion
+
+
+#region DEBUG
+
+# func _physics_process(_delta: float) -> void:
+# 	showDebugInfo()
+
+func showDebugInfo() -> void:
+	if not debugMode: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
+	Debug.watchList.areasInContact  = self.areasInContact
+	Debug.watchList.bodiesInContact = self.bodiesInContact
+
+#endregion
