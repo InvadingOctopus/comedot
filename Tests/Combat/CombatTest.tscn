@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://dafge0n7l43qm"]
+[gd_scene load_steps=24 format=4 uid="uid://dafge0n7l43qm"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2lgxf"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="2_a6r0q"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://h3pbo0mlj4je" path="res://Templates/Entities/MonsterEntityTemplate-Platformer.tscn" id="5_l6t3l"]
 [ext_resource type="PackedScene" uid="uid://dnj2tewb1jq0n" path="res://Scenes/Areas/SpawnArea.tscn" id="7_q70sy"]
 [ext_resource type="PackedScene" uid="uid://c8l4oj33xh2qa" path="res://Entities/Entity.tscn" id="7_s6bpi"]
-[ext_resource type="PackedScene" uid="uid://ks8fhlam1j34" path="res://Templates/Examples/GhostExampleEntity.tscn" id="8_js8sm"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="9_lvn5x"]
 [ext_resource type="PackedScene" uid="uid://qskvvxdkwgod" path="res://Components/Combat/DamageRepeatingComponent.tscn" id="10_lvn5x"]
 [ext_resource type="TileSet" uid="uid://bshjeqon37qc0" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.tres" id="10_s8cv2"]
@@ -33,7 +32,7 @@ script = ExtResource("3_a6r0q")
 min = 0
 max = 20
 value = 20
-logChanges = false
+debugMode = false
 name = &"health"
 displayName = "Health"
 description = ""
@@ -45,7 +44,7 @@ script = ExtResource("3_a6r0q")
 min = 0
 max = 20
 value = 20
-logChanges = false
+debugMode = false
 name = &"monsterHealth"
 displayName = "Health"
 description = ""
@@ -98,7 +97,7 @@ shape = SubResource("RectangleShape2D_v2n8r")
 
 [node name="SpawnTimer" parent="SpawnArea" index="1"]
 wait_time = 10.0
-sceneToSpawn = ExtResource("8_js8sm")
+sceneToSpawn = "uid://ks8fhlam1j34"
 groupToAddTo = &"ghosts"
 maximumLimitInGroup = 2
 
