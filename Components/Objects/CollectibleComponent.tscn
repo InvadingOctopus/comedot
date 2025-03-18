@@ -15,5 +15,3 @@ metadata/_edit_group_ = true
 [node name="CollectibleCollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_nufh5")
 debug_color = Color(0.3, 1, 0.3, 0.392157)
-
-[connection signal="area_entered" from="." to="." method="onAreaEntered"]

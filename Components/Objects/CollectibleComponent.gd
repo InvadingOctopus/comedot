@@ -10,11 +10,9 @@
 class_name CollectibleComponent
 extends Component
 
-# NOTE: DESIGN: [CollectibleComponent]s shouldn't include code to perform the handling of collision/transfer etc.
+# NOTE: DESIGN: PERFORMANCE: [CollectibleComponent] shouldn't inherit from [AreaCollisionComponent] or include code to perform the handling of collision to keep the component lightweight.
 # This component should only contain data about the collectible.
-# The pickup process should be covered by a [CollectorComponent].
-
-# TBD: PERFORMANCE: Inherit AreaCollisionComponent or would that be excessive bloat?
+# The pickup process should be covered by a [CollectorComponent] or subclasses such as [CollectibleStatComponent].
 
 
 #region Parameters
@@ -34,22 +32,26 @@ var previousPayloadResult: bool = false # TBD: Should this be a Variant to remem
 
 
 #region Signals
-signal didCollideCollector(collectorComponent: CollectorComponent)
+@warning_ignore("unused_signal")
+signal didCollideCollector(collectorComponent: CollectorComponent) ## NOTE: Unused by the base [CollectibleComponent], but may be emitted by subclasses.
 signal willBeCollected(collectorEntity: Entity)
 signal didDenyCollection(collectorEntity: Entity) ## When this component declines or cancels the collection.
 signal willBeFreed
 #endregion
 
 
-func onAreaEntered(area: Area2D) -> void:
-	if not isEnabled: return
+# DEBUG: UNUSED: May be used for subclasses.
+# func onAreaEntered(area: Area2D) -> void:
+# 	if not isEnabled: return
 
-	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
-	if not collectorComponent: return
+# 	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
+# 	if not collectorComponent: return
 
-	if debugMode: printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))
-	didCollideCollector.emit(collectorComponent)
+# 	if debugMode: printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))
+# 	didCollideCollector.emit(collectorComponent)
 
+
+#region Collection
 
 ## Called by a [CollectorComponent].
 ## When a collision occurs, the [CollectorComponent] handles the event and checks the conditions for collection (such as maximum allowed health or remaining inventory space).
@@ -84,6 +86,9 @@ func collect(collectorComponent: CollectorComponent) -> Variant:
 		self.requestDeletionOfParentEntity()
 
 	return previousPayloadResult
+
+
+#endregion
 
 
 #region Virtual Methods
