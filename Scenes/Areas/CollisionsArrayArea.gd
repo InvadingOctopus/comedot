@@ -1,13 +1,15 @@
 ## An [Area2D] which keeps track of all the other [Area2D]s that are in contact with it.
 ## Only [Area2D]s with a [CollisionObject2D.collision_layer] that matches the [CollisionObject2D.collision_mask] of this area are added.
 ## NOTE: Does NOT detect [PhysicsBody2D]s such as [CharacterBody2D] etc.
+## TIP: For an [Entity], use [AreaContactComponent].
 
 class_name CollisionsArrayArea
 extends Area2D
 
+# TODO: Update to bring in line with [AreaContactComponent]
 # TODO: Handle [PhysicsBody2D] collisions
 # TBD: Allow an `areaOverride` as in [ZoneComponent]?
-# TBD: Reduce code duplication between [AreaCollisionComponent]?
+# TBD: Reduce code duplication between [AreaContactComponent]?
 
 
 #region Parameters
