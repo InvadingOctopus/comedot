@@ -29,6 +29,7 @@ func _ready() -> void:
 func onCollide(collidingNode: Node2D) -> void:
 	if not isEnabled: return
 	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", shouldRemoveEntity: ", shouldRemoveEntity, ", nodesToRemove: ", nodesToRemove, ", componentsToRemove: ", componentsToRemove, ", componentsToCreate: ", componentsToCreate))
+	super.onCollide(collidingNode)
 	if shouldRemoveEntity:
 		self.willRemoveEntity.emit()
 		self.requestDeletionOfParentEntity()

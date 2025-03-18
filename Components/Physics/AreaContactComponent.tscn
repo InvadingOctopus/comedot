@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfeqql42vl720"]
+
+[ext_resource type="Script" uid="uid://tyfp2us4r8id" path="res://Components/Physics/AreaContactComponent.gd" id="1_qq1o2"]
+
+[node name="AreaContactComponent" type="Node" groups=["components"]]
+script = ExtResource("1_qq1o2")
