@@ -33,7 +33,7 @@ func _ready() -> void:
 
 ## Clears the [member areasInContact] & [member bodiesInContact] arrays and re-adds all [Area2D]s, [PhysicsBody2D]s or [TileMapLayer]s that are currently in contact with the [Area2D] of this component.
 ## Only [Area2D]s with a [CollisionObject2D.collision_layer] that matches the [CollisionObject2D.collision_mask] of this component are added.
-## If not [member isEnabled], the list is cleared but no areas are added.
+## If not [member isEnabled], the list is cleared but no areas are added. Affected by [member shouldMonitorAreas] and [member shouldMonitorBodies].
 ## NOTE: The [signal didEnterArea] and [signal didEnterBody] signals are emitted here to allow other scripts to react to any existing physical contact.
 func readdAllContacts() -> void:
 	# NOTE: Clear the list but don't add new areas/bodies if not enabled.
@@ -42,15 +42,17 @@ func readdAllContacts() -> void:
 	self.bodiesInContact.clear()
 	if not isEnabled: return
 
-	for overlappingArea in selfAsArea.get_overlapping_areas():
-		self.areasInContact.append(overlappingArea)
-		# TBD: Also call self.onCollide()?
-		self.didEnterArea.emit(overlappingArea)
+	if shouldMonitorAreas:
+		for overlappingArea in selfAsArea.get_overlapping_areas():
+			self.areasInContact.append(overlappingArea)
+			# TBD: Also call self.onCollide()?
+			self.didEnterArea.emit(overlappingArea)
 
-	for overlappingBody in selfAsArea.get_overlapping_bodies():
-		self.bodiesInContact.append(overlappingBody)
-		# TBD: Also call self.onExit()?
-		self.didEnterBody.emit(overlappingBody)
+	if shouldMonitorBodies:
+		for overlappingBody in selfAsArea.get_overlapping_bodies():
+			self.bodiesInContact.append(overlappingBody)
+			# TBD: Also call self.onExit()?
+			self.didEnterBody.emit(overlappingBody)
 
 
 #region Events
