@@ -1,5 +1,5 @@
 ## Base class for various components which depend on, monitor or manipulate an [Area2D].
-## The [Component] or its parent [Entity] ITSELF may BE an [Area2D] node, or a different [Area2D] that already exists may be supplied.
+## This [Component] script's node or its parent [Entity] ITSELF may BE an [Area2D] node, or a different [Area2D] that already exists may be specified.
 
 class_name AreaComponentBase
 extends Component
@@ -29,9 +29,8 @@ var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be
 
 
 func _enter_tree() -> void:
-	self.area = self.areaOverride
-
 	# DESIGN: A Component as Area2D should override the Entity as Area2D, because a Component is an explicit addition to an Entity.
+	self.area = self.areaOverride
 
 	# If no override is specified, first, try using this Component itself as an Area2D
 	if not self.area:
@@ -45,4 +44,4 @@ func _enter_tree() -> void:
 
 	# Still nothing? :(
 	if not self.area:
-		printWarning("Missing area. Cannot cast self as Area2D and cannot get area from parent Entity: " + parentEntity.logFullName)
+		printWarning("Missing area. Cannot cast self as Area2D and cannot get area from parentEntity: " + parentEntity.logFullName)
