@@ -121,15 +121,15 @@ func validateChoice() -> bool:
 func connectSignals() -> void:
 	# TBD: Disconnect signals if Upgrade is null'ed?
 	if not upgrade: return
-	Tools.reconnectSignal(upgrade.didLevelUp,   self.updateUI)
-	Tools.reconnectSignal(upgrade.didLevelDown, self.updateUI)
+	Tools.connectSignal(upgrade.didLevelUp,   self.updateUI)
+	Tools.connectSignal(upgrade.didLevelDown, self.updateUI)
 
 	# IMPORTANT: NOTE: Connect to the [UpgradesComponent] for these signals, because the component adds the Upgrade AFTER the Upgrade emits its signal!
-	Tools.reconnectSignal(targetUpgradesComponent.didAcquire, self.onUpgradesComponent_didChange)
-	Tools.reconnectSignal(targetUpgradesComponent.didDiscard, self.onUpgradesComponent_didChange)
+	Tools.connectSignal(targetUpgradesComponent.didAcquire, self.onUpgradesComponent_didChange)
+	Tools.connectSignal(targetUpgradesComponent.didDiscard, self.onUpgradesComponent_didChange)
 
 	var paymentStat: Stat = upgrade.findCostStatInStatsComponent(targetStatsComponent)
-	if paymentStat: Tools.reconnectSignal(paymentStat.changed, self.updateUI)
+	if paymentStat: Tools.connectSignal(paymentStat.changed, self.updateUI)
 
 
 func onUpgradesComponent_didChange(upgradeInComponent: Upgrade) -> void:

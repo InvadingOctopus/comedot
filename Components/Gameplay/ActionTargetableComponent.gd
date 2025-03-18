@@ -72,8 +72,8 @@ func updateMouseHover() -> void:
 
 
 func connectMouseSignals() -> void:
-	Tools.reconnectSignal(selfAscollisionObject.mouse_entered, setHighlight.bind(true))
-	Tools.reconnectSignal(selfAscollisionObject.mouse_exited, setHighlight.bind(false))
+	Tools.connectSignal(selfAscollisionObject.mouse_entered, setHighlight.bind(true))
+	Tools.connectSignal(selfAscollisionObject.mouse_exited, setHighlight.bind(false))
 
 
 func disconnectMouseSignals() -> void:

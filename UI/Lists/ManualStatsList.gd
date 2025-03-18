@@ -34,7 +34,7 @@ extends Container
 
 func _ready() -> void:
 	updateInitialStats()
-	Tools.reconnectSignal(GameState.statUpdated, self.onGameState_statUpdated) # Use Tools method to avoid error on multiple connections
+	Tools.connectSignal(GameState.statUpdated, self.onGameState_statUpdated) # Use Tools method to avoid error on multiple connections
 
 
 func updateInitialStats() -> void:

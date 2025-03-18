@@ -34,8 +34,8 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	Tools.reconnectSignal(GameState.playerRemoved, self.gameState_playerRemoved)
-	Tools.reconnectSignal(GameState.gameDidOver,   self.gameState_gameDidOver)
+	Tools.connectSignal(GameState.playerRemoved, self.gameState_playerRemoved)
+	Tools.connectSignal(GameState.gameDidOver,   self.gameState_gameDidOver)
 
 
 func disconnectSignals() -> void:

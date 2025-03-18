@@ -57,7 +57,7 @@ func _input(event: InputEvent) -> void:
 #region Target Selection
 
 func _ready() -> void:
-	Tools.reconnectSignal(actionsComponent.didRequestTarget, self.onActionsComponent_didRequestTarget)
+	Tools.connectSignal(actionsComponent.didRequestTarget, self.onActionsComponent_didRequestTarget)
 
 
 func onActionsComponent_didRequestTarget(action: Action, source: Entity) -> void:

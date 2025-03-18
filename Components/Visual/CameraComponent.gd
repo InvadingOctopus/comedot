@@ -91,7 +91,7 @@ func registerEntity(newParentEntity: Entity) -> void:
 
 
 func connectSignals() -> void:
-	Tools.reconnectSignal(parentEntity.preDelete, self.onEntity_preDelete)
+	Tools.connectSignal(parentEntity.preDelete, self.onEntity_preDelete)
 
 
 func onEntity_preDelete() -> void:

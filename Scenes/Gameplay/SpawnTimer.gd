@@ -32,7 +32,7 @@ func _ready() -> void:
 		selfAsTimer.stop() # Stop the Timer
 		spawn.call_deferred() # Defer to avoid the error: "Parent node is busy setting up children, `add_child()` failed."
 
-	Tools.reconnectSignal(selfAsTimer.timeout, self.onTimeout)
+	Tools.connectSignal(selfAsTimer.timeout, self.onTimeout)
 	selfAsTimer.start() # Start the Timer after the initial spawn
 
 

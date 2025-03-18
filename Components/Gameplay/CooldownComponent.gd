@@ -62,7 +62,7 @@ signal didFinishCooldown
 
 func _ready() -> void:
 	# Also connect the signal via code to make it more convenient for subclasses which don't inherit the .tscn scene, such as GunComponent
-	Tools.reconnectSignal(cooldownTimer.timeout, self.finishCooldown)
+	Tools.connectSignal(cooldownTimer.timeout, self.finishCooldown)
 
 
 #region Cooldown

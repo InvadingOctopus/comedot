@@ -22,8 +22,8 @@ func _ready() -> void:
 	# Just in case...
 	repetitionTimer.autostart = false
 	repetitionTimer.stop()
-	Tools.reconnectSignal(self.didCollideReceiver, self.onDidCollideReceiver)
-	Tools.reconnectSignal(self.didLeaveReceiver,   self.onDidLeaveReceiver)
+	Tools.connectSignal(self.didCollideReceiver, self.onDidCollideReceiver)
+	Tools.connectSignal(self.didLeaveReceiver,   self.onDidLeaveReceiver)
 
 
 ## Starts the [member repetitionTimer] if it's not already on.

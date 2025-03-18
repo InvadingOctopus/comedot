@@ -33,7 +33,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	Tools.reconnectSignal(gunComponent.didFire, self.onGunComponent_didFire)
+	Tools.connectSignal(gunComponent.didFire, self.onGunComponent_didFire)
 
 
 func onGunComponent_didFire(bullet: Entity) -> void:

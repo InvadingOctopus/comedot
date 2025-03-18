@@ -98,8 +98,8 @@ func createCooldownsList() -> void:
 
 func connectSignals() -> void:
 	for action in self.actions:
-		Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown.bind(action))
-		Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown.bind(action))
+		Tools.connectSignal(action.didStartCooldown,  self.onAction_didStartCooldown.bind(action))
+		Tools.connectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown.bind(action))
 	
 
 func onAction_didStartCooldown(action: Action) -> void:

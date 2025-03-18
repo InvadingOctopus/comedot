@@ -93,13 +93,13 @@ func checkUsability() -> bool:
 #region Events
 
 func connectSignals() -> void:
-	Tools.reconnectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
-	Tools.reconnectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
-	Tools.reconnectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
+	Tools.connectSignal(action.didDecreaseUses,   self.onAction_didDecreaseUses)
+	Tools.connectSignal(action.didStartCooldown,  self.onAction_didStartCooldown)
+	Tools.connectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown)
 
-	Tools.reconnectSignal(GlobalUI.actionIsChoosingTarget, self.onGlobalUI_actionIsChoosingTarget)
-	Tools.reconnectSignal(GlobalUI.actionDidChooseTarget,  self.onGlobalUI_actionDidChooseTarget)
-	Tools.reconnectSignal(GlobalUI.actionDidCancelTarget,  self.onGlobalUI_actionDidCancelTarget)
+	Tools.connectSignal(GlobalUI.actionIsChoosingTarget, self.onGlobalUI_actionIsChoosingTarget)
+	Tools.connectSignal(GlobalUI.actionDidChooseTarget,  self.onGlobalUI_actionDidChooseTarget)
+	Tools.connectSignal(GlobalUI.actionDidCancelTarget,  self.onGlobalUI_actionDidCancelTarget)
 
 
 func onPressed() -> void:

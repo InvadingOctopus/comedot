@@ -89,8 +89,8 @@ func _enter_tree() -> void:
 func connectSignals() -> void:
 	printDebug("connectSignals()")
 	# TBD: UNUSED: Unneeded for now
-	# Tools.reconnectSignal(self.child_entered_tree, self.childEnteredTree)
-	# Tools.reconnectSignal(self.child_exiting_tree, self.childExitingTree)
+	# Tools.connectSignal(self.child_entered_tree, self.childEnteredTree)
+	# Tools.connectSignal(self.child_exiting_tree, self.childExitingTree)
 
 
 func _process(_delta: float) -> void:

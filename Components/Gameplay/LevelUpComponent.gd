@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	if xp: Tools.reconnectSignal(xp.didMax, self.onxp_didMax)
+	if xp: Tools.connectSignal(xp.didMax, self.onxp_didMax)
 
 
 func onxp_didMax() -> void:

@@ -82,7 +82,7 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 #region Rechecks
 
 func connectSignals() -> void:
-	Tools.reconnectSignal(stat.changed, self.onstat_changed)
+	Tools.connectSignal(stat.changed, self.onstat_changed)
 
 
 func onstat_changed() -> void:

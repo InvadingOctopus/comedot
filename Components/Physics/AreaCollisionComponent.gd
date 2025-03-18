@@ -45,10 +45,10 @@ func _ready() -> void:
 ## NOTE: NOT called by the default/superclass implementation. Must be called manually by any class that `extends` [AreaCollisionComponentBase]
 ## TIP: To connect only specific signal(s), override this method WITHOUT calling `super.connectSignals()`
 func connectSignals() -> void:
-	Tools.reconnectSignal(area.area_entered, self.onArea_areaEntered)
-	Tools.reconnectSignal(area.area_exited,  self.onArea_areaExited)
-	Tools.reconnectSignal(area.body_entered, self.onArea_bodyEntered)
-	Tools.reconnectSignal(area.body_exited,  self.onArea_bodyExited)
+	Tools.connectSignal(area.area_entered, self.onArea_areaEntered)
+	Tools.connectSignal(area.area_exited,  self.onArea_areaExited)
+	Tools.connectSignal(area.body_entered, self.onArea_bodyEntered)
+	Tools.connectSignal(area.body_exited,  self.onArea_bodyExited)
 
 
 func onArea_areaEntered(areaEntered: Area2D) -> void:
