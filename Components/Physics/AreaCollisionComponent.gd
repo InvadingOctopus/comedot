@@ -45,20 +45,20 @@ func _ready() -> void:
 ## NOTE: NOT called by the default/superclass implementation. Must be called manually by any class that `extends` [AreaCollisionComponentBase]
 ## TIP: To connect only specific signal(s), override this method WITHOUT calling `super.connectSignals()`
 func connectSignals() -> void:
-	Tools.connectSignal(area.area_entered, self.onArea_areaEntered)
-	Tools.connectSignal(area.area_exited,  self.onArea_areaExited)
-	Tools.connectSignal(area.body_entered, self.onArea_bodyEntered)
-	Tools.connectSignal(area.body_exited,  self.onArea_bodyExited)
+	Tools.connectSignal(area.area_entered, self.onAreaEntered)
+	Tools.connectSignal(area.area_exited,  self.onAreaExited)
+	Tools.connectSignal(area.body_entered, self.onBodyEntered)
+	Tools.connectSignal(area.body_exited,  self.onBodyExited)
 
 
-func onArea_areaEntered(areaEntered: Area2D) -> void:
+func onAreaEntered(areaEntered: Area2D) -> void:
 	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 	if not isEnabled or areaEntered.owner == self or areaEntered.owner == self.parentEntity: return # Avoid running into ourselves
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
 
 
-func onArea_bodyEntered(bodyEntered: Node2D) -> void:
+func onBodyEntered(bodyEntered: Node2D) -> void:
 	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
 	if not isEnabled or bodyEntered.owner == self or bodyEntered.owner == self.parentEntity: return # Avoid running into ourselves
 	self.onCollide(bodyEntered)
@@ -66,7 +66,7 @@ func onArea_bodyEntered(bodyEntered: Node2D) -> void:
 
 
 ## NOTE: This is NOT affected by `isEnabled`; areas that exit should ALWAYS be removed!
-func onArea_areaExited(areaExited: Area2D) -> void:
+func onAreaExited(areaExited: Area2D) -> void:
 	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
 	if areaExited.owner == self or areaExited.owner == self.parentEntity: return # Avoid raising a ruckus if it's just ourselves
 	self.onExit(areaExited)
@@ -74,7 +74,7 @@ func onArea_areaExited(areaExited: Area2D) -> void:
 
 
 ## NOTE: This is NOT affected by `isEnabled`; bodies that exit should ALWAYS be removed!
-func onArea_bodyExited(bodyExited: Node2D) -> void:
+func onBodyExited(bodyExited: Node2D) -> void:
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
 	if bodyExited.owner == self or bodyExited.owner == self.parentEntity: return # Avoid raising a ruckus if it's just ourselves
 	self.onExit(bodyExited)
