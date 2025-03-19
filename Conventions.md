@@ -110,6 +110,20 @@ func onTimeout() # in the script of a Timer node
 * "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between UpgradesComponents, should be done via signals.
 
 
+## Comments
+
+* Comments don't use BBCode. It's ugly and just dumb in 2025. Waiting for Godot to just implement Markdown already.
+
+* Comments may begin with tags for marking stuff to watch out for. Most such as TODO & FIXME are self-explanatory.
+	- TBD: (To Be Decided) or CHECK: Something that is an uncertain solution, may not be the ideal and could change in the future, but works for now.
+	- DESIGN: Explanation for decisions behind code that may seem weird or when its reason may not be immediately apparent.
+	- DEBUG: Code that is only there to aid debugging and should be commented out or removed before committing, exporting or release.
+	- FIXED/SOLVED/DONTTOUCH or similar: Code that has already solved a tricky problem and should not be messed with, otherwise the problem might resurface.
+	- WORKAROUND: Code that temporarily solves a bug in Godot etc. and may be removed after the bug has been eradicated.
+	- CREDIT: For people/sources who created certain code or resources, such as other open-source projects/contributors or third-party asset providers.
+	- THANKS: For people/sources who suggested or were the inspiration behind an idea or solution.
+
+
 ## Design
 
 * The ultimate goal is to have minimal time between getting a new gameplay idea and seeing it on screen. And be easy to modify later. The focus is on 2D games.
@@ -133,8 +147,6 @@ func onTimeout() # in the script of a Timer node
 
 
 ## Miscellaneous
-
-* Comments don't use BBCode. It's dumb and ugly in 2025. Waiting for Godot to just implement Markdown already.
 
 * Do not try to use `-1` etc as an indicator of whether some numerical value is invalid or should be ignored. It complicates ALL other calculations down the road. Just use a separate flag.
 	- e.g. `allowInfiniteLevels = true` instead of `maxLevel = -1`
