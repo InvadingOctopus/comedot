@@ -1,26 +1,14 @@
-## Monitors an [Area2D] and performs actions when it enters or exits another [Area2D] belonging to the "Zones" group.
-## Keeps a list of overlapping zones.
+## Monitors an [Area2D] when it enters or exits another [Area2D] belonging to the "zones" group, and maintains a list of overlapping zones.
+## Intended to be subclassed for game-specific functionality.
 ## Examples: A "home zone" which heals the player, or an area of fire or poison which causes damage.
-## Recommended to be subclassed.
 
 class_name ZoneComponent
-extends Component
-
-
-#region Parameters
-
-## The area which this component represents. If `null` then the component node itself is used if it is an [Area2D], otherwise the parent [Entity] node is used if that is an [Area2D]
-## NOTE: The area's signals are connected to this component automatically in [method _ready]
-## Default: `self` or `parentEntity.area`
-@export var areaOverride: Area2D
-
-@export var isEnabled: bool = true
-#endregion
+extends AreaContactComponent
 
 
 #region Signals
-signal didEnterZone(zoneArea: Area2D)
-signal didExitZone(zoneArea:  Area2D)
+signal didEnterZone(zoneArea: Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didEnterArea]
+signal didExitZone(zoneArea:  Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didExitArea]
 signal didUpdateZones
 #endregion
 
@@ -32,67 +20,105 @@ var currentZones: Array[Area2D]
 
 
 func _ready() -> void:
-	if not areaOverride:
-		areaOverride = self.get_node(^".") as Area2D # HACK: Find better way to cast self?
-
-	# If we still have no area, check if the parent [Entity] has an area.
-
-	if not areaOverride:
-		areaOverride = parentEntity.getArea()
-
+	super._ready()
+	self.shouldMonitorAreas  = true
+	self.shouldMonitorBodies = false
 	connectSignals()
-	updateCurrentZones()
 
 
+## Overrides [method AreaContactComponent.connectSignals] and only monitors for [Area2D]s, regardless of flags.
 func connectSignals() -> void:
-	if not areaOverride: return
 	# TBD: CHECK: Should it CONNECT_PERSIST?
-	Tools.connectSignal(areaOverride.area_entered, self.onAreaEntered, CONNECT_PERSIST)
-	Tools.connectSignal(areaOverride.area_exited,  self.onAreaExited,  CONNECT_PERSIST)
+	Tools.connectSignal(area.area_entered, self.onAreaEntered, CONNECT_PERSIST)
+	Tools.connectSignal(area.area_exited,  self.onAreaExited,  CONNECT_PERSIST)
+	# NOTE: Ignore "bodies"
 
 
-## Returns: The number of overlapping [Area2D]s which belong to the "zones" group, and adds them to the [member currentZones] array.
-func updateCurrentZones() -> int:
-	var areas: Array[Area2D] = self.areaOverride.get_overlapping_areas()
+## Overrides [method AreaContactComponent.readdAllContacts] and only adds "zones".
+func readdAllContacts() -> void:
+	# Clear the current lists.
+	areasInContact.clear()
+	bodiesInContact.clear()
+	currentZones.clear()
+	
+	# Ignore shouldMonitorAreas/shouldMonitorBodies flags 
+	# Allow signal observers to respond to zones already in contact.
 
-	# First, clear the current list.
-	self.currentZones.clear()
-
-	for zone in areas:
-		if zone.is_in_group(Global.Groups.zones):
-			currentZones.append(zone)
+	for overlappingArea in selfAsArea.get_overlapping_areas():
+		areasInContact.append(overlappingArea)
+		self.didEnterArea.emit(overlappingArea)
+		
+		if overlappingArea.is_in_group(Global.Groups.zones):
+			currentZones.append(overlappingArea)
+			self.didEnterZone.emit(overlappingArea)
 
 	didUpdateZones.emit()
-	return currentZones.size()
+	return currentZones.size() # TBD: How does this work with `void`?
 
 
-func onAreaEntered(area: Area2D) -> void:
+## Overrides [method AreaContactComponent.onAreaEntered] and only adds "zones".
+func onAreaEntered(areaEntered: Area2D) -> void:
 	# Is the area a member of the "zones" group?
-	if not isEnabled or not area.is_in_group(Global.Groups.zones): return
+	if not isEnabled or not areaEntered.is_in_group(Global.Groups.zones): return
+
+	areasInContact.append(areaEntered)
 
 	# Add it to the [currentZones] array if it isn't already in it.
-	if self.currentZones.count(area) <= 0:
-		currentZones.append(area)
+	if self.currentZones.count(areaEntered) <= 0:
+		currentZones.append(areaEntered)
 		didUpdateZones.emit()
 
-	printDebug("onAreaEntered: " + str(area) + " | currentZones: " + str(currentZones.size()))
-	didEnterZone.emit(area)
+	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", currentZones: ", currentZones.size()))
+	self.onCollide(areaEntered)
+	didEnterArea.emit(areaEntered)
+	didEnterZone.emit(areaEntered)
 
 
-func onAreaExited(area: Area2D) -> void:
+## Overrides [method AreaContactComponent.readdonAreaExitedllContacts] and only adds "zones".
+## NOTE: This is NOT affected by `isEnabled`; zones that exit should ALWAYS be removed!
+func onAreaExited(areaExited: Area2D) -> void:
 	# Is the area a member of the "zones" group?
-	if not isEnabled or not area.is_in_group(Global.Groups.zones): return
+	if not areaExited.is_in_group(Global.Groups.zones): return
+	
+	areasInContact.erase(areaExited)
 
 	# Remove it from the [currentZones] array.
-	if self.currentZones.count(area) >= 1:
-		currentZones.erase(area)
+	if self.currentZones.count(areaExited) >= 1:
+		currentZones.erase(areaExited)
 		didUpdateZones.emit()
 
-	printDebug("onAreaExited: " + str(area) + " | currentZones: " + str(currentZones.size()))
-	didExitZone.emit(area)
+	if debugMode: printDebug(str("onAreaExited(): ", areaExited, ", currentZones: ", currentZones.size()))
+	self.onExit(areaExited)
+	didExitArea.emit(areaExited)
+	didExitZone.emit(areaExited)
+
+
+#region Abstract Methods
+# NOTE: Ignore the AreaContactComponent implementation because here we only care about zones.
+
+## Abstract; Must be implemented by subclass.
+@warning_ignore("unused_parameter")
+func onCollide(collidingNode: Node2D) -> void:
+	pass
+
+
+## Abstract; Must be implemented by subclass.
+@warning_ignore("unused_parameter")
+func onExit(exitingNode: Node2D) -> void:
+	pass
+
+#endregion
 
 
 #region DEBUG
+
 # func _physics_process(_delta: float) -> void:
-# 	Debug.watchList.currentZones = self.currentZones
+# 	showDebugInfo()
+
+
+func showDebugInfo() -> void:
+	if not debugMode: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
+	Debug.watchList.currentZones = self.currentZones
+
 #endregion
