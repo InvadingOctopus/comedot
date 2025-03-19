@@ -10,6 +10,8 @@
 class_name DamageComponent
 extends Component
 
+# TBD: Inherit from AreaCollisionComponent or AreaContactComponent or stay standalone to improve performance and keep customizability?
+
 
 #region Parameters
 

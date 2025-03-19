@@ -6,7 +6,7 @@
 class_name AreaCollisionComponent
 extends AreaComponentBase
 
-# TBD: Use this as the base for DamageComponent, ZoneComponent, etc.?
+# TBD: Use this as the base for DamageComponent etc.?
 
 # DESIGN: Do not connect signals here; specific signals should only be connected in specific subclasses when they are needed, to improve performance.
 
@@ -80,6 +80,10 @@ func onBodyExited(bodyExited: Node2D) -> void:
 	self.onExit(bodyExited)
 	didExitBody.emit(bodyExited)
 
+#endregion
+
+
+#region Abstract Methods
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] comes into contact.
 ## NOTE: Called BEFORE [signal didEnterArea] or [signal didEnterBody] is emitted, to let subclasses such as [AreaContactComponent] to modify the state before signal handlers.

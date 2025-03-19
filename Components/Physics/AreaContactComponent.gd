@@ -6,7 +6,7 @@ class_name AreaContactComponent
 extends AreaCollisionComponent
 
 # TBD: Add a list for [TileMapLayer]s?
-# TBD: Use this as the base for DamageComponent, ZoneComponent, etc.?
+# TBD: Use this as the base for DamageComponent etc.?
 # TBD: Reduce code duplication between [CollisionsArrayArea]?
 
 # DESIGN: Do not connect signals here; specific signals should only be connected in specific subclasses when they are needed, to improve performance.
@@ -59,7 +59,6 @@ func readdAllContacts() -> void:
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] comes into contact, and adds the colliding node to [member areasInContact] or [member bodiesInContact].
 ## NOTE: Does NOT add new nodes if not [member isEnabled]
-@warning_ignore("unused_parameter")
 func onCollide(collidingNode: Node2D) -> void:
 	if not isEnabled: return
 	# TBD: Prevent duplicates? or is that done implicitly anyway via the order of enter/exit signals?
@@ -69,7 +68,6 @@ func onCollide(collidingNode: Node2D) -> void:
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] leaves contact, and removes the departing node from [member areasInContact] or [member bodiesInContact].
 ## NOTE: Removal is NOT affected by [member isEnabled] to ensure expected behavior.
-@warning_ignore("unused_parameter")
 func onExit(exitingNode: Node2D) -> void:
 	if   exitingNode is Area2D: areasInContact.erase(exitingNode)
 	elif exitingNode is PhysicsBody2D or TileMapLayer: bodiesInContact.erase(exitingNode)
@@ -81,6 +79,7 @@ func onExit(exitingNode: Node2D) -> void:
 
 # func _physics_process(_delta: float) -> void:
 # 	showDebugInfo()
+
 
 func showDebugInfo() -> void:
 	if not debugMode: return
