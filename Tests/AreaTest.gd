@@ -12,11 +12,11 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	Debug.watchList.areaPositition = area.position
-	Debug.watchList.areaGlobalPositition = area.global_position
+	Debug.watchList.areaPosition = area.position
+	Debug.watchList.areaGlobalPosition = area.global_position
 
-	Debug.watchList.shapeNodePositition = shapeNode.position
-	Debug.watchList.shapeNodeGlobalPositition = shapeNode.global_position
+	Debug.watchList.shapeNodePosition = shapeNode.position
+	Debug.watchList.shapeNodeGlobalPosition = shapeNode.global_position
 
 	var shapeBounds: Rect2 = Tools.getShapeBounds(area)
 	Debug.watchList.shapeBounds = shapeBounds
