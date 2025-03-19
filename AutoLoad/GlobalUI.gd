@@ -69,7 +69,7 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 	window.move_to_center()
 	window.size	= newSize
 	window.move_to_center()
-	
+
 	Settings.windowWidth  = width
 	Settings.windowHeight = height
 
