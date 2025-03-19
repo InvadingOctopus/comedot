@@ -1,20 +1,24 @@
 ## Base class for various components which depend on, monitor or manipulate an [Area2D].
-## This [Component] script's node or its parent [Entity] ITSELF may BE an [Area2D] node, or a different [Area2D] that already exists may be specified.
+## The monitored area may be this component's own node, the parent [Entity] node, or another area which may be shared between multiple components.
+## This component only chooses and provides an [Area2D] property.
+## TIP: To receive signals about collisions, use [AreaCollisionComponent].
+## TIP: To maintain a list of all nodes in physical contact, use [AreaContactComponent].
 
 class_name AreaComponentBase
 extends Component
 
-# TBD: Better name? :')
+# TBD: Better name?
 
 
 #region Parameters
-## A specific [Area2D] to use. If unspecified, then this Component is used if it itself is an [Area2D] node, otherwise the Component's parent [member Entity.area] is used.
+## A specific [Area2D] to use. If unspecified, then this Component's node is used if it itself is an [Area2D], otherwise this Component's parent [member Entity.area] is used.
 @export var areaOverride: Area2D
 #endregion
 
 
 #region State
-var area: Area2D ## The actual [Area2D] currently in use.
+
+var area: Area2D ## The actual [Area2D] currently in use, which may be chosen automatically if [member areaOverride] is not valid.
 
 var selfAsArea: Area2D: # TBD: PERFORMANCE: Should this be set once in _ready()?
 	get:
@@ -25,6 +29,7 @@ var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be
 	get:
 		if not selfAscollisionObject: selfAscollisionObject = self.get_node(^".") as CollisionObject2D
 		return selfAscollisionObject
+
 #endregion
 
 

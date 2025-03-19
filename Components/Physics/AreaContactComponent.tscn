@@ -1,5 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfeqql42vl720"]
+[gd_scene load_steps=3 format=3 uid="uid://dfeqql42vl720"]
 
 [ext_resource type="PackedScene" uid="uid://c67ee4tfbi3lk" path="res://Components/Physics/AreaCollisionComponent.tscn" id="1_qq1o2"]
+[ext_resource type="Script" uid="uid://tyfp2us4r8id" path="res://Components/Physics/AreaContactComponent.gd" id="2_lah8s"]
 
 [node name="AreaContactComponent" instance=ExtResource("1_qq1o2")]
+script = ExtResource("2_lah8s")
+shouldMonitorAreas = true
+shouldMonitorBodies = true
+shouldConnectSignalsOnReady = true

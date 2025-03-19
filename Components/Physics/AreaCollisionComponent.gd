@@ -1,27 +1,26 @@
-## Emits signals when an [Area2D], [PhysicsBody2D] or [TileMapLayer] collides with this component's [Area2D].
-## Only nodes with a [CollisionObject2D.collision_layer] that matches the [CollisionObject2D.collision_mask] of this component are added.
+## Monitors an [Area2D] and emits signals when it collides with another [Area2D], [PhysicsBody2D] or [TileMapLayer].
+## Only nodes with a [CollisionObject2D.collision_layer] matching the [CollisionObject2D.collision_mask] of this component are detected.
 ## Suitable as a base class for any component that needs to react to physics collisions.
-## TIP: For a class that maintains a list of all objects currently in physics contact, use [AreaContactComponent].
+## IMPORTANT: [method connectSignals] must be called manually by a subclass or another script to start monitoring collisions, to improve performance until needed.
+## TIP: To maintain a list of all nodes currently in physics contact, use [AreaContactComponent]
 
 class_name AreaCollisionComponent
 extends AreaComponentBase
 
 # TBD: Use this as the base for DamageComponent etc.?
 
-# DESIGN: Do not connect signals here; specific signals should only be connected in specific subclasses when they are needed, to improve performance.
-
 
 #region Parameters
 
 ## If `false`, no new areas/bodies are reported.
-## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
+## Also effects [member Area2D.monitorable] but NOT [member Area2D.monitoring]
 ## NOTE: Does NOT affect the EXIT signals or REMOVAL of areas/bodies which leave contact with this component.
 @export var isEnabled: bool = true:
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
 			if selfAsArea: selfAsArea.monitorable = isEnabled
-			# selfAsArea.monitoring  = isEnabled # Should be always disabled; WHY? To detect exits?
+			# selfAsArea.monitoring = isEnabled # Should be always enabled, to detect exits.
 
 #endregion
 
@@ -36,7 +35,7 @@ signal didExitBody(body:  Node2D) ## NOTE: Emitted AFTER [method onExit]
 
 func _ready() -> void:
 	if selfAsArea: selfAsArea.monitorable = isEnabled
-	# connectSignals() # TBD: PERFORMANCE: Should be opted-in by subclasses.
+	# connectSignals() # DESIGN: PERFORMANCE: Should be opted-in by subclasses.
 
 
 #region Events
