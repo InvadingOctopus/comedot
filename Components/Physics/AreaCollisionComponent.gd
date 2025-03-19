@@ -50,16 +50,19 @@ func connectSignals() -> void:
 	Tools.connectSignal(area.body_exited,  self.onBodyExited)
 
 
+# DESIGN: All functions below: Ignore collisions when the node is the parent Entity or any of its children.
+# TBD: Should removals skip the parent check?
+
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
-	if not isEnabled or areaEntered.owner == self or areaEntered.owner == self.parentEntity: return # Avoid running into ourselves
+	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return 
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
 	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
-	if not isEnabled or bodyEntered.owner == self or bodyEntered.owner == self.parentEntity: return # Avoid running into ourselves
+	if not isEnabled or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	self.onCollide(bodyEntered)
 	didEnterBody.emit(bodyEntered)
 
@@ -67,7 +70,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 ## NOTE: This is NOT affected by `isEnabled`; areas that exit should ALWAYS be removed!
 func onAreaExited(areaExited: Area2D) -> void:
 	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
-	if areaExited.owner == self or areaExited.owner == self.parentEntity: return # Avoid raising a ruckus if it's just ourselves
+	if areaExited == self.parentEntity or areaExited.owner == self.parentEntity: return
 	self.onExit(areaExited)
 	didExitArea.emit(areaExited)
 
@@ -75,7 +78,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 ## NOTE: This is NOT affected by `isEnabled`; bodies that exit should ALWAYS be removed!
 func onBodyExited(bodyExited: Node2D) -> void:
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
-	if bodyExited.owner == self or bodyExited.owner == self.parentEntity: return # Avoid raising a ruckus if it's just ourselves
+	if bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
 	self.onExit(bodyExited)
 	didExitBody.emit(bodyExited)
 

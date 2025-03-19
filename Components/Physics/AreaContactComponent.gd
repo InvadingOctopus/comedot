@@ -48,15 +48,17 @@ func readdAllContacts() -> void:
 
 	if shouldMonitorAreas:
 		for overlappingArea in selfAsArea.get_overlapping_areas():
-			areasInContact.append(overlappingArea)
-			self.onCollide(overlappingArea)
-			self.didEnterArea.emit(overlappingArea)
+			if overlappingArea != self.parentEntity or overlappingArea.owner != self.parentEntity:
+				areasInContact.append(overlappingArea)
+				self.onCollide(overlappingArea)
+				self.didEnterArea.emit(overlappingArea)
 
 	if shouldMonitorBodies:
 		for overlappingBody in selfAsArea.get_overlapping_bodies():
-			bodiesInContact.append(overlappingBody)
-			self.onCollide(overlappingBody)
-			self.didEnterBody.emit(overlappingBody)
+			if overlappingBody != self.parentEntity or overlappingBody.owner != self.parentEntity:
+				bodiesInContact.append(overlappingBody)
+				self.onCollide(overlappingBody)
+				self.didEnterBody.emit(overlappingBody)
 
 
 #region Events
@@ -75,10 +77,12 @@ func connectSignals() -> void:
 
 # DESIGN: All functions below: Arrays should be updated before signals.
 # There is code duplication from [AreaCollisionComponent] because the arrays must be updated in the middle of the functions :(
+# Ignore collisions when the node is the parent Entity or any of its children.
+# TBD: Should removals skip the parent check?
 
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled or not shouldMonitorAreas or areaEntered.owner == self or areaEntered.owner == self.parentEntity: return
+	if not isEnabled or not shouldMonitorAreas or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return
 	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 	
 	areasInContact.append(areaEntered)
@@ -87,9 +91,9 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
-	if not isEnabled or not shouldMonitorBodies or bodyEntered.owner == self or bodyEntered.owner == self.parentEntity: return
+	if not isEnabled or not shouldMonitorBodies or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
-	
+
 	bodiesInContact.append(bodyEntered)
 	self.onCollide(bodyEntered)
 	didEnterBody.emit(bodyEntered)
@@ -97,7 +101,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 
 ## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorAreas]
 func onAreaExited(areaExited: Area2D) -> void:
-	if not shouldMonitorAreas or areaExited.owner == self or areaExited.owner == self.parentEntity: return
+	if not shouldMonitorAreas or areaExited == self.parentEntity or areaExited.owner == self.parentEntity: return
 	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
 	
 	areasInContact.erase(areaExited)
@@ -107,7 +111,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 ## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorBodies]
 func onBodyExited(bodyExited: Node2D) -> void:
-	if not shouldMonitorBodies or bodyExited.owner == self or bodyExited.owner == self.parentEntity: return
+	if not shouldMonitorBodies or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
 	
 	bodiesInContact.erase(bodyExited)
