@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://dx0iq5k22enrr"]
+
+[ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="1_0e2cn"]
+[ext_resource type="PackedScene" uid="uid://bw620u6vv6sci" path="res://Components/Combat/TileDamageComponent.tscn" id="2_3ifp7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyjcu"]
+resource_local_to_scene = true
+size = Vector2(4, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_akffb"]
+resource_local_to_scene = true
+size = Vector2(4, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8a3n8"]
+resource_local_to_scene = true
+size = Vector2(4, 4)
+
+[node name="Bullet" instance=ExtResource("1_0e2cn")]
+
+[node name="NonDamageCollisionShape" parent="." index="1"]
+shape = SubResource("RectangleShape2D_jyjcu")
+
+[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
+shape = SubResource("RectangleShape2D_akffb")
+
+[node name="TileDamageComponent" parent="." index="7" instance=ExtResource("2_3ifp7")]
+debugMode = true
+
+[node name="DamageCollisionShape" parent="TileDamageComponent" index="0"]
+shape = SubResource("RectangleShape2D_8a3n8")
+
+[editable path="DamageComponent"]
+[editable path="OffscreenRemovalComponent"]
+[editable path="TileDamageComponent"]
