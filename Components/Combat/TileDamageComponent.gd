@@ -1,42 +1,42 @@
 ## A subclass of [DamageComponent] which causes damage to destructible [TileMapLayer] cells.
+## Calls [method Tools.damageTileMapCell] which changes a TileMap cell's tile to a different tile,
+## depending on the tile's [member Global.TileMapCustomData.isDestructible] & [member Global.TileMapCustomData.nextTileOnDamage] custom data layers, which must be set in the TileSet itself.
+## If there is no "next tile" specified or both X & Y coordinates are below 0 i.e. (-1,-1) then the cell is erased/destroyed.
+## @experimental
 
 class_name TileDamageComponent
-extends DamageComponent
+extends TileCollisionComponent
 
+# TODO: Variable damage & cell health
 # TBD: Add contacts to an array similar to`damageReceivingComponentsInContact`?
+
+
+func _ready() -> void:
+	Tools.connectSignal(area.body_shape_entered, self.onBodyShapeEntered)
+	# Ignore exits # UNUSED: Tools.connectSignal(area.body_shape_exited,  self.onBodyShapeExited)
 
 
 #region Collisions
 
-## Suppresses [method DamageComponent.onAreaEntered] to disable collisions with regular [Area2D]s
-func onAreaEntered(_areaEntered: Area2D) -> void:
-	pass
-
-
-## Suppresses [method DamageComponent.onAreaExited] to disable collisions with regular [Area2D]s
-func onAreaExited(_areaExited: Area2D) -> void:
-	# TBD: Should we respect removal of `damageReceivingComponentsInContact`?
-	pass
-
-
 @warning_ignore("unused_parameter")
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
+	# TBD: Remove code duplication from TileCollisionComponent
 	if not isEnabled or bodyEntered is not TileMapLayer or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	var cellCoordinates: Vector2i = bodyEntered.get_coords_for_body_rid(bodyRID)
 
 	if debugMode:
 		printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
 		TextBubble.create.call(str(cellCoordinates), bodyEntered).label.label_settings.font_color = Color.YELLOW
-	
-	Tools.damageTileMapCell(bodyEntered, cellCoordinates)
+
+	Tools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
+	self.onCollideCell(bodyEntered, cellCoordinates)
+	didEnterTileCell.emit(bodyEntered, cellCoordinates)
 
 
+## Suppresses [method TileCollisionComponent.onBodyShapeExited] to ignore events of leaving physical contact with a [TileMapLayer] cell.
 @warning_ignore("unused_parameter")
 func onBodyShapeExited(bodyRID: RID,  bodyExited: Node2D,  bodyShapeIndex: int, localShapeIndex: int) -> void:
 	pass
-	# UNUSED:
-	# if bodyExited is not TileMapLayer or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
-	# var cellCoordinates: Vector2i = bodyExited.get_coords_for_body_rid(bodyRID)
-	# if debugMode: printDebug(str("TileMapLayer exited: ", bodyExited, " @", cellCoordinates))
+	# UNUSED: super.onBodyShapeExited(bodyRID, bodyExited, bodyShapeIndex, localShapeIndex)
 
 #endregion
