@@ -74,7 +74,7 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 		if signi(randomizedModifier) == 1:    symbol = "+"
 		elif signi(randomizedModifier) == -1: symbol = "-"
 
-		TextBubble.create(collectorEntity, str(stat.displayName.capitalize(), symbol, randomizedModifier))
+		TextBubble.create(str(stat.displayName.capitalize(), symbol, randomizedModifier), collectorEntity)
 	
 	return randomizedModifier
 

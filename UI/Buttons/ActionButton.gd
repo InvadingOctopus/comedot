@@ -131,7 +131,7 @@ func onAction_didFinishCooldown() -> void:
 func onGlobalUI_actionIsChoosingTarget(eventAction: Action, _source: Entity) -> void:
 	if eventAction == self.action:
 		self.disabled = true
-		if shouldShowTargetPrompt: TextBubble.create(self, "Choose target", Vector2(self.size.x / 2, 0)) # Position the Bubble at the center of this Button
+		if shouldShowTargetPrompt: TextBubble.create("Choose target", self, Vector2(self.size.x / 2, 0)) # Position the Bubble at the center of this Button
 
 
 func onGlobalUI_actionDidChooseTarget(eventAction: Action, _source: Entity, _target: Variant) -> void:

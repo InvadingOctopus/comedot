@@ -78,5 +78,5 @@ func emitBubble(damageAmount: int) -> void:
 	if self.shouldShowRemainingHealth and healthComponent: text = str(healthComponent.health.value)
 	else: str("-," if damageAmount > 0 else "", damageAmount)
 
-	var bubble: TextBubble = TextBubble.create(self.parentEntity, text)
+	var bubble: TextBubble = TextBubble.create(text, self.parentEntity)
 	bubble.label.label_settings.font_color = Color.ORANGE

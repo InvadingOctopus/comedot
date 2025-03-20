@@ -77,7 +77,7 @@ func processTurnBeginSignals() -> void:
 	if not isEnabled: return
 	if debugMode:
 		printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
-		TextBubble.create(self, str("turnBegin ", currentTurn))
+		TextBubble.create(str("turnBegin ", currentTurn), self)
 
 	willBeginTurn.emit()
 	await self.processTurnBegin()
@@ -92,7 +92,7 @@ func processTurnUpdateSignals() -> void:
 	if not isEnabled: return
 	if debugMode:
 		printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
-		TextBubble.create(self, str("turnUpdate ", currentTurn))
+		TextBubble.create(str("turnUpdate ", currentTurn), self)
 
 	willUpdateTurn.emit()
 	await self.processTurnUpdate()
@@ -107,7 +107,7 @@ func processTurnEndSignals() -> void:
 	if not isEnabled: return
 	if debugMode:
 		printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
-		TextBubble.create(self, str("turnEnd ", currentTurn))
+		TextBubble.create(str("turnEnd ", currentTurn), self)
 
 	willEndTurn.emit()
 	await self.processTurnEnd()

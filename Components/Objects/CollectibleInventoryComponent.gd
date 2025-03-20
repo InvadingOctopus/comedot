@@ -61,6 +61,6 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 	# TODO: Make it customizable
 
 	if shouldDisplayIndicator:
-		TextBubble.create(collectorEntity, "GET " + inventoryItem.displayName.capitalize())
+		TextBubble.create("GET " + inventoryItem.displayName.capitalize(), collectorEntity)
 
 	return inventoryItem
