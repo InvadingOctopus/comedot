@@ -445,6 +445,23 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 	return cellCoordinatesInDestinationMap
 
 
+## Damages a [TileMapLayer] Cell if it is [member Global.TileMapCustomData.isDestructible].
+## Returns `true` if the Cell was damaged.
+static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
+	# PERFORMANCE: Do not call Tools.getTileData() to reduce calls
+	var tileData: TileData = map.get_cell_tile_data(coordinates)
+	if tileData:
+		var isDestructible: bool = tileData.get_custom_data(Global.TileMapCustomData.isDestructible)
+		if  isDestructible:
+			var nextTileOnDamage: Vector2i = tileData.get_custom_data(Global.TileMapCustomData.nextTileOnDamage)
+			if nextTileOnDamage and nextTileOnDamage.x > 0 and nextTileOnDamage.x >= 0: # Negative coordinates are invalid or mean "destroy on damage"
+				map.set_cell(coordinates, 0, nextTileOnDamage)
+			else: map.erase_cell(coordinates)
+			return true
+	
+	return false
+
+
 ## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
 ## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
 static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:

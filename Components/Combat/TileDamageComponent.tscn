@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bw620u6vv6sci"]
+
+[ext_resource type="Script" uid="uid://cno1wg44li8w2" path="res://Components/Combat/TileDamageComponent.gd" id="1_wcs3a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nfbax"]
+resource_local_to_scene = true
+size = Vector2(16, 16)
+
+[node name="TileDamageComponent" type="Area2D" groups=["components"]]
+collision_layer = 1024
+collision_mask = 16
+script = ExtResource("1_wcs3a")
+metadata/_edit_group_ = true
+
+[node name="DamageCollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nfbax")
+debug_color = Color(0.7, 0, 0, 0.419608)
+
+[connection signal="body_shape_entered" from="." to="." method="onBodyShapeEntered"]

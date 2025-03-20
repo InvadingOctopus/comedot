@@ -21,7 +21,7 @@ extends TileMapLayer
 func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void:
 	if debugMode: Debug.printDebug(str("setCellData() @", coordinates, " ", key, " = ", value), self)
 
-	# NOTE: Do NOT assign an entire dictionary here or that will overrite all other keys!
+	# NOTE: Do NOT assign an entire dictionary here or that will override all other keys!
 
 	# Get the data dictionary for the cell, or add an empty dictionary.
 	var cellData: Variant = dataDictionary.get_or_add(coordinates, {}) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
