@@ -81,7 +81,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	didExitArea.emit(areaExited)
 
 
-## NOTE: This is NOT affected by [member isEnabled] but IS affected by [member shouldMonitorAreas]
+## NOTE: This is NOT affected by [member isEnabled] but IS affected by [member shouldMonitorBodies]
 func onBodyExited(bodyExited: Node2D) -> void:
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
 	if not shouldMonitorBodies or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
