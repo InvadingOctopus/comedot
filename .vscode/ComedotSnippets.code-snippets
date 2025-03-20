@@ -170,8 +170,14 @@
 
 	"Debug Variables": {
 		"prefix": "debugVar",
-		"body": [ "Debug.printVariables([${1:self}]) # TEMP: DONTCOMMIT\n$0" ],
+		"body": [ "Debug.printVariables([${1:self}]) # DEBUG: DONTCOMMIT\n$0" ],
 		"description": "Print multiple variable values for runtime debugging."
+	},
+
+	"Debug Trace": {
+		"prefix": "trace",
+		"body": [ "Debug.printTrace([${1:self}]) # DEBUG: DONTCOMMIT\n$0" ],
+		"description": "Print multiple variable values along with the recent function calls for runtime debugging."
 	},
 
 	"Debug Info": {
