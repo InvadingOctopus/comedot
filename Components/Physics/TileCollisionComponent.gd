@@ -22,7 +22,7 @@ func _ready() -> void:
 	super._ready()
 
 
-#region Events 
+#region Events
 
 ## Overrides [method AreaCollisionComponent.connectSignals] to only monitor physics "bodies" which include [TileMapLayer]s
 ## Affected by [member shouldMonitorBodies]
@@ -41,7 +41,7 @@ func connectSignals() -> void:
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	if not isEnabled or bodyEntered is not TileMapLayer or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	var cellCoordinates: Vector2i = bodyEntered.get_coords_for_body_rid(bodyRID)
-	
+
 	if debugMode:
 		printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
 		TextBubble.create(str("IN ", cellCoordinates), self.parentEntity).label.label_settings.font_color = Color.GREEN
