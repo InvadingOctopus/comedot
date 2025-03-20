@@ -15,5 +15,3 @@ metadata/_edit_group_ = true
 [node name="DamageCollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_nfbax")
 debug_color = Color(0.7, 0, 0, 0.419608)
-
-[connection signal="body_shape_entered" from="." to="." method="onBodyShapeEntered"]

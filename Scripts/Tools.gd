@@ -446,15 +446,19 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 
 
 ## Damages a [TileMapLayer] Cell if it is [member Global.TileMapCustomData.isDestructible].
-## Returns `true` if the Cell was damaged.
+## Changes the cell's tile to the [member Global.TileMapCustomData.nextTileOnDamage] if there is any,
+## or erases the cell if there is no "next tile" specified or both X & Y coordinates are below 0 i.e. (-1,-1)
+## Returns `true` if the cell was damaged.
+## @experimental
 static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
+	# TODO: Variable health & damage
 	# PERFORMANCE: Do not call Tools.getTileData() to reduce calls
 	var tileData: TileData = map.get_cell_tile_data(coordinates)
 	if tileData:
 		var isDestructible: bool = tileData.get_custom_data(Global.TileMapCustomData.isDestructible)
 		if  isDestructible:
 			var nextTileOnDamage: Vector2i = tileData.get_custom_data(Global.TileMapCustomData.nextTileOnDamage)
-			if nextTileOnDamage and nextTileOnDamage.x > 0 and nextTileOnDamage.x >= 0: # Negative coordinates are invalid or mean "destroy on damage"
+			if nextTileOnDamage and (nextTileOnDamage.x >= 0 or nextTileOnDamage.y >= 0): # Both negative coordinates are invalid or mean "destroy on damage"
 				map.set_cell(coordinates, 0, nextTileOnDamage)
 			else: map.erase_cell(coordinates)
 			return true

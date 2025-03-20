@@ -1,18 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0530vu7n5mri"]
+[gd_scene load_steps=3 format=3 uid="uid://b0530vu7n5mri"]
 
-[ext_resource type="PackedScene" uid="uid://c67ee4tfbi3lk" path="res://Components/Physics/AreaCollisionComponent.tscn" id="1_o3ew6"]
 [ext_resource type="Script" uid="uid://cgv8fgx2od243" path="res://Components/Physics/TileCollisionComponent.gd" id="2_4078o"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4078o"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t2cih"]
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="TileCollisionComponent" instance=ExtResource("1_o3ew6")]
+[node name="TileCollisionComponent" type="Area2D" groups=["components"]]
+collision_layer = 0
 collision_mask = 16
-monitorable = false
 script = ExtResource("2_4078o")
-shouldMonitorAreas = false
-shouldConnectSignalsOnReady = true
+metadata/_edit_group_ = true
 
-[node name="AreaDetectorShape" parent="." index="0"]
-shape = SubResource("RectangleShape2D_4078o")
+[node name="TileDetectorShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_t2cih")
+debug_color = Color(0.6, 0.8, 0, 0.42)
