@@ -16,13 +16,5 @@ metadata/_edit_group_ = true
 shape = SubResource("RectangleShape2D_jqapn")
 debug_color = Color(0.7, 0, 0, 0.419608)
 
-[node name="DebugIndicator" type="ColorRect" parent="."]
-visible = false
-offset_left = -4.0
-offset_top = -16.0
-offset_right = 4.0
-offset_bottom = -8.0
-color = Color(1, 0, 0, 0.25098)
-
 [connection signal="area_entered" from="." to="." method="onAreaEntered"]
 [connection signal="area_exited" from="." to="." method="onAreaExited"]
