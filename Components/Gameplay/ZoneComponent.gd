@@ -7,12 +7,13 @@ class_name ZoneComponent
 extends AreaContactComponent
 
 # TODO: Option to choose any Group name.
+# TBD:  Replace ZoneComponent with AreaContactComponent + Group-filtering parameter?
 
 
 #region Signals
 signal didEnterZone(zoneArea: Area2D) ## Emitted BEFORE [signal AreaCollisionComponent.didEnterArea]
 signal didExitZone(zoneArea:  Area2D) ## Emitted BEFORE [signal AreaCollisionComponent.didExitArea]
-signal didUpdateZones
+signal didUpdateZones ## Emitted when the [member currentZones] array is updated, BEFORE [signal didEnterZone] or [signal didExitZone]
 #endregion
 
 

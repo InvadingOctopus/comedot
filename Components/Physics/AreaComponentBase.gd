@@ -8,6 +8,7 @@ class_name AreaComponentBase
 extends Component
 
 # TBD: Better name?
+# TBD: Also support monitoring RigidBody2D?
 
 
 #region Parameters
