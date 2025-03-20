@@ -340,6 +340,12 @@ static func getCellGlobalPosition(tileMap: TileMapLayer, cellCoordinates: Vector
 	return cellGlobalPosition
 
 
+## For a list of custom data layer names, see [Global.TileMapCustomData].
+static func getTileData(map: TileMapLayer, coordinates: Vector2i, dataName: StringName) -> Variant:
+	var tileData: TileData = map.get_cell_tile_data(coordinates)
+	return tileData.get_custom_data(dataName) if tileData else null
+
+
 ## Sets custom data for an individual cell of a [TileMapLayerWithCustomCellData].
 ## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer.]
 ## DESIGN: This is a separate function on top of [TileMapLayerWithCustomCellData] because it may redirect to a native Godot feature in the future.
@@ -380,7 +386,6 @@ static func checkTileVacancy(tileMap: TileMapLayerWithCustomCellData, coordinate
 
 	# If there is an occupant, no need to check the Tile data, just scram
 	if not isCellVacant: return false
-
 
 	# Then check the TILE data
 
