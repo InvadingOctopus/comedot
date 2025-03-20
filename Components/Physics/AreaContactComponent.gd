@@ -5,18 +5,9 @@
 class_name AreaContactComponent
 extends AreaCollisionComponent
 
-# TODO: Disconnect signals when flags disabled
-# TBD: Move signal flags to AreaCollisionComponent?
 # TBD: Add a list for [TileMapLayer]s?
 # TBD: Use this as the base for DamageComponent etc.?
 # TBD: Reduce code duplication between [CollisionsArrayArea]?
-
-
-#region Parameters
-@export var shouldMonitorAreas:  bool = true ## If `false` no [Area2D]s are added OR removed in [member areasInContact]
-@export var shouldMonitorBodies: bool = true ## If `false` no [PhysicsBody2D]s or [TileMapLayer]s are added OR removed in [member bodiesInContact]
-@export var shouldConnectSignalsOnReady: bool = true ## TIP: PERFORMANCE: Connect signals in subclasses or via other scripts, to enable physics monitoring only needed.
-#endregion
 
 
 #region State
@@ -26,9 +17,8 @@ var bodiesInContact: Array[Node2D] ## A list of [PhysicsBody2D]s OR [TileMapLaye
 
 
 func _ready() -> void:
-	super._ready()
 	readdAllContacts()
-	if shouldConnectSignalsOnReady: connectSignals() # Start monitoring exits after adding existing overlaps
+	super._ready() # Start monitoring exits after adding existing overlaps
 	self.set_physics_process(self.debugMode) # Disable per-frame debugging until needed
 
 
@@ -62,18 +52,6 @@ func readdAllContacts() -> void:
 
 
 #region Events
-
-## Connects collision signals like [signal Area2D.area_entered] & [signal Area2D.body_entered] etc.
-## NOTE: NOT called by the default/superclass implementation. Must be called manually by any class that `extends` [AreaCollisionComponentBase]
-## TIP: To connect only specific signal(s), override this method WITHOUT calling `super.connectSignals()`
-func connectSignals() -> void:
-	if shouldMonitorAreas:
-		Tools.connectSignal(area.area_entered, self.onAreaEntered)
-		Tools.connectSignal(area.area_exited,  self.onAreaExited)
-	if shouldMonitorBodies:
-		Tools.connectSignal(area.body_entered, self.onBodyEntered)
-		Tools.connectSignal(area.body_exited,  self.onBodyExited)
-
 
 # DESIGN: All functions below: Arrays should be updated before signals.
 # There is code duplication from [AreaCollisionComponent] because the arrays must be updated in the middle of the functions :(
