@@ -46,9 +46,12 @@ class AudioBuses:
 	const music	:= &"Music"
 
 
-class TileMapCustomData: ## A list of names for the custom data types that [TileMapLayer] Tile Sets may set on tiles.
-	const isWalkable	:= &"isWalkable"	## Tile is vacant
+## A list of names for the custom data layer types that [TileMapLayer] Tile Sets may set on Tiles.
+## For dynamic runtime data on CELLS, use [TileMapLayerWithCustomCellData].
+class TileMapCustomData:
+	const isWalkable	:= &"isWalkable"	## Tile is vacant. # TBD: Rename to isOccupiable?
 	const isBlocked		:= &"isBlocked"		## Impassable terrain or object
+	const isDestructible:= &"isDestructible"## Tile may be damaged by a [TileDamageComponent]
 
 	const isOccupied	:= &"isOccupied"	## Is occupied by a character
 	const occupant		:= &"occupant"		## The entity occupying the tile
