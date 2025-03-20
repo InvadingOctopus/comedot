@@ -462,6 +462,21 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	return false
 
 
+## Sets all the Cells in the specified [TileMapLayer] region to random Tiles from the specified coordinates in the Map's [TileSet].
+## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
+static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float) -> void:
+	# TODO: Validate parameters and sizes
+	
+	var randomTile: Vector2i
+
+	# NOTE: +1 to range() end to make the bounds inclusive
+	for y in range(cellRegionStart.y, cellRegionEnd.y + 1):
+		for x in range(cellRegionStart.x, cellRegionEnd.x + 1):
+			if is_equal_approx(modificationChance, 1.0) or randf() < modificationChance: # TBD: Should this be an integer?
+				randomTile = Vector2i(randi_range(tileCoordinatesMin.x, tileCoordinatesMax.x), randi_range(tileCoordinatesMin.y, tileCoordinatesMax.y))
+				map.set_cell(Vector2i(x, y), 0, randomTile)
+
+
 ## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
 ## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
 static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
