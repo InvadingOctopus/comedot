@@ -23,15 +23,20 @@ func _ready() -> void:
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	# TBD: Remove code duplication from TileCollisionComponent
 	if not isEnabled or bodyEntered is not TileMapLayer or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
-	var cellCoordinates: Vector2i = bodyEntered.get_coords_for_body_rid(bodyRID)
+	if bodyEntered is TileMapLayer: # Dummy Godot can't cast without this
+		if bodyEntered.physics_quadrant_size != 1:
+			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyEntered))
+			return
+	
+		var cellCoordinates: Vector2i = bodyEntered.get_coords_for_body_rid(bodyRID)
 
-	if debugMode:
-		printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
-		TextBubble.create.call(str(cellCoordinates), bodyEntered).label.label_settings.font_color = Color.YELLOW
+		if debugMode:
+			printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
+			TextBubble.create.call(str(cellCoordinates), bodyEntered).label.label_settings.font_color = Color.YELLOW
 
-	Tools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
-	self.onCollideCell(bodyEntered, cellCoordinates)
-	didEnterTileCell.emit(bodyEntered, cellCoordinates)
+		Tools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
+		self.onCollideCell(bodyEntered, cellCoordinates)
+		didEnterTileCell.emit(bodyEntered, cellCoordinates)
 
 
 ## Suppresses [method TileCollisionComponent.onBodyShapeExited] to ignore events of leaving physical contact with a [TileMapLayer] cell.
