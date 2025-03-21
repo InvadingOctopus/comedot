@@ -42,6 +42,10 @@ func _ready() -> void:
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	if not isEnabled or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	if bodyEntered is TileMapLayer: # Dummy Godot can't cast without this
+		if bodyEntered.physics_quadrant_size != 1:
+			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyEntered))
+			return
+
 		var cellCoordinates: Vector2i = bodyEntered.get_coords_for_body_rid(bodyRID)
 
 		if debugMode:
@@ -56,8 +60,11 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 @warning_ignore("unused_parameter")
 func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	if bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
-
 	if bodyExited is TileMapLayer: # Dummy Godot can't cast without this
+		if bodyExited.physics_quadrant_size != 1:
+			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyExited))
+			return
+
 		var cellCoordinates: Vector2i
 		cellCoordinates = bodyExited.get_coords_for_body_rid(bodyRID) if bodyExited.has_body_rid(bodyRID) else Vector2i(-1, -1) # Avoid errors if the cell is being destroyed.
 
