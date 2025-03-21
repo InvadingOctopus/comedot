@@ -1,5 +1,6 @@
 ## Monitors an [Area2D] and emits signals when it collides with a [TileMapLayer], including the specific cell coordinates.
 ## IMPORTANT: To detect [TileMapLayer]s, BOTH [member Area2D.monitoring] & [member Area2D.monitorable] flags must be enabled!
+## WORKAROUND: Godot 4.5.dev1: [member TileMapLayer.physics_quadrant_size] must be set to 1
 
 class_name TileCollisionComponent
 extends AreaComponentBase
