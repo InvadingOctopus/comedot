@@ -87,7 +87,7 @@
 
 	"Component Dependency": {
 		"prefix": "coComponent",
-		"body": [ "@onready var ${2:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n" ],
+		"body": [ "@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n" ],
 		"description": "A property that searches for a sibling component and caches a reference to it."
 	},
 
