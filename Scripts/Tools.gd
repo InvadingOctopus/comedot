@@ -272,6 +272,15 @@ static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 	if is_zero_approx(lastMotion.y): body.velocity.y = 0
 	return lastMotion
 
+
+## Returns the [Shape2D] from a [CollisionObject2D]-based node (such as [Area2D]) and a given "shape index"
+## @experimental
+static func getCollisionShape(node: CollisionObject2D, shapeIndex: int) -> Shape2D:
+	# What is this hell...
+	var areaShapeOwnerID: int = node.shape_find_owner(shapeIndex)
+	# UNUSED: var areaShapeOwner: CollisionShape2D = node.shape_owner_get_owner(areaShapeOwnerID)
+	return node.shape_owner_get_shape(areaShapeOwnerID, shapeIndex) # CHECK: Should it be `shapeIndex` or 0?
+
 #endregion
 
 
