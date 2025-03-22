@@ -104,10 +104,10 @@ func checkRequiredComponents() -> bool:
 ## otherwise if [member shouldCheckGrandparentsForEntity] then all grandparents will be searched until an Entity is found.
 func validateParent() -> void:
 	# Initialization Order: 1: This seems to be called before any other methods, via the notification, at least when creating a new instance e.g. by a GunComponent
-	
+
 	var newParent: Node = self.get_parent()
 	if debugMode: printDebug(str("validateParent(): ", newParent))
-	
+
 	# If the parent node is not an Entity, print a warning if needed
 	if not is_instance_of(newParent, Entity):
 		var message: String = str("validateParent(): Parent node is not an Entity: ", newParent, " ／ This may prevent sibling components from finding this component.")
@@ -119,11 +119,11 @@ func validateParent() -> void:
 
 		if newParent is Entity: # If our parent is an Entity, all's well and good in the world.
 			self.registerEntity(newParent)
-		
+
 		# If our immediate parent node is not an Entity, should we search up the scene tree hierarchy for an Entity to adopt this Component?
 		elif shouldCheckGrandparentsForEntity and not allowNonEntityParent:
 			var grandparentEntity: Entity = self.findParentEntity(true)
-			if grandparentEntity: 
+			if grandparentEntity:
 				self.registerEntity(grandparentEntity)
 
 	else: # Do we already have an Entity?
@@ -139,7 +139,7 @@ func validateParent() -> void:
 ## Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	# Initialization Order: 2: After Entity._enter_tree(), before Entity.childEnteredTree()
-	
+
 	self.add_to_group(Global.Groups.components, true) # persistent
 
 	# Find which Entity this Component belongs to, if not already set.
@@ -175,7 +175,7 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 		return parentOrGrandparent
 	elif not allowNonEntityParent:
 		printWarning(str("findParentEntity() found no Entity! checkGrandparents: ", checkGrandparents))
-	
+
 	return null
 
 

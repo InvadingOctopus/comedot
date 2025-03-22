@@ -156,7 +156,7 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
-	
+
 	# DESIGN: This signal should be emitted regardless of actual health deducted, because this signal is to acknowledge that we received an attempt to cause damage.
 	# TIP: For changes to health, monitor [HealthComponent]
 	didReceiveDamage.emit(damageComponent, damageAmount, attackerFactions)
