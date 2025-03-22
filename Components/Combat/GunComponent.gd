@@ -39,6 +39,10 @@ extends CooldownComponent
 ## The adjusted position in relation to the [member bulletEmitter] where newly spawned bullets are placed. (0,0) is the position of the emitter.
 @export var bulletPositionOffset: Vector2
 
+## An optional parent node for new bullets.
+## DEFAULT: If omitted, then bullets are added to the Entity's parent if the [member bulletEmitter] is a child of this [GunComponent], otherwise the emitter's parent node is used.
+@export var bulletParentOverride: Node
+
 ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
 @export var ammoDepletedMessage: String = "AMMO DEPLETED"
 
@@ -132,12 +136,16 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 	# Add the bullet to the scene
 	# PERFORMANCE: Not using Tools.addChildAndSetOwner() to avoid a large amount of function calls if many bullets are fired each frame.
 
-	# If the default internal emitter is used, then this component's entity's parent should be the bullet's parent.
-	if bulletEmitter == %BulletEmitter or bulletEmitter.get_parent() == self:
-		self.parentEntity.get_parent().add_child(newBullet, false) # not force_readable_name (for performance?)
+	# If there is no parent specified and the default internal emitter is used, then this component's entity's parent should be the bullet's parent.
+	# NOTE: add_child() not force_readable_name (for performance?)
+	if bulletParentOverride:
+		bulletParentOverride.add_child(newBullet, false)
+	elif bulletEmitter == %BulletEmitter or bulletEmitter.get_parent() == self:
+		self.parentEntity.get_parent().add_child(newBullet, false)
 	else:
-		bulletEmitter.get_parent().add_child(newBullet, false) # not force_readable_name (for performance?)
+		bulletEmitter.get_parent().add_child(newBullet, false)
 
+	if debugMode: printDebug(str("fire(): newBullet.parent: ", newBullet.get_parent()))
 	newBullet.owner = newBullet.get_parent() # For persistence to a [PackedScene] for save/load. CHECK: Is this necessary or will it reduce performance?
 
 	didFire.emit(newBullet)
