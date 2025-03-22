@@ -36,8 +36,10 @@ func onCollide(collidingNode: Node2D) -> void:
 	else:
 		# NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! Which invalidates parentEntity
 		var entity: Entity = self.parentEntity
+		# Check for valid parents to avoid crashes if we collided TOO soon :')
 		for node in nodesToRemove:
-			node.get_parent().remove_child(node)
+			if is_instance_valid(node.get_parent()): node.get_parent().remove_child(node)
 			node.queue_free() # TBD: Should this be optional?
-		entity.removeComponents(componentsToRemove)
-		didAddComponents.emit(entity.createNewComponents(componentsToCreate))
+		if is_instance_valid(entity):
+			entity.removeComponents(componentsToRemove)
+			didAddComponents.emit(entity.createNewComponents(componentsToCreate))
