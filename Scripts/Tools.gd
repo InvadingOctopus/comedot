@@ -733,6 +733,20 @@ static func checkResult(value: Variant) -> bool:
 	else: return false
 
 
+## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
+static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
+	if not sourceSignal.is_connected(targetCallable):
+		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
+	else:
+		return 0
+
+
+## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
+static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
+	if sourceSignal.is_connected(targetCallable):
+		sourceSignal.disconnect(targetCallable)
+
+
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
 ## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
@@ -757,18 +771,20 @@ static func findMethodInScript(script: Script, methodName: StringName) -> bool: 
 	return false
 
 
-## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
-static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
-	if not sourceSignal.is_connected(targetCallable):
-		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
-	else:
-		return 0
+## Searches for a [param value] in an [param options] array and if found, returns the next item from the list.
+## If [param value] is the last member of the array, then the array's first item is returned.
+## If there is only 1 item in the array, then the same value is returned, or `null` if [param value] is not found.
+## TIP: May be used to cycle through a list of possible options, such as [42, 69, 420, 666]
+## WARNING: The cycle may get "stuck" if there are 2 or more identical values in the list: [a, b, b, c] will always only return the 2nd `b`
+static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
+	if not value or list.is_empty(): return null
 
+	var index: int = list.find(value)
 
-## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
-static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
-	if sourceSignal.is_connected(targetCallable):
-		sourceSignal.disconnect(targetCallable)
+	if index >= 0: # -1 means value not found.
+		if list.size() == 1: return value
+		else: return list[index+1] if index < list.size()-1 else list[0] # Wrap around if at the end of the array.
+	else: return null
 
 
 ## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
