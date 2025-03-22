@@ -343,8 +343,7 @@ func printError(message: String = "") -> void:
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## Affected by [member debugMode] and only printed in debug builds.
 func printTrace(values: Array[Variant] = []) -> void:
-	if self is InjectorComponent or self is DamageOverTimeComponent:
-		Debug.printTrace(values, self, 3)
+	Debug.printTrace(values, self, 3) # Start further from the call stack to skip this method
 
 
 ## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].
