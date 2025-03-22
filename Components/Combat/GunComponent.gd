@@ -46,6 +46,12 @@ extends CooldownComponent
 ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
 @export var ammoDepletedMessage: String = "AMMO DEPLETED"
 
+@export var isPlayerControlled: bool = true: ## Accept player input? Disable for AI-controlled enemies.
+	set(newValue):
+		if newValue != isPlayerControlled:
+			isPlayerControlled = newValue
+			self.set_process_unhandled_input(isPlayerControlled)
+
 @export var isEnabled: bool = true
 
 #endregion
@@ -92,7 +98,7 @@ func _unhandled_input(_event: InputEvent) -> void:
 	# check the [member Control.mouse_filter] property of any overlaying nodes,
 	# and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
 
-	if not isEnabled or autoFire: return
+	if not isEnabled or not isPlayerControlled or autoFire: return
 
 	wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
 	isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)

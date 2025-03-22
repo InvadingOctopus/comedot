@@ -145,6 +145,7 @@ factions = 8
 [node name="GunComponent" parent="ArmedMonsterEntity" instance=ExtResource("15_jt7ij")]
 bulletEntity = ExtResource("15_lbdmr")
 autoFire = true
+isPlayerControlled = false
 cooldown = 3.0
 
 [node name="GunSprite" parent="ArmedMonsterEntity/GunComponent/Pivot" index="0"]
