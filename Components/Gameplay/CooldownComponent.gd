@@ -72,7 +72,7 @@ func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 	## The Stat is reapplied above in case its value has changed
 	if debugMode:
 		if cooldownMillisecondsModifier: printTrace(["cooldownMillisecondsModifier", cooldownMillisecondsModifier.value])
-		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", cooldownMillisecondsModifier.logName))
+		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", cooldownMillisecondsModifier.logName if cooldownMillisecondsModifier else "null"))
 	hasCooldownCompleted = false
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
