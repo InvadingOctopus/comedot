@@ -47,11 +47,11 @@ var haveTurningControlComponent: bool:
 
 func _ready() -> void:
 	if not nodeToRotate: nodeToRotate = self.parentEntity
-	if not targetToFace: printWarning("No targetToFace")
+	if not targetToFace: printDebug("No targetToFace") # Do not clutter the log with warnings, in case the target is set after _ready(), e.g. spawning monsters set to target the player.
 
 
 func _input(event: InputEvent) -> void:
-	# Supress the turning control if we also have a TurningControlComponent and there was a `turn` event.
+	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \
 		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
