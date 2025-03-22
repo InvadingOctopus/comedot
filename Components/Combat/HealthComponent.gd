@@ -77,10 +77,11 @@ func onHealthChanged() -> void:
 ## If [member shouldClampHealthDamage] is true, then the [param damageAmount] will be limited to [member maximumHealthDamagePerHit] before deducting it from [member health].
 ## Returns: Remaining [member health].
 func damage(damageAmount: int) -> int:
+	if debugMode: printTrace([isEnabled, damageAmount, health.value])
 	if not isEnabled: return health.value
 
 	if self.shouldClampHealthDamage and damageAmount > self.maximumHealthDamagePerHit:
-		printDebug(str("Clamping damage ", damageAmount, " → ", maximumHealthDamagePerHit))
+		if debugMode: printDebug(str("Clamping damage ", damageAmount, " → ", maximumHealthDamagePerHit))
 		damageAmount = self.maximumHealthDamagePerHit # NOTE: Limit may be negative. See property documentation.
 
 	health.value -= damageAmount
