@@ -2,6 +2,7 @@
 ## Assists with testing a project during development by temporarily modifying nodes, global flags and other variables from a single point,
 ## such as disabling superfluous visual effects for a game, or increasing the lives of a player,
 ## instead of permanently modifying values in the Godot Editor and multiple files then trying to remember, find and revert them.
+## Sets [member Debug.testMode] for use by other scripts/Components.
 ## NOTE: The [TestMode] node itself will be visible when Test Mode is active, and hidden when not.
 ## TIP: In a subclass, just implement [method TestMode.onDidToggleTestMode]
 
@@ -23,6 +24,7 @@ var isInTestMode: bool = false:
 	set(newValue):
 		if newValue == isInTestMode: return # Avoid emitting signals needlessly
 		isInTestMode = newValue
+		Debug.testMode = newValue
 		applyTestMode()
 #endregion
 

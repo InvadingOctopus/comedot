@@ -48,7 +48,9 @@ static var customLogColorFlag:	 bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
 ## @experimental
-static var customLog: Array[Dictionary]
+static var customLog:			Array[Dictionary]
+
+static var testMode:			bool ## Set by [TestMode].gd for use by other scripts, for temporary gameplay testing.
 
 #endregion
 
