@@ -83,7 +83,8 @@ func _physics_process(delta: float) -> void:
 			offset = direction * remainingDistance
 
 	# Move
-	parentEntity.translate(offset) # parentEntity.position += offset
+	parentEntity.position += offset # TBD: PERFORMANCE: Use translate(offset)?
+	parentEntity.reset_physics_interpolation() # CHECK: Is this necessary? Avoid physics "teleportation" glitches
 	self.distanceTraveled += offset.length()
 
 	if debugMode: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))
