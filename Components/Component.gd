@@ -206,6 +206,7 @@ func requestDeletion() -> bool:
 	return true
 
 
+## Returns `true` if the parent [Entity] agrees to [method Entity.requestDeletion] or if there is no [member parentEntity].
 func requestDeletionOfParentEntity() -> bool:
 	if parentEntity:
 		if debugMode: printDebug(str("requestDeletionOfParentEntity(): ", parentEntity.logName))
