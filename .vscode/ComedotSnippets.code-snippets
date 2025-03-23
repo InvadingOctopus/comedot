@@ -176,7 +176,7 @@
 
 	"Debug Trace": {
 		"prefix": "trace",
-		"body": [ "Debug.printTrace([${1:self}]) # DEBUG: DONTCOMMIT$0" ],
+		"body": [ "Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0" ],
 		"description": "Print multiple variable values along with the recent function calls for runtime debugging."
 	},
 
