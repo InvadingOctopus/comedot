@@ -125,7 +125,7 @@ func spawn() -> Node2D:
 			newSpawn.add_to_group(groupToAddTo, true)
 
 		willAddSpawn.emit(newSpawn, parent) # TBD: Should this be emitted before adding to a group?
-		parent.add_child(newSpawn)
+		parent.add_child(newSpawn, false) # PERFORMANCE: not force_readable_name (very slow according to Godot docs)
 
 		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.

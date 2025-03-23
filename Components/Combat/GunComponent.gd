@@ -143,7 +143,7 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 	# PERFORMANCE: Not using Tools.addChildAndSetOwner() to avoid a large amount of function calls if many bullets are fired each frame.
 
 	# If there is no parent specified and the default internal emitter is used, then this component's entity's parent should be the bullet's parent.
-	# NOTE: add_child() not force_readable_name (for performance?)
+	# PERFORMANCE: add_child() must not force_readable_name (which is very slow according to Godot docs)
 	if bulletParentOverride:
 		bulletParentOverride.add_child(newBullet, false)
 	elif bulletEmitter == %BulletEmitter or bulletEmitter.get_parent() == self:
