@@ -150,7 +150,7 @@
 	"Signal Connection": {
 		"prefix": "connect",
 		"body": [ 
-			"Tools.reconnectSignal(${1}.${2}, self.${3:on${1}_${2}})\n\n",
+			"Tools.connectSignal(${1}.${2}, self.${3:on${1}_${2}})\n\n",
 			"${0:func $3() -> void:\n\tpass}"
 		],
 		"description": "A safe signal connector and a function to handle the signal."
