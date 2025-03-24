@@ -22,4 +22,5 @@ extends Area2D
 
 
 func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node2D) -> void:
-	newSpawn.position = parent.to_local(Tools.getRandomPositionInArea(self))
+	if parent == self: newSpawn.position = Tools.getRandomPositionInArea(self)
+	else: newSpawn.position = parent.to_local(Tools.getRandomPositionInArea(self))

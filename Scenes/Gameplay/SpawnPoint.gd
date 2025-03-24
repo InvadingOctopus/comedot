@@ -11,4 +11,5 @@ extends Marker2D
 
 
 func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node2D) -> void:
-	newSpawn.position = parent.to_local(self.global_position)
+	if parent == self: newSpawn.position = self.global_position
+	else: newSpawn.position = parent.to_local(self.global_position)
