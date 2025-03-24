@@ -11,14 +11,6 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 #region Parameters
 
-## If `false`, suppresses log messages from this entity and its child [Component]s.
-## NOTE: Does NOT affect warnings and errors!
-@export var isLoggingEnabled: bool = true
-
-## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
-## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` with functions such as `str()` that might reduce performance.
-@export var debugMode: bool = false
-
 # PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
 # Do not initialize these properties until they are needed, or it may slow performance when lots of entities are being created.
 
@@ -453,6 +445,17 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 
 
 #region Logging
+
+@export_group("Debugging")
+
+## If `false`, suppresses log messages from this entity and its child [Component]s.
+## NOTE: Does NOT affect warnings and errors!
+@export var isLoggingEnabled: bool = true
+
+## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
+## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` with functions such as `str()` that might reduce performance.
+@export var debugMode: bool = false
+
 
 var logName: String: # Static assignment would set the property before the `name` is set.
 	# Entities just need to show their name as they're almost always the same type/eclass.

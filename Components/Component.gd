@@ -297,6 +297,8 @@ func removeSiblingComponentsOfSameType() -> int:
 
 #region Logging
 
+@export_group("Debugging")
+
 ## Enables more detailed debugging information for this component, such as verbose log messages, visual indicators, the [member Debug.watchList] live property labels, or chart windows etc.
 ## NOTE: Subclasses may add their own information or may not respect this flag.
 ## Defaults to the entity's [member Entity.debugMode] if initially `false`.
