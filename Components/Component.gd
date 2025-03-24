@@ -301,11 +301,17 @@ func removeSiblingComponentsOfSameType() -> int:
 ## NOTE: Subclasses may add their own information or may not respect this flag.
 ## Defaults to the entity's [member Entity.debugMode] if initially `false`.
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` which functions such as `str()`, because that might reduce performance.
-@export var debugMode: bool
+@export var debugMode:		bool
+
+## If `true`, all calls to [method Component.printDebug] are forwarded to [method Debug.printTrace] which includes a list of the recent function calls and a highlighted color.
+## This may help with quickly tracking a specific issue in specific components.
+## NOTE: Suppresses `debugMode = false` i.e. [method printDebug] is always printed.
+@export var debugModeTrace:	bool
+
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 ## NOTE: Does NOT affect warnings and errors!
-var isLoggingEnabled: bool
+var isLoggingEnabled:		bool
 
 var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
 	get: return "􀥭 " + self.name
@@ -321,11 +327,12 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 
 
 ## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
+## NOTE: If [member debugModeTrace] is on, then [method Debug.printTrace] is ALWAYS called even if debugMode is off.
 ## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if not debugMode: return
-	Debug.printDebug(message, logName, "cyan")
+	if debugModeTrace: Debug.printTrace([message], self, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
+	elif debugMode: Debug.printDebug(message, logName, "cyan")
 
 
 ## Calls [method Debug.printWarning]
