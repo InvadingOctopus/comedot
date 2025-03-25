@@ -35,8 +35,12 @@ var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be
 
 
 func _enter_tree() -> void:
-	# DESIGN: A Component as Area2D should override the Entity as Area2D, because a Component is an explicit addition to an Entity.
-	self.area = self.areaOverride
+	# DESIGN: A Component-as-Area2D should override the Entity-as-Area2D, because a Component is an explicit addition to an Entity.
+	# Log before attempts, in case there are property getters/setters ahead
+
+	if self.areaOverride: 
+		if debugMode: printDebug(str("Using areaOverride: ", areaOverride))
+		self.area = self.areaOverride
 
 	# If no override is specified, first, try using this Component itself as an Area2D
 	if not self.area:
@@ -45,8 +49,8 @@ func _enter_tree() -> void:
 	
 	# If this Component is not an Area2D, try using the area specified on the Entity.
 	if not self.area:
-		self.area = parentEntity.getArea()
 		if debugMode: printDebug(str("Cannot cast self as Area2D. parentEntity.getArea(): ", area))
+		self.area = parentEntity.getArea()
 
 	# Still nothing? :(
 	if not self.area:
