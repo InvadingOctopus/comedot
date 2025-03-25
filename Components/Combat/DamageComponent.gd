@@ -1,16 +1,18 @@
-## Causes damage to when this component's [Area2D] "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox", which then passes it on to the victim entity's [HealthComponent].
-## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
-## If a [FactionComponent] is missing then damage is always dealt.
-## ALERT: Remember to set the proper [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] or the combat system may behave unexpectedly!
-## The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
+## Causes damage to another Entity when this component's [Area2D] "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox", which then passes it on to the victim entity's [HealthComponent].
+## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction. If a [FactionComponent] is missing then damage is always dealt.
+## ALERT: Set the appropriate [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] on each [Area2D] or the combat system may behave unexpectedly!
+## NOTE: The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
 ## TIP: For hazards such as pools of acid or lava that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent].
 ## TIP: For attacks such as poison arrows etc. that cause "lingering" damage over time, add a [DamageOverTimeComponent] to the victim entity.
-## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D] representing the "hitbox".
+## Requirements: This component must be an [Area2D] representing the "hitbox".
 
 class_name DamageComponent
 extends Component
 
-# TBD: Inherit from AreaCollisionComponent or AreaContactComponent or stay standalone to improve performance and keep customizability?
+# DESIGN: An attacker's [DamageComponent] is the "active" object that initiates the combat and calls the [DamageReceivingComponent]'s damage processing code. 
+# [DamageReceivingComponent] is the passive object in this system.
+# DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to casts an [Area2D] to a [DamageComponent].
+# This may REDUCE performance but it ensures a self-contained-components workflow.
 
 
 #region Parameters
@@ -26,7 +28,7 @@ extends Component
 ## TIP: [member damageOnCollision] may be set to 0 to use the [Stat] as the base and sole damage value.
 ## IMPORTANT: Use [member damageOnCollisionWithModifier] to get the actual damage value.
 ## @experimental
-@export var damageModifier: Stat 
+@export var damageModifier: Stat
 
 ## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
@@ -106,9 +108,12 @@ func _ready() -> void:
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
-	if debugMode: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
-
 	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
+	if debugMode: 
+		# Because Dummydot doesn't have ?Optionals so we can't just `areaEntered.parentEntity?.logFullName?`:
+		if damageReceivingComponent and damageReceivingComponent.parentEntity: printDebug(str("onAreaEntered: ", areaEntered, ", entity: ", damageReceivingComponent.parentEntity.logFullName))
+		else: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", damageReceivingComponent.parentEntity.logFullName)) 
+		# Wow `if`s are so much more readable and elegant! Just for a damn debug line.. >_<
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:

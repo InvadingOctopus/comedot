@@ -1,15 +1,17 @@
 ## Receives damage when this component's [Area2D] "hurtbox" collides with an attacker's [DamageComponent] "hitbox". The damage is passed to the parent entity's [HealthComponent].
-## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction.
-## If a [FactionComponent] is missing then damage is always dealt.
-## ALERT: Remember to set the proper [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] or the combat system may behave unexpectedly!
-## The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
-## Requirements: This component must be an [Area2D] or connected to signals from an [Area2D] representing the "hurtbox". Also a [HealthComponent] or subclass.
+## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction. If a [FactionComponent] is missing then damage is always dealt.
+## ALERT: Set the appropriate [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] on each [Area2D] or the combat system may behave unexpectedly!
+## NOTE: The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
+## Requirements: This component must be an [Area2D] representing the "hurtbox", and the Entity must also have a [HealthComponent] (or subclass).
 
 class_name DamageReceivingComponent
 extends Component
 
-# CHECK: Dynamically find co-components?
-# NOTE:  Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
+# DESIGN:	[DamageReceivingComponent] should NOT monitor the physics: It is the passive object in relation to the attacker's [DamageComponent] which is the "active" object that initiates the combat and calls the damage processing code.
+# DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to casts an [Area2D] to a [DamageReceivingComponent].
+# This may REDUCE performance but it ensures a self-contained-components workflow.
+# NOTE:		Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
+# TBD:		Dynamically find co-components?
 
 
 #region Parameters
