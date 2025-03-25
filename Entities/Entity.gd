@@ -89,7 +89,7 @@ func _process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
 	# TBD: Assess performance impact
-	if not functionsAlreadyCalledOnceThisFrame.is_empty(): 
+	if not functionsAlreadyCalledOnceThisFrame.is_empty():
 		functionsAlreadyCalledOnceThisFrame.clear()
 	self.set_process(false) # No need to check every frame again. CHECK: Does this mess up anything unexpected?
 
@@ -175,7 +175,7 @@ func unregisterComponent(componentToRemove: Component) -> bool:
 
 	# Does the dictionary have a component of the same type?
 	# NOTE: Make sure the component in the dictionary which matches the same type, is also the same INSTANCE that has been requested to be removed.
-	
+
 	var existingComponent: Component = self.components.get(componentType)
 
 	if existingComponent == null:
@@ -376,7 +376,7 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO
 func getSprite() -> Node2D:
 	if self.sprite == null:
 		self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
-		
+
 		if self.sprite == self: printLog("getSprite(): self")
 		else: printLog(str("getSprite(): ", sprite))
 
@@ -408,7 +408,7 @@ func getArea() -> Area2D:
 ## The body may be this [Entity] node itself, or the first matching child node.
 func getBody() -> CharacterBody2D:
 	if self.body == null:
-		
+
 		# First, is the entity itself a [CharacterBody2D]?
 		# PERFORMANCE: Handle this here before calling Tools.gd
 		var selfAsBody: CharacterBody2D = get_node(".") as CharacterBody2D # HACK: Find better way to cast self?
@@ -527,6 +527,6 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 # 			print(str(logName, " ", callerFunction, ": velocity ", previousVelocity, " → ", value))
 
 # 	# Access normally
-# 	return false 
+# 	return false
 
 #endregion
