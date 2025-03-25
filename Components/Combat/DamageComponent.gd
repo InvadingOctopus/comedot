@@ -125,6 +125,8 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use `removeEntityOnApplyingDamage` instead.
 		if removeEntityOnCollisionWithReceiver:
 			if debugMode: printDebug("removeEntityOnCollisionWithReceiver")
+			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
+			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
 
 
@@ -169,9 +171,11 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 
 	# Even if we have no faction, damage must be dealt.
 	var didReceiveDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
-	
+
 	if removeEntityOnApplyingDamage and didReceiveDamage:
 			if debugMode: printDebug("removeEntityOnApplyingDamage")
+			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
+			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
 
 
