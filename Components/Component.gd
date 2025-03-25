@@ -322,6 +322,10 @@ var logName: String: # NOTE: This is a dynamic property because direct assignmen
 var logFullName: String:
 	get: return str("􀥭 ", self, ":", self.get_script().get_global_name())
 
+# [member Component.logName] + [member Entity.logName]
+var logNameWithEntity: String:
+	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
+
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
@@ -333,7 +337,7 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 ## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if debugModeTrace: Debug.printTrace([message], self, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
+	if debugModeTrace: Debug.printTrace([message], self.logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
 	elif debugMode: Debug.printDebug(message, logName, "cyan")
 
 
@@ -353,7 +357,7 @@ func printError(message: String = "") -> void:
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## Affected by [member debugMode] and only printed in debug builds.
 func printTrace(values: Array[Variant] = []) -> void:
-	Debug.printTrace(values, self, 3) # Start further from the call stack to skip this method
+	Debug.printTrace(values, self.logNameWithEntity, 3) # Start further from the call stack to skip this method
 
 
 ## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].
