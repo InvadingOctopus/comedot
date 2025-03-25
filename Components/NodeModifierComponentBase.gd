@@ -8,10 +8,11 @@ extends Component
 
 
 #region Parameters
-@export var shouldRemoveEntity: bool		  ## Removes the entity itself. NOTE: Prevents the addition or removal of components or nodes.
-@export var nodesToRemove:		Array[Node]   ## Occurs BEFORE [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
-@export var componentsToRemove: Array[Script] ## Occurs BEFORE [member componentsToCreate] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
-@export var componentsToCreate: Array[Script] ## Occurs AFTER [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
+@export var shouldRemoveEntity: bool			## Removes the entity itself. NOTE: Prevents the addition or removal of components or nodes.
+@export var nodesToRemove:		Array[Node]		## Occurs BEFORE [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
+@export var componentsToRemove: Array[Script]	## Occurs BEFORE [member componentsToCreate] and AFTER [member nodesToRemove]. Overridden by [member shouldRemoveEntity]
+@export var componentsToCreate: Array[Script]	## Occurs AFTER [member componentsToRemove]. Overridden by [member shouldRemoveEntity]
+@export var payload:			Payload			## An optional [Payload] to execute. The `source` is this component's parent [Entity] and the `target` depends on the subclass implementation (`null` by default). Occurs last.
 @export var isEnabled:			bool = true
 #endregion
 
@@ -60,6 +61,11 @@ func createComponents(entityOverride: Entity = self.savedParentEntity) -> Array[
 	return newComponents
 
 
+func executePayload(target: Variant) -> void:
+	if debugMode: printDebug(str("executePayload(): ", payload, ", target: ", target))
+	if payload: payload.execute(self.parentEntity, target)
+
+
 ## Calls all the other methods in order: If [member shouldRemoveEntity] then only [method removeEntity], otherwise: [method removeNodes] → [method removeComponents] → [method createComponents]
 func performAllModifications() -> void:
 	if shouldRemoveEntity:
@@ -68,3 +74,4 @@ func performAllModifications() -> void:
 		removeNodes()
 		removeComponents()
 		createComponents()
+		executePayload(null)
