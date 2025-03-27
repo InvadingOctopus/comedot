@@ -81,6 +81,7 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 * Signal names should begin with a `did` or `will` wherever it makes sense.
 	- This ensure consistency in words by avoiding English plural jankery: `didDecrease` vs `decreased`, `didRunOut` vs `ranOut`
 	- `ammoInsufficient` does not make sense in a past or future tense, so it is exempt.
+	- If there are no "did" or "will" variants the tense can be omitted, e.g. `onCollide`.
 
 _Examples:_
 ```
@@ -102,6 +103,7 @@ func onGunComponent_ammoDepleted()
 func onHealthChanged(…)
 func onTimeout() # in the script of a Timer node
 ```
+
 
 ## Resources
 
