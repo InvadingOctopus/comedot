@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://b83yms280mvvt"]
+
+[ext_resource type="Script" uid="uid://onciu5vahtkx" path="res://Components/Combat/DamageRayComponent.gd" id="1_uav8k"]
+
+[node name="DamageRayComponent" type="RayCast2D" groups=["components"]]
+target_position = Vector2(8, 0)
+collision_mask = 1024
+collide_with_areas = true
+collide_with_bodies = false
+script = ExtResource("1_uav8k")
