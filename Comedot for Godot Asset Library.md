@@ -1,6 +1,6 @@
 # Comedot for the Godot Asset Library
 
-Asset Name: Comedot Ultimate Template [4.4]
+Asset Name: Comedot Ultimate Template [4.5]
 Description:
 
 All-in-one project template and components framework: Basically Nodes but for gameplay. Optimized for 2D pixel art.
@@ -21,11 +21,11 @@ Font: Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
 Category:		Templates
 License:		MIT
-Repository URL:	https://github.com/InvadingOctopus/comedot
-Issues URL:		https://github.com/InvadingOctopus/comedot/issues
-Godot Version:	4.4
-Asset Version:	4.4.1.1.69
-Commit URL:		fc2f3405060eaad53c226a3960dec06c326bf76d 2025-03-21
+Repository URL:	https://github.com/invadingoctopus/comedot
+Issues URL:		https://github.com/invadingoctopus/comedot/issues
+Godot Version:	4.5
+Asset Version:	4.5.0.1.42 (First 4 numbers are the Godot version including Dev/Beta/RC)
+Commit URL:		9d8f8db3802a76fbf440e5d221b91d7f4faab2f8 2025-03-29
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		https://i.imgur.com/aW0MHRu.png Logo
