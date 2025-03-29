@@ -39,6 +39,6 @@ collision_mask = 1064
 [node name="GunComponent" parent="." index="10" instance=ExtResource("6_qdfo0")]
 
 [node name="MouseRotationComponent" parent="." index="11" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("7_ywvyn")]
-nodeToRotate = NodePath("../GunComponent/Pivot/GunSprite")
+nodeToRotate = NodePath("../GunComponent")
 
 [editable path="GunComponent"]

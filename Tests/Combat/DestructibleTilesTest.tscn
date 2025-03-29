@@ -1,12 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://c0fbbusll0dcy"]
+[gd_scene load_steps=7 format=4 uid="uid://c0fbbusll0dcy"]
 
 [ext_resource type="Script" uid="uid://byd8kqyi6b2uj" path="res://Tests/Combat/DestructibleTilesTest.gd" id="1_eugu1"]
 [ext_resource type="TileSet" uid="uid://emoyueri5hos" path="res://Assets/Tiles/Kenney1Bit-Colored-Physics.tres" id="2_7rv1j"]
 [ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_crwg5"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="4_2kkv4"]
-[ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="5_utwak"]
+[ext_resource type="PackedScene" uid="uid://bfxsrq5vvp0de" path="res://Templates/Entities/PlayerEntityTemplate-OverheadCombat.tscn" id="4_223hs"]
 [ext_resource type="PackedScene" uid="uid://dx0iq5k22enrr" path="res://Tests/Combat/TileDamageBullet.tscn" id="6_g6vvj"]
-[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="7_4ls62"]
 [ext_resource type="PackedScene" uid="uid://b0530vu7n5mri" path="res://Components/Physics/TileCollisionComponent.tscn" id="8_s07v7"]
 
 [node name="DestructibleTilesTest" type="Node2D"]
@@ -21,21 +19,20 @@ physics_quadrant_size = 1
 script = ExtResource("3_crwg5")
 metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 
-[node name="PlayerEntityTemplate-OverheadBasic2" parent="." instance=ExtResource("4_2kkv4")]
+[node name="PlayerEntityTemplate-OverheadCombat" parent="." instance=ExtResource("4_223hs")]
 
-[node name="GunComponent" parent="PlayerEntityTemplate-OverheadBasic2" instance=ExtResource("5_utwak")]
+[node name="GunComponent" parent="PlayerEntityTemplate-OverheadCombat" index="10"]
 bulletEntity = ExtResource("6_g6vvj")
 cooldown = 0.25
 
-[node name="CooldownTimer" parent="PlayerEntityTemplate-OverheadBasic2/GunComponent" index="1"]
+[node name="CooldownTimer" parent="PlayerEntityTemplate-OverheadCombat/GunComponent" index="1"]
 wait_time = 0.25
 
-[node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadBasic2" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("7_4ls62")]
-nodeToRotate = NodePath("../GunComponent/Pivot/GunSprite")
+[node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadCombat" index="11"]
 rotationSpeed = 15.0
 
-[node name="TileCollisionComponent" parent="PlayerEntityTemplate-OverheadBasic2" instance=ExtResource("8_s07v7")]
+[node name="TileCollisionComponent" parent="PlayerEntityTemplate-OverheadCombat" instance=ExtResource("8_s07v7")]
 debugMode = true
 
-[editable path="PlayerEntityTemplate-OverheadBasic2"]
-[editable path="PlayerEntityTemplate-OverheadBasic2/GunComponent"]
+[editable path="PlayerEntityTemplate-OverheadCombat"]
+[editable path="PlayerEntityTemplate-OverheadCombat/GunComponent"]
