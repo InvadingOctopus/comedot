@@ -337,7 +337,7 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 ## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if debugModeTrace: Debug.printTrace([message], self.logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
+	if debugModeTrace: Debug.printTrace(message.split(", "), self.logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
 	elif debugMode: Debug.printDebug(message, logName, "cyan")
 
 

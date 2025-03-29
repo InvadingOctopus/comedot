@@ -43,7 +43,7 @@ const customLogMaximumEntries: int = 100
 var previousChartWindowInitialPosition: Vector2i
 
 static var lastFrameLogged:		 int  = -1 # Start at -1 so the first frame 0 can be printed.
-static var alternateTraceLogRow: bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
+static var isTraceLogAlternateRow: bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
 static var customLogColorFlag:	 bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
@@ -277,21 +277,32 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
 func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=dimgray]•[/color] ") -> void:
 	if OS.is_debug_build():
-		var backgroundColor: String = "[bgcolor=101020]" if alternateTraceLogRow else "[bgcolor=001030]"
-		var bullet: String = " ⬦ " if alternateTraceLogRow else " ⬥ "
-		print_rich(str(backgroundColor, "[color=B080FF]", bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), "[color=0070E0] ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
+		const textColorA1: String = "[color=FF80FF]"
+		const textColorA2: String = "[color=C060C0]"
+		const textColorB1: String = "[color=8080FF]"
+		const textColorB2: String = "[color=6060C0]"
+
+		var textColor1:	   String = textColorA1 if not isTraceLogAlternateRow else textColorB1
+		var textColor2:    String = textColorA2 if not isTraceLogAlternateRow else textColorB2
+
+		var backgroundColor: String = "[bgcolor=101020]" if not isTraceLogAlternateRow else "[bgcolor=001030]"
+		var bullet: String = " ⬥ " if not isTraceLogAlternateRow else " ⬦ "
+
+		print_rich(str(backgroundColor, textColor1, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), textColor2, " ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
+
 		if not values.is_empty():
-			# This mess instead of just `separator.join(values)` is so we can alternate color between values for better readability
+			# SORRY: This mess instead of just `separator.join(values)` is so we can alternate color between values for better readability
 			# PERFORMANCE: Watch out for any FPS impact! :')
 			var joinedValues: String = ""
-			var flipColor: bool
-			var color: String
+			var isAlternateValueColor: bool
+			var valueColor: String
 			for value: Variant in values:
-				color = "FF00FF" if flipColor else "FF88FF"
-				joinedValues += str("[color=", color, "]") + str(value) + separator
-				flipColor = not flipColor
+				if not isTraceLogAlternateRow: valueColor = textColorA1 if not isAlternateValueColor else textColorA2
+				else: valueColor = textColorB1 if not isAlternateValueColor else textColorB2
+				joinedValues += str(valueColor, value, separator)
+				isAlternateValueColor = not isAlternateValueColor
 			print_rich(str(backgroundColor, " 　 ", joinedValues.trim_suffix(separator)))
-		alternateTraceLogRow = not alternateTraceLogRow
+		isTraceLogAlternateRow = not isTraceLogAlternateRow
 
 
 ## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
