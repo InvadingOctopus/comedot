@@ -9,7 +9,7 @@
 class_name DamageComponent
 extends Component
 
-# DESIGN: An attacker's [DamageComponent] is the "active" object that initiates the combat and calls the [DamageReceivingComponent]'s damage processing code. 
+# DESIGN: An attacker's [DamageComponent] is the "active" object that initiates the combat and calls the [DamageReceivingComponent]'s damage processing code.
 # [DamageReceivingComponent] is the passive object in this system.
 # DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to casts an [Area2D] to a [DamageComponent].
 # This may REDUCE performance but it ensures a self-contained-components workflow.
@@ -83,7 +83,7 @@ var damageOnCollisionWithModifier: int:
 
 ## Returns this component as an [Area2D] node.
 var area: Area2D:
-	get: return (self.get_node(^".") as Area2D)
+	get: return self.get_node(^".") as Area2D
 
 #endregion
 
@@ -102,6 +102,9 @@ signal didLeaveReceiver(damageReceivingComponent:   DamageReceivingComponent)
 
 func _ready() -> void:
 	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
+	# UNUSED: Signals already connected in .tscn Scene
+	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
+	# Tools.connectSignal(area.area_exited,  self.onAreaExited)
 
 
 #region Collisions
@@ -109,11 +112,7 @@ func _ready() -> void:
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
 	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
-	if debugMode: 
-		# Because Dummydot doesn't have ?Optionals so we can't just `areaEntered.parentEntity?.logFullName?`:
-		if damageReceivingComponent and damageReceivingComponent.parentEntity: printDebug(str("onAreaEntered: ", areaEntered, ", entity: ", damageReceivingComponent.parentEntity.logFullName))
-		else: printDebug(str("onAreaEntered: ", areaEntered, ", owner: ", damageReceivingComponent.parentEntity.logFullName)) 
-		# Wow `if`s are so much more readable and elegant! Just for a damn debug line.. >_<
+	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:
@@ -136,22 +135,24 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
+	if  debugMode: printDebug(str("onAreaExited(): ", areaExited, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
 	if  damageReceivingComponent:
 		damageReceivingComponentsInContact.erase(damageReceivingComponent)
 		didLeaveReceiver.emit(damageReceivingComponent)
 
 
-## Casts an [Area2D] as a [DamageReceivingComponent].
-func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingComponent:
-	var damageReceivingComponent: DamageReceivingComponent = componentArea.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
+## Returns a [DamageReceivingComponent] by casting an [Area2D] node, if possible.
+func getDamageReceivingComponent(collidingArea: Area2D) -> DamageReceivingComponent:
+	var damageReceivingComponent: DamageReceivingComponent = collidingArea.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
 
 	if not damageReceivingComponent:
 		## NOTE: This warning may help to set collision masks properly.
-		printDebug(str("Cannot cast area as DamageReceivingComponent: ", componentArea, " — Check collision masks"))
+		if debugMode: printWarning(str("Cannot cast area as DamageReceivingComponent: ", collidingArea, " — Check collision masks."))
 		return null
 
 	# Is it our own entity?
-	if damageReceivingComponent.parentEntity == self.parentEntity:
+	if self.parentEntity and damageReceivingComponent.parentEntity == self.parentEntity:
+		if debugMode: printDebug(str("DamageReceivingComponent belongs to this DamageComponent's Entity: ", damageReceivingComponent.parentEntity.logName))
 		return null
 
 	return damageReceivingComponent
@@ -160,7 +161,7 @@ func getDamageReceivingComponent(componentArea: Area2D) -> DamageReceivingCompon
 ## Calls [method DamageReceivingComponent.processCollision]
 func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
 	if not isEnabled: return
-	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName, " to ", damageReceivingComponent))
+	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName if damageModifier else "null", " to ", damageReceivingComponent))
 
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
