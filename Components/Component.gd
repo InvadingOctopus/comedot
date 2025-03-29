@@ -295,6 +295,36 @@ func removeSiblingComponentsOfSameType() -> int:
 #endregion
 
 
+#region Static Methods
+
+## Attempts to cast any Node as a Component, since the `Component.gd` script may be attached to any Node.
+## If the [param node] is not an component but the node's parent/grandparent is an Entity, the Entity is searched to find the matching [param componentType] if [param findInParentEntity].
+## @experimental
+static func castOrFindComponent(node: Node, componentType: GDScript, findInParentEntity: bool = true) -> Component:
+
+	# First, try casting the node itself.
+	var component: Component = node.get_node(^".") as Component # HACK: Find better way to cast self?
+
+	if not component:
+		Debug.printDebug(str("Cannot cast ", node, " as ", componentType.get_global_name()), "Component.castOrFindComponent()")
+
+		# Try to see if the node's grand/parent is an Entity
+		if findInParentEntity:
+			var nodeParent: Entity = Tools.findFirstParentOfType(node, Entity)
+			if nodeParent:
+				component = nodeParent.components.get(componentType.get_global_name())
+				if not component:
+					Debug.printDebug(str("node parent ", nodeParent, " has no ", componentType.get_global_name()), "Component.castOrFindComponent()")
+					return null
+			else:
+				Debug.printDebug(str("node parent is not an Entity: ", nodeParent), "Component.castOrFindComponent()")
+				return null
+
+	return component
+
+#endregion
+
+
 #region Logging
 
 @export_group("Debugging")
