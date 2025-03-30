@@ -71,7 +71,7 @@ func spawn() -> Node2D:
 	if sceneToSpawn.is_empty():
 		Debug.printWarning("No sceneToSpawn", self)
 		return null
-	
+
 	# NOTE: <0 is ignored
 	if maximumTotalToSpawn >= 0 \
 	and totalNodesSpawned >= maximumTotalToSpawn:
@@ -98,20 +98,20 @@ func spawn() -> Node2D:
 	if not newSpawn:
 		Debug.printWarning("Unable to instantiate scene: " + sceneToSpawn, self)
 		return null
-	
+
 	# Prep the newborn
 
 	if newSpawn is Entity:
 		if self.suppressEntityLogs:
 			newSpawn.isLoggingEnabled = false
 			# NOTE: Do NOT suppress `Entity.debugMode` because that is an explicit decision when debugging so it should be left as is.
-		elif self.debugMode: 
+		elif self.debugMode:
 			# If we're not explicitly silencing Entity logs and the spawner is in debugMode, log the spawned Entity too!
 			newSpawn.isLoggingEnabled = true
 			newSpawn.debugMode = true
 
 	# Add the new node to the parent
-	
+
 	var parent: Node
 
 	if not parentOverride: parent = self.get_parent() # The [Timer]'s parent because [Timer] is not a [Node2D]
@@ -129,11 +129,11 @@ func spawn() -> Node2D:
 
 		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
-		
+
 		totalNodesSpawned += 1
 		didSpawn.emit(newSpawn, parent)
 		return newSpawn
-	
+
 	else:
 		return null
 
