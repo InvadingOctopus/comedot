@@ -1,5 +1,7 @@
 # Comedot for the Godot Asset Library
 
+https://godotengine.org/asset-library/asset/3887
+
 Asset Name: Comedot Ultimate Template [4.5]
 Description:
 
