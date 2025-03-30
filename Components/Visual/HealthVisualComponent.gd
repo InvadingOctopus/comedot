@@ -89,6 +89,6 @@ func updateTint()-> void:
 
 
 func emitBubble(difference: int) -> void:
-	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else str(difference)
+	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else "%+d" % difference
 	var bubble: TextBubble = TextBubble.create(text, self.parentEntity) # NOTE: Emit the bubble from the ENTITY, so it's not affected by the effects on `nodeToAnimate`.
 	bubble.label.label_settings.font_color = Color.GREEN if difference > 0 else Color.ORANGE

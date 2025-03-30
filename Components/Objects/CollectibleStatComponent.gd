@@ -70,12 +70,8 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 	# TODO: Make it customizable
 
 	if shouldDisplayIndicator:
-		var symbol: String
-		if signi(randomizedModifier) == 1:    symbol = "+"
-		elif signi(randomizedModifier) == -1: symbol = "-"
+		TextBubble.create(str(stat.displayName.capitalize(), "%+d" % randomizedModifier), collectorEntity) # TBD: Put a space between text & number?
 
-		TextBubble.create(str(stat.displayName.capitalize(), symbol, randomizedModifier), collectorEntity)
-	
 	return randomizedModifier
 
 
