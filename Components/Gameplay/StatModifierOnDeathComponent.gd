@@ -7,8 +7,9 @@ extends Component
 
 
 #region Parameters
-@export var statsToModify:	Dictionary[Stat, int] ## A [Dictionary] where the keys are [Stat] Resources and the values are the positive or negative modifier to apply to that respective Stat.
-@export var isEnabled:		bool = true
+@export var statsToModify:		Dictionary[Stat, int] ## A [Dictionary] where the keys are [Stat] Resources and the values are the positive or negative modifier to apply to that respective Stat.
+@export var shouldEmitBubble:	bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
+@export var isEnabled:			bool = true
 #endregion
 
 
@@ -28,5 +29,14 @@ func onHealthComponent_healthDidZero() -> void:
 
 
 func modifyStats() -> void:
+	var bubbleOffsetY: float = 0
 	for stat in statsToModify:
 		stat.value += statsToModify[stat]
+		if shouldEmitBubble:
+			# NOTE: Check the `Stat.previousChange` to see the actual difference in value instead of just the modifier we attempted to apply.
+			# NOTE: Spawn the Bubble in the Entity's parent, not as a child of the Entity itself, as we're about to die anyway :'(
+			# TBD:  Put a space between text & number?
+			TextBubble.create(str(stat.displayName, "%+d" % stat.previousChange), \
+				parentEntity.get_parent(), \
+				Vector2(parentEntity.position.x, parentEntity.position.y + bubbleOffsetY))
+			bubbleOffsetY -= 10 # Add some spacing between each Stat
