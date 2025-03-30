@@ -52,19 +52,19 @@
 	},
 
 	"Export": {
-		"prefix": "@export",
+		"prefix": ["@export", "export"],
 		"body": [ "@export var ${1:isFlagged}: ${2:bool} = ${3:false}" ],
 		"description": "A basic export parameter."
 	},
 
 	"Export Range": {
-		"prefix": "@export",
+		"prefix": ["@export", "export"],
 		"body": [ "@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}" ],
 		"description": "An export parameter with a range."
 	},
 
 	"@onready Node Reference": {
-		"prefix": "@onready",
+		"prefix": ["@onready", "onready"],
 		"body": [ "@onready var $0${1:propertyName}: ${2:NodeType} = ${3:$}${1:NodeName}" ],
 		"description": "A property that references a Node with a $Name or %Unique name."
 	},
@@ -213,7 +213,7 @@
 	},
 	
 	"Experimental Tag": {
-		"prefix": "@experimental",
+		"prefix": ["@experimental", "experimental"],
 		"body": ["## @experimental$0"],
 		"description": "Adds a comment to mark a script, method or property as experimental."
 	},
