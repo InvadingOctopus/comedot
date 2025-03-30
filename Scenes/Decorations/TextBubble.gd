@@ -22,7 +22,7 @@ static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
 	newBubble.position += offset # The default offset is above a 16-pixel sprite.
 	if parentNode: parentNode.add_child(newBubble)
-	newBubble.label.text = bubbleText
+	newBubble.get_node(^"Label").text = bubbleText # SOLVED: Use get_node() to avoid crash if there is no `parentNode` yet, therefore no @onready
 	# newBubble.owner = parentNode # TBD: No need for persistence across Save/Load, right?
 	return newBubble
 
