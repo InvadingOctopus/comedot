@@ -28,6 +28,8 @@ extends Control
 ## So another script such as the [UpgradeChoicesList] UI or a manual Signal connection from [signal didChooseUpgrade] to [method UpgradesComponent.addOrLevelUpUpgrade] must be made.
 @export var shouldInstallUpgrades: bool = true
 
+@export var shouldHideStatIfFree:  bool = true
+
 @export var debugMode: bool = false
 
 #endregion
@@ -87,10 +89,14 @@ func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
 	if upgrade.costStat:
 		costStatUI.text = upgrade.costStat.displayName 
+		costStatUI.visible = true
 		costAmountLabel.text = str(upgrade.getCost(self.getLevelToPurchase()))
+		costAmountLabel.visible = true
 	else:
-		costStatUI.text = "FREE"
-		costAmountLabel.text = ""
+		costStatUI.text			= "FREE" if not shouldHideStatIfFree else ""
+		costAmountLabel.text	= ""
+		costStatUI.visible		= not shouldHideStatIfFree
+		costAmountLabel.visible	= not shouldHideStatIfFree # TBD: Always hide the cost number if free?
 
 
 func updateButton() -> void:

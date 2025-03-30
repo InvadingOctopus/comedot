@@ -21,6 +21,8 @@ extends Container
 ## Supersedes [member UpgradeChoiceUI.shouldInstallUpgrades]
 @export var shouldInstallUpgrades: bool = true
 
+@export var shouldHideStatIfFree:  bool = true
+
 @export var debugMode: bool = false
 #endregion
 
@@ -79,7 +81,8 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 	newChoiceUI.targetEntity = self.targetEntity
 	newChoiceUI.upgrade = upgrade
 	newChoiceUI.shouldInstallUpgrades = not self.shouldInstallUpgrades # Who should install the Upgrades?
-
+	newChoiceUI.shouldHideStatIfFree  = self.shouldHideStatIfFree
+	
 	Tools.addChildAndSetOwner(newChoiceUI, self)
 
 	newChoiceUI.updateUI() # TBD: Update before adding or after?
