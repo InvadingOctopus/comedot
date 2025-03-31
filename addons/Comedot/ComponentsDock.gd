@@ -126,11 +126,11 @@ func _ready() -> void:
 		setupUI()
 
 
-func printLog(message: String) -> void:
+static func printLog(message: String) -> void:
 	print(str("Comedock: ", message))
 
 
-func printError(message: String) -> void:
+static func printError(message: String) -> void:
 	var errorMessage: String = str("Comedock: ERROR: ", message)
 	print(errorMessage)
 	push_error(errorMessage)

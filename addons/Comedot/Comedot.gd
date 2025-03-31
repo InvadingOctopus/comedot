@@ -47,6 +47,18 @@ static func printLog(message: String) -> void:
 	print(str("Comedot:  ", message)) # Extra space to align with "Comedock: " :)
 
 
+static func printWarning(message: String) -> void:
+	var warningMessage: String = str("Comedot:  WARNING: ", message) 
+	print(warningMessage)
+	push_warning(warningMessage)
+
+
+static func printError(message: String) -> void:
+	var errorMessage: String = str("Comedot:  WARNING: ", message)
+	print(errorMessage)
+	push_error(errorMessage)
+
+
 #region Custom Types
 
 func addCustomTypes() -> void:
@@ -148,17 +160,17 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 				if doesFilenameEndInComponent:
 					# TEST 1: Does the filename end in "Component" but cannot be instantiated?
 					if not scene:
-						printLog("Cannot load Component Scene: " + file)
+						printError("Cannot load Component Scene: " + file)
 						areAllComponentsOK = false
 						continue
 					elif not instance or not is_instance_valid(instance):
-						printLog("Cannot instantiate Component Scene: " + file)
+						printError("Cannot instantiate Component Scene: " + file)
 						areAllComponentsOK = false
 						continue
 
 					# TEST 2: Is the file named "…Component" but is not a Component object?
 					elif not is_instance_of(instance, Component):
-						printLog("Filename ends in \"Component\" but Object Type is not Component: " + file)
+						printWarning("Filename ends in \"Component\" but Object Type is not Component: " + file)
 						areAllComponentsOK = false
 						continue
 
@@ -167,11 +179,12 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 
 					# TEST 3: Is it in the "Components" Group?
 					if not instance.is_in_group(Global.Groups.components):
-						printLog("Component root node is not in \"" + Global.Groups.components + "\" group: " + file)
+						printWarning("Component root node is not in \"" + Global.Groups.components + "\" group: " + file)
 						areAllComponentsOK = false
 						continue
 
-	printLog(str("verifyAllComponents(): ", count, " components checked. All OK? ", areAllComponentsOK))
+	if areAllComponentsOK: printLog(str("verifyAllComponents(): ", count, " components checked. All OK."))
+	else: printWarning(str("verifyAllComponents(): ", count, " components checked. SOME TESTS FAILED!"))
 	return areAllComponentsOK
 
 #endregion
