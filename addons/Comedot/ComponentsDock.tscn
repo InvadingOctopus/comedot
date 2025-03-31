@@ -81,7 +81,7 @@ alignment = 2
 
 [node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1"]
 layout_mode = 2
-tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components."
+tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components and verify."
 focus_next = NodePath("../AddEntityMenuButton")
 focus_previous = NodePath("../EditableChildrenCheckBox")
 text = "Rescan Folders"
