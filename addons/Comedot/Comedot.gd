@@ -3,6 +3,7 @@
 ## Only `Entity.gd` and the scripts in the `Components` folder (and the AutoLoads etc. that they depend on) are the core functionality of Comedot.
 
 @tool
+class_name ComedotPlugin # TBD: Is this needed? Are there any side effects?
 extends EditorPlugin
 
 # TODO: Menu item shortcut customization: List it in the Editor's Command Palette

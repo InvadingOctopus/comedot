@@ -333,6 +333,7 @@ func onComponentsTree_itemActivated() -> void:
 
 
 func onRefreshButton_pressed() -> void:
+	ComedotPlugin.verifyAllComponents("res://Components")
 	buildComponentsTree.call_deferred() # `call_deferred` to reduce lag?
 
 
