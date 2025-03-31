@@ -36,6 +36,7 @@ var progress: float
 
 
 #region Signals
+@warning_ignore("unused_signal")
 signal didCompletePath ## Emitted when a circuit is completed around the [Path2D]'s [Curve2D].
 #endregion
 
