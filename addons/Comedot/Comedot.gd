@@ -42,7 +42,7 @@ func _get_plugin_icon() -> Texture2D:
 	return componentIcon
 
 
-func printLog(message: String) -> void:
+static func printLog(message: String) -> void:
 	print(str("Comedot:  ", message)) # Extra space to align with "Comedock: " :)
 
 
@@ -73,7 +73,7 @@ func addDock() -> void:
 	componentsDock.plugin = self as EditorPlugin
 	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 	self.set_dock_tab_icon(componentsDock, componentIcon)
-	
+
 
 func removeDock() -> void:
 	remove_control_from_docks(componentsDock)
@@ -106,7 +106,7 @@ func removeMenuItems() -> void:
 ## Handles keyboard shortcuts for custom menu items
 func _shortcut_input(event: InputEvent) -> void:
 	# Handle shortcut only once, only when pressed
-	if not event.is_pressed() or event.is_echo(): 
+	if not event.is_pressed() or event.is_echo():
 		return
 
 	if newComponentInFolderShortcut.matches_event(event):
@@ -114,3 +114,63 @@ func _shortcut_input(event: InputEvent) -> void:
 
 #endregion
 
+
+#region Maintenance
+
+## Checks all component `".tscn"` Scene files for any descrepancies or configuration mistakes.
+## Returns `true` if all components are OK.
+## NOTE: May not include hidden or otherwise inaccessible files.
+## @experimental
+static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
+	var areAllComponentsOK: bool = true # Assume all is OK even if there are no components
+	var subfoldersToScan: PackedStringArray
+
+	printLog("Scanning for all Component .tscn Scene files from \"res://\"…")
+	subfoldersToScan = Tools.findAllSubfolders(rootPath)
+
+	# Create variables here once, instead of in every loop iteration
+	var count:		int
+	var scene:	  	PackedScene
+	var instance: 	Node
+	var doesFilenameEndInComponent: bool
+
+	for folder in subfoldersToScan:
+		for file in DirAccess.get_files_at(folder):
+			if file.ends_with(".tscn"):
+				count += 1
+				file = folder + "/" + file # Append the folder path because Godon't
+				doesFilenameEndInComponent = file.ends_with ("Component.tscn") # Check once to reuse in multiple tests
+				
+				scene = ResourceLoader.load(file) # Load the scene
+				if scene: instance = scene.instantiate() # Instantiate the scene
+
+				if doesFilenameEndInComponent:
+					# TEST 1: Does the filename end in "Component" but cannot be instantiated?
+					if not scene:
+						printLog("Cannot load Component Scene: " + file)
+						areAllComponentsOK = false
+						continue
+					elif not instance or not is_instance_valid(instance):
+						printLog("Cannot instantiate Component Scene: " + file)
+						areAllComponentsOK = false
+						continue
+
+					# TEST 2: Is the file named "…Component" but is not a Component object?
+					elif not is_instance_of(instance, Component):
+						printLog("Filename ends in \"Component\" but Object Type is not Component: " + file)
+						areAllComponentsOK = false
+						continue
+
+				# Did we load a valid Component instance?
+				if is_instance_valid(instance) and is_instance_of(instance, Component):
+
+					# TEST 3: Is it in the "Components" Group?
+					if not instance.is_in_group(Global.Groups.components):
+						printLog("Component root node is not in \"" + Global.Groups.components + "\" group: " + file)
+						areAllComponentsOK = false
+						continue
+
+	printLog(str("verifyAllComponents(): ", count, " components checked. All OK? ", areAllComponentsOK))
+	return areAllComponentsOK
+
+#endregion
