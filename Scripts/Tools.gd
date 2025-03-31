@@ -64,7 +64,7 @@ static func findFirstChildOfAnyTypes(parentNode: Node, types: Array[Variant], re
 	for type: Variant in types:
 		for child in parentNode.get_children():
 			if is_instance_of(child, type): return child # break
-	
+
 	# Return the parent itself AFTER none of the requested types are found.
 	# DESIGN: REASON: This may be useful for situations like choosing an [AnimatedSprite2D] or [Sprite2D] otherwise operate on the entity itself.
 	return parentNode if returnParentIfNoMatches else null
@@ -471,7 +471,7 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 				map.set_cell(coordinates, 0, nextTileOnDamage)
 			else: map.erase_cell(coordinates)
 			return true
-	
+
 	return false
 
 
@@ -479,7 +479,7 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 ## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
 static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float) -> void:
 	# TODO: Validate parameters and sizes
-	
+
 	var randomTile: Vector2i
 
 	# NOTE: +1 to range() end to make the bounds inclusive
@@ -648,30 +648,63 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 ## NOTE: Case-sensitive.
 static func addPathPrefixIfMissing(path: String, prefix: String = "res://") -> String:
 	if  not path.begins_with("res://") \
-	and not path.begins_with("user://"): 
+	and not path.begins_with("user://"):
 		return prefix + path
 	else:
 		return path
 
 
+## Returns a list of all the subfolders and recursively searches for any deeper subfolders inside the folder at [param initialPath].
+## IMPORTANT: The [param initialPath] must begin with `"res://"` or `"user://"`
+static func findAllSubfolders(initialPath: String = "res://") -> PackedStringArray:
+	var subfolders: PackedStringArray
+	var dirAccess:  DirAccess = DirAccess.open(initialPath)
+	if not dirAccess:
+		print("Error: Cannot open DirAccess @ " + initialPath) # NOTE: Don't use Debug.gd logging so this method can be used by the Comedot plugin/addon.
+		return []
+
+	# PLAN: Go through each folder in the `subfolders` array,
+	# index-wise, not via iterator as the array will be modified during iteration.
+	# Get the subfolders of each folder, and append them at the end of the array.
+	# This way, all child folders are added to the list, and then their children are added, ensuring a full traversal.
+
+	subfolders.append(initialPath) # Add the initial folder to enumerate the contents of
+
+	var index: int = 0
+	var parentPath: String
+	var newSubfoldersToAppend: PackedStringArray
+
+	while index < subfolders.size():
+		# WORKAROUND: Dummy Godot does not give us the full path in each item returned by DirAccess.get_directories_at()
+		# so we have to prefix it manually >:(
+		parentPath = subfolders[index] # Get the current folder being enumerated, which is assumed to be prefixed with its full path already.
+		newSubfoldersToAppend.clear() # Clear any previous additions
+		for newSubfolder in DirAccess.get_directories_at(parentPath):
+			newSubfoldersToAppend.append(parentPath + "/" + newSubfolder) # Prefix the parent folder's path to each subfolder's name. grrr
+		subfolders.append_array(newSubfoldersToAppend)
+		index += 1 # Enumerate the next folder
+
+	return subfolders
+
+
 ## Returns an array of all files at the specified path which include [param filter] (case-insensitive) in the filename.
 ## If [param filter] is empty then all files are returned.
 ## If the [param folderPath] does not begin with "res://" or "user://" (case-sensitive) then "res://" is added.
-## NOTE: When used on a "res://" path in an exported project, only the files actually included in the PCK at the given folder level are returned. 
+## NOTE: When used on a "res://" path in an exported project, only the files actually included in the PCK at the given folder level are returned.
 static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
 	folderPath = Tools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
 	var folder: DirAccess = DirAccess.open(folderPath)
-	if folder == null: 
+	if folder == null:
 		Debug.printWarning("getFilesFromFolder() cannot open " + folderPath)
 		return []
 
 	folder.list_dir_begin() # CHECK: Necessary for get_files()?
 	var files: PackedStringArray
-	
+
 	for fileName: String in folder.get_files():
 		if filter.is_empty() or fileName.containsn(filter):
 			files.append(folder.get_current_dir() + "/" + fileName) # CHECK: Use get_current_dir() instead of folderPath?
-	
+
 	folder.list_dir_end() # CHECK: Necessary for get_files()?
 	return files
 
@@ -683,14 +716,14 @@ static func getResourcesInFolder(folderPath: String, filter: String = "") -> Pac
 	folderPath = Tools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
 	var resources: PackedStringArray = ResourceLoader.list_directory(folderPath)
 	if resources.is_empty(): return []
-	
+
 	if not folderPath.ends_with("/"): folderPath += "/" # Tack the tail on
 
 	var filteredResources: PackedStringArray
 	for resourceName: String in resources:
 		if filter.is_empty() or resourceName.containsn(filter):
 			filteredResources.append(folderPath + resourceName)
-	
+
 	return filteredResources
 
 
