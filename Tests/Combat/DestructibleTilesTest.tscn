@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://byd8kqyi6b2uj" path="res://Tests/Combat/DestructibleTilesTest.gd" id="1_eugu1"]
 [ext_resource type="TileSet" uid="uid://emoyueri5hos" path="res://Assets/Tiles/Kenney1Bit-Colored-Physics.tres" id="2_7rv1j"]
-[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_crwg5"]
+[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="3_crwg5"]
 [ext_resource type="PackedScene" uid="uid://bfxsrq5vvp0de" path="res://Templates/Entities/PlayerEntityTemplate-OverheadCombat.tscn" id="4_223hs"]
 [ext_resource type="PackedScene" uid="uid://dx0iq5k22enrr" path="res://Tests/Combat/TileDamageBullet.tscn" id="6_g6vvj"]
 [ext_resource type="PackedScene" uid="uid://b0530vu7n5mri" path="res://Components/Physics/TileCollisionComponent.tscn" id="8_s07v7"]

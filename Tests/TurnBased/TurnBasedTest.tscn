@@ -1,7 +1,7 @@
 [gd_scene load_steps=34 format=4 uid="uid://dkm5w4ukgrpgf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_x8hsg"]
-[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCustomCellData.gd" id="3_blwqs"]
+[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="3_blwqs"]
 [ext_resource type="Script" uid="uid://65agal3il42" path="res://Tests/TurnBased/TurnBasedTestUIEntity.gd" id="3_orv1y"]
 [ext_resource type="Script" uid="uid://unl3pbfwqcqt" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="3_udncs"]
 [ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedTileBasedControlComponent.tscn" id="4_3bh2s"]

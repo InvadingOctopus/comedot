@@ -1,7 +1,7 @@
 ## A [TileMapLayer] with a [TileMapCellData] Resource to store custom data during runtime for individual cells,
 ## such as whether a cell is occupied by an Entity or its "health" if it's destructible etc.
 
-class_name TileMapLayerWithCustomCellData
+class_name TileMapLayerWithCellData
 extends TileMapLayer
 
 

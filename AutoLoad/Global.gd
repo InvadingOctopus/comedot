@@ -47,7 +47,7 @@ class AudioBuses:
 
 
 ## A list of names for the custom data layer types that [TileMapLayer] Tile Sets may set on Tiles.
-## For dynamic runtime data on CELLS, use [TileMapLayerWithCustomCellData].
+## For dynamic runtime data on CELLS, use [TileMapLayerWithCellData] or [TileMapCellData].
 class TileMapCustomData:
 	const isWalkable	:= &"isWalkable"	## Tile is vacant. # TBD: Rename to isOccupiable?
 	const isBlocked		:= &"isBlocked"		## Impassable terrain or object

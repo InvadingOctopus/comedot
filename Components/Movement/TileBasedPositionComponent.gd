@@ -2,7 +2,7 @@
 ## Does NOT receive player control input, or perform path-finding or any other validation logic
 ## except checking the tile map bounds and tile collision.
 ## NOTE: To provide player input, use [TileBasedControlComponent].
-## Requirements: [TileMapLayerWithCustomCellData]
+## Requirements: [TileMapLayerWithCellData]
 
 class_name TileBasedPositionComponent
 extends Component
@@ -18,7 +18,7 @@ extends Component
 
 #region Parameters
 
-@export var tileMap: TileMapLayerWithCustomCellData:
+@export var tileMap: TileMapLayerWithCellData:
 	set(newValue):
 		if tileMap != newValue:
 			printChange("tileMap", tileMap, newValue)
@@ -31,7 +31,7 @@ extends Component
 				validateTileMap()
 				applyInitialCoordinates()
 
-## If `true` and [member tileMap] is `null` then the current Scene will be searched and the first [TileMapLayerWithCustomCellData] will be used, if any.
+## If `true` and [member tileMap] is `null` then the current Scene will be searched and the first [TileMapLayerWithCellData] will be used, if any.
 ## WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
 ## @experimental
 @export var shouldSearchForTileMap: bool = false
@@ -129,19 +129,19 @@ func onWillRemoveFromEntity() -> void:
 
 ## Verifies [member tileMap].
 func validateTileMap() -> bool:
-	# TODO: If missing, try to use the first [TileMapLayerWithCustomCellData] found in the current scene, if any?
+	# TODO: If missing, try to use the first [TileMapLayerWithCellData] found in the current scene, if any?
 
 	if not tileMap:
 		if shouldSearchForTileMap:
-			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCustomCellData in current scene…")
-			tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCustomCellData) # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCellData in current scene…")
+			tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCellData) # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
 		
 		# Warn only in debugMode, in case the tileMap will be supplied by a different script.
-		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCustomCellData")
+		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCellData")
 		return false
 
-	if not tileMap is TileMapLayerWithCustomCellData:
-		printWarning(str("tileMap is not TileMapLayerWithCustomCellData: ", tileMap))
+	if not tileMap is TileMapLayerWithCellData:
+		printWarning(str("tileMap is not TileMapLayerWithCellData: ", tileMap))
 		return false
 
 	return true

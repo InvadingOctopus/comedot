@@ -3,7 +3,7 @@
 ## NOTE: "CELLS" are the individual grid elements, NOT the "TILES";
 ## Tiles are the permanent resources in a [TileSet]. A single Tile is used to paint multiple Cells of a [TileMapLayer].
 ## [TileSet]s can specify custom data per Tile, but a [TileMapLayer] cannot add custom data per grid Cell without this script.
-## For a standalone [TileMapLayer] with built-in support for custom data, see [TileMapLayerWithCustomCellData]
+## For a standalone [TileMapLayer] with built-in support for custom data, see [TileMapLayerWithCellData]
 
 class_name TileMapCellData
 extends Resource
