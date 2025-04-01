@@ -22,7 +22,14 @@ extends Component
 	set(newValue):
 		if tileMap != newValue:
 			printChange("tileMap", tileMap, newValue)
+			
+			# If we have a TileMap and are about to leave it, mark our cell as no longer occupied.
+			if tileMap and not newValue: vacateCurrentCell()
+
 			tileMap = newValue
+			if tileMap:
+				validateTileMap()
+				applyInitialCoordinates()
 
 @export var setInitialCoordinatesFromEntityPosition: bool = false
 @export var initialDestinationCoordinates: Vector2i
@@ -93,13 +100,12 @@ signal didArriveAtNewCell(newDestination: Vector2i)
 #region Life Cycle
 
 func _ready() -> void:
-	validateTileMap()
-
 	if debugMode:
 		self.willStartMovingToNewCell.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewCell.connect(self.onDidArriveAtNewTile)
 
 	if tileMap: # If this component was loaded dynamically at runtime, then the tileMap may be set later.
+		validateTileMap()
 		applyInitialCoordinates()
 	
 	updateIndicator() # Fix the visually-annoying initial snap from the default position
@@ -107,7 +113,8 @@ func _ready() -> void:
 
 
 func onWillRemoveFromEntity() -> void:
-	Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
+	# Set our cell as vacant before this component or entity is removed.
+	vacateCurrentCell()
 
 #endregion
 
@@ -260,6 +267,10 @@ func cancelDestination() -> void:
 	self.destinationCellCoordinates = self.currentCellCoordinates
 	self.isMovingToNewCell = false
 
+
+func vacateCurrentCell() -> void:
+	if tileMap: Tools.setCellOccupancy(tileMap, currentCellCoordinates, false, null)
+
 #endregion
 
 
@@ -302,8 +313,12 @@ func checkForArrival() -> bool:
 
 func updateIndicator() -> void:
 	if not visualIndicator: return
-	visualIndicator.global_position = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates)
-	visualIndicator.visible = isMovingToNewCell
+	if tileMap:
+		visualIndicator.global_position = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates)
+		visualIndicator.visible = isMovingToNewCell
+	else:
+		visualIndicator.position = Vector2.ZERO # TBD: Necessary?
+		visualIndicator.visible = false
 
 #endregion
 
