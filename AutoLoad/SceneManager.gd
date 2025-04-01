@@ -201,15 +201,6 @@ func togglePause() -> bool:
 
 #region General Functions
 
-func instantiateSceneFromPath(resourcePath: String) -> Node:
-	var scene: PackedScene = load(resourcePath) as PackedScene
-
-	if is_instance_valid(scene):
-		return scene.instantiate()
-	else:
-		Debug.printWarning(str("Cannot instantiateSceneFromPath(): ", resourcePath))
-		return null
-
 
 ## Returns the path for a scene from a class type.
 ## Convenient for getting the scene for a component.
@@ -222,17 +213,34 @@ func getScenePathFromClass(type: Script) -> String:
 	return scenePath
 
 
-## Instantiates a new copy of the specified scene path and adds it as a child node of this entity.
-## Shortcut for [load] and [method PackedScene.instantiate].
-## Returns: The new instance of the scene.
+## Returns a new instance (Node) of a scene from the specified path.
+## Shortcut for [method @GDScript.load] + [method PackedScene.instantiate]
+func instantiateSceneFromPath(path: String) -> Node:
+	var scene: PackedScene = load(path) as PackedScene
+
+	if is_instance_valid(scene):
+		var instance := scene.instantiate()
+		if is_instance_valid(instance): return instance
+		else:
+			Debug.printWarning(str("SceneManager.instantiateSceneFromPath(): Cannot instantiate ", scene, " from ", path))
+	else:
+		Debug.printWarning("SceneManager.instantiateSceneFromPath(): Cannot load " + path)
+	
+	return null
+
+
+## Loads the specified Scene path and adds a new copy of it as a child node of the specified parent.
+## Shortcut for [load] and [method addSceneInstance].
+## Returns: The new instance.
 func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	var scene: PackedScene = load(path)
 	return addSceneInstance(scene, parent, position)
 
 
+## Instantiates a new copy of the specified Scene and adds it as a child node of the specified parent.
 ## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
-## ALERT: Some situations may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
-## Returns: The new copy of the scene.
+## ALERT: Some situations may cause the error: "Parent node is busy setting up children". To solve, use `addSceneInstance.call_deferred(…)`
+## Returns: The new instance.
 func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
 	if scene == null:
 		Debug.printWarning(str("SceneManager.addSceneInstance(): scene is null!"))
@@ -240,7 +248,7 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 
 	var newChild := scene.instantiate()
 
-	if newChild == null:
+	if not is_instance_valid(newChild):
 		Debug.printWarning(str("SceneManager.addSceneInstance(): Cannot instantiate ", scene))
 		return null
 
