@@ -31,6 +31,11 @@ extends Component
 				validateTileMap()
 				applyInitialCoordinates()
 
+## If `true` and [member tileMap] is `null` then the current Scene will be searched and the first [TileMapLayerWithCustomCellData] will be used, if any.
+## WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+## @experimental
+@export var shouldSearchForTileMap: bool = false
+
 @export var setInitialCoordinatesFromEntityPosition: bool = false
 @export var initialDestinationCoordinates: Vector2i
 
@@ -100,13 +105,14 @@ signal didArriveAtNewCell(newDestination: Vector2i)
 #region Life Cycle
 
 func _ready() -> void:
+	validateTileMap()
+
 	if debugMode:
 		self.willStartMovingToNewCell.connect(self.onWillStartMovingToNewTile)
 		self.didArriveAtNewCell.connect(self.onDidArriveAtNewTile)
 
-	if tileMap: # If this component was loaded dynamically at runtime, then the tileMap may be set later.
-		validateTileMap()
-		applyInitialCoordinates()
+	# Then the tileMap may be set later, if this component was loaded dynamically at runtime, or initialized by another script.
+	if tileMap: applyInitialCoordinates()
 	
 	updateIndicator() # Fix the visually-annoying initial snap from the default position
 	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
@@ -126,9 +132,12 @@ func validateTileMap() -> bool:
 	# TODO: If missing, try to use the first [TileMapLayerWithCustomCellData] found in the current scene, if any?
 
 	if not tileMap:
-		# printWarning("tileMap not specified! Searching for first TileMapLayerWithCustomCellData in current scene")
-		# tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCustomCellData) # WARNING: Caues bugs! When dynamically moving between TileMaps or setting up new entities.
-		if not tileMap: printWarning("Missing TileMapLayerWithCustomCellData")
+		if shouldSearchForTileMap:
+			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCustomCellData in current scene…")
+			tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCustomCellData) # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+		
+		# Warn only in debugMode, in case the tileMap will be supplied by a different script.
+		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCustomCellData")
 		return false
 
 	if not tileMap is TileMapLayerWithCustomCellData:
