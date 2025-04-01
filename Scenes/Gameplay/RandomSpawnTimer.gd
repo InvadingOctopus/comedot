@@ -15,7 +15,7 @@ extends SpawnTimer
 @export_file("*.tscn") var randomScenesList: Array[String]
 
 ## The chance in percentage for an instance to be created whenever the Timer counts down.
-@export_range(0, 100, 1, "suffix:%") var spawnChance: int = 100
+@export_range(0, 100, 1, "suffix:%") var spawnChance: int = 100 # TBD: Should this be a float 0.0 to 1.0? or will that cause float comparison effery?
 
 #endregion
 
