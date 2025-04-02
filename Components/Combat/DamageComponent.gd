@@ -48,7 +48,8 @@ extends Component
 ## Useful for "bullet" entities (including arrows etc.) that should NOT be blocked by the entity which fired them.
 ## Ignored if the combatants do not have opposing factions or friendly fire.
 ## TIP: To always remove a "bullet" etc. on ANY collision with a receiver, use [member removeEntityOnCollisionWithReceiver].
-## WARNING: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
+## NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [member DamageReceivingComponent.damageChance] or [ShieldedHealthComponent] etc.
+## IMPORTANT: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
 @export var removeEntityOnApplyingDamage: bool = false
 
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
@@ -171,9 +172,10 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	# will be checked in the `factionComponent` property getter
 
 	# Even if we have no faction, damage must be dealt.
-	var didReceiveDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
+	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [member DamageReceivingComponent.damageChance] or [ShieldedHealthComponent] etc.
+	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
 
-	if removeEntityOnApplyingDamage and didReceiveDamage:
+	if removeEntityOnApplyingDamage and didHandleDamage:
 			if debugMode: printDebug("removeEntityOnApplyingDamage")
 			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."

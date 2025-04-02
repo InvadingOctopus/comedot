@@ -17,6 +17,12 @@ extends Component
 #region Parameters
 @export var shouldRemoveEntityIfNoHealthComponent: bool = true ## Lets this component be usable without a [THealthComponent], as a single solution for basic gameplay and entities that don't need to have "health".
 
+## If less than 100, then the Entity may occasionally ignore damage.
+## This may be useful for highly agile characters or monsters such as ghosts etc.
+## NOTE: If [member DamageComponent.removeEntityOnApplyingDamage] is `true` then it is always applied even if [member DamageReceivingComponent.damageChance] < 100
+## @experimental
+@export_range(0, 100, 1, "suffix:%") var damageChance: int = 100 # TODO: Let projectiles pass through ghosts etc.
+
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
 		isEnabled = newValue
@@ -162,8 +168,14 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire): return false
 
-	if debugMode: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
+	if debugMode: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", damageChance: ", damageChance, ", healthComponent: ", healthComponent))
 
+	# Do we have a chance to ignore the damage?
+	if damageChance < 100 \
+	and randi_range(1, 100) >= damageChance: # i.e. if the chance is 10%, then any number from 1-10 should succeed. If chance is 0 then never succeed.
+		if debugMode: printDebug("Missed!")
+		return true # Return `true` even if we dodged, because `DamageComponent.removeEntityOnApplyingDamage` etc. depends on this return value.
+	
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
 
