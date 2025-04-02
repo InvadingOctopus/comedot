@@ -22,7 +22,7 @@ extends SpawnTimer
 
 func onTimeout() -> void:
 	if spawnChance >= 100 \
-	or randi_range(1, 100) <= spawnChance: # i.e. if the chance is 10%, then any number from 1-10 should succeed.
+	or randi_range(1, 100) <= spawnChance: # i.e. if the chance is 10%, then any number from 1-10 should succeed. If chance is 0 then never succeed.
 		if debugMode: Debug.printDebug(str("onTimeout() roll >= spawnChance: ", spawnChance), self)
 
 		# Choose a random scene
