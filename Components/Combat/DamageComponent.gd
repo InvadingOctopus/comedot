@@ -33,7 +33,13 @@ extends Component
 ## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
+## @experimental
 @export_range(0, 1000) var damagePerSecond: float = 0 # NOTE: Should this be an integer or float?
+
+## If less than 100, then a collision with a [DamageReceivingComponent] may occasionally be ignored.
+## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
+## TIP: To ensure that a character always hits, this value may be set to greater than 100.
+@export_range(0, 1000, 1, "suffix:%") var hitChance: int = 100
 
 ## Should bullets from the same faction hurt?
 @export var friendlyFire: bool = false
@@ -48,7 +54,7 @@ extends Component
 ## Useful for "bullet" entities (including arrows etc.) that should NOT be blocked by the entity which fired them.
 ## Ignored if the combatants do not have opposing factions or friendly fire.
 ## TIP: To always remove a "bullet" etc. on ANY collision with a receiver, use [member removeEntityOnCollisionWithReceiver].
-## NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [member DamageReceivingComponent.damageChance] or [ShieldedHealthComponent] etc.
+## ALERT: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
 ## IMPORTANT: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
 @export var removeEntityOnApplyingDamage: bool = false
 
@@ -98,6 +104,7 @@ var area: Area2D:
 #region Signals
 signal didCollideReceiver(damageReceivingComponent: DamageReceivingComponent)
 signal didLeaveReceiver(damageReceivingComponent:   DamageReceivingComponent)
+signal willCalculateChance(damageReceivingComponent:DamageReceivingComponent)
 #endregion
 
 
@@ -164,15 +171,23 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	if not isEnabled: return
 	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName if damageModifier else "null", " to ", damageReceivingComponent))
 
-	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
+	# NOTE: The "own entity" check is done once in getDamageReceivingComponent()
+	# The signal is emitted in onAreaEntered()
+	# Factions will be checked in DamageReceivingComponent.checkFactions()
+	
+	# But first, check if we actually hit or miss…
 
-	# The signal is emitted in [onAreaEntered]
+	self.willCalculateChance.emit(damageReceivingComponent) # Give any observers a chance to animate or modify the hit/miss calculation
 
-	# Do we belong to a faction?
-	# will be checked in the `factionComponent` property getter
-
-	# Even if we have no faction, damage must be dealt.
-	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [member DamageReceivingComponent.damageChance] or [ShieldedHealthComponent] etc.
+	var finalHitChance: int = self.hitChance - damageReceivingComponent.missChance
+	if debugMode: printDebug(str("hitChance ", self.hitChance, "% vs missChance ", damageReceivingComponent.missChance, " = ", finalHitChance, "%"))
+	
+	if finalHitChance < 100 and finalHitChance > 0 \
+	and randi_range(1, 100) > finalHitChance: # i.e. if finalHitChance is 10 then a roll of 1-10 will succeed but 11 will fail.
+		if debugMode: printDebug("Missed!")
+		return 
+	
+	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
 	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
 
 	if removeEntityOnApplyingDamage and didHandleDamage:
