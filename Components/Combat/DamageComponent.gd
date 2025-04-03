@@ -102,9 +102,12 @@ var area: Area2D:
 
 
 #region Signals
-signal didCollideReceiver(damageReceivingComponent: DamageReceivingComponent)
-signal didLeaveReceiver(damageReceivingComponent:   DamageReceivingComponent)
-signal willCalculateChance(damageReceivingComponent:DamageReceivingComponent)
+signal didCollideReceiver(damageReceivingComponent:	DamageReceivingComponent)
+signal didLeaveReceiver(damageReceivingComponent:	DamageReceivingComponent)
+
+signal willCalculateChance(damageReceivingComponent:DamageReceivingComponent) ## Emitted before [member DamageReceivingComponent.missChance] is deducted from [member DamageComponent.hitChance], allowing other scripts to animate or modify the chances.
+signal didSucceed(damageReceivingComponent:			DamageReceivingComponent, totalChance: int, roll: int)
+signal didMiss(damageReceivingComponent:			DamageReceivingComponent, totalChance: int, roll: int)
 #endregion
 
 
@@ -176,16 +179,7 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	# Factions will be checked in DamageReceivingComponent.checkFactions()
 	
 	# But first, check if we actually hit or miss…
-
-	self.willCalculateChance.emit(damageReceivingComponent) # Give any observers a chance to animate or modify the hit/miss calculation
-
-	var finalHitChance: int = self.hitChance - damageReceivingComponent.missChance
-	if debugMode: printDebug(str("hitChance ", self.hitChance, "% vs missChance ", damageReceivingComponent.missChance, " = ", finalHitChance, "%"))
-	
-	if finalHitChance < 100 and finalHitChance > 0 \
-	and randi_range(1, 100) > finalHitChance: # i.e. if finalHitChance is 10 then a roll of 1-10 will succeed but 11 will fail.
-		if debugMode: printDebug("Missed!")
-		return 
+	if not calculateChance(damageReceivingComponent): return
 	
 	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
 	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
@@ -195,6 +189,27 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
+
+
+func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool:
+	self.willCalculateChance.emit(damageReceivingComponent) # Give any observers a chance to animate or modify the hit/miss calculation
+
+	var totalChance: int = self.hitChance - damageReceivingComponent.missChance
+	if debugMode: printDebug(str("hitChance ", self.hitChance, "% vs missChance ", damageReceivingComponent.missChance, " = ", totalChance, "%"))
+
+	if totalChance >= 100: # Always succeed? :)
+		self.didSucceed.emit(damageReceivingComponent, totalChance, 100)
+		return true
+	elif totalChance < 1: # Always miss? :(
+		self.didMiss.emit(damageReceivingComponent, totalChance, 0)
+		return false
+	else:
+		var roll: int = randi_range(1, 100) 
+		var didSucceedRoll: bool = roll <= totalChance # i.e. If totalChance is 10 then a roll of 1-10 will succeed but 11 will fail.
+		if debugMode: printDebug(str("Rolled ", roll, ": Missed!" if not didSucceedRoll else ""))
+		if didSucceedRoll: self.didSucceed.emit(damageReceivingComponent	, totalChance, roll)
+		else: self.didMiss.emit(damageReceivingComponent, totalChance, roll)
+		return didSucceedRoll
 
 
 ## Calls [method DamageReceivingComponent.processCollision] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact]
