@@ -286,7 +286,7 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 		var textColor2:    String = textColorA2 if not isTraceLogAlternateRow else textColorB2
 
 		var backgroundColor: String = "[bgcolor=101020]" if not isTraceLogAlternateRow else "[bgcolor=001030]"
-		var bullet: String = " ⬥ " if not isTraceLogAlternateRow else " ⬦ "
+		var bullet: String = " ⬦ " if not isTraceLogAlternateRow else " ⬥ "
 
 		print_rich(str(backgroundColor, textColor1, bullet, "F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000, " [b]", object if object else "", "[/b] @ ", getCaller(stackPosition), textColor2, " ← ", getCaller(stackPosition+1), " ← ", getCaller(stackPosition+2)))
 
