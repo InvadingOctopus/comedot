@@ -1,6 +1,6 @@
 ## Rotates the parent [Entity] OR another specified [Node2D] to face towards another node.
 ## TIP: May be used to aim a [GunComponent] towards a targetting cursor etc.
-## NOTE: Mutually exclusive with [TurningControlComponent]: 
+## NOTE: Mutually exclusive with [TurningControlComponent]:
 ## Set [member shouldDisableOnTurningInput] to disable this component when the player inputs a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight].
 ## Will be reenabled after a [Timer] duration.
 
@@ -17,7 +17,6 @@ extends Component
 @export var targetToFace: Node2D
 
 @export_range(0.1, 20, 0.1) var rotationSpeed: float = 5.0
-
 @export var shouldRotateInstantly: bool = false
 
 ## If `true`, this component is disabled when a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight] is received, and reenabled after the [member reenablingTimer] duration.
@@ -25,6 +24,12 @@ extends Component
 @export var shouldDisableOnTurningInput: bool = true
 
 @export var isEnabled: bool = true
+
+@export_group("Deviation")
+@export var offset: Vector2 ## The constant deviation from the [member targetToFace]'s position.
+@export var shouldApplyRandomDeviation: bool = false ## Applies a random "jitter" between [member randomDeviationMin] & [member randomDeviationMax], e.g. to simulate inaccurate aim etc.
+@export var randomDeviationMin: Vector2 ## The lower bound of a random variation to apply to the [member targetToFace]'s position every frame,
+@export var randomDeviationMax: Vector2 ## The upper bound of a random variation to apply to the [member targetToFace]'s position every frame,
 
 #endregion
 
@@ -69,7 +74,12 @@ func _physics_process(delta: float) -> void: # TBD: Should this be `_process()` 
 	didRotateThisFrame = false
 	previousRotation   = nodeToRotate.global_rotation
 
-	var targetPosition: Vector2 = targetToFace.global_position
+	var targetPosition: Vector2 = targetToFace.global_position + self.offset # Apply the constant offset if any
+
+	if shouldApplyRandomDeviation: # and a random "jitter"
+		targetPosition += Vector2(
+			randf_range(self.randomDeviationMin.x, self.randomDeviationMax.x), \
+			randf_range(self.randomDeviationMin.y, self.randomDeviationMax.y))
 
 	# Rotate instantly or gradually?
 
@@ -106,6 +116,3 @@ func showDebugInfo() -> void:
 	Debug.watchList.targetPosition		= targetToFace.position
 	Debug.watchList.targetPositionGlobal= targetToFace.global_position
 	Debug.watchList.didRotate			= didRotateThisFrame
-
-
-
