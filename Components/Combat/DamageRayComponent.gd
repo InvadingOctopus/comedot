@@ -51,7 +51,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func onDidMiss(damageReceivingComponent: DamageReceivingComponent, _totalChance: int, _roll: int) -> void:
-	# NOTE: Do not retry to hit the same DamageReceivingComponent we just missed our chance at, 
+	# NOTE: Do not retry to hit the same DamageReceivingComponent we just missed our chance at,
 	# otherwise the chance will be tried EVERY FRAME while this DamageRayComponent remains in the DamageReceivingComponent's hurtbox.
-	selfAsRayCast.add_exception(damageReceivingComponent.area) 
+	selfAsRayCast.add_exception(damageReceivingComponent.area)
 	# TODO: Remove exception after exiting area
