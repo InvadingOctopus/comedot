@@ -40,7 +40,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 ## How To Use
 
 > [!IMPORTANT]  
-> _Requires Godot 4.4 ~Embrace the Future_ ✨  
+> _Requires Godot 4.5 ~Embrace the Future_ ✨  
 
 1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
 	* Or you can cherry-pick files from Comedot to use in other templates.
