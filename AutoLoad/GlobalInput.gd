@@ -36,8 +36,11 @@ class Actions:
 	const fire			:= &"fire"
 	const interact		:= &"interact"
 
-	## Used for generating input events for an [Action], a Resource which represents an explicitly-chosen game-specific special ability, such as casting a spell.
-	const specialActionPrefix := &"specialAction" # TBD: Less ambiguous name? :')
+	## Used for generating and detecting input events for an [Action], a Resource which represents an explicitly-chosen game-specific special ability, such as casting a spell.
+	## See [ActionControlComponent] & [ActionButton] etc.
+	## NOTE: This string should end in an underscore `_` to separate the prefix from the [member Action.name] which normally begins with a lowercase letter as well.
+	## Edit the Godot Project Settings' Input Map to add shortcuts for special [Actions] e.g `specialAction_dash`.
+	const specialActionPrefix := &"specialAction_" # TBD: Less ambiguous name? :')
 
 	const pause			:= &"pause"
 	const screenshot	:= &"screenshot"

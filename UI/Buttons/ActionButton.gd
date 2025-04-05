@@ -25,14 +25,6 @@ extends Button
 #endregion
 
 
-#region State
-#endregion
-
-
-#region Signals
-#endregion
-
-
 #region Dependencies
 var player: PlayerEntity:
 	get: return GameState.players.front()

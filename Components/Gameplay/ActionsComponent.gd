@@ -1,7 +1,10 @@
-## Stores a list of gameplay actions which an Entity such as the player character or an NPC may perform.
-## The actions may cost a Stat Resource when used and may require a target to be chosen,
-## such as a special skill/spell like "Fireball", or a trivial command like "Examine".
+## Stores a list of special gameplay actions which an Entity such as the player character or an NPC may explicitly choose to perform.
+## Actions may be special skills/spells like "Fireball", or trivial commands like "Examine".
+## An Action may cost a [Stat] Resource when used and may require a target to be chosen.
 ## To perform an Action in response to player control, use [ActionControlComponent].
+## To display UI buttons for Actions, use [ActionButtons] & [ActionButtonsList].
+## TIP: To execute Actions via keyboard shortcuts or gamepad buttons, edit the Project Settings' Input Map,
+## and add Godot input actions with names matching [member GlobalInput.Actions.specialActionPrefix] + [member Action.name] e.g. `specialAction_dash`.
 ## Requirements: [StatsComponent] to perform Actions which have a Stat cost.
 
 class_name ActionsComponent
@@ -9,7 +12,7 @@ extends Component
 
 
 #region Parameters
-@export var actions: Array[Action] ## The list of available actions that the Entity may choose to perform.
+@export var actions: Array[Action] ## The list of available [Action]s that the Entity may choose to perform.
 @export var isEnabled: bool = true
 #endregion
 
@@ -47,6 +50,9 @@ func _ready() -> void:
 ## Returns the first [Action] with the matching name from the [member actions] array.
 func findAction(nameToSearch: StringName) -> Action:
 	# TBD: Use `Array.any()`?
+	# TBD: PERFORMANCE: Use a Dictionary to cache Name:Action?
+	# TBD: PERFORMANCE: Should we to_lower() to avoid any typo bugs? Or is that a bad idea for StringName?
+	
 	for action in self.actions:
 		if action.name == nameToSearch: return action
 
@@ -54,9 +60,28 @@ func findAction(nameToSearch: StringName) -> Action:
 	return null
 
 
+## Returns an [Action] that matches an [InputEvent] shortcut.
+## i.e. the first [Action] from this component's [member actions] array where
+## [member GlobalInput.Actions.specialActionPrefix] + [member Action.name] returns `true` for [method InputEvent.is_action]
+## For example `specialAction_dash`.
+## This method is called by [ActionControlComponent] to handle keyboard/gamepad/etc. shortcuts for special Actions.
+func findActionForInputEvent(inputEvent: InputEvent) -> Action:
+	# NOTE: GRR: Dummy Godot does not seem to have a way to get all the matching Godot Input Action from an InputEvent,
+	# so we have to try all the [special/explicit] Actions we have and ask Godot whether an InputEvent matches any of them.
+
+	if debugMode: printDebug(str("findActionForInputEvent(): ", inputEvent))
+	for action in self.actions:
+		if inputEvent.is_action(GlobalInput.Actions.specialActionPrefix + action.name):
+			if debugMode: printDebug(str("First match: ", action.logName))
+			return action
+	return null
+
+
 ## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
 ## To perform Actions in response to player control and handle targeting, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
+	# TBD: PERFORMANCE: Use a Dictionary to cache Name:Action?
+	# TBD: PERFORMANCE: Should we to_lower() to avoid any typo bugs? Or is that a bad idea for StringName?
 	var actionToPerform: Action = self.findAction(actionName)
 	if debugMode: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
 	if not actionToPerform: return false
