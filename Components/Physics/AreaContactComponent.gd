@@ -6,8 +6,14 @@ class_name AreaContactComponent
 extends AreaCollisionComponent
 
 # TBD: Add a list for [TileMapLayer]s?
-# TBD: Use this as the base for DamageComponent etc.?
 # TBD: Reduce code duplication between [CollisionsArrayArea]?
+# DESIGN: Areas cannot be shared between DamageComponent/DamageReceivingComponent etc. (why?)
+
+
+#region Parameters
+## If not empty, only physics nodes belonging to this group will be included in the contact lists, e.g. "zones" etc.
+@export var groupToInclude: StringName # PERFORMANCE: Only 1 group is checked because comparing array-with-array "intersection" is slower.
+#endregion
 
 
 #region State
@@ -38,14 +44,16 @@ func readdAllContacts() -> void:
 
 	if shouldMonitorAreas:
 		for overlappingArea in selfAsArea.get_overlapping_areas():
-			if overlappingArea != self.parentEntity or overlappingArea.owner != self.parentEntity:
+			if  (overlappingArea != parentEntity or overlappingArea.owner != parentEntity) \
+			and (not groupToInclude.is_empty()  and overlappingArea.is_in_group(groupToInclude)):
 				areasInContact.append(overlappingArea)
 				self.onCollide(overlappingArea)
 				self.didEnterArea.emit(overlappingArea)
 
 	if shouldMonitorBodies:
 		for overlappingBody in selfAsArea.get_overlapping_bodies():
-			if overlappingBody != self.parentEntity or overlappingBody.owner != self.parentEntity:
+			if  (overlappingBody != parentEntity or overlappingBody.owner != parentEntity) \
+			and (not groupToInclude.is_empty()  and overlappingBody.is_in_group(groupToInclude)):
 				bodiesInContact.append(overlappingBody)
 				self.onCollide(overlappingBody)
 				self.didEnterBody.emit(overlappingBody)
@@ -56,11 +64,14 @@ func readdAllContacts() -> void:
 # DESIGN: All functions below: Arrays should be updated before signals.
 # There is code duplication from [AreaCollisionComponent] because the arrays must be updated in the middle of the functions :(
 # Ignore collisions when the node is the parent Entity or any of its children.
-# TBD: Should removals skip the parent check?
+# DESIGN: Let the methods that handle entry & addition take care of the checks; only recheck array membership during exit/removal.
 
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled or not shouldMonitorAreas or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return
+	if not isEnabled or not shouldMonitorAreas \
+	or (areaEntered == parentEntity or areaEntered.owner == parentEntity) \
+	or (not groupToInclude.is_empty() and not areaEntered.is_in_group(groupToInclude)): return
+ 
 	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 	
 	areasInContact.append(areaEntered)
@@ -69,7 +80,10 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
-	if not isEnabled or not shouldMonitorBodies or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
+	if not isEnabled or not shouldMonitorBodies \
+	or bodyEntered == parentEntity or bodyEntered.owner == parentEntity \
+	or (not groupToInclude.is_empty() and not bodyEntered.is_in_group(groupToInclude)): return
+
 	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
 
 	bodiesInContact.append(bodyEntered)
@@ -77,9 +91,10 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 	didEnterBody.emit(bodyEntered)
 
 
-## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorAreas]
+## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorAreas].
+## NOTE: [method onExit] & [signal didExitArea] are only called if the exiting area is in [member areasInContact].
 func onAreaExited(areaExited: Area2D) -> void:
-	if not shouldMonitorAreas or areaExited == self.parentEntity or areaExited.owner == self.parentEntity: return
+	if not shouldMonitorAreas or not areasInContact.has(areaExited): return
 	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
 	
 	areasInContact.erase(areaExited)
@@ -87,9 +102,10 @@ func onAreaExited(areaExited: Area2D) -> void:
 	didExitArea.emit(areaExited)
 
 
-## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorBodies]
+## NOTE: Removals are NOT affected by [member isEnabled] but ARE affected by [member shouldMonitorBodies].
+## NOTE: [method onExit] & [signal didExitBodt] are only called if the exiting body is in [member bodiesInContact].
 func onBodyExited(bodyExited: Node2D) -> void:
-	if not shouldMonitorBodies or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
+	if not shouldMonitorBodies or not bodiesInContact.has(bodyExited): return
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
 	
 	bodiesInContact.erase(bodyExited)
