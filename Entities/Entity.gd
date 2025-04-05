@@ -444,7 +444,7 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 
 ## Loads and instantiates a Scene and adds it to this Entity's parent node at the specified offset from this Entity's position.
 ## Returns the new instance (Node).
-func spawnNode(scenePath: String, positionOffset: Vector2) -> void:
+func spawnNode(scenePath: String, positionOffset: Vector2 = Vector2.ZERO) -> void:
 	var myParent: Node = self.get_parent()
 	if not myParent:
 		printWarning(str("spawnNode(): This Entity has no parent: ", self.logFullName))
