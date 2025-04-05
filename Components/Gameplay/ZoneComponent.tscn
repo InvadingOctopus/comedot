@@ -1,10 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://igl5tam71pns"]
+[gd_scene load_steps=2 format=3 uid="uid://igl5tam71pns"]
 
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="1_8tdn4"]
-[ext_resource type="Script" uid="uid://b4g4nmlwwib4t" path="res://Components/Gameplay/ZoneComponent.gd" id="1_shr7o"]
 
 [node name="ZoneComponent" instance=ExtResource("1_8tdn4")]
-collision_mask = 512
-monitorable = false
-script = ExtResource("1_shr7o")
+editor_description = "Variant of AreaContactComponent that only monitors the \"zones\" Group."
+groupToInclude = &"zones"
 shouldMonitorBodies = false
