@@ -71,9 +71,9 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or not shouldMonitorAreas \
 	or (areaEntered == parentEntity or areaEntered.owner == parentEntity) \
 	or (not groupToInclude.is_empty() and not areaEntered.is_in_group(groupToInclude)): return
- 
+
 	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
-	
+
 	areasInContact.append(areaEntered)
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
@@ -96,7 +96,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 func onAreaExited(areaExited: Area2D) -> void:
 	if not shouldMonitorAreas or not areasInContact.has(areaExited): return
 	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
-	
+
 	areasInContact.erase(areaExited)
 	self.onExit(areaExited)
 	didExitArea.emit(areaExited)
@@ -107,7 +107,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 func onBodyExited(bodyExited: Node2D) -> void:
 	if not shouldMonitorBodies or not bodiesInContact.has(bodyExited): return
 	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
-	
+
 	bodiesInContact.erase(bodyExited)
 	self.onExit(bodyExited)
 	didExitBody.emit(bodyExited)
