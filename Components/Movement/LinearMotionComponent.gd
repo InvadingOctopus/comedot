@@ -8,12 +8,12 @@ extends Component
 
 #region Parameters
 
-@export_range(-2000, 2000, 5) var initialSpeed:	float = 150  ## The initial value for [member speed]
-@export_range(-2000, 2000, 5) var maximumSpeed:	float = 800  ## The maximum limit if [member shouldApplyModifier] is positive (i.e. acceleration)
-@export_range(-2000, 2000, 5) var minimumSpeed:	float = 10   ## The minimum limit if [member shouldApplyModifier] is negative (i.e. friction)
+@export_range(-2500, 2500, 5) var initialSpeed:	float = 150  ## The initial value for [member speed]
+@export_range(-2500, 2500, 5) var maximumSpeed:	float = 800  ## The maximum limit if [member shouldApplyModifier] is positive (i.e. acceleration)
+@export_range(-2500, 2500, 5) var minimumSpeed:	float = 10   ## The minimum limit if [member shouldApplyModifier] is negative (i.e. friction)
 
 @export var shouldApplyModifier:				 bool = true ## If `true` then the acceleration/friction [member modifier] is applied to [member speed] every frame.
-@export_range(-2000, 2000, 5) var modifier:		float = 800  ## The acceleration (if positive) or friction (if negative) added to [member speed] every frame if [member shouldApplyModifier]
+@export_range(-5000, 5000, 5) var modifier:		float = 800  ## The acceleration (if positive) or friction (if negative) added to [member speed] every frame if [member shouldApplyModifier]
 
 @export var shouldStopAtMaximumDistance:		 bool = false
 @export var shouldDeleteParentAtMaximumDistance: bool = false
