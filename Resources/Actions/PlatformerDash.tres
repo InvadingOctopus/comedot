@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="Action" load_steps=7 format=3 uid="uid://bromkuu4nfhd3"]
+
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_ug0eg"]
+[ext_resource type="Script" uid="uid://514sfycgayn" path="res://Resources/Actions/PlatformerDash.gd" id="2_5n12a"]
+[ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="3_wk77y"]
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Action.gd" id="4_immu7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7mysx"]
+atlas = ExtResource("1_ug0eg")
+region = Rect2(352, 336, 16, 16)
+
+[sub_resource type="Resource" id="Resource_11y2k"]
+script = ExtResource("3_wk77y")
+payloadScript = ExtResource("2_5n12a")
+payloadScriptMethodName = &"onPayload_didExecute"
+debugMode = false
+metadata/_custom_type_script = "uid://cnho8p8evw7t0"
+
+[resource]
+script = ExtResource("4_immu7")
+requiresTarget = false
+hasFiniteUses = false
+maximumUses = 0
+cooldown = 1.0
+payload = SubResource("Resource_11y2k")
+debugMode = false
+usesRemaining = null
+cooldownRemaining = 0.0
+cost = 0
+name = &"dash"
+displayName = "Dash"
+description = "A short sprint forward."
+icon = SubResource("AtlasTexture_7mysx")
+metadata/_custom_type_script = "uid://q0i03i1tgbx7"
