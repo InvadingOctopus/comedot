@@ -53,7 +53,7 @@
 
 	"Export": {
 		"prefix": ["@export", "export"],
-		"body": [ "@export var ${1:isFlagged}: ${2:bool} = ${3:false}" ],
+		"body": [ "@export var ${1:isEnabled}: ${2:bool} = ${3:true}" ],
 		"description": "A basic export parameter."
 	},
 
