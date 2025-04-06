@@ -444,15 +444,33 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 
 ## Loads and instantiates a Scene and adds it to this Entity's parent node at the specified offset from this Entity's position.
 ## Returns the new instance (Node).
-func spawnNode(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
+func spawnPath(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
 	var myParent: Node = self.get_parent()
 	if not myParent:
-		printWarning(str("spawnNode(): This Entity has no parent: ", self.logFullName))
+		printWarning(str("spawnPath(): This Entity has no parent: ", self.logFullName))
 		return
 	
 	var newNode: Node = SceneManager.loadSceneAndAddInstance(scenePath, myParent, self.position + positionOffset)
 	if  copyZIndex and newNode is CanvasItem: newNode.z_index = self.z_index
 	return newNode
+
+
+## Adds an existing node it to this Entity's parent node at the specified offset from this Entity's position.
+## Removes the node from any other parent. Returns the same node.
+func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
+	var myParent: Node = self.get_parent()
+	if not myParent:
+		printWarning(str("spawnNode(): This Entity has no parent: ", self.logFullName))
+		return
+	
+	if node.get_parent(): node.get_parent().remove_child(node)
+
+	node.position = self.position + positionOffset
+	if copyZIndex and node is CanvasItem: node.z_index = self.z_index
+	myParent.add_child(node)
+	node.owner = myParent
+
+	return node
 
 #endregion
 
