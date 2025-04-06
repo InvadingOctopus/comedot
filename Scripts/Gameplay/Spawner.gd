@@ -16,6 +16,9 @@ extends Node
 ## The parent node to add the new spawns to. If `null`, the spawns will be added as children of this area.
 @export var parentOverride:	Node
 
+## Suppresses [member parentOverride] and adds new spawned nodes as children of the current Scene's root node.
+@export var spawnInSceneRoot: bool = false
+
 ## An optional group to add the spawned nodes to.
 @export var groupToAddTo:	StringName
 
@@ -114,16 +117,18 @@ func spawn() -> Node2D:
 
 	var parent: Node
 
-	if not parentOverride: parent = self.get_parent() # The [Timer]'s parent because [Timer] is not a [Node2D]
-	else: parent = parentOverride
+	if   spawnInSceneRoot: parent = self.get_tree().current_scene
+	elif parentOverride:   parent = parentOverride
+	else:				   parent = self.get_parent() # The [Timer]'s parent because [Timer] is not a [Node2D]
 
 	# Let the game-specific subclasses, if any, customize the new copies.
 
 	if validateNewNode(newSpawn, parent):
 
 		if not groupToAddTo.is_empty():
-			newSpawn.add_to_group(groupToAddTo, true)
+			newSpawn.add_to_group(groupToAddTo, true) # persistent
 
+		if debugMode: Debug.printDebug(str("spawn() willAddSpawn: ", newSpawn, " in ", parent, ", group: ", groupToAddTo), self)
 		willAddSpawn.emit(newSpawn, parent) # TBD: Should this be emitted before adding to a group?
 		parent.add_child(newSpawn, false) # PERFORMANCE: not force_readable_name (very slow according to Godot docs)
 
@@ -131,6 +136,7 @@ func spawn() -> Node2D:
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 		totalNodesSpawned += 1
+		if debugMode: Debug.printDebug(str("spawn() didSpawn: ", newSpawn, " in ", newSpawn.get_parent(), ", total: ", totalNodesSpawned, ", total in group: ", self.get_tree().get_nodes_in_group(groupToAddTo).size()), self)
 		didSpawn.emit(newSpawn, parent)
 		return newSpawn
 
