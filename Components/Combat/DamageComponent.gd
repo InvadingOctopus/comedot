@@ -44,6 +44,9 @@ extends Component
 ## Should bullets from the same faction hurt?
 @export var friendlyFire: bool = false
 
+## Display "MISS" text when [member hitChance] fails?
+@export var shouldEmitBubbleOnMiss: bool = true
+
 ## Should the parent Entity be removed when this [DamageComponent]'s "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox"?
 ## Useful for "bullet" entities (including arrows etc.) that must be blocked by all receivers.
 ## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
@@ -208,7 +211,9 @@ func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool
 		var didSucceedRoll: bool = roll <= totalChance # i.e. If totalChance is 10 then a roll of 1-10 will succeed but 11 will fail.
 		if debugMode: printDebug(str("Rolled ", roll, ": Missed!" if not didSucceedRoll else ""))
 		if didSucceedRoll: self.didSucceed.emit(damageReceivingComponent	, totalChance, roll)
-		else: self.didMiss.emit(damageReceivingComponent, totalChance, roll)
+		else: 
+			self.didMiss.emit(damageReceivingComponent, totalChance, roll)
+			if shouldEmitBubbleOnMiss: TextBubble.create("MISS", damageReceivingComponent)
 		return didSucceedRoll
 
 
