@@ -56,15 +56,14 @@ func gameState_gameDidOver() -> void:
 		# NOTE: Make sure ALL players are dead before Overing the Game!
 		if GameState.players.is_empty():
 			disconnectSignals()
-			if not isDisplayingGameOver: displayGameOver()
+			if not isDisplayingGameOver: enterGameOverState()
 		else:
 			Debug.printDebug(str("gameState_gameDidOver(): GameState.players remaining: ", GameState.players.size(), " ", GameState.players), self)
 
 
 ## Pauses the gameplay and makes the node visible.
-## For other game-specific animations, override this method.
-## IMPORTANT: `super.displayGameOver()` MUST Be called.
-func displayGameOver() -> void:
+## IMPORTANT: Do NOT override in subclass for other game-specific animations; override [method customizeGameOver] instead.
+func enterGameOverState() -> void:
 	if isDisplayingGameOver: 
 		Debug.printDebug("displayGameOver() called while already isDisplayingGameOver")
 		return
@@ -81,3 +80,9 @@ func displayGameOver() -> void:
 	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay. FIXME: Weird Godot error: "Condition "!is_inside_tree()" is true. Returning: false"
 	self.visible = true # Show Game Over graphics
 	self.isDisplayingGameOver = true
+
+
+## Abstract; override in subclass.
+## IMPORTANT: Check [member isDisplayingGameOver]
+func customizeGameOver() -> void:
+	pass # if not isDisplayingGameOver: return
