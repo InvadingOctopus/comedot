@@ -20,7 +20,8 @@ extends CollectibleComponent
 
 @export var preventCollectionIfStatIsMax: bool = true # TBD: Better name? :')
 
-@export var shouldDisplayIndicator: bool = true
+@export var shouldEmitBubble:  bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
+@export var shouldColorBubble: bool = true
 
 #endregion
 
@@ -69,8 +70,12 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 	# Create a visual indicator
 	# TODO: Make it customizable
 
-	if shouldDisplayIndicator:
-		TextBubble.create(str(stat.displayName.capitalize(), "%+d" % randomizedModifier), collectorEntity) # TBD: Put a space between text & number?
+	if shouldEmitBubble:
+		# TBD: Put a space between text & number?
+		var labelSettings: LabelSettings = TextBubble.create(str(stat.displayName, "%+d" % randomizedModifier), collectorEntity).label.label_settings
+		if shouldColorBubble:
+			if   stat.previousChange > 0: labelSettings.font_color = Color.GREEN
+			elif stat.previousChange < 0: labelSettings.font_color = Color.ORANGE
 
 	return randomizedModifier
 
