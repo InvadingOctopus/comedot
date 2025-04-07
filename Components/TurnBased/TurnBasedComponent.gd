@@ -115,24 +115,24 @@ func processTurnEndSignals() -> void:
 
 #region Abstract Turn Process Methods
 
-# NOTE: These methids MUST be overridden by subclasses to perform the actual game-specific actions.
+# NOTE: These methods MUST be overridden by subclasses to perform the actual game-specific actions.
 
 ## Any "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
 ## Abstract; Must be overridden by subclasses.
 func processTurnBegin() -> void:
-	pass
+	pass # if not isEnabled: return
 
 
 ## The actual actions which occur every turn, such as movement or combat.
 ## Abstract; Must be overridden by subclasses.
 func processTurnUpdate() -> void:
-	pass
+	pass # if not isEnabled: return
 
 
 ## Any "post-turn" activity that happens AFTER the main activity, such as animations, damage-over-time effects, log messages, or cleanup.
 ## Abstract; Must be overridden by subclasses.
 func processTurnEnd() -> void:
-	pass
+	pass # if not isEnabled: return
 
 #endregion
 
