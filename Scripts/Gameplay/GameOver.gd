@@ -1,7 +1,7 @@
 ## YOU DIED! Script for any node (recommended to be a [CanvasLayer]) which displays "Game Over" graphics and pauses the gameplay when the global [signal GameState.gameDidOver] signal is emitted, 
 ## such as when the player entity's [HealthComponent] drops to 0.
 ## Add game-specific nodes/labels/etc. for the Game Over visuals as children of this node; this script automatically hides the node on [method _ready] and makes it visible when the game is over.
-## For other game-specific animations or conditions, extend from this script and override the [method displayGameOver] method. IMPORTANT: `super.displayGameOver()` MUST Be called.
+## For other game-specific animations or conditions, extend from this script and override the [method customizeGameOver] method.
 ## @experimental
 
 class_name GameOver
@@ -47,7 +47,7 @@ func gameState_playerRemoved(player: Entity) -> void:
 	if isEnabled and shouldGameOverAfterAllPlayersRemoved and GameState.players.is_empty():
 		if debugMode: Debug.printDebug(str("gameState_playerRemoved() last player Entity: ", player), self)
 		disconnectSignals()
-		if not isDisplayingGameOver: displayGameOver()
+		if not isDisplayingGameOver: enterGameOverState()
 
 
 func gameState_gameDidOver() -> void:
@@ -65,16 +65,16 @@ func gameState_gameDidOver() -> void:
 ## IMPORTANT: Do NOT override in subclass for other game-specific animations; override [method customizeGameOver] instead.
 func enterGameOverState() -> void:
 	if isDisplayingGameOver: 
-		Debug.printDebug("displayGameOver() called while already isDisplayingGameOver")
+		Debug.printDebug("enterGameOverState() called while already isDisplayingGameOver")
 		return
 	
-	Debug.printLog("displayGameOver()", self)
+	Debug.printLog("enterGameOverState()", self)
 	
 	var currentScene: Node
 	if is_instance_valid(self) and is_instance_valid(self.get_tree()):
 		currentScene = self.get_tree().current_scene
 	if not currentScene: # Avoid crash if triggered during scene transitions
-		Debug.printWarning(str("displayGameOver(): Cannot get SceneTree.current_scene! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
+		Debug.printWarning(str("enterGameOverState(): Cannot get SceneTree.current_scene! Called during scene transition? shouldGameOverAfterAllPlayersRemoved: ", shouldGameOverAfterAllPlayersRemoved), self)
 		return 
 
 	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay. FIXME: Weird Godot error: "Condition "!is_inside_tree()" is true. Returning: false"
