@@ -80,7 +80,7 @@ func processMovement(delta: float) -> void:
 	if parameters.shouldMaintainMinimumVelocity:
 		if body.velocity.length() < parameters.minimumSpeed:
 			if body.velocity.is_zero_approx():
-				body.velocity = self.lastVelocity.normalized() * parameters.minimumSpeed
+				body.velocity = characterBodyComponent.previousVelocity.normalized() * parameters.minimumSpeed
 			else:
 				body.velocity = body.velocity.normalized() * parameters.minimumSpeed
 
