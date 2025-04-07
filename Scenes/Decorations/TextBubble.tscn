@@ -5,6 +5,7 @@
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="2_cw8ty"]
 
 [node name="TextBubble" type="Node2D"]
+process_mode = 3
 z_index = 100
 script = ExtResource("1_ak04i")
 
