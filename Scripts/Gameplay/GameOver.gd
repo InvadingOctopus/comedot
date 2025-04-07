@@ -80,6 +80,7 @@ func enterGameOverState() -> void:
 	currentScene.process_mode = Node.PROCESS_MODE_DISABLED # Pause the gameplay. FIXME: Weird Godot error: "Condition "!is_inside_tree()" is true. Returning: false"
 	self.visible = true # Show Game Over graphics
 	self.isDisplayingGameOver = true
+	customizeGameOver() # Time for game-specific animations
 
 
 ## Abstract; override in subclass.
