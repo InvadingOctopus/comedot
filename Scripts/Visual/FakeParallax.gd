@@ -2,14 +2,18 @@
 ## Used to simulate a basic parallax effect. For proper parallax, use [Parallax2D].
 ## @experimental
 
-class_name FakeParallax
+# class_name FakeParallax
 extends Node2D
 
 
 #region Parameters
 @export var focalNode:	 Node2D ## The node which acts as the "camera" such as the player sprite. If omitted, the first [member GameState.players] Entity is used.
 @export var scrollScale: float = 1.0
-@export var isEnabled:	 bool  = true
+@export var isEnabled:	 bool  = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_process(isEnabled)
 #endregion
 
 #region State
@@ -24,7 +28,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not isEnabled: return
+	# if not isEnabled: return # Set by property setter
 
 	if self.previousFocalPosition != focalNode.global_position:
 		var difference: float = previousFocalPosition.x - focalNode.global_position.x
