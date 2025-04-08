@@ -74,8 +74,8 @@ static func findFirstChildOfAnyTypes(parentNode: Node, types: Array[Variant], re
 static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 	var parent: Node = childNode.get_parent() # parentOrGrandparent
 
-	# If parent is null or not the matching type, get the grandparent (parent's parent) and keep searching up the tree.
-	while not (is_instance_of(parent, type)) and not (parent == null):
+	# If parent is not the matching type, get the grandparent (parent's parent) and keep searching up the tree, until we run out of parents (null).
+	while not is_instance_of(parent, type):
 		parent = parent.get_parent()
 
 	return parent
