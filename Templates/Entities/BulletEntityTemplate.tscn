@@ -50,8 +50,5 @@ shouldRemoveEntity = true
 
 [node name="OffscreenRemovalComponent" parent="." instance=ExtResource("4_ogryl")]
 
-[node name="OnScreenNotifier" parent="OffscreenRemovalComponent" index="0"]
-scale = Vector2(0.25, 0.25)
-
 [editable path="DamageComponent"]
 [editable path="OffscreenRemovalComponent"]

@@ -157,7 +157,7 @@ script = ExtResource("9_g0ayb")
 min = 0
 max = 10
 value = 10
-logChanges = false
+debugMode = false
 name = &"health"
 displayName = ""
 description = ""
@@ -168,7 +168,7 @@ script = ExtResource("9_g0ayb")
 min = 0
 max = 100
 value = 100
-logChanges = false
+debugMode = false
 name = &"ammo"
 displayName = ""
 description = ""
@@ -179,7 +179,7 @@ script = ExtResource("9_g0ayb")
 min = 0
 max = 10000000
 value = 1337
-logChanges = false
+debugMode = false
 name = &"score"
 displayName = ""
 description = ""
@@ -191,7 +191,7 @@ script = ExtResource("9_g0ayb")
 min = 0
 max = 10
 value = 10
-logChanges = false
+debugMode = false
 name = &"playerHealth"
 displayName = "HP"
 description = ""
@@ -263,12 +263,10 @@ ammo = SubResource("Resource_puhqw")
 ammoCost = 1
 cooldown = 1.0
 
-[node name="Pivot" parent="GunComponent" index="0" node_paths=PackedStringArray("spriteToMatch")]
+[node name="GunSprite" parent="GunComponent" index="0" node_paths=PackedStringArray("spriteToMatch")]
+visible = false
 script = ExtResource("12_n5pr4")
 spriteToMatch = NodePath("../../AnimatedSprite2D")
-
-[node name="GunSprite" parent="GunComponent/Pivot" index="0"]
-visible = false
 
 [node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
 
