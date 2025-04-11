@@ -168,6 +168,19 @@
 		"description": "Store reference to self casted as a different type."
 	},
 
+	"EnabledFlag": {
+		"prefix": "var isEnabled",
+		"body": [
+			"@export var isEnabled: bool = true:",
+				"\tset(newValue):",
+					"\t\tif newValue != isEnabled:",
+						"\t\t\tisEnabled = newValue",
+						"\t\t\tself.set_process(isEnabled)",
+						"\t\t\tself.set_physics_process(isEnabled)",
+		],
+		"description": "A flag to enable/disable a script and also set per-frame updates."
+	},
+
 	"Debug Variables": {
 		"prefix": "debugVar",
 		"body": [ "Debug.printVariables([${1:self}]) # DEBUG: DONTCOMMIT$0" ],
