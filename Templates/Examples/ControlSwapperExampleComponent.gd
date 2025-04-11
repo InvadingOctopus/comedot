@@ -1,7 +1,7 @@
 ## An example of swapping components from an [Entity] based on which [Area2D] it is in.
 
 class_name ControlSwapperExampleComponent
-extends ZoneComponent
+extends AreaContactComponent
 
 
 #region Constants
@@ -22,17 +22,17 @@ const overheadPhysicsComponentScene:	PackedScene = preload("res://Components/Phy
 #endregion
 
 
-func onAreaEntered(area: Area2D) -> void:
-	super.onAreaEntered(area)
-	if area.name == indoorZoneName: switchComponentSet(false)
+func onCollide(collidingNode: Node2D) -> void:
+	super.onCollide(collidingNode)
+	if collidingNode.name == indoorZoneName: enableFlyingComponentSet(false)
 
 
-func onAreaExited(area: Area2D) -> void:
-	super.onAreaExited(area)
-	if area.name == indoorZoneName: switchComponentSet(true)
+func onExit(exitingNode: Node2D) -> void:
+	super.onExit(exitingNode)
+	if exitingNode.name == indoorZoneName: enableFlyingComponentSet(true)
 
 
-func switchComponentSet(isPlayerFlying: bool) -> void:
+func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
 		parentEntity.removeComponents([JumpControlComponent,  PlatformerControlComponent, PlatformerPhysicsComponent]) # Types
