@@ -27,7 +27,7 @@ extends Container
 @export var shouldAddSpaceBeforeSuffix:		bool = true
 
 ## Affects the prefix and suffix labels, not the actual Stat value numbers.
-@export var shouldShowText:  bool = true: 
+@export var shouldShowText:  bool = true:
 	set(newValue):
 		if newValue != shouldShowText:
 			shouldShowText = newValue
@@ -151,6 +151,6 @@ func buildLabelText() -> String:
 			valueText = format % stat.value
 		else:
 			valueText = str(stat.value)
-	
+
 	# DEBUG: Debug.printTrace([fullPrefix, valueText, fullSuffix], self)
 	return str(fullPrefix, valueText, fullSuffix)

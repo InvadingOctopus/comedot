@@ -88,7 +88,7 @@ func updateUI(_entity: Entity = self.targetEntity) -> void: # The entity argumen
 func updateCostUI() -> void:
 	# NOTE: DESIGN: Only show the CURRENT level's cost to simplify development. For the next level, use a separate button.
 	if upgrade.costStat:
-		costStatUI.text = upgrade.costStat.displayName 
+		costStatUI.text = upgrade.costStat.displayName
 		costStatUI.visible = true
 		costAmountLabel.text = str(upgrade.getCost(self.getLevelToPurchase()))
 		costAmountLabel.visible = true
