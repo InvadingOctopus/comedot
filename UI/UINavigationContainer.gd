@@ -27,15 +27,7 @@ func _ready() -> void:
 	elif debugMode: Debug.printWarning("Missing backButton", self) # Suppress warning in case there is a different way to close, such as the PauseButton.
 
 
-func connectBackButton() -> void:
-	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action(GlobalInput.Actions.back):
-		goBack()
-		self.get_viewport().set_input_as_handled()
-
+#region History Stack Management
 
 ## Clears the [member navigationStack] array and re-adds the first child as the first member.
 ## Returns: The first child of type [Control]
@@ -57,6 +49,32 @@ func addNodeToHistory(path: String) -> int:
 	showDebugInfo()
 	return navigationStack.size()
 
+
+## Returns `true` if the [member navigationStack] history successfully moved back, i.e. the stack size is > 1.
+func goBack() -> bool:
+	# GODOT: Why is there no pop_back() for PackedArrays??
+
+	if debugMode: Debug.printTrace([self.get_children()], self)
+
+	# Have to have at least 2 nodes to be able to go back in history.
+	# NOTE: Do not store the size because it will change.
+	if navigationStack.size() < 2: return false
+
+	# Remove the currently displayed node
+	navigationStack.remove_at(navigationStack.size() - 1)
+
+	# Pop again to get the previous node
+	var previousDestination: String = navigationStack[navigationStack.size() - 1]
+	navigationStack.remove_at(navigationStack.size() - 1)
+	# It will be appended to [navigationStack] again in displayNavigationDestination()
+
+	self.displayNavigationDestination(previousDestination)
+	return true
+
+#endregion
+
+
+#region Child Management
 
 func findFirstChildControl() -> Control:
 	return Tools.findFirstChildOfType(self, Control, false) # not includeParent
@@ -104,35 +122,25 @@ func displayNavigationDestination(newDestinationPath: String) -> bool:
 		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationStack), self)
 	return result
 
+#endregion
+
+
+#region User Input
+
+func connectBackButton() -> void:
+	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
+
 
 func onBackButton_pressed() -> void:
 	goBack()
-
-
-func goBack() -> void:
-	# GODOT: Why is there no pop_back() for PackedArrays??
-
-	if debugMode: Debug.printTrace([self.get_children()], self)
-
-	# Have to have at least 2 nodes to be able to go back in history.
-	# NOTE: Do not store the size because it will change.
-	if navigationStack.size() <= 1: return
-
-	# Remove the currently displayed node
-	navigationStack.remove_at(navigationStack.size() - 1)
-
-	# Pop again to get the previous node
-	var previousDestination: String = navigationStack[navigationStack.size() - 1]
-	navigationStack.remove_at(navigationStack.size() - 1)
-	# It will be appended to [navigationStack] again in displayNavigationDestination()
-
-	self.displayNavigationDestination(previousDestination)
 
 
 func updateBackButton() -> void:
 	if not is_instance_valid(backButton): return
 	# Show the button if there is more than 1 node in the history.
 	backButton.visible = navigationStack.size() > 1
+
+#endregion
 
 
 func showDebugInfo() -> void:
