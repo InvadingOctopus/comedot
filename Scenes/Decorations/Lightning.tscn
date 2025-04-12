@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddelaue1jqkt0"]
+
+[ext_resource type="Script" uid="uid://dpuw44su50wgd" path="res://Scenes/Decorations/Lightning.gd" id="1_52dl3"]
+[ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="2_vkje2"]
+
+[node name="Lightning" type="Node2D"]
+editor_description = "A basic lightning flash effect."
+visible = false
+script = ExtResource("1_52dl3")
+
+[node name="LightningTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+ignore_time_scale = true
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+energy = 0.5
+shadow_enabled = true
+shadow_filter = 1
+shadow_filter_smooth = 4.0
+shadow_item_cull_mask = 512
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(320, 0)
+shadow_enabled = true
+shadow_filter = 1
+shadow_filter_smooth = 4.0
+shadow_item_cull_mask = 513
+texture = ExtResource("2_vkje2")
+texture_scale = 4.0
+
+[connection signal="timeout" from="LightningTimer" to="." method="onLightningTimer_timeout"]
