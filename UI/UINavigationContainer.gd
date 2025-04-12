@@ -31,6 +31,12 @@ func connectBackButton() -> void:
 	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action(GlobalInput.Actions.back):
+		self.onBackButton_pressed()
+		self.get_viewport().set_input_as_handled()
+
+
 ## Clears the [member navigationStack] array and re-adds the first child as the first member.
 ## Returns: The first child of type [Control]
 func resetHistory() -> Control:

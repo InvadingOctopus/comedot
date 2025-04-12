@@ -42,6 +42,7 @@ class Actions:
 	## Edit the Godot Project Settings' Input Map to add shortcuts for special [Actions] e.g `specialAction_dash`.
 	const specialActionPrefix := &"specialAction_" # TBD: Less ambiguous name? :')
 
+	const back			:= &"back"
 	const pause			:= &"pause"
 	const screenshot	:= &"screenshot"
 	const quickSave		:= &"quickSave"
