@@ -33,7 +33,7 @@ func connectBackButton() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action(GlobalInput.Actions.back):
-		self.onBackButton_pressed()
+		goBack()
 		self.get_viewport().set_input_as_handled()
 
 
@@ -43,7 +43,7 @@ func resetHistory() -> Control:
 	navigationStack.clear()
 
 	var firstChild: Control = self.findFirstChildControl()
-	if firstChild:  addNodeToHistory(firstChild.scene_file_path)
+	if  firstChild: addNodeToHistory(firstChild.scene_file_path)
 
 	updateBackButton()
 	showDebugInfo()
@@ -111,6 +111,8 @@ func onBackButton_pressed() -> void:
 
 func goBack() -> void:
 	# GODOT: Why is there no pop_back() for PackedArrays??
+
+	if debugMode: Debug.printTrace([self.get_children()], self)
 
 	# Have to have at least 2 nodes to be able to go back in history.
 	# NOTE: Do not store the size because it will change.
