@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c6yshcgh6q0w5" path="res://UI/Lists/InputActionsList.gd" id="1_cp2cp"]
 
-[node name="InputMapUi" type="MarginContainer"]
+[node name="InputMapUI" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
