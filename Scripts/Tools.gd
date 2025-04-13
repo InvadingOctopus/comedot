@@ -479,6 +479,7 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 ## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
 static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float) -> void:
 	# TODO: Validate parameters and sizes
+	# NOTE: Rect2i is less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
 	var randomTile: Vector2i
 
