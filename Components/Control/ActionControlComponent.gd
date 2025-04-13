@@ -69,7 +69,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if actionsComponent:
 		# See if a keyboard shortcut or gamepad button etc. matches any Action, and execute it
 		var action: Action = actionsComponent.findActionForInputEvent(event)
-		if  action: 
+		if  action:
 			actionsComponent.performAction(action.name)
 			self.get_viewport().set_input_as_handled()
 

@@ -70,8 +70,10 @@ func findActionForInputEvent(inputEvent: InputEvent) -> Action:
 	# so we have to try all the [special/explicit] Actions we have and ask Godot whether an InputEvent matches any of them.
 
 	if debugMode: printDebug(str("findActionForInputEvent(): ", inputEvent))
+	var inputActionName: StringName
 	for action in self.actions:
-		if inputEvent.is_action(GlobalInput.Actions.specialActionPrefix + action.name):
+		inputActionName = GlobalInput.Actions.specialActionPrefix + action.name
+		if InputMap.has_action(inputActionName) and inputEvent.is_action(inputActionName): # Check InputMap.has_action() to avoid a dumb Godot error
 			if debugMode: printDebug(str("First match: ", action.logName))
 			return action
 	return null
