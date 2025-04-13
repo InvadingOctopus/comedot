@@ -1,7 +1,10 @@
-[gd_resource type="LabelSettings" format=3 uid="uid://cuk4bxw1adh5v"]
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://cuk4bxw1adh5v"]
+
+[ext_resource type="FontFile" uid="uid://wdvwb23naavb" path="res://Assets/Fonts/PixelOperatorMono8.ttf" id="1_aqc0t"]
 
 [resource]
 resource_local_to_scene = true
+font = ExtResource("1_aqc0t")
 font_size = 8
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
