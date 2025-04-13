@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" uid="uid://cn0nasortgjdq" path="res://Assets/Themes/Button/Comedot Default/Disabled StyleBox.tres" id="1_c7sdf"]
 [ext_resource type="StyleBox" uid="uid://bximlchqiv3qx" path="res://Assets/Themes/Button/Comedot Default/Normal StyleBox.tres" id="1_yj4d2"]
 [ext_resource type="StyleBox" uid="uid://bwrhi2fmnpqdb" path="res://Assets/Themes/Button/Comedot Default/Focus StyleBox.tres" id="2_0r7n7"]
-[ext_resource type="FontFile" uid="uid://dngxku6kk8ps8" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_qfpu2"]
+[ext_resource type="FontFile" uid="uid://bkhnxruyird0e" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_qfpu2"]
 [ext_resource type="StyleBox" uid="uid://b8wetmvjllfi1" path="res://Assets/Themes/Button/Comedot Default/Hover StyleBox.tres" id="3_febwk"]
 [ext_resource type="StyleBox" uid="uid://byccvy8tvkt2w" path="res://Assets/Themes/Button/Comedot Default/Pressed StyleBox.tres" id="5_5dpge"]
 [ext_resource type="StyleBox" uid="uid://cqaoplsmfugew" path="res://Assets/Themes/ScrollBar/ScrollBar Grabber.tres" id="6_xf5bp"]

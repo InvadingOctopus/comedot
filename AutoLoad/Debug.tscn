@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://byku6wanllr5n"]
 
 [ext_resource type="Script" uid="uid://crjyggcni7yry" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
-[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
+[ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="4_v5ev8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rssih"]

@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dc30psrpymtkr" path="res://Components/TurnBased/TurnBasedStateUIComponent.tscn" id="5_178cw"]
 [ext_resource type="PackedScene" uid="uid://b8evr41o1p0ea" path="res://Tests/TurnBased/TurnBasedTestComponent.tscn" id="5_253pd"]
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
-[ext_resource type="FontFile" uid="uid://cbowgwltqkamb" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
+[ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
 [ext_resource type="PackedScene" uid="uid://c5rfeug8xxxho" path="res://Components/TurnBased/TurnBasedAnimationComponent.tscn" id="12_178cw"]
 [ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="12_s804s"]
 
