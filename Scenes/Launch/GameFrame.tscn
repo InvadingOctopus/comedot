@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene load_steps=13 format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_jd6d7"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="1_uhj4x"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://brhfkmfe0g806" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
 [ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Logos/ComedotLogo.png" id="6_jd6d7"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://UI/Menus/MainMenuButtons.tscn" id="7_wy4rx"]
+[ext_resource type="Shortcut" uid="uid://c4er757mljhl4" path="res://Resources/Shortcuts/BackShortcut.tres" id="9_t25e2"]
 
 [sub_resource type="Environment" id="Environment_ljcfk"]
 background_mode = 3
@@ -108,6 +109,7 @@ focus_mode = 2
 [node name="BackButton" type="Button" parent="CanvasLayer/UIMarginContainer/UINavigationContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+shortcut = ExtResource("9_t25e2")
 text = "< Back"
 
 [editable path="CleanDebugBackground"]
