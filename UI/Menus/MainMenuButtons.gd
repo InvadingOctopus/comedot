@@ -18,6 +18,7 @@ func setInitialFocus() -> void:
 
 
 func _input(event: InputEvent) -> void: # TBD: Use `_unhandled_input()`
+	GlobalInput.isPauseShortcutAllowed = false # Reassert unpausability as long as the Main Menu is onscreen, to workaround SceneManager resetting the flag.
 	if not didSetInitialFocus and event is InputEventAction:
 		setInitialFocus()
 		self.get_viewport().set_input_as_handled()
