@@ -32,5 +32,5 @@ func onQuitButton_longPressed() -> void:
 
 
 func quit() -> void:
-	Debug.printLog("Auf Wiedersehen, Monty!")
+	Debug.printLog("Auf Wiedersehen Monty!", "")
 	get_tree().quit()
