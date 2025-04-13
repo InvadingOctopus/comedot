@@ -1,10 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdj4v68mvmp1u"]
 
 [ext_resource type="Script" uid="uid://b63l3dt33jnx2" path="res://UI/Views/BusVolumeUI.gd" id="1_06fqj"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_ior2c"]
-resource_local_to_scene = true
-font_size = 8
+[ext_resource type="LabelSettings" uid="uid://du8wd14pgp8fg" path="res://Assets/Themes/Label/PixelOperatorMono8.tres" id="2_fkql1"]
 
 [node name="BusVolumeUI" type="GridContainer"]
 offset_right = 76.0
@@ -12,7 +9,6 @@ offset_bottom = 16.0
 columns = 4
 script = ExtResource("1_06fqj")
 busIndex = 2
-settingsKey = null
 
 [node name="BusLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -20,6 +16,7 @@ custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_horizontal = 10
 text = "V"
+label_settings = ExtResource("2_fkql1")
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -32,8 +29,9 @@ text = "«"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+tooltip_text = "0.0"
 text = "6"
-label_settings = SubResource("LabelSettings_ior2c")
+label_settings = ExtResource("2_fkql1")
 horizontal_alignment = 1
 vertical_alignment = 1
 
