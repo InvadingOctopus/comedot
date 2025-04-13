@@ -46,7 +46,8 @@ signal didPushScene(scenePath:  String)
 signal willPopScene ## TIP: May be used to modify the stack before a scene is popped, for example, pushing a scene if there is none, to make sure a "Back" Button always works.
 signal didPopScene(scenePath: String)
 
-signal willSetPause(pause: bool) ## TIP: May be used to modify the visuals before the game is paused.
+signal willSetPause(pause: bool)	## TIP: May be used to modify visuals etc. before the game is paused.
+signal didSetPause(isPaused: bool)	## TIP: May be used to modify UI such as [PauseButton.gd] after the game is paused.
 #endregion
 
 
@@ -182,12 +183,20 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefau
 
 #region Pause/Unpause
 
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PAUSED, NOTIFICATION_UNPAUSED:
+			didSetPause.emit(sceneTree.paused)
+
+
 ## Sets [member SceneTree.paused] and returns the resulting paused status.
-func setPause(paused: bool) -> bool:
-	willSetPause.emit(paused)
-	sceneTree.paused = paused
+func setPause(shouldPause: bool) -> bool:
+	# TBD: Emit signal only if changing?
+	willSetPause.emit(shouldPause)
+	sceneTree.paused = shouldPause
 
 	GlobalUI.showPauseVisuals(sceneTree.paused)
+	# NOTE: Do not emit didSetPause here; let _notification() handle pause/unpause from ANY source.
 	return sceneTree.paused
 
 
