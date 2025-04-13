@@ -40,8 +40,9 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 
 @onready var foregroundOverlay:		CanvasLayer				= %ForegroundOverlay
 @onready var labelsList:			TemporaryLabelList		= %LabelsList
-@onready var overlayRect:			ColorRect				= %GlobalOverlayRect
 @onready var navigationContainer:	UINavigationContainer	= %NavigationContainer ## For top-level UI
+@onready var overlayRect:			ColorRect				= %GlobalOverlayRect
+@onready var pauseOverlayRect:		ColorRect				= %PauseOverlayRect
 @onready var pauseOverlayContainer:	UINavigationContainer	= %PauseOverlayContainer
 #endregion
 
@@ -99,7 +100,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		# Ensure visibility just in case
 		pauseOverlay.pauseButton.visible = true
 		pauseOverlay.visible = true
-		fadeInOverlayRect()
+		Animations.fadeIn(pauseOverlayRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = Animations.fadeIn(pauseOverlayContainer, 0.2)
 		didShowPauseOverlay.emit(pauseOverlay)
@@ -108,7 +109,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 		if pauseOverlay: pauseOverlay.pauseButton.visible = false
 
-		fadeOutOverlayRect()
+		Animations.fadeOut(pauseOverlayRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = Animations.fadeOut(pauseOverlayContainer, 0.2)
 		await pauseOverlayTween.finished

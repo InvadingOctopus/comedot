@@ -48,7 +48,10 @@ func animateLogo() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not event is InputEventMouseButton: return
+	if  not event is InputEventMouseButton \
+	and not event is InputEventKey \
+	and not event is InputEventJoypadButton:
+		return
 
 	# Check is_released() before setting `isSkipping`
 	# to ensure that both `if`s don't run during the same frame if multiple keys are pressed/released.
