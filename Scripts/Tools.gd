@@ -75,7 +75,7 @@ static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 	var parent: Node = childNode.get_parent() # parentOrGrandparent
 
 	# If parent is not the matching type, get the grandparent (parent's parent) and keep searching up the tree, until we run out of parents (null).
-	while not is_instance_of(parent, type):
+	while parent != null and not is_instance_of(parent, type): # NOTE: Avoid calling get_parent() on `null`
 		parent = parent.get_parent()
 
 	return parent
