@@ -91,6 +91,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
 [node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/UIMarginContainer" node_paths=PackedStringArray("backButton")]
 layout_mode = 2
