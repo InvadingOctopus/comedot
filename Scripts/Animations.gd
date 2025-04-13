@@ -23,6 +23,28 @@ static func tweenProperty(node: CanvasItem, property: NodePath, value: Variant, 
 	tween.tween_property(node, property, value, duration)
 	return tween
 
+#endregion
+
+
+#region Visibility Animations
+
+static func fadeIn(node: CanvasItem, duration: float = 0.5) -> Tween:
+	var currentColorWithMaxAlpha: Color = Color(node.modulate, 1.0)
+	var tween: Tween = node.create_tween()
+	node.visible = true
+	tween.tween_property(node, ^"modulate", currentColorWithMaxAlpha, duration) \
+		.set_ease(Tween.EASE_OUT) # TBD: .set_trans(Tween.TRANS_CUBIC)
+	return tween
+
+
+static func fadeOut(node: CanvasItem, duration: float = 0.5) -> Tween:
+	var currentColorWithZeroAlpha: Color = Color(node.modulate, 0)
+	var tween: Tween = node.create_tween()
+	tween.tween_property(node, ^"modulate", currentColorWithZeroAlpha, duration) \
+		.set_ease(Tween.EASE_OUT) # TBD: .set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(node, ^"visible", false, 0)
+	return tween
+
 
 static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -> Tween:
 	var tween: Tween = node.create_tween()
@@ -30,17 +52,6 @@ static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -
 	tween.tween_property(node, ^"visible", false, duration)
 	tween.tween_property(node, ^"visible", true,  duration)
 	return tween
-
-
-static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), duration: float = 1.0) -> Tween:
-	var tween: Tween = node.create_tween()
-	var targetPosition: Vector2 = node.position + distance # Assume `node` has `position`
-	var targetModulate: Color   = node.modulate
-	targetModulate.a = 0
-	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration).set_delay(0.5)
-	tween.parallel().tween_property(node, ^"position", targetPosition, duration).set_ease(Tween.EaseType.EASE_OUT)
-	return tween
-
 
 #endregion
 
@@ -75,7 +86,17 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 #endregion
 
 
-#region Data-based Animations
+#region Special Animations
+
+static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), duration: float = 1.0) -> Tween:
+	var tween: Tween = node.create_tween()
+	var targetPosition: Vector2 = node.position + distance # Assume `node` has `position`
+	var targetModulate: Color   = node.modulate
+	targetModulate.a = 0
+	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration).set_delay(0.5)
+	tween.parallel().tween_property(node, ^"position", targetPosition, duration).set_ease(Tween.EaseType.EASE_OUT)
+	return tween
+
 
 ## Plays different animations on a [NODE] depending on how the specified number changes.
 static func modulateNumberDifference(node: CanvasItem, value: Variant, previousValue: Variant, colorForIncrement: Color = Color.GREEN, colorForDecrement: Color = Color.RED) -> Tween:
