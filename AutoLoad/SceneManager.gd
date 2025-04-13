@@ -77,13 +77,13 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 
 	# Pause
 	sceneTree.paused = pauseSceneTree
-	if animate: await GlobalUI.fadeIn() # Fade the overlay in, fade the game out.
+	if animate: await GlobalUI.fadeInOverlayRect() # Fade the overlay in, fade the game out.
 
 	# Transition
 	sceneTree.change_scene_to_packed(nextScene)
 
 	# Unpause
-	if animate: await GlobalUI.fadeOut() # Fade the overlay out, fade the game in.
+	if animate: await GlobalUI.fadeOutOverlayRect() # Fade the overlay out, fade the game in.
 	sceneTree.paused = false
 
 	ongoingTransitionScene = null # Clear the transition tracker
