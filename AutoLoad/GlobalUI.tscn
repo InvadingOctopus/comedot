@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
-[ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://UI/Buttons/PauseButton.tscn" id="2_bawob"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
 [ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="3_vibvi"]
 
@@ -122,15 +121,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.5, 0, 1, 0.501961)
-
-[node name="PauseButton" parent="ForegroundOverlay" instance=ExtResource("2_bawob")]
-unique_name_in_owner = true
-visible = false
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 26.0
-offset_bottom = 26.0
+color = Color(0.5, 0, 1, 0.5)
 
 [node name="LabelsList" type="VBoxContainer" parent="ForegroundOverlay"]
 unique_name_in_owner = true

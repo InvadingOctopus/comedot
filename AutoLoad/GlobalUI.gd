@@ -15,7 +15,7 @@ var pauseOverlay: PauseOverlay
 
 #region Signals
 
-signal didShowPauseOverlay
+signal didShowPauseOverlay(overlay: CanvasItem)
 signal didHidePauseOverlay
 
 # Signal Event Bus
@@ -39,7 +39,6 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 @onready var navigationContainer:UINavigationContainer = %NavigationContainer ## For top-level UI
 @onready var foregroundOverlay	:CanvasLayer = %ForegroundOverlay
 @onready var animationPlayer	:AnimationPlayer = %AnimationPlayer
-@onready var pauseButton		:Button = %PauseButton
 @onready var labelsList			:TemporaryLabelList = %LabelsList
 #endregion
 
@@ -78,26 +77,31 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 
 
 func showPauseVisuals(isPaused: bool) -> void:
+	# Avoid reanimating an existing state
+	if (isPaused and (pauseOverlay and pauseOverlay.visible)) \
+	or (not isPaused and (not pauseOverlay or not pauseOverlay.visible)):
+		return
+
 	if isPaused: self.fadeIn()
 	else: self.fadeOut()
 
-	pauseButton.updateState()
-	pauseButton.visible = isPaused
+	# Let PauseButton.gd handle its update itself
 
 	if isPaused:
 
-		if not self.pauseOverlay:
-			self.pauseOverlay = pauseOverlayScene.instantiate() # NOTE: Create only here; not in property getter
+		if not pauseOverlay:
+			pauseOverlay = pauseOverlayScene.instantiate() # NOTE: Create only here; not in property getter, to avoid unnecessary creation.
 
 		if pauseOverlay.get_parent() != foregroundOverlay:
 			foregroundOverlay.add_child(pauseOverlay)
 			pauseOverlay.owner = foregroundOverlay # Necessary for persistence to a [PackedScene] for save/load.
 		foregroundOverlay.move_child(pauseOverlay, -1)  # Put it above the fullscreen overlay effect.
 		pauseOverlay.visible = true # Just in case
-		didShowPauseOverlay.emit()
+		didShowPauseOverlay.emit(pauseOverlay)
 
 	elif not isPaused and pauseOverlay:
 		foregroundOverlay.remove_child(pauseOverlay)
+		pauseOverlay.queue_free() # TBD: queue_free() or save for reuse?
 		self.pauseOverlay = null
 		didHidePauseOverlay.emit()
 
