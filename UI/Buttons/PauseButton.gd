@@ -20,7 +20,7 @@ func onSceneManager_didSetPause(_isPaused: bool) -> void:
 
 
 func updateState() -> void:
-	var isScenePaused: bool = self.get_tree().paused
+	var isScenePaused: bool = SceneManager.sceneTree.paused if SceneManager.sceneTree else true # TBD: Count as paused if no SceneTree?
 	self.set_pressed_no_signal(isScenePaused) # NOTE: set_pressed_no_signal() to avoid triggering onToggled()
 
 	# TBD: The Great Conundrum: Should the visual of a toggle-able control represent the CURRENT state or the NEXT state that will happen upon using the control?
