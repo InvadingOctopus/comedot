@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://du8wd14pgp8fg"]
+
+[ext_resource type="FontFile" uid="uid://wdvwb23naavb" path="res://Assets/Fonts/PixelOperatorMono8.ttf" id="1_liwah"]
+
+[resource]
+resource_local_to_scene = true
+font = ExtResource("1_liwah")
+font_size = 8
