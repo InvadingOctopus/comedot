@@ -6,7 +6,7 @@
 
 [node name="TextInteractionComponent" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("1_kfts1")]
 script = ExtResource("2_fi5i1")
-textStrings = Array[String](["String1", "String2", "String3"])
+textStrings = ["String1", "String2", "String3"]
 textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 0, 1)])
 interactionIndicator = NodePath("Label")
 
