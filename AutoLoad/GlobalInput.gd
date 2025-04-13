@@ -84,10 +84,26 @@ func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
 
-## Global keyboard shortcuts
+## Global shortcuts including gamepad etc.
 func _unhandled_input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
+	if not event.is_action_type(): return
 
+	var isHandled: bool = false # Keep other scripts from eating our leftovers, e.g. prevent the Escape key for "Pause" also triggering a "Back" event or vice-versa.
+
+	# Game
+
+	if isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
+		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
+		SceneManager.togglePause()
+		isHandled = true
+	
+	if isHandled: self.get_viewport().set_input_as_handled()
+
+
+## Global keyboard shortcuts
+func _unhandled_key_input(event: InputEvent) -> void:
+	# TBD: Should we check `event` or [Input]?
 	if not event.is_action_type(): return
 
 	var isHandled: bool = false # Keep other scripts from eating our leftovers, e.g. prevent the Escape key for "Pause" also triggering a "Back" event or vice-versa.
@@ -103,13 +119,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		isHandled = true
 	elif Input.is_action_just_released(Actions.debugWindow):
 		Debug.toggleDebugWindow()
-		isHandled = true
-
-	# Game
-
-	if isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
-		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
-		SceneManager.togglePause()
 		isHandled = true
 
 	# Window
