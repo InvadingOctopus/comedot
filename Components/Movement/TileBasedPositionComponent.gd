@@ -22,7 +22,7 @@ extends Component
 	set(newValue):
 		if tileMap != newValue:
 			printChange("tileMap", tileMap, newValue)
-			
+
 			# If we have a TileMap and are about to leave it, mark our cell as no longer occupied.
 			if tileMap and not newValue: vacateCurrentCell()
 
@@ -113,7 +113,7 @@ func _ready() -> void:
 
 	# Then the tileMap may be set later, if this component was loaded dynamically at runtime, or initialized by another script.
 	if tileMap: applyInitialCoordinates()
-	
+
 	updateIndicator() # Fix the visually-annoying initial snap from the default position
 	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
 
@@ -135,7 +135,7 @@ func validateTileMap() -> bool:
 		if shouldSearchForTileMap:
 			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCellData in current scene…")
 			tileMap = Tools.findFirstChildOfType(get_tree().current_scene, TileMapLayerWithCellData) # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
-		
+
 		# Warn only in debugMode, in case the tileMap will be supplied by a different script.
 		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCellData")
 		return false
