@@ -30,7 +30,9 @@ func _ready() -> void:
 
 func updateUI() -> void:
 	var eventControlText: String = inputEvent.as_text()
-	eventControlText = Tools.replaceStrings(eventControlText, GlobalInput.eventTextReplacements)
+	eventControlText = Tools.replaceStrings(eventControlText, GlobalInput.eventTextReplacements) \
+		.replacen("(Keyboard)", "Key") \
+		.replacen("Motion on ", "")
 	label.text = eventControlText
 
 

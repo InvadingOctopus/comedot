@@ -24,8 +24,8 @@ func buildList() -> void:
 	# Get ALL the input actions
 	var inputActions: Array[StringName] = InputMap.get_actions()
 
-	# Remove all the built-in Godot UI input actions, because they don't need to be customized them in a game
-	inputActions = inputActions.filter(isNotUIAction)
+	# Remove the actions that don't need to be customized or aren't used in a specific game.
+	inputActions = inputActions.filter(checkActionInclusion)
 
 	# Add a Label for each Input Action
 	for inputActionName in inputActions:
@@ -34,6 +34,7 @@ func buildList() -> void:
 		Tools.addChildAndSetOwner(newActioUI, self)
 
 
-## Used for filtering the list by exclusing built-in Godot UI input actions.
-func isNotUIAction(inputActionName: StringName) -> bool:
-	return not inputActionName.begins_with(uiInputActionPrefix)
+## Used for filtering the list e.g. by excluding built-in Godot UI input actions.
+func checkActionInclusion(inputActionName: StringName) -> bool:
+	return  not inputActionName.begins_with(uiInputActionPrefix) \
+		and not GlobalInput.Actions.excludedFromCustomization.has(inputActionName)

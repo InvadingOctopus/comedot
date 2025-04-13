@@ -90,6 +90,7 @@ func _unhandled_input(event: InputEvent) -> void: # TBD: Use `_input()` or `_unh
 	if event.is_pressed():
 		if not event.is_action(&"ui_cancel", true): # Cancel if ESCape on exact_match
 			addNewControl(event)
+		self.get_viewport().set_input_as_handled()
 		isAddingNewControl = false
 
 

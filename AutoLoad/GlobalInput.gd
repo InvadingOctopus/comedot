@@ -56,12 +56,17 @@ class Actions:
 	const debugTest		:= &"debugTest"   ## Activates [TestMode]
 	const debugBreak	:= &"debugBreak"  ## Causes a debugging breakpoint.
 
+	## List of input actions to be excluded from player customization in [InputActionsList] and other control remapping UI.
+	const excludedFromCustomization: Array[StringName] = [
+		back, pause,
+		windowToggleAlwaysOnTop, windowResizeTo1080, windowResizeTo720,
+		debugWindow, debugTest, debugBreak
+		]
 
 ## Replacements for certain strings in the text representations of InputEvent control names, such as "Keyboard" instead of "Physical".
 const eventTextReplacements: Dictionary[String, String] = {
 	"Physical": "Keyboard",
 	}
-
 #endregion
 
 
