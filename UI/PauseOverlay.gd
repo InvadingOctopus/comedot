@@ -5,8 +5,8 @@ class_name PauseOverlay # Named so other objects can access our properties.
 extends Control
 
 
-## A label for any game-specific text, such as help, instructions or credits.
-@onready var extraLabel: Label = %ExtraLabel
+@onready var pauseButton: Button = %PauseButton
+@onready var extraLabel:  Label  = %ExtraLabel ## A label for any game-specific text, such as help, instructions or credits.
 
 
 func _ready() -> void:

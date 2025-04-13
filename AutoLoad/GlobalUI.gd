@@ -96,13 +96,17 @@ func showPauseVisuals(isPaused: bool) -> void:
 			pauseOverlay.owner = pauseOverlayContainer # Necessary for persistence to a [PackedScene] for save/load.
 
 		pauseOverlayContainer.move_child(pauseOverlay, -1) # Put it in front of any other children
-		pauseOverlay.visible = true # Just in case
+		# Ensure visibility just in case
+		pauseOverlay.pauseButton.visible = true
+		pauseOverlay.visible = true
 		fadeInOverlayRect()
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = Animations.fadeIn(pauseOverlayContainer, 0.2)
 		didShowPauseOverlay.emit(pauseOverlay)
 
 	elif not isPaused:
+
+		if pauseOverlay: pauseOverlay.pauseButton.visible = false
 
 		fadeOutOverlayRect()
 		if pauseOverlayTween: pauseOverlayTween.kill()
