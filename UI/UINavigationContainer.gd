@@ -23,7 +23,7 @@ var navigationStack: PackedStringArray # Better performance than Array[String]
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	resetHistory()
-	if backButton: connectBackButton()
+	if backButton:  connectBackButton()
 	elif debugMode: Debug.printWarning("Missing backButton", self) # Suppress warning in case there is a different way to close, such as the PauseButton.
 
 
@@ -128,7 +128,7 @@ func displayNavigationDestination(newDestinationPath: String) -> bool:
 #region User Input
 
 func connectBackButton() -> void:
-	if backButton: backButton.pressed.connect(self.onBackButton_pressed)
+	if backButton: Tools.connectSignal(backButton.pressed, self.onBackButton_pressed)
 
 
 func onBackButton_pressed() -> void:
