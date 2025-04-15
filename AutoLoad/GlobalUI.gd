@@ -121,6 +121,9 @@ func showPauseVisuals(isPaused: bool) -> void:
 			pauseOverlay = null
 		didHidePauseOverlay.emit()
 
+	# Hide any other global UI when paused
+	navigationContainer.visible = not pauseOverlayContainer.visible
+
 
 func createTemporaryLabel(text: String) -> Label:
 	return labelsList.createTemporaryLabel(text)

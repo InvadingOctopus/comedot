@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=5 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
 [ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="3_vibvi"]
+[ext_resource type="Shortcut" uid="uid://c4er757mljhl4" path="res://Resources/Shortcuts/BackShortcut.tres" id="4_u63o5"]
 
 [node name="GlobalUI" type="Node"]
 process_mode = 3
@@ -12,7 +13,7 @@ script = ExtResource("1_6ujyj")
 unique_name_in_owner = true
 layer = 120
 
-[node name="NavigationContainer" type="MarginContainer" parent="ForegroundOverlay"]
+[node name="NavigationContainer" type="MarginContainer" parent="ForegroundOverlay" node_paths=PackedStringArray("backButton")]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +24,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("2_vibvi")
+backButton = NodePath("../NavigationBackButton")
+
+[node name="NavigationBackButton" type="Button" parent="ForegroundOverlay"]
+visible = false
+custom_minimum_size = Vector2(18, 18)
+offset_left = 32.0
+offset_top = 8.0
+offset_right = 50.0
+offset_bottom = 26.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+shortcut = ExtResource("4_u63o5")
+text = "<"
 
 [node name="GlobalOverlayRect" type="ColorRect" parent="ForegroundOverlay"]
 unique_name_in_owner = true
