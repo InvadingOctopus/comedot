@@ -53,19 +53,19 @@
 
 	"Export": {
 		"prefix": ["@export", "export"],
-		"body": [ "@export var ${1:isEnabled}: ${2:bool} = ${3:true}" ],
+		"body": ["@export var ${1:isEnabled}: ${2:bool} = ${3:true}"],
 		"description": "A basic export parameter."
 	},
 
 	"Export Range": {
 		"prefix": ["@export", "export"],
-		"body": [ "@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}" ],
+		"body": ["@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}"],
 		"description": "An export parameter with a range."
 	},
 
 	"@onready Node Reference": {
 		"prefix": ["@onready", "onready"],
-		"body": [ "@onready var $0${1:propertyName}: ${2:NodeType} = ${3:$}${1:NodeName}" ],
+		"body": ["@onready var $0${1:propertyName}: ${2:NodeType} = ${3:$}${1:NodeName}"],
 		"description": "A property that references a Node with a $Name or %Unique name."
 	},
 
@@ -87,7 +87,7 @@
 
 	"Component Dependency": {
 		"prefix": "coComponent",
-		"body": [ "@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n" ],
+		"body": ["@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n"],
 		"description": "A property that searches for a sibling component and caches a reference to it."
 	},
 
@@ -102,7 +102,7 @@
 
 	"Property Getter": {
 		"prefix": "get",
-		"body": [ "get: return $0" ],
+		"body": ["get: return $0"],
 		"description": "A property getter stub."
 	},
 
@@ -158,13 +158,13 @@
 
 	"Stat": {
 		"prefix": "stat",
-		"body": [ "statsComponent.getStat(&\"${1:health}\").$0" ],
+		"body": ["statsComponent.getStat(&\"${1:health}\").$0"],
 		"description": "Quick access to a StatsComponent."
 	},
 
 	"SelfCast": {
 		"prefix": "selfAs",
-		"body": [ "var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}$0" ],
+		"body": ["var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}$0"],
 		"description": "Store reference to self casted as a different type."
 	},
 
@@ -183,13 +183,13 @@
 
 	"Debug Variables": {
 		"prefix": "debugVar",
-		"body": [ "Debug.printVariables([${1:self}]) # DEBUG: DONTCOMMIT$0" ],
+		"body": ["Debug.printVariables([${1:self}]) # DEBUG: DONTCOMMIT$0"],
 		"description": "Print multiple variable values for runtime debugging."
 	},
 
 	"Debug Trace": {
 		"prefix": "trace",
-		"body": [ "Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0" ],
+		"body": ["Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0"],
 		"description": "Print multiple variable values along with the recent function calls for runtime debugging."
 	},
 
