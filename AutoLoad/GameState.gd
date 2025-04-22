@@ -9,8 +9,8 @@ extends Node
 
 #region Game State
 
-## A dictionary of values that may be accessed and modified by multiple nodes and the scripts in the scene tree.
-## [StringName] is the optimal type to use for keys.
+## A [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
+## TIP: [StringName] may be the optimal type to use for keys.
 @export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
