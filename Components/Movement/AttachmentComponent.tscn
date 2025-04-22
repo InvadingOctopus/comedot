@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cebku0t4m4dqh"]
+
+[ext_resource type="Script" uid="uid://capnnim0k7nhm" path="res://Components/Movement/AttachmentComponent.gd" id="1_x15um"]
+
+[node name="AttachmentComponent" type="Node2D" groups=["components"]]
+script = ExtResource("1_x15um")
+metadata/_edit_group_ = true
