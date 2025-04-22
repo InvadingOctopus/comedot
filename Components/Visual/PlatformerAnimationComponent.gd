@@ -1,5 +1,6 @@
-## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [PlatformerControlComponent]'s movement.
-## Requirements: [AnimatedSprite2D], AFTER [PlatformerControlComponent] & [CharacterBodyComponent]
+## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [member PlatformerControlComponent.lastInputDirection] movement.
+## If a [PlatformerControlComponent] is not present, then [member CharacterBodyComponent.previousVelocity] is used.
+## Requirements: [AnimatedSprite2D], AFTER [PlatformerControlComponent] (optional) & [CharacterBodyComponent]
 
 class_name PlatformerAnimationComponent
 extends Component
@@ -27,7 +28,7 @@ var body:						CharacterBody2D
 var platformerControlComponent: PlatformerControlComponent
 
 func getRequiredComponents() -> Array[Script]:
-	return [CharacterBodyComponent, PlatformerControlComponent]
+	return [CharacterBodyComponent]
 #endregion
 
 
@@ -38,7 +39,7 @@ func _ready() -> void:
 
 	self.characterBodyComponent		= parentEntity.findFirstComponentSubclass(CharacterBodyComponent) # TBD: Include entity?
 	self.body						= characterBodyComponent.body
-	self.platformerControlComponent	= coComponents.PlatformerControlComponent # TBD: Static or dynamic?
+	self.platformerControlComponent	= coComponents.get(&"PlatformerControlComponent") # Optional
 
 
 func _process(_delta: float) -> void:
@@ -48,8 +49,11 @@ func _process(_delta: float) -> void:
 
 	var animationToPlay: StringName
 
-	if flipWhenWalkingLeft and platformerControlComponent:
-		animatedSprite.flip_h = true if signf(platformerControlComponent.lastInputDirection) < 0.0 else false
+	if flipWhenWalkingLeft:
+		if platformerControlComponent:
+			animatedSprite.flip_h = true if signf(platformerControlComponent.lastInputDirection) < 0.0 else false
+		else:
+			animatedSprite.flip_h = true if characterBodyComponent.previousVelocity.x < 0 else false
 		# Debug.watchList.hDirection = platformControlComponent.lastDirection
 
 	if not idleAnimation.is_empty() \
