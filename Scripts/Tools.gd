@@ -132,7 +132,7 @@ static func removeAllChildren(parent: Node) -> int:
 	return removalCount
 
 
-## Convert a path from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
+## Convert a [NodePath] from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
 static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
 	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
 	var propertyPath: String = str(":", relativePath.get_concatenated_subnames())
@@ -147,6 +147,7 @@ static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativ
 	return absolutePathIncludingProperty
 
 
+## Splits a [NodePath] such as `/root:size:x` and returns `/root` & `:size:x`
 static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 	var nodePath: NodePath
 	var propertyPath: NodePath
