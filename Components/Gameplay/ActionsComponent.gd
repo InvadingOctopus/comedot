@@ -36,7 +36,7 @@ signal didPerformAction(action: Action, result: Variant)
 
 
 #region Dependencies
-@onready var statsComponent: StatsComponent = coComponents.StatsComponent # TBD: Static or dynamic?
+@onready var statsComponent: StatsComponent = coComponents.get(&"StatsComponent")
 #endregion
 
 
@@ -52,7 +52,7 @@ func findAction(nameToSearch: StringName) -> Action:
 	# TBD: Use `Array.any()`?
 	# TBD: PERFORMANCE: Use a Dictionary to cache Name:Action?
 	# TBD: PERFORMANCE: Should we to_lower() to avoid any typo bugs? Or is that a bad idea for StringName?
-	
+
 	for action in self.actions:
 		if action.name == nameToSearch: return action
 
@@ -96,7 +96,7 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionControlComponent is used, then it is the ActionControlComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
-	
+
 	# Get the Stat to pay the Action's cost with, if any,
 	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
 
@@ -127,7 +127,7 @@ func connectSignals() -> void:
 	for action in self.actions:
 		Tools.connectSignal(action.didStartCooldown,  self.onAction_didStartCooldown.bind(action))
 		Tools.connectSignal(action.didFinishCooldown, self.onAction_didFinishCooldown.bind(action))
-	
+
 
 func onAction_didStartCooldown(action: Action) -> void:
 	self.actionsOnCooldown.append(action)
