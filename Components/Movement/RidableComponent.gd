@@ -18,6 +18,11 @@ extends Component
 				didMount.emit(rider)
 
 @export var offset: Vector2
+
+## The list of component types to transfer from a new rider Entity to this component's vehicle/mount Entity, e.g. to hand over player control.
+## When a rider unmounts, the components are transferred back.
+@export var componentTypesToTransfer: Array[Script] = [PlatformerControlComponent, JumpControlComponent, ActionsComponent, ActionControlComponent]
+
 @export var isEnabled: bool = true
 #endregion
 
@@ -29,25 +34,46 @@ var isMounted: bool:
 
 
 #region Signals
-signal didMount(rider: Entity)
-signal didUnmount(rider: Entity)
+signal didMount(newRider: Entity)
+signal didUnmount(previousRider: Entity)
 #endregion
 
+
+#region Interface
 
 func mount(newRider: Entity) -> bool:
 	if self.isMounted:
 		return false
 	else: 
-		self.rider = newRider
+		self.rider = newRider # Signal will be emitted by property setter
 		return true
 
 
 func unmount() -> bool:
 	if self.isMounted:
-		self.rider = null
+		self.rider = null # Signal will be emitted by property setter
 		return true
 	else:
 		return false
+
+#endregion
+
+
+#region Events
+
+func _ready() -> void:
+	Tools.connectSignal(self.didMount, self.onSelf_didMount)
+	Tools.connectSignal(self.didUnmount, self.onSelf_didUnmount)
+
+
+func onSelf_didMount(newRider: Entity) -> void:
+	if not isEnabled or componentTypesToTransfer.is_empty(): return	
+	newRider.transferComponents(componentTypesToTransfer, self.parentEntity) # Move components from rider to mount
+
+
+func onSelf_didUnmount(previousRider: Entity) -> void:
+	if not isEnabled or componentTypesToTransfer.is_empty(): return
+	self.parentEntity.transferComponents(componentTypesToTransfer, previousRider) # Move components from mount back to previous rider
 
 
 func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_process()?
@@ -57,3 +83,5 @@ func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_proc
 	rider.global_position = self.global_position + offset
 	if is_instance_of(rider, CollisionObject2D):
 		rider.reset_physics_interpolation() # CHECK: Is this necessary?
+
+#endregion
