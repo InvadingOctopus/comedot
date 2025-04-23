@@ -132,6 +132,24 @@ static func removeAllChildren(parent: Node) -> int:
 	return removalCount
 
 
+## Moves nodes from one parent to another and returns an array of all children that were successfully reparented.
+static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], newParent: Node, keepGlobalTransform: bool = true) -> Array[Node]:
+	var transferredNodes: Array[Node]
+	for node in nodesToTransfer:
+		if node.get_parent() == currentParent: # TBD: Is this extra layer of "security" necessary?
+			node.reparent(newParent, keepGlobalTransform)
+			node.owner = newParent # For persistence etc.
+			if node.get_parent() == newParent: # TBD: Is this verification necessary?
+				transferredNodes.append(node)
+			else:
+				Debug.printWarning(str("transferNodes(): ", node, " could not be moved from ", currentParent, " to newParent: ", newParent), node)
+				continue
+		else:
+			Debug.printWarning(str("transferNodes(): ", node, " does not belong to currentParent: ", currentParent), node)
+			continue
+	return transferredNodes
+
+
 ## Convert a [NodePath] from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
 static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
 	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
