@@ -310,9 +310,9 @@ func removeComponents(componentTypes: Array[Script], shouldFree: bool = true) ->
 
 
 ## Moves components from this entity to another and returns an array of all components that were successfully reparented.
-func transferComponentTypes(componentTypesToTransfer: Array[Script], newParent: Entity, keepGlobalTransform: bool = true, skipExistingComponents: bool = true) -> Array[Component]:
+func transferComponents(componentTypesToTransfer: Array[Script], newParent: Entity, keepGlobalTransform: bool = true, skipExistingComponents: bool = true) -> Array[Component]:
 	if newParent == self:
-		Debug.printWarning(str("transferComponentTypes(): newParent is self!"))
+		Debug.printWarning(str("transferComponents(): newParent is self!"))
 		return []
 
 	var transferredComponents: Array[Component]
@@ -324,7 +324,7 @@ func transferComponentTypes(componentTypesToTransfer: Array[Script], newParent: 
 		if component:
 
 			if skipExistingComponents and newParent.getComponent(type):
-				if debugMode: Debug.printDebug(str("transferComponentTypes(): skipExistingComponents: ", component.logFullName, " already in ", newParent.logFullName))
+				if debugMode: Debug.printDebug(str("transferComponents(): skipExistingComponents: ", component.logFullName, " already in ", newParent.logFullName))
 				continue
 
 			component.reparent(newParent, keepGlobalTransform)
@@ -333,10 +333,10 @@ func transferComponentTypes(componentTypesToTransfer: Array[Script], newParent: 
 			if component.get_parent() == newParent and component.parentEntity == newParent:
 				transferredComponents.append(component)
 			else:
-				Debug.printWarning(str("transferComponentTypes(): ", component, " could not be moved from ", self.logFullName, " to ", newParent.logFullName))
+				Debug.printWarning(str("transferComponents(): ", component, " could not be moved from ", self.logFullName, " to ", newParent.logFullName))
 				continue
 		else:
-			printWarning(str("transferComponentTypes(): ", self.logFullName, " does not have ", component))
+			printWarning(str("transferComponents(): ", self.logFullName, " does not have ", component))
 			continue
 
 	return transferredComponents
