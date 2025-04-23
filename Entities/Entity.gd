@@ -330,7 +330,7 @@ func transferComponents(componentTypesToTransfer: Array[Script], newParent: Enti
 			component.reparent(newParent, keepGlobalTransform)
 			component.owner = newParent # For persistence etc. # CHECK: Necessary?
 
-			if component.get_parent() == newParent:
+			if component.get_parent() == newParent and component.parentEntity == newParent:
 				transferredComponents.append(component)
 			else:
 				Debug.printWarning(str("transferComponents(): ", component, " could not be moved from ", self.logFullName, " to ", newParent.logFullName))
