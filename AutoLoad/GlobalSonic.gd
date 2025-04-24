@@ -19,7 +19,7 @@ var audioPlayers: Array[AudioStreamPlayer2D]
 var currentAudioPlayerIndex: int
 
 var musicFiles: PackedStringArray ## An array that is populated by all the ".mp3" files found in the [const musicFolder] on [method _ready].
-var currentMusicIndex: int ## The index in the [member musicFiles] array of the currently playing song.
+var currentMusicIndex: int = -1 ## The index in the [member musicFiles] array of the currently playing song. Defaults to -1 to indicate no song.
 #endregion
 
 
@@ -162,6 +162,7 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 		return null
 	
 	if Tools.validateArrayIndex(self.musicFiles, index):
+		self.currentMusicIndex = index
 		return self.playMusicFile(self.musicFiles[index])
 	else:
 		Debug.printWarning(str("playMusicIndex() invalid index: ", index, ", musicFiles size: ", musicFiles.size()), self)
@@ -169,9 +170,17 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 
 
 ## Plays and returns a random song from the [member musicFiles] array.
-## NOTE: The same song as the current/previous song may be played again. Such is the nature of true randomness.
-func playRandomMusicIndex() -> AudioStream:
-	return self.playMusicIndex(randi_range(0, self.musicFiles.size() - 1)) # randi_range() is inclusive and size() is +1 > maximum valid array index.
+## If [param allowRepeats] is `true` the same song as the current/previous song may be played again. Such is the nature of true randomness.
+func playRandomMusicIndex(allowRepeats: bool = false) -> AudioStream:
+	if self.musicFiles.is_empty():
+		return null
+	elif allowRepeats or self.musicFiles.size() == 1: # No need to random if there's only 1 song!
+		return self.playMusicIndex(randi_range(0, self.musicFiles.size() - 1)) # randi_range() is inclusive and size() is +1 > maximum valid array index.
+	else:
+		var newMusicIndex: int = self.currentMusicIndex
+		while newMusicIndex == self.currentMusicIndex:
+			newMusicIndex = randi_range(0, self.musicFiles.size() - 1)
+		return self.playMusicIndex(newMusicIndex)
 
 
 ## Plays and returns the specified file on the "MusicPlayer" [AudioStreamPlayer] node.
@@ -188,6 +197,9 @@ func playMusicFile(path: String) -> AudioStream:
 		fileName = ResourceUID.get_id_path(ResourceUID.text_to_id(path))
 	else:
 		fileName = path
+	
+	# Update the current index if the song is in our playlist
+	self.currentMusicIndex = self.findMusicFile(fileName)
 
 	self.musicPlayer.stream = newMusicStream
 	self.musicPlayer.play()
