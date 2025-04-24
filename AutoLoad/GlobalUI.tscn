@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
 [ext_resource type="Script" uid="uid://cyqog03afsper" path="res://UI/Lists/TemporaryLabelList.gd" id="3_vibvi"]
+[ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="4_c88uu"]
 [ext_resource type="Shortcut" uid="uid://c4er757mljhl4" path="res://Resources/Shortcuts/BackShortcut.tres" id="4_u63o5"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="4_vibvi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c88uu"]
+atlas = ExtResource("4_vibvi")
+region = Rect2(624, 256, 16, 16)
 
 [node name="GlobalUI" type="Node"]
 process_mode = 3
@@ -38,7 +44,7 @@ size_flags_vertical = 4
 shortcut = ExtResource("4_u63o5")
 text = "<"
 
-[node name="GlobalOverlayRect" type="ColorRect" parent="ForegroundOverlay"]
+[node name="GlobalTintRect" type="ColorRect" parent="ForegroundOverlay"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0)
@@ -50,7 +56,35 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.15, 0, 0.3, 1)
 
-[node name="PauseOverlayRect" type="ColorRect" parent="ForegroundOverlay"]
+[node name="MusicLabelContainer" type="HBoxContainer" parent="ForegroundOverlay"]
+unique_name_in_owner = true
+modulate = Color(0, 1, 1, 1)
+material = ExtResource("4_c88uu")
+custom_minimum_size = Vector2(64, 16)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -16.0
+offset_right = 96.0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 8
+
+[node name="MusicIcon" type="TextureRect" parent="ForegroundOverlay/MusicLabelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_c88uu")
+stretch_mode = 2
+
+[node name="MusicLabel" type="Label" parent="ForegroundOverlay/MusicLabelContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+text = "Now Playing"
+
+[node name="PauseTintRect" type="ColorRect" parent="ForegroundOverlay"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0)

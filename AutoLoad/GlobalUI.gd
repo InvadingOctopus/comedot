@@ -41,9 +41,13 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 @onready var foregroundOverlay:		CanvasLayer				= %ForegroundOverlay
 @onready var labelsList:			TemporaryLabelList		= %LabelsList
 @onready var navigationContainer:	UINavigationContainer	= %NavigationContainer ## For top-level UI
-@onready var overlayRect:			ColorRect				= %GlobalOverlayRect
-@onready var pauseOverlayRect:		ColorRect				= %PauseOverlayRect
+@onready var tintRect:				ColorRect				= %GlobalTintRect
+
+@onready var pauseTintRect:			ColorRect				= %PauseTintRect
 @onready var pauseOverlayContainer:	UINavigationContainer	= %PauseOverlayContainer
+
+@onready var musicLabelContainer:	Container				= %MusicLabelContainer
+@onready var musicLabel:			Label					= %MusicLabel
 #endregion
 
 
@@ -58,6 +62,9 @@ func _ready() -> void:
 		var windowMode: int = DisplayServer.window_get_mode()
 		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
+
+	musicLabelContainer.position.y = musicLabel.get_viewport_rect().end.y
+	Tools.connectSignal(GlobalSonic.musicPlayerDidPlay, self.onGlobalSonic_musicPlayerDidPlay)
 
 
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
@@ -100,7 +107,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		# Ensure visibility just in case
 		pauseOverlay.pauseButton.visible = true
 		pauseOverlay.visible = true
-		Animations.fadeIn(pauseOverlayRect)
+		Animations.fadeIn(pauseTintRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = Animations.fadeIn(pauseOverlayContainer, 0.2)
 		didShowPauseOverlay.emit(pauseOverlay)
@@ -109,7 +116,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 		if pauseOverlay: pauseOverlay.pauseButton.visible = false
 
-		Animations.fadeOut(pauseOverlayRect)
+		Animations.fadeOut(pauseTintRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = Animations.fadeOut(pauseOverlayContainer, 0.2)
 		await pauseOverlayTween.finished
@@ -125,23 +132,55 @@ func showPauseVisuals(isPaused: bool) -> void:
 	navigationContainer.visible = not pauseOverlayContainer.visible
 
 
-func createTemporaryLabel(text: String) -> Label:
-	return labelsList.createTemporaryLabel(text)
-
+func onGlobalSonic_musicPlayerDidPlay(fileName: String) -> void:
+	showMusicLabel(fileName.get_basename().get_file())
 
 #region Animations
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
-func fadeInOverlayRect() -> Tween:
+func fadeInTintRect() -> Tween:
 	if rectFadeTween: rectFadeTween.kill()
-	rectFadeTween = Animations.fadeIn(overlayRect)
+	rectFadeTween = Animations.fadeIn(tintRect)
 	return rectFadeTween
 
 
 ## Fades out the global overlay, which may be a solid black rectangle, effectively fading IN the actual game content.
-func fadeOutOverlayRect() -> Tween:
+func fadeOutTintRect() -> Tween:
 	if rectFadeTween: rectFadeTween.kill()
-	rectFadeTween = Animations.fadeOut(overlayRect)
+	rectFadeTween = Animations.fadeOut(tintRect)
 	return rectFadeTween
+
+
+## @experimental
+func showMusicLabel(title: String) -> void:
+	# TODO: Fix interrupted animations
+
+	const margin:		float = 4.0
+	const showTime:		float = 0.5
+	const hideTime:		float = 0.5
+	const waitTIme:		float = 2.0
+
+	# musicLabel.text				= "" # Let any existing title be animated into the new one ^^
+	musicLabelContainer.position.y	= musicLabelContainer.get_viewport_rect().end.y
+	musicLabelContainer.modulate	= Color(Color.CYAN, 0)
+	musicLabelContainer.visible		= true
+
+	Animations.tweenProperty(musicLabel, ^"text", title, showTime)
+
+	var slideAnimation: Tween = Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y - 16 - margin, showTime) \
+		.set_ease(Tween.EASE_OUT)
+	Animations.fadeIn(musicLabelContainer, showTime)
+
+	await slideAnimation.finished
+	await SceneManager.sceneTree.create_timer(waitTIme).timeout
+
+	Animations.tweenProperty(musicLabel, ^"text", "", hideTime)
+	Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y, hideTime) \
+		.set_ease(Tween.EASE_OUT)
+	Animations.fadeOut(musicLabelContainer, hideTime)
+
+
+func createTemporaryLabel(text: String) -> Label:
+	return labelsList.createTemporaryLabel(text)
 
 #endregion
