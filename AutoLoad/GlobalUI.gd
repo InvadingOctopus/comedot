@@ -12,6 +12,7 @@ extends Node
 var pauseOverlay:		PauseOverlay
 var pauseOverlayTween:	Tween
 var rectFadeTween:		Tween
+var musicLabelTween:	Tween
 #endregion
 
 
@@ -63,7 +64,7 @@ func _ready() -> void:
 		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
-	musicLabelContainer.position.y = musicLabel.get_viewport_rect().end.y
+	musicLabelContainer.position.y = musicLabelContainer.get_viewport_rect().end.y
 	Tools.connectSignal(GlobalSonic.musicPlayerDidPlay, self.onGlobalSonic_musicPlayerDidPlay)
 
 
@@ -153,31 +154,44 @@ func fadeOutTintRect() -> Tween:
 
 ## @experimental
 func showMusicLabel(title: String) -> void:
-	# TODO: Fix interrupted animations
+	# TODO: Make this awesome animation a generic shared function! in Animations.gd
 
 	const margin:		float = 4.0
 	const showTime:		float = 0.5
 	const hideTime:		float = 0.5
 	const waitTIme:		float = 2.0
+	const hideColor:	Color = Color(1, 0, 1, 1)
 
-	# musicLabel.text				= "" # Let any existing title be animated into the new one ^^
-	musicLabelContainer.position.y	= musicLabelContainer.get_viewport_rect().end.y
-	musicLabelContainer.modulate	= Color(Color.CYAN, 0)
+	# UNUSED: Let any existing title be animated into the new one ^^
+	# musicLabel.text					= ""
+	# musicLabelContainer.position.y	= musicLabelContainer.get_viewport_rect().end.y
+	musicLabelContainer.modulate	= hideColor # if not musicLabelTween else Color(1, 1, 1, 2) # Flash if skipping music
 	musicLabelContainer.visible		= true
 
 	Animations.tweenProperty(musicLabel, ^"text", title, showTime)
 
-	var slideAnimation: Tween = Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y - 16 - margin, showTime) \
-		.set_ease(Tween.EASE_OUT)
-	Animations.fadeIn(musicLabelContainer, showTime)
+	if musicLabelTween: musicLabelTween.kill()
 
-	await slideAnimation.finished
-	await SceneManager.sceneTree.create_timer(waitTIme).timeout
-
-	Animations.tweenProperty(musicLabel, ^"text", "", hideTime)
-	Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y, hideTime) \
+	musicLabelTween = Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y - 16 - margin, showTime) \
+		.set_ignore_time_scale()  \
+		.set_ease(Tween.EASE_OUT) \
+		.set_parallel()
+	musicLabelTween.tween_property(musicLabelContainer, ^"modulate", Color(0, 1, 1, 1), showTime) \
 		.set_ease(Tween.EASE_OUT)
-	Animations.fadeOut(musicLabelContainer, hideTime)
+
+	await musicLabelTween.finished
+	musicLabelTween = Animations.tweenProperty(musicLabelContainer, ^"modulate", musicLabelContainer.modulate, waitTIme) # NOTE: Use a [Tween] to wait instead of a [SceneTreeTimer] so it can be killed/interrupted.
+	await musicLabelTween.finished
+	# UNUSED: await SceneManager.sceneTree.create_timer(waitTIme).timeout
+
+	if not musicLabelTween or not musicLabelTween.is_running():
+		# Animations.tweenProperty(musicLabel, ^"text", "", hideTime) # UNUSED: Let the previous title morph into the next one ^^
+		musicLabelTween = Animations.tweenProperty(musicLabelContainer, ^"position:y", musicLabelContainer.get_viewport_rect().end.y, hideTime) \
+			.set_ignore_time_scale()  \
+			.set_ease(Tween.EASE_OUT) \
+			.set_parallel()
+		musicLabelTween.tween_property(musicLabelContainer, ^"modulate", hideColor, hideTime) \
+			.set_ease(Tween.EASE_OUT)
 
 
 func createTemporaryLabel(text: String) -> Label:

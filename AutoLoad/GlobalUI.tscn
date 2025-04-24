@@ -58,6 +58,7 @@ color = Color(0.15, 0, 0.3, 1)
 
 [node name="MusicLabelContainer" type="HBoxContainer" parent="ForegroundOverlay"]
 unique_name_in_owner = true
+process_mode = 3
 modulate = Color(0, 1, 1, 1)
 material = ExtResource("4_c88uu")
 custom_minimum_size = Vector2(64, 16)
