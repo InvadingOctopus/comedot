@@ -217,10 +217,11 @@ func onMusicPlayer_finished() -> void:
 	self.playRandomMusicIndex()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+	# BUG: Gets called twice in the same frame??
 	if event.is_action(GlobalInput.Actions.skipMusic) and Input.is_action_just_pressed(GlobalInput.Actions.skipMusic):
-		self.skipMusic()
 		self.get_viewport().set_input_as_handled()
+		self.skipMusic()
 
 #endregion
 
