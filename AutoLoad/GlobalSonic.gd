@@ -148,6 +148,13 @@ func getMusicFilesFromFolder(path: String = self.musicFolder) -> PackedStringArr
 	return files
 
 
+## Searches for the specified song name and returns its index in the [member musicFiles] array if found, otherwise -1
+func findMusicFile(fileName: String) -> int:
+	var matchingIndex: int = self.musicFiles.find(fileName)
+	if matchingIndex < 0: Debug.printWarning("findMusicFile() cannot find: " + fileName, self)
+	return matchingIndex
+
+
 ## Plays the song found at the specified index in the [member musicFiles] array.
 func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 	if currentMusicIndex == 0 and self.musicFiles.is_empty(): # Silence warning for the default state of new projects: No music files.
@@ -175,9 +182,11 @@ func playMusicFile(path: String) -> AudioStream:
 		Debug.printWarning("playMusicFile() cannot load " + path, self)
 		return null
 	
+	var fileName: String = ResourceUID.get_id_path(ResourceUID.text_to_id(path)) # Because Godot sends UIDs instead of the actual text path
+
 	self.musicPlayer.stream = newMusicStream
 	self.musicPlayer.play()
-	self.musicPlayerDidPlay.emit(path)
+	self.musicPlayerDidPlay.emit(fileName)
 	return newMusicStream
 
 
