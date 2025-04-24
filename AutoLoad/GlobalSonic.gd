@@ -183,6 +183,14 @@ func playMusicFile(path: String) -> AudioStream:
 
 func onMusicPlayer_finished() -> void:
 	self.musicPlayerDidStop.emit()
+	self.playRandomMusicIndex()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action(GlobalInput.Actions.skipMusic) and Input.is_action_just_pressed(GlobalInput.Actions.skipMusic):
+		self.musicPlayerDidStop.emit()
+		self.playRandomMusicIndex()
+		self.get_viewport().set_input_as_handled()
 
 #endregion
 

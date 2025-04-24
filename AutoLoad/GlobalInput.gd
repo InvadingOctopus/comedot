@@ -45,6 +45,7 @@ class Actions:
 	const back			:= &"back"
 	const pause			:= &"pause"
 	const screenshot	:= &"screenshot"
+	const skipMusic		:= &"skipMusic"
 	const quickSave		:= &"quickSave"
 	const quickLoad		:= &"quickLoad"
 
