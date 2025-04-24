@@ -4,12 +4,14 @@
 ## Requirements: [Sprite2D]
 ## Editable Children: [Area2D]
 
-#@tool
+# @tool
 class_name CornerCollisionComponent
 extends Component
 
 
 #region Parameters
+
+@export var fitAreasAutomatically: bool = true
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -52,11 +54,7 @@ var isCollidingOnBottom:	bool
 
 
 func _ready() -> void:
-	setAreaPositions()
-
-
-func _physics_process(_delta: float) -> void:
-	pass
+	if fitAreasAutomatically: setAreaPositions()
 
 
 ## Places the [Area2D]s at the corners of the entity's [Sprite2D]
@@ -69,10 +67,7 @@ func setAreaPositions() -> void:
 	areaSE.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.southEast)
 	areaSW.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.southWest)
 
-	#Debug.watchList.areaNW = areaNW.position
-	#Debug.watchList.areaNE = areaNE.position
-	#Debug.watchList.areaSE = areaSE.position
-	#Debug.watchList.areaSW = areaSW.position
+	if debugMode: printTrace([areaNW.position, areaNE.position, areaSE.position, areaSW.position])
 
 
 func setCollisionEnabled(enabled: bool) -> void:
@@ -109,7 +104,7 @@ func updateFlags() -> void:
 	isCollidingOnRight	= (areaNECollisionCount >= 1) or (areaSECollisionCount >= 1)
 	isCollidingOnTop	= (areaNWCollisionCount >= 1) or (areaNECollisionCount >= 1)
 	isCollidingOnBottom	= (areaSWCollisionCount >= 1) or (areaSECollisionCount >= 1)
-	#showDebugInfo()
+	# DEBUG: showDebugInfo()
 
 
 func updateCollisionCount() -> void:
@@ -120,6 +115,8 @@ func updateCollisionCount() -> void:
 
 
 func showDebugInfo() -> void:
+	if not debugMode: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.NW = areaNWCollisionCount
 	Debug.watchList.NE = areaNECollisionCount
 	Debug.watchList.SE = areaSECollisionCount
