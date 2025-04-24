@@ -38,6 +38,7 @@ extends Component
 ## Shows a [TextBubble] representing the current health value or the difference.
 ## The bubble is set as a child node of the entity, to avoid being affected by the effects on [nodeToAnimate].
 @export var shouldEmitBubble: bool = true
+@export var detachedBubbles:  bool = false ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
 
 @export var shouldShowRemainingHealth: bool = false ## If `true`, the [TextBubble] shows the REMAINING health instead of the DIFFERENCE.
 
@@ -90,6 +91,14 @@ func updateTint()-> void:
 
 func emitBubble(difference: int) -> void:
 	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else "%+d" % difference
-	# NOTE: Emit the bubble from the ENTITY, so it's not affected by the effects on `nodeToAnimate`.
-	TextBubble.create(text, self.parentEntity) \
-		.label.label_settings.font_color = Color.GREEN if difference > 0 else Color.ORANGE
+	
+	var color: Color = Color(0, 1, 0) if difference > 0 else Color(1, 0.5, 0)
+	color.b += [0, +0.1, +0.2, +0.3].pick_random()
+
+	if not detachedBubbles:
+		# NOTE: Emit the bubble from the ENTITY, so it's not affected by the effects on `nodeToAnimate`.
+		TextBubble.create(text, self.parentEntity) \
+			.label.label_settings.font_color = color
+	else:
+		TextBubble.create(text, self.parentEntity.get_parent(), self.parentEntity.global_position) \
+			.label.label_settings.font_color = color
