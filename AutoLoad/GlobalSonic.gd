@@ -178,8 +178,10 @@ func playRandomMusicIndex(allowRepeats: bool = false) -> AudioStream:
 		return self.playMusicIndex(randi_range(0, self.musicFiles.size() - 1)) # randi_range() is inclusive and size() is +1 > maximum valid array index.
 	else:
 		var newMusicIndex: int = self.currentMusicIndex
-		while newMusicIndex == self.currentMusicIndex:
+		var tries: int = 0 # Limit the number of tries so we don't get stuck in an infinite loop during pauses etc.
+		while newMusicIndex == self.currentMusicIndex and tries < 100: # 100 should be enough to ensure no repeats, right?
 			newMusicIndex = randi_range(0, self.musicFiles.size() - 1)
+			tries += 1
 		return self.playMusicIndex(newMusicIndex)
 
 
