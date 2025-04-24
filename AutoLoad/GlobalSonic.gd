@@ -181,8 +181,13 @@ func playMusicFile(path: String) -> AudioStream:
 	if newMusicStream == null:
 		Debug.printWarning("playMusicFile() cannot load " + path, self)
 		return null
-	
-	var fileName: String = ResourceUID.get_id_path(ResourceUID.text_to_id(path)) # Because Godot sends UIDs instead of the actual text path
+
+	# Convert any UIDs to the actual text path
+	var fileName: String
+	if ResourceUID.has_id(ResourceUID.text_to_id(path)):
+		fileName = ResourceUID.get_id_path(ResourceUID.text_to_id(path))
+	else:
+		fileName = path
 
 	self.musicPlayer.stream = newMusicStream
 	self.musicPlayer.play()
