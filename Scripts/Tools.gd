@@ -21,6 +21,10 @@ class CompassDirections: ## A list of unit vectors representing 8 compass direct
 	const southWest	:= Vector2i(-1, +1)
 	const west		:= Vector2i.LEFT
 
+## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
+## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
+const sequenceNegative1toPositive1stepPoint1: Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0] # TBD: Better name pleawse :')
+
 #endregion
 
 
