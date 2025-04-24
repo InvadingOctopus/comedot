@@ -18,6 +18,8 @@ static var scenePath: String:
 #endregion
 
 
+## Creates & returns a new [TextBubble].
+## TIP: The [param offset] is applied to the default position of 0,0 so the offset may also be used as a absolute position.
 static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16)) -> TextBubble:
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
 	newBubble.position += offset # The default offset is above a 16-pixel sprite.
