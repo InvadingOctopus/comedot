@@ -112,10 +112,10 @@ func validateStatsComponent(statsComponent: StatsComponent) -> bool:
 ## If this Resource has not [member costStat], `null` is returned.
 func getPaymentStatFromStatsComponent(statsComponent: StatsComponent) -> Stat:
 	# TBD: Review & replace with a better interface if needed
-	if not statsComponent:
+	if not self.costStat: return null # Avoid printing a warning if there's no cost, so check the cost first.
+	elif not statsComponent:
 		Debug.printWarning("getPaymentStatFromStatsComponent(): null", self)
 		return null
-	elif not self.costStat: return null
 	else: return statsComponent.getStat(self.costStat.name)
 
 
