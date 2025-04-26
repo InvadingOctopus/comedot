@@ -25,7 +25,6 @@ modulate_color_glyphs=false
 hinting=1
 subpixel_positioning=4
 keep_rounding_remainders=true
-oversampling=0.0
 Fallbacks=null
 fallbacks=[]
 Compress=null
