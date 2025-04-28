@@ -1,6 +1,9 @@
 ## Represents a statistic on a character or object, such as the player's health or an enemy's attack power.
 ## TIP: Use [StatUI], [StatBar], [StatPips] to display a game character's [Stats] in the UI.
 ## TIP: Use the `UI/Lists/[StatsList].gd` script to automatically display and update these values in a HUD during runtime.
+## DESIGN: Stats are integers to simplify arithmetic and comparisons and potentially improve performance.
+## TIP: If you need to use Stats for objects that require floats, such as [member Timer.wait_time] or [member CooldownComponent.cooldownMillisecondsModifier],
+## then let the Stat be multiples of 1000, e.g. milliseconds instead of whole seconds. Then to convert from a Stat to a float, divide by 1000. Vice versa, multiply by 1000.
 
 #@tool # To clamp values when editing stats in the editor. # WARNING: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
 @warning_ignore("missing_tool")
