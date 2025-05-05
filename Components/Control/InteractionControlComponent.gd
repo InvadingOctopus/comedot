@@ -15,6 +15,8 @@ extends CooldownComponent
 
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
+@export var inputEventName: StringName = GlobalInput.Actions.interact
+
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
@@ -83,10 +85,12 @@ func updateIndicator() -> void:
 		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
 
-func _input(_event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or _input()?
 	if not isEnabled or not hasCooldownCompleted or not haveInteracionsInRange: return
 
-	if Input.is_action_just_pressed("interact"): interact()
+	if Input.is_action_just_pressed(inputEventName):
+		interact()
+		self.get_viewport().set_input_as_handled()
 
 
 func interact() -> void:
