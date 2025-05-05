@@ -1,13 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwo5yflm2rjhw"]
+[gd_scene load_steps=3 format=3 uid="uid://bwo5yflm2rjhw"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_hd7sx"]
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_obbkp"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_y8ehy"]
-atlas = ExtResource("1_obbkp")
-region = Rect2(592, 208, 16, 16)
-
 [node name="SpriteEntity" type="Sprite2D" groups=["entities"]]
-texture = SubResource("AtlasTexture_y8ehy")
+texture = ExtResource("1_obbkp")
+region_enabled = true
+region_rect = Rect2(592, 208, 16, 16)
 script = ExtResource("1_hd7sx")
 metadata/_edit_group_ = true
