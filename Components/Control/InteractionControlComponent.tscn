@@ -10,8 +10,6 @@ radius = 16.0
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_3nqhk")
-isEnabled = null
-cooldown = null
 metadata/_edit_group_ = true
 
 [node name="InteractionControlShape" type="CollisionShape2D" parent="."]
@@ -23,4 +21,4 @@ wait_time = 0.5
 
 [connection signal="area_entered" from="." to="." method="onArea_entered"]
 [connection signal="area_exited" from="." to="." method="onArea_exited"]
-[connection signal="timeout" from="CooldownTimer" to="." method="onCooldownTimer_timeout"]
+[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]
