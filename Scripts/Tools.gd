@@ -43,16 +43,17 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 	child.owner = parent
 
 
-## Adds a child node at the position of another node, and copies the rotation and scale of the [member placementNode] if specified.
+## Adds & returns a child node at the position of another node, and optionally copies the rotation and scale of the [member placementNode].
 ## Also sets the child's owner to the new parent.
 ## Example: Using [Marker2D]s as placeholders for objects like doors etc. during procedural map generation from a template.
 ## NOTE: Also sets the `force_readable_name` parameter, which may slow performance if used frequently.
-static func addChildAtNode(child: Node2D, placementNode: Node2D, parent: Node, copyRotation: bool = true, copyScale: bool = true) -> void: # DESIGN: TBD: Should `parent` be the 1st argument or 2nd? All global functions operate on the 1st argument, the parent [Node], but this method's name has "child" as the first word, so the `child` should be the 1st argument, right? :')
+static func addChildAtNode(child: Node2D, placementNode: Node2D, parent: Node, copyRotation: bool = true, copyScale: bool = true) -> Node2D:
 	child.position = placementNode.position
 	if copyRotation: child.rotation	= placementNode.rotation
 	if copyScale:	 child.scale	= placementNode.scale
 	parent.add_child(child, true) # force_readable_name # NOTE: PERFORMANCE: Slower!
 	child.owner = parent
+	return child
 
 
 ## Returns the first child of [param parentNode] which matches the specified [param type].
