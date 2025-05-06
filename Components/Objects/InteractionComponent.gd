@@ -11,7 +11,7 @@ extends Component
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
-@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collision with an [InteractionControlComponent].
+@export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collisioncontact with an [InteractionControlComponent].
 
 @export var alwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
 
@@ -21,7 +21,7 @@ extends Component
 	set(newValue):
 		if newValue != label:
 			label = newValue
-			updateLabel()
+			if self.is_node_ready(): updateLabel()
 
 ## An optional detailed description of the interaction to display in the UI.
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
@@ -109,21 +109,8 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 ## If the [interactionIndicator] is a [Label], display our [label] parameter.
 func updateLabel() -> void:
 	# TBD: Should this be optional?
-	if (not self.label.is_empty()) and interactionIndicator is Label:
+	if not self.label.is_empty() and interactionIndicator is Label:
 		interactionIndicator.text = self.label
-		# Also apply the color
-		interactionIndicator.modulate = self.modulate
-
-
-#region Virtual Methods
-
-## May be overridden in a subclass to approve or deny an interaction.
-## NOTE: Remember to check [member isEnabled] in the subclass implementation!
-## Default: `true`
-func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
-	# CHECK: Maybe a better name? :p
-	if debugMode: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
-	return isEnabled
 
 
 ## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.
@@ -138,5 +125,16 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	self.didPerformInteraction.emit(result)
 
 	return result
+
+
+#region Virtual Methods
+
+## May be overridden in a subclass to approve or deny an interaction.
+## NOTE: Remember to check [member isEnabled] in the subclass implementation!
+## Default: `true`
+func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
+	# CHECK: Maybe a better name? :p
+	if debugMode: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
+	return isEnabled
 
 #endregion
