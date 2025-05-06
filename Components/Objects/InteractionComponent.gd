@@ -12,6 +12,12 @@ extends Component
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
+## Initiate an interaction automatically as soon as any [InteractionControlComponent] comes in contact.
+## Calls [method InteractionControlComponent.interact] on an [Area2D] collision event.
+## Example: Portals or traps etc.
+## NOTE: Does not repeat interaction after the cooldown resets.
+@export var automatic: bool = false
+
 @export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collisioncontact with an [InteractionControlComponent].
 
 @export var alwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
@@ -79,6 +85,9 @@ func onArea_entered(area: Area2D) -> void:
 		interactionIndicator.visible = true
 
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
+
+	if self.automatic:
+		interactionControlComponent.interact()
 
 
 func onArea_exited(area: Area2D) -> void:
