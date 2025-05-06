@@ -1,5 +1,6 @@
 ## Represents an area where an interaction may occur when the player inputs the interaction action.
 ## The initiator of an interaction is an [Entity]'s [InteractionControlComponent].
+## For interactions that have a cooldown and a [Stat] cost on the object's side, use [InteractionWithCostComponent]
 
 class_name InteractionComponent
 extends Component

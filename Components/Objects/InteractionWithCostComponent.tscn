@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctb31yeqt3dae"]
+
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_755gj"]
+[ext_resource type="Script" uid="uid://tenrw04a0cxr" path="res://Components/Objects/InteractionWithCostComponent.gd" id="2_nrbwt"]
+
+[node name="InteractionWithCostComponent" instance=ExtResource("1_755gj")]
+editor_description = "Subclass of InteractionComponent with a cooldown and Stat cost."
+script = ExtResource("2_nrbwt")
+cost = null
+
+[node name="CooldownTimer" type="Timer" parent="." index="1"]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="CooldownTimer" to="." method="onCooldownTimer_timeout"]
