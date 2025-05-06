@@ -6,8 +6,8 @@
 class_name Action
 extends StatDependentResourceBase
 
-# TBD:  A less ambiguous name, like ExplicitAction or Ability? Because "action" is a Godot term for all input events.
-# TODO: Add support for position targeting.
+# TBD:  A less ambiguous name, like SpecialAction or Ability? Because "action" is a Godot term for all input events.
+# TODO: Add support for position targeting, e.g. casting a Fireball at the ground.
 
 
 #region Parameters
@@ -26,7 +26,7 @@ extends StatDependentResourceBase
 @export_range(0, 6000, 0.1) var cooldown: float = 0 ## The time in seconds (or fraction of a second) to wait before this Action may be used again.
 
 ## The code to execute when this Action is performed. See [Payload] for explanation and available options.
-@export var payload:		Payload
+@export var payload: Payload
 
 @export var debugMode: bool
 
