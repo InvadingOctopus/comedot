@@ -93,14 +93,18 @@ func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or 
 		self.get_viewport().set_input_as_handled()
 
 
-func interact() -> void:
+## Interacts with all [InteractionComponent]s in collision contact, and starts the cooldown if there was interaction succeeds.
+## "Success" is determined by [method Tools.checkResult] (i.e. not null and not false)
+## Returns: Number of successful interactions.
+func interact() -> int:
 	# NOTE: TBD: If there are multiple interactions within range,
-	# should they all be processed withing a single cooldown?
+	# should they all be processed within a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
 
-	if not isEnabled or not hasCooldownCompleted: return
+	if not isEnabled or not hasCooldownCompleted: return 0
 
 	var count: int = 0
+	var successes: int = 0
 
 	for interactionComponent in self.interactionsInRange:
 		if interactionComponent.requestToInteract(self.parentEntity, self):
@@ -109,12 +113,14 @@ func interact() -> void:
 
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
+			if Tools.checkResult(result): successes += 1
 			self.didPerformInteraction.emit(result)
 			# TBD: Check interaction success?
 			
 			if count >= maximumSimultaneousInteractions: break
 
-	startCooldown()
+	if successes > 0: startCooldown()
+	return successes
 
 
 # DEBUG: func _process(delta: float) -> void:
