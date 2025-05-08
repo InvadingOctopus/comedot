@@ -79,7 +79,8 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 * or, if the ACTION is the focus: {action}{object} e.g. `didSpawnEntity`
 * or, if the OBJECT is the focus: {object}{action} e.g. `entityDidSpawn`
 * Signal names should begin with a `did` or `will` wherever it makes sense.
-	- This ensure consistency in words by avoiding English plural jankery: `didDecrease` vs `decreased`, `didRunOut` vs `ranOut`
+	- This allows the event handlers to know exactly at what point the effects of their code will occur.
+	- This ensure consistency in words by reducing English jankery: `didDecrease` vs `decreased`, `didRunOut` vs `ranOut`
 	- `ammoInsufficient` does not make sense in a past or future tense, so it is exempt.
 	- If there are no "did" or "will" variants the tense can be omitted, e.g. `onCollide`.
 
