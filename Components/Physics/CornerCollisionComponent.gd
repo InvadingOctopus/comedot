@@ -62,10 +62,10 @@ func setAreaPositions() -> void:
 	if not sprite: return # TBD: Should we reset the raycass to a default position if there is no sprite?
 	var spriteRect: Rect2 = sprite.get_rect()
 
-	areaNW.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.northWest)
-	areaNE.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.northEast)
-	areaSE.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.southEast)
-	areaSW.position = Tools.getRectCorner(spriteRect, Tools.CompassDirections.southWest)
+	areaNW.position = Tools.getRectCorner(spriteRect, Tools.CompassVectors.northWest)
+	areaNE.position = Tools.getRectCorner(spriteRect, Tools.CompassVectors.northEast)
+	areaSE.position = Tools.getRectCorner(spriteRect, Tools.CompassVectors.southEast)
+	areaSW.position = Tools.getRectCorner(spriteRect, Tools.CompassVectors.southWest)
 
 	if debugMode: printTrace([areaNW.position, areaNE.position, areaSE.position, areaSW.position])
 

@@ -9,7 +9,7 @@ extends GDScript
 
 #region Constants
 
-class CompassDirections: ## A list of unit vectors representing 8 compass directions.
+class CompassVectors: ## A list of unit vectors representing 8 compass directions.
 	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
 	const none		:= Vector2i.ZERO
 	const northWest	:= Vector2i(-1, -1)
@@ -328,14 +328,14 @@ static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vecto
 	var end			:= rectangle.end
 
 	match compassDirection:
-		CompassDirections.northWest:	return Vector2(position.x, position.y)
-		CompassDirections.north:		return Vector2(center.x, position.y)
-		CompassDirections.northEast:	return Vector2(end.x, position.y)
-		CompassDirections.east:			return Vector2(end.x, center.y)
-		CompassDirections.southEast:	return Vector2(end.x, end.y)
-		CompassDirections.south:		return Vector2(center.x, end.y)
-		CompassDirections.southWest:	return Vector2(position.x, end.y)
-		CompassDirections.west:			return Vector2(position.x, center.y)
+		CompassVectors.northWest:	return Vector2(position.x, position.y)
+		CompassVectors.north:		return Vector2(center.x, position.y)
+		CompassVectors.northEast:	return Vector2(end.x, position.y)
+		CompassVectors.east:		return Vector2(end.x, center.y)
+		CompassVectors.southEast:	return Vector2(end.x, end.y)
+		CompassVectors.south:		return Vector2(center.x, end.y)
+		CompassVectors.southWest:	return Vector2(position.x, end.y)
+		CompassVectors.west:		return Vector2(position.x, center.y)
 
 		_: return Vector2.ZERO
 
