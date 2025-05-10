@@ -11,15 +11,16 @@ extends GDScript
 
 class CompassVectors: ## A list of unit vectors representing 8 compass directions.
 	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
+	# DESIGN: Start from East to match the default rotation angle of 0
 	const none		:= Vector2i.ZERO
-	const northWest	:= Vector2i(-1, -1)
-	const north		:= Vector2i.UP
-	const northEast	:= Vector2i(+1, -1)
 	const east		:= Vector2i.RIGHT
 	const southEast	:= Vector2i(+1, +1)
 	const south		:= Vector2i.DOWN
 	const southWest	:= Vector2i(-1, +1)
 	const west		:= Vector2i.LEFT
+	const northWest	:= Vector2i(-1, -1)
+	const north		:= Vector2i.UP
+	const northEast	:= Vector2i(+1, -1)
 
 ## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
 ## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
