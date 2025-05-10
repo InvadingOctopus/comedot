@@ -9,7 +9,8 @@ extends GDScript
 
 #region Constants
 
-class CompassVectors: ## A list of unit vectors representing 8 compass directions.
+## A list of unit vectors representing 8 compass directions.
+class CompassVectors:
 	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
 	# DESIGN: Start from East to match the default rotation angle of 0
 	const none		:= Vector2i.ZERO
@@ -21,6 +22,19 @@ class CompassVectors: ## A list of unit vectors representing 8 compass direction
 	const northWest	:= Vector2i(-1, -1)
 	const north		:= Vector2i.UP
 	const northEast	:= Vector2i(+1, -1)
+
+## The cardinal & ordinal directions, each assigned a number representing the associated rotation angle in degrees, with East = 0 and incrementing by 45
+enum CompassDirection {
+	none		=  -1,
+	east		=   0,
+	southEast	=  45,
+	south		=  90,
+	southWest	= 135,
+	west		= 180,
+	northWest	= 225,
+	north		= 270,
+	northEast	= 315
+	}
 
 ## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
 ## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
