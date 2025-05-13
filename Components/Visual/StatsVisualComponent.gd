@@ -1,0 +1,48 @@
+## Emits [TextBubble]s and displays other UI over the Entity whenever one of the chosen [Stat]s changes in value.
+## NOTE: The visuals are displayed at the position of the component, not the entity, so they may be offset from the entity's position.
+
+class_name StatsVisualComponent
+extends Component
+
+# TODO: Avoid overlapping bubbles
+# TODO: Add attached [StatsList]
+# TODO: Support array additions at runtime
+
+
+#region Parameters
+@export var statsToMonitor: Array[Stat]
+@export var statsToExclude: Array[Stat]
+@export var shouldCopyFromStatsComponent: bool = true # If `true` then [member statsToMonitor] will include the Stats from an [StatsComponent], if any.
+@export var isEnabled: bool = true
+#endregion
+
+
+#region Dependencies
+var statsComponent: StatsComponent:
+	get:
+		if not statsComponent: statsComponent = coComponents.get(&"StatsComponent")
+		return statsComponent
+#endregion
+
+
+func _ready() -> void:
+	if shouldCopyFromStatsComponent and statsComponent:
+		self.statsToMonitor.append_array(statsComponent.stats) # NOTE: append, don't override :)
+	if debugMode: printDebug(str(statsToMonitor, ", exclude: ", statsToExclude))
+	connectSignals()
+
+
+func connectSignals() -> void:
+	for stat in statsToMonitor:
+		if not statsToExclude.has(stat):
+			Tools.connectSignal(stat.changed, self.onStatChanged.bind(stat))
+
+
+func onStatChanged(stat: Stat) -> void:
+	# Double-check if the Stat is in the array, to support removals during runtime.
+	if not statsToMonitor.has(stat):
+		Tools.disconnectSignal(stat.changed, self.onStatChanged)
+		return
+	if not isEnabled and not statsToExclude.has(stat): return
+
+	TextBubble.create(str(stat.displayName, "%+d" % stat.previousChange), self)
