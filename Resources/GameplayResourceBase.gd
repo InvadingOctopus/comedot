@@ -21,7 +21,8 @@ extends Resource
 @export var name: StringName:
 	set(newValue):
 		if newValue.is_empty():
-			Debug.printWarning("Rejected attempt to set name to empty string", self)
+			var logName: String = str(self.resource_path.get_file(), " ", self.get_script().get_global_name(), " ", self)
+			Debug.printWarning("Rejecting empty name string." + ((" Current: " + name) if not name.is_empty() else ""), logName)
 			return
 		name = newValue
 		self.resource_name = name # CHECK: Does this work without @tool?
