@@ -82,7 +82,7 @@ func setValue(newValue: int) -> void:
 
 		valueWithModifiers = value # TBD: Should this be here?
 		GameState.statUpdated.emit(self) # TBD: Should this be optional?
-	
+
 	else: previousChange = 0 # IMPORTANT: If the value did not change due to clamping etc., reset previousChange so TextBubble etc. can properly show the actual difference!
 
 #endregion
