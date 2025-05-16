@@ -11,7 +11,6 @@ size = Vector2(12, 14)
 collision_mask = 512
 script = ExtResource("2_1k7qh")
 groupToInclude = &"zones"
-shouldConnectSignalsOnReady = false
 
 [node name="AreaDetectorShape" parent="." index="0"]
 shape = SubResource("RectangleShape2D_okh6g")

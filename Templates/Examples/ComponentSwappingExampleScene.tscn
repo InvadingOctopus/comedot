@@ -79,6 +79,7 @@ shape = SubResource("RectangleShape2D_sdyhs")
 boundary = NodePath("../../CameraBounds")
 
 [node name="ControlSwapperExampleComponent" parent="PlayerEntity" instance=ExtResource("7_37w12")]
+debugMode = true
 
 [node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("8_dur3v")]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://p5j61vitplf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_3wcaw"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_kwxr1"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_kwxr1"]
 [ext_resource type="PackedScene" uid="uid://35rprhfbgfpb" path="res://Components/Gameplay/InventoryComponent.tscn" id="3_fdjm8"]
 [ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="4_hcysf"]
 [ext_resource type="Script" uid="uid://wkmslg2j8n3a" path="res://UI/Lists/InventoryList.gd" id="5_koqj8"]
@@ -15,12 +15,12 @@
 [node name="InventoryTest" type="Node2D"]
 script = ExtResource("1_3wcaw")
 
-[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_kwxr1")]
+[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_kwxr1")]
 
-[node name="InventoryComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_fdjm8")]
+[node name="InventoryComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("3_fdjm8")]
 debugMode = true
 
-[node name="CollectorComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_hcysf")]
+[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_hcysf")]
 debugMode = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -41,7 +41,7 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 columns = 4
 script = ExtResource("5_koqj8")
-inventoryComponent = NodePath("../../../PlayerEntityTemplate-OverheadBasic/InventoryComponent")
+inventoryComponent = NodePath("../../../PlayerEntityTemplate-Overhead/InventoryComponent")
 
 [node name="RedKey" type="Sprite2D" parent="."]
 position = Vector2(-112, 0)

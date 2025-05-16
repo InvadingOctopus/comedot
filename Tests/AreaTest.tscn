@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_tyeq5"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_tyeq5"]
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="3_yuy2n"]
 [ext_resource type="PackedScene" uid="uid://igl5tam71pns" path="res://Components/Gameplay/ZoneComponent.tscn" id="4_msvcj"]
 

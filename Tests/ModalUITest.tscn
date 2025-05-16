@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hjmmma8ca0y8" path="res://UI/ModalUI.gd" id="1_auuvl"]
 [ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/DebugCheckerboard32.png" id="2_mu8qp"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_nml0c"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_nml0c"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_basq6"]
 normal = Vector2(2.08165e-12, 1)

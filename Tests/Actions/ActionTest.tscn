@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://bdryp1672xdf7"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_baond"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_020ow"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_020ow"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_c1c8v"]
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="4_tue7k"]
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="5_tl03x"]
@@ -20,16 +20,16 @@
 [node name="ActionsTest" type="Node2D"]
 script = ExtResource("1_baond")
 
-[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_020ow")]
+[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_020ow")]
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_c1c8v")]
+[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("3_c1c8v")]
 stats = Array[ExtResource("4_tue7k")]([ExtResource("5_tl03x"), ExtResource("6_ahkry"), ExtResource("7_8gufy")])
 
-[node name="ActionsComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_fib85")]
+[node name="ActionsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("8_fib85")]
 actions = Array[ExtResource("9_0lnki")]([ExtResource("10_faxyp"), ExtResource("11_suttq")])
 debugMode = true
 
-[node name="ActionControlComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("12_jynvc")]
+[node name="ActionControlComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("12_jynvc")]
 
 [node name="SpriteEntity" parent="." instance=ExtResource("13_558mi")]
 position = Vector2(72, 56)
@@ -46,7 +46,7 @@ theme_override_constants/margin_top = 24
 [node name="StatsList" type="GridContainer" parent="CanvasLayer/MarginContainer" node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
 script = ExtResource("15_lia1s")
-statsComponent = NodePath("../../../PlayerEntityTemplate-OverheadBasic/StatsComponent")
+statsComponent = NodePath("../../../PlayerEntityTemplate-Overhead/StatsComponent")
 
 [node name="ActionsList" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("entity")]
 anchors_preset = 2
@@ -56,5 +56,5 @@ offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
 script = ExtResource("16_lbcpr")
-entity = NodePath("../../PlayerEntityTemplate-OverheadBasic")
+entity = NodePath("../../PlayerEntityTemplate-Overhead")
 debugMode = true

@@ -201,10 +201,10 @@ metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 resource_local_to_scene = true
 size = Vector2(12, 12)
 
-[node name="PlayerEntityTemplate-Platformer" type="CharacterBody2D" groups=["entities", "players"]]
+[node name="Player-Platformer" type="CharacterBody2D" groups=["entities", "players"]]
 z_index = 10
 collision_layer = 6
-collision_mask = 3640
+collision_mask = 120
 floor_constant_speed = true
 platform_on_leave = 2
 script = ExtResource("1_rwmjt")

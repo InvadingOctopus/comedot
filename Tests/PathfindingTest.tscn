@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=4 uid="uid://2w1tcs0a5lqb"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_5guwh"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-OverheadBasic.tscn" id="2_t8ro4"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_t8ro4"]
 [ext_resource type="TileSet" uid="uid://emoyueri5hos" path="res://Assets/Tiles/Kenney1Bit-Colored-Physics.tres" id="3_5guwh"]
 [ext_resource type="PackedScene" uid="uid://c8l4oj33xh2qa" path="res://Entities/Entity.tscn" id="5_ydg3b"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="6_6de5m"]
