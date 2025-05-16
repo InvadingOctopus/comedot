@@ -1,49 +1,41 @@
-[gd_scene load_steps=10 format=4 uid="uid://dptnl2r7a6q1a"]
+[gd_scene load_steps=7 format=4 uid="uid://dptnl2r7a6q1a"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2ybn1"]
-[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_3qr72"]
-[ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="2_foo43"]
 [ext_resource type="Script" uid="uid://2ow1pluircli" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
+[ext_resource type="TileSet" uid="uid://bnuthy0vx4048" path="res://Assets/Tiles/Kenney1Bit-Monochrome.tres" id="3_owc60"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="4_fnve7"]
-[ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="5_kihht"]
-[ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="6_73iom"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_esh4c"]
-size = Vector2(14, 12)
+[ext_resource type="PackedScene" uid="uid://c3u5roi5rwks1" path="res://Templates/Entities/PlayerEntityTemplate-TileBased.tscn" id="4_e6c1b"]
+[ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="7_rgyjq"]
 
 [node name="TileMovementTest" type="Node2D"]
 script = ExtResource("1_2ybn1")
 
-[node name="TerrainContainer" type="Node2D" parent="."]
+[node name="RotatingContainer" type="Node2D" parent="."]
+texture_filter = 2
 script = ExtResource("2_gqr1m")
 speed = 0.1
 
-[node name="TerrainTileMapLayer" type="TileMapLayer" parent="TerrainContainer"]
-tile_map_data = PackedByteArray("AAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAAAAEAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAUAAwAAAAAAAAADAAMAAwAAAAAAAAADAAkAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAgAAwAAAAAAAAAAAAkAAwAAAAAAAAAAAAoAAwAAAAAAAAAAAAsAAwAAAAAAAAAAAAwAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAwAAAAAAAAANAAAAAwAAAAAAAAAEAAoAAwAAAAAAAAADAAoAAwAAAAAAAAANAA0AAwAAAAAAAAAMAA0AAwAAAAAAAAALAA0AAwAAAAAAAAAKAA0AAwAAAAAAAAAJAA0AAwAAAAAAAAAHAA0AAwAAAAAAAAAGAA0AAwAAAAAAAAAFAA0AAwAAAAAAAAAEAA0AAwAAAAAAAAADAA0AAwAAAAAAAAACAA0AAwAAAAAAAAABAA0AAwAAAAAAAAAAAA0AAwAAAAAAAAAHAAgAAwAAAAAAAAAHAAcAAwAAAAAAAAAHAAYAAwAAAAAAAAAHAAUAAwAAAAAAAAAJAAgAAwAAAAAAAAAJAAcAAwAAAAAAAAAJAAYAAwAAAAAAAAAJAAUAAwAAAAAAAAANAAkAAwAAAAAAAAANAAoAAwAAAAAAAAAMAAoAAwAAAAAAAAANAAMAAwAAAAAAAAAOAAAAAwAAAAAAAAAPAAAAAwAAAAAAAAAQAAAAAwAAAAAAAAAQAAEAAwAAAAAAAAAQAAIAAwAAAAAAAAAQAAMAAwAAAAAAAAAQAAQAAwAAAAAAAAAQAAUAAwAAAAAAAAAQAAYAAwAAAAAAAAAQAAcAAwAAAAAAAAAQAAgAAwAAAAAAAAAQAAkAAwAAAAAAAAAQAAoAAwAAAAAAAAAQAAsAAwAAAAAAAAAOAA0AAwAAAAAAAAAPAA0AAwAAAAAAAAAQAA0AAwAAAAAAAAAQAAwAAwAAAAAAAAAHAAQAAwAAAAAAAAAJAAQAAwAAAAAAAAA=")
-tile_set = ExtResource("2_foo43")
+[node name="TileMapA" type="TileMapLayer" parent="RotatingContainer"]
+tile_map_data = PackedByteArray("AAAAAAAAAAApABAAAAABAAAAAAAnAA4AAAACAAAAAAAnAA4AAAADAAAAAAAnAA4AAAAEAAAAAAAnAA4AAAAFAAAAAAAnAA4AAAAGAAAAAAAnAA4AAAAHAAAAAAAnAA4AAAAJAAAAAAAnAA4AAAAAAAEAAAAnAA4AAAAAAAIAAAAnAA4AAAAAAAMAAAAnAA4AAAAAAAQAAAAnAA4AAAAAAAUAAAAnAA4AAAADAAMAAAAjABIAAAADAAkAAAApAA0AAAAAAAYAAAAnAA4AAAAAAAcAAAAnAA4AAAAAAAgAAAAnAA4AAAAAAAkAAAAnAA4AAAAAAAoAAAAnAA4AAAAAAAsAAAAnAA4AAAAAAAwAAAAnAA4AAAAKAAAAAAAnAA4AAAALAAAAAAAnAA4AAAAMAAAAAAAnAA4AAAANAAAAAAAnAA4AAAAEAAoAAAApAA0AAAADAAoAAAAjABIAAAANAA0AAAAnAA4AAAAMAA0AAAAnAA4AAAALAA0AAAAnAA4AAAAKAA0AAAAnAA4AAAAJAA0AAAAnAA4AAAAHAA0AAAAnAA4AAAAGAA0AAAAnAA4AAAAFAA0AAAAnAA4AAAAEAA0AAAAnAA4AAAADAA0AAAAnAA4AAAACAA0AAAAnAA4AAAABAA0AAAAnAA4AAAAAAA0AAAATABQAAAAHAAgAAAApAA0AAAAHAAcAAAApAA0AAAAHAAYAAAApAA0AAAAHAAUAAAApAA0AAAAJAAgAAAApAA0AAAAJAAcAAAApAA0AAAAJAAYAAAApAA0AAAAJAAUAAAApAA0AAAANAAkAAAApAA0AAAANAAoAAAAjABIAAAAMAAoAAAApAA0AAAANAAMAAAAjABIAAAAOAAAAAAAnAA4AAAAPAAAAAAAnAA4AAAAQAAAAAAAVABQAAAAQAAEAAAAnAA4AAAAQAAIAAAAnAA4AAAAQAAMAAAAnAA4AAAAQAAQAAAAnAA4AAAAQAAUAAAAnAA4AAAAQAAYAAAAnAA4AAAAQAAcAAAAnAA4AAAAQAAgAAAAnAA4AAAAQAAkAAAAnAA4AAAAQAAoAAAAnAA4AAAAQAAsAAAAnAA4AAAAOAA0AAAAnAA4AAAAPAA0AAAAnAA4AAAAQAA0AAAAWABQAAAAQAAwAAAAnAA4AAAAHAAQAAAAcABQAAAAJAAQAAAAcABQAAAANAAQAAAApAA0AAAAMAAMAAAApAA0AAAAEAAMAAAApAA0AAAADAAQAAAApAA0AAAA=")
+tile_set = ExtResource("3_owc60")
+occlusion_enabled = false
 collision_enabled = false
+navigation_enabled = false
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-script = ExtResource("1_3qr72")
+[node name="Player-TileBased" parent="." instance=ExtResource("4_e6c1b")]
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
-texture = ExtResource("4_fnve7")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-shape = SubResource("RectangleShape2D_esh4c")
-
-[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
-process_callback = 0
-
-[node name="TileBasedControlComponent" parent="CharacterBody2D" instance=ExtResource("5_kihht")]
+[node name="TileBasedControlComponent" parent="Player-TileBased" index="3"]
 debugMode = true
 
-[node name="TileBasedPositionComponent" parent="CharacterBody2D" node_paths=PackedStringArray("tileMap", "visualIndicator") instance=ExtResource("6_73iom")]
-tileMap = NodePath("../../TerrainContainer/TerrainTileMapLayer")
-visualIndicator = NodePath("MovementIndicator")
+[node name="TileBasedPositionComponent" parent="Player-TileBased" index="4" node_paths=PackedStringArray("tileMap")]
+tileMap = NodePath("../../RotatingContainer/TileMapA")
 debugMode = true
 
-[node name="GunComponent" parent="CharacterBody2D" instance=ExtResource("4_6v6op")]
+[node name="GunComponent" parent="Player-TileBased" instance=ExtResource("4_6v6op")]
 
-[editable path="CharacterBody2D/TileBasedPositionComponent"]
+[node name="DebugComponent" parent="Player-TileBased" instance=ExtResource("7_rgyjq")]
+modulate = Color(0.5, 1, 0.25, 0.75)
+propertiesToWatch = Array[NodePath]([NodePath("../TileBasedPositionComponent:currentCellCoordinates")])
+
+[editable path="Player-TileBased"]
+[editable path="Player-TileBased/TileBasedPositionComponent"]
