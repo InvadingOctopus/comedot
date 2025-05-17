@@ -26,16 +26,19 @@ enum ParentOptions {
 ## The parent [Node] to add a new instance of [member payloadScene] to.
 @export var parentChoice: ParentOptions = ParentOptions.payloadTarget
 
-@export var randomPositionOffsetMin: Vector2 # The lower bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
-@export var randomPositionOffsetMax: Vector2 # The upper bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
+@export var shouldUseSourcePosition: bool = false ## If `true` then the payload node's position will be set to the position of the payload "source" or initiator, e.g. an [InteractionComponent]. Otherwise the initial position will be 0,0 in the target parent's space.
+@export var positionOffset: Vector2
+@export var randomPositionOffsetMin: Vector2 ## The lower bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
+@export var randomPositionOffsetMax: Vector2 ## The upper bound of the random offset for the spawned node's position, which defaults to the position of the Payload's `source` if it is a [Node2D].
 
 #endregion
 
 
+## Executes the payload, where the [param source] is the [Action], [InteractionComponent] or [Upgrade] etc. and the [param target] is the Entity etc. to which the node payload will be attached.
 ## Returns the [Node] instance that was created from the [member payloadScene].
 func executeImplementation(source: Variant, target: Variant) -> Node:
 	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, ", target: ", target))
-	
+
 	if not self.payloadScene:
 		Debug.printWarning("Missing payloadScene", self.logName)
 		return null
@@ -66,15 +69,16 @@ func executeImplementation(source: Variant, target: Variant) -> Node:
 
 	self.willExecute.emit(source, target)
 	var payloadNode: Node = createPayloadNode()
-	
+
 	# Position
-	
+
 	if payloadNode is Node2D:
-		if source is Node2D: payloadNode.global_position = source.global_position
-		# TBD: Ensure minimum distance from parent so as to not obscure the parent?
+		if shouldUseSourcePosition and source is Node2D:
+			payloadNode.global_position = source.global_position
+			payloadNode.position = parent.to_local(payloadNode.position)
+		payloadNode.position   += positionOffset
 		payloadNode.position.x += randf_range(randomPositionOffsetMin.x, randomPositionOffsetMax.x)
 		payloadNode.position.y += randf_range(randomPositionOffsetMin.y, randomPositionOffsetMax.y)
-		payloadNode.position = parent.to_local(payloadNode.position)
 
 	# Attach
 
