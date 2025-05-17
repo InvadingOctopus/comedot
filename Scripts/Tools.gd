@@ -407,28 +407,28 @@ static func getTileData(map: TileMapLayer, coordinates: Vector2i, dataName: Stri
 
 
 ## Sets custom data for an individual cell of a [TileMapLayerWithCellData].
-## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer].
+## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multiple cells of a [TileMapLayer].
 ## DESIGN: This is a separate function on top of [TileMapLayerWithCellData] because it may redirect to a native Godot feature in the future.
 static func setCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, key: StringName, value: Variant) -> void:
 	map.setCellData(coordinates, key, value)
 
 
 ## Gets custom data for an individual cell of a [TileMapCellData].
-## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multple cells of a [TileMapLayer].
+## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multiple cells of a [TileMapLayer].
 ## DESIGN: This is a separate function on top of [TileMapCellData] because it may redirect to a native Godot feature in the future.
-static func getCellData(map: TileMapCellData, coordinates: Vector2i, key: StringName) -> Variant:
+static func getCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, key: StringName) -> Variant:
 	return map.getCellData(coordinates, key)
 
 
 ## Uses a custom data structure to mark individual [TileMap] cells (not tiles) as occupied or unoccupied by an [Entity].
-static func setCellOccupancy(map: TileMapCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
-	map.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
-	map.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
+static func setCellOccupancy(data: TileMapCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
+	data.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
+	data.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
 
 
-static func checkTileAndCellVacancy(map: TileMapLayerWithCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
+static func checkTileAndCellVacancy(map: TileMapLayer, data: TileMapCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
 	# CHECK: First check the CELL data because it's quicker, right?
-	var isCellVacant: bool = Tools.checkCellVacancy(map.cellData, coordinates, ignoreEntity)
+	var isCellVacant: bool = Tools.checkCellVacancy(data, coordinates, ignoreEntity)
 	if not isCellVacant: return false # If there is an occupant, no need to check the Tile data, just scram
 
 	# Then check the TILE data
