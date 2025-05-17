@@ -1,14 +1,15 @@
-[gd_scene load_steps=7 format=4 uid="uid://dptnl2r7a6q1a"]
+[gd_scene load_steps=8 format=4 uid="uid://dptnl2r7a6q1a"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2ybn1"]
+[ext_resource type="Script" uid="uid://o5n3dduj7g3" path="res://Tests/TileMovementTest.gd" id="1_rgyjq"]
 [ext_resource type="Script" uid="uid://2ow1pluircli" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
 [ext_resource type="TileSet" uid="uid://bnuthy0vx4048" path="res://Assets/Tiles/Kenney1Bit-Monochrome.tres" id="3_owc60"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="4_6v6op"]
 [ext_resource type="PackedScene" uid="uid://c3u5roi5rwks1" path="res://Templates/Entities/PlayerEntityTemplate-TileBased.tscn" id="4_e6c1b"]
+[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="4_yp2em"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="7_rgyjq"]
 
 [node name="TileMovementTest" type="Node2D"]
-script = ExtResource("1_2ybn1")
+script = ExtResource("1_rgyjq")
 
 [node name="RotatingContainer" type="Node2D" parent="."]
 texture_filter = 2
@@ -16,11 +17,34 @@ script = ExtResource("2_gqr1m")
 speed = 0.1
 
 [node name="TileMapA" type="TileMapLayer" parent="RotatingContainer"]
+unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAAAAAAAAAApABAAAAABAAAAAAAnAA4AAAACAAAAAAAnAA4AAAADAAAAAAAnAA4AAAAEAAAAAAAnAA4AAAAFAAAAAAAnAA4AAAAGAAAAAAAnAA4AAAAHAAAAAAAnAA4AAAAJAAAAAAAnAA4AAAAAAAEAAAAnAA4AAAAAAAIAAAAnAA4AAAAAAAMAAAAnAA4AAAAAAAQAAAAnAA4AAAAAAAUAAAAnAA4AAAADAAMAAAAjABIAAAADAAkAAAApAA0AAAAAAAYAAAAnAA4AAAAAAAcAAAAnAA4AAAAAAAgAAAAnAA4AAAAAAAkAAAAnAA4AAAAAAAoAAAAnAA4AAAAAAAsAAAAnAA4AAAAAAAwAAAAnAA4AAAAKAAAAAAAnAA4AAAALAAAAAAAnAA4AAAAMAAAAAAAnAA4AAAANAAAAAAAnAA4AAAAEAAoAAAApAA0AAAADAAoAAAAjABIAAAANAA0AAAAnAA4AAAAMAA0AAAAnAA4AAAALAA0AAAAnAA4AAAAKAA0AAAAnAA4AAAAJAA0AAAAnAA4AAAAHAA0AAAAnAA4AAAAGAA0AAAAnAA4AAAAFAA0AAAAnAA4AAAAEAA0AAAAnAA4AAAADAA0AAAAnAA4AAAACAA0AAAAnAA4AAAABAA0AAAAnAA4AAAAAAA0AAAATABQAAAAHAAgAAAApAA0AAAAHAAcAAAApAA0AAAAHAAYAAAApAA0AAAAHAAUAAAApAA0AAAAJAAgAAAApAA0AAAAJAAcAAAApAA0AAAAJAAYAAAApAA0AAAAJAAUAAAApAA0AAAANAAkAAAApAA0AAAANAAoAAAAjABIAAAAMAAoAAAApAA0AAAANAAMAAAAjABIAAAAOAAAAAAAnAA4AAAAPAAAAAAAnAA4AAAAQAAAAAAAVABQAAAAQAAEAAAAnAA4AAAAQAAIAAAAnAA4AAAAQAAMAAAAnAA4AAAAQAAQAAAAnAA4AAAAQAAUAAAAnAA4AAAAQAAYAAAAnAA4AAAAQAAcAAAAnAA4AAAAQAAgAAAAnAA4AAAAQAAkAAAAnAA4AAAAQAAoAAAAnAA4AAAAQAAsAAAAnAA4AAAAOAA0AAAAnAA4AAAAPAA0AAAAnAA4AAAAQAA0AAAAWABQAAAAQAAwAAAAnAA4AAAAHAAQAAAAcABQAAAAJAAQAAAAcABQAAAANAAQAAAApAA0AAAAMAAMAAAApAA0AAAAEAAMAAAApAA0AAAADAAQAAAApAA0AAAA=")
 tile_set = ExtResource("3_owc60")
 occlusion_enabled = false
 collision_enabled = false
 navigation_enabled = false
+
+[node name="TileMapB" type="TileMapLayer" parent="."]
+modulate = Color(0, 1, 1, 1)
+position = Vector2(288, 0)
+tile_map_data = PackedByteArray("AAAAAAAAAAAkABIAAAAAAAEAAAAbABQAAAABAAAAAAAbABQAAAACAAAAAAAbABQAAAAAAAIAAAAbABQAAAAAAAMAAAAbABQAAAAAAAQAAAAbABQAAAADAAAAAAAbABQAAAAEAAAAAAAbABQAAAAAAAUAAAAkABIAAAAFAAAAAAAkABIAAAAFAAUAAAAkABIAAAABAAUAAAAbABQAAAACAAUAAAAbABQAAAADAAUAAAAbABQAAAAEAAUAAAAbABQAAAAFAAEAAAAbABQAAAAFAAIAAAAbABQAAAAFAAMAAAAbABQAAAAFAAQAAAAbABQAAAAEAAQAAAAbABQAAAADAAQAAAAbABQAAAACAAQAAAAbABQAAAABAAQAAAAbABQAAAABAAMAAAAbABQAAAACAAMAAAAbABQAAAADAAMAAAAbABQAAAAEAAMAAAAbABQAAAACAAIAAAAbABQAAAABAAIAAAAbABQAAAACAAEAAAAbABQAAAADAAEAAAAbABQAAAAEAAEAAAAbABQAAAAEAAIAAAAbABQAAAADAAIAAAAbABQAAAABAAEAAAAbABQAAAA=")
+tile_set = ExtResource("3_owc60")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+script = ExtResource("4_yp2em")
+metadata/_custom_type_script = "uid://ciflnc7p46rqm"
+
+[node name="TileMapC" type="TileMapLayer" parent="."]
+modulate = Color(1, 1, 0, 0.75)
+position = Vector2(368, -16)
+tile_map_data = PackedByteArray("AAAAAAAAAAAlABIAAAAAAAEAAAAtABEAAAABAAAAAAAtABEAAAACAAAAAAAtABEAAAAAAAIAAAAtABEAAAAAAAMAAAAtABEAAAAAAAQAAAAtABEAAAADAAAAAAAtABEAAAAEAAAAAAAtABEAAAAAAAUAAAAtABEAAAAFAAAAAAAtABEAAAAFAAUAAAAtABEAAAABAAUAAAAtABEAAAACAAUAAAAtABEAAAADAAUAAAAtABEAAAAEAAUAAAAtABEAAAAFAAEAAAAtABEAAAAFAAIAAAAtABEAAAAFAAMAAAAtABEAAAAFAAQAAAAtABEAAAAEAAQAAAAtABEAAAADAAQAAAAtABEAAAACAAQAAAAtABEAAAABAAQAAAAtABEAAAABAAMAAAAtABEAAAACAAMAAAAtABEAAAADAAMAAAAtABEAAAAEAAMAAAAtABEAAAACAAIAAAAtABEAAAABAAIAAAAtABEAAAACAAEAAAAtABEAAAADAAEAAAAtABEAAAAEAAEAAAAtABEAAAAEAAIAAAAtABEAAAADAAIAAAAtABEAAAABAAEAAAAtABEAAAAAAAcAAAAlABIAAAAHAAAAAAAlABIAAAAHAAcAAAAlABIAAAAGAAUAAAAtABEAAAAHAAUAAAAtABEAAAAHAAYAAAAtABEAAAAHAAQAAAAtABEAAAAHAAMAAAAtABEAAAAHAAIAAAAtABEAAAAHAAEAAAAtABEAAAAGAAAAAAAtABEAAAAGAAEAAAAtABEAAAAGAAIAAAAtABEAAAAGAAMAAAAtABEAAAAGAAQAAAAtABEAAAAGAAYAAAAtABEAAAAFAAYAAAAtABEAAAAEAAYAAAAtABEAAAADAAYAAAAtABEAAAACAAYAAAAtABEAAAABAAYAAAAtABEAAAAAAAYAAAAtABEAAAABAAcAAAAtABEAAAACAAcAAAAtABEAAAADAAcAAAAtABEAAAAEAAcAAAAtABEAAAAFAAcAAAAtABEAAAAGAAcAAAAtABEAAAA=")
+tile_set = ExtResource("3_owc60")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+script = ExtResource("4_yp2em")
+metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 
 [node name="Player-TileBased" parent="." instance=ExtResource("4_e6c1b")]
 
@@ -29,6 +53,7 @@ debugMode = true
 
 [node name="TileBasedPositionComponent" parent="Player-TileBased" index="4" node_paths=PackedStringArray("tileMap")]
 tileMap = NodePath("../../RotatingContainer/TileMapA")
+shouldSnapPositionEveryFrame = true
 debugMode = true
 
 [node name="GunComponent" parent="Player-TileBased" instance=ExtResource("4_6v6op")]
@@ -36,6 +61,46 @@ debugMode = true
 [node name="DebugComponent" parent="Player-TileBased" instance=ExtResource("7_rgyjq")]
 modulate = Color(0.5, 1, 0.25, 0.75)
 propertiesToWatch = Array[NodePath]([NodePath("../TileBasedPositionComponent:currentCellCoordinates")])
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 50.0
+offset_bottom = 24.0
+size_flags_vertical = 0
+
+[node name="ButtonACell" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "A @Cell"
+
+[node name="ButtonBCell" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "B @Cell"
+
+[node name="ButtonBPixel" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "B @Pixel"
+
+[node name="ButtonCCell" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "C @Cell"
+
+[node name="ButtonCPixel" type="Button" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "C @Pixel"
+
+[connection signal="pressed" from="UI/HBoxContainer/ButtonACell" to="." method="onButtonACell_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/ButtonBCell" to="." method="onButtonBCell_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/ButtonBPixel" to="." method="onButtonBPixel_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/ButtonCCell" to="." method="onButtonCCell_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/ButtonCPixel" to="." method="onButtonCPixel_pressed"]
 
 [editable path="Player-TileBased"]
 [editable path="Player-TileBased/TileBasedPositionComponent"]
