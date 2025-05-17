@@ -445,7 +445,7 @@ func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 
 	if isMovingToNewCell:
-		moveTowardsDestinationTile(delta)
+		moveTowardsDestinationCell(delta)
 		checkForArrival()
 	elif shouldSnapPositionEveryFrame and tileMap != null:
 		# If we are already at the destination, keep snapping to the current tile coordinates,
@@ -455,7 +455,9 @@ func _physics_process(delta: float) -> void:
 	if debugMode: showDebugInfo()
 
 
-func moveTowardsDestinationTile(delta: float) -> void:
+## Called every frame to move the parent Entity towards the [member destinationCellCoordinates]'s onscreen position.
+## IMPORTANT: Other scripts should NOT call this method directly; use [method setDestinationCellCoordinates] to specify a new map grid cell.
+func moveTowardsDestinationCell(delta: float) -> void:
 	# TODO: Handle physics collisions
 	# TODO: TBD: Occupy each cell along the way too?
 	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
