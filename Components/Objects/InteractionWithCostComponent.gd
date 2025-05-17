@@ -27,6 +27,7 @@ func _ready() -> void:
 
 func updateLabel() -> void:
 	# OVERRIDE: super.updateLabel()
+	if not interactionIndicator: return
 
 	# Just modify `self_modulate` alpha to avoid disrupting any existing `modulate` tints
 	# NOTE: DESIGN: Modifying `visible` is problematic because making it visible onCooldownTimer_timeout() would cause it to reappear even if there is no [InteractionControlComponent] in contact.
