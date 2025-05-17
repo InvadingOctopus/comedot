@@ -704,7 +704,14 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 
 
 #region Maths Functions
-## INFO: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
+
+## TIP: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
+
+## "Rolls" a random integer number from 1…100 (inclusive) and returns `true` if the result is less than or equal to the specified [param chancePercent].
+## i.e. If the chance is 10% then a roll of 1…10 will succeed but 11…100 (90 possibilities) will fail.
+func rollChance(chancePercent: int) -> bool:
+	return randi_range(1, 100) <= chancePercent
+
 #endregion
 
 
