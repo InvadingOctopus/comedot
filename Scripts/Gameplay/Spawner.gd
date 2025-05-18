@@ -20,7 +20,7 @@ extends Node
 @export var spawnInSceneRoot: bool = false
 
 ## An optional group to add the spawned nodes to.
-@export var groupToAddTo:	StringName
+@export var groupToAddTo: StringName
 
 ## Maintains a counter and stops spawning nodes when the maximum number is reached.
 ## NOTE: Does NOT monitor the deletion of previous nodes; so the counter never decreases. Use [member maximumLimitInGroup] to maintain a specific amount of nodes currently in the scene.

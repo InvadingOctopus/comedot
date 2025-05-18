@@ -45,4 +45,4 @@ func onStatChanged(stat: Stat) -> void:
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
-	TextBubble.create(str(stat.displayName, "%+d" % stat.previousChange), self)
+	TextBubble.create(str(stat.displayName, " %+d" % stat.previousChange), self)
