@@ -9,6 +9,7 @@ extends Component
 #region Parameters
 
 ## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`.
+## DESIGN: Interactions may succeed even if there is no payload; this allows special [InteractionControlComponent] subclasses to perform specific effects without a payload.
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
