@@ -712,6 +712,21 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 func rollChance(chancePercent: int) -> bool:
 	return randi_range(1, 100) <= chancePercent
 
+
+## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
+## May be used to cycle through a range by adding/subtracting an offset to [param current] such as +1 or -1. The number may be an array index or `enum` state, or a sprite position to wrap it around the screen Pac-Man-style.
+static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
+	if minimum > maximum:
+		Debug.printWarning(str("cycleInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
+		return current
+	elif minimum == maximum: # If there is no difference between the range, just return either.
+		return minimum
+
+	# NOTE: Do NOT clamp first! So that an already-offset value may be provided for `current`
+
+	# THANKS: rubenverg@Discord, lololol__@Discord
+	return posmod(current - minimum, maximum - minimum + 1) + minimum # +1 to make limits inclusive
+
 #endregion
 
 
@@ -894,18 +909,34 @@ static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
 	else: return null
 
 
-## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
-## May be used to cycle through a range by adding/subtracting an offset to [param current] such as +1 or -1. The number may be an array index or `enum` state, or a sprite position to wrap it around the screen Pac-Man-style.
-static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
-	if minimum > maximum:
-		Debug.printWarning(str("cycleInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
-		return current
-	elif minimum == maximum: # If there is no difference between the range, just return either.
-		return minimum
+static func convertCompassDirectionToVector(direction: Tools.CompassDirection) -> Vector2i:
+	match direction:
+		CompassDirection.east:		return Vector2i.RIGHT
+		CompassDirection.southEast:	return Vector2i(+1, +1)
+		CompassDirection.south:		return Vector2i.DOWN
+		CompassDirection.southWest:	return Vector2i(-1, +1)	
+		CompassDirection.west:		return Vector2i.LEFT
+		CompassDirection.northWest:	return Vector2i(-1, -1)	
+		CompassDirection.north:		return Vector2i.UP
+		CompassDirection.northEast:	return Vector2i(+1, -1)
+		_:
+			Debug.printWarning(str("convertCompassDirectionToVector() invalid direction: ", direction))
+			return Vector2i.ZERO
 
-	# NOTE: Do NOT clamp first! So that an already-offset value may be provided for `current`
 
-	# THANKS: rubenverg@Discord, lololol__@Discord
-	return posmod(current - minimum, maximum - minimum + 1) + minimum # +1 to make limits inclusive
+## Returns a COPY of a [Vector2i] moved in the specified [enum CompassDirection]
+static func offsetVectorByCompassDirection(vector: Vector2i, direction: Tools.CompassDirection) -> Vector2i:
+	var offsetVector: Vector2i = vector
+	match direction:
+		CompassDirection.east:		offsetVector.x += 1
+		CompassDirection.southEast:	offsetVector.y += 1; offsetVector.x += 1
+		CompassDirection.south:		offsetVector.y += 1
+		CompassDirection.southWest:	offsetVector.y += 1; offsetVector.x -= 1
+		CompassDirection.west:		offsetVector.x -= 1
+		CompassDirection.northWest:	offsetVector.y -= 1; offsetVector.x -= 1
+		CompassDirection.north:		offsetVector.y -= 1
+		CompassDirection.northEast:	offsetVector.y -= 1; offsetVector.x += 1
+		_: Debug.printWarning(str("offsetVectorByCompassDirection() vector: ", vector, ", invalid direction: ", direction))
+	return offsetVector
 
 #endregion
