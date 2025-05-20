@@ -914,9 +914,9 @@ static func convertCompassDirectionToVector(direction: Tools.CompassDirection) -
 		CompassDirection.east:		return Vector2i.RIGHT
 		CompassDirection.southEast:	return Vector2i(+1, +1)
 		CompassDirection.south:		return Vector2i.DOWN
-		CompassDirection.southWest:	return Vector2i(-1, +1)	
+		CompassDirection.southWest:	return Vector2i(-1, +1)
 		CompassDirection.west:		return Vector2i.LEFT
-		CompassDirection.northWest:	return Vector2i(-1, -1)	
+		CompassDirection.northWest:	return Vector2i(-1, -1)
 		CompassDirection.north:		return Vector2i.UP
 		CompassDirection.northEast:	return Vector2i(+1, -1)
 		_:
