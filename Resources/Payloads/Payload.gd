@@ -4,6 +4,7 @@
 ## Examples: A [CollectibleComponent] representing an apple could have a Payload that calls the function `decreaseHunger()`.
 ## The Payload of a BFG69420 gun [Upgrade] would be a customized [GunComponent] to be instantiated and attached to the player Entity.
 ## The Payload of an [Action] representing a Fireball Spell would be the `Fireball.gd` script that may run complex code to check the terrain for flammability etc.
+## TIP: A Payload may be omitted if Signal handlers are enough e.g. [signal InteractionComponent.didPerformInteraction]
 
 class_name Payload
 extends Resource
