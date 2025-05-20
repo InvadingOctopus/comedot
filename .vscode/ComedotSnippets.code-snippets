@@ -181,16 +181,22 @@
 		"description": "A flag to enable/disable a script and also set per-frame updates."
 	},
 
+	"Debug": {
+		"prefix": "debug",
+		"body": ["if debugMode: printDebug(str(${1:get_stack()}))$0"],
+		"description": "Logs a message if the debugMode flag is set."
+	},
+
 	"Debug Variables": {
-		"prefix": "debugVar",
+		"prefix": "debugVariables",
 		"body": ["Debug.printVariables([${1:self}]) # DEBUG: DONTCOMMIT$0"],
-		"description": "Print multiple variable values for runtime debugging."
+		"description": "Prints multiple variable values for runtime debugging."
 	},
 
 	"Debug Trace": {
 		"prefix": "trace",
 		"body": ["Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0"],
-		"description": "Print multiple variable values along with the recent function calls for runtime debugging."
+		"description": "Prints a list of variables and recent function calls for runtime debugging."
 	},
 
 	"Debug Info": {
@@ -204,6 +210,12 @@
 		"description": "A template for a showDebugInfo() method."
 	},
 	
+	"Breakpoint": {
+		"prefix": "break",
+		"body": ["Debug.printTrace([${1:self}], self); breakpoint # DEBUG: DONTCOMMIT$0"],
+		"description": "Prints a list of variables and recent function calls and pauses game execution."
+	},
+
 	"Region": {
 		"prefix": "region",
 		"body": [
