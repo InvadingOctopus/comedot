@@ -115,13 +115,14 @@ var destinationCellCoordinates: Vector2i:
 			printChange("destinationCellCoordinates", destinationCellCoordinates, newValue)
 			destinationCellCoordinates = newValue
 
-# var destinationTileGlobalPosition: Vector2i # NOTE: Not cached because the [TIleMapLayer] may move between frames.
+# var destinationTileGlobalPosition: Vector2i # NOTE: UNUSED: Not cached because the [TIleMapLayer] may move between frames.
 
-var inputVector: Vector2i
-	#set(newValue): # NOTE: This causes "flicker" between 0 and the other value, when resetting the `inputVector`, so just set it manually
-		#if newValue != inputVector:
-			#previousInputVector = inputVector
-			#inputVector = newValue
+var inputVector: Vector2i:
+	set(newValue):
+		if newValue != inputVector:
+			if debugMode: Debug.printChange("inputVector", inputVector, newValue)
+			# previousInputVector = inputVector # NOTE: This causes "flicker" between 0 and the other value, when resetting the `inputVector`, so just set it manually
+			inputVector = newValue
 
 var previousInputVector: Vector2i
 
@@ -300,7 +301,7 @@ func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	self.isMovingToNewCell = true
 
 	# Vacate the current (to-be previous) tile
-	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
+	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it was toggled true→false at runtime.
 	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
 
 	# TODO: TBD: Occupy each cell along the way too each frame?
@@ -312,15 +313,38 @@ func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	return true
 
 
+## Cancels the current move and vacates the previous [member destinationCellCoordinates] if needed.
+func cancelDestination(snapToCurrentCell: bool = true) -> void:
+	# First, clear the previous destination's occupancy in case we hogged it
+	# NOTE: Vacate regardless of `shouldOccupyCell`
+	if tileMapData and Tools.getCellOccupant(tileMapData, self.destinationCellCoordinates) == parentEntity:
+		Tools.setCellOccupancy(tileMapData, self.destinationCellCoordinates, false, null)
+
+	# Were we on the way to a different destination tile?
+	if isMovingToNewCell and snapToCurrentCell:
+		# Then snap back to the current tile coordinates.
+		# TODO: Option to animate back?
+		self.snapEntityPositionToTile(self.currentCellCoordinates)
+
+	self.destinationCellCoordinates = self.currentCellCoordinates
+	if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity) # Reoccupy the current cell
+	self.isMovingToNewCell = false
+
+
+func vacateCurrentCell() -> void:
+	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
+
+
 ## Uses a new [TileMapLayer] and preserves the current PIXEL position onscreen, but may get different CELL coordinates on the new map's grid.
 ## NOTE: Verifies if the new cell coordinates are unoccupied in the new map, but bounds are NOT validated; the current pixel position may be outside the new map's grid.
 ## Returns: The DIFFERENCE between the previous cell coordinates on the old map vs the updated cell coordinates on the new map.
-func setMapAndKeepPosition(newMap: TileMapLayer, copyData: bool = true) -> Vector2i:
+func setMapAndKeepPosition(newMap: TileMapLayer, useNewData: bool = true) -> Vector2i:
 	if not newMap or newMap == self.tileMap:
 		if debugMode: printDebug(str("setMapAndKeepPosition(): newMap == current map or null: ", newMap))
 		return Vector2i.ZERO # Nothing to do if nowhere to move!
 
 	var previousCoordinates: Vector2i = self.currentCellCoordinates
+	var previousDestination: Vector2i = self.destinationCellCoordinates
 	var newCoordinates:		 Vector2i = Tools.convertCoordinatesBetweenTileMaps(self.tileMap, self.currentCellCoordinates, newMap)
 	var isNewCellVacant:	 bool
 
@@ -334,44 +358,45 @@ func setMapAndKeepPosition(newMap: TileMapLayer, copyData: bool = true) -> Vecto
 		willSetNewMap.emit(self.tileMap, previousCoordinates, newMap, newCoordinates)
 
 		# Vacate the current (to-be previous) tile from the current [TileMapCellData]
-		# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
-		if self.tileMapData: Tools.setCellOccupancy(self.tileMapData, previousCoordinates, false, null) # isOccupied, occupant
+		if self.tileMapData:
+			# As well as cancel any movement first
+			self.cancelDestination(false) # not snapToCurrentCell # NOTE: This function reoccupies `currentCellCoordinates`
+			Tools.setCellOccupancy(self.tileMapData, previousCoordinates, false, null) # isOccupied, occupant
 
 		# NOTE: Do not replace our own data until the movement has been validated and the previous cell has been vacated.
-		if copyData and newMap is TileMapLayerWithCellData:
-			if debugMode: printDebug(str("setMapAndKeepPosition() copyData: ", self.tileMapData, " → ", newMap.cellData))
+		if useNewData and newMap is TileMapLayerWithCellData:
+			if debugMode: printDebug(str("setMapAndKeepPosition() useNewData: ", self.tileMapData, " → ", newMap.cellData))
 			if newMap.cellData:
 				self.tileMapData = newMap.cellData
 			else:
-				printWarning(str("setMapAndKeepPosition() copyData: true but newMap has no cellData: ", newMap))
+				printWarning(str("setMapAndKeepPosition() useNewData: true but newMap has no cellData: ", newMap))
 				self.tileMapData = null # NOTE: Yes, clear the data if the new map doesn't have any, to avoid unexpected blocking in empty cells etc.
 
 		# Move over
+
+		var previousMap: TileMapLayer = self.tileMap # Let the TileMap change before changing `currentCellCoordinates`, just in case the property getters/setters do anything.
 		self.tileMap = newMap
-		self.validateTileMap(false) # not searchForTileMap
+		self.validateTileMap(false) # not searchForTileMap # TBD: Is this necessary?
 		self.currentCellCoordinates = newCoordinates
-		self.destinationCellCoordinates = newCoordinates # To make checkForArrival() work correctly
 
 		# NOTE: Use the actual `currentCellCoordinates` from hereon instead of `newCoordinates`, which may not have been applied if there was an error or bug.
 		if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity)
 
-		# Set the flag to animate movement to a new pixel position if needed (e.g. in case the tile dimensions are different on the new map)
-		self.isMovingToNewCell = true
-
-		# Should we teleport?
-		if shouldMoveInstantly: snapEntityPositionToTile(self.currentCellCoordinates)
+		# TBD: If we were on the way to a different cell during the previous map, keep moving to ensure smooth animations etc.
+		var newDestination: Vector2i = Tools.convertCoordinatesBetweenTileMaps(previousMap, previousDestination, self.tileMap)
+		if newDestination != self.currentCellCoordinates: self.setDestinationCellCoordinates(newDestination)
 
 		if debugMode: printDebug(str("setMapAndKeepPosition() coordinates: ", previousCoordinates, " → ", self.currentCellCoordinates))
-		didSetNewMap.emit(self.tileMap, previousCoordinates, newMap, self.currentCellCoordinates)
+		didSetNewMap.emit(previousMap, previousCoordinates, newMap, self.currentCellCoordinates)
 		return self.currentCellCoordinates - previousCoordinates
-
+	# else
 	return Vector2i.ZERO # No movement if we didn't move
 
 
 ## Uses a new [TileMapLayer] and preserves the current CELL coordinates, but may move the Entity to a new PIXEL position on the screen.
 ## NOTE: Verifies if the current coordinates are unoccupied in the new map, but bounds are NOT validated; the coordinates may be outside the new map's grid.
 ## Returns: The DIFFERENCE between the Entity's previous global position and the new global position.
-func setMapAndKeepCoordinates(newMap: TileMapLayer, copyData: bool = true) -> Vector2:
+func setMapAndKeepCoordinates(newMap: TileMapLayer, useNewData: bool = true) -> Vector2:
 	if not newMap or newMap == self.tileMap:
 		if debugMode: printDebug(str("setMapAndKeepCoordinates(): newMap == current map or null: ", newMap))
 		return Vector2.ZERO # Nothing to do if nowhere to move!
@@ -385,55 +410,43 @@ func setMapAndKeepCoordinates(newMap: TileMapLayer, copyData: bool = true) -> Ve
 	if debugMode: printDebug(str("setMapAndKeepCoordinates(): ", self.tileMap, " → ", newMap, " @", self.currentCellCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapBounds(newMap, self.currentCellCoordinates)))
 
 	if isNewCellVacant: # Don't move if shouldn't move
-
 		var previousPosition: Vector2 = parentEntity.global_position
 		willSetNewMap.emit(self.tileMap, self.currentCellCoordinates, newMap, self.currentCellCoordinates)
 
 		# Vacate the current (to-be previous) tile from the current [TileMapCellData]
-		# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it is toggled at runtime.
-		if self.tileMapData: Tools.setCellOccupancy(self.tileMapData, self.currentCellCoordinates, false, null) # isOccupied, occupant
+		if self.tileMapData:
+			# As well as cancel any movement first
+			self.cancelDestination(false) # not snapToCurrentCell # NOTE: This function reoccupies `currentCellCoordinates`
+			Tools.setCellOccupancy(self.tileMapData, self.currentCellCoordinates, false, null) # isOccupied, occupant
 
 		# NOTE: Do not replace our own data until the movement has been validated and the previous cell has been vacated.
-		if copyData and newMap is TileMapLayerWithCellData:
-			if debugMode: printDebug(str("setMapAndKeepCoordinates() copyData: ", self.tileMapData, " → ", newMap.cellData))
+		if useNewData and newMap is TileMapLayerWithCellData:
+			if debugMode: printDebug(str("setMapAndKeepCoordinates() useNewData: ", self.tileMapData, " → ", newMap.cellData))
 			if newMap.cellData:
 				self.tileMapData = newMap.cellData
 			else:
-				printWarning(str("setMapAndKeepCoordinates() copyData: true but newMap has no cellData: ", newMap))
+				printWarning(str("setMapAndKeepCoordinates() useNewData: true but newMap has no cellData: ", newMap))
 				self.tileMapData = null # NOTE: Yes, clear the data if the new map doesn't have any, to avoid unexpected blocking in empty cells etc.
 
 		# Move over
+		var previousMap: TileMapLayer = self.tileMap
 		self.tileMap = newMap
-		self.validateTileMap(false) # not searchForTileMap
+		self.validateTileMap(false) # not searchForTileMap # TBD: Is this necessary?
 		if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity)
 
-		# Set the flag to animate movement to a new pixel position if needed.
-		self.isMovingToNewCell = true
-
-		# Should we teleport?
-		if shouldMoveInstantly: snapEntityPositionToTile(self.currentCellCoordinates)
+		# Animate movement to a new pixel position if needed.
+		if shouldMoveInstantly:
+			snapEntityPositionToTile(self.currentCellCoordinates)
+			self.isMovingToNewCell = false
+		else:
+			self.destinationCellCoordinates = self.currentCellCoordinates # TBD: Necessary?
+			self.isMovingToNewCell = true
 
 		if debugMode: printDebug(str("setMapAndKeepCoordinates() position: ", previousPosition, " → ", parentEntity.global_position))
-		didSetNewMap.emit(self.tileMap, self.currentCellCoordinates, newMap, self.currentCellCoordinates)
+		didSetNewMap.emit(previousMap, self.currentCellCoordinates, newMap, self.currentCellCoordinates)
 		return parentEntity.global_position - previousPosition
-
+	# else
 	return Vector2.ZERO # No movement if we didn't move
-
-
-## Cancels the current move.
-func cancelDestination() -> void:
-	# Were we on the way to a different destination tile?
-	if isMovingToNewCell:
-		# Then snap back to the current tile coordinates.
-		# TODO: Option to animate back?
-		self.snapEntityPositionToTile(self.currentCellCoordinates)
-
-	self.destinationCellCoordinates = self.currentCellCoordinates
-	self.isMovingToNewCell = false
-
-
-func vacateCurrentCell() -> void:
-	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
 
 #endregion
 
