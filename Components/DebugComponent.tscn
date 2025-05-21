@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bifi5b0gcmh1v"]
+[gd_scene load_steps=5 format=3 uid="uid://bifi5b0gcmh1v"]
 
 [ext_resource type="Script" uid="uid://bk867jxvt37vm" path="res://Components/DebugComponent.gd" id="1_sj8xd"]
+[ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="2_e6xiu"]
 [ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="2_o2bsa"]
 
 [sub_resource type="Theme" id="Theme_8onww"]
@@ -15,13 +16,14 @@ script = ExtResource("1_sj8xd")
 metadata/_edit_group_ = true
 
 [node name="Labels" type="VBoxContainer" parent="."]
-z_index = 10
+z_index = 100
 offset_right = 35.0
 offset_bottom = 8.0
 theme = SubResource("Theme_8onww")
 
 [node name="DebugLabel" type="Label" parent="Labels"]
 unique_name_in_owner = true
+material = ExtResource("2_e6xiu")
 layout_mode = 2
 text = "DebugLabel"
 label_settings = ExtResource("2_o2bsa")
