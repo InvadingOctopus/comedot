@@ -61,8 +61,8 @@ var selfAsArea: Area2D:
 
 #region Signals
 signal didEnterInteractionArea(entity: Entity, interactionControlComponent: InteractionControlComponent)
-signal didExitInteractionArea(entity: Entity, interactionControlComponent: InteractionControlComponent)
-signal didDenyInteraction(interactorEntity: Entity)
+signal didExitInteractionArea(entity:  Entity, interactionControlComponent: InteractionControlComponent)
+signal didDenyInteraction(interactorEntity:		Entity)
 signal willPerformInteraction(interactorEntity: Entity)
 signal didPerformInteraction(result: Variant)
 #region endregion

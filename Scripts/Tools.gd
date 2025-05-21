@@ -686,7 +686,7 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 static func getEnumText(enumType: Dictionary, value: int) -> String:
 	# TBD: Less ambiguous name?
 	var key: String
-	
+
 	key = str(enumType.find_key(value)) # TBD: Check for `null`?
 	if key.is_empty(): key = "[invalid key/value]"
 
