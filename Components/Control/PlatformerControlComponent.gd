@@ -14,7 +14,12 @@ extends Component
 ## Flips the controls. For situations like mirrored gameplay or "confusion" effects etc.
 @export var shouldInvertXAxis: bool = false # For when you pick a purple flower :)
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_physics_process(isEnabled)
+
 #endregion
 
 
@@ -32,11 +37,6 @@ var isInputZero:			bool = true
 
 func getRequiredComponents() -> Array[Script]:
 	return [PlatformerPhysicsComponent]
-
-
-func _input(_event: InputEvent) -> void:
-	if not isEnabled: return
-	# if event.is_action(GlobalInput.Actions.jump): processJumpInput() # NOTE: Jumping is solely handled by [JumpControlComponent]
 
 
 func _physics_process(_delta: float) -> void:
@@ -68,13 +68,6 @@ func processInput() -> void:
 
 	# NOTE: DESIGN: Accept input in air even if [member PlatformerMovementParameters.shouldAllowMovementInputInAir] is `false`,
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
-
-
-func processJumpInput() -> void:
-	pass # NOTE: Jumping is solely handled by [JumpControlComponent]
-	# Jump
-	# platformerPhysicsComponent.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
-	#platformerPhysicsComponent.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
 
 func copyInputToPhysicsComponent() -> void:

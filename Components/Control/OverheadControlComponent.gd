@@ -7,7 +7,11 @@ extends Component
 
 #region Parameters
 @export var modifierScale: Vector2 = Vector2(1, 1) ## A modifier to multiply the player input by, where (1, 1) is normal control, and negative values invert an axis.
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_physics_process(isEnabled)
 #endregion
 
 

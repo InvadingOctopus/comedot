@@ -25,15 +25,24 @@ const maximumTries: int = 10
 
 
 func _ready() -> void:
+	# Suppress TileBasedControlComponent
+	self.set_physics_process(false)
+	self.set_process_input(false)
+	self.set_process_unhandled_input(false)
+
 	tileBasedPositionComponent.didArriveAtNewCell.connect(self.onTileBasedPositionComponent_didArriveAtNewCell)
 
 
 func _input(_event: InputEvent) -> void:
-	pass # Supress TileBasedControlComponent
+	pass # Suppress TileBasedControlComponent
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+	pass # Suppress TileBasedControlComponent
 
 
 func _physics_process(_delta: float) -> void:
-	pass # Supress TileBasedControlComponent
+	pass # Suppress TileBasedControlComponent
 
 
 func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:

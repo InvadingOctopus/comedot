@@ -13,8 +13,13 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export var isEnabled:  bool = true
 @export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
+
+@export var isEnabled:  bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_process_unhandled_input(isEnabled)
 #endregion
 
 
@@ -76,13 +81,14 @@ func _ready() -> void:
 
 #region Update Cycle
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if not isEnabled \
 	or not event.is_action(GlobalInput.Actions.jump): return
 
 	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
+	self.get_viewport().set_input_as_handled()
 
 	if debugMode:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
