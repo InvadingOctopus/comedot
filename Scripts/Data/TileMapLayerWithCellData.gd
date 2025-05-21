@@ -9,6 +9,8 @@ extends TileMapLayer
 
 @export var cellData: TileMapCellData ## If `null` then a new structure is created on [method _ready]
 
+@export var shouldCreateCellData: bool = true
+
 @export var debugMode: bool = false:
 	set(newValue):
 		if newValue != debugMode:
@@ -19,9 +21,11 @@ extends TileMapLayer
 
 
 func _ready() -> void:
-	if not cellData:
+	if not cellData and shouldCreateCellData:
 		if debugMode: Debug.printDebug("No TileMapCellData, creating new.", self)
 		self.cellData = TileMapCellData.new()
+	
+	if cellData: # A separate `if` in case a `cellData` was created by the previous `if`
 		cellData.debugMode = self.debugMode
 
 
