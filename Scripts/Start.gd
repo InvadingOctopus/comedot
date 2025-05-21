@@ -106,7 +106,7 @@ func applyGlobalFlags() -> void:
 	if not self.musicFileToPlayOnStart.is_empty():
 		GlobalSonic.playMusicFile(self.musicFileToPlayOnStart)
 	elif shouldPlayRandomMusicIndex:
-		GlobalSonic.playRandomMusicIndex()
+		GlobalSonic.playRandomMusicIndex(true) # allowRepeats to allow index 0 to be included :')
 	else:
 		GlobalSonic.playMusicIndex(self.musicIndexToPlayOnStart)
 

@@ -8,9 +8,10 @@ extends Node
 
 
 #region Parameters
-@export var musicFolder: String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
-@export var maximumNumberOfSounds: int = 10 # TBD:
-@export var debugMode:  bool = false
+@export var musicFolder:			String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
+@export var shouldShuffleMusic:		bool = true ## Affects [method skipMusic] and the next track that plays after the current track finishes.
+@export var maximumNumberOfSounds:	int  = 10 # TBD:
+@export var debugMode:				bool = false
 #endregion
 
 
@@ -169,9 +170,28 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 		return null
 
 
-## Plays and returns a random song from the [member musicFiles] array.
+## Plays the next track from [member musicFiles] after [member currentMusicIndex].
+## If the playlist only has 1 track, then it is repeated.
+## If the playlist is empty, then the music is stopped.
+## Returns: The newly played [AudioStream].
+func playNextMusicIndex() -> AudioStream:
+	if self.musicFiles.is_empty():
+		musicPlayer.stop()
+		return null
+	elif self.musicFiles.size() == 1:
+		# NOTE: Manually replay the stream, in case some other script played a different track that is not the `currentMusicIndex`
+		return self.playMusicFile(self.musicFiles[self.currentMusicIndex])
+	else:
+		var nextIndex: int = self.currentMusicIndex + 1
+		if nextIndex >= self.musicFiles.size(): nextIndex = 0 # The last valid index is size-1
+		return self.playMusicFile(self.musicFiles[nextIndex])
+
+
+## Shuffles/plays and returns a random song from the [member musicFiles] array.
 ## If [param allowRepeats] is `true` the same song as the current/previous song may be played again. Such is the nature of true randomness.
+## NOTE: If this is the first music to be played e.g. from [Start].gd then [param allowRepeats] should be set to `true` to allow the index 0 to be included in the shuffle.
 func playRandomMusicIndex(allowRepeats: bool = false) -> AudioStream:
+	# TBD: A better way to include index 0 on the first call?
 	if self.musicFiles.is_empty():
 		return null
 	elif allowRepeats or self.musicFiles.size() == 1: # No need to random if there's only 1 song!
@@ -211,12 +231,14 @@ func playMusicFile(path: String) -> AudioStream:
 
 func skipMusic() -> AudioStream:
 	self.musicPlayerDidStop.emit()
-	return self.playRandomMusicIndex()
+	if shouldShuffleMusic: return self.playRandomMusicIndex()
+	else: return self.playNextMusicIndex()
 
 
 func onMusicPlayer_finished() -> void:
 	self.musicPlayerDidStop.emit()
-	self.playRandomMusicIndex()
+	if shouldShuffleMusic: self.playRandomMusicIndex()
+	else: self.playNextMusicIndex()
 
 
 func _input(event: InputEvent) -> void:
