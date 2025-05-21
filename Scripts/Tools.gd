@@ -559,7 +559,8 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 
 ## Sets all the Cells in the specified [TileMapLayer] region to random Tiles from the specified coordinates in the Map's [TileSet].
 ## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
-static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float) -> void:
+## If [param skipEmptyCells] is `true` then empty "unpainted" cells in the TileMap will be left untouched.
+static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float, skipEmptyCells: bool = true) -> void:
 	# TODO: Validate parameters and sizes
 	# NOTE: Rect2i is less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
@@ -568,6 +569,7 @@ static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, 
 	# NOTE: +1 to range() end to make the bounds inclusive
 	for y in range(cellRegionStart.y, cellRegionEnd.y + 1):
 		for x in range(cellRegionStart.x, cellRegionEnd.x + 1):
+			if skipEmptyCells and map.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1): continue # (-1,-1) = Cell does not exist
 			if is_equal_approx(modificationChance, 1.0) or randf() < modificationChance: # TBD: Should this be an integer?
 				randomTile = Vector2i(randi_range(tileCoordinatesMin.x, tileCoordinatesMax.x), randi_range(tileCoordinatesMin.y, tileCoordinatesMax.y))
 				map.set_cell(Vector2i(x, y), 0, randomTile)
