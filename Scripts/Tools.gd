@@ -113,10 +113,10 @@ static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
 	return parent
 
 
-## Replaces a child node with another node at the same index (order).
-## NOTE: The child and its sub-children are NOT deleted. To delete a child, use [method Node.queue_free].
+## Replaces a child node with another node at the same index (order), optionally copying the position, rotation and/or scale.
+## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free].
 ## Returns: `true` if [param childToReplace] was found and replaced.
-static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node) -> bool:
+static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node, copyPosition: bool = false, copyRotation: bool = false, copyScale: bool = false, freeReplacedChild: bool = false) -> bool:
 	if childToReplace.get_parent() != parentNode:
 		Debug.printWarning(str("replaceChild() childToReplace.get_parent(): ", childToReplace.get_parent(), " != parentNode: ", parentNode))
 		return false
@@ -128,24 +128,34 @@ static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node)
 		Debug.printWarning("replaceChild(): newChild already in another parent: " + str(newChild, " in ", newChildCurrentParent))
 		return false
 
+	# Copy properties
+	if copyPosition: newChild.position	= childToReplace.position
+	if copyRotation: newChild.rotation	= childToReplace.rotation
+	if copyScale:	 newChild.scale		= childToReplace.scale
+
+	# Swap the kids
 	var previousChildIndex: int = childToReplace.get_index() # The original index
-	parentNode.remove_child(childToReplace)
+	parentNode.remove_child(childToReplace) # NOTE: Do not use `replace_by()` which transfers all sub-children as well.
 
 	Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
 	parentNode.move_child(newChild, previousChildIndex)
 	newChild.owner = parentNode # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
+	# Yeet the disowned child?
+	if freeReplacedChild: childToReplace.queue_free()
+
 	return true
 
 
-## Removes the first child of the [param parentNode], if any, and adds the specified [param newChild].
-## NOTE: The child and its sub-children are NOT deleted. To delete a child, use [method Node.queue_free].
-static func replaceFirstChild(parentNode: Node, newChild: Node) -> void:
+## Removes the first child of the [param parentNode], if any, and adds the specified [param newChild]. Optionally copies the position, rotation and/or scale.
+## NOTE: The new child is added regardless of whether the parent already had a child or not.
+## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free].
+static func replaceFirstChild(parentNode: Node, newChild: Node, copyPosition: bool = false, copyRotation: bool = false, copyScale: bool = false, freeReplacedChild: bool = false) -> void:
 	var childToReplace: Control = parentNode.findFirstChildControl()
 	# Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
 
 	if childToReplace:
-		Tools.replaceChild(parentNode, childToReplace, newChild)
+		Tools.replaceChild(parentNode, childToReplace, newChild, copyPosition, copyRotation, copyScale, freeReplacedChild)
 	else: # If there are no children, just add the new one.
 		Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
 		newChild.owner = parentNode # For persistence
