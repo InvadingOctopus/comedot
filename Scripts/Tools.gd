@@ -406,6 +406,13 @@ static func getTileData(map: TileMapLayer, coordinates: Vector2i, dataName: Stri
 	return tileData.get_custom_data(dataName) if tileData else null
 
 
+## Gets custom data for an individual cell of a [TileMapCellData].
+## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multiple cells of a [TileMapLayer].
+## DESIGN: This is a separate function on top of [TileMapCellData] because it may redirect to a native Godot feature in the future.
+static func getCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, key: StringName) -> Variant:
+	return map.getCellData(coordinates, key)
+
+
 ## Sets custom data for an individual cell of a [TileMapLayerWithCellData].
 ## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multiple cells of a [TileMapLayer].
 ## DESIGN: This is a separate function on top of [TileMapLayerWithCellData] because it may redirect to a native Godot feature in the future.
@@ -413,11 +420,10 @@ static func setCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, ke
 	map.setCellData(coordinates, key, value)
 
 
-## Gets custom data for an individual cell of a [TileMapCellData].
-## NOTE: CELLS are different from TILES; A Tile is the resource used by a [TileSet] to paint multiple cells of a [TileMapLayer].
-## DESIGN: This is a separate function on top of [TileMapCellData] because it may redirect to a native Godot feature in the future.
-static func getCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, key: StringName) -> Variant:
-	return map.getCellData(coordinates, key)
+## Uses a custom data structure to check if individual [TileMap] cells (not tiles) are occupied by an [Entity] and returns it.
+## NOTE: Does NOT check for [member Global.TileMapCustomData.isOccupied] first, only the [member Global.TileMapCustomData.occupant]
+static func getCellOccupant(data: TileMapCellData, coordinates: Vector2i) -> Entity:
+	return data.getCellData(coordinates, Global.TileMapCustomData.occupant)
 
 
 ## Uses a custom data structure to mark individual [TileMap] cells (not tiles) as occupied or unoccupied by an [Entity].
