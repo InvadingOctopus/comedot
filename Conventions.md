@@ -58,6 +58,7 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 * Booleans should start with `is`, `has`, `should` etc.
 	- This may make autocompletion easier by listing all booleans together.
 	- Avoid ambiguity with "verbs" e.g.`showDebugInfo` could be a function name.
+	- `bool` parameters in function/methods calls may be named as verbs/commands to match the function convention e.g. `skipEmptyCells` in `randomizeTileMapCells()`
 
 
 ### Functions & Methods
