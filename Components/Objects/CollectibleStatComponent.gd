@@ -20,7 +20,9 @@ extends CollectibleComponent
 
 @export var preventCollectionIfStatIsMax: bool = true # TBD: Better name? :')
 
-@export var shouldEmitBubble:	  bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
+## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
+## NOTE: The bubble is emitted from COLLECTIBLE item, NOT the Collector Entity. To display [Stat]-related bubbles from the player entity or other characters, use [StatsVisualComponent].
+@export var shouldEmitBubble:	  bool = true
 @export var shouldColorBubble:	  bool = true
 @export var shouldAppendStatName: bool = true
 
@@ -68,9 +70,11 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 
 	stat.value += randomizedModifier
 
-	# Create a visual indicator
+	# Create a visual indicator. # NOTE: Spawn it on the entity's parent because the entity will be destroyed after collection. To emit bubbles from the COLLECTOR, use [StatsVisualComponent]
 	# TODO: Make it customizable
-	if shouldEmitBubble: GameplayResourceBubble.createForStat(stat, collectorEntity, Vector2(0, -16), shouldAppendStatName, shouldColorBubble)
+	if shouldEmitBubble:
+		GameplayResourceBubble.createForStat(stat, parentEntity.get_parent(), Vector2(parentEntity.position.x, parentEntity.position.y - 16), shouldAppendStatName, shouldColorBubble) \
+			.z_index = 100 # FIXED: Need to restore this for some reason, otherwise the bubble may be obscured by even the lowest Z index nodes.
 
 	return randomizedModifier
 

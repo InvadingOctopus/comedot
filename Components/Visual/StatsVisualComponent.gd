@@ -1,5 +1,6 @@
 ## Emits [TextBubble]s and displays other UI over the Entity whenever one of the chosen [Stat]s changes in value.
 ## NOTE: The visuals are displayed at the position of the component, not the entity, so they may be offset from the entity's position.
+## NOTE: The bubble is emitted from COLLECTOR Entity, NOT the collectible item. To display [Stat]-related bubbles from collectibles, use [CollectibleStatComponent].
 
 class_name StatsVisualComponent
 extends Component
