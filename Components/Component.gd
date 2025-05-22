@@ -47,7 +47,7 @@ var coComponents: Dictionary[StringName, Component]
 
 #region Signals
 
-## Emitted on [const Node.NOTIFICATION_UNPARENTED].
+## Emitted on [constant Node.NOTIFICATION_UNPARENTED].
 ## May be connected to by subclasses to perform cleanup specific to each component.
 ## NOTE: [member parentEntity] is still assigned at this point and set to `null` after this signal is emitted.
 signal willRemoveFromEntity
@@ -98,7 +98,7 @@ func checkRequiredComponents() -> bool:
 
 #region Life Cycle
 
-## Called by [method _notification] when the component receives [const NOTIFICATION_PARENTED],
+## Called by [method _notification] when the component receives [constant NOTIFICATION_PARENTED],
 ## which is when the node is added as a child of any parent node. NOTE: This does not mean the node has entered the SceneTree (yet).
 ## If the parent node is an [Entity] then this component is registered with that Entity,
 ## otherwise if [member shouldCheckGrandparentsForEntity] then all grandparents will be searched until an Entity is found.
@@ -220,7 +220,7 @@ func requestDeletionOfParentEntity() -> bool:
 		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 
-## Called by [method _notification] when the component receives [const NOTIFICATION_UNPARENTED],
+## Called by [method _notification] when the component receives [constant NOTIFICATION_UNPARENTED],
 ## which is when the parent node calls [method Node.remove_child] on the component node.
 ## NOTE: This does not mean the node has exited the SceneTree (yet).
 func unregisterEntity() -> void:

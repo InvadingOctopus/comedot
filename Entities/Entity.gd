@@ -129,7 +129,7 @@ func childEnteredTree(node: Node) -> void:
 
 
 ## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards.
-## May be called by a [Component] when it receives the [const Node.NOTIFICATION_PARENTED] Notification.
+## May be called by a [Component] when it receives the [constant Node.NOTIFICATION_PARENTED] Notification.
 ## Returns `true` if successfully registered.
 func registerComponent(newComponent: Component) -> bool:
 	var componentType: StringName = newComponent.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?
@@ -168,7 +168,7 @@ func childExitingTree(node: Node) -> void:
 
 
 ## Removes a [Component] from the [member components] [Dictionary].
-## May be called by a [Component] when it receives the [const Node.NOTIFICATION_UNPARENTED] Notification.
+## May be called by a [Component] when it receives the [constant Node.NOTIFICATION_UNPARENTED] Notification.
 ## Returns `true` if the component was found and unregistered.
 func unregisterComponent(componentToRemove: Component) -> bool:
 	var componentType: StringName = componentToRemove.get_script().get_global_name() # CHECK: Is there a better way to get the actual "class_name"?

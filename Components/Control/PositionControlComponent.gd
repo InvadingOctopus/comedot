@@ -11,7 +11,7 @@ extends Component
 
 @export_range(0.0, 1000.0, 10.0) var speed: float = 200
 
-## If `true`, uses the "look" input actions such as [const GlobalInput.Actions.lookLeft] etc.,
+## If `true`, uses the "look" input actions such as [constant GlobalInput.Actions.lookLeft] etc.,
 ## which default to a secondary input axis such as the right gamepad joystick,
 ## that may be used to control a camera angle or an aiming cursor etc.
 @export var shouldUseSecondaryAxis: bool = false

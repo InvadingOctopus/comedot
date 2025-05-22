@@ -102,7 +102,7 @@ signal didChange(settingName: StringName, newValue: Variant)
 ## and the default value if the setting is missing from the file.
 class Setting:
 	var name:	 StringName
-	var section: StringName ## If omitted, [const SectionNames.default] will be used.
+	var section: StringName ## If omitted, [constant SectionNames.default] will be used.
 	var type:	 Variant.Type
 	var default: Variant
 
@@ -187,7 +187,7 @@ func _get(propertyName: StringName) -> Variant:
 
 
 ## Fetches a [Setting] matching the [param propertyName] key from the [member settingsDictionary] and reads it from the [member configFile].
-## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [const SectionNames.default] section.
+## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [constant SectionNames.default] section.
 func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) -> Variant:
 	var setting: Setting = settingsDictionary.get(propertyName)
 	if setting:
@@ -210,7 +210,7 @@ func _set(propertyName: StringName, value: Variant) -> bool:
 
 
 ## Fetches a [Setting] matching the [param propertyName] key from the [member settingsDictionary] and saves it to the [member configFile].
-## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [const SectionNames.default] section.
+## If no such [Setting] is explicitly defined, then this method will still attempt to access the file for setting with a matching key from the [constant SectionNames.default] section.
 func saveSetting(propertyName: StringName, newValue: Variant) -> void:
 	var setting: Setting = settingsDictionary.get(propertyName)
 

@@ -28,7 +28,7 @@ const volumeSteps: Array[float] = [-72, -60, -24, -18, -12, -6, 0, +6] # In deci
 @onready var busLabel:	  Label = %BusLabel
 @onready var volumeLabel: Label = %VolumeLabel
 
-## The index of the value to choose from the [const volumeSteps] array.
+## The index of the value to choose from the [constant volumeSteps] array.
 ## 0 = mute. Second last index = 0 db (normal volume).
 ## WARNING: Maximum index = distorted volume!
 var volumeStepIndex: int = volumeSteps.size() - 2: # Default to the second last value (0 db)

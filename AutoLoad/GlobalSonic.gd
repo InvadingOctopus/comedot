@@ -19,7 +19,7 @@ extends Node
 var audioPlayers: Array[AudioStreamPlayer2D]
 var currentAudioPlayerIndex: int
 
-var musicFiles: PackedStringArray ## An array that is populated by all the ".mp3" files found in the [const musicFolder] on [method _ready].
+var musicFiles: PackedStringArray ## An array that is populated by all the ".mp3" files found in the [constant musicFolder] on [method _ready].
 var currentMusicIndex: int = -1 ## The index in the [member musicFiles] array of the currently playing song. Defaults to -1 to indicate no song.
 #endregion
 

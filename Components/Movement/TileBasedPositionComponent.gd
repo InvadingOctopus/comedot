@@ -80,7 +80,7 @@ extends Component
 
 @export var shouldClampToBounds: bool = true ## Keep the entity within the [member tileMap]'s region of "painted" cells?
 
-## Should the Cell be marked as [const Global.TileMapCustomData.isOccupied] by the parent Entity?
+## Should the Cell be marked as [constant Global.TileMapCustomData.isOccupied] by the parent Entity?
 ## Set to `false` to disable occupancy; useful for visual-only entities such as mouse cursors and other UI/effects.
 @export var shouldOccupyCell: bool = true
 
@@ -209,8 +209,8 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 
 ## Checks if the tile may be moved into.
 ## May be overridden by subclasses to perform different checks,
-## such as testing custom data on a tile, e.g. [const Global.TileMapCustomData.isWalkable],
-## and custom data on a cell, e.g. [const Global.TileMapCustomData.isOccupied],
+## such as testing custom data on a tile, e.g. [constant Global.TileMapCustomData.isWalkable],
+## and custom data on a cell, e.g. [constant Global.TileMapCustomData.isOccupied],
 ## or performing a more rigorous physics collision detection.
 func checkCellVacancy(coordinates: Vector2i) -> bool:
 	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`.

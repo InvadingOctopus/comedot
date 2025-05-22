@@ -453,7 +453,7 @@ static func checkTileAndCellVacancy(map: TileMapLayer, data: TileMapCellData, co
 	return isCellVacant and isTileVacant
 
 
-## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [const Global.TileMapCustomData.isWalkable].
+## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [constant Global.TileMapCustomData.isWalkable].
 static func checkTileVacancy(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	var isTileVacant: bool = false
 
@@ -476,7 +476,7 @@ static func checkTileVacancy(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	return isTileVacant
 
 
-## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [const Global.TileMapCustomData.isWalkable].
+## Checks if the specified tile is vacant by examining the custom tile/cell data for flags such as [constant Global.TileMapCustomData.isWalkable].
 static func checkCellVacancy(mapData: TileMapCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
 	var isCellVacant: bool = false
 

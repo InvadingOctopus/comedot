@@ -174,7 +174,7 @@ func getInputEventText(action: StringName) -> PackedStringArray:
 
 
 ## Returns a list of the textual representation of keys, buttons or other controls specified for an Input Action, such as "Space" for "jump".
-## Replaces redundant text such as "(Physical)" with "(Keyboard)" using the [const eventTextReplacements] [Dictionary].
+## Replaces redundant text such as "(Physical)" with "(Keyboard)" using the [constant eventTextReplacements] [Dictionary].
 func getInputEventReplacedText(action: StringName) -> PackedStringArray:
 	var strings: PackedStringArray
 	for event: InputEvent in InputMap.action_get_events(action):
