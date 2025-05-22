@@ -145,13 +145,13 @@ func saveGame() -> void: # NOTE: Cannot be `static` because of `self.process_mod
 	@warning_ignore("redundant_await")
 	await Debug.printLog("Saving state → " + Settings.saveFilePath) # TBD: await or not?
 
-	var sceneTree := get_tree()
+	var sceneTree: SceneTree = get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
 
 	Global.screenshot("Save") # DEBUG: Take a screenshop for comparison
 
-	var packedSceneToSave := PackedScene.new()
+	var packedSceneToSave: PackedScene = PackedScene.new()
 	packedSceneToSave.pack(sceneTree.get_current_scene())
 	ResourceSaver.save(packedSceneToSave, Settings.saveFilePath)
 
@@ -169,7 +169,7 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 	@warning_ignore("redundant_await")
 	await Debug.printLog("Loading state ← " + Settings.saveFilePath) # TBD: await or not?
 
-	var sceneTree := get_tree()
+	var sceneTree: SceneTree = get_tree()
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	sceneTree.paused = true
 

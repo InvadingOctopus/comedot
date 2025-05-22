@@ -22,10 +22,10 @@ var camera: Camera2D:
 		if not camera: camera = parentEntity.findFirstChildOfType(Camera2D)
 		return camera
 		
-var inputDirection		:= Vector2.ZERO
-var lastInputDirection	:= Vector2.ZERO
-var lastDirection		:= Vector2.ZERO ## Normalized
-#var lastVelocity		:= Vector2.ZERO
+var inputDirection:		Vector2 = Vector2.ZERO
+var lastInputDirection:	Vector2 = Vector2.ZERO
+var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
+#var lastVelocity:		Vector2 = Vector2.ZERO
 
 #endregion
 
@@ -72,7 +72,7 @@ func processInput(delta: float) -> void:
 	if not inputDirection.is_zero_approx(): lastInputDirection = inputDirection
 		
 	# Calculate separate velocities for X and Y
-	var inputVelocity := Vector2(inputDirection.x * parameters.horizontalSpeed, inputDirection.y * parameters.verticalSpeed)
+	var inputVelocity: Vector2 = Vector2(inputDirection.x * parameters.horizontalSpeed, inputDirection.y * parameters.verticalSpeed)
 	
 	# TBD: Is setting the vector once as a whole the exact same effect as setting the 2 axes separately?
 	if parameters.shouldApplyAcceleration:

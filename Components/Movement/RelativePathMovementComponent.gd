@@ -25,9 +25,9 @@ extends Component
 
 @export_range(0, 60, 0.1, "seconds") var delayBetweenMoves: float = 0.0
 
-@export var shouldLoop: bool = true
+@export var shouldLoop:	bool = true
 
-@export var isEnabled := true
+@export var isEnabled:	bool = true
 
 #endregion
 

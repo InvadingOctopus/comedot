@@ -203,7 +203,7 @@ func buildComponentsTree() -> void:
 			#var fileType: String = categoryFolder.get_file_type(fileIndex) # Not needed
 
 			if fileName.to_lower().ends_with(acceptedFileSuffix):
-				var componentName := fileName.trim_suffix(acceptedFileExtension)
+				var componentName: String = fileName.trim_suffix(acceptedFileExtension)
 				# if debugMode:#printLog(componentName + " " + filePath)
 
 				# Add the component to the Tree
@@ -243,7 +243,7 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryRow.set_selectable(0, false)
 
 	# Add a button for creating a new component
-	var buttonTooltip := "Create a new Component in the " + categoryName + " folder."
+	var buttonTooltip: String = "Create a new Component in the " + categoryName + " folder."
 	categoryRow.add_button(1, createComponentIcon, 0, false, buttonTooltip)
 	categoryRow.set_text(1, "+")
 	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -503,7 +503,7 @@ func getSelectedComponentAndAddToSelectedNode() -> void:
 	if debugMode: printLog(str("onComponentsTree_itemActivated() ", selectedComponentName, " ", selectedComponentPath))
 
 	# Convert script paths to scenes, just in case
-	var componentScenePath := selectedComponentPath
+	var componentScenePath: String = selectedComponentPath
 	if componentScenePath.to_lower().ends_with(".gd"):
 		componentScenePath = componentScenePath.replace(".gd", ".tscn")
 

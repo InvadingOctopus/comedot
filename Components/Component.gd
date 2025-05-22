@@ -280,7 +280,7 @@ func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 ## Useful for replacing components when there should be only one component of a specific class, such as a [FactionComponent].
 ## Returns: The number of components removed.
 func removeSiblingComponentsOfSameType() -> int:
-	var removalCount := 0
+	var removalCount: int = 0
 
 	for sibling: Component in parentEntity.get_children(false): # Don't include sub-children
 		# Is it us?

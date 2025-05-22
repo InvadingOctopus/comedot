@@ -4,8 +4,8 @@ class_name SpinComponent
 extends Component
 
 
-@export var isPaused := false
-@export var shouldRotateParentNodeInsteadOfEntity := false
+@export var isPaused: bool = false
+@export var shouldRotateParentNodeInsteadOfEntity: bool = false
 @export_range(-20, 20, 0.1) var rotationAmount: float = 1.0
 
 

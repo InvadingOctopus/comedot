@@ -7,8 +7,8 @@ extends Container
 
 
 #region Constants
-const inputActionUIScene  := preload("res://UI/InputActionUI.tscn")
-const uiInputActionPrefix := &"ui_"
+const inputActionUIScene := preload("res://UI/InputActionUI.tscn")
+const uiInputActionPrefix: StringName = &"ui_"
 #endregion
 
 

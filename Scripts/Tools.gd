@@ -268,7 +268,7 @@ static func getShapeBoundsInArea(area: Area2D) -> Rect2:
 
 	# Make local copies of the frequently used stuff.
 
-	var _shapeNodePositionInArea := shapeNode.position
+	var _shapeNodePositionInArea: Vector2 = shapeNode.position
 	var shape: Shape2D = shapeNode.shape
 
 	# The bounding rectangle of the shape. NOTE: In the coordinates of the CollisionShape2D node!
@@ -278,11 +278,11 @@ static func getShapeBoundsInArea(area: Area2D) -> Rect2:
 	# we have to get it's top-left corner,
 	# by subtracting HALF the size of the actual SHAPE:
 
-	var shapeNodeTopLeftCorner := Vector2( \
+	var shapeNodeTopLeftCorner: Vector2 = Vector2( \
 		shapeNode.position.x - shapeBoundingRect.size.x / 2, \
 		shapeNode.position.y - shapeBoundingRect.size.y / 2)
 
-	var shapeBoundsInArea := Rect2( \
+	var shapeBoundsInArea: Rect2 = Rect2( \
 		shapeNodeTopLeftCorner.x, shapeNodeTopLeftCorner.y, \
 		shapeBoundingRect.size.x, shapeBoundingRect.size.y)
 
@@ -292,8 +292,8 @@ static func getShapeBoundsInArea(area: Area2D) -> Rect2:
 
 
 static func getShapeGlobalBounds(area: Area2D) -> Rect2:
-	var shapeGlobalBounds := getShapeBoundsInArea(area)
-	shapeGlobalBounds.position = area.to_global(shapeGlobalBounds.position)
+	var shapeGlobalBounds: Rect2 = getShapeBoundsInArea(area)
+	shapeGlobalBounds.position   = area.to_global(shapeGlobalBounds.position)
 	return shapeGlobalBounds
 
 
@@ -303,7 +303,7 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 
 	# Generate a random position within the area.
 
-	#var isWithinArea := false
+	#var isWithinArea: bool = false
 	#while not isWithinArea:
 
 	#randomize() # TBD: Do we need this?
@@ -348,9 +348,9 @@ static func getCollisionShape(node: CollisionObject2D, shapeIndex: int) -> Shape
 #region Visual Functions
 
 static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
-	var position	:= rectangle.position
-	var center		:= rectangle.get_center()
-	var end			:= rectangle.end
+	var position:	Vector2 = rectangle.position
+	var center:		Vector2 = rectangle.get_center()
+	var end:		Vector2 = rectangle.end
 
 	match compassDirection:
 		CompassVectors.northWest:	return Vector2(position.x, position.y)
@@ -380,14 +380,14 @@ static func addRandomDistance(position: Vector2, \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
-	var randomizedPosition := position
+	var randomizedPosition: Vector2 = position
 	randomizedPosition.x += randf_range(minimumDistance.x, maximumDistance.x) * xScale
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
 	return randomizedPosition
 
 ## Returns the global position of the top-left corner of the screen in the camera's view.
 static func getScreenTopLeftInCamera(camera: Camera2D) -> Vector2:
-	var cameraCenter := camera.get_screen_center_position()
+	var cameraCenter: Vector2 = camera.get_screen_center_position()
 	return cameraCenter - camera.get_viewport_rect().size / 2
 
 

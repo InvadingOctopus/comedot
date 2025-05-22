@@ -13,9 +13,9 @@ extends CharacterBodyDependentComponentBase
 
 
 #region State
-var inputDirection		:= Vector2.ZERO
-var lastInputDirection	:= Vector2.ZERO
-var lastDirection		:= Vector2.ZERO ## Normalized
+var inputDirection:		Vector2 = Vector2.ZERO
+var lastInputDirection:	Vector2 = Vector2.ZERO
+var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
 #endregion
 
 

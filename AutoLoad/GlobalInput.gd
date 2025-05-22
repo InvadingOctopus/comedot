@@ -12,7 +12,7 @@ extends Node
 ## NOTE: This is NOT the same as the [Action] Resource which represent special actions performed by explicit in-game choices.
 class Actions:
 	# TBD: Rename to "InputAction" or "InputEventName" etc. to disambiguate from Comedot-specific "special/explicit" [Action]s?
-	
+
 	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
 	const moveLeft		:= &"moveLeft"
 	const moveRight		:= &"moveRight"
@@ -104,7 +104,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
 		SceneManager.togglePause()
 		isHandled = true
-	
+
 	if isHandled: self.get_viewport().set_input_as_handled()
 
 
@@ -131,7 +131,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	# Window
 
 	if Input.is_action_just_released(Actions.windowToggleAlwaysOnTop):
-		var isAlwaysOnTop := DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP)
+		var isAlwaysOnTop: bool = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, not isAlwaysOnTop) # `not` because it's a toggle.
 		GlobalUI.createTemporaryLabel(str("Window Always on Top: ", not isAlwaysOnTop))
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?

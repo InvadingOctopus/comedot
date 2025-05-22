@@ -7,7 +7,7 @@ extends Component
 #region Parameters
 @export var shouldRepositionImmediately: bool = true
 @export_range(0, 1000, 5) var speed: float = 100
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 

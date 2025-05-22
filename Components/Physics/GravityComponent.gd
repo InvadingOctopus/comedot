@@ -7,7 +7,7 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export var isEnabled := true
+@export var isEnabled: bool = true
 
 ## 1.0 is normal gravity as defined in Project Settings/Physics/2D
 @export_range(-10, 10, 0.05) var gravityScale: float = 1.0

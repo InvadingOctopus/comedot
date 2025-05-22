@@ -10,11 +10,11 @@ extends Component
 ## Use a different node for the compass indicator, such as a minimap UI element.
 @export var compassIndicatorOverride: Node2D
 
-@export var shouldRotateInstantly := false
+@export var shouldRotateInstantly: bool = false
 
 @export_range(0.1, 20, 0.1) var rotationSpeed: float = 10.0
 
-@export var shouldDisappearWhenNear := true
+@export var shouldDisappearWhenNear: bool = true
 @export var proximityDistance: float = 100.0
 
 #endregion
@@ -27,7 +27,7 @@ func _process(delta: float) -> void:
 	if compassIndicatorOverride: compass = compassIndicatorOverride
 	else: compass = %CompassIndicator
 
-	var targetPosition := nodeToTrack.global_position
+	var targetPosition: Vector2 = nodeToTrack.global_position
 
 	if shouldDisappearWhenNear:
 		var distance: float = parentEntity.global_position.distance_to(targetPosition)
@@ -44,9 +44,9 @@ func _process(delta: float) -> void:
 	if shouldRotateInstantly:
 		compass.look_at(targetPosition)
 	else:
-		var parentEntityPosition := parentEntity.global_position
-		var rotateFrom := compass.global_rotation
-		var rotateTo   := parentEntityPosition.angle_to_point(targetPosition)
+		var parentEntityPosition: Vector2 = parentEntity.global_position
+		var rotateFrom:	float = compass.global_rotation
+		var rotateTo:	float = parentEntityPosition.angle_to_point(targetPosition)
 
 		compass.global_rotation = rotate_toward(rotateFrom, rotateTo, rotationSpeed * delta)
 

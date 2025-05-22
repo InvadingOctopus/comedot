@@ -27,7 +27,7 @@ func _ready() -> void:
 func onDidDisplayFinalString() -> void:
 	# "Flatten" the label into the world; drop the feather to the ground :)
 	var newParent := get_tree().current_scene
-	var screenTopLeft := Tools.getScreenTopLeftInCamera(camera)
+	var screenTopLeft: Vector2 = Tools.getScreenTopLeftInCamera(camera)
 
 	labelContainer.reparent(newParent, false)
 	labelContainer.owner = newParent

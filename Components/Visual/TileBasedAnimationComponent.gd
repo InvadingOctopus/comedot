@@ -10,7 +10,7 @@ extends Component
 @export var walkAnimation: StringName = &"walk"
 
 @export var flipWhenWalkingLeft: bool = true
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 

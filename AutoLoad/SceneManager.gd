@@ -218,9 +218,9 @@ func togglePause() -> bool:
 ## e.g. [JumpControlComponent] returns "res://Components/Control/JumpControlComponent.tscn"
 ## WARNING: This assumes that the scene's name is the same as the `class_name`
 func getScenePathFromClass(type: Script) -> String:
-	# var className   := type.get_global_name()
-	var scriptPath	:= type.resource_path
-	var scenePath 	:= scriptPath.replace(".gd", ".tscn")
+	# var className: String = type.get_global_name()
+	var scriptPath:	String = type.resource_path
+	var scenePath:	String = scriptPath.replace(".gd", ".tscn")
 	return scenePath
 
 

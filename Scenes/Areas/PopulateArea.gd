@@ -49,7 +49,7 @@ extends Area2D
 
 ## Use for non-rectangular areas. If `true`, each randomly generated position is tested to ensure that it is inside the shape.
 ## This may be a slower process than choosing a random position within a simple rectangle.
-# @export var shouldVerifyWithinArea := false # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
+# @export var shouldVerifyWithinArea: bool = false # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
 
 @export var debugMode: bool = false
 

@@ -416,7 +416,7 @@ func addSceneCopy(path: String) -> Node:
 ## Returns: The number of children that were removed (0 means none were found).
 func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO: Return type?
 	var childrenToRemove: Array[Node] = self.findChildrenOfType(type)
-	var childrenRemoved := 0
+	var childrenRemoved:  int = 0
 	for child: Node in childrenToRemove:
 		self.remove_child(child)
 		if shouldFree: child.queue_free()

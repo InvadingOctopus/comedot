@@ -7,7 +7,7 @@ extends Entity
 
 
 #region Parameters
-@export var isEnabled := true
+@export var isEnabled: bool = true
 #endregion
 
 
