@@ -20,9 +20,9 @@ static var scenePath: String:
 
 ## Creates & returns a new [TextBubble].
 ## TIP: The [param offset] is applied to the default position of 0,0 so the offset may also be used as a absolute position.
-static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16)) -> TextBubble:
+static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16)) -> TextBubble: # The default offset is above a 16-pixel sprite.
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
-	newBubble.position += offset # The default offset is above a 16-pixel sprite.
+	newBubble.position += offset
 	if parentNode: parentNode.add_child(newBubble)
 	newBubble.get_node(^"Label").text = bubbleText # SOLVED: Use get_node() to avoid crash if there is no `parentNode` yet, therefore no @onready
 	# newBubble.owner = parentNode # TBD: No need for persistence across Save/Load, right?
