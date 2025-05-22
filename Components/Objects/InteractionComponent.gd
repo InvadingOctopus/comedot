@@ -25,10 +25,10 @@ extends Component
 
 ## An optional short label, name or phrase for the interaction to display in the UI.
 ## Example: "Open Door" or "Chop Tree".
-@export var label: String:
+@export var labelText: String:
 	set(newValue):
-		if newValue != label:
-			label = newValue
+		if newValue != labelText:
+			labelText = newValue
 			if self.is_node_ready(): updateLabel()
 
 ## An optional detailed description of the interaction to display in the UI.
@@ -42,6 +42,8 @@ extends Component
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
+		self.visible = isEnabled # Just in case some UI nodes are our children
+		if interactionIndicator: interactionIndicator.visible = isEnabled
 		if selfAsArea:
 			selfAsArea.monitorable = isEnabled
 			selfAsArea.monitoring  = isEnabled
@@ -60,11 +62,11 @@ var selfAsArea: Area2D:
 
 
 #region Signals
-signal didEnterInteractionArea(entity: Entity, interactionControlComponent: InteractionControlComponent)
-signal didExitInteractionArea(entity:  Entity, interactionControlComponent: InteractionControlComponent)
-signal didDenyInteraction(interactorEntity:		Entity)
-signal willPerformInteraction(interactorEntity: Entity)
-signal didPerformInteraction(result: Variant)
+signal didEnterInteractionArea	(entity: Entity, interactionControlComponent: InteractionControlComponent)
+signal didExitInteractionArea	(entity: Entity, interactionControlComponent: InteractionControlComponent)
+signal didDenyInteraction		(interactorEntity: Entity)
+signal willPerformInteraction	(interactorEntity: Entity)
+signal didPerformInteraction	(result: Variant)
 #region endregion
 
 
@@ -77,6 +79,7 @@ func _ready() -> void:
 
 
 func onArea_entered(area: Area2D) -> void:
+	if not isEnabled: return
 	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
 
@@ -92,6 +95,7 @@ func onArea_entered(area: Area2D) -> void:
 
 
 func onArea_exited(area: Area2D) -> void:
+	# NOTE: Exits should not check isEnabled to ensure cleanups are always performed.
 	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
 
@@ -117,11 +121,11 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 		return false
 
 
-## If the [interactionIndicator] is a [Label], display our [label] parameter.
+## If the [interactionIndicator] is a [Label], display our [labelText] parameter.
 func updateLabel() -> void:
 	# TBD: Should this be optional?
-	if not self.label.is_empty() and interactionIndicator is Label:
-		interactionIndicator.text = self.label
+	if not self.labelText.is_empty() and interactionIndicator is Label:
+		interactionIndicator.text = self.labelText
 
 
 ## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.

@@ -20,11 +20,12 @@ extends CooldownComponent
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
+		self.visible = isEnabled # Just in case some UI nodes are our children
 		if selfAsArea:
 			selfAsArea.monitorable = isEnabled
 			selfAsArea.monitoring  = isEnabled
-			updateIndicator()
-			
+		updateIndicator()
+
 #endregion
 
 
@@ -44,10 +45,10 @@ var selfAsArea: Area2D:
 
 
 #region Signals
-signal didEnterInteractionArea(entity: Entity, interactionComponent: InteractionComponent)
-signal didExitInteractionArea (entity: Entity, interactionComponent: InteractionComponent)
-signal willPerformInteraction (entity: Entity, interactionComponent: InteractionComponent)
-signal didPerformInteraction  (result: Variant)
+signal didEnterInteractionArea	(entity: Entity, interactionComponent: InteractionComponent)
+signal didExitInteractionArea	(entity: Entity, interactionComponent: InteractionComponent)
+signal willPerformInteraction	(entity: Entity, interactionComponent: InteractionComponent)
+signal didPerformInteraction	(result: Variant)
 #endregion
 
 
@@ -59,6 +60,7 @@ func _ready() -> void:
 
 
 func onArea_entered(area: Area2D) -> void:
+	if not isEnabled: return
 	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
 	if not interactionComponent: return
 
@@ -70,6 +72,7 @@ func onArea_entered(area: Area2D) -> void:
 
 
 func onArea_exited(area: Area2D) -> void:
+	# NOTE: Exits should not check isEnabled to ensure cleanups are always performed.
 	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
 	if not interactionComponent: return
 
