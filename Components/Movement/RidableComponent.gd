@@ -4,6 +4,8 @@
 class_name RidableComponent
 extends Component
 
+# TBD: Dismount on NOTIFICATION_PREDELETE?
+
 
 #region State
 
@@ -11,17 +13,18 @@ extends Component
 	set(newValue):
 		if newValue != rider:
 			var previousRider: Entity = rider if rider is Entity else null
-			rider = newValue # Set the new rider before the unmount signal, so handlers can see who it is now.
+			rider = newValue # Set the new rider before the dismount signal, so handlers can see who it is now.
 			if previousRider and previousRider != rider:
-				didUnmount.emit(previousRider)
+				didDismount.emit(previousRider)
 			if rider is Entity:
 				didMount.emit(rider)
 
 @export var offset: Vector2
 
-## The list of component types to transfer from a new rider Entity to this component's vehicle/mount Entity, e.g. to hand over player control.
-## When a rider unmounts, the components are transferred back.
-@export var componentTypesToTransfer: Array[Script] = [PlatformerControlComponent, JumpControlComponent, ActionsComponent, ActionControlComponent]
+## The list of component types to toggle on the new rider Entity and this component's vehicle/mount Entity. When a rider dismounts, the components are toggled back.
+## [method Entity.toggleComponents] is called to flip the `isEnabled` flag found on most components, and their
+## May be used to hand over player control to a vehicle/mount.
+@export var componentTypesToToggle: Array[Script] = [PlatformerControlComponent, JumpControlComponent, ActionsComponent, ActionControlComponent]
 
 @export var isEnabled: bool = true
 #endregion
@@ -35,7 +38,7 @@ var isMounted: bool:
 
 #region Signals
 signal didMount(newRider: Entity)
-signal didUnmount(previousRider: Entity)
+signal didDismount(previousRider: Entity)
 #endregion
 
 
@@ -44,12 +47,12 @@ signal didUnmount(previousRider: Entity)
 func mount(newRider: Entity) -> bool:
 	if self.isMounted:
 		return false
-	else: 
+	else:
 		self.rider = newRider # Signal will be emitted by property setter
 		return true
 
 
-func unmount() -> bool:
+func dismount() -> bool:
 	if self.isMounted:
 		self.rider = null # Signal will be emitted by property setter
 		return true
@@ -62,18 +65,26 @@ func unmount() -> bool:
 #region Events
 
 func _ready() -> void:
-	Tools.connectSignal(self.didMount, self.onSelf_didMount)
-	Tools.connectSignal(self.didUnmount, self.onSelf_didUnmount)
+	Tools.connectSignal(self.didMount,    self.onSelf_didMount)
+	Tools.connectSignal(self.didDismount, self.onSelf_didDismount)
 
 
 func onSelf_didMount(newRider: Entity) -> void:
-	if not isEnabled or componentTypesToTransfer.is_empty(): return	
-	newRider.transferComponents(componentTypesToTransfer, self.parentEntity) # Move components from rider to mount
+	if debugMode: printDebug(str("onSelf_didMount(): ", newRider, " componentsToToggle: ", componentTypesToToggle))
+	
+	if not isEnabled or componentTypesToToggle.is_empty(): return
+	# Switch components from rider to mount
+	newRider.toggleComponents(componentTypesToToggle, false)
+	self.parentEntity.toggleComponents(componentTypesToToggle, true)
 
 
-func onSelf_didUnmount(previousRider: Entity) -> void:
-	if not isEnabled or componentTypesToTransfer.is_empty(): return
-	self.parentEntity.transferComponents(componentTypesToTransfer, previousRider) # Move components from mount back to previous rider
+func onSelf_didDismount(previousRider: Entity) -> void:
+	if debugMode: printDebug(str("onSelf_didDisount(): ", previousRider, " componentsToToggle: ", componentTypesToToggle))
+	
+	if not isEnabled or componentTypesToToggle.is_empty(): return
+	# Switch components from mount back to previous rider
+	self.parentEntity.toggleComponents(componentTypesToToggle, false)
+	previousRider.toggleComponents(componentTypesToToggle, true)
 
 
 func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_process()?
@@ -83,5 +94,15 @@ func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_proc
 	rider.global_position = self.global_position + offset
 	if is_instance_of(rider, CollisionObject2D):
 		rider.reset_physics_interpolation() # CHECK: Is this necessary?
+
+
+func unregisterEntity() -> void:
+	self.dismount()
+	super.unregisterEntity()
+
+
+func _exit_tree() -> void:
+	self.dismount()
+	super._exit_tree()
 
 #endregion
