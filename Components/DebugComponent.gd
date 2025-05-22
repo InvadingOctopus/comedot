@@ -46,7 +46,7 @@ func convertPathsToAbsolute(relativePaths: Array[NodePath]) -> Array[NodePath]:
 	var absolutePaths:	Array[NodePath]
 
 	for relativePath: NodePath in relativePaths:
-		absolutePath = Tools.convertRelativePathToAbsolute(self, relativePath)
+		absolutePath = Tools.convertRelativeNodePathToAbsolute(self, relativePath)
 		if debugMode: printDebug(str("convertPathsToAbsolute() relativePath: ", relativePath, " → ", absolutePath))
 		absolutePaths.append(absolutePath)
 

@@ -193,13 +193,13 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 
 
 ## Convert a [NodePath] from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
-static func convertRelativePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
+static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
 	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
 	var propertyPath: String = str(":", relativePath.get_concatenated_subnames())
 	var absolutePathIncludingProperty: NodePath = NodePath(str(absoluteNodePath, propertyPath))
 
 	# DEBUG:
-	#Debug.printLog(str("Tools.convertRelativePathToAbsolute() parentNodeToConvertFrom: ", parentNodeToConvertFrom, \
+	#Debug.printLog(str("Tools.convertRelativeNodePathToAbsolute() parentNodeToConvertFrom: ", parentNodeToConvertFrom, \
 		#", relativePath: ", relativePath, \
 		#", absoluteNodePath: ", absoluteNodePath, \
 		#", propertyPath: ", propertyPath))
