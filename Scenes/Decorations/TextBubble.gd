@@ -1,6 +1,7 @@
 ## A text [Label] that floats up and disappears.
 ## Call the static method [method TextBubble.create] to add a text bubble to a node.
 ## Useful for showing health values etc. over a sprite.
+## TIP: For "bubbles" for [Stat]s and other [GameplayResourceBase]-derived Resources, use [GameplayResourceBubble].
 
 class_name TextBubble
 extends Node2D

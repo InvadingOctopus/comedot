@@ -13,7 +13,9 @@ stat = null
 statModifierMinimum = 1
 statModifierMaximum = 1
 preventCollectionIfStatIsMax = true
-shouldDisplayIndicator = true
+shouldEmitBubble = true
+shouldColorBubble = true
+shouldAppendStatName = true
 previouslyDeniedCollector = null
 
 [node name="CollectibleCollisionShape" parent="." index="0"]

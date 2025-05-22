@@ -20,8 +20,9 @@ extends CollectibleComponent
 
 @export var preventCollectionIfStatIsMax: bool = true # TBD: Better name? :')
 
-@export var shouldEmitBubble:  bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
-@export var shouldColorBubble: bool = true
+@export var shouldEmitBubble:	  bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
+@export var shouldColorBubble:	  bool = true
+@export var shouldAppendStatName: bool = true
 
 #endregion
 
@@ -50,7 +51,7 @@ func getRandomModifier() -> int:
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not super.checkCollectionConditions(collectorEntity, collectorComponent): return false
 	# Is it pointless to pick up the Stat?
-	if preventCollectionIfStatIsMax and stat.value >= stat.max: 
+	if preventCollectionIfStatIsMax and stat.value >= stat.max:
 		if debugMode: printDebug(str("preventCollectionIfStatIsMax: stat.value ", stat.value, " >= stat.max ", stat.max))
 		previouslyDeniedCollector = collectorComponent # Remember the collector in case it is still in contact after the Stat decreases.
 		return false
@@ -69,13 +70,7 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 
 	# Create a visual indicator
 	# TODO: Make it customizable
-
-	if shouldEmitBubble:
-		# TBD: Put a space between text & number?
-		var labelSettings: LabelSettings = TextBubble.create(str(stat.displayName, "%+d" % randomizedModifier), collectorEntity).label.label_settings
-		if shouldColorBubble:
-			if   stat.previousChange > 0: labelSettings.font_color = Color.GREEN
-			elif stat.previousChange < 0: labelSettings.font_color = Color.ORANGE
+	if shouldEmitBubble: GameplayResourceBubble.createForStat(stat, collectorEntity, Vector2(0, -16), shouldAppendStatName, shouldColorBubble)
 
 	return randomizedModifier
 
@@ -105,4 +100,3 @@ func onAreaExited(area: Area2D) -> void:
 	if previouslyDeniedCollector == collectorComponent: previouslyDeniedCollector = null
 
 #endregion
-

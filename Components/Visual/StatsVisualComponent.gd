@@ -10,10 +10,14 @@ extends Component
 
 
 #region Parameters
+@export var isEnabled: bool = true
+@export_group("Stats")
 @export var statsToMonitor: Array[Stat]
 @export var statsToExclude: Array[Stat]
 @export var shouldCopyFromStatsComponent: bool = true # If `true` then [member statsToMonitor] will include the Stats from an [StatsComponent], if any.
-@export var isEnabled: bool = true
+@export_group("Visual")
+@export var shouldAppendDisplayName: bool = false
+@export var shouldColorBubble: bool = true
 #endregion
 
 
@@ -45,4 +49,4 @@ func onStatChanged(stat: Stat) -> void:
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
-	TextBubble.create(str(stat.displayName, " %+d" % stat.previousChange), self)
+	GameplayResourceBubble.createForStat(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble) # TBD: Put a space between text & number?
