@@ -1,28 +1,25 @@
-## Rotates the parent [Entity] OR the parent [Node] every frane,
+## Rotates the parent [Entity] or a different [Node2D] every frame.
+## NOTE: Uses [method Node._physics_process] instead of [method Node._process] for consistency with other physics-based movement.
 
 class_name SpinComponent
 extends Component
 
 
-@export var isPaused: bool = false
-@export var shouldRotateParentNodeInsteadOfEntity: bool = false
-@export_range(-20, 20, 0.1) var rotationAmount: float = 1.0
-
-
-var parent: Node2D
+#region Parameters
+@export var nodeToRotate: Node2D ## If unspecified, this component's parent Entity is rotated.
+@export_range(-20, 20, 0.1) var rotationPerFrame: float = 1.0
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_physics_process(isEnabled)
+#endregion
 
 
 func _ready() -> void:
-	self.parent = get_parent()
+	if not nodeToRotate: self.nodeToRotate = parentEntity
 
 
 func _physics_process(delta: float) -> void:
-
-	if isPaused: return
-
-	# Which node to rotate?
-
-	if shouldRotateParentNodeInsteadOfEntity:
-		self.parent.rotation += rotationAmount * delta
-	else:
-		parentEntity.rotation += rotationAmount * delta
+	# if not isEnabled: return # Set by property setter
+	nodeToRotate.rotation += rotationPerFrame * delta
