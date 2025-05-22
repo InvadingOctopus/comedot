@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://2fvjfjeddswh" path="res://Scenes/Decorations/GameplayResourceBubble.gd" id="1_y46m7"]
 
 [node name="GameplayResourceBubble" type="Node2D"]
+process_mode = 3
+z_index = 100
 script = ExtResource("1_y46m7")
 
 [node name="GameplayResourceUI" parent="." instance=ExtResource("1_2nomy")]
