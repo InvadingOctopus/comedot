@@ -342,22 +342,28 @@ func transferComponents(componentTypesToTransfer: Array[Script], newParent: Enti
 	return transferredComponents
 
 
-## Sets the `isEnabled` flag on each of the list components to its opposite or [param overrideIsEnabled] if specified.
-## Components that do not have an `isEnabled` property are skipped.
+## Sets the `isEnabled` flag, if available, on each of the listed components to its opposite or [param overrideIsEnabled] if specified.
+## Components may also be optionally paused/unpaused. WARNING: Unpausing always sets the [member Node.process_mode] to [constant Node.PROCESS_MODE_INHERIT] which may NOT be the previous/default setting before the pause.
 ## Returns: An array of enabled components whose `isEnabled` is `true`.
 ## TIP: Example: Quickly toggle player control between different characters without adding/removing components at runtime, which reduces performance.
-func toggleComponents(componentTypes: Array[Script], overrideIsEnabled: Variant = null) -> Array[Component]:
+func toggleComponents(componentTypes: Array[Script], overrideIsEnabled: Variant = null, togglePause: bool = false) -> Array[Component]:
 	var enabledComponents: Array[Component]
 	var component: Component
 	
 	for type in componentTypes:
 		component = self.getComponent(type)
-		if component and &"isEnabled" in component: # CHECK: Should it be a StringName?
+		if not component: continue
+		
+		if &"isEnabled" in component: # CHECK: Should it be a StringName?
 			if overrideIsEnabled != null and overrideIsEnabled is bool:
 				component.isEnabled = overrideIsEnabled
 			else:
 				component.isEnabled = not component.isEnabled
 			if component.isEnabled: enabledComponents.append(component)
+		
+		if togglePause: # TBD: CHECK: A better way to pause/unpause and save the previous value?
+			if component.process_mode != PROCESS_MODE_DISABLED: component.process_mode = PROCESS_MODE_DISABLED
+			else: component.process_mode = PROCESS_MODE_INHERIT # WARNING: Does NOT restore the component's previous state if it wasn't "INHERIT"
 
 	return enabledComponents
 
