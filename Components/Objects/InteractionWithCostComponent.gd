@@ -40,6 +40,12 @@ func updateLabel() -> void:
 			interactionIndicator.text = "COOLDOWN"
 
 
+func onCooldownTimer_timeout() -> void:
+	updateLabel()
+
+
+#region Interaction Interface
+
 ## Called by an [InteractionControlComponent].
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
 ## Then this [InteractionWithCostComponent] checks its own conditions (such as whether the player has key to open a door, or the energy to chop a tree).
@@ -87,6 +93,4 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		return result
 	else: return false
 
-
-func onCooldownTimer_timeout() -> void:
-	updateLabel()
+#endregion

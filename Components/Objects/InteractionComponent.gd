@@ -67,7 +67,7 @@ signal didExitInteractionArea	(entity: Entity, interactionControlComponent: Inte
 signal didDenyInteraction		(interactorEntity: Entity)
 signal willPerformInteraction	(interactorEntity: Entity)
 signal didPerformInteraction	(result: Variant)
-#region endregion
+#endregion
 
 
 func _ready() -> void:
@@ -106,6 +106,15 @@ func onArea_exited(area: Area2D) -> void:
 	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
 
 
+## If the [interactionIndicator] is a [Label], display our [labelText] parameter.
+func updateLabel() -> void:
+	# TBD: Should this be optional?
+	if not self.labelText.is_empty() and interactionIndicator is Label:
+		interactionIndicator.text = self.labelText
+
+
+#region Interaction Interface
+
 ## Called by an [InteractionControlComponent].
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
 ## Then this [InteractionComponent] checks its own conditions (such as whether the player has key to open a door, or an axe to chop a tree).
@@ -121,13 +130,6 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 		return false
 
 
-## If the [interactionIndicator] is a [Label], display our [labelText] parameter.
-func updateLabel() -> void:
-	# TBD: Should this be optional?
-	if not self.labelText.is_empty() and interactionIndicator is Label:
-		interactionIndicator.text = self.labelText
-
-
 ## Executes the [member payload], passing this [InteractionComponent] as the `source` of the [Payload], and the [param interactorEntity] as the `target`.
 ## May be overridden by a subclass to perform custom actions.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
@@ -140,6 +142,8 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	self.didPerformInteraction.emit(result)
 
 	return result
+
+#endregion
 
 
 #region Virtual Methods
