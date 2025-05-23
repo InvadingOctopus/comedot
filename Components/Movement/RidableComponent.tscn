@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://6chqnp41m44g"]
-
-[ext_resource type="Script" uid="uid://c74bxjofhf8ax" path="res://Components/Movement/RidableComponent.gd" id="1_djgjk"]
-
-[node name="RidableComponent" type="Node2D" groups=["components"]]
-script = ExtResource("1_djgjk")
-metadata/_edit_group_ = true

@@ -1,10 +1,11 @@
 ## Allows the parent Entity to be "mounted" and "ridden" by another Entity, e.g. as a vehicle or horse etc. driven by the player character.
 ## For more basic "attachment" of any node to an Entity, see [AttachmentComponent].
 
-class_name RidableComponent
+class_name RideableComponent
 extends Component
 
 # TBD: Dismount on NOTIFICATION_PREDELETE?
+# TBD: Rename to MountableComponent?
 
 
 #region State

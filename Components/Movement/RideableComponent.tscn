@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://6chqnp41m44g"]
+
+[ext_resource type="Script" uid="uid://c74bxjofhf8ax" path="res://Components/Movement/RideableComponent.gd" id="1_4q3lr"]
+
+[node name="RideableComponent" type="Node" groups=["components"]]
+editor_description = "Allows the player to \"mount\" a vehicle or animal etc."
+script = ExtResource("1_4q3lr")
