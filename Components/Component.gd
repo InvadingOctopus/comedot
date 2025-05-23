@@ -295,6 +295,43 @@ func removeSiblingComponentsOfSameType() -> int:
 #endregion
 
 
+#region Miscellaneous Interface
+
+## Sets the [member isEnabled] flag, if available, to its opposite or [param overrideIsEnabled] if specified.
+## Also optionally pauses/unpauses the component based on the resulting `isEnabled` state, or [param overrideIsEnabled] if there is no `isEnabled` flag.
+## ALERT: Changes to [member isEnabled] may NOT be accepted based on subclass-specific property setters etc.
+## WARNING: Unpausing always sets the [member Node.process_mode] to [constant Node.PROCESS_MODE_INHERIT] which may NOT be the previous/default setting before the pause.
+## Returns: The resulting [member isEnabled] state if there is an `isEnabled` flag, otherwise `true` if [member Node.process_mode] is NOT [constant Node.PROCESS_MODE_DISABLED].
+func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false) -> bool:
+	# TBD: CHECK: A better way to pause/unpause and save the previous value?
+	# WARNING: Does NOT restore the component's previous state if it wasn't "INHERIT"
+	
+	if debugMode: printDebug(str("toggleEnabled(): isEnabled? ", (self.isEnabled if &"isEnabled" in self else "null"), ", override: ", overrideIsEnabled, ", togglePause: ", togglePause))
+	
+	if &"isEnabled" in self: # CHECK: Should it be a StringName?
+		if overrideIsEnabled != null and overrideIsEnabled is bool:
+			self.isEnabled = overrideIsEnabled
+		else:
+			self.isEnabled = not self.isEnabled
+
+		if togglePause:
+			# NOTE: Pause/unpause based on the final `isEnabled` state
+			self.process_mode = PROCESS_MODE_INHERIT if self.isEnabled else PROCESS_MODE_DISABLED
+
+		return self.isEnabled
+
+	elif togglePause: # If there is no `isEnabled` property
+		if overrideIsEnabled != null and overrideIsEnabled is bool:
+			self.process_mode = PROCESS_MODE_INHERIT if overrideIsEnabled == true else PROCESS_MODE_DISABLED
+		else:
+			if self.process_mode != PROCESS_MODE_DISABLED: self.process_mode = PROCESS_MODE_DISABLED
+			else: self.process_mode = PROCESS_MODE_INHERIT
+
+	return self.process_mode != PROCESS_MODE_DISABLED # If there is no `isEnabled` just return `true` for any state except disabled
+
+#endregion
+
+
 #region Static Methods
 
 ## Attempts to cast any Node as a Component, since the `Component.gd` script may be attached to any Node.
