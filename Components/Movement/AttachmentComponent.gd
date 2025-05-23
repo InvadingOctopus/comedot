@@ -1,5 +1,5 @@
 ## Sets the [member Node2D.position] of another node (which may be another [Entity]) to the position of this component on every frame.
-## To implement "mounts" such as vehicles, horses etc. see [RidableComponent].
+## To implement "mounts" such as vehicles, horses etc. see [RideableComponent].
 
 class_name AttachmentComponent
 extends Component
