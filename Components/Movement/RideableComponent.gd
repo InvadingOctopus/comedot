@@ -4,6 +4,7 @@
 class_name RideableComponent
 extends Component
 
+# NOTE: The node has to be a [Node2D] to get the component's position.
 # TBD: Dismount on NOTIFICATION_PREDELETE?
 # TBD: Rename to MountableComponent?
 

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c74bxjofhf8ax" path="res://Components/Movement/RideableComponent.gd" id="1_4q3lr"]
 
-[node name="RideableComponent" type="Node" groups=["components"]]
+[node name="RideableComponent" type="Node2D" groups=["components"]]
 editor_description = "Allows the player to \"mount\" a vehicle or animal etc."
 script = ExtResource("1_4q3lr")
+metadata/_edit_group_ = true
