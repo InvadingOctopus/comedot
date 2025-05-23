@@ -42,7 +42,7 @@ extends Component
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
-		self.visible = isEnabled # Just in case some UI nodes are our children
+		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
 		if interactionIndicator: interactionIndicator.visible = isEnabled
 		if selfAsArea:
 			selfAsArea.monitorable = isEnabled
