@@ -779,6 +779,7 @@ func rollChance(chancePercent: int) -> bool:
 ## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
 ## May be used to cycle through a range by adding/subtracting an offset to [param current] such as +1 or -1. The number may be an array index or `enum` state, or a sprite position to wrap it around the screen Pac-Man-style.
 static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
+	# TBD: Use Godot's pingpong()?
 	if minimum > maximum:
 		Debug.printWarning(str("cycleInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
 		return current
