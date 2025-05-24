@@ -45,8 +45,9 @@ extends Component
 		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
 		if interactionIndicator: interactionIndicator.visible = isEnabled
 		if selfAsArea:
-			selfAsArea.monitorable = isEnabled
-			selfAsArea.monitoring  = isEnabled
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
+			set_deferred("monitorable", newValue)
+			set_deferred("monitoring",  newValue)
 
 #endregion
 
