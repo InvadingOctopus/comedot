@@ -16,6 +16,7 @@ static var scenePath: String:
 		return scenePath
 
 @onready var ui: GameplayResourceUI = $GameplayResourceUI
+var tween: Tween ## The default animation [Tween] that starts on [method _ready]. May be modified or cancelled by custom scripts.
 #endregion
 
 
@@ -46,5 +47,6 @@ static func createForStat(stat: Stat, parentNode: Node = null, offset: Vector2 =
 
 
 func _ready() -> void:
-	await Animations.bubble(self).finished
+	self.tween = Animations.bubble(self)
+	await tween.finished
 	self.queue_free()

@@ -16,6 +16,7 @@ static var scenePath: String:
 		return scenePath
 
 @onready var label: Label = $Label
+var tween: Tween ## The default animation [Tween] that starts on [method _ready]. May be modified or cancelled by custom scripts.
 #endregion
 
 
@@ -40,5 +41,6 @@ static func createForStat(stat: Stat, textToApped: String, parentNode: Node = nu
 
 
 func _ready() -> void:
-	await Animations.bubble(self).finished
+	self.tween = Animations.bubble(self)
+	await tween.finished
 	self.queue_free()
