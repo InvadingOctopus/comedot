@@ -88,12 +88,11 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 
 #region Special Animations
 
-static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), duration: float = 1.0) -> Tween:
+static func bubble(node: CanvasItem, distance: Vector2 = Vector2(0, -32), toOpacity: float = 0, duration: float = 1.0) -> Tween:
 	var tween: Tween = node.create_tween()
 	var targetPosition: Vector2 = node.position + distance # Assume `node` has `position`
-	var targetModulate: Color   = node.modulate
-	targetModulate.a = 0
-	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration).set_delay(0.5)
+	var targetModulate: Color   = Color(node.modulate, toOpacity)
+	tween.parallel().tween_property(node, ^"modulate", targetModulate, duration).set_delay(duration / 2) # Delay fading for a while
 	tween.parallel().tween_property(node, ^"position", targetPosition, duration).set_ease(Tween.EaseType.EASE_OUT)
 	return tween
 
