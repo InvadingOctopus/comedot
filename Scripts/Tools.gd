@@ -347,6 +347,12 @@ static func getCollisionShape(node: CollisionObject2D, shapeIndex: int) -> Shape
 
 #region Visual Functions
 
+## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
+static func getRandomQuantizedColor() -> Color:
+	const steps: Array[float] = [0.25, 0.5, 0.75, 1.0]
+	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random())
+
+
 static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
 	var position:	Vector2 = rectangle.position
 	var center:		Vector2 = rectangle.get_center()
