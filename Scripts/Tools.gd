@@ -48,6 +48,43 @@ const sequenceNegative1toPositive1stepPoint1: Array[float] = [-1.0, -0.9, -0.8, 
 #endregion
 
 
+#region Script Tools
+
+## Returns a [StringName] with the `class_name` from a [Script] type.
+## NOTE: This method is needed because we cannot directly write `SomeTypeName.get_global_name()` :(
+func getStringNameFromClass(type: Script) -> StringName:
+	return type.get_global_name()
+
+
+## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
+static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
+	if not sourceSignal.is_connected(targetCallable):
+		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
+	else:
+		return 0
+
+
+## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
+static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
+	if sourceSignal.is_connected(targetCallable):
+		sourceSignal.disconnect(targetCallable)
+
+
+## Checks whether a script has a function/method with the specified name.
+## NOTE: Only checks for the name, NOT the arguments or return type.
+## ALERT: Use the EXACT SAME CASE as the method you need to find!
+static func findMethodInScript(script: Script, methodName: StringName) -> bool: # TBD: Should it be [StringName]?
+	# TODO: A variant or option to check for multiple methods.
+	# TODO: Check arguments and return type.
+	var methodDictionary: Array[Dictionary] = script.get_script_method_list()
+	for method in methodDictionary:
+		# DEBUG: Debug.printDebug(str("findMethodInScript() script: ", script, " searching: ", method))
+		if method["name"] == methodName: return true
+	return false
+
+#endregion
+
+
 #region Node Management
 
 ## Calls [param parent].[method Node.add_child] and sets the [param child].[member Node.owner].
@@ -881,20 +918,6 @@ static func checkResult(value: Variant) -> bool:
 	else: return false
 
 
-## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
-static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
-	if not sourceSignal.is_connected(targetCallable):
-		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
-	else:
-		return 0
-
-
-## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
-static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
-	if sourceSignal.is_connected(targetCallable):
-		sourceSignal.disconnect(targetCallable)
-
-
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
 ## WARNING: This may cause bugs, especially when multiple objects are using `await` to wait for a Timer.
 ## Returns: The leftover time before the timer was stopped. WARNING: May not be accurate!
@@ -904,19 +927,6 @@ static func skipTimer(timer: Timer) -> float:
 	timer.stop()
 	timer.timeout.emit()
 	return leftoverTime
-
-
-## Checks whether a script has a function/method with the specified name.
-## NOTE: Only checks for the name, NOT the arguments or return type.
-## ALERT: Use the EXACT SAME CASE as the method you need to find!
-static func findMethodInScript(script: Script, methodName: StringName) -> bool: # TBD: Should it be [StringName]?
-	# TODO: A variant or option to check for multiple methods.
-	# TODO: Check arguments and return type.
-	var methodDictionary: Array[Dictionary] = script.get_script_method_list()
-	for method in methodDictionary:
-		# DEBUG: Debug.printDebug(str("findMethodInScript() script: ", script, " searching: ", method))
-		if method["name"] == methodName: return true
-	return false
 
 
 ## Searches for a [param value] in an [param options] array and if found, returns the next item from the list.
