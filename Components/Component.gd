@@ -305,9 +305,9 @@ func removeSiblingComponentsOfSameType() -> int:
 func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false) -> bool:
 	# TBD: CHECK: A better way to pause/unpause and save the previous value?
 	# WARNING: Does NOT restore the component's previous state if it wasn't "INHERIT"
-	
+
 	if debugMode: printDebug(str("toggleEnabled(): isEnabled? ", (self.isEnabled if &"isEnabled" in self else "null"), ", override: ", overrideIsEnabled, ", togglePause: ", togglePause))
-	
+
 	if &"isEnabled" in self: # CHECK: Should it be a StringName?
 		if overrideIsEnabled != null and overrideIsEnabled is bool:
 			self.isEnabled = overrideIsEnabled
@@ -393,6 +393,7 @@ var logFullName: String:
 var logNameWithEntity: String:
 	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
 
+var debugBubbleColor: Color = Tools.getRandomQuantizedColor() ## Used for [method emitDebugBubble] to distinguish different components from each other.
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
@@ -433,5 +434,17 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 		var string: String = str(variableName, ": ", previousValue, " → ", newValue)
 		if not logAsDebug: printLog("[color=gray]" + string)
 		else: printDebug(string)
+
+
+## Emits a [TextBubble] if [member debugMode] or [param ignoreDebugMode].
+func emitDebugBubble(textOrObject: Variant, ignoreDebugMode: bool = false, color: Color = self.debugBubbleColor) -> void:
+	if not ignoreDebugMode and not debugMode: return
+	if textOrObject is String and textOrObject.is_empty(): textOrObject = "\"\""
+
+	@warning_ignore("incompatible_ternary")
+	TextBubble.create(str(textOrObject), \
+		self if is_instance_of(self, Node2D) else parentEntity, \
+		Vector2([-16, -8, 0, +8, +16].pick_random(), 0)) \
+			.label.label_settings.font_color = color
 
 #endregion
