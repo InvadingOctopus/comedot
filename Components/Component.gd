@@ -442,9 +442,15 @@ func emitDebugBubble(textOrObject: Variant, ignoreDebugMode: bool = false, color
 	if textOrObject is String and textOrObject.is_empty(): textOrObject = "\"\""
 
 	@warning_ignore("incompatible_ternary")
-	TextBubble.create(str(textOrObject), \
+	var bubble: TextBubble = TextBubble.create(str(textOrObject), \
 		self if is_instance_of(self, Node2D) else parentEntity, \
-		Vector2([-16, -8, 0, +8, +16].pick_random(), 0)) \
-			.label.label_settings.font_color = color
+		Vector2([-16, -8, 0, +8, +16].pick_random(), [-8, 0, +8].pick_random())) # Randomize position to reduce overlap
+	bubble.label.label_settings.font_color = color
+	bubble.z_index = 220
+	# Customize the animation to improve readability
+	bubble.tween.kill()
+	bubble.cancel_free()
+	await Animations.bubble(bubble, Vector2(0, -32), 1.0, 1.0).finished
+	bubble.queue_free()
 
 #endregion
