@@ -183,7 +183,7 @@
 
 	"Debug": {
 		"prefix": "debug",
-		"body": ["if debugMode: printDebug(str(${1:get_stack()}))$0"],
+		"body": ["if debugMode: printDebug(str(\"${1:self}: \", ${1:self}))$0"],
 		"description": "Logs a message if the debugMode flag is set."
 	},
 
@@ -197,6 +197,12 @@
 		"prefix": "trace",
 		"body": ["Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0"],
 		"description": "Prints a list of variables and recent function calls for runtime debugging."
+	},
+
+	"Debug Bubble": {
+		"prefix": "debugBubble",
+		"body": ["emitDebugBubble(str(\"${1:self}:\", ${1:self}), true, ${2:debugBubbleColor}) # DEBUG: DONTCOMMIT$0"],
+		"description": "Emtis a TextBubble from a Component for quick visual debugging."
 	},
 
 	"Debug Info": {
