@@ -1,29 +1,59 @@
-[gd_scene load_steps=5 format=3 uid="uid://bifi5b0gcmh1v"]
+[gd_scene load_steps=6 format=3 uid="uid://bifi5b0gcmh1v"]
 
 [ext_resource type="Script" uid="uid://bk867jxvt37vm" path="res://Components/DebugComponent.gd" id="1_sj8xd"]
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="2_e6xiu"]
 [ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="2_o2bsa"]
-
-[sub_resource type="Theme" id="Theme_8onww"]
-default_font_size = 8
-Label/colors/font_outline_color = Color(0, 0, 0, 1)
-Label/constants/outline_size = 1
+[ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="3_h7tkw"]
+[ext_resource type="Texture2D" uid="uid://cxq0ri0ydsc3l" path="res://Assets/Images/Solid4.png" id="3_xaxy5"]
 
 [node name="DebugComponent" type="Node2D" groups=["components"]]
 z_index = 100
 z_as_relative = false
+material = ExtResource("2_e6xiu")
 script = ExtResource("1_sj8xd")
 metadata/_edit_group_ = true
 
 [node name="Labels" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
 z_index = 100
+use_parent_material = true
 offset_right = 35.0
 offset_bottom = 8.0
-theme = SubResource("Theme_8onww")
+size_flags_vertical = 0
+mouse_filter = 2
 
-[node name="DebugLabel" type="Label" parent="Labels"]
+[node name="EntityLabel" type="Label" parent="Labels"]
 unique_name_in_owner = true
-material = ExtResource("2_e6xiu")
+modulate = Color(0.5, 1, 0, 1)
+material = ExtResource("3_h7tkw")
 layout_mode = 2
-text = "DebugLabel"
+mouse_filter = 1
+text = "Entity"
 label_settings = ExtResource("2_o2bsa")
+
+[node name="PropertiesLabel" type="Label" parent="Labels"]
+unique_name_in_owner = true
+use_parent_material = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "Properties"
+label_settings = ExtResource("2_o2bsa")
+
+[node name="VisibilityToggleHotspot" type="TextureRect" parent="."]
+light_mask = 0
+visibility_layer = 513
+z_index = 1000
+use_parent_material = true
+custom_minimum_size = Vector2(2, 2)
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_default_cursor_shape = 16
+texture = ExtResource("3_xaxy5")
+stretch_mode = 1
+
+[connection signal="mouse_entered" from="VisibilityToggleHotspot" to="." method="onVisibilityToggleHotspot_mouseEntered"]
+[connection signal="mouse_exited" from="VisibilityToggleHotspot" to="." method="onVisibilityToggleHotspot_mouseExited"]
