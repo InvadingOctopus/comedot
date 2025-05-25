@@ -269,7 +269,7 @@ static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, rel
 	return absolutePathIncludingProperty
 
 
-## Splits a [NodePath] such as `/root:size:x` and returns `/root` & `:size:x`
+## Splits a [NodePath] into an Array of 2 paths where index [0] is the node's path and [1] is the property chain, e.g. `/root:size:x` → [`/root`, `:size:x`]
 static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 	var nodePath: NodePath
 	var propertyPath: NodePath
