@@ -9,22 +9,10 @@ extends GDScript
 
 #region Constants
 
-## A list of unit vectors representing 8 compass directions.
-class CompassVectors:
-	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
-	# DESIGN: Start from East to match the default rotation angle of 0
-	const none		:= Vector2i.ZERO
-	const east		:= Vector2i.RIGHT
-	const southEast	:= Vector2i(+1, +1)
-	const south		:= Vector2i.DOWN
-	const southWest	:= Vector2i(-1, +1)
-	const west		:= Vector2i.LEFT
-	const northWest	:= Vector2i(-1, -1)
-	const north		:= Vector2i.UP
-	const northEast	:= Vector2i(+1, -1)
-
 ## The cardinal & ordinal directions, each assigned a number representing the associated rotation angle in degrees, with East = 0 and incrementing by 45
 enum CompassDirection {
+	# DESIGN: Start from East to match the default rotation angle of 0
+	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
 	none		=  -1,
 	east		=   0,
 	southEast	=  45,
@@ -35,6 +23,43 @@ enum CompassDirection {
 	north		= 270,
 	northEast	= 315
 	}
+
+const compassDirectionVectors: Dictionary[CompassDirection, Vector2i] = {
+	CompassDirection.none:		Vector2i.ZERO,
+	CompassDirection.east:		Vector2i.RIGHT,
+	CompassDirection.southEast:	Vector2i(+1, +1),
+	CompassDirection.south:		Vector2i.DOWN,
+	CompassDirection.southWest:	Vector2i(-1, +1),
+	CompassDirection.west:		Vector2i.LEFT,
+	CompassDirection.northWest:	Vector2i(-1, -1),
+	CompassDirection.north:		Vector2i.UP,
+	CompassDirection.northEast:	Vector2i(+1, -1)
+	}
+
+const compassDirectionOpposites: Dictionary[CompassDirection, CompassDirection] = {
+	CompassDirection.none:		CompassDirection.none,
+	CompassDirection.east:		CompassDirection.west,
+	CompassDirection.southEast:	CompassDirection.northWest,
+	CompassDirection.south:		CompassDirection.north,
+	CompassDirection.southWest:	CompassDirection.northEast,
+	CompassDirection.west:		CompassDirection.east,
+	CompassDirection.northWest:	CompassDirection.southEast,
+	CompassDirection.north:		CompassDirection.south,
+	CompassDirection.northEast:	CompassDirection.southWest,
+	}
+
+## A list of unit vectors representing 8 compass directions.
+class CompassVectors:
+	# TBD: Replace with `compassDirectionVectors[CompassDirection]`?
+	const none		:= Vector2i.ZERO
+	const east		:= Vector2i.RIGHT
+	const southEast	:= Vector2i(+1, +1)
+	const south		:= Vector2i.DOWN
+	const southWest	:= Vector2i(-1, +1)
+	const west		:= Vector2i.LEFT
+	const northWest	:= Vector2i(-1, -1)
+	const north		:= Vector2i.UP
+	const northEast	:= Vector2i(+1, -1)
 
 ## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
 ## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
@@ -946,34 +971,8 @@ static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
 	else: return null
 
 
-static func convertCompassDirectionToVector(direction: Tools.CompassDirection) -> Vector2i:
-	match direction:
-		CompassDirection.east:		return Vector2i.RIGHT
-		CompassDirection.southEast:	return Vector2i(+1, +1)
-		CompassDirection.south:		return Vector2i.DOWN
-		CompassDirection.southWest:	return Vector2i(-1, +1)
-		CompassDirection.west:		return Vector2i.LEFT
-		CompassDirection.northWest:	return Vector2i(-1, -1)
-		CompassDirection.north:		return Vector2i.UP
-		CompassDirection.northEast:	return Vector2i(+1, -1)
-		_:
-			Debug.printWarning(str("convertCompassDirectionToVector() invalid direction: ", direction))
-			return Vector2i.ZERO
-
-
 ## Returns a COPY of a [Vector2i] moved in the specified [enum CompassDirection]
-static func offsetVectorByCompassDirection(vector: Vector2i, direction: Tools.CompassDirection) -> Vector2i:
-	var offsetVector: Vector2i = vector
-	match direction:
-		CompassDirection.east:		offsetVector.x += 1
-		CompassDirection.southEast:	offsetVector.y += 1; offsetVector.x += 1
-		CompassDirection.south:		offsetVector.y += 1
-		CompassDirection.southWest:	offsetVector.y += 1; offsetVector.x -= 1
-		CompassDirection.west:		offsetVector.x -= 1
-		CompassDirection.northWest:	offsetVector.y -= 1; offsetVector.x -= 1
-		CompassDirection.north:		offsetVector.y -= 1
-		CompassDirection.northEast:	offsetVector.y -= 1; offsetVector.x += 1
-		_: Debug.printWarning(str("offsetVectorByCompassDirection() vector: ", vector, ", invalid direction: ", direction))
-	return offsetVector
+static func offsetVectorByCompassDirection(vector: Vector2i, direction: CompassDirection) -> Vector2i:
+	return vector + Tools.compassDirectionVectors[direction]
 
 #endregion
