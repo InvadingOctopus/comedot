@@ -134,10 +134,12 @@ func updatePropertiesLabel() -> void:
 
 
 func onVisibilityToggleHotspot_mouseEntered() -> void:
-	if shouldHideLabelsUntilHover: %Labels.visible = true
+	if shouldHideLabelsUntilHover:
+		%Labels.modulate = Color(%Labels.modulate, 1.0) # Recover from fade-out
+		%Labels.visible = true
 
 
 func onVisibilityToggleHotspot_mouseExited() -> void:
-	if shouldHideLabelsUntilHover: %Labels.visible = false
+	if shouldHideLabelsUntilHover: Animations.fadeOut(%Labels, 2.0) # Fade slowly instead of hiding instantly, to allow some time to hover over the Entity name to see its tooltip
 
 #endregion
