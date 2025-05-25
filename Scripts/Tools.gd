@@ -135,13 +135,13 @@ static func addChildAtNode(child: Node2D, placementNode: Node2D, parent: Node, c
 
 ## Returns the first child of [param parentNode] which matches the specified [param type].
 ## If [param includeParent] is `true` (default) then the [param parentNode] ITSELF may be returned if it is node of a matching type. This may be useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
-static func findFirstChildOfType(parentNode: Node, type: Variant, includeParent: bool = true) -> Node:
-	if includeParent and is_instance_of(parentNode, type):
+static func findFirstChildOfType(parentNode: Node, childType: Variant, includeParent: bool = true) -> Node:
+	if includeParent and is_instance_of(parentNode, childType):
 		return parentNode
 
 	var children: Array[Node] = parentNode.get_children()
 	for child in children:
-		if is_instance_of(child, type): return child # break
+		if is_instance_of(child, childType): return child # break
 	#else
 	return null
 
@@ -150,12 +150,12 @@ static func findFirstChildOfType(parentNode: Node, type: Variant, includeParent:
 ## If [param includeParent] is `true` (default) then the [param parentNode] ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes of an entity to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
 ## PERFORMANCE: Should be the same as multiple calls to [method Tools.findFirstChildOfType] in order of the desired types.
-static func findFirstChildOfAnyTypes(parentNode: Node, types: Array[Variant], returnParentIfNoMatches: bool = true) -> Node:
+static func findFirstChildOfAnyTypes(parentNode: Node, childTypes: Array[Variant], returnParentIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
 	# Nodes may be an instance of multiple inherited types, so check each of the requested types.
 	# NOTE: Types must be the outer loop, so that when searching for [AnimatedSprite2D, Sprite2D], the first [AnimatedSprite2D] is returned.
 	# If child nodes are the outer loop, then a [Sprite2D] might be returned if it is higher in the child tree than the [AnimatedSprite2D].
-	for type: Variant in types:
+	for type: Variant in childTypes:
 		for child in parentNode.get_children():
 			if is_instance_of(child, type): return child # break
 
@@ -165,11 +165,11 @@ static func findFirstChildOfAnyTypes(parentNode: Node, types: Array[Variant], re
 
 
 ## Searches up the tree until a matching parent or grandparent is found.
-static func findFirstParentOfType(childNode: Node, type: Variant) -> Node:
+static func findFirstParentOfType(childNode: Node, parentType: Variant) -> Node:
 	var parent: Node = childNode.get_parent() # parentOrGrandparent
 
 	# If parent is not the matching type, get the grandparent (parent's parent) and keep searching up the tree, until we run out of parents (null).
-	while parent != null and not is_instance_of(parent, type): # NOTE: Avoid calling get_parent() on `null`
+	while parent != null and not is_instance_of(parent, parentType): # NOTE: Avoid calling get_parent() on `null`
 		parent = parent.get_parent()
 
 	return parent
