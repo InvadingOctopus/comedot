@@ -183,7 +183,7 @@ func registerEntity(newParentEntity: Entity) -> void:
 	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
 	if not newParentEntity: return
 	self.parentEntity = newParentEntity
-	self.parentEntity.registerComponent(self) # NOTE: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
+	parentEntity.registerComponent(self) # NOTE: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
 	self.coComponents = parentEntity.components
 
 
@@ -230,7 +230,7 @@ func unregisterEntity() -> void:
 	if parentEntity:
 		willRemoveFromEntity.emit()
 		self.coComponents = {}
-		self.parentEntity.unregisterComponent(self)
+		parentEntity.unregisterComponent(self)
 		self.parentEntity = null
 		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
 
@@ -262,7 +262,7 @@ func _notification(what: int) -> void:
 ## ALERT: Slower performance compared to accessing the [member coComponents] [Dictionary] directly! Use this method only if a warning is needed instead of a crash, in case of a missing component.
 func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
-	var coComponent: Component = self.coComponents.get(type.get_global_name())
+	var coComponent: Component = coComponents.get(type.get_global_name())
 
 	if not coComponent:
 

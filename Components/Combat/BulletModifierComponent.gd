@@ -23,7 +23,7 @@ signal didModifyBullet(bullet: Entity)
 
 #region Dependencies
 
-@onready var gunComponent: GunComponent = self.coComponents.GunComponent
+@onready var gunComponent: GunComponent = coComponents.GunComponent
 
 ## Returns a list of required component types that this component depends on.
 func getRequiredComponents() -> Array[Script]:

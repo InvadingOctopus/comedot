@@ -74,12 +74,12 @@ var wasFireActionJustPressed: bool = false
 #region Dependencies
 var characterBodyComponent: CharacterBodyComponent:
 	get:
-		if not characterBodyComponent: characterBodyComponent = self.coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
+		if not characterBodyComponent: characterBodyComponent = coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
 		return characterBodyComponent
 
 var labelComponent: LabelComponent:
 	get:
-		if not labelComponent: labelComponent = self.coComponents.get(&"LabelComponent")
+		if not labelComponent: labelComponent = coComponents.get(&"LabelComponent")
 		return labelComponent
 
 func getRequiredComponents() -> Array[Script]:
@@ -148,7 +148,7 @@ func fire(ignoreCooldown: bool = false) -> Entity:
 	if bulletParentOverride:
 		bulletParentOverride.add_child(newBullet, false)
 	elif bulletEmitter == %BulletEmitter or bulletEmitter.get_parent() == self:
-		self.parentEntity.get_parent().add_child(newBullet, false)
+		parentEntity.get_parent().add_child(newBullet, false)
 	else:
 		bulletEmitter.get_parent().add_child(newBullet, false)
 
@@ -230,7 +230,7 @@ func createNewBullet() -> Entity:
 
 	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
 
-	var gunFactionComponent: FactionComponent = self.coComponents.get(&"FactionComponent")
+	var gunFactionComponent: FactionComponent = coComponents.get(&"FactionComponent")
 	var bulletFactionComponent: FactionComponent = newBullet.components.get(&"FactionComponent")
 
 	if gunFactionComponent and bulletFactionComponent:

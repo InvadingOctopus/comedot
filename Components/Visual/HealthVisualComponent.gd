@@ -100,5 +100,5 @@ func emitBubble(difference: int) -> void:
 		TextBubble.create(text, self.parentEntity) \
 			.label.label_settings.font_color = color
 	else:
-		TextBubble.create(text, self.parentEntity.get_parent(), self.parentEntity.global_position) \
+		TextBubble.create(text, parentEntity.get_parent(), parentEntity.global_position) \
 			.label.label_settings.font_color = color

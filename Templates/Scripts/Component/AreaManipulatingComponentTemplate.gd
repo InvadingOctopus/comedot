@@ -29,7 +29,7 @@ signal didSomethingHappen ## Placeholder
 
 #region Dependencies
 
-var coComponent: Component = self.coComponents.Component ## Placeholder # WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
+var coComponent: Component = coComponents.Component ## Placeholder # WARNING: "Memoization" (caching the reference) may cause bugs if a new component of the same type is later added to the entity.
 
 ## Returns a list of required component types that this component depends on.
 func getRequiredComponents() -> Array[Script]:

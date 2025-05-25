@@ -20,7 +20,7 @@ extends Component
 		if newValue != shouldTint:
 			shouldTint = newValue
 			if shouldTint: updateTint()
-			else: self.parentEntity.modulate = Color.WHITE
+			else: parentEntity.modulate = Color.WHITE
 
 
 @export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the current health value or the difference.
@@ -61,7 +61,7 @@ func updateTint()-> void:
 	if self.shouldTint and healthComponent:
 		var health: Stat  = healthComponent.health
 		var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase redness as health gets lower
-		var targetModulate:  Color = self.parentEntity.modulate
+		var targetModulate:  Color = parentEntity.modulate
 		targetModulate.r = red
 		if debugMode: Debug.printVariables([health.logName, red, targetModulate])
 		Animations.tweenProperty(self.parentEntity, ^"modulate", targetModulate, 0.1)

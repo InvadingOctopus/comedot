@@ -90,7 +90,7 @@ func snapEntityToCurve() -> Vector2:
 	if pathFollower.rotates: # Do we also need to rotate?
 		var bakedTransform: Transform2D = curve.sample_baked_with_rotation(snappedOffset, pathFollower.cubic_interp)
 		snappedPosition = bakedTransform.get_origin()
-		self.parentEntity.rotation = bakedTransform.get_rotation()
+		parentEntity.rotation = bakedTransform.get_rotation()
 	else:
 		snappedPosition = curve.sample_baked(snappedOffset, pathFollower.cubic_interp)
 
@@ -101,7 +101,7 @@ func snapEntityToCurve() -> Vector2:
 	snappedPosition = path.to_global(snappedPosition)
 
 	# Move the entity
-	self.parentEntity.global_position = snappedPosition
+	parentEntity.global_position = snappedPosition
 
 	if debugMode: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
 

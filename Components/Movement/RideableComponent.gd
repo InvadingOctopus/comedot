@@ -103,7 +103,7 @@ func onSelf_didMount(newRider: Entity) -> void:
 	if not isEnabled or componentTypesToToggle.is_empty(): return
 	# Switch components from rider to mount
 	newRider.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
-	self.parentEntity.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
+	parentEntity.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
 
 
 func onSelf_didDismount(previousRider: Entity) -> void:
@@ -111,7 +111,7 @@ func onSelf_didDismount(previousRider: Entity) -> void:
 	
 	if not isEnabled or componentTypesToToggle.is_empty(): return
 	# Switch components from mount back to previous rider
-	self.parentEntity.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
+	parentEntity.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
 	previousRider.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
 
 

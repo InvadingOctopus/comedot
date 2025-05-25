@@ -42,15 +42,15 @@ func findAnimationNode() -> void:
 
 		# Try searching for an AnimationPlayer before an AnimatedSprite2D
 
-		animationNode = self.parentEntity.get_node(^".") as AnimationPlayer
-		if not animationNode: animationNode = self.parentEntity.get_node(^".") as AnimatedSprite2D
+		animationNode = parentEntity.get_node(^".") as AnimationPlayer
+		if not animationNode: animationNode = parentEntity.get_node(^".") as AnimatedSprite2D
 
 		if animationNode:
 			if debugMode: printDebug("animationNode not specified. Using parent Entity: " + parentEntity.logName)
 
 		else: # Or search for the first matching sibling node.
-			animationNode = self.parentEntity.findFirstChildOfType(AnimationPlayer)
-			if not animationNode: animationNode = self.parentEntity.findFirstChildOfType(AnimatedSprite2D)
+			animationNode = parentEntity.findFirstChildOfType(AnimationPlayer)
+			if not animationNode: animationNode = parentEntity.findFirstChildOfType(AnimatedSprite2D)
 
 			if animationNode:
 				if debugMode: printDebug(str("animationNode not specified. Using first sibling found: ", animationNode))
