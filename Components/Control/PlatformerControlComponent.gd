@@ -23,19 +23,22 @@ extends Component
 
 
 #region State
-
 var inputDirectionOverride:	float = 0 ## Overrides [member inputDirection] for example to allow control by AI agents. NOTE: Reset to 0 every frame.
 var inputDirection:			float
 var lastInputDirection:		float
 var isInputZero:			bool = true
-
-@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
-
 #endregion
 
 
+#region Dependencies
+@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
 func getRequiredComponents() -> Array[Script]:
 	return [PlatformerPhysicsComponent]
+#endregion
+
+
+func _ready() -> void:
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 func _physics_process(_delta: float) -> void:

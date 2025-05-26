@@ -76,7 +76,8 @@ func _ready() -> void:
 
 	# Reset if not enabled
 	if not isEnabled: modulate = Color.WHITE
-
+	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
+	
 	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
 
 

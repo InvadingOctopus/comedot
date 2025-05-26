@@ -122,6 +122,11 @@ signal didMiss(damageReceivingComponent:			DamageReceivingComponent, totalChance
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
 	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
+	# Apply setters because Godot doesn't on initialization
+	self.set_process(isEnabled and not is_zero_approx(damagePerSecond))
+	self.set_physics_process(isEnabled)
+	area.set_deferred("monitoring",  isEnabled)
+	area.set_deferred("monitorable", isEnabled)
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)

@@ -74,6 +74,9 @@ var area: Area2D
 
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
+	# Apply setters because Godot doesn't on initialization
+	area.set_deferred("monitoring",  isEnabled)
+	area.set_deferred("monitorable", isEnabled)
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)

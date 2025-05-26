@@ -24,6 +24,7 @@ extends Node2D
 
 func _ready() -> void:
 	if not nodeToMatch: nodeToMatch = GameState.getPlayer(0)
+	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 func _process(_delta: float) -> void: # _process() instead of _physics_process() because it should happen every frame regardless of physics.

@@ -25,6 +25,10 @@ var intervalElapsed: float
 #endregion
 
 
+func _ready() -> void:
+	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
+
+
 func _process(delta: float) -> void:
 	intervalElapsed += delta
 	if intervalElapsed < interval: return

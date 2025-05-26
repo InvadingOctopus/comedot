@@ -29,13 +29,11 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	if not nodeToRotate:
-		nodeToRotate = self.parentEntity
+	if not nodeToRotate: nodeToRotate = self.parentEntity
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 func _physics_process(delta: float) -> void:
 	var rotationDirection: float = playerInputComponent.turnInput
-
-	if rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
-
-	#Debug.watchList.rotationDirection = rotationDirection
+	if  rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
+	# DEBUG: Debug.watchList.rotationDirection = rotationDirection

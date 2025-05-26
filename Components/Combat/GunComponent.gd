@@ -95,6 +95,12 @@ func getRequiredComponents() -> Array[Script]:
 #endregion
 
 
+func _ready() -> void:
+	# Apply setters because Godot doesn't on initialization
+	self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+	self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
+
+
 #region Process Input
 
 func _unhandled_input(_event: InputEvent) -> void:

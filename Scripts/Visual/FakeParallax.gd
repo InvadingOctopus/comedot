@@ -22,8 +22,8 @@ var previousFocalPosition: Vector2
 
 func _ready() -> void:
 	if not focalNode: focalNode = GameState.getPlayer(0)
-
 	if focalNode: self.previousFocalPosition = focalNode.global_position
+	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 func _process(_delta: float) -> void:

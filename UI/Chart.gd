@@ -73,6 +73,7 @@ func _ready() -> void:
 	resizeArrays()
 	createGridLines()
 	updateNameLabel()
+	self.set_process(isEnabled and not nodeToMonitor.is_empty() and not propertyToMonitor.is_empty()) # Apply setters because Godot doesn't on initialization
 
 
 func resizeArrays() -> void:

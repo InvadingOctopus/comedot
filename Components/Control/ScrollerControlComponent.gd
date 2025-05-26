@@ -14,22 +14,17 @@ extends CharacterBodyDependentComponentBase
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+
 @export var parameters: ScrollerMovementParameters = ScrollerMovementParameters.new()
 #endregion
 
 
 #region State
-
-var camera: Camera2D:
-	get:
-		if not camera: camera = parentEntity.findFirstChildOfType(Camera2D)
-		return camera
-		
+var camera:				Camera2D
 var inputDirection:		Vector2 = Vector2.ZERO
 var lastInputDirection:	Vector2 = Vector2.ZERO
 var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
 #var lastVelocity:		Vector2 = Vector2.ZERO
-
 #endregion
 
 
@@ -43,6 +38,9 @@ func _ready() -> void:
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 	
+	if not self.camera: self.camera = parentEntity.findFirstChildOfType(Camera2D)
+
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 
 

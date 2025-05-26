@@ -22,6 +22,10 @@ extends CharacterBodyDependentComponentBase
 #endregion
 
 
+func _ready() -> void:
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+
+
 func _physics_process(_delta: float) -> void:
 	# Cache to reduce the number of property checks and function calls
 

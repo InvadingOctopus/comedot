@@ -16,6 +16,10 @@ extends CharacterBodyDependentComponentBase
 #endregion
 
 
+func _ready() -> void:
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+
+
 func _physics_process(_delta: float) -> void:
 	for collisionIndex in body.get_slide_collision_count():
 		var collision: KinematicCollision2D = body.get_slide_collision(collisionIndex)

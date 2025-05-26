@@ -35,6 +35,7 @@ func _ready() -> void:
 		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 func _physics_process(delta: float) -> void:

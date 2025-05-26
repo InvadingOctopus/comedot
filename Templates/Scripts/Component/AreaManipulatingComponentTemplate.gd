@@ -57,7 +57,12 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	pass # Placeholder: Add any code needed to configure and prepare the component.
+	# Apply setters because Godot doesn't on initialization
+	self.set_process(isEnabled)
+	self.set_process_input(isEnabled)
+	area.set_deferred("monitoring",  isEnabled)
+	area.set_deferred("monitorable", isEnabled)
+	# Placeholder: Add any code needed to configure and prepare the component.
 
 
 func _input(event: InputEvent) -> void:

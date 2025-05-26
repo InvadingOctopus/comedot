@@ -24,7 +24,6 @@ extends Component
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_process(isEnabled and isMoving) # PERFORMANCE: Set once instead of every frame
 
-
 #endregion
 
 
@@ -35,7 +34,6 @@ var isMoving: bool = true: ## Set to `false` after reaching the [member maximumD
 	set(newValue):
 		isMoving = newValue
 		self.set_process(isEnabled and isMoving)
-
 #endregion
 
 
@@ -50,6 +48,7 @@ func _ready() -> void:
 	if shouldStopAtMaximumDistance \
 	and distanceTraveled > maximumDistance or is_equal_approx(distanceTraveled, maximumDistance):
 		self.isMoving = false
+	self.set_physics_process(isEnabled and isMoving) # Apply setters because Godot doesn't on initialization
 
 
 func _physics_process(delta: float) -> void: # TBD: _physics_process() instead of _process() because movement may interact with physics, right?
@@ -94,4 +93,3 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 	self.distanceTraveled += offset.length()
 
 	if debugMode: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))
-

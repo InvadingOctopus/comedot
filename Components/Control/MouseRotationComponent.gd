@@ -27,6 +27,7 @@ extends Component
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+		self.set_process_input(isEnabled)
 
 #endregion
 
@@ -49,6 +50,9 @@ func _ready() -> void:
 	if not nodeToRotate:
 		nodeToRotate = self.parentEntity
 	setMouseCursor()
+	# Apply setters because Godot doesn't on initialization
+	self.set_physics_process(isEnabled)
+	self.set_process_input(isEnabled)
 
 
 func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
@@ -57,7 +61,7 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 	else: Input.set_custom_mouse_cursor(null, Input.CursorShape.CURSOR_ARROW)
 
 
-func _input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void: # TBD: Should this be _unhandled_input()?
 	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \

@@ -32,7 +32,10 @@ signal didSomethingHappen ## Placeholder
 
 
 func _ready() -> void:
-	pass # Placeholder: Add any code needed to configure and prepare the component.
+	# Apply setters because Godot doesn't on initialization
+	self.set_process(isEnabled)
+	self.set_process_input(isEnabled)
+	# Placeholder: Add any code needed to configure and prepare the component.
 
 
 func _input(event: InputEvent) -> void:
