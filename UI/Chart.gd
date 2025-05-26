@@ -95,8 +95,14 @@ func _process(_delta: float) -> void:
 
 
 func recordMonitoredVariable() -> void:
-	var node:  Node  = self.get_node(nodeToMonitor)
-	if not is_instance_valid(node): return
+	var node: Node  = self.get_node(nodeToMonitor)
+	if not is_instance_valid(node):
+		nameLabel.text = str("INVALID:", nodeToMonitor)
+		return
+
+	if node.get_indexed(propertyToMonitor) is not float:
+		nameLabel.text = str("INVALID:", propertyToMonitor)
+		return
 	var value: float = node.get_indexed(propertyToMonitor)
 
 	monitoredVariableHistory[currentHistoryIndex] = value * valueScale
