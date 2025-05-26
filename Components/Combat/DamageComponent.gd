@@ -71,8 +71,8 @@ extends Component
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 
 		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
-		set_deferred("monitorable", newValue)
-		set_deferred("monitoring",  newValue)
+		area.set_deferred("monitoring",  newValue)
+		area.set_deferred("monitorable", newValue)
 		
 		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
@@ -97,9 +97,8 @@ var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
 var damageOnCollisionWithModifier: int:
 	get: return self.damageOnCollision + (damageModifier.value if damageModifier else 0) # FIXED: Wow watch those () brackets, Godot's ternary operator works in unexpected ways without them!
 
-## Returns this component as an [Area2D] node.
-var area: Area2D:
-	get: return self.get_node(^".") as Area2D
+## The [Area2D] "hitbox" that this component represents, which may be this component's own node.
+var area: Area2D
 
 #endregion
 
@@ -121,6 +120,7 @@ signal didMiss(damageReceivingComponent:			DamageReceivingComponent, totalChance
 
 
 func _ready() -> void:
+	if not area: area = self.get_node(^".") as Area2D
 	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
