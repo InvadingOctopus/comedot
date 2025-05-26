@@ -68,6 +68,18 @@ const sequenceNegative1toPositive1stepPoint1: Array[float] = [-1.0, -0.9, -0.8, 
 #endregion
 
 
+#region Subclasses
+
+## A set of parameters for [method CanvasItem.draw_line]
+class Line: # UNUSED: Until Godot can support custom class @export :')
+	var start:	Vector2
+	var end:	Vector2
+	var color:	Color = Color.WHITE
+	var width:	float = -1.0 ## A negative means the line will remain a "2-point primitive" i.e. always be a 1-width line regardless of scaling.
+
+#endregion
+
+
 #region Scene Management
 # See SceneManager.gd
 #endregion
