@@ -36,7 +36,7 @@ func _ready() -> void:
 
 ## @experimental
 func _physics_process(_delta: float) -> void:
-	if not isEnabled: return
+	# if not isEnabled: return # Set by `super.isEnabled` setter and _ready()
 	# Keep scanning until a [DamageReceivingComponent] is found, if any.
 	while selfAsRayCast.is_colliding():
 		recentCollidingObject = selfAsRayCast.get_collider()

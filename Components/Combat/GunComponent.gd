@@ -23,7 +23,10 @@ extends CooldownComponent
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
 
 ## If `true`, the gun fires automatically without any player input.
-@export var autoFire: bool = false
+@export var autoFire: bool = false:
+	set(newValue):
+		autoFire = newValue
+		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
 
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
 @export var pressAgainToShoot: bool = false
@@ -49,11 +52,14 @@ extends CooldownComponent
 
 @export var isPlayerControlled: bool = true: ## Accept player input? Disable for AI-controlled enemies.
 	set(newValue):
-		if newValue != isPlayerControlled:
-			isPlayerControlled = newValue
-			self.set_process_unhandled_input(isPlayerControlled)
+		isPlayerControlled = newValue
+		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
 
 #endregion
 
@@ -99,10 +105,9 @@ func _unhandled_input(_event: InputEvent) -> void:
 	# check the [member Control.mouse_filter] property of any overlaying nodes,
 	# and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
 
-	if not isEnabled or not isPlayerControlled or autoFire: return
-
 	wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
 	isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
+	self.get_viewport().set_input_as_handled()
 
 
 func _process(_delta: float) -> void:
@@ -111,8 +116,6 @@ func _process(_delta: float) -> void:
 	# NOTE: Input actions are handled in [_unhandled_input]
 	# to allow UI buttons etc. to handle mouse clicks,
 	# because it looks janky if the gun fires when the player clicks on an unrelated UI button.
-
-	if not isEnabled: return
 
 	if autoFire and hasCooldownCompleted:
 		fire()

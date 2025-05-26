@@ -43,6 +43,7 @@ extends CanvasItem
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
+		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 		if not isEnabled: modulate = Color.WHITE
 
 #endregion
@@ -81,8 +82,6 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if not isEnabled: return
-
 	# Cycle the values within 0.0 and 1.0
 
 	# NOTE: Apparently setting [Color.from_hsv()] automatically modulates by 1.0

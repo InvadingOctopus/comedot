@@ -9,7 +9,11 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export var isEnabled:  bool = true
+@export var isEnabled:  bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+
 @export var parameters: AsteroidsMovementParameters = AsteroidsMovementParameters.new()
 #endregion
 
@@ -34,7 +38,6 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not isEnabled: return
 	processInput(delta)
 	characterBodyComponent.queueMoveAndSlide()
 	lastVelocity = body.velocity # TBD: Should this come last?

@@ -16,9 +16,8 @@ extends Component
 
 @export var isEnabled: bool = true:
 	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			self.set_physics_process(isEnabled)
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -40,7 +39,6 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _physics_process(_delta: float) -> void:
-	if not isEnabled: return
 	processInput()
 	copyInputToPhysicsComponent()
 

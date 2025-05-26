@@ -10,7 +10,10 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export var isEnabled:  bool = true
+@export var isEnabled:  bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 @export var parameters: ScrollerMovementParameters = ScrollerMovementParameters.new()
 #endregion
 
@@ -44,8 +47,6 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not isEnabled: return
-	
 	processInput(delta)
 	#applyDefaultVelocity(delta) # TBD: Is a separate function useful?
 	clampVelocity(delta)

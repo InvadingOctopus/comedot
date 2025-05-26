@@ -11,9 +11,8 @@ extends CanvasItem
 @export var scrollScale: Vector2 = Vector2(1, 0)
 @export var isEnabled:	 bool	 = true:
 	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			self.set_process(isEnabled)
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 #endregion
 
 #region State
@@ -28,8 +27,6 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	# if not isEnabled: return # Set by property setter
-
 	if self.previousFocalPosition != focalNode.global_position:
 		var difference: Vector2 = previousFocalPosition - focalNode.global_position
 		self.position += (difference * scrollScale)

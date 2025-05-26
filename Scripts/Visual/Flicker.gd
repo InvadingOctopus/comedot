@@ -14,9 +14,8 @@ extends CanvasItem
 
 @export var isEnabled:   bool = true:
 	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			self.set_process(isEnabled)
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -27,8 +26,6 @@ var intervalElapsed: float
 
 
 func _process(delta: float) -> void:
-	# if not isEnabled: return # Set by property setter
-	
 	intervalElapsed += delta
 	if intervalElapsed < interval: return
 	intervalElapsed = 0

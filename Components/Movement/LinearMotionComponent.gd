@@ -19,7 +19,11 @@ extends Component
 @export var shouldDeleteParentAtMaximumDistance: bool = false
 @export_range(50, 2000, 5) var maximumDistance: float = 200
 
-@export var isEnabled:							 bool = true
+@export var isEnabled:							 bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled and isMoving) # PERFORMANCE: Set once instead of every frame
+
 
 #endregion
 
@@ -27,7 +31,11 @@ extends Component
 #region State
 @export_storage var speed: float = initialSpeed ## Set to [member initialSpeed] on [method _ready]
 @export_storage var distanceTraveled: float = 0
-var isMoving: bool = true ## Set to `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
+var isMoving: bool = true: ## Set to `false` after reaching the [member maximumDistance] if [member shouldStopAtMaximumDistance].
+	set(newValue):
+		isMoving = newValue
+		self.set_process(isEnabled and isMoving)
+
 #endregion
 
 
@@ -44,9 +52,7 @@ func _ready() -> void:
 		self.isMoving = false
 
 
-func _physics_process(delta: float) -> void:
-	if not isEnabled or not isMoving: return
-
+func _physics_process(delta: float) -> void: # TBD: _physics_process() instead of _process() because movement may interact with physics, right?
 	# Check the maximum distance limit before moving any further.
 
 	if shouldStopAtMaximumDistance or shouldDeleteParentAtMaximumDistance: # So that the distance comparisson doesn't happen every frame.

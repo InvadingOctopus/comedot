@@ -10,8 +10,15 @@ extends Node2D
 
 #region Parameters
 
-@export var nodeToMonitor:		NodePath ## See [NodePath] documentation for examples of paths.
-@export var propertyToMonitor:	NodePath ## A path to the node's property, beginning with ":"
+@export var nodeToMonitor:		NodePath: ## See [NodePath] documentation for examples of paths.
+	set(newValue):
+		nodeToMonitor = newValue
+		self.set_process(isEnabled and not nodeToMonitor.is_empty() and not propertyToMonitor.is_empty())
+
+@export var propertyToMonitor:	NodePath: ## A path to the node's property, beginning with ":"
+	set(newValue):
+		propertyToMonitor = newValue
+		self.set_process(isEnabled and not nodeToMonitor.is_empty() and not propertyToMonitor.is_empty())
 
 ## How many instances of values to record for the [member Chart.propertyToMonitor].
 # NOTE: This is the first INVALID index outside the bounds of the [member Chart.monitoredVariableHistory] array; it must be compared with a >=.
@@ -30,7 +37,10 @@ extends Node2D
 @export var gridColor:	Color = Color(0.0, 0.2, 0.3,  0.5)
 @export var headColor:	Color = Color(0.5, 0.5, 0.75, 0.25) ## The color of the vertical "head" or "tracker" line.
 
-@export var isEnabled:	bool = true
+@export var isEnabled:	bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled and not nodeToMonitor.is_empty() and not propertyToMonitor.is_empty()) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -81,7 +91,6 @@ func _draw() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not isEnabled: return
 	recordMonitoredVariable()
 	updateMinMaxLabels()
 

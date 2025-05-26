@@ -13,7 +13,10 @@ extends CharacterBodyDependentComponentBase
 #region Parameters
 @export_range(0, 1000, 5.0) var thrust:		float = 100
 @export_range(0, 1000, 5.0) var friction:	float = 50
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 #endregion
 
 
@@ -32,7 +35,6 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not isEnabled: return
 	var input: float = playerInputComponent.thrustInput
 
 	if not is_zero_approx(input): # Apply thrust

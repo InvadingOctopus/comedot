@@ -13,7 +13,10 @@ extends Component
 ## Override this to rotate a different node instead of the parent [Entity], such as a [GunComponent].
 @export var nodeToRotate: Node2D = null
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 #endregion
 
 
@@ -31,8 +34,6 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not isEnabled: return
-
 	var rotationDirection: float = playerInputComponent.turnInput
 
 	if rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta

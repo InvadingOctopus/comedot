@@ -23,7 +23,10 @@ extends Component
 ## This allows other components such as [TurningControlComponent] to function, supporting mouse & gamepad control on the same entity, but not at the same time.
 @export var shouldDisableOnTurningInput: bool = true
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -69,9 +72,7 @@ func _input(event: InputEvent) -> void:
 			setMouseCursor(true)
 
 
-func _physics_process(delta: float) -> void:
-	if not isEnabled: return
-
+func _physics_process(delta: float) -> void: # CHECK: _physics_process() instead of _process() because any movement may interact with physics, right?
 	# Keep track of any actual changes in position & rotation, for any other components to monitor.
 
 	# TBD: Where to `get_global_mouse_position()` from? The parentEntity or nodeToRotate?

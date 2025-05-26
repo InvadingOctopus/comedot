@@ -34,7 +34,10 @@ extends Component
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
 ## @experimental
-@export_range(0, 1000) var damagePerSecond: float = 0 # NOTE: Should this be an integer or float?
+@export_range(0, 1000) var damagePerSecond: float = 0: # NOTE: Should this be an integer or float?
+	set(newValue):
+		damagePerSecond = newValue # Don't bother checking for a change
+		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of every frame
 
 ## If less than 100, then a collision with a [DamageReceivingComponent] may occasionally be ignored.
 ## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
@@ -70,6 +73,9 @@ extends Component
 		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
 		set_deferred("monitorable", newValue)
 		set_deferred("monitoring",  newValue)
+		
+		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
+		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
 #endregion
 
@@ -228,9 +234,7 @@ func causeDamageToAllReceivers() -> void:
 
 #region Per-Frame Damage
 
-func _physics_process(delta: float) -> void:
-	if not isEnabled or is_zero_approx(damagePerSecond): return
-
+func _process(delta: float) -> void: # TBD: _process() instead of _physics_process because this is time-based, not physics based, right?
 	## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
 	## TBD: Skip the frame in which a collision happens?
 	## But the would require more work to keep track of each collision :(

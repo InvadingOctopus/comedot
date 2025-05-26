@@ -13,7 +13,15 @@ extends Component
 ## If `null` then it will be acquired from the parent [Entity] on [method _enter_tree()]
 @export var area: Area2D
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		# PERFORMANCE: Set once instead of every frame
+		self.set_process(isEnabled)
+		self.set_process_input(isEnabled)
+		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+		area.set_deferred("monitoring",  newValue)
+		area.set_deferred("monitorable", newValue)
 #endregion
 
 
@@ -53,12 +61,10 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not isEnabled: return
 	pass # Placeholder: Handle one-shot input events such as jumping or firing.
 
 
 func _process(delta: float) -> void: # NOTE: If you need to process movement or collisions, use `_physics_process()`
-	if not isEnabled: return
 	pass # Placeholder: Perform any per-frame updates.
 
 

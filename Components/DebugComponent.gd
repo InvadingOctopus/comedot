@@ -11,9 +11,9 @@ extends Component
 
 @export var isEnabled: bool = true:
 	set(newValue):
-		if newValue != isEnabled:
+		if newValue != isEnabled: # Avoid unnecessary updateLabelsVisibility()
 			isEnabled = newValue
-			self.set_process(isEnabled)
+			self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 			if self.is_node_ready(): updateLabelsVisibility()
 
 
@@ -110,7 +110,6 @@ func updateLabelsVisibility() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not isEnabled: return
 	if propertiesToLabel.is_empty(): # In case the array was modified at runtime
 		self.set_process(false)
 		return

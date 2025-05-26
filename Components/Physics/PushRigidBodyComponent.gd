@@ -9,12 +9,14 @@ extends CharacterBodyDependentComponentBase
 
 #region Parameters
 @export_range(10.0, 100.0, 10.0) var pushingForce: float = 100.0
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 #endregion
 
 
 func _physics_process(_delta: float) -> void:
-	if not isEnabled: return
 	for collisionIndex in body.get_slide_collision_count():
 		var collision: KinematicCollision2D = body.get_slide_collision(collisionIndex)
 		var collider:  RigidBody2D = collision.get_collider() as RigidBody2D
