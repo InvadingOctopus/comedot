@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkokjrtkb8dch"]
+
+[ext_resource type="Script" uid="uid://brlukm4dl1yu7" path="res://Components/Visual/ShapeDrawComponent.gd" id="1_kev2r"]
+
+[node name="ShapeDrawComponent" type="Node2D" groups=["components"]]
+editor_description = "Draws vector shapes and shit."
+script = ExtResource("1_kev2r")
+metadata/_edit_group_ = true
