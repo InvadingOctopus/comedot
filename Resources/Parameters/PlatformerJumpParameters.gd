@@ -16,16 +16,16 @@ extends Resource
 @export_range(0, 10, 1) var maxNumberOfJumps: int = 2
 
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
-@export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity1stJump: float = 350 
+@export_range(-1000, 1000, 5, "or_greater", "or_less") var jumpVelocity1stJump: float = 350 
 
 ## A shorter maximum velocity for the 1st jump if the player releases the Jump button quickly.
 ## NOTE: Does NOT apply to mid-air or wall jumps.
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
-@export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity1stJumpShort: float = 150
+@export_range(-1000, 1000, 5, "or_greater", "or_less") var jumpVelocity1stJumpShort: float = 150
 
 ## The velocity of the 2nd and all subsequent jumps in a single chain (before touching the ground).
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].
-@export_range(-1000, 1000, 10, "or_greater", "or_less") var jumpVelocity2ndJump: float = 300
+@export_range(-1000, 1000, 5, "or_greater", "or_less") var jumpVelocity2ndJump: float = 300
 
 ## Allows a "grace period" to let the player to jump just after walking off a platform floor.
 ## This may provide a better feel of control in some games.
