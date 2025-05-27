@@ -1,6 +1,8 @@
 ## A component which is a [Camera2D] node with various options,
 ## such as attaching to a grandparent Node when the parent [Entity] is destroyed, to preserve the on screen viewing position.
 ## TIP: For standalone non-component scripts for any [Camera2D] node, see the `/Scripts/Visual/` folder and CameraMouseTracking.gd, ClampCameraToArea.gd etc.
+## ALERT: BUG: There may be an initial delay or undesiring panning as the start of scene as the [Camera2D] moves to the parent node's position, specially if [member Camera2D.position_smoothing_enabled] is `true`.
+## BUGFIX: To workaround the initial lag, add a standalone [Camera2D] outside the player Entity, at the same position as this [CameraComponent], and add a [RemoteTransform2D] as a child of this component, then link the [RemoteTransform2D] with the external [Camera2D].
 
 class_name CameraComponent
 extends Component
@@ -63,23 +65,28 @@ extends Component
 
 
 #region State
-var selfAsCamera:  Camera2D # Necessary because `Component` is a `Node` not `Node2D` :')
-var zoomFlipTimer: float
+var selfAsCamera:	Camera2D # Necessary because `Component` is a `Node` not `Node2D` :')
+var camera:			Camera2D # The actual camera in use. TODO: Expose as @export for using external [Camera2D] nodes.
+var zoomFlipTimer:	float
 #endregion
 
 
 func _ready() -> void:
-	self.selfAsCamera = self.get_node(^".") as Camera2D
-
-	if selfAsCamera:
+	selfAsCamera = self.get_node(^".") as Camera2D
+	if not camera: camera = selfAsCamera
+	
+	if camera:
 		if boundary: clampToBoundary()
-		if shouldTrackMouse: self.position = selfAsCamera.get_local_mouse_position()
+		if shouldTrackMouse: self.position = camera.get_local_mouse_position()
 
 		self.set_process(shouldTrackMouse or shouldBounceZoom) # Update per-frame only if needed
 		self.set_process_input(shouldLookAhead)
 
 	else:
 		printWarning("CameraComponent is not a Camera2D node!")
+	
+	camera.align()
+	camera.force_update_scroll()
 
 
 #region Detachment & Reattachment
@@ -118,15 +125,15 @@ func attachToGrandparent() -> void:
 	if not is_instance_valid(newParent):
 		newParent = SceneManager.get_tree().current_scene # FINDBETTERWAY: How else to get the damn SceneTree from a Node that's not in the SceneTree???
 
-	if debugMode: printDebug(str("Reattaching to new parent: ", newParent, " @ global position: ", selfAsCamera.global_position))
+	if debugMode: printDebug(str("Reattaching to new parent: ", newParent, " @ global position: ", camera.global_position))
 
-	selfAsCamera.position_smoothing_enabled = false # TODO: FIXME: HACK: Fix jump/hitter :(
+	camera.position_smoothing_enabled = false # TODO: FIXME: HACK: Fix jump/hitter :(
 	self.owner = null
 	self.reparent(newParent, true) # keep_global_transform
 	self.set_owner(newParent)
-	selfAsCamera.reset_smoothing()
+	camera.reset_smoothing()
 
-	if debugMode: printDebug(str("New position: ", selfAsCamera.position, ", global: ", selfAsCamera.global_position))
+	if debugMode: printDebug(str("New position: ", camera.position, ", global: ", camera.global_position))
 
 #endregion
 
@@ -141,10 +148,12 @@ func clampToBoundary() -> void:
 	if not areaRectangle:
 		Debug.printWarning(str("Cannot get a Rect2 from Area2D: ", boundary), self)
 
-	selfAsCamera.limit_left   = int(areaRectangle.position.x)
-	selfAsCamera.limit_right  = int(areaRectangle.end.x)
-	selfAsCamera.limit_top	  = int(areaRectangle.position.y)
-	selfAsCamera.limit_bottom = int(areaRectangle.end.y)
+	camera.limit_left   = int(areaRectangle.position.x)
+	camera.limit_right  = int(areaRectangle.end.x)
+	camera.limit_top	  = int(areaRectangle.position.y)
+	camera.limit_bottom = int(areaRectangle.end.y)
+	
+	camera.reset_smoothing()
 
 #endregion
 
@@ -154,11 +163,11 @@ func clampToBoundary() -> void:
 func _process(delta: float) -> void:
 	# NOTE: Cannot use `_input()` for updating position only on mouse events, because it causes erratic behavior.
 	if shouldTrackMouse:
-		selfAsCamera.position = selfAsCamera.get_global_mouse_position() * (0.5) # CHECK: WEIRD: Using the global position and halving it smoothes movement and fixes erratic behavior.
+		camera.position = camera.get_global_mouse_position() * (0.5) # CHECK: WEIRD: Using the global position and halving it smoothes movement and fixes erratic behavior.
 
 	# Woop Zoop
 	if shouldBounceZoom:
-		selfAsCamera.zoom += Vector2(zoomDirection * delta, zoomDirection * delta) # Camera2D.zoom
+		camera.zoom += Vector2(zoomDirection * delta, zoomDirection * delta) # Camera2D.zoom
 		zoomFlipTimer += delta
 		if zoomFlipTimer >= zoomTimerMax:
 			zoomDirection = -zoomDirection
@@ -171,16 +180,16 @@ func _input(event: InputEvent) -> void:
 	# THANKS: Inspired by optionaldev2876@YouTube https://www.youtube.com/watch?v=Wzrw6_KDMl4
 	if shouldLookAhead and event is InputEventMouseMotion:
 		# Get the unscaled Viewport dimensions
-		var viewport: Rect2 = selfAsCamera.get_viewport_rect()
+		var viewport: Rect2 = camera.get_viewport_rect()
 		# Get the mouse position from the center of the screen
 		var target: Vector2 = event.position - (viewport.size * 0.5)
 
 		if target.length() < lookAheadDeadZone: # Move the camera offset only when the target is far enough from the center.
-			selfAsCamera.offset = Vector2.ZERO
+			camera.offset = Vector2.ZERO
 		else:
-			selfAsCamera.offset = target.normalized() * (target.length() - lookAheadDeadZone) * 0.5
+			camera.offset = target.normalized() * (target.length() - lookAheadDeadZone) * 0.5
 
-		if debugMode: printDebug(str("event.position: ", event.position, ", viewport.half: ", viewport.size * 0.5, ", target: ", target, ", target.normalized: ", target.normalized(), ", target.length: ", target.length(), ", Camera2D.offset: ", selfAsCamera.offset))
+		if debugMode: printDebug(str("event.position: ", event.position, ", viewport.half: ", viewport.size * 0.5, ", target: ", target, ", target.normalized: ", target.normalized(), ", target.length: ", target.length(), ", Camera2D.offset: ", camera.offset))
 
 #endregion
 
@@ -189,7 +198,7 @@ func showDebugInfo() -> void:
 	if not debugMode: return
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.boundary		= self.boundary.position
-	Debug.watchList.limit_left  	= selfAsCamera.limit_left
-	Debug.watchList.limit_right 	= selfAsCamera.limit_right
-	Debug.watchList.limit_top		= selfAsCamera.limit_top
-	Debug.watchList.limit_bottom	= selfAsCamera.limit_bottom
+	Debug.watchList.limit_left  	= camera.limit_left
+	Debug.watchList.limit_right 	= camera.limit_right
+	Debug.watchList.limit_top		= camera.limit_top
+	Debug.watchList.limit_bottom	= camera.limit_bottom
