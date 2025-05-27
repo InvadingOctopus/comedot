@@ -1,4 +1,4 @@
-## Generates a sine or cosine wave function and optionally applies it to the position of the parent Entity's node every frame, resulting in a wave-like movement along an axis, or a circular motion if both axes are used.
+## Generates a sine wave function and optionally applies it to the position of the parent Entity's node every frame, resulting in a wave-like movement along an axis, or a circular motion if both axes are used.
 ## NOTE: Sets the parent entity's position DIRECTLY; does NOT use "physics" such as [member CharacterBody2D.velocity].
 ## TIP: This component is a [Node2D] so it may itself be moved without affecting the Entity, and have visual child nodes etc. This may be useful for having "drones" around the player etc.
 
@@ -8,10 +8,12 @@ extends Component
 
 #region Parameters
 
-@export_range(-1000, +1000, 1)   var xAmplitude: float = 0 ## The vertical range of the wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "trough" (-[member xAmplitude]) of the wave to the "peak" (+[member xAmplitude]).
-@export_range(0,	  100,	0.1) var xFrequency: float = 0 ## The number of times during 1 second for the horizontal wave to go from -[member xAmplitude] to +[member xAmplitude]. i.e. a frequency of 0.5 will take 2 seconds. 
+## The horizontal range of the sine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "trough" -[member xAmplitude] of the wave to the "peak" +[member xAmplitude].
+## NOTE: A SINE wave is used for the horizontal movement; NOT a cosine wave, because sine always starts at 0.
+@export_range(-1000, +1000, 1)   var xAmplitude: float = 0
+@export_range(0,	  100,	0.1) var xFrequency: float = 0 ## The number of times during 1 second for the horizontal wave to go from -[member xAmplitude] to +[member xAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
 
-@export_range(-1000, +1000, 1)   var yAmplitude: float = 64 ## The vertical range of the wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "peak" (-[member yAmplitude]) of the wave to "trough" (+[member yAmplitude]).
+@export_range(-1000, +1000, 1)   var yAmplitude: float = 64 ## The vertical range of the sine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "peak" -[member yAmplitude] of the wave to the "trough" +[member yAmplitude].
 @export_range(0,	  100,	0.1) var yFrequency: float = 1  ## The number of times during 1 second for the vertical wave to go from -[member yAmplitude] to +[member yAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
 
 @export var nodeToMove: Node2D ## If not specified, the parent Entity will be used.
@@ -40,7 +42,7 @@ func _ready() -> void:
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
-func _physics_process(delta: float) -> void:	
+func _physics_process(delta: float) -> void:
 	# NOTE: SOLVED: Problem Example Parameters: yAmplitude:64
 	# Adding directly with `position.y += wave.y * delta` gives an almost-pixel-perfect position range but it's doubled: from 0 to +128,
 	# WHY: because the generated wave goes up to +64 then back down to 0, so the wave's value is +64 and AGAIN +64 MORE units!
@@ -48,18 +50,18 @@ func _physics_process(delta: float) -> void:
 	# TRIED: Using `cos` for Y gives a Y range of -63.45~ to +64.5~ which is not pixel-perfect
 
 	time += delta # Let each component instance start at 0 and have its own wave phase. Also `Time.get_ticks_msec()` doesn't work right
-	
+
 	previousWavePosition = wavePosition
-	
+
 	# Store the wave separately for use by other scripts etc.
-	wavePosition = Vector2( 
-		cos(time * (PI * xFrequency)) * xAmplitude,
+	wavePosition = Vector2(
+		sin(time * (PI * xFrequency)) * xAmplitude, # NOTE: Use a sine wave for the horizontal X component too because sine starts at 0!
 		sin(time * (PI * yFrequency)) * yAmplitude)
 
-	# Get the wave "direction" or "derivative"
+	# Get the wave "direction"
 	waveDelta = wavePosition - previousWavePosition
 
-	# Move the node by the derivative of the wave 
+	# Move the node by the "derivative" of the wave (TBD: is "derivative" the correct word to use here? ^^")
 	nodeToMove.position += waveDelta
 
 	# DEBUG: if debugMode: showDebugInfo(delta)
@@ -71,13 +73,13 @@ func showDebugInfo(delta: float) -> void:
 	if not debugMode: return
 
 	secondsToMaxAmplitudeX += delta
-	if is_equal_approx(abs(nodeToMove.position.x), abs(yAmplitude)):
-		Debug.printVariables([parentEntity.name, time, secondsToMaxAmplitudeX, wavePosition.x, nodeToMove.position.x])
+	if not is_zero_approx(xAmplitude) and is_equal_approx(abs(nodeToMove.position.x), abs(xAmplitude)):
+		Debug.printVariables([parentEntity.name, time, "Seconds to X:", secondsToMaxAmplitudeX, wavePosition.x, nodeToMove.position.x])
 		secondsToMaxAmplitudeX = 0
 
 	secondsToMaxAmplitudeY += delta
-	if is_equal_approx(abs(nodeToMove.position.y), abs(yAmplitude)):
-		Debug.printVariables([parentEntity.name, time, secondsToMaxAmplitudeY, wavePosition.y, nodeToMove.position.y])
+	if not is_zero_approx(yAmplitude) and is_equal_approx(abs(nodeToMove.position.y), abs(yAmplitude)):
+		Debug.printVariables([parentEntity.name, time, "Seconds to Y:", secondsToMaxAmplitudeY, wavePosition.y, nodeToMove.position.y])
 		secondsToMaxAmplitudeY = 0
 
 #endregion
