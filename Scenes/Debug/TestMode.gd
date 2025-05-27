@@ -26,6 +26,8 @@ var isInTestMode: bool = false:
 		isInTestMode = newValue
 		Debug.testMode = newValue
 		applyTestMode()
+var sceneTree: SceneTree:
+	get: return self.get_tree()
 #endregion
 
 
