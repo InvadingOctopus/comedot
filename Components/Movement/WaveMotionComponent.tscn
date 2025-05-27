@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7jqgvvksna1y"]
+
+[ext_resource type="Script" uid="uid://dvlb10o1e5sqi" path="res://Components/Movement/WaveMotionComponent.gd" id="1_q51k5"]
+
+[node name="WaveMotionComponent" type="Node2D" groups=["components"]]
+editor_description = "Applies a sine/cosine function to the Entity's position."
+script = ExtResource("1_q51k5")
+metadata/_edit_group_ = true
