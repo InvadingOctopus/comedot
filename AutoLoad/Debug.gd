@@ -200,20 +200,6 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 
 #region Logging
 
-class CustomLogKeys:
-	# NOTE: Must be all lower case for `Tools.setLabelsWithDictionary()`
-	const message	= &"message"
-	const frameTime	= &"frametime"
-	const object	= &"object"
-	const instance	= &"instance"
-	const name		= &"name"
-	const type		= &"type"
-	const nodeClass	= &"nodeclass"
-	const baseScript = &"basescript"
-	const className	= &"classname"
-	const parent	= &"parent"
-
-
 func printLog(message: String = "", object: Variant = null, messageColor: String = "", objectColor: String = "") -> void:
 	updateLastFrameLogged()
 	print_rich(str("[color=", objectColor, "]", object, "[/color] [color=", messageColor, "]", message)) # [/color] not necessary
@@ -239,8 +225,9 @@ func printDebug(message: String = "", object: Variant = null, _objectColor: Stri
 ## TIP: To see the chain of recent function calls which led to a warning, use [method Debug.printTrace]
 func printWarning(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	push_warning(str("Frame ", lastFrameLogged, " ⚠️ ", object, " ", message))
-	print_rich(str("[indent]􀇿 [color=yellow]", object, " ", message)) # [/color] not necessary
+	var callerOfLogger: String = " ← " + getCaller(3) # Get the stack index 3 for the function that called the function which called this print function :)
+	push_warning(str("⚠️ ", object, " ", message, callerOfLogger)) # push_warning() does not add a line to the output log, so we can add a color-formatted message ourselves.
+	print_rich(str("[indent]􀇿 [color=yellow]", object, " ", message, "[color=orange]", callerOfLogger)) # [/color] not necessary
 
 
 ## Prints an error message in the Output Log and Godot Debugger Console. Includes the caller's file and method.
@@ -248,7 +235,7 @@ func printWarning(message: String = "", object: Variant = null, _objectColor: St
 ## TIP: To see the chain of recent function calls which led to an error, use [method Debug.printTrace]
 func printError(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
 	updateLastFrameLogged()
-	var plainText: String = str("Frame ", lastFrameLogged, " ", getCaller(3), " ❗️ ", object, " ", message)
+	var plainText: String = str("❗️ ", object, " ", message, " ← ", getCaller(3)) # Get the stack index 3 for the function that called the function which called this print function :)
 	push_error(plainText)
 	printerr(plainText)
 	# Don't print a duplicate line, to reduce clutter.
@@ -340,6 +327,20 @@ static func updateLastFrameLogged() -> void:
 
 
 #region Custom Log UI
+
+class CustomLogKeys:
+	# NOTE: Must be all lower case for `Tools.setLabelsWithDictionary()`
+	const message	= &"message"
+	const frameTime	= &"frametime"
+	const object	= &"object"
+	const instance	= &"instance"
+	const name		= &"name"
+	const type		= &"type"
+	const nodeClass	= &"nodeclass"
+	const baseScript = &"basescript"
+	const className	= &"classname"
+	const parent	= &"parent"
+
 
 ## @experimental
 func addCustomLog(object: Variant, parent: Variant, message: String) -> void:
