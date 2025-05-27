@@ -40,7 +40,7 @@ func _ready() -> void:
 		characterBodyComponent.shouldResetVelocityIfZeroMotion = false
 
 	if not nodeToChase and shouldChasePlayerIfUnspecified:
-		nodeToChase = GameState.players.front()
+		nodeToChase = GameState.getPlayer(0)
 
 
 func _physics_process(_delta: float) -> void:
