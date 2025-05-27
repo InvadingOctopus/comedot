@@ -29,8 +29,9 @@ extends Component
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 
 		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
-		area.set_deferred("monitoring",  newValue)
-		area.set_deferred("monitorable", newValue)
+		if  area: 
+			area.set_deferred("monitoring",  newValue)
+			area.set_deferred("monitorable", newValue)
 #endregion
 
 
@@ -75,8 +76,9 @@ var area: Area2D
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
 	# Apply setters because Godot doesn't on initialization
-	area.set_deferred("monitoring",  isEnabled)
-	area.set_deferred("monitorable", isEnabled)
+	if  area: 
+		area.set_deferred("monitoring",  isEnabled)
+		area.set_deferred("monitorable", isEnabled)
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)

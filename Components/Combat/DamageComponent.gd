@@ -71,9 +71,10 @@ extends Component
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 
 		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
-		area.set_deferred("monitoring",  newValue)
-		area.set_deferred("monitorable", newValue)
-		
+		if  area:
+			area.set_deferred("monitoring",  newValue)
+			area.set_deferred("monitorable", newValue)
+
 		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
@@ -125,8 +126,9 @@ func _ready() -> void:
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled and not is_zero_approx(damagePerSecond))
 	self.set_physics_process(isEnabled)
-	area.set_deferred("monitoring",  isEnabled)
-	area.set_deferred("monitorable", isEnabled)
+	if  area:
+		area.set_deferred("monitoring",  isEnabled)
+		area.set_deferred("monitorable", isEnabled)
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)
@@ -191,10 +193,10 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	# NOTE: The "own entity" check is done once in getDamageReceivingComponent()
 	# The signal is emitted in onAreaEntered()
 	# Factions will be checked in DamageReceivingComponent.checkFactions()
-	
+
 	# But first, check if we actually hit or miss…
 	if not calculateChance(damageReceivingComponent): return
-	
+
 	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
 	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
 
@@ -218,11 +220,11 @@ func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool
 		self.didMiss.emit(damageReceivingComponent, totalChance, 0)
 		return false
 	else:
-		var roll: int = randi_range(1, 100) 
+		var roll: int = randi_range(1, 100)
 		var didSucceedRoll: bool = roll <= totalChance # i.e. If totalChance is 10 then a roll of 1-10 will succeed but 11 will fail.
 		if debugMode: printDebug(str("Rolled ", roll, ": Missed!" if not didSucceedRoll else ""))
 		if didSucceedRoll: self.didSucceed.emit(damageReceivingComponent	, totalChance, roll)
-		else: 
+		else:
 			self.didMiss.emit(damageReceivingComponent, totalChance, roll)
 			if shouldEmitBubbleOnMiss: TextBubble.create("MISS", damageReceivingComponent)
 		return didSucceedRoll
