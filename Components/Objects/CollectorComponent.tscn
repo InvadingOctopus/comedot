@@ -7,7 +7,7 @@ resource_local_to_scene = true
 size = Vector2(16, 16)
 
 [node name="CollectorComponent" type="Area2D" groups=["components"]]
-collision_layer = 0
+collision_layer = 2
 collision_mask = 2048
 script = ExtResource("1_wnmgx")
 metadata/_edit_group_ = true

@@ -18,7 +18,9 @@ extends CollectibleComponent
 @export var statModifierMinimum: int = 1 ## The minimum amount of change, inclusive. To always apply a fixed amount, set both minimum and maximum to the same number.
 @export var statModifierMaximum: int = 1 ## The maximum amount of change, inclusive. To always apply a fixed amount, set both minimum and maximum to the same number.
 
-@export var preventCollectionIfStatIsMax: bool = true # TBD: Better name? :')
+## Denies collection if the [Stat] is at its maximum limit.
+## IMPORTANT: The [CollectorComponent]'s physics [member CollisionObject2D.collision_layer] must match [CollectibleStatComponent]'s [member CollisionObject2D.collision_mask] to trigger the [signal Area2D.onAreaExited] signal and ensure correct behavior.
+@export var preventCollectionIfStatIsMax: bool = true
 
 ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
 ## NOTE: The bubble is emitted from COLLECTIBLE item, NOT the Collector Entity. To display [Stat]-related bubbles from the player entity or other characters, use [StatsVisualComponent].
@@ -92,15 +94,15 @@ func onstat_changed() -> void:
 		previouslyDeniedCollector.handleCollection(self) # This is a little jank, controlling the Collector from the Collectible :')
 
 
+## Removes the [member previouslyDeniedCollector] to avoid re-collection if the [Stat] goes below its maximum value while the [CollectorComponent] is outside contact.
+## IMPORTANT: The [CollectorComponent]'s physics [member CollisionObject2D.collision_layer] must match [CollectibleStatComponent]'s [member CollisionObject2D.collision_mask] to trigger the [signal Area2D.onAreaExited] signal and ensure correct behavior.
 func onAreaExited(area: Area2D) -> void:
 	# PERFORMANCE: Remove the `previouslyDeniedCollector` on leaving contact, so we don't have to recheck collisions each time the Stat decreases.
 	# NOTE: Removals should NOT depend on `isEnabled`
 	if not previouslyDeniedCollector: return
-
-	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
-	if not collectorComponent: return
-
-	if debugMode: printDebug(str("onAreaExited() CollectorComponent: ", collectorComponent, ", previouslyDeniedCollector: ", previouslyDeniedCollector))
+	
+	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast?
+	if debugMode: printDebug(str("onAreaExited(): ", area, ", CollectorComponent: ", collectorComponent, ", previouslyDeniedCollector: ", previouslyDeniedCollector))
 	if previouslyDeniedCollector == collectorComponent: previouslyDeniedCollector = null
 
 #endregion
