@@ -4,5 +4,6 @@
 
 [node name="CameraComponent" type="Camera2D" groups=["components"]]
 process_callback = 0
+limit_smoothed = true
 script = ExtResource("1_a757b")
 allowNonEntityParent = true
