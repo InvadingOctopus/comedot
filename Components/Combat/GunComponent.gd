@@ -103,7 +103,7 @@ func _ready() -> void:
 
 #region Process Input
 
-func _unhandled_input(_event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	# NOTE: Using [_unhandled_input] allows UI buttons etc. to trap mouse clicks
 	# without causing the gun to fire, which looks janky.
 
@@ -111,9 +111,10 @@ func _unhandled_input(_event: InputEvent) -> void:
 	# check the [member Control.mouse_filter] property of any overlaying nodes,
 	# and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
 
-	wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
-	isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
-	self.get_viewport().set_input_as_handled()
+	if event.is_action(GlobalInput.Actions.fire):
+		wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
+		isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
+		self.get_viewport().set_input_as_handled()
 
 
 func _process(_delta: float) -> void:
