@@ -24,7 +24,7 @@ script = ExtResource("4_5bs4y")
 min = 0
 max = 5
 value = 5
-logChanges = false
+debugMode = false
 name = &"monsterHealth"
 displayName = "Monster HP"
 description = ""
@@ -38,6 +38,7 @@ size = Vector2(18, 18)
 collision_layer = 8
 collision_mask = 120
 script = ExtResource("1_5a21o")
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.5, 0, 1)
