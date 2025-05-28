@@ -24,9 +24,16 @@ extends Component
 
 #region State
 var inputDirectionOverride:	float = 0 ## Overrides [member inputDirection] for example to allow control by AI agents. NOTE: Reset to 0 every frame.
-var inputDirection:			float
-var lastInputDirection:		float
+var inputDirection:			float ## The horizontal direction of walking movement.
+var lastInputDirection:		float ## The last input direction received. NOTE: NOT "previous" direction: this may be the SAME as [member inputDirection]
 var isInputZero:			bool = true
+#endregion
+
+
+#region Signals
+## Emitted when [member inputDirection] and [member lastInputDirection] have a different SIGN (positive/negative), signifying a change/flip in direction from right ↔ left.
+## Used for sprite flipping and other animations etc.
+signal didChangeHorizontalDirection
 #endregion
 
 
@@ -49,26 +56,34 @@ func _physics_process(_delta: float) -> void:
 ## Handles player input.
 ## Affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processInput() -> void:
-	if not isEnabled: return
-
-	# Get the input direction and handle the movement/deceleration.
-	if inputDirectionOverride:
-		self.inputDirection = inputDirectionOverride
-	else:
-		self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
-
-	if shouldInvertXAxis: self.inputDirection = -self.inputDirection
-
-	# Reset the override.
-	self.inputDirectionOverride = 0
-
-	# Cache properties that are accessed often to avoid repeated function calls on other objects.
-	self.isInputZero = is_zero_approx(inputDirection)
-
-	if not isInputZero: lastInputDirection = inputDirection
-
 	# NOTE: DESIGN: Accept input in air even if [member PlatformerMovementParameters.shouldAllowMovementInputInAir] is `false`,
 	# so that some games can let the player turn around to shoot in any direction while in air, for example.
+	# if not isEnabled: return # Unnecessary check after `set_physics_process()`
+
+	# Get the input direction
+
+	if inputDirectionOverride: inputDirection = inputDirectionOverride
+	else: inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
+
+	if shouldInvertXAxis: inputDirection = -inputDirection
+
+	# Reset the override
+	inputDirectionOverride = 0
+
+	# Cache properties that are accessed often to avoid repeated function calls on other objects.
+	isInputZero = is_zero_approx(inputDirection)
+
+	if not isInputZero:
+		# Emit signals if we're changing directions, to support sprite flipping & animations etc.
+		if signf(inputDirection) != signf(lastInputDirection):
+			if debugMode:
+				printDebug(str("didChangeHorizontalDirection: lastInputDirection: ", lastInputDirection, " -> inputDirection: ", inputDirection))
+				emitDebugBubble(str(lastInputDirection, "->", inputDirection))
+			didChangeHorizontalDirection.emit()
+
+		lastInputDirection = inputDirection
+
+	# DEBUG: if debugMode: showDebugInfo() # PERFORMANCE: Skip check until logging is actually needed
 
 
 func copyInputToPhysicsComponent() -> void:
@@ -77,3 +92,11 @@ func copyInputToPhysicsComponent() -> void:
 	platformerPhysicsComponent.inputDirection		= self.inputDirection
 	platformerPhysicsComponent.isInputZero			= self.isInputZero
 	platformerPhysicsComponent.lastInputDirection	= self.lastInputDirection
+
+
+func showDebugInfo() -> void:
+	if not debugMode: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
+	Debug.watchList.inputDirectionOverride	= self.inputDirectionOverride
+	Debug.watchList.inputDirection			= self.inputDirection
+	Debug.watchList.lastInputDirection		= self.lastInputDirection
