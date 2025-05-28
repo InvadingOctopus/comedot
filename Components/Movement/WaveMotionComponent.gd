@@ -1,4 +1,4 @@
-## Generates a sine wave function and optionally applies it to the position of the parent Entity's node every frame, resulting in a wave-like movement along an axis, or a circular motion if both axes are used.
+## Generates a sine/cosine wave function and optionally applies it to the position of the parent Entity's node every frame, resulting in a wave-like movement along an axis, or a circular motion if both axes are used.
 ## NOTE: Sets the parent entity's position DIRECTLY; does NOT use "physics" such as [member CharacterBody2D.velocity].
 ## TIP: This component is a [Node2D] so it may itself be moved without affecting the Entity, and have visual child nodes etc. This may be useful for having "drones" around the player etc.
 
@@ -8,13 +8,18 @@ extends Component
 
 #region Parameters
 
-## The horizontal range of the sine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "trough" -[member xAmplitude] of the wave to the "peak" +[member xAmplitude].
-## NOTE: A SINE wave is used for the horizontal movement; NOT a cosine wave, because sine always starts at 0.
-@export_range(-1000, +1000, 1)   var xAmplitude: float = 0
-@export_range(0,	  100,	0.1) var xFrequency: float = 0 ## The number of times during 1 second for the horizontal wave to go from -[member xAmplitude] to +[member xAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
+## If `true` then a COSINE [method @GlobalScope.cos] wave function is used for the horizontal X value, which allows a circular motion when combined with a sine wave for the vertical Y value.
+## If `false` (default), a SINE wave is used for the horizontal X value, so that it always starts at 0 and ensures a smooth offset from a node's current position.
+## NOTE: Using sine waves for BOTH X & Y results in a diagonal cycle.
+@export var shouldUseCosineForX: bool = false
 
-@export_range(-1000, +1000, 1)   var yAmplitude: float = 64 ## The vertical range of the sine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "peak" -[member yAmplitude] of the wave to the "trough" +[member yAmplitude].
-@export_range(0,	  100,	0.1) var yFrequency: float = 1  ## The number of times during 1 second for the vertical wave to go from -[member yAmplitude] to +[member yAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
+## The horizontal range of the sine/cosine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "trough" -[member xAmplitude] of the wave to the "peak" +[member xAmplitude].
+## NOTE: Unless [member shouldUseCosineForX] is `true`, a SINE wave is used for the horizontal movement; NOT a cosine wave, because sine always starts at 0.
+@export_range(-1000, +1000, 1)		var xAmplitude: float = 0
+@export_range(-100,	  100,	0.05)	var xFrequency: float = 0 ## The number of times during 1 second for the horizontal wave to go from -[member xAmplitude] to +[member xAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
+
+@export_range(-1000, +1000, 1)		var yAmplitude: float = 64 ## The vertical range of the sine wave motion, effectively the distance in pixels (hence the granularity of 1.0) from the "peak" -[member yAmplitude] of the wave to the "trough" +[member yAmplitude].
+@export_range(-100,	  100,	0.05)	var yFrequency: float = 1  ## The number of times during 1 second for the vertical wave to go from -[member yAmplitude] to +[member yAmplitude]. i.e. a frequency of 0.5 will take 2 seconds.
 
 @export var nodeToMove: Node2D ## If not specified, the parent Entity will be used.
 
@@ -54,16 +59,22 @@ func _physics_process(delta: float) -> void:
 	previousWavePosition = wavePosition
 
 	# Store the wave separately for use by other scripts etc.
-	wavePosition = Vector2(
-		sin(time * (PI * xFrequency)) * xAmplitude, # NOTE: Use a sine wave for the horizontal X component too because sine starts at 0!
-		sin(time * (PI * yFrequency)) * yAmplitude)
+	if shouldUseCosineForX:
+		wavePosition = Vector2(
+			cos(time * (PI * xFrequency)) * xAmplitude,
+			sin(time * (PI * yFrequency)) * yAmplitude)
+	else:
+		wavePosition = Vector2(
+			sin(time * (PI * xFrequency)) * xAmplitude, # NOTE: Use a sine wave for the horizontal X component too because sine starts at 0!
+			sin(time * (PI * yFrequency)) * yAmplitude)
 
 	# Get the wave "direction"
 	waveDelta = wavePosition - previousWavePosition
 
 	# Move the node by the "derivative" of the wave (TBD: is "derivative" the correct word to use here? ^^")
 	nodeToMove.position += waveDelta
-
+	nodeToMove.reset_physics_interpolation() # CHECK: Is this necessary?
+	
 	# DEBUG: if debugMode: showDebugInfo(delta)
 
 
