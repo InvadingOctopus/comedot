@@ -393,7 +393,7 @@ var logFullName: String:
 var logNameWithEntity: String:
 	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
 
-var debugBubbleColor: Color = Tools.getRandomQuantizedColor() ## Used for [method emitDebugBubble] to distinguish different components from each other.
+var randomDebugColor: Color = Tools.getRandomQuantizedColor() ## Used by [method emitDebugBubble] etc. to distinguish different components from each other.
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
@@ -437,7 +437,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 
 ## Emits a [TextBubble] if [member debugMode] or [param ignoreDebugMode].
-func emitDebugBubble(textOrObject: Variant, ignoreDebugMode: bool = false, color: Color = self.debugBubbleColor) -> void:
+func emitDebugBubble(textOrObject: Variant, ignoreDebugMode: bool = false, color: Color = self.randomDebugColor) -> void:
 	if not ignoreDebugMode and not debugMode: return
 	if textOrObject is String and textOrObject.is_empty(): textOrObject = "\"\""
 

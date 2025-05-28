@@ -57,7 +57,7 @@ var propertiesToLabelAbsolutePaths: Array[NodePath]
 
 
 func _ready() -> void:
-	%PropertiesLabel.self_modulate = self.debugBubbleColor # Differentiate from other DebugComponents
+	%PropertiesLabel.self_modulate = self.randomDebugColor # Differentiate from other DebugComponents
 	updateLabelsVisibility()
 	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	
