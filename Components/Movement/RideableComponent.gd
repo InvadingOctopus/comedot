@@ -1,10 +1,11 @@
 ## Allows the parent Entity to be "mounted" and "ridden" by another Entity, e.g. as a vehicle or horse etc. driven by the player character.
+## Uses a [RemoteTransform2D] child node to attach the rider. Enable "Editable Children" and reposition the [RemoteTransform2D] in the Editor to set the offset of the rider's node in relation to this component.
 ## For more basic "attachment" of any node to an Entity, see [AttachmentComponent].
 
 class_name RideableComponent
 extends Component
 
-# NOTE: The node has to be a [Node2D] to get the component's position.
+# NOTE: The component node has to be a [Node2D] to have a position and reposition child nodes etc.
 # TBD: Dismount on NOTIFICATION_PREDELETE?
 # TBD: Rename to MountableComponent?
 
@@ -14,12 +15,14 @@ extends Component
 @export var rider: Entity:
 	set(newValue):
 		if newValue != rider:
+			if debugMode: Debug.printChange("rider", rider, newValue)
 			var previousRider: Entity = rider if rider is Entity else null
 			rider = newValue # Set the new rider before the dismount signal, so handlers can see who it is now.
 			if previousRider and previousRider != rider:
 				didDismount.emit(previousRider)
 			if rider is Entity:
 				didMount.emit(rider)
+			setInternalState()
 
 @export var riderPositionOffset: Vector2 = Vector2(0, -16)
 
@@ -41,21 +44,29 @@ extends Component
 	set(newValue):
 		if newValue != dismountInputEventName:
 			dismountInputEventName = newValue
-			self.set_process_unhandled_input(isEnabled and not dismountInputEventName.is_empty())
+			self.set_process_unhandled_input(not dismountInputEventName.is_empty() and rider and isEnabled) # setInternalState() not needed because this flag only affects input.
 
 @export var isEnabled: bool = true:
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_process_unhandled_input(isEnabled and not dismountInputEventName.is_empty())
+			setInternalState()
 
 #endregion
 
 
 #region State
+
+@onready var riderPlaceholder: RemoteTransform2D = $RiderPlaceholder
+
 var isMounted: bool:
 	get: return is_instance_valid(rider)
-#endregion
+
+# Sprite2D or AnimatedSprite2D
+var mountSprite: Node2D
+var riderSprite: Node2D
+
+#endregion 
 
 
 #region Signals
@@ -66,6 +77,7 @@ signal didDismount(previousRider: Entity)
 
 #region Interface
 
+## Returns `true` if there is no current rider and the [param newRider] has been set as the [member rider] of this component.
 func mount(newRider: Entity) -> bool:
 	if self.isMounted:
 		return false
@@ -74,6 +86,7 @@ func mount(newRider: Entity) -> bool:
 		return true
 
 
+## Returns `true` if there is a valid current [member rider] and is successfully removed.
 func dismount() -> bool:
 	if self.isMounted:
 		self.rider = null # Signal will be emitted by property setter
@@ -87,41 +100,79 @@ func _unhandled_input(event: InputEvent) -> void:
 		self.dismount()
 		self.get_viewport().set_input_as_handled()
 
+
+## Copies the [member Sprite2D.flip_h] of this mount Entity's [Sprite2D] or [AnimatedSprite2D] to the rider Entity's sprite.
+## Returns the [member Sprite2D.flip_h] of the mount sprite, if any.
+func syncSpriteFlip() -> bool:
+	# TODO: A better global/generic/shared way to sync the flip of 2 sprites
+	if self.mountSprite and self.riderSprite:
+		riderSprite.flip_h = mountSprite.flip_h
+	return mountSprite.flip_h if mountSprite else false
+
 #endregion
 
 
 #region Events
 
 func _ready() -> void:
+	# Cache a reference to our sprite to synchronize the flip direction between mount and rider.
+	self.parentEntity.getSprite()
+	self.mountSprite = parentEntity.sprite
+
 	Tools.connectSignal(self.didMount,    self.onSelf_didMount)
 	Tools.connectSignal(self.didDismount, self.onSelf_didDismount)
+	setInternalState() # Apply setters because Godot doesn't on initialization
+
+
+func setInternalState() -> void:
+	# PERFORMANCE: Set once instead of every frame
+	# UNUSED: self.set_physics_process(isEnabled and rider) # Not needed with RemoteTransform2D
+	self.set_process_unhandled_input(not dismountInputEventName.is_empty() and rider and isEnabled) # Flags that will change rarely checked last
+	# TBD: Is there any point to setting RemoteTransform2D flags instead of just the `remote_path`?
+	riderPlaceholder.update_position = isEnabled and rider
+	riderPlaceholder.update_rotation = isEnabled and rider
+	if is_instance_valid(rider): riderPlaceholder.remote_path = riderPlaceholder.get_path_to(rider) # CHECK: Does RemoteTransform2D only accept a relative path?
+	else: riderPlaceholder.remote_path = ^""
 
 
 func onSelf_didMount(newRider: Entity) -> void:
 	if debugMode: printDebug(str("onSelf_didMount(): ", newRider, " componentsToToggle: ", componentTypesToToggle, ", shouldTogglePause: ", shouldTogglePause))
 	
-	if not isEnabled or componentTypesToToggle.is_empty(): return
+	if not isEnabled: return
+
+	# Sync sprite directions
+	newRider.getSprite()
+	if newRider.sprite:
+		self.riderSprite = newRider.sprite
+		syncSpriteFlip()
+		if self.coComponents.PlatformerControlComponent:
+			Tools.connectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onPlatformerControlComponent_didChangeHorizontalDirection)
+
 	# Switch components from rider to mount
-	newRider.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
-	parentEntity.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
+	if not componentTypesToToggle.is_empty():
+		newRider.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
+		parentEntity.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
 
 
 func onSelf_didDismount(previousRider: Entity) -> void:
+	# NOTE: Removals/cleanup should NOT depend on isEnabled
 	if debugMode: printDebug(str("onSelf_didDisount(): ", previousRider, " componentsToToggle: ", componentTypesToToggle, ", shouldTogglePause: ", shouldTogglePause))
 	
-	if not isEnabled or componentTypesToToggle.is_empty(): return
+	# Disconnect sprite flips
+	self.riderSprite = null
+	if self.coComponents.PlatformerControlComponent:
+		Tools.disconnectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onPlatformerControlComponent_didChangeHorizontalDirection)
+	
 	# Switch components from mount back to previous rider
-	parentEntity.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
-	previousRider.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
+	if not componentTypesToToggle.is_empty():
+		parentEntity.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
+		previousRider.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
 
 
-func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_process()?
-	if not isEnabled or not rider: return
-	# DESIGN: Set the attachee's position to this COMPONENT's position, NOT the mount/vehicle Entity's position,
-	# so that there may be an additional constant offset if needed.
-	rider.global_position = self.global_position + riderPositionOffset
-	if is_instance_of(rider, CollisionObject2D):
-		rider.reset_physics_interpolation() # CHECK: Is this necessary?
+func onPlatformerControlComponent_didChangeHorizontalDirection() -> void:
+	# PERFORMANCE: Do it directly instead of calling syncSpriteFlip()
+	if self.mountSprite and self.riderSprite:
+		riderSprite.flip_h = mountSprite.flip_h
 
 
 func unregisterEntity() -> void:
@@ -132,5 +183,14 @@ func unregisterEntity() -> void:
 func _exit_tree() -> void:
 	self.dismount()
 	super._exit_tree()
+
+
+# UNUSED: The [RemoteTransform2D] does all the work.
+# func _physics_process(_delta: float) -> void: # TBD: _process() or _physics_process()?
+# 	# DESIGN: Set the attachee's position to this COMPONENT's position, NOT the mount/vehicle Entity's position,
+# 	# so that there may be an additional constant offset if needed.
+# 	rider.global_position = self.global_position + riderPositionOffset
+# 	if is_instance_of(rider, CollisionObject2D):
+# 		rider.reset_physics_interpolation() # CHECK: Is this necessary?
 
 #endregion

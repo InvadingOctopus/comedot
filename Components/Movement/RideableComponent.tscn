@@ -6,3 +6,9 @@
 editor_description = "Allows the player to \"mount\" a vehicle or animal etc."
 script = ExtResource("1_4q3lr")
 metadata/_edit_group_ = true
+
+[node name="RiderPlaceholder" type="RemoteTransform2D" parent="."]
+position = Vector2(0, -16)
+update_position = false
+update_rotation = false
+update_scale = false
