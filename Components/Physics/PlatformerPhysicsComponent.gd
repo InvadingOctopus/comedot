@@ -16,13 +16,14 @@ extends CharacterBodyDependentComponentBase
 ## May be used for incidental situations such as flipping the gravity direction without modifying the base parameters.
 @export_range(-10, 10, 0.05) var gravityScaleOverride: float = 1.0
 
-@export var isEnabled: bool = true:
+@export var isEnabled: bool = true: ## NOTE: Does not affect manual function calls such as [method applyFrictionOnFloor] etc.
 	set(newValue):
 		isEnabled = newValue
 		if not isEnabled:
 			# Reset other flags only once
 			self.inputDirection = 0
 			self.isInputZero = true
+			self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
 
@@ -58,6 +59,8 @@ func _ready() -> void:
 
 	if coComponents.get("GravityComponent"):
 		printWarning("PlatformerPhysicsComponent & GravityComponent both process gravity; Remove one!")
+	
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 #region Update Cycle
@@ -186,20 +189,21 @@ func processAllFriction(delta: float) -> void:
 #region Standalone Functions
 
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
+# DESIGN: Do not check for `isEnabled` or other flags here as they should be checked by the callers.
 
-## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; this flag should be checked by caller.
+## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; flags should be checked by caller.
 func applyAccelerationOnFloor(delta: float) -> void:
 	if (not isInputZero) and characterBodyComponent.isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
 
 
-## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; this flag should be checked by caller.
+## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; flags should be checked by caller.
 func applyAccelerationInAir(delta: float) -> void:
 	if (not isInputZero) and (not characterBodyComponent.isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
 
 
-## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; this flag should be checked by caller.
+## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; flags should be checked by caller.
 func applyFrictionOnFloor(delta: float) -> void:
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
@@ -211,7 +215,7 @@ func applyFrictionOnFloor(delta: float) -> void:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
-## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; this flag should be checked by caller.
+## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; flags should be checked by caller.
 func applyFrictionInAir(delta: float) -> void:
 	# If movement is not allowed in air, then apply air friction regardless of player input.
 	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not characterBodyComponent.isOnFloor):
@@ -225,6 +229,7 @@ func applyFrictionInAir(delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.state = currentState
 	Debug.watchList.input = inputDirection
 
