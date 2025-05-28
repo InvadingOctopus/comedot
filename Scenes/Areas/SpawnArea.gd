@@ -16,7 +16,7 @@ extends Area2D
 
 #region State
 @onready var spawnTimer: SpawnTimer = $SpawnTimer
-@onready var spawnAreaShapeNode: CollisionShape2D = %SpawnAreaShape
+@onready var spawnAreaShape: CollisionShape2D = $SpawnAreaShape
 #region
 
 
