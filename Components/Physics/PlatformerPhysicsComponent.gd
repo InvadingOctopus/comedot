@@ -16,6 +16,8 @@ extends CharacterBodyDependentComponentBase
 ## May be used for incidental situations such as flipping the gravity direction without modifying the base parameters.
 @export_range(-10, 10, 0.05) var gravityScaleOverride: float = 1.0
 
+@export var isGravityEnabled: bool = true ## Allows gravity to be temporarily disabled e.g. when climbing or flying etc.
+
 @export var isEnabled: bool = true: ## NOTE: Does not affect manual function calls such as [method applyFrictionOnFloor] etc.
 	set(newValue):
 		isEnabled = newValue
@@ -39,9 +41,9 @@ var currentState: State #:
 	# 	Debug.printChange("currentState", currentState, newValue)
 	# 	currentState = newValue
 
-var inputDirection:		float
-var lastInputDirection:	float
-var isInputZero:		bool = true
+@export_storage var inputDirection:		float
+@export_storage var lastInputDirection:	float
+var isInputZero: bool = true
 
 var gravity: float = Settings.gravity
 
@@ -134,7 +136,9 @@ func clearInput() -> void:
 
 #region Platformer Physics
 
+
 func processGravity(delta: float) -> void:
+	if not isGravityEnabled: return
 	# Vertical Slowdown
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale * self.gravityScaleOverride) * delta
