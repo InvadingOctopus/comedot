@@ -85,21 +85,6 @@
 		"description": "A property that returns another object's property."
 	},
 
-	"Component Dependency": {
-		"prefix": "coComponent",
-		"body": ["@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n"],
-		"description": "A property that searches for a sibling component and caches a reference to it."
-	},
-
-	"Component Reference": {
-		"prefix": "varComponent",
-		"body": [
-			"var ${2:coComponent}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
-			"${2:coComponent}.$0"
-		],
-		"description": "A variable that stores a reference to a sibling component."
-	},
-
 	"Property Getter": {
 		"prefix": "get",
 		"body": ["get: return $0"],
@@ -154,6 +139,27 @@
 			"${0:func $3() -> void:\n\tpass}"
 		],
 		"description": "A safe signal connector and a function to handle the signal."
+	},
+
+	"Component Dependency": {
+		"prefix": "coComponent",
+		"body": ["@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n"],
+		"description": "A property that searches for a sibling component and caches a reference to it."
+	},
+
+	"Component Reference": {
+		"prefix": "varComponent",
+		"body": [
+			"var ${2:coComponent}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
+			"${2:coComponent}.$0"
+		],
+		"description": "A variable that stores a reference to a sibling component."
+	},
+
+	"Component Access": {
+		"prefix": "Component",
+		"body": ["$0(${1|self.coComponents,entity.components|}.${3:ComponentType} as ${3:ComponentType}).${4:propertyOrMethod}"],
+		"description": "Access an Entity's components or a Component's sibling co-components."
 	},
 
 	"Stat": {
