@@ -44,10 +44,10 @@ extends Component
 		isEnabled = newValue
 		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
 		if interactionIndicator: interactionIndicator.visible = isEnabled
-		if selfAsArea:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
-			set_deferred("monitorable", newValue)
-			set_deferred("monitoring",  newValue)
+		if  selfAsArea:
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			selfAsArea.set_deferred("monitoring",  isEnabled)
+			selfAsArea.set_deferred("monitorable", isEnabled)
 
 #endregion
 
@@ -77,6 +77,9 @@ func _ready() -> void:
 		updateLabel()
 		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
 		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
+	if  selfAsArea: # Apply setter because Godot doesn't on initialization
+		selfAsArea.monitoring  = isEnabled
+		selfAsArea.monitorable = isEnabled
 
 
 func onArea_entered(area: Area2D) -> void:

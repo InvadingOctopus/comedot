@@ -70,10 +70,10 @@ extends Component
 		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 
-		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
 		if  area:
-			area.set_deferred("monitoring",  newValue)
-			area.set_deferred("monitorable", newValue)
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			area.set_deferred("monitoring",  isEnabled)
+			area.set_deferred("monitorable", isEnabled)
 
 		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
@@ -127,8 +127,8 @@ func _ready() -> void:
 	self.set_process(isEnabled and not is_zero_approx(damagePerSecond))
 	self.set_physics_process(isEnabled)
 	if  area:
-		area.set_deferred("monitoring",  isEnabled)
-		area.set_deferred("monitorable", isEnabled)
+		area.monitoring  = isEnabled
+		area.monitorable = isEnabled
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)

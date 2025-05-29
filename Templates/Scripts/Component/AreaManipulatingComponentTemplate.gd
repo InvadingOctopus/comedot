@@ -19,9 +19,10 @@ extends Component
 		# PERFORMANCE: Set once instead of every frame
 		self.set_process(isEnabled)
 		self.set_process_input(isEnabled)
-		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-		area.set_deferred("monitoring",  newValue)
-		area.set_deferred("monitorable", newValue)
+		if  area:
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			area.set_deferred("monitoring",  isEnabled)
+			area.set_deferred("monitorable", isEnabled)
 #endregion
 
 
@@ -46,22 +47,17 @@ func getRequiredComponents() -> Array[Script]:
 #endregion
 
 
-# Called whenever the component enters the scene tree.
-func _enter_tree() -> void:
-	super._enter_tree()
-	if parentEntity != null and self.area == null:
-		self.area = parentEntity.getArea()
-	if area:
-		area.area_entered.connect(self.onArea_areaEntered)
-		area.area_exited.connect(self.onArea_areaExited)
-
-
 func _ready() -> void:
+	if parentEntity != null and self.area == null:
+		self.area = parentEntity.getArea()	
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
 	self.set_process_input(isEnabled)
-	area.set_deferred("monitoring",  isEnabled)
-	area.set_deferred("monitorable", isEnabled)
+	if  area:
+		area.monitoring  = isEnabled
+		area.monitorable = isEnabled
+		area.area_entered.connect(self.onArea_areaEntered)
+		area.area_exited.connect(self.onArea_areaExited)
 	# Placeholder: Add any code needed to configure and prepare the component.
 
 

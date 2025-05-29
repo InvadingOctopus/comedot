@@ -21,10 +21,10 @@ extends CooldownComponent
 	set(newValue):
 		isEnabled = newValue
 		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
-		if selfAsArea:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal."
-			set_deferred("monitorable", newValue)
-			set_deferred("monitoring",  newValue)
+		if  selfAsArea:
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			selfAsArea.set_deferred("monitoring",  isEnabled)
+			selfAsArea.set_deferred("monitorable", isEnabled)
 		updateIndicator()
 
 #endregion
@@ -58,6 +58,9 @@ func _ready() -> void:
 	if interactionIndicator:
 		interactionIndicator.visible = false
 		updateIndicator()
+	if  selfAsArea: # Apply setter because Godot doesn't on initialization
+		selfAsArea.monitoring  = isEnabled
+		selfAsArea.monitorable = isEnabled
 
 
 func onArea_entered(area: Area2D) -> void:
