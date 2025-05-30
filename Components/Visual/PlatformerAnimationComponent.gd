@@ -74,15 +74,17 @@ func _process(_delta: float) -> void:
 	# if debugMode and platformerControlComponent: Debug.watchList.hDirection = platformControlComponent.lastDirection
 
 	# Check and set animation in order of lowest priority to highest. e.g. walk overrides idle
+	
+	# NOTE: BUG: Including `body.velocity.y` in the check for "idle" and "walk" SOMETIMES causes a "walk" animation after [GunComponent] because the Y velocity remains a miniscule amount like -0.000023
 
 	# Are we chilling?
 	if not idleAnimation.is_empty() \
-	and body.velocity.is_zero_approx():
+	and is_zero_approx(body.velocity.x):
 		animationToPlay = idleAnimation
 
 	# Are we walking?
 	if not walkAnimation.is_empty() \
-	and not body.velocity.is_zero_approx():
+	and not is_zero_approx(body.velocity.x):
 		animationToPlay = walkAnimation
 
 	# Are we jumping or falling?
