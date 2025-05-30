@@ -437,7 +437,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 
 ## Emits a [TextBubble] if [member debugMode] or [param ignoreDebugMode].
-func emitDebugBubble(textOrObject: Variant, ignoreDebugMode: bool = false, color: Color = self.randomDebugColor) -> void:
+func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor, ignoreDebugMode: bool = false) -> void:
 	if not ignoreDebugMode and not debugMode: return
 	if textOrObject is String and textOrObject.is_empty(): textOrObject = "\"\""
 

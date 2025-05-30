@@ -207,7 +207,7 @@
 
 	"Debug Bubble": {
 		"prefix": "debugBubble",
-		"body": ["emitDebugBubble(str(\"${1:self}:\", ${1:self}), true, ${2:randomDebugColor}) # DEBUG: DONTCOMMIT$0"],
+		"body": ["emitDebugBubble(str(\"${1:self}:\", ${1:self}), ${2:randomDebugColor}, true) # DEBUG: DONTCOMMIT$0"],
 		"description": "Emtis a TextBubble from a Component for quick visual debugging."
 	},
 
