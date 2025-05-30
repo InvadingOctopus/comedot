@@ -89,18 +89,19 @@ folder_colors={
 [global_group]
 
 components="Nodes which represent the actions, behaviors and/or features of an Entity."
-deleteOnSceneReady="May be optionally used by some Scenes in their _ready() method to delete any objects that may be left over from previous instances or other scenes."
 entities="Nodes which represent characters or objects and contain Components."
-zones="Area2Ds representing special regions in the game, such as a zone which spawns monsters, or a goal."
 players="Entities controlled by players."
 enemies="Monsters usually controlled by AI."
 hazards="Objects in the environment that are usually static and cause damage to the player and/or monsters, such spikes or pools of acid."
 collectibles="Objects that may be picked up by the player or other characters."
 interactions="Objects such as doors, chests, lever etc. that the player and other characters may use and interact with."
+zones="Area2Ds representing special regions in the game, such as a zone which spawns monsters, or a goal."
 turnBased="Nodes which may only take action or be updated on their turn in a turn-based game."
 targetables="May be targeted by an action/command/skill/spell which requires a target to be chosen."
 spawners="Nodes that spawn copies of other Scenes."
-props="Miscellaneous objects."
+props="Miscellaneous objects for superfluous decoration etc."
+climbable="Areas & objects representing ladders, ropes, cliffs etc."
+deleteOnSceneReady="May be optionally used by some Scenes in their _ready() method to delete any objects that may be left over from previous instances or other scenes."
 
 [gui]
 
