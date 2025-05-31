@@ -281,6 +281,15 @@ static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, rel
 	return absolutePathIncludingProperty
 
 
+## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
+## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
+## TIP: Combine with the output from [member getShapeBoundsInArea] to get an [Area2D]'s global region.
+## WARNING: May not work correctly with rotation, scaling or negative dimensions.
+static func convertNodeRectToGlobalCoordinates(node: CanvasItem, rect: Rect2) -> Rect2:
+	# TODO: Account for rotation & scaling
+	return Rect2(rect.position + node.global_position, rect.size)
+
+
 ## Splits a [NodePath] into an Array of 2 paths where index [0] is the node's path and [1] is the property chain, e.g. `/root:size:x` → [`/root`, `:size:x`]
 static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 	var nodePath: NodePath
