@@ -317,9 +317,9 @@ static func getShapeBounds(area: Area2D) -> Rect2:
 	return shapeBounds
 
 
-## Returns a rectangle representing the bounds of an [Area2D]'s first [CollisionShape2D] child.
-## NOTE: The rectangle is in the coordinates of the [Area2D].
-## Works best with areas with a single rectangle shape.
+## Returns a rectangle representing the bounds of an [Area2D]'s FIRST [CollisionShape2D] child.
+## NOTE: The rectangle is in the LOCAL coordinates of the [Area2D]. To convert to GLOBAL coordinates, add + the area's [member Node2D.global_position].
+## NOTE: Works best with areas with a single rectangle shape. 
 ## Returns: On failure: a rectangle with size -1
 static func getShapeBoundsInArea(area: Area2D) -> Rect2:
 	# TODO: More accuracy within all sorts of shapes
