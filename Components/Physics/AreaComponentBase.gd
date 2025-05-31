@@ -19,12 +19,9 @@ extends Component
 
 #region State
 
-var area: Area2D ## The actual [Area2D] currently in use, which may be chosen automatically if [member areaOverride] is not valid.
+@export_storage var area: Area2D ## The actual [Area2D] currently in use, which may be chosen automatically if [member areaOverride] is not valid.
 
-var selfAsArea: Area2D: # TBD: PERFORMANCE: Should this be set once in _ready()?
-	get:
-		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
-		return selfAsArea
+var selfAsArea: Area2D ## This [Component]'s node as an [Area2D] for static typing and autocompletion etc.
 
 var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be set once in _ready()?
 	get:
@@ -34,11 +31,24 @@ var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be
 #endregion
 
 
+#region Derived Properties
+## The rectangular bounds of the [Area2D]'s FIRST [CollisionShape2D].
+## NOTE: The vertices are in LOCAL coordinates. Add + [member area]'s [method Node2D.global_position] to convert to GLOBAL coordinates.
+## IMPORTANT: Call [member updateAreaBounds] to update this property if the area's shape changes during runtime.
+var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
+	get:
+		if not areaBounds: areaBounds = self.updateAreaBounds() # A `not` check works even though it can't be `null`. TBD: Use has_area()?
+		return areaBounds
+#endregion
+
+
 func _enter_tree() -> void:
 	# DESIGN: A Component-as-Area2D should override the Entity-as-Area2D, because a Component is an explicit addition to an Entity.
 	# Log before attempts, in case there are property getters/setters ahead
 
-	if self.areaOverride: 
+	selfAsArea = self.get_node(^".") as Area2D
+
+	if self.areaOverride:
 		if debugMode: printDebug(str("Using areaOverride: ", areaOverride))
 		self.area = self.areaOverride
 
@@ -46,7 +56,7 @@ func _enter_tree() -> void:
 	if not self.area:
 		if debugMode: printDebug(str("No areaOverride. Casting self as Area2D"))
 		self.area = selfAsArea
-	
+
 	# If this Component is not an Area2D, try using the area specified on the Entity.
 	if not self.area:
 		if debugMode: printDebug(str("Cannot cast self as Area2D. parentEntity.getArea(): ", area))
@@ -57,3 +67,9 @@ func _enter_tree() -> void:
 		printWarning("Missing area. Cannot cast self as Area2D & cannot get area from parentEntity: " + parentEntity.logFullName)
 	elif debugMode:
 		printDebug(str("area parent: ", area.get_parent()))
+
+
+## Updates [member areaBounds] and returns the rectangular bounds of the [Area2D]'s [CollisionShape2D].
+func updateAreaBounds() -> Rect2:
+	self.areaBounds = Tools.getShapeBoundsInArea(area)
+	return areaBounds
