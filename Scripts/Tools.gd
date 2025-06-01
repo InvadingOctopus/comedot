@@ -305,32 +305,28 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 
 #region Area & Shape Functions
 
-## Returns a rectangle representing the bounds of an [Area2D]'s first [CollisionShape2D] child.
-## NOTE: The rectangle is in the coordinates of the [CollisionShape2D].
-## Works best with areas with a single rectangle shape.
-## Returns: On failure: a rectangle with size -1
+## Returns a [Rect2] representing the boundary/extents of an [Area2D]'s FIRST [CollisionShape2D] child.
+## NOTE: The rectangle is in the coordinates of the shape's [CollisionShape2D] container, with its anchor at the CENTER.
+## Works most accurately & reliably for areas with a single [RectangleShape2D].
+## Returns: A [Rect2] of the bounds. On failure: a rectangle with size -1 and the position set to the [Area2D]'s local position.
 static func getShapeBounds(area: Area2D) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
 	# Find a CollisionShape2D child.
-
 	var shapeNode: CollisionShape2D = findFirstChildOfType(area, CollisionShape2D)
 
 	if not shapeNode:
-		Debug.printWarning("getShapeBounds(): Cannot find a CollisionShape2D child", str(area))
+		Debug.printWarning("getShapeBounds(): Cannot find a CollisionShape2D child", area)
 		return Rect2(area.position.x, area.position.y, -1, -1) # Return a invalid negative-sized rectangle matching the area's origin.
 
-	var shape: Shape2D = shapeNode.shape
-	var shapeBounds: Rect2 = shape.get_rect()
-
-	return shapeBounds
+	return shapeNode.shape.get_rect()
 
 
 ## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL of an [Area2D]'s [CollisionShape2D] children.
 ## To get the bounds of the first shape only, set [param maximumShapeCount] to 1.
 ## NOTE: The rectangle is in the LOCAL coordinates of the [Area2D]. To convert to GLOBAL coordinates, add + the area's [member Node2D.global_position].
-## Areas with a single rectangle shape give the most accurate result.
-## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 but the position set to the [Area2D]'s local position.
+## Works most accurately & reliably for areas with a single [RectangleShape2D].
+## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 and the position set to the [Area2D]'s local position.
 static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
@@ -370,22 +366,26 @@ static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> 
 		return combinedShapeBounds
 
 
+## Calls [method Tools.getShapeBoundsInArea] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL of an [Area2D]'s [CollisionShape2D] children, converted into GLOBAL coordinates.
+## Useful for comparing the [Area2D]s of 2 separate nodes/entities.
 static func getShapeGlobalBounds(area: Area2D) -> Rect2:
 	var shapeGlobalBounds: Rect2 = getShapeBoundsInArea(area)
 	shapeGlobalBounds.position   = area.to_global(shapeGlobalBounds.position)
 	return shapeGlobalBounds
 
 
+## Returns a random point inside the combined rectangular boundary of ALL an [Area2D]'s [Shape2D]s.
+## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D].
+## Works most accurately & reliably for areas with a single [RectangleShape2D].
 static func getRandomPositionInArea(area: Area2D) -> Vector2:
-
 	var areaBounds: Rect2 = getShapeBoundsInArea(area)
 
 	# Generate a random position within the area.
 
+	#randomize() # TBD: Do we need this?
+	
 	#var isWithinArea: bool = false
 	#while not isWithinArea:
-
-	#randomize() # TBD: Do we need this?
 
 	var x: float = randf_range(areaBounds.position.x, areaBounds.end.x)
 	var y: float = randf_range(areaBounds.position.y, areaBounds.end.y)
@@ -394,8 +394,7 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 	#if shouldVerifyWithinArea: isWithinArea = ... # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
 	#else: isWithinArea = true
 
-	#Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
-
+	# DEBUG: Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
 	return randomPosition
 
 #endregion
