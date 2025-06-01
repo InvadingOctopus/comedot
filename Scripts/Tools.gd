@@ -326,52 +326,48 @@ static func getShapeBounds(area: Area2D) -> Rect2:
 	return shapeBounds
 
 
-## Returns a rectangle representing the bounds of an [Area2D]'s FIRST [CollisionShape2D] child.
+## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL of an [Area2D]'s [CollisionShape2D] children.
+## To get the bounds of the first shape only, set [param maximumShapeCount] to 1.
 ## NOTE: The rectangle is in the LOCAL coordinates of the [Area2D]. To convert to GLOBAL coordinates, add + the area's [member Node2D.global_position].
-## NOTE: Works best with areas with a single rectangle shape. 
-## Returns: On failure: a rectangle with size -1
-static func getShapeBoundsInArea(area: Area2D) -> Rect2:
-	# TODO: More accuracy within all sorts of shapes
-	# TODO: Find a more elegant and efficient way :')
+## Areas with a single rectangle shape give the most accurate result.
+## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 but the position set to the [Area2D]'s local position.
+static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
-	# INFO: Overview: An [Area2D] has a [CollisionShape2D] child [Node], which in turn has a [Shape2D] [Resource].
+	# INFO: PLAN: Overview: An [Area2D] has a [CollisionShape2D] child [Node], which in turn has a [Shape2D] [Resource].
 	# In the parent Area2D, the CollisionShape2D's "anchor point" is at the top-left corner, so its `position` may be 0,0.
-	# But inside the CollisionShape2D, the Shape2D's anchor point is at the center of the shape, so its `position` may be 16,16 for a rectangle of 32x32.
+	# But inside the CollisionShape2D, the Shape2D's anchor point is at the CENTER of the shape, so its `position` would be for example 16,16 for a rectangle of 32x32.
 	# SO, we have to figure out the Shape2D's rectangle in the coordinate space of the Area2D.
 	# THEN convert it to global coordinates.
 
-	# First, find a CollisionShape2D child.
+	if area.get_child_count() < 1: return Rect2(area.position.x, area.position.y, -1, -1) # In case of failure, return a invalid negative-sized rectangle matching the area's origin.
 
-	var shapeNode: CollisionShape2D = findFirstChildOfType(area, CollisionShape2D)
+	# Get all CollisionShape2D children
 
-	if not shapeNode:
-		Debug.printWarning("getShapeBoundsInArea(): Cannot find a CollisionShape2D child", str(area))
-		return Rect2(area.position.x, area.position.y, -1, -1) # Return a invalid negative-sized rectangle matching the area's origin.
+	var combinedShapeBounds: Rect2
+	var shapesAdded: int = 0
+	var shapeSize:	 Vector2
+	var shapeBounds: Rect2
 
-	# Make local copies of the frequently used stuff.
+	for shapeNode in area.get_children(): # TBD: PERFORMANCE: Use Node.find_children()?
+		if shapeNode is CollisionShape2D:
+			shapeSize = shapeNode.shape.get_rect().size # TBD: Should we use `extents`? It seems to be half of the size, but it seems to be a hidden property [as of 4.3 Dev 3].
+			# Because a [CollisionShape2D]'s anchor is at the center of, we have to get it's top-left corner, by subtracting HALF the size of the actual SHAPE:
+			shapeBounds = Rect2(shapeNode.position - shapeSize / 2, shapeSize) # TBD: PERFORMANCE: Use * 0.5?
+			
+			if shapesAdded < 1: combinedShapeBounds = shapeBounds # Is it the first shape?
+			else: combinedShapeBounds.merge(shapeBounds)
+			
+			# DEBUG: Debug.printDebug(str("shape: ", shapeNode.shape, ", rect: ", shapeNode.shape.get_rect(), ", bounds in node: ", shapeBounds, ", combinedShapeBounds: ", combinedShapeBounds), area)
+			shapesAdded += 1
+			if shapesAdded >= maximumShapeCount: break
 
-	var _shapeNodePositionInArea: Vector2 = shapeNode.position
-	var shape: Shape2D = shapeNode.shape
-
-	# The bounding rectangle of the shape. NOTE: In the coordinates of the CollisionShape2D node!
-	var shapeBoundingRect: Rect2 = shape.get_rect() # TBD: Should we use `extents`? It seems to be half of the size, but it seems to be a hidden property [as of 4.3 Dev 3].
-
-	# Because a [CollisionShape2D]'s anchor is at its center,
-	# we have to get it's top-left corner,
-	# by subtracting HALF the size of the actual SHAPE:
-
-	var shapeNodeTopLeftCorner: Vector2 = Vector2( \
-		shapeNode.position.x - shapeBoundingRect.size.x / 2, \
-		shapeNode.position.y - shapeBoundingRect.size.y / 2)
-
-	var shapeBoundsInArea: Rect2 = Rect2( \
-		shapeNodeTopLeftCorner.x, shapeNodeTopLeftCorner.y, \
-		shapeBoundingRect.size.x, shapeBoundingRect.size.y)
-
-	#var shapeGlobalOrigin: Vector2 = shapeNode.global_position - shapeNode.shape.extents # NOTE: CHECK: `extents` seems to be the distance of the edge from the origin (center in this case), but it seems to be a hidden property?
-
-	return shapeBoundsInArea
+	if shapesAdded < 1:
+		Debug.printWarning("getShapeBoundsInArea(): Cannot find a CollisionShape2D child", area)
+		return Rect2(area.position.x, area.position.y, -1, -1)
+	else:
+		# DEBUG: Debug.printTrace([combinedShapeBounds, area.get_child_count(), shapesAdded], area)
+		return combinedShapeBounds
 
 
 static func getShapeGlobalBounds(area: Area2D) -> Rect2:
