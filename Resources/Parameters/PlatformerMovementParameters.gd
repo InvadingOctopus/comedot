@@ -35,7 +35,7 @@ extends Resource
 
 ## If `false`, then [member speed] is applied directly.
 @export var shouldApplyAccelerationInAir:			bool  = true
-@export_range(0, 1000, 5) var accelerationInAir:		float = 400
+@export_range(0, 1000, 5) var accelerationInAir:	float = 400
 
 ## Should the horizontal velocity reset to 0 as soon as there is no input?
 ## WARNING: If this is `true` while [member shouldAllowMovementInputInAir] is `false` then there will be NO horizontal movement in air; only straight vertical jumps.
@@ -44,6 +44,12 @@ extends Resource
 
 ## Should the horizontal velocity gradually slow down when there is no input?
 @export var shouldApplyFrictionInAir:				bool  = true ## Applies horizontal friction when not on a floor (not gravity).
-@export_range(0, 5000, 5) var frictionInAir:			float = 200 ## Applies horizontal friction when not on a floor (not gravity).
+@export_range(0, 5000, 5) var frictionInAir:		float = 200 ## Applies horizontal friction when not on a floor (not gravity).
+
+
+@export_group("Climbing")
+
+@export_range(0, 2000, 5) var climbUpSpeed:		float = 100
+@export_range(0, 2000, 5) var climbDownSpeed:	float = 150
 
 #endregion
