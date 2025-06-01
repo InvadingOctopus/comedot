@@ -56,6 +56,7 @@ metadata/_edit_lock_ = true
 [node name="SpriteEntity" parent="." instance=ExtResource("2_6dclq")]
 
 [node name="AreaContactComponent" parent="SpriteEntity" instance=ExtResource("3_yuy2n")]
+unique_name_in_owner = true
 position = Vector2(32, 0)
 collision_layer = 515
 collision_mask = 65535
@@ -68,6 +69,7 @@ shape = SubResource("RectangleShape2D_6dclq")
 [node name="MouseTrackingComponent" parent="SpriteEntity" instance=ExtResource("5_6dclq")]
 
 [node name="Zone1" type="Area2D" parent="." groups=["zones"]]
+unique_name_in_owner = true
 position = Vector2(128, 0)
 collision_layer = 513
 collision_mask = 0
@@ -78,6 +80,7 @@ shape = SubResource("RectangleShape2D_msvcj")
 debug_color = Color(0.6, 0.8, 0, 0.42)
 
 [node name="Zone2" type="Area2D" parent="." groups=["zones"]]
+unique_name_in_owner = true
 position = Vector2(160, 32)
 collision_layer = 513
 collision_mask = 0
