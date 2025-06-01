@@ -39,6 +39,9 @@ var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
 	get:
 		if not areaBounds: areaBounds = self.updateAreaBounds() # A `not` check works even though it can't be `null`. TBD: Use has_area()?
 		return areaBounds
+
+var areaBoundsGlobal: Rect2:
+	get: return Rect2(areaBounds.position + area.global_position, areaBounds.size)
 #endregion
 
 
