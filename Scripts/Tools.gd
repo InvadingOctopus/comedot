@@ -374,6 +374,35 @@ static func getShapeGlobalBounds(area: Area2D) -> Rect2:
 	return shapeGlobalBounds
 
 
+## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [PlatformerClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.
+## TIP: To put the inner rectangle back inside the container rectangle, SUBTRACT (or add the negative of) the returned offset from the [param containedRect]'s [member Rect2.position] (or from the position of the Entity it represents).
+## WARNING: Does NOT include rotation or scaling etc.
+## Returns: The offset/displacement by which the [param containedRect] is outside the bounds of the [param containerRect].
+## Negative -X values mean to the left, +X means to the right. -Y means jutting upwards, +Y means downwards.
+## (0,0) if the [param containedRect] is completely inside the [param containerRect].
+static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: Rect2) -> Vector2:
+	# If the container completely encloses the containee, no need to do anything.
+	if containerRect.encloses(containedRect): return Vector2.ZERO
+
+	var displacement: Vector2
+
+	# Out to the left?
+	if containedRect.position.x < containerRect.position.x:
+		displacement.x = containedRect.position.x - containerRect.position.x # Negative if the containee's left edge is further left
+	# Out to the right?
+	elif containedRect.end.x > containerRect.end.x:
+		displacement.x = containedRect.end.x - containerRect.end.x # Positive if the containee's right edge is further right
+
+	# Out over the top?
+	if containedRect.position.y < containerRect.position.y:
+		displacement.y = containedRect.position.y - containerRect.position.y # Negative if the containee's top is higher
+	# Out under the bottom?
+	elif containedRect.end.y > containerRect.end.y:
+		displacement.y = containedRect.end.y - containerRect.end.y # Positive if the containee's bottom is lower
+
+	return displacement
+
+
 ## Returns a random point inside the combined rectangular boundary of ALL an [Area2D]'s [Shape2D]s.
 ## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D].
 ## Works most accurately & reliably for areas with a single [RectangleShape2D].
