@@ -74,7 +74,7 @@ var zoomFlipTimer:	float
 func _ready() -> void:
 	selfAsCamera = self.get_node(^".") as Camera2D
 	if not camera: camera = selfAsCamera
-	
+
 	if camera:
 		if boundary: clampToBoundary()
 		if shouldTrackMouse: self.position = camera.get_local_mouse_position()

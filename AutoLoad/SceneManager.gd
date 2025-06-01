@@ -236,7 +236,7 @@ func instantiateSceneFromPath(path: String) -> Node:
 			Debug.printWarning(str("SceneManager.instantiateSceneFromPath(): Cannot instantiate ", scene, " from ", path))
 	else:
 		Debug.printWarning("SceneManager.instantiateSceneFromPath(): Cannot load " + path)
-	
+
 	return null
 
 
