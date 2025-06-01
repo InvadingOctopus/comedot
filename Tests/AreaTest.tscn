@@ -1,16 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://dnloy15xnmp4u"]
+[gd_scene load_steps=8 format=3 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
-[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_tyeq5"]
+[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="3_yuy2n"]
-[ext_resource type="PackedScene" uid="uid://igl5tam71pns" path="res://Components/Gameplay/ZoneComponent.tscn" id="4_msvcj"]
+[ext_resource type="PackedScene" uid="uid://d36npu023mnts" path="res://Components/Control/MouseTrackingComponent.tscn" id="5_6dclq"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_s8u3k"]
-size = Vector2(64, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_75p7t"]
-resource_local_to_scene = true
-size = Vector2(32, 32)
+[sub_resource type="CircleShape2D" id="CircleShape2D_msvcj"]
+radius = 32.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6dclq"]
 resource_local_to_scene = true
@@ -32,11 +28,11 @@ border_color = Color(0, 1, 1, 1)
 editor_only = false
 metadata/_edit_lock_ = true
 
-[node name="Area" type="Area2D" parent="."]
+[node name="TestArea" type="Area2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(64, 64)
+position = Vector2(32, 32)
 
-[node name="AreaMarker" type="ReferenceRect" parent="Area"]
+[node name="AreaMarker" type="ReferenceRect" parent="TestArea"]
 offset_left = -8.0
 offset_top = -8.0
 offset_right = 8.0
@@ -44,11 +40,11 @@ offset_bottom = 8.0
 editor_only = false
 metadata/_edit_lock_ = true
 
-[node name="ShapeNode" type="CollisionShape2D" parent="Area"]
+[node name="TestShapeNode" type="CollisionShape2D" parent="TestArea"]
 unique_name_in_owner = true
-shape = SubResource("RectangleShape2D_s8u3k")
+shape = SubResource("CircleShape2D_msvcj")
 
-[node name="ShapeNodeMarker" type="ReferenceRect" parent="Area/ShapeNode"]
+[node name="ShapeNodeMarker" type="ReferenceRect" parent="TestArea/TestShapeNode"]
 offset_left = -8.0
 offset_top = -8.0
 offset_right = 8.0
@@ -57,22 +53,19 @@ border_color = Color(0, 1, 0, 0.784314)
 editor_only = false
 metadata/_edit_lock_ = true
 
-[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("2_tyeq5")]
+[node name="SpriteEntity" parent="." instance=ExtResource("2_6dclq")]
 
-[node name="AreaContactComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("3_yuy2n")]
-collision_layer = 513
-collision_mask = 65535
-debugMode = true
-
-[node name="AreaDetectorShape" parent="PlayerEntityTemplate-OverheadBasic/AreaContactComponent" index="0"]
-shape = SubResource("RectangleShape2D_75p7t")
-
-[node name="ZoneComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("4_msvcj")]
-debugMode = true
-
-[node name="AreaDetectorShape" parent="PlayerEntityTemplate-OverheadBasic/ZoneComponent" index="0"]
+[node name="AreaContactComponent" parent="SpriteEntity" instance=ExtResource("3_yuy2n")]
 position = Vector2(32, 0)
+collision_layer = 515
+collision_mask = 65535
+groupToInclude = &""
+debugMode = true
+
+[node name="AreaDetectorShape" parent="SpriteEntity/AreaContactComponent" index="0"]
 shape = SubResource("RectangleShape2D_6dclq")
+
+[node name="MouseTrackingComponent" parent="SpriteEntity" instance=ExtResource("5_6dclq")]
 
 [node name="Zone1" type="Area2D" parent="." groups=["zones"]]
 position = Vector2(128, 0)
@@ -94,5 +87,4 @@ position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_msvcj")
 debug_color = Color(0, 0.6, 0.8, 0.42)
 
-[editable path="PlayerEntityTemplate-OverheadBasic/AreaContactComponent"]
-[editable path="PlayerEntityTemplate-OverheadBasic/ZoneComponent"]
+[editable path="SpriteEntity/AreaContactComponent"]

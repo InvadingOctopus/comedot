@@ -1,13 +1,13 @@
 extends Start
 
 
-@onready var area: Area2D = %Area
-@onready var shapeNode: CollisionShape2D = %ShapeNode
-
+@onready var area: Area2D = %TestArea
+@onready var shapeNode: CollisionShape2D = %TestShapeNode
 
 
 func _ready() -> void:
 	super._ready()
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
