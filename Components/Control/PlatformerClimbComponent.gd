@@ -4,14 +4,14 @@
 class_name PlatformerClimbComponent
 extends AreaContactComponent
 
-# DESIGN: Cannot be merged into PlatformerControlComponent because it would add a lot of extra Area2D-related bloat.
+# DESIGN: Climbing should not be a part of PlatformerControlComponent or PlatformerPhysicsComponent because it would add a lot of extra Area2D-related bloat etc.
 # TODO: Allow jumping from ladders/etc.
 # TODO: Transfer between adjacent Climbable areas
 
 
 #region Parameters
 
-@export var shouldStayInClimbableArea:	bool = true  ## If `true`, then the Entity is confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing]
+@export var shouldStayInClimbableArea:	bool = true  ## If `true`, then the Entity is VERTICALLY confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing]. NOTE: Horizontal movement depends on [member shouldAllowHorizontalMovmement]
 @export var shouldSnapToClimbableArea:	bool = false ## If `true`, then the Entity will be moved fully inside the rectangular bounds of the chosen Climbable [Area2D].
 @export var shouldSnapInstantly:		bool = true  ## @experimental
 
@@ -250,7 +250,6 @@ func showDebugInfo() -> void:
 	Debug.watchList.isInClimbableArea	= self.isInClimbableArea
 	Debug.watchList.isClimbing			= self.isClimbing
 	Debug.watchList.activeClimbingArea	= self.activeClimbingArea
-	#Debug.watchList.climbingAreaRect	= self.activeClimbingAreaBounds
 	Debug.watchList.climbingAreaRectGlobal	= self.activeClimbingAreaGlobalBounds
 	Debug.watchList.climberRect			= self.areaBoundsGlobal
 	Debug.watchList.displacement		= Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, self.activeClimbingAreaGlobalBounds)
