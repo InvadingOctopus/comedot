@@ -2,7 +2,7 @@
 ## e.g. to have a random chance to attack every N seconds and so on.
 ## @experimental
 
-class_name TimerAgentComponentBase
+abstract class_name TimerAgentComponentBase
 extends Component
 
 

@@ -2,7 +2,7 @@
 ## Displays the name and icon, and uses the [member GameplayResourceBase.description] as the tooltip.
 
 @tool
-class_name GameplayResourceUI
+abstract class_name GameplayResourceUI
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')

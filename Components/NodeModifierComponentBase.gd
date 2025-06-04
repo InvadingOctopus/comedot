@@ -3,7 +3,7 @@
 ## TIP: To add/remove nodes based on physics collisions, use [ModifyOnCollisionComponent].
 ## For modifying nodes after a specific period of time, use [ModifyOnTimerComponent]
 
-class_name NodeModifierComponentBase
+abstract class_name NodeModifierComponentBase
 extends Component
 
 

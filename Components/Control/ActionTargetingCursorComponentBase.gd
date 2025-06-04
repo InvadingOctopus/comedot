@@ -3,7 +3,7 @@
 ## The target must be an [Entity] with an [ActionTargetableComponent].
 ## @experimental
 
-class_name ActionTargetingCursorComponentBase
+abstract class_name ActionTargetingCursorComponentBase
 extends ActionTargetingComponentBase
 
 

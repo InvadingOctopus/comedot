@@ -1,6 +1,6 @@
 ## An abstract base class for Components that depend on a [Timer].
 
-class_name TimerComponentBase
+abstract class_name TimerComponentBase
 extends Component
 
 

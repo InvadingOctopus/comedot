@@ -8,7 +8,7 @@
 ##
 ## Requirements: [TurnBasedEntity], [AnimatedSprite2D]
 
-class_name TurnBasedComponent
+abstract class_name TurnBasedComponent
 extends Component # + TurnBasedObjectBase
 
 # NOTE: DESIGN: This class is almost identical to [TurnBasedEntity] and there is a lot of code duplication

@@ -4,7 +4,7 @@
 ## TIP: To receive signals about collisions, use [AreaCollisionComponent].
 ## TIP: To maintain a list of all nodes in physical contact, use [AreaContactComponent].
 
-class_name AreaComponentBase
+abstract class_name AreaComponentBase
 extends Component
 
 # TBD: Better name?

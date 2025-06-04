@@ -1,6 +1,6 @@
 ## An abstract base class for scripts that may be attached to any [Container] [Control]s to display a list of [GameplayResourceBase] Resources such as [Stat]s or [Action]s.
 
-class_name ResourceListBase
+abstract class_name ResourceListBase
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')

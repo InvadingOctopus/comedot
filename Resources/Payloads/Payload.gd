@@ -6,7 +6,7 @@
 ## The Payload of an [Action] representing a Fireball Spell would be the `Fireball.gd` script that may run complex code to check the terrain for flammability etc.
 ## TIP: A Payload may be omitted if Signal handlers are enough e.g. [signal InteractionComponent.didPerformInteraction]
 
-class_name Payload
+abstract class_name Payload
 extends Resource
 
 
