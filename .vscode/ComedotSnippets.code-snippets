@@ -143,23 +143,23 @@
 
 	"Component Dependency": {
 		"prefix": "coComponent",
-		"body": ["@onready var $0${1:coComponent}: ${1:ComponentType} = coComponents.${1:ComponentType}\n"],
+		"body": ["@onready var ${1/(.)/${1:/downcase}/}: ${1:ComponentType} = coComponents.${1:ComponentType}\n"],
 		"description": "A property that searches for a sibling component and caches a reference to it."
 	},
 
-	"Component Reference": {
+	"Component Temporary Reference": {
 		"prefix": "varComponent",
 		"body": [
 			"var ${2:coComponent}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
 			"${2:coComponent}.$0"
 		],
-		"description": "A variable that stores a reference to a sibling component."
+		"description": "A local function variable that stores a temporary reference to a sibling component."
 	},
 
 	"Component Access": {
 		"prefix": "Component",
 		"body": ["$0(${1|self.coComponents,entity.components|}.${3:ComponentType} as ${3:ComponentType}).${4:propertyOrMethod}"],
-		"description": "Access an Entity's components or a Component's sibling co-components."
+		"description": "Quick access to an Entity's components or a Component's sibling co-components."
 	},
 
 	"Stat": {
