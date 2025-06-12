@@ -1,4 +1,4 @@
-## Set of movement physics parameters for [PlatformerControlComponent] and [JumpControlComponent]
+## Set of movement physics parameters for [PlatformerControlComponent], [JumpControlComponent] and [PlatformerClimbComponent]
 
 class_name PlatformerMovementParameters
 extends Resource
@@ -49,7 +49,7 @@ extends Resource
 
 @export_group("Climbing")
 
-@export_range(0, 2000, 5) var climbUpSpeed:		float = 100
-@export_range(0, 2000, 5) var climbDownSpeed:	float = 150
+@export_range(0, 2000, 5) var climbUpSpeed:		float = 100 ## NOTE: Should be POSITIVE, as it is multiplied by the [member CharacterBody2D.up_direction].y (which is -1 for UP) to allow for inverted gravity etc.
+@export_range(0, 2000, 5) var climbDownSpeed:	float = 150 ## NOTE: Multiplied by the INVERSE of [member CharacterBody2D.up_direction].y (which is -1 for UP)
 
 #endregion
