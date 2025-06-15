@@ -2,7 +2,7 @@
 ## The direction of the jump is determined by the [member CharacterBody2D.up_direction] (only the Y axis).
 ## NOTE: Gravity and friction in air is handled by [PlatformerPhysicsComponent].
 ## TIP:  For "inverted gravity" jumps, modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
-## For climbing ladders/ropes/etc. use [PlatformerClimbComponent].
+## For climbing ladders/ropes/etc. use [ClimbComponent].
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
 
 class_name JumpControlComponent

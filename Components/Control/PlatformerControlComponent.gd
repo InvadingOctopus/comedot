@@ -1,5 +1,5 @@
 ## Provides player control input to a [PlatformerPhysicsComponent].
-## NOTE: Jumping is provided by [JumpControlComponent], climbing is provided by [PlatformerClimbComponent].
+## NOTE: Jumping is provided by [JumpControlComponent], climbing is provided by [ClimbComponent].
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
 
 class_name PlatformerControlComponent

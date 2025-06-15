@@ -2,7 +2,7 @@
 ## TIP: For "inverted gravity", modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
 ## Requirements: BEFORE [CharacterBodyComponent], [PlatformerPhysicsComponent], but AFTER [PlatformerControlComponent] (in order to suppress horizontal movement on ladders etc.)
 
-class_name PlatformerClimbComponent
+class_name ClimbComponent
 extends AreaContactComponent
 
 # DESIGN: Climbing should not be a part of PlatformerControlComponent or PlatformerPhysicsComponent because it would add a lot of extra Area2D-related bloat etc.
@@ -27,7 +27,7 @@ extends AreaContactComponent
 @export var shouldWalkIntoClimbableArea:bool = true
 
 ## If `true`, suppresses the horizontal [member PlatformerPhysicsComponent.inputDirection] which is usually provided by [PlatformerControlComponent].
-## IMPORTANT: This [PlatformerClimbComponent] must come AFTER the [PlatformerControlComponent] in the Scene Tree and BEFORE the [PlatformerPhysicsComponent]
+## IMPORTANT: This [ClimbComponent] must come AFTER the [PlatformerControlComponent] in the Scene Tree and BEFORE the [PlatformerPhysicsComponent]
 @export var shouldAllowHorizontalInput: bool = true
 
 @export var isPlayerControlled:			bool = true:

@@ -1,4 +1,4 @@
-## Set of movement physics parameters for [PlatformerControlComponent], [JumpControlComponent] and [PlatformerClimbComponent]
+## Set of movement physics parameters for [PlatformerControlComponent], [JumpControlComponent] and [ClimbComponent]
 
 class_name PlatformerMovementParameters
 extends Resource

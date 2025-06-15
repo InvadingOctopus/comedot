@@ -374,7 +374,7 @@ static func getShapeGlobalBounds(area: Area2D) -> Rect2:
 	return shapeGlobalBounds
 
 
-## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [PlatformerClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.
+## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [ClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.
 ## TIP: To put the inner rectangle back inside the container rectangle, SUBTRACT (or add the negative of) the returned offset from the [param containedRect]'s [member Rect2.position] (or from the position of the Entity it represents).
 ## WARNING: Does NOT include rotation or scaling etc.
 ## Returns: The offset/displacement by which the [param containedRect] is outside the bounds of the [param containerRect].
