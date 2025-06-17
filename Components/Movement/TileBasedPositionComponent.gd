@@ -199,10 +199,10 @@ func validateTileMap(searchForTileMap: bool = self.shouldSearchForTileMap) -> bo
 ## May be overridden by subclasses to perform additional checks.
 ## NOTE: Subclasses MUST call super to perform common validation.
 func validateCoordinates(coordinates: Vector2i) -> bool:
-	var isValidBounds: bool = Tools.checkTileMapBounds(tileMap, coordinates)
+	var isValidBounds: bool = Tools.checkTileMapCoordinates(tileMap, coordinates)
 	var isTileVacant:  bool = self.checkCellVacancy(coordinates)
 
-	if debugMode: printDebug(str("@", coordinates, ": checkTileMapBounds(): ", isValidBounds, ", checkCellVacancy(): ", isTileVacant))
+	if debugMode: printDebug(str("@", coordinates, ": checkTileMapCoordinates(): ", isValidBounds, ", checkCellVacancy(): ", isTileVacant))
 
 	return isValidBounds and isTileVacant
 
@@ -352,7 +352,7 @@ func setMapAndKeepPosition(newMap: TileMapLayer, useNewData: bool = true) -> Vec
 	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = Tools.checkTileAndCellVacancy(newMap, newMap.cellData, newCoordinates, self.parentEntity) # Ignore our own entity
 	else: isNewCellVacant = Tools.checkTileVacancy(newMap, newCoordinates)
 
-	if debugMode: printDebug(str("setMapAndKeepPosition(): ", self.tileMap, " @", previousCoordinates, ", pixel global position: ", parentEntity.global_position, " → ", newMap, " @", newCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapBounds(newMap, newCoordinates)))
+	if debugMode: printDebug(str("setMapAndKeepPosition(): ", self.tileMap, " @", previousCoordinates, ", pixel global position: ", parentEntity.global_position, " → ", newMap, " @", newCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapCoordinates(newMap, newCoordinates)))
 
 	if isNewCellVacant: # Don't move if shouldn't move
 		willSetNewMap.emit(self.tileMap, previousCoordinates, newMap, newCoordinates)
@@ -407,7 +407,7 @@ func setMapAndKeepCoordinates(newMap: TileMapLayer, useNewData: bool = true) -> 
 	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = Tools.checkTileAndCellVacancy(newMap, newMap.cellData, self.currentCellCoordinates, self.parentEntity) # Ignore our own entity
 	else: isNewCellVacant = Tools.checkTileVacancy(newMap, self.currentCellCoordinates)
 
-	if debugMode: printDebug(str("setMapAndKeepCoordinates(): ", self.tileMap, " → ", newMap, " @", self.currentCellCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapBounds(newMap, self.currentCellCoordinates)))
+	if debugMode: printDebug(str("setMapAndKeepCoordinates(): ", self.tileMap, " → ", newMap, " @", self.currentCellCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapCoordinates(newMap, self.currentCellCoordinates)))
 
 	if isNewCellVacant: # Don't move if shouldn't move
 		var previousPosition: Vector2 = parentEntity.global_position

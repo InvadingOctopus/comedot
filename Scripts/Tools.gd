@@ -613,18 +613,17 @@ static func checkCellVacancy(mapData: TileMapCellData, coordinates: Vector2i, ig
 
 
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
-static func checkTileMapBounds(map: TileMapLayer, coordinates: Vector2i) -> bool:
+static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	var mapRect: Rect2i = map.get_used_rect()
 	return mapRect.has_point(coordinates)
 
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
-## ALERT: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
+## ALERT: UNIMPLEMENTED: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
 ## @experimental
 static func checkTileCollision(map: TileMapLayer, _body: PhysicsBody2D, _coordinates: Vector2i) -> bool:
 	# If the TileMap or its collisions are disabled, then the tile is always available.
 	if not map.enabled or not map.collision_enabled: return true
-
 	return true # HACK: TODO: Implement
 
 
