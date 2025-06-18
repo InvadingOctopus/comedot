@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dnloy15xnmp4u"]
+[gd_scene load_steps=9 format=4 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
 [ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="3_yuy2n"]
 [ext_resource type="PackedScene" uid="uid://d36npu023mnts" path="res://Components/Control/MouseTrackingComponent.tscn" id="5_6dclq"]
+[ext_resource type="TileSet" uid="uid://bshjeqon37qc0" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.tres" id="5_75p7t"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_msvcj"]
 radius = 32.0
@@ -89,5 +90,25 @@ collision_mask = 0
 position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_msvcj")
 debug_color = Color(0, 0.6, 0.8, 0.42)
+
+[node name="TileMapLayer1" type="TileMapLayer" parent="."]
+position = Vector2(64, 64)
+tile_map_data = PackedByteArray("AAAAAAAAAAAkAAwAAAABAAAAAAAkAAwAAAACAAAAAAAkAAwAAAAAAAEAAAAkAAwAAAABAAEAAAAqAA4AAAACAAEAAAAqAA4AAAACAAIAAAAqAA4AAAABAAIAAAAqAA4AAAAAAAIAAAAkAAwAAAADAAAAAAAkAAwAAAADAAEAAAAkAAwAAAADAAIAAAAkAAwAAAADAAMAAAAkAAwAAAACAAMAAAAkAAwAAAABAAMAAAAkAAwAAAAAAAMAAAAkAAwAAAA=")
+tile_set = ExtResource("5_75p7t")
+
+[node name="TileMapLayer2" type="TileMapLayer" parent="."]
+position = Vector2(128, 128)
+tile_map_data = PackedByteArray("AAABAAEAAAArAA4AAAACAAEAAAArAA4AAAACAAIAAAArAA4AAAABAAIAAAArAA4AAAA=")
+tile_set = ExtResource("5_75p7t")
+
+[node name="TileMapLayer3" type="TileMapLayer" parent="."]
+position = Vector2(256, 128)
+tile_map_data = PackedByteArray("AAABAAEAAAAsAA4AAAADAAMAAAAsAA4AAAADAAcAAAAsAA4AAAAGAAUAAAAsAA4AAAA=")
+tile_set = ExtResource("5_75p7t")
+
+[node name="TileMapLayer4" type="TileMapLayer" parent="."]
+position = Vector2(320, 128)
+tile_map_data = PackedByteArray("AAD+//7/AAAtAA4AAAD8//z/AAAtAA4AAAA=")
+tile_set = ExtResource("5_75p7t")
 
 [editable path="SpriteEntity/AreaContactComponent"]
