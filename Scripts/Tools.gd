@@ -350,10 +350,10 @@ static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> 
 			shapeSize = shapeNode.shape.get_rect().size # TBD: Should we use `extents`? It seems to be half of the size, but it seems to be a hidden property [as of 4.3 Dev 3].
 			# Because a [CollisionShape2D]'s anchor is at the center of, we have to get it's top-left corner, by subtracting HALF the size of the actual SHAPE:
 			shapeBounds = Rect2(shapeNode.position - shapeSize / 2, shapeSize) # TBD: PERFORMANCE: Use * 0.5?
-			
+
 			if shapesAdded < 1: combinedShapeBounds = shapeBounds # Is it the first shape?
 			else: combinedShapeBounds.merge(shapeBounds)
-			
+
 			# DEBUG: Debug.printDebug(str("shape: ", shapeNode.shape, ", rect: ", shapeNode.shape.get_rect(), ", bounds in node: ", shapeBounds, ", combinedShapeBounds: ", combinedShapeBounds), area)
 			shapesAdded += 1
 			if shapesAdded >= maximumShapeCount: break
@@ -412,7 +412,7 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 	# Generate a random position within the area.
 
 	#randomize() # TBD: Do we need this?
-	
+
 	#var isWithinArea: bool = false
 	#while not isWithinArea:
 
@@ -614,8 +614,27 @@ static func checkCellVacancy(mapData: TileMapCellData, coordinates: Vector2i, ig
 
 ## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
 static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) -> bool:
-	var mapRect: Rect2i = map.get_used_rect()
-	return mapRect.has_point(coordinates)
+	var gridRect: Rect2i = map.get_used_rect()
+	return gridRect.has_point(coordinates)
+
+
+## Returns the rectangular bounds of a [TileMapLayer] containing all of its "used" or "painted" cells, in the coordinate space of the TileMap's parent.
+## ALERT: This may not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
+static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
+	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
+	if not cellGrid.has_area(): return Rect2() # Null area if there are no cells
+
+	var screenRect:	Rect2
+	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
+
+	# The points will initially be in the TileMap's own space
+	screenRect.position  = cellGrid.position * tileSize
+	screenRect.size		 = cellGrid.size * tileSize
+
+	# Offset the bounds by the map's own position in the map's parent's space
+	screenRect.position += map.position
+
+	return screenRect
 
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
