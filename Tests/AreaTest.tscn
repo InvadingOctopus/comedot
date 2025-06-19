@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://dnloy15xnmp4u"]
+[gd_scene load_steps=10 format=4 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
 [ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
@@ -8,6 +8,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_msvcj"]
 radius = 32.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_75p7t"]
+size = Vector2(16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6dclq"]
 resource_local_to_scene = true
@@ -55,6 +58,12 @@ editor_only = false
 metadata/_edit_lock_ = true
 
 [node name="SpriteEntity" parent="." instance=ExtResource("2_6dclq")]
+
+[node name="SpriteArea" type="Area2D" parent="SpriteEntity"]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteEntity/SpriteArea"]
+shape = SubResource("RectangleShape2D_75p7t")
 
 [node name="AreaContactComponent" parent="SpriteEntity" instance=ExtResource("3_yuy2n")]
 unique_name_in_owner = true

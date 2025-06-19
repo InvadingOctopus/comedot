@@ -637,6 +637,25 @@ static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to
 	return screenRect
 
 
+## Checks if a [Vector2] is inside a [TileMapLayer].
+## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
+	# NOTE: Rect2.has_point() does NOT include points on the right & bottom edges, so grow the Rect2 by 1 pixel to the right & bottom.
+	return Tools.getTileMapScreenBounds(map).grow_individual(0, 0, 1, 1).has_point(point)
+
+
+## Checks if a [Rect2]'s [member Rect2.position] origin and/or [member Rect2.end] points are inside a [TileMapLayer].
+## If [param checkOriginAndEnd] is `true` (default) then this method returns `true` only if the rectangle's origin AND end are BOTH fully inside the TileMap.
+## If [param checkOriginAndEnd] is `false` then even a partial intersection returns `true`.
+## IMPORTANT: The [param rectangle] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+## NOTE: Rotation and other transforms are NOT supported.
+static func isRectInTileMap(rectangle: Rect2, map: TileMapLayer, checkOriginAndEnd: bool = true) -> bool:
+	# NOTE: Rect2.has_point() does NOT include points on the right & bottom edges, so grow the Rect2 by 1 pixel to the right & bottom.
+	var tileMapBounds: Rect2 = Tools.getTileMapScreenBounds(map).grow_individual(0, 0, 1, 1)
+	if checkOriginAndEnd: return tileMapBounds.has_point(rectangle.position) and tileMapBounds.has_point(rectangle.end)
+	else: return tileMapBounds.has_point(rectangle.position) or tileMapBounds.has_point(rectangle.end)
+
+
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
 ## ALERT: UNIMPLEMENTED: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
 ## @experimental

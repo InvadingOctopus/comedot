@@ -3,6 +3,7 @@ extends Start
 
 @onready var testArea: Area2D = %TestArea
 @onready var testShapeNode: CollisionShape2D = %TestShapeNode
+@onready var spriteArea: Area2D = %SpriteArea
 @onready var areaContactComponent: AreaContactComponent = %AreaContactComponent
 
 func _ready() -> void:
@@ -28,10 +29,25 @@ func _process(_delta: float) -> void:
 	Debug.watchList.shapeGlobalBounds = shapeGlobalBounds
 
 	Debug.watchList.displacementOutsideZone2 = Tools.getRectOffsetOutsideContainer(areaContactComponent.areaBoundsGlobal, Tools.getShapeGlobalBounds(%Zone2))
+	Debug.watchList.spriteAreaGlobalBounds = Tools.getShapeGlobalBounds(spriteArea)
 
 
 func _draw() -> void:
-	draw_rect(Tools.getTileMapScreenBounds($TileMapLayer1), Color(Color.GREEN_YELLOW, 0.5), true)
-	draw_rect(Tools.getTileMapScreenBounds($TileMapLayer2), Color(Color.CYAN, 0.5), true)
-	draw_rect(Tools.getTileMapScreenBounds($TileMapLayer3), Color(Color.YELLOW, 0.5), true)
-	draw_rect(Tools.getTileMapScreenBounds($TileMapLayer4), Color(Color.VIOLET, 0.5), true)
+	var mapsAndColors: Dictionary[TileMapLayer, Color] = {
+		$TileMapLayer1: Color(Color.GREEN_YELLOW, 0.5),
+		$TileMapLayer2: Color(Color.CYAN, 0.5),
+		$TileMapLayer3: Color(Color.YELLOW, 0.5),
+		$TileMapLayer4: Color(Color.VIOLET, 0.5)}
+
+	var spriteAreaRect:	 Rect2 = Tools.getShapeGlobalBounds(spriteArea)
+	var mapRect:		 Rect2
+	var isTestAreaInMap: bool
+	
+	for map in mapsAndColors:
+		mapRect = Tools.getTileMapScreenBounds(map) # .grow_individual(0, 0, 1, 1)
+		isTestAreaInMap = Tools.isRectInTileMap(spriteAreaRect, map, false) # not checkOriginAndEnd
+		draw_rect(mapRect, mapsAndColors[map] if not isTestAreaInMap else Color.RED, true)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion: self.queue_redraw()
