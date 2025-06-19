@@ -42,9 +42,9 @@ func _draw() -> void:
 	var spriteAreaRect:	 Rect2 = Tools.getShapeGlobalBounds(spriteArea)
 	var mapRect:		 Rect2
 	var isTestAreaInMap: bool
-	
+
 	for map in mapsAndColors:
-		mapRect = Tools.getTileMapScreenBounds(map) # .grow_individual(0, 0, 1, 1)
+		mapRect = Tools.getTileMapScreenBounds(map)
 		isTestAreaInMap = Tools.isRectInTileMap(spriteAreaRect, map, false) # not checkOriginAndEnd
 		draw_rect(mapRect, mapsAndColors[map] if not isTestAreaInMap else Color.RED, true)
 

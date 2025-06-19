@@ -639,9 +639,10 @@ static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to
 
 ## Checks if a [Vector2] is inside a [TileMapLayer].
 ## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
 static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
-	# NOTE: Rect2.has_point() does NOT include points on the right & bottom edges, so grow the Rect2 by 1 pixel to the right & bottom.
-	return Tools.getTileMapScreenBounds(map).grow_individual(0, 0, 1, 1).has_point(point)
+	# NOTE: Apparently there is no need to grow_individual() the Rect2's right & bottom edges by 1 pixel even though Rect2.has_point() does NOT include points on those edges, according to the Godot documentation.
+	return Tools.getTileMapScreenBounds(map).has_point(point)
 
 
 ## Checks if a [Rect2]'s [member Rect2.position] origin and/or [member Rect2.end] points are inside a [TileMapLayer].
@@ -649,11 +650,10 @@ static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
 ## If [param checkOriginAndEnd] is `false` then even a partial intersection returns `true`.
 ## IMPORTANT: The [param rectangle] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
 ## NOTE: Rotation and other transforms are NOT supported.
+## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
 static func isRectInTileMap(rectangle: Rect2, map: TileMapLayer, checkOriginAndEnd: bool = true) -> bool:
-	# NOTE: Rect2.has_point() does NOT include points on the right & bottom edges, so grow the Rect2 by 1 pixel to the right & bottom.
-	var tileMapBounds: Rect2 = Tools.getTileMapScreenBounds(map).grow_individual(0, 0, 1, 1)
-	if checkOriginAndEnd: return tileMapBounds.has_point(rectangle.position) and tileMapBounds.has_point(rectangle.end)
-	else: return tileMapBounds.has_point(rectangle.position) or tileMapBounds.has_point(rectangle.end)
+	var tileMapBounds: Rect2 = Tools.getTileMapScreenBounds(map)
+	return tileMapBounds.encloses(rectangle) if checkOriginAndEnd else rectangle.intersects(tileMapBounds)
 
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
