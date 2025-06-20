@@ -19,15 +19,10 @@ func buildListItems() -> void:
 
 
 ## Returns the collection of [GameplayResourceBase] data to be displayed by this UI [Container].
-## IMPORTANT: Abstract; MUST be implemented in subclass.
-func getResources() -> Array[GameplayResourceBase]:
-	Debug.printWarning("getResources() not implemented in subclass!", self)
-	return []
+## IMPORTANT: Abstract; MUST be overridden in subclasses.
+abstract func getResources() -> Array[GameplayResourceBase]
 
 
 ## Creates a UI [Control] for the visual representation of a [GameplayResourceBase]'s data.
-## IMPORTANT: Abstract; MUST be implemented in subclass.
-@warning_ignore("unused_parameter")
-func createListItemUI(listItem: Variant) -> Control:
-	Debug.printWarning("createListItemUI() not implemented in subclass!", self)
-	return null
+## IMPORTANT: Abstract; MUST be overridden in subclasses
+abstract func createListItemUI(listItem: Variant) -> Control

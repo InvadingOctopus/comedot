@@ -15,5 +15,4 @@ extends Component
 
 
 ## Abstract; override in subclasses.
-func onTimeout() -> void:
-	pass # if not isEnabled: return
+abstract func onTimeout() -> void

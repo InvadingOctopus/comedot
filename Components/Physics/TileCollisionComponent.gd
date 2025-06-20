@@ -79,10 +79,11 @@ func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, lo
 
 
 #region Abstract Methods
+# Cannot mark as `abstract` because they're optional, and `abstract` functions require the class itself to also be `abstract`, but [TileCollisionComponent] is not abstract as it may still be used via signals.
 
 ## Called when a [TileMapLayer] comes into contact.
 ## NOTE: Called BEFORE [signal didEnterTileCell]
-## Abstract; Must be implemented by subclass.
+## Abstract; To be implemented by subclasses.
 @warning_ignore("unused_parameter")
 func onCollideCell(map: TileMapLayer, cellCoordinates: Vector2i) -> void:
 	pass
@@ -91,7 +92,7 @@ func onCollideCell(map: TileMapLayer, cellCoordinates: Vector2i) -> void:
 ## Called when a [TileMapLayer] leaves contact.
 ## NOTE: If the cell was destroyed, for example by [method Tools.damageTileMapCell], then the [param cellCoordinates] are reported as (-1,-1)
 ## NOTE: Called BEFORE [signal didExitTileCell]
-## Abstract; Must be implemented by subclass.
+## Abstract; To be implemented by subclasses.
 @warning_ignore("unused_parameter")
 func onExitCell(map: TileMapLayer, cellCoordinates: Vector2i) -> void:
 	pass

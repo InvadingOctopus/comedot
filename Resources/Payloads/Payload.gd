@@ -50,11 +50,8 @@ func execute(source: Variant, target: Variant) -> Variant:
 
 ## The actual code which performs the actual action or effect of the Payload.
 ## IMPORTANT: MUST be overridden in a subclass which `extends Payload` such as [SignalPayload] and [ScriptPayload].
-func executeImplementation(source: Variant, target: Variant) -> Variant:
-	Debug.printWarning(str("executeImplementation() source: ", source, ", target: ", target, " — Not implemented; Must be overridden in a Payload subclass."), self.logName)
-	return false
+abstract func executeImplementation(source: Variant, target: Variant) -> Variant
 
 
 func printLog(message: String) -> void:
 	if debugMode: Debug.printLog(message, self.logName, "", "pink")
-

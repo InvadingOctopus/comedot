@@ -94,10 +94,11 @@ func onBodyExited(bodyExited: Node2D) -> void:
 
 
 #region Abstract Methods
+# Cannot mark as `abstract` because they're optional, and `abstract` functions require the class itself to also be `abstract`, but [AreaCollisionComponent] is not abstract as it may still be used via signals.
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] comes into contact.
 ## NOTE: Called BEFORE [signal didEnterArea] or [signal didEnterBody] is emitted, to let subclasses such as [AreaContactComponent] to modify the state before signal handlers.
-## Abstract; Must be implemented by subclass.
+## Abstract; To be implemented by subclasses.
 @warning_ignore("unused_parameter")
 func onCollide(collidingNode: Node2D) -> void:
 	pass
@@ -105,7 +106,7 @@ func onCollide(collidingNode: Node2D) -> void:
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] leaves contact.
 ## NOTE: Called BEFORE [signal didExitArea] or [signal didExitBody] is emitted, to let subclasses such as [AreaContactComponent] to modify the state before signal handlers.
-## Abstract; Must be implemented by subclass.
+## Abstract; To be implemented by subclasses.
 @warning_ignore("unused_parameter")
 func onExit(exitingNode: Node2D) -> void:
 	pass

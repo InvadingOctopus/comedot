@@ -83,7 +83,7 @@ func enterGameOverState() -> void:
 	customizeGameOver() # Time for game-specific animations
 
 
-## Abstract; override in subclass.
+## Abstract; To be implemented by subclasses.
 ## IMPORTANT: Check [member isDisplayingGameOver]
-func customizeGameOver() -> void:
+func customizeGameOver() -> void: # Not marked as `abstract` because it's optional.
 	pass # if not isDisplayingGameOver: return
