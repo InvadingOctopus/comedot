@@ -403,6 +403,71 @@ static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: R
 	return displacement
 
 
+## Checks a list of [Area2D]s and returns the area nearest to another specific area.
+## The [param comparedAreas] would usually be static "zones" and the [param primaryArea] may be the bounds of a player Entity or another character etc.
+static func getNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
+	var nearestArea:	Area2D
+	var minimumDistance: float = INF # Start with infinity
+
+	var primaryAreaBounds:  Rect2 = Tools.getShapeGlobalBounds(primaryArea)
+	var comparedAreaBounds: Rect2
+
+	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
+
+	var primaryLeft:	float = primaryAreaBounds.position.x
+	var primaryRight:	float = primaryAreaBounds.end.x
+	var primaryTop:		float = primaryAreaBounds.position.y
+	var primaryBottom:	float = primaryAreaBounds.end.y
+
+	var comparedLeft:	float
+	var comparedRight:	float
+	var comparedTop:	float
+	var comparedBottom:	float
+
+	var gap:			Vector2 # The pixels between the area edges
+	var distance:		float	# The Euclidean distance between edges
+
+	for comparedArea: Area2D in comparedAreas:
+		if comparedArea == primaryArea: continue
+
+		comparedAreaBounds = Tools.getShapeGlobalBounds(comparedArea)
+		if not comparedAreaBounds.abs().has_area(): continue # Skip area if it doesn't have an area!
+
+		# If both regions are exactly the same, that's the nearest area!
+		if comparedAreaBounds.is_equal_approx(primaryAreaBounds):
+			minimumDistance = 0
+			nearestArea = comparedArea
+			break
+
+		# TBD: Should we use Rect2.encloses() or check the edges anyway to resolve ties between multiple overlapping regions?
+		# if comparedAreaBounds.encloses(primaryAreaBounds) or primaryAreaBounds.encloses(comparedAreaBounds): …
+
+		# Simplify names
+		comparedLeft	= comparedAreaBounds.position.x
+		comparedRight	= comparedAreaBounds.end.x
+		comparedTop		= comparedAreaBounds.position.y
+		comparedBottom	= comparedAreaBounds.end.y
+		gap				= Vector2.ZERO # Gaps will default to 0 if the edges are touching
+
+		# Compute horizontal gap
+		if   primaryRight  < comparedLeft:	gap.x = comparedLeft - primaryRight		# Primary to the left of Compared?
+		elif comparedRight < primaryLeft:	gap.x = primaryLeft  - comparedRight	# or to the right?
+
+		# Compute vertical gap
+		if   primaryBottom  < comparedTop:	gap.y = comparedTop - primaryBottom		# Primary above Compared?
+		elif comparedBottom < primaryTop:	gap.y = primaryTop  - comparedBottom	# or below?
+
+		# Get the Euclidean distance between edges
+		distance = sqrt(gap.x * gap.x + gap.y * gap.y)
+
+		# We have a nearer `nearestArea` if this is a new minimum
+		if  distance < minimumDistance:
+			minimumDistance = distance
+			nearestArea = comparedArea
+
+	return nearestArea
+
+
 ## Returns a random point inside the combined rectangular boundary of ALL an [Area2D]'s [Shape2D]s.
 ## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D].
 ## Works most accurately & reliably for areas with a single [RectangleShape2D].
