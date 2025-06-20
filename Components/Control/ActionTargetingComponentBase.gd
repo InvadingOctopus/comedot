@@ -2,7 +2,7 @@
 ## The [Action] may be a special skill or magic spell etc. such as "Fireball", which may be targeted anywhere,
 ## or it may be an explicit command like "Talk" or "Examine" which requires the target to be an [Entity] with an [ActionTargetableComponent].
 
-abstract class_name ActionTargetingComponentBase
+class_name ActionTargetingComponentBase # TBD: Cannot set as `abstract` because it causes an error in ActionControlComponent.gd:94 "Cannot set object script"
 extends Component
 
 
