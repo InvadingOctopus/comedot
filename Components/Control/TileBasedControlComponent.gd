@@ -19,6 +19,7 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
+			self.set_process_unhandled_input(isEnabled)
 			self.set_physics_process(isEnabled and shouldMoveContinuously)
 #endregion
 
@@ -28,16 +29,25 @@ var recentInputVector: Vector2i:
 	set(newValue): printChange("recentInputVector", recentInputVector, newValue); recentInputVector = newValue # DEBUG
 
 @onready var timer: Timer = $Timer
-@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent # TBD: Static or dynamic?
 #endregion
 
 
+#region Dependencies
+@onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent
+
 func getRequiredComponents() -> Array[Script]:
 	return [TileBasedPositionComponent]
+#endregion
+
+
+func _ready() -> void:
+	# Apply setters because Godot doesn't on initialization
+	self.set_process_unhandled_input(isEnabled)
+	self.set_physics_process(isEnabled and shouldMoveContinuously)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not isEnabled or not event.is_action_type(): return
+	if not event.is_action_type(): return
 
 	if GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveLeft) \
 	or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveRight) \
@@ -58,7 +68,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if not isEnabled or not shouldMoveContinuously: return
 	move()
 
 
