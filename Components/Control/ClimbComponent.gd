@@ -37,6 +37,7 @@ extends AreaContactComponent
 			self.set_process_unhandled_input(isInClimbableArea and isPlayerControlled and isEnabled)
 
 ## The name of the InputEvent Action the player can press to cancel climbing, e.g. by jumping.
+## NOTE: Cancellation occurs as soon as the input is pressed (not on release).
 @export var cancelClimbInputActionName:	StringName = GlobalInput.Actions.jump
 
 #endregion
@@ -197,7 +198,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	# If no other applicable inputs match, check for the cancelation input
-	elif not cancelClimbInputActionName.is_empty() and event.is_action(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
+	elif not cancelClimbInputActionName.is_empty() and Input.is_action_just_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs! # TBD: Cancel on "just pressed" or released?
 		stopClimbing()
 		self.get_viewport().set_input_as_handled()
 
