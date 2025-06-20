@@ -39,7 +39,7 @@ func _ready() -> void:
 ## Returns: The number of stats saved in the dictionary.
 func cacheStats() -> int:
 	if debugMode: printDebug(str("cacheStats() ", stats))
-	
+
 	# Clear the dictionaries before re-caching, to remove Stats that are no longer present.
 	self.statsDictionary.clear()
 	self.statsUIDDictionary.clear()
@@ -92,7 +92,7 @@ func findStat(nameToSearch: StringName) -> Stat:
 	if stats.is_empty(): return null
 
 	for stat: Stat in stats:
-		if stat.name == nameToSearch: 
+		if stat.name == nameToSearch:
 			statsDictionary[stat.name] = stat # Cache for quicker future access
 			return stat
 	# else:
@@ -149,4 +149,3 @@ func setStatToMin(statName: StringName) -> void:
 	if stat: stat.value = stat.min
 
 #endregion
-

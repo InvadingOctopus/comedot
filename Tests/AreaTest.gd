@@ -29,8 +29,8 @@ func _process(_delta: float) -> void:
 	Debug.watchList.shapeGlobalBounds = shapeGlobalBounds
 
 	Debug.watchList.displacementOutsideZone2 = Tools.getRectOffsetOutsideContainer(areaContactComponent.areaBoundsGlobal, Tools.getShapeGlobalBounds(%Zone2))
-	Debug.watchList.spriteAreaGlobalBounds = Tools.getShapeGlobalBounds(spriteArea)
-	Debug.watchList.nearestAreaToSprite = Tools.getNearestArea(spriteArea, [testArea, %Zone1, %Zone2])
+	Debug.watchList.spriteAreaGlobalBounds	 = Tools.getShapeGlobalBounds(spriteArea)
+	Debug.watchList.nearestAreaToSprite		 = Tools.getNearestArea(spriteArea, [testArea, %Zone1, %Zone2])
 
 
 func _draw() -> void:
