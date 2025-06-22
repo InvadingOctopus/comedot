@@ -65,6 +65,27 @@ func _ready() -> void:
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
+#region Control
+
+## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of the [CharacterBody2D]'s [CollisionShape2D] are not fully inside the specified [Rect2],
+## then [member inputDirection] is set to make the character walk towards the rectangle's interior until the character is fully enclosed.
+## IMPORTANT: The [param targetRect] must be in the global coordinate space.
+## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
+## @experimental
+func walkIntoRect(targetRect: Rect2) -> Vector2:
+	# CHECK: Fix seemingly unnecessary inertia?
+
+	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(Tools.getShapeGlobalBounds(characterBodyComponent.body), targetRect)
+	# Walk into the interior
+	if not displacement.is_zero_approx():
+		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
+		self.inputDirection = signf(-displacement.x) # Clamp input range to 0.0…1.0
+	# Return the updated displacement
+	return displacement
+
+#endregion
+
+
 #region Update Cycle
 
 func _physics_process(delta: float) -> void:
