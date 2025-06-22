@@ -47,6 +47,11 @@ var skipFirstWarning:		bool = true
 
 var shouldMoveThisFrame:	bool = false
 
+var collisionShape:			Shape2D: ## @experimental
+	get:
+		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
+		return collisionShape
+
 #endregion
 
 
