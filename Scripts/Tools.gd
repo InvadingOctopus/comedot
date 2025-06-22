@@ -405,7 +405,7 @@ static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: R
 
 ## Checks a list of [Rect2]s and returns the rectangle nearest to another specific rectangle.
 ## The [param comparedRects] would usually represent static "zones" and the [param primaryRect] may be the bounds of a player Entity or another character etc.
-static func getNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
+static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
 	var nearestRect:	 Rect2
 	var minimumDistance: float = INF # Start with infinity
 
@@ -464,8 +464,8 @@ static func getNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> R
 
 ## Checks a list of [Area2D]s and returns the area nearest to another specific area.
 ## The [param comparedAreas] would usually be static "zones" and the [param primaryArea] may be the bounds of a player Entity or another character etc.
-static func getNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
-	# DESIGN: PERFORMANCE: Cannot use getNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
+static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
+	# DESIGN: PERFORMANCE: Cannot use findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
 	# so there has to be some code dpulication :')
 
 	var nearestArea:	Area2D
