@@ -22,7 +22,7 @@ func _process(_delta: float) -> void:
 	var shapeBounds: Rect2 = Tools.getShapeBounds(testArea)
 	Debug.watchList.shapeBounds = shapeBounds
 
-	var shapeBoundsInArea: Rect2 = Tools.getShapeBoundsInArea(testArea)
+	var shapeBoundsInArea: Rect2 = Tools.getShapeBoundsInNode(testArea)
 	Debug.watchList.shapeBoundsInArea = shapeBoundsInArea
 
 	var shapeGlobalBounds: Rect2 = Tools.getShapeGlobalBounds(testArea)
