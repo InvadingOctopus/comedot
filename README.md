@@ -8,13 +8,21 @@ _Component-based framework and project template for [Godot][godot]_
 
 ![components-tree]
 
-* Comes with a library of components for the common stuff needed in most games: Different types of player movement, combat, collectibles, interactions, upgrades etc.
+* Comes with a library of components for different types of player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.anyName = 69`
 * A neutron star spoonful of helper functions & debugging tools.
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
+
+🎖️ What makes Comedot most awesomecious is components that go beyond basic implementation to make sure gameplay *feels* right, by solving tricky edge-case issues that all games run into sooner or later, like:
+
+* Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
+* Ladders/ropes: Snapping while holding the climb input in mid-air. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
+
+*And so much more!!*
+
 
 > [!WARNING]
 > _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews certain conventions like ugly underscores and may change frequently:_ **No backwards compatibility is guaranteed!**
