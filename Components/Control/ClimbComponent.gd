@@ -6,6 +6,7 @@ class_name ClimbComponent
 extends AreaContactComponent
 
 # DESIGN: Climbing should not be a part of PlatformerControlComponent or PlatformerPhysicsComponent because it would add a lot of extra Area2D-related bloat etc.
+# DESIGN: For now, this isn't split into multiple components like PlatformerControlComponent + PlatformerPhysicsComponent because climbing logic seems to be a separate self-contained behavior, so far.
 # TODO: Allow jumping from ladders/etc.
 # TODO: Transfer between adjacent Climbable areas
 
@@ -78,7 +79,7 @@ extends AreaContactComponent
 			activeClimbingArea = newValue
 			# Update the bounds
 			if activeClimbingArea:
-				activeClimbingAreaBounds = Tools.getShapeBoundsInArea(activeClimbingArea)
+				activeClimbingAreaBounds = Tools.getShapeBoundsInNode(activeClimbingArea)
 				activeClimbingAreaBoundsGlobal = Rect2(activeClimbingAreaBounds.position + activeClimbingArea.global_position, activeClimbingAreaBounds.size)
 			else:
 				activeClimbingAreaBounds = Rect2()
@@ -115,7 +116,7 @@ signal didEndClimb(area:	Area2D) # TBD: Should this be emitted by the `isClimbin
 
 #region Dependencies
 @onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
-@onready var characterBodyComponent: CharacterBodyComponent = coComponents.CharacterBodyComponent # TBD: Static or dynamic?
+@onready var characterBodyComponent:	 CharacterBodyComponent		= coComponents.CharacterBodyComponent # TBD: Static or dynamic?
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, PlatformerPhysicsComponent]
 #endregion
@@ -280,17 +281,19 @@ func startClimbing() -> Area2D:
 	return climbNearestArea()
 
 
-## @experimental
 func climbNearestArea() -> Area2D:
 	if areasInContact.is_empty() or not isEnabled:
 		if debugMode: printDebug("climbNearestArea(): No areasInContact")
 		return null
 
+	var nearestClimbableArea: Area2D = findNearestClimbableArea()
+	if not nearestClimbableArea: return null
+
 	# If we're nut fully inside the nearest Climbable we're touching, walk a bit before we can climb.
-	if characterBodyComponent.isOnFloor and shouldWalkIntoClimbableArea and not walkIntoNearestClimbableArea().is_zero_approx():
+	if characterBodyComponent.isOnFloor and shouldWalkIntoClimbableArea and not walkIntoArea(nearestClimbableArea).is_zero_approx():
 		return null
 
-	activeClimbingArea = getNearestClimbableArea()
+	activeClimbingArea = nearestClimbableArea
 
 	if activeClimbingArea:
 		characterBodyComponent.body.velocity.y = 0 # NOTE: Stop any other vertical movement. FIXES: Gradual buildup of gravity from "bouncing" outside a Climbable etc.
@@ -301,27 +304,33 @@ func climbNearestArea() -> Area2D:
 	return activeClimbingArea
 
 
-## UNIMPLEMENTED: For now, just returns the latest index from [member areasInContact]
-## @experimental
-func getNearestClimbableArea() -> Area2D:
-	return areasInContact.back()
+func findNearestClimbableArea() -> Area2D:
+	if areasInContact.is_empty():  return null
+	
+	var nearestArea: Area2D
+	if areasInContact.size() == 1: nearestArea = areasInContact[0]
+	else: nearestArea = Tools.findNearestArea(self.area, areasInContact)
+
+	#if debugMode: printTrace(nearestArea)
+	return nearestArea
 
 
 ## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of this component's [Area2D] are not fully inside the nearest Climbable [Area2D],
 ## then [PlatformerPhysicsComponent] is used to make the character walk towards the Climbable area's interior.
-## Returns: The remain displacement/offset outside the Climbable [Area2D].
-## @experimental
-func walkIntoNearestClimbableArea() -> Vector2:
+## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
+func walkIntoArea(targetArea: Area2D) -> Vector2:
 	# TODO: Fix seemingly unnecessary inertia & overlapping Climbables
-	var nearestClimbableAreaBounds: Rect2 = Tools.getShapeGlobalBounds(getNearestClimbableArea())
-	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, nearestClimbableAreaBounds)
+	# DESIGN: Cannot use PlatformerPhysicsComponent.walkIntoRect() because ClimbComponent uses its own Area2D, not the CharacterBody2D's CollisionShape2D.
+	
+	var targetAreaBounds: Rect2 = Tools.getShapeGlobalBounds(targetArea)
+	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetAreaBounds)
 	# Walk into the interior
 	if not displacement.is_zero_approx():
 		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
-		platformerPhysicsComponent.inputDirection = -displacement.normalized().x # Clamp input range to 0.0…1.0
+		platformerPhysicsComponent.inputDirection = signf(-displacement.x) # Clamp input range to 0.0…1.0
 		# TBD: Neutralize inertia so we don't slide too deep into the Climbable?
-	# Return the updated displacement
-	return Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, nearestClimbableAreaBounds)
+
+	return displacement
 
 
 ## Instantly repositions the Entity to place this component's [Area2D] inside the [member activeClimbingArea]. 
