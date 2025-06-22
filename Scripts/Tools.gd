@@ -328,6 +328,7 @@ static func getShapeBounds(area: Area2D) -> Rect2:
 ## Works most accurately & reliably for areas with a single [RectangleShape2D].
 ## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 and the position set to the [Area2D]'s local position.
 static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> Rect2:
+	# TBD: PERFORMANCE: Option to cache results?
 	# HACK: Sigh @ Godot for making this so hard...
 
 	# INFO: PLAN: Overview: An [Area2D] has a [CollisionShape2D] child [Node], which in turn has a [Shape2D] [Resource].
@@ -369,6 +370,7 @@ static func getShapeBoundsInArea(area: Area2D, maximumShapeCount: int = 100) -> 
 ## Calls [method Tools.getShapeBoundsInArea] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL of an [Area2D]'s [CollisionShape2D] children, converted into GLOBAL coordinates.
 ## Useful for comparing the [Area2D]s of 2 separate nodes/entities.
 static func getShapeGlobalBounds(area: Area2D) -> Rect2:
+	# TBD: PERFORMANCE: Option to cache results?
 	var shapeGlobalBounds: Rect2 = getShapeBoundsInArea(area)
 	shapeGlobalBounds.position   = area.to_global(shapeGlobalBounds.position)
 	return shapeGlobalBounds
@@ -406,6 +408,8 @@ static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: R
 ## Checks a list of [Rect2]s and returns the rectangle nearest to another specific rectangle.
 ## The [param comparedRects] would usually represent static "zones" and the [param primaryRect] may be the bounds of a player Entity or another character etc.
 static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
+	# TBD: PERFORMANCE: Option to cache results?
+
 	var nearestRect:	 Rect2
 	var minimumDistance: float = INF # Start with infinity
 
@@ -427,14 +431,13 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 	for comparedRect: Rect2 in comparedRects:
 		if not comparedRect.abs().has_area(): continue # Skip rect if it doesn't have an area
 
-		# If both regions are exactly the same, that's the nearest rect!
-		if comparedRect.is_equal_approx(primaryRect):
+		# If both regions are exactly the same position & size,
+		# or either of them completely contain the other, then you can't get any nearer than that!
+		if comparedRect.is_equal_approx(primaryRect) \
+		or comparedRect.encloses(primaryRect) or primaryRect.encloses(comparedRect):
 			minimumDistance = 0
 			nearestRect = comparedRect
 			break
-
-		# TBD: Should we use Rect2.encloses() or check the edges anyway to resolve ties between multiple overlapping regions?
-		# if comparedRect.encloses(primaryRect) or primaryRect.encloses(comparedRect): …
 
 		# Simplify names
 		comparedLeft	= comparedRect.position.x
@@ -464,12 +467,15 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 
 ## Checks a list of [Area2D]s and returns the area nearest to another specific area.
 ## The [param comparedAreas] would usually be static "zones" and the [param primaryArea] may be the bounds of a player Entity or another character etc.
+## NOTE: If 2 different [Area2D]s are at the same distance from [param primaryArea] then the one on top i.e. with the higher [member CanvasItem.z_index] will be used.
 static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
-	# DESIGN: PERFORMANCE: Cannot use findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
-	# so there has to be some code dpulication :')
+	# TBD: PERFORMANCE: Option to cache results?
 
-	var nearestArea:	Area2D
-	var minimumDistance: float = INF # Start with infinity
+	# DESIGN: PERFORMANCE: Cannot use findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
+	# and there is a separate tie-break based on the Z index, so there has to be some code dpulication :')
+
+	var nearestArea:	Area2D = null # Initialize with `null` to avoid the "used before assigning a value" warning
+	var minimumDistance: float = INF  # Start with infinity
 
 	var primaryAreaBounds:  Rect2 = Tools.getShapeGlobalBounds(primaryArea)
 	var comparedAreaBounds: Rect2
@@ -495,14 +501,17 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 		comparedAreaBounds = Tools.getShapeGlobalBounds(comparedArea)
 		if not comparedAreaBounds.abs().has_area(): continue # Skip area if it doesn't have an area!
 
-		# If both regions are exactly the same, that's the nearest area!
-		if comparedAreaBounds.is_equal_approx(primaryAreaBounds):
-			minimumDistance = 0
-			nearestArea = comparedArea
-			break
-
-		# TBD: Should we use Rect2.encloses() or check the edges anyway to resolve ties between multiple overlapping regions?
-		# if comparedAreaBounds.encloses(primaryAreaBounds) or primaryAreaBounds.encloses(comparedAreaBounds): …
+		# If both regions are exactly the same position & size,
+		# or either of them completely contain the other, then you can't get any nearer than that!
+		if comparedAreaBounds.is_equal_approx(primaryAreaBounds) \
+		or comparedAreaBounds.encloses(primaryAreaBounds) or primaryAreaBounds.encloses(comparedAreaBounds):
+			# Is this the first overlapping area? (i.e. the minimum distance is not already 0)
+			# or is it another overlapping area visually on top (with a higher Z index) of a previous overlapping area?
+			if not is_zero_approx(minimumDistance) \
+			or (nearestArea and comparedArea.z_index > nearestArea.z_index):
+				minimumDistance = 0
+				nearestArea = comparedArea
+			continue # NOTE: Do NOT `break` the loop here! Keep checking for multiple overlapping areas to choose the one with the highest Z index.
 
 		# Simplify names
 		comparedLeft	= comparedAreaBounds.position.x
@@ -526,6 +535,13 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 		if  distance < minimumDistance:
 			minimumDistance = distance
 			nearestArea = comparedArea
+
+		# If 2 different [Area2D]s have the same distance,
+		# use the one that is visually on top of the other: with a higher Z index
+		elif is_equal_approx(distance, minimumDistance) \
+		and  comparedArea.z_index > nearestArea.z_index:
+			nearestArea = comparedArea
+		# TBD: Otherwise, keep the first area.
 
 	return nearestArea
 

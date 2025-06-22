@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://dnloy15xnmp4u"]
+[gd_scene load_steps=12 format=4 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
 [ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
@@ -16,8 +16,14 @@ size = Vector2(16, 16)
 resource_local_to_scene = true
 size = Vector2(32, 32)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_msvcj"]
-size = Vector2(64, 64)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gxrg5"]
+size = Vector2(80, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pcalh"]
+size = Vector2(80, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j0ons"]
+size = Vector2(32, 64)
 
 [node name="AreaTestScene" type="Node2D"]
 script = ExtResource("1_xp6u4")
@@ -85,8 +91,8 @@ collision_layer = 513
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Zone1"]
-position = Vector2(32, 32)
-shape = SubResource("RectangleShape2D_msvcj")
+position = Vector2(40, 40)
+shape = SubResource("RectangleShape2D_gxrg5")
 debug_color = Color(0.6, 0.8, 0, 0.42)
 
 [node name="Zone2" type="Area2D" parent="." groups=["zones"]]
@@ -96,9 +102,20 @@ collision_layer = 513
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Zone2"]
-position = Vector2(32, 32)
-shape = SubResource("RectangleShape2D_msvcj")
-debug_color = Color(0, 0.6, 0.8, 0.42)
+position = Vector2(40, 40)
+shape = SubResource("RectangleShape2D_pcalh")
+debug_color = Color(0, 0.8001019, 0.60038817, 0.42000002)
+
+[node name="Zone3" type="Area2D" parent="." groups=["zones"]]
+unique_name_in_owner = true
+z_index = 1
+position = Vector2(200, 72)
+collision_layer = 513
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone3"]
+shape = SubResource("RectangleShape2D_j0ons")
+debug_color = Color(0.8001019, 0.60038817, 0.8001019, 0.42000002)
 
 [node name="TileMapLayer1" type="TileMapLayer" parent="."]
 position = Vector2(64, 64)
