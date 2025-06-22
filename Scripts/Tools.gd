@@ -539,7 +539,7 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 		# If 2 different [Area2D]s have the same distance,
 		# use the one that is visually on top of the other: with a higher Z index
 		elif is_equal_approx(distance, minimumDistance) \
-		and  comparedArea.z_index > nearestArea.z_index:
+		and nearestArea and comparedArea.z_index > nearestArea.z_index:
 			nearestArea = comparedArea
 		# TBD: Otherwise, keep the first area.
 
