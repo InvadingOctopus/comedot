@@ -424,7 +424,7 @@ func printError(message: String = "") -> void:
 ## Prints an array of variables in a highlighted color, along with a short "stack trace" of recent functions and their filenames before [method Debug.printTrace] was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## Affected by [member debugMode] and only printed in debug builds.
-func printTrace(values: Array[Variant] = []) -> void:
+func printTrace(...values: Array[Variant]) -> void:
 	Debug.printTrace(values, self.logNameWithEntity, 3) # Start further from the call stack to skip this method
 
 
