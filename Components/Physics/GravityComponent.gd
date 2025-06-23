@@ -34,4 +34,4 @@ func _physics_process(delta: float) -> void:
 	if not characterBodyComponent.isOnFloor:
 		body.velocity.y += (gravity * gravityScale) * delta
 
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true

@@ -52,7 +52,7 @@ func _physics_process(_delta: float) -> void:
 	self.recentChaseDirection = parentEntity.global_position.direction_to(nodeToChase.global_position).normalized()
 	overheadPhysicsComponent.inputDirection = self.recentChaseDirection
 
-	# characterBodyComponent.queueMoveAndSlide() # Unneeded; will be called by OverheadPhysicsComponent
+	# characterBodyComponent.shouldMoveThisFrame = true # Unneeded; will be called by OverheadPhysicsComponent
 	if debugMode: showDebugInfo()
 
 

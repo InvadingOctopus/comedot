@@ -49,7 +49,7 @@ func _physics_process(delta: float) -> void:
 	#applyDefaultVelocity(delta) # TBD: Is a separate function useful?
 	clampVelocity(delta)
 	
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 
 
 func characterBodyComponent_didMove() -> void:

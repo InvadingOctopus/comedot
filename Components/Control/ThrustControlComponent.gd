@@ -45,6 +45,6 @@ func _physics_process(delta: float) -> void:
 	else: # Apply friction
 		body.velocity = body.velocity.move_toward(Vector2.ZERO, friction * delta)
 
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 
 	#Debug.watchList.velocity = body.velocity

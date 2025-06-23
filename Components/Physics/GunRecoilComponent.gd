@@ -40,4 +40,4 @@ func onGunComponentDidFire(bullet: Entity) -> void:
 	# Knock the parent entity's body back in the opposite direction.
 	forceVector = forceVector * -1
 	body.velocity += forceVector * knockbackForce
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true

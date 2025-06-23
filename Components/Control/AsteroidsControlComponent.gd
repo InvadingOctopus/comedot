@@ -40,7 +40,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	processInput(delta)
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 	lastVelocity = body.velocity # TBD: Should this come last?
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.

@@ -1,11 +1,12 @@
 ## Manages updates to a [CharacterBody2D]. Ensures that [method CharacterBody2D.move_and_slide] is called only once every frame (to prevent excessive movement) and updates related flags.
-## Components which need to process updates AFTER the [CharacterBody2D] moves must connect to the [signal CharacterBodyComponent.didMove] signal.
-## NOTE: This component must come AFTER all other components which move the body, like [JumpControlComponent].
+## IMPORTANT: Set the [member shouldMoveThisFrame] to `true` after modifying the [member CharacterBody2D.velocity] etc.
+## TIP: Components which need to process updates AFTER the [CharacterBody2D] moves must connect to the [signal CharacterBodyComponent.didMove] signal.
+## Requirements: This component must come AFTER all other components which move the body, like [JumpControlComponent].
 
 class_name CharacterBodyComponent
 extends Component
 
-# TBD: CHECK: Performance impact of having multiple components for basic player movement.
+# TBD: CHECK: PERFORMANCE: impact of having multiple components for basic player movement.
 
 
 #region Parameters
@@ -26,6 +27,7 @@ extends Component
 
 
 #region State
+# TBD: Persist state flags with @export_storage to be restored by Save/Load?
 
 var isOnFloor:		bool ## Did the body collide with the floor after [method CharacterBody2D.move_and_slide]? (may be cached since the previous frame).
 
@@ -42,12 +44,15 @@ var previousVelocity:	Vector2:
 var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with.
 var lastMotionCached:	Vector2 ## NOTE: Used for and updated ONLY IF [member shouldResetVelocityIfZeroMotion] is `true`.
 
-## This avoids the superfluous warning when checking the [member body] for the first time in [method _enter_tree()].
-var skipFirstWarning:		bool = true
+## Avoids the superfluous warning when checking the [member body] for the first time in [method _enter_tree()].
+var skipFirstWarning:	bool = true
 
-var shouldMoveThisFrame:	bool = false
+## When `true`, [method CharacterBody2D.move_and_slide] is called during the current frame, ONLY ONCE, then this flag is reset before the next frame,
+## This ensures that multiple physics-modifying components do not cause excessive movement.
+## Other components such as [PlatformerPhysicsComponent] should set this flag whenever modifying the [member CharacterBody2D.velocity] etc.
+var shouldMoveThisFrame:bool = false # AVOID: Do not toggle set_physics_process() here: It makes shit slower, possibly because taking effect on the next frame?
 
-var collisionShape:			Shape2D: ## @experimental
+var collisionShape:		Shape2D: ## @experimental
 	get:
 		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
 		return collisionShape
@@ -59,6 +64,8 @@ var collisionShape:			Shape2D: ## @experimental
 signal didMove(delta: float) ## Emitted after [method CharacterBody2D.move_and_slide]
 #endregion
 
+
+#region Initialization
 
 # Called whenever the node enters the scene tree.
 func _enter_tree() -> void:
@@ -72,31 +79,28 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	cacheBodyFlags() # Cache the initial state of body flags.
-
-
-func cacheBodyFlags() -> void:
+	# Cache the initial state of body flags.
 	self.isOnFloor = body.is_on_floor()
 
+#endregion
 
-func queueMoveAndSlide() -> void:
-	self.shouldMoveThisFrame = true
 
+#region Update
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog(str("_physics_process() delta: ", delta))
 
-	if self.shouldMoveThisFrame:
-		updateStateBeforeMove(delta)
+	if shouldMoveThisFrame:
+		self.updateStateBeforeMove(delta)
 		if debugMode and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
 
 		# TBD: PERFORMANCE: Should `entity.callOnceThisFrame()` be used, or call `move_and_slide()` directly?
 		# DISABLED FOR PERFORMANCE: parentEntity.callOnceThisFrame(body.move_and_slide)
 		body.move_and_slide()
-		updateStateAfterMove(delta)
+		self.updateStateAfterMove(delta)
 
-		self.shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
+		shouldMoveThisFrame = false # Reset the flag so we don't move more than once.
 		didMove.emit(delta)
 
 	if debugMode: showDebugInfo()
@@ -110,8 +114,7 @@ func updateStateBeforeMove(_delta: float) -> void:
 
 	self.previousVelocity = body.velocity
 
-	if wasOnWall:
-		self.previousWallNormal = body.get_wall_normal()
+	if wasOnWall: self.previousWallNormal = body.get_wall_normal()
 
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
@@ -132,10 +135,14 @@ func updateStateAfterMove(_delta: float) -> void:
 	if debugMode and not body.velocity.is_equal_approx(previousVelocity):
 		printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
 
+#endregion
+
+
+#region Debugging
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
+	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.velocity	= body.velocity
 	Debug.watchList.lastVelocity= previousVelocity
 	Debug.watchList.lastMotion	= body.get_last_motion()
@@ -143,3 +150,5 @@ func showDebugInfo() -> void:
 	Debug.watchList.wasOnFloor	= wasOnFloor
 	Debug.watchList.wasOnWall	= wasOnWall
 	Debug.watchList.wallNormal	= body.get_wall_normal()
+
+#endregion

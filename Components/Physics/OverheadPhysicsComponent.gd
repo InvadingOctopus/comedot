@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 	if not isEnabled: return
 
 	processMovement(delta)
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 	clearInput() # PERFORMANCE: Done directly instead of via signal for now
 
 	if debugMode: showDebugInfo()

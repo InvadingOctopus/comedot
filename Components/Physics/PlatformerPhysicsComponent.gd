@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 	processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
 
 	# Move Your Body ♪
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 
 
 func updateStateBeforeMove() -> void:

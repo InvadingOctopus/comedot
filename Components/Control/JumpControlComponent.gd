@@ -98,7 +98,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	processWallJump()
 	processJump()
 
-	characterBodyComponent.queueMoveAndSlide()
+	characterBodyComponent.shouldMoveThisFrame = true
 
 
 ## Performs updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].
