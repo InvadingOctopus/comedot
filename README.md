@@ -16,7 +16,7 @@ _Component-based framework and project template for [Godot][godot]_
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
-🎖️ What makes Comedot most awesomecious is components that go beyond basic implementation to make sure gameplay *feels* right, by solving tricky edge-case issues that all games run into sooner or later, like:
+🎖️ What makes Comedot most sprillific is components that go beyond basic implementation to make sure gameplay *feels* right, by solving tricky edge-case issues that all games run into sooner or later:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
 * Ladders/ropes: Snapping while holding the climb input in mid-air. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
