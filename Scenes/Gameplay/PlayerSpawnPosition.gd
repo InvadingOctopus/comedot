@@ -58,6 +58,7 @@ func setPlayerPosition() -> void:
 	if player:
 		if debugMode: Debug.printDebug(str("setPlayerPosition(): ", player.logName, " ", player.global_position, " → ", playerSpawnPosition.global_position), self)
 		player.global_position = playerSpawnPosition.global_position
+		player.reset_physics_interpolation() # Skip interpolation, just snap!
 		if shouldCreateCamera: setCamera()
 
 
