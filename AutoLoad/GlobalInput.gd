@@ -65,6 +65,11 @@ class Actions:
 		debugWindow, debugTest, debugBreak
 		]
 
+	static var allActions: Dictionary: ## Returns a list of all the input action `const` property names & values. NOTE: NOT updated during runtime!
+		get:
+			if not allActions: allActions = Actions.new().get_script().get_script_constant_map()
+			return allActions
+
 ## Replacements for certain strings in the text representations of InputEvent control names, such as "Keyboard" instead of "Physical".
 const eventTextReplacements: Dictionary[String, String] = {
 	"Physical": "Keyboard",
@@ -186,5 +191,18 @@ func getInputEventReplacedText(action: StringName) -> PackedStringArray:
 func hasActionTransitioned(action: StringName) -> bool:
 	return Input.is_action_just_pressed(action) \
 		or Input.is_action_just_released(action)
+
+
+## Returns all the player control input actions from [GlobalInput] that match a given [InputEvent].
+## WARNING: PERFORMANCE: May be too slow; avoid calling frequently!
+## @experimental
+func findActionsFromInputEvent(event: InputEvent) -> Array[StringName]:
+	if not event.is_action_type(): return []
+	# PERFORMANCE: GRRR: Since dummy Godot does not provide any direct way to get the input actions from an [InputEvent],
+	# we have to manually check every possibility... >:(
+	var inputActions: Array[StringName]
+	for propertyName: String in Actions.allActions:
+		if event.is_action(propertyName): inputActions.append(propertyName)
+	return inputActions
 
 #endregion
