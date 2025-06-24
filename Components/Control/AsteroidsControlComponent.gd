@@ -1,6 +1,6 @@
 ## Lets the player move by rotating left or right, and thrust forward, and brake.
 ## Similar to Asteroids; a common control scheme for spaceships or "tank"-like movement.
-## NOTE: This component is an independent and more advanced alternative to combining [TurningControlComponent] + [ThrustControlComponent], and it does not depend on [PlayerInputComponent].
+## NOTE: This component is an independent and more advanced alternative to combining [TurningControlComponent] + [ThrustControlComponent], and it does not depend on [InputComponent].
 ## Requirements: BEFORE [CharacterBodyComponent]
 ## @experimental
 

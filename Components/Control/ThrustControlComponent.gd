@@ -1,7 +1,7 @@
 ## Applies thrust or braking to the entity's [CharacterBody2D] when the player uses the up or down controls.
 ## May be combined with the [TurningControlComponent] to provide spaceship or tank-like controls, similar to Asteroids.
 ## Use [VelocityClampComponent] to limit the speed.
-## Requirements: AFTER [PlayerInputComponent], BEFORE [CharacterBodyComponent]
+## Requirements: AFTER [InputComponent], BEFORE [CharacterBodyComponent]
 
 class_name ThrustControlComponent
 extends CharacterBodyDependentComponentBase
@@ -21,7 +21,7 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Dependencies
-@onready var playerInputComponent: PlayerInputComponent = coComponents.PlayerInputComponent # TBD: Static or dynamic?
+@onready var inputComponent: InputComponent = coComponents.InputComponent # TBD: Static or dynamic?
 #endregion
 
 
@@ -36,7 +36,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var input: float = playerInputComponent.thrustInput
+	var input: float = inputComponent.thrustInput
 
 	if not is_zero_approx(input): # Apply thrust
 		var direction: Vector2 = Vector2.from_angle(body.rotation) # No need for [.normalized()]
