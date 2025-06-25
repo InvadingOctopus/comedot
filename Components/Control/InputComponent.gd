@@ -1,4 +1,5 @@
 ## Monitors and stores the player's input for other components to act upon.
+## ALERT: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
 ## Requirements: Should be BEFORE all components that depend on player/AI control.
@@ -42,26 +43,36 @@ const inputActionsToMonitor: PackedStringArray = [
 ## A list of all the input actions from [member inputActionsToMonitor] that are currently pressed.
 var inputActionsPressed: PackedStringArray
 
-var inputDirection:		Vector2 ## The combined horizontal + vertical axes.
-var previousInputDirection:	Vector2 ## Preserved if a new [inputDirection] is 0, to let other components/scripts compare with a non-zero difference.
+var previousMovementDirection:	Vector2
+var movementDirection:			Vector2: ## The primary movmeent input from the combined horizontal + vertical axes. Includes the Left Joystick & the D-pad.
+	set(newValue):
+		if newValue != movementDirection:
+			# NOTE: Do not count "echoes" (repeated events generated when the same input is pressed and held) as changes in the input!
+			if not lastInputEvent.is_echo(): previousMovementDirection = movementDirection
+			movementDirection = newValue
 
-var horizontalInput:	float
-var verticalInput:		float
+var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & the D-pad.
+var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & the D-pad.
 
-var turnInput:			float ## For the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]
-var thrustInput:		float ## For the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
+var lookDirection:		Vector2 ## The Right Joystick.
+var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]
+var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
+
+var lastInputEvent:		InputEvent ## The most recent [InputEvent] processed. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
 
 #endregion
 
 
 #region Signals
+# TBD: Signals for axis updates?
+signal didProcessInput(event: InputEvent)
 signal didUpdateInputActionsList ## Emitted when the list of [member inputActionsPressed] is updated.
 #endregion
 
 
 func _ready() -> void:
 	# Update the input actions that were pressed/released BEFORE this component is ready.
-	updateInputActions(null) # No specific InputEvent
+	updateInputActionsPressed()
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(debugMode)
 	self.set_process_input(isEnabled and not shouldProcessUnhandledInputOnly)
@@ -72,20 +83,24 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	# Checked by property setters: if isEnabled and not shouldProcessUnhandledInputOnly:
+	if event is InputEventMouseMotion: return
 	if debugMode: printDebug(str("_input(): ", event))
 	handleInput(event)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Checked by property setters: if isEnabled and shouldProcessUnhandledInputOnly:
+	if event is InputEventMouseMotion: return
 	if debugMode: printDebug(str("_unhandled_input(): ", event))
 	handleInput(event)
 
 
 func handleInput(event: InputEvent) -> void:
+	# NOTE: For joystick input, events will be raised TWICE: once for both the X and Y axes.
+
 	if not event.is_action_type(): return
-	
-	updateInputActions(event)
+	self.lastInputEvent = event
+	updateInputActionsPressed(event)
 
 	# TBD: CHECK: PERFORMANCE: Use a bunch of `if`s to update state properties only when there is a relevant matching input event?
 	
@@ -96,24 +111,20 @@ func handleInput(event: InputEvent) -> void:
 	or event.is_action(GlobalInput.Actions.moveRight)	\
 	or event.is_action(GlobalInput.Actions.moveUp)		\
 	or event.is_action(GlobalInput.Actions.moveDown):
-		
-		# Preserve the previousInputDirection if the new input is 0,
-		# to let other components/scripts compare with a non-zero difference.
-		if not self.inputDirection.is_zero_approx():
-			self.previousInputDirection	= self.inputDirection
 
-		self.inputDirection		= Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
-		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)
+		self.movementDirection	= Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
 		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight)
+		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)
 
-	self.turnInput			= Input.get_axis(GlobalInput.Actions.turnLeft, GlobalInput.Actions.turnRight)
-	self.thrustInput		= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
+	self.lookDirection			= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown)
+	self.turnInput				= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
+	self.thrustInput			= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
-	# TBD: Signals for axis updates?
+	didProcessInput.emit(event)
 	# TODO: CHECK: Does this work for joystick input?
 
 
-func updateInputActions(_event: InputEvent) -> void:
+func updateInputActionsPressed(_event: InputEvent = null) -> void:
 	# DESIGN: Do NOT just listen for `event.is_action_pressed()` etc., poll the state of ALL input actions,
 	# to make sure that [inputActionsPressed] also includes input actions that were pressed BEFORE this component received its first event.
 	
@@ -142,10 +153,11 @@ func showDebugInfo() -> void:
 	if not debugMode: return
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.actionsPressed		= inputActionsPressed
-	Debug.watchList.inputDirection		= inputDirection
-	Debug.watchList.previousInputDirection	= previousInputDirection
-	Debug.watchList.verticalInput		= verticalInput
+	Debug.watchList.previousMovementDirection	= previousMovementDirection
+	Debug.watchList.movementDirection	= movementDirection
+	Debug.watchList.lookDirection		= lookDirection
 	Debug.watchList.horizontalInput		= horizontalInput
+	Debug.watchList.verticalInput		= verticalInput
 	Debug.watchList.turnInput			= turnInput
 	Debug.watchList.thrustInput			= thrustInput
 
