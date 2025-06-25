@@ -303,7 +303,7 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 #endregion
 
 
-#region Area & Shape Functions
+#region Area & Shape Geometry
 
 ## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
 ## NOTE: The rectangle is in the coordinates of the shape's [CollisionShape2D] container, with its anchor at the CENTER.
@@ -568,6 +568,11 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 
 	# DEBUG: Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
 	return randomPosition
+
+
+## Returns a COPY of a [Vector2i] moved in the specified [enum CompassDirection]
+static func offsetVectorByCompassDirection(vector: Vector2i, direction: CompassDirection) -> Vector2i:
+	return vector + Tools.compassDirectionVectors[direction]
 
 #endregion
 
@@ -1194,10 +1199,5 @@ static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
 		if list.size() == 1: return value
 		else: return list[index+1] if index < list.size()-1 else list[0] # Wrap around if at the end of the array.
 	else: return null
-
-
-## Returns a COPY of a [Vector2i] moved in the specified [enum CompassDirection]
-static func offsetVectorByCompassDirection(vector: Vector2i, direction: CompassDirection) -> Vector2i:
-	return vector + Tools.compassDirectionVectors[direction]
 
 #endregion
