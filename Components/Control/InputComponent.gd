@@ -2,7 +2,7 @@
 ## ALERT: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
-## Requirements: Should be BEFORE all components that depend on player/AI control.
+## Requirements: AFTER (below in the Scene Tree) all components that depend on player/AI control, because input events propagate from the BOTTOM of the Scene Tree nodes list UPWARD.
 
 class_name InputComponent
 extends Component
@@ -67,6 +67,14 @@ var lastInputEvent:		InputEvent ## The most recent [InputEvent] processed. NOTE:
 # TBD: Signals for axis updates?
 signal didProcessInput(event: InputEvent)
 signal didUpdateInputActionsList ## Emitted when the list of [member inputActionsPressed] is updated.
+
+## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the X axis, signifying a change/flip in direction from right ↔ left.
+## May be used for sprite flipping and other animations etc.
+signal didChangeHorizontalDirection
+
+## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the Y axis, signifying a change/flip in direction from up ↔ down.
+## May be used for sprite flipping and other animations etc.
+signal didChangeVerticalDirection
 #endregion
 
 
@@ -116,12 +124,19 @@ func handleInput(event: InputEvent) -> void:
 		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight)
 		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)
 
+		if signf(previousMovementDirection.x) != signf(movementDirection.x):
+			if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))
+			didChangeHorizontalDirection.emit()
+
+		if signf(previousMovementDirection.y) != signf(movementDirection.y):
+			if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
+			didChangeVerticalDirection.emit()
+
 	self.lookDirection			= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown)
 	self.turnInput				= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
 	self.thrustInput			= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
 	didProcessInput.emit(event)
-	# TODO: CHECK: Does this work for joystick input?
 
 
 func updateInputActionsPressed(_event: InputEvent = null) -> void:
@@ -146,11 +161,11 @@ func updateInputActionsPressed(_event: InputEvent = null) -> void:
 #region Debugging
 
 func _process(_delta: float) -> void:
-	showDebugInfo()
+	if debugMode: showDebugInfo()
 
 
 func showDebugInfo() -> void:
-	if not debugMode: return
+	# if not debugMode: return # Checked by caller
 	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
 	Debug.watchList.actionsPressed		= inputActionsPressed
 	Debug.watchList.previousMovementDirection	= previousMovementDirection
