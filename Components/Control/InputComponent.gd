@@ -26,13 +26,16 @@ extends Component
 			self.set_process_input(isEnabled and not shouldProcessUnhandledInputOnly)
 			self.set_process_unhandled_input(isEnabled and shouldProcessUnhandledInputOnly)
 
+## If `true`, then [InputEvent] are prevented from bubbling up the Scene Tree if they include any of the input actions processed by this component, such as movement, jumping, shooting etc.
+@export var shouldSetEventsAsHandled: bool = false # TODO: Start as `false` for now until we have updated/migrated all other control components to use [InputComponent]
+
 ## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
 ## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
-@export var movementDirectionScale: Vector2 = Vector2.ONE
+@export var movementDirectionScale:	Vector2 = Vector2.ONE
 
 ## Multiplies each of the [param lookDirection]'s axes, which is usually provided by the Right Joystick.
 ## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
-@export var lookDirectionScale: Vector2 = Vector2.ONE
+@export var lookDirectionScale:		Vector2 = Vector2.ONE
 
 ## The list of input actions to watch for and include in [member inputActionsPressed].
 ## Because dummy Godot doesn't let us directly get all the input actions from an [InputEvent],
@@ -141,28 +144,36 @@ func handleInput(event: InputEvent) -> void:
 			if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
 			didChangeVerticalDirection.emit()
 
-	self.lookDirection			= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown) * lookDirectionScale
-	self.turnInput				= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
-	self.thrustInput			= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
+		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
+
+	self.lookDirection	= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown) * lookDirectionScale
+	self.turnInput		= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
+	self.thrustInput	= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
+
+	# TODO: self.get_viewport().set_input_as_handled() for the other input actions we handled.
 
 	didProcessInput.emit(event)
 
 
-func updateInputActionsPressed(_event: InputEvent = null) -> void:
+func updateInputActionsPressed(event: InputEvent = null) -> void:
 	# DESIGN: Do NOT just listen for `event.is_action_pressed()` etc., poll the state of ALL input actions,
 	# to make sure that [inputActionsPressed] also includes input actions that were pressed BEFORE this component received its first event.
 
 	# TBD: CHECK: PERFORMANCE: What's faster? Just create a new array each time or modify an existing one?
 	var inputActionsPressedNew: PackedStringArray
+	var isEventMonitored: bool # Does the received InputEvent include one of the input actions we monitor?
 
 	for inputActionToMonitor: StringName in inputActionsToMonitor:
 		if Input.is_action_pressed(inputActionToMonitor):
 			inputActionsPressedNew.append(inputActionToMonitor)
 
-	if self.inputActionsPressed != inputActionsPressedNew: # TODO: VERIFY: Can 2 different arrays be compared with `==`?
-		didUpdateInputActionsList.emit()
+		if event and event.is_action(inputActionToMonitor): isEventMonitored = true
 
-	self.inputActionsPressed = inputActionsPressedNew
+	# Did we consume an InputEvent for one of the input actions we monitor?
+	if isEventMonitored:
+		self.inputActionsPressed = inputActionsPressedNew
+		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
+		didUpdateInputActionsList.emit()
 
 #endregion
 
