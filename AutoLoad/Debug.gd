@@ -11,14 +11,20 @@ extends Node
 ## NOTE: Does NOT affect normal logging.
 @export var shouldPrintDebugLogs: bool = OS.is_debug_build() # TBD: Should this be a constant to improve performance?
 
-## Sets the visibility of the debug information overlay text.
+## Sets the visibility of the debug information overlay text, as well as the [member watchList].
 ## NOTE: Does NOT affect the visibility of the framework warning label.
 @export var showDebugLabels: bool = OS.is_debug_build():
 	set(newValue):
 		showDebugLabels = newValue
 		setLabelVisibility()
+		self.set_process(showDebugLabels) # PERFORMANCE: Don't update per-frame if not needed
 
-## A dictionary of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
+## A [Dictionary] of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
+## Updating the value of an existing key will update the label for that property i.e. to show its value at runtime.
+## EXAMPLE: `Debug.watchList.velocity = characterBody.velocity`
+## NOTE: Clearing the list will not cause [member watchListLabel] to be cleared because the per-frame [method _process] is skipped when [member watchList] is empty.
+## ALERT: Replace "[" & "]" in variable values to avoid BBCode injection! Tags like "[color]" or "[url]" may wonk the entire [member watchListLabel] and may even be intentionally malicious!
+## `watchList[value].replace("[", "[lb]")`
 @export var watchList: Dictionary[StringName, Variant] = {}
 
 const customLogEntryScene: PackedScene = preload("res://UI/CustomLogEntryUI.tscn")
@@ -35,7 +41,7 @@ const customLogMaximumEntries: int = 100
 @onready var labels:		 Node   = %Labels
 @onready var label:			 Label  = %Label
 @onready var warningLabel:	 Label  = %WarningLabel
-@onready var watchListLabel: Label  = %WatchListLabel
+@onready var watchListLabel: RichTextLabel  = %WatchListLabel # TBD: PERFORMANCE: Should we stick to a regular [Label]? or performance doesn't matter anyway while debugging?
 @onready var customLogList:	 Container = %CustomLogList
 
 @onready var debugBackground: Node2D = %DebugBackground
@@ -68,15 +74,16 @@ func _ready() -> void:
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
+	self.set_process(showDebugLabels) # Apply setter because Godot doesn't on initialization
 
 
 func initializeLogWindow() -> void:
 	# TBD: # logWindow.visible = OS.is_debug_build()
 	# Position the Log Window to the bottom of the main window
 	var mainWindow: Window = self.get_window()
-	logWindow.position = mainWindow.position
-	logWindow.position.y += mainWindow.size.y + 75
-	logWindow.size.x = mainWindow.size.x
+	logWindow.position	   = mainWindow.position
+	logWindow.position.y  += mainWindow.size.y + 75
+	logWindow.size.x	   = mainWindow.size.x
 
 
 func initializeDebugWindow() -> void:
@@ -125,15 +132,17 @@ func displayInitializationMessage() -> void:
 #endregion
 
 
-#region Runtime
+#region Watchlist
 
 func _process(_delta: float) -> void:
-	if not showDebugLabels or not is_instance_valid(debugWindow) or not debugWindow.visible: return
+	# TODO: PERFORMANCE: Disable per-frame updates when `watchList` is empty. Use [Timer]?
+	# NOTE: Clearing the `watchList` will not cause `watchListLabel` to be cleared.
+	if watchList.is_empty() or not is_instance_valid(debugWindow) or not debugWindow.visible: return # showDebugLabels checked by property setter
 
-	var text: String = ""
-
+	var text:  String = ""
 	for value: Variant in watchList:
-		text += str(value) + ": " + str(watchList[value]) + "\n"
+		# NOTE: Do not replace "[" & "]" in variable values; BBCode must be allowed for addCombinedWatchList()
+		text += str("[color=deepskyblue]", value, "[/color]: ", watchList[value], "\n")
 
 	watchListLabel.text = text
 
@@ -158,7 +167,7 @@ func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> 
 func addCombinedWatchList(key: StringName, variables: Dictionary[String, Variant]) -> void:
 	var variablesText: String = ""
 	for variable in variables:
-		variablesText += str(" ", variable, ": ", variables[variable], "\n")
+		variablesText += str(" [color=lightgray]", variable, ": [color=gray]", variables[variable], "\n")
 	Debug.watchList[key] = "\n" + variablesText
 
 
