@@ -148,6 +148,25 @@ func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> 
 	await self.get_tree().create_timer(duration, false, false, true).timeout
 	watchList.erase(key)
 
+
+## Adds a set of different variables and formats them as a single watchlist entry.
+## Makes it easier to monitor multiple variables from a single object at runtime by visually grouping them together.
+## TIP: The [param variables] [Dictionary] may be written in a "Lua-style table syntax" with `=` instead of `:` to quickly add properties.
+## EXAMPLE: `{velocity = body.velocity}` where "velocity" is the text string for the property name to show in the watchlist label.
+## WARNING: Calling this method again with the same [param key] but with different [param variables] will remove the previous variables.
+## This method should be called once for each specific object with the same set of variables, e.g. in a `showDebugInfo()` method.
+func addCombinedWatchList(key: StringName, variables: Dictionary[String, Variant]) -> void:
+	var variablesText: String = ""
+	for variable in variables:
+		variablesText += str(" ", variable, ": ", variables[variable], "\n")
+	Debug.watchList[key] = "\n" + variablesText
+
+
+## Adds a set of properties from a [Component] to the [member watchList] and formats them as a single watchlist entry along with the component & entity's name.
+## Calls [method Debug.addCombinedWatchList]. See the documentation for that method for more details.
+func addComponentWatchList(component: Component, variables: Dictionary[String, Variant]) -> void:
+	Debug.addCombinedWatchList(str(component.parentEntity.name, ".", component.name), variables)
+
 #endregion
 
 
