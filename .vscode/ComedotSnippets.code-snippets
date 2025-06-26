@@ -115,7 +115,7 @@
 		"body": [
 			"set(newValue):",
 			"\tif newValue != ${1:property}:",
-			"\t\tif debugMode: Debug.printChange(\"${1:property}\", ${1:property}, newValue)",
+			"\t\tif debugMode: Debug.printChange(\"${1:property}\", ${1:property}, newValue, self.debugModeTrace) # logAsTrace",
 			"\t\t${1:property} = newValue\n\t\t$0"
 		],
 		"description": "A property setter which only updates a variable if the new value is different and prints a log of the change."

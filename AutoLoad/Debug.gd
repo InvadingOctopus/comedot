@@ -321,13 +321,14 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 
 
 ## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
+## TIP: [param logAsTrace] lists recent function calls to assist in tracking what caused the variable to change.
 ## Affected by [member shouldPrintDebugLogs]
-func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsDebug: bool = true) -> String:
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
 		var string: String = str(previousValue, " → ", newValue)
-		if not logAsDebug: printLog(string, variableName, "dimgray", "gray")
-		else: printDebug(string, variableName)
+		if not logAsTrace: printLog(string, variableName, "dimgray", "gray")
+		else: printTrace([string], variableName, 3)
 		return string
 	else:
 		return ""
