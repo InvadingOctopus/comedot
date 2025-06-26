@@ -59,6 +59,7 @@ const inputActionsToMonitor: PackedStringArray = [
 
 
 #region State
+# TBD: @export_storage
 
 ## A list of all the input actions from [const inputActionsToMonitor] that are currently pressed.
 var inputActionsPressed: PackedStringArray
@@ -78,7 +79,11 @@ var lookDirection:		Vector2 ## The Right Joystick.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
 
-var lastInputEvent:		InputEvent ## The most recent [InputEvent] processed. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
+var lastInputEvent:		InputEvent ## The most recent [InputEvent] received by [method handleInput]. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
+
+## If `true`, then the next [method _input] or [method _unhandled_input] is skipped ONCE, and then this flag is reset.
+## May be used to temporarily suppress player control, e.g. to implement automatic/scripted movement etc.
+var shouldSkipNextEvent:bool = false
 
 #endregion
 
@@ -118,22 +123,31 @@ func setProcess() -> void:
 #region Update
 
 ## Affected by [member isEnabled], [member isPlayerControlled] and [member shouldProcessUnhandledInputOnly].
+## May be skipped ONCE by [member shouldSkipNextEvent].
 func _input(event: InputEvent) -> void:
 	# Checked by property setters: if isEnabled and not shouldProcessUnhandledInputOnly:
 	if event is InputEventMouseMotion: return
+	if shouldSkipNextEvent:
+		shouldSkipNextEvent = false
+		return
 	if debugMode: printDebug(str("_input(): ", event))
 	handleInput(event)
 
 
 ## Affected by [member isEnabled], [member isPlayerControlled] and [member shouldProcessUnhandledInputOnly].
+## May be skipped ONCE by [member shouldSkipNextEvent].
 func _unhandled_input(event: InputEvent) -> void:
 	# Checked by property setters: if isEnabled and shouldProcessUnhandledInputOnly:
 	if event is InputEventMouseMotion: return
+	if shouldSkipNextEvent:
+		shouldSkipNextEvent = false
+		return
 	if debugMode: printDebug(str("_unhandled_input(): ", event))
 	handleInput(event)
 
 
 ## Affected by [member isEnabled] but NOT affected by [member isPlayerControlled], to allow control by AI/code.
+## NOTE: NOT affected by [member shouldSkipNextEvent], to allow manual processing of synthetic [InputEvent]s etc.
 func handleInput(event: InputEvent) -> void:
 	# NOTE: For joystick input, events will be raised TWICE: once for both the X and Y axes.
 
