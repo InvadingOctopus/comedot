@@ -4,4 +4,3 @@
 
 [node name="PlatformerPatrolComponent" type="Node" groups=["components"]]
 script = ExtResource("1_w6gon")
-metadata/_edit_group_ = true
