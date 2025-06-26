@@ -51,7 +51,7 @@ const inputActionsToMonitor: PackedStringArray = [
 
 #region State
 
-## A list of all the input actions from [member inputActionsToMonitor] that are currently pressed.
+## A list of all the input actions from [const inputActionsToMonitor] that are currently pressed.
 var inputActionsPressed: PackedStringArray
 
 var previousMovementDirection:	Vector2
@@ -119,7 +119,9 @@ func handleInput(event: InputEvent) -> void:
 
 	if not event.is_action_type(): return
 	self.lastInputEvent = event
-	updateInputActionsPressed(event)
+	
+	if updateInputActionsPressed(event) and shouldSetEventsAsHandled: 
+		self.get_viewport().set_input_as_handled()
 
 	# TBD: CHECK: PERFORMANCE: Use a bunch of `if`s to update state properties only when there is a relevant matching input event?
 
@@ -152,10 +154,15 @@ func handleInput(event: InputEvent) -> void:
 
 	# TODO: self.get_viewport().set_input_as_handled() for the other input actions we handled.
 
+	if debugMode: showDebugInfo()
 	didProcessInput.emit(event)
 
 
-func updateInputActionsPressed(event: InputEvent = null) -> void:
+## Updates [member inputActionsPressed]. Affected by [member isEnabled].
+## Returns `true` if [param event] contains one of the input actions included in [const inputActionsToMonitor].
+func updateInputActionsPressed(event: InputEvent = null) -> bool:
+	if not isEnabled: return false
+
 	# DESIGN: Do NOT just listen for `event.is_action_pressed()` etc., poll the state of ALL input actions,
 	# to make sure that [inputActionsPressed] also includes input actions that were pressed BEFORE this component received its first event.
 
@@ -172,8 +179,9 @@ func updateInputActionsPressed(event: InputEvent = null) -> void:
 	# Did we consume an InputEvent for one of the input actions we monitor?
 	if isEventMonitored:
 		self.inputActionsPressed = inputActionsPressedNew
-		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
 		didUpdateInputActionsList.emit()
+
+	return isEventMonitored
 
 #endregion
 
