@@ -17,7 +17,7 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Dependencies
-@onready var gunComponent: GunComponent = coComponents.GunComponent if coComponents.has(GunComponent) else null # TBD: Static or dynamic?
+@onready var gunComponent: GunComponent = coComponents.GunComponent if coComponents.GunComponent else null # TBD: Static or dynamic?
 #endregion
 
 
