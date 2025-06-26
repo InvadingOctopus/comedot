@@ -66,7 +66,7 @@ class TileMapCustomData:
 #region Initialization
 
 static func _static_init() -> void:
-	print_rich("[color=WHITE]Global.gd[/color] _static_init()")
+	print_rich("[color=white]Global.gd[/color] _static_init()")
 	printInitializationMessage()
 
 
