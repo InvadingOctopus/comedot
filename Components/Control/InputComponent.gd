@@ -26,6 +26,14 @@ extends Component
 			self.set_process_input(isEnabled and not shouldProcessUnhandledInputOnly)
 			self.set_process_unhandled_input(isEnabled and shouldProcessUnhandledInputOnly)
 
+## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
+## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
+@export var movementDirectionScale: Vector2 = Vector2.ONE
+
+## Multiplies each of the [param lookDirection]'s axes, which is usually provided by the Right Joystick.
+## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
+@export var lookDirectionScale: Vector2 = Vector2.ONE
+
 ## The list of input actions to watch for and include in [member inputActionsPressed].
 ## Because dummy Godot doesn't let us directly get all the input actions from an [InputEvent],
 ## we have to manually check every possibility, so here we shorten that list of possible events.
@@ -120,9 +128,10 @@ func handleInput(event: InputEvent) -> void:
 	or event.is_action(GlobalInput.Actions.moveUp)		\
 	or event.is_action(GlobalInput.Actions.moveDown):
 
-		self.movementDirection	= Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
-		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight)
-		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)
+		self.movementDirection	= Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown) * movementDirectionScale
+		# TBD: Get the individual axes again or just copy from `movementDirection`?
+		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight) * movementDirectionScale.x
+		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)  * movementDirectionScale.y
 
 		if signf(previousMovementDirection.x) != signf(movementDirection.x):
 			if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))
@@ -132,7 +141,7 @@ func handleInput(event: InputEvent) -> void:
 			if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
 			didChangeVerticalDirection.emit()
 
-	self.lookDirection			= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown)
+	self.lookDirection			= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown) * lookDirectionScale
 	self.turnInput				= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
 	self.thrustInput			= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
