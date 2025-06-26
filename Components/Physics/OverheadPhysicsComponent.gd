@@ -103,6 +103,6 @@ func clearInput() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.lastInput		= lastInputDirection
-	Debug.watchList.lastDirection	= lastDirection
+	Debug.addComponentWatchList(self, {
+		lastInput		= lastInputDirection,
+		lastDirection	= lastDirection})

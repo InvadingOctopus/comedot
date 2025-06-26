@@ -58,5 +58,4 @@ func _physics_process(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.chaseVector = self.recentChaseDirection
+	Debug.watchList.set(parentEntity.name + "." + self.name, recentChaseDirection)

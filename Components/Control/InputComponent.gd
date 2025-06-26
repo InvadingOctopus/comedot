@@ -111,7 +111,7 @@ func handleInput(event: InputEvent) -> void:
 	updateInputActionsPressed(event)
 
 	# TBD: CHECK: PERFORMANCE: Use a bunch of `if`s to update state properties only when there is a relevant matching input event?
-	
+
 	# NOTE: Do NOT check is_action_pressed() or is_action_released()
 	# because even if 1 directional input is pressed/released, an entire axis must be updated from the state of 2 input actions.
 	# Analog joystick fractional input strengths must also be accounted for.
@@ -142,8 +142,8 @@ func handleInput(event: InputEvent) -> void:
 func updateInputActionsPressed(_event: InputEvent = null) -> void:
 	# DESIGN: Do NOT just listen for `event.is_action_pressed()` etc., poll the state of ALL input actions,
 	# to make sure that [inputActionsPressed] also includes input actions that were pressed BEFORE this component received its first event.
-	
-	# TBD: CHECK: PERFORMANCE: What's faster? Just create a new array each time or modify an existing one?	
+
+	# TBD: CHECK: PERFORMANCE: What's faster? Just create a new array each time or modify an existing one?
 	var inputActionsPressedNew: PackedStringArray
 
 	for inputActionToMonitor: StringName in inputActionsToMonitor:
@@ -153,7 +153,7 @@ func updateInputActionsPressed(_event: InputEvent = null) -> void:
 	if self.inputActionsPressed != inputActionsPressedNew: # TODO: VERIFY: Can 2 different arrays be compared with `==`?
 		didUpdateInputActionsList.emit()
 
-	self.inputActionsPressed = inputActionsPressedNew 
+	self.inputActionsPressed = inputActionsPressedNew
 
 #endregion
 
@@ -166,14 +166,15 @@ func _process(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	# if not debugMode: return # Checked by caller
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.actionsPressed		= inputActionsPressed
-	Debug.watchList.previousMovementDirection	= previousMovementDirection
-	Debug.watchList.movementDirection	= movementDirection
-	Debug.watchList.lookDirection		= lookDirection
-	Debug.watchList.horizontalInput		= horizontalInput
-	Debug.watchList.verticalInput		= verticalInput
-	Debug.watchList.turnInput			= turnInput
-	Debug.watchList.thrustInput			= thrustInput
+	Debug.addComponentWatchList(self, {
+		actionsPressed		= inputActionsPressed,
+		previousMovementDirection = previousMovementDirection,
+		movementDirection	= movementDirection,
+		lookDirection		= lookDirection,
+		horizontalInput		= horizontalInput,
+		verticalInput		= verticalInput,
+		turnInput			= turnInput,
+		thrustInput			= thrustInput
+		})
 
 #endregion

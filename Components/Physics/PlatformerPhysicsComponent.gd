@@ -254,9 +254,10 @@ func applyFrictionInAir(delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.state = currentState
-	Debug.watchList.input = inputDirection
+	Debug.addComponentWatchList(self, {
+		state = currentState,
+		input = inputDirection,
+		})
 
 	# Friction?
 	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
@@ -265,3 +266,5 @@ func showDebugInfo() -> void:
 		Debug.watchList.friction = "air"
 	else:
 		Debug.watchList.friction = "none"
+
+	# TODO: Combine into addComponentWatchList()

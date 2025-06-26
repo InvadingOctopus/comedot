@@ -83,7 +83,8 @@ func moveTowardsDestination() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n— ", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.recentDirection = self.recentDirection
-	Debug.watchList.destination = destinationNode.global_position
-	Debug.watchList.target = selfAsAgent.target_position
+	Debug.addComponentWatchList(self, {
+		recentDirection	= recentDirection,
+		destination		= destinationNode.global_position,
+		target			= selfAsAgent.target_position,
+		})

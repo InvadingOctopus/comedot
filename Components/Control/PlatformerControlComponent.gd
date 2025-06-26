@@ -96,7 +96,8 @@ func copyInputToPhysicsComponent() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.inputDirectionOverride	= self.inputDirectionOverride
-	Debug.watchList.inputDirection			= self.inputDirection
-	Debug.watchList.lastInputDirection		= self.lastInputDirection
+	Debug.addComponentWatchList(self, {
+		inputDirectionOverride	= inputDirectionOverride,
+		inputDirection			= inputDirection,
+		lastInputDirection		= lastInputDirection,
+		})

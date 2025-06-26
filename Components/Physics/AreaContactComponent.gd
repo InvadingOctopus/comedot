@@ -123,8 +123,8 @@ func _physics_process(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.areasInContact  = self.areasInContact
-	Debug.watchList.bodiesInContact = self.bodiesInContact
+	Debug.addComponentWatchList(self, {
+		areasInContact	= areasInContact,
+		bodiesInContact	= bodiesInContact})
 
 #endregion

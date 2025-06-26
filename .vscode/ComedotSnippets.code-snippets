@@ -211,15 +211,16 @@
 		"description": "Emtis a TextBubble from a Component for quick visual debugging."
 	},
 
-	"Debug Info": {
+	"Component Debug Info": {
 		"prefix": "showDebugInfo",
 		"body": [
 			"func showDebugInfo() -> void:",
 			"\tif not debugMode: return",
-			"\tDebug.watchList[str(\"\\n —\", parentEntity.name, \".\", self.name)] = \"\"",
-			"\tDebug.watchList.$0"
+			"\tDebug.addComponentWatchList(self, {",
+			"\t\t${1:propertyName1}\t= ${1:propertyValue1},$0",
+			"\t\t})"
 		],
-		"description": "A template for a showDebugInfo() method."
+		"description": "Template for a Component's showDebugInfo() method."
 	},
 	
 	"Breakpoint": {

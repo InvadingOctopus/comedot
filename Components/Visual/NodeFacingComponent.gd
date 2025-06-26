@@ -111,8 +111,9 @@ func onReenablingTimer_timeout() -> void:
 
 func showDebugInfo() -> void:
 	# if not debugMode: return # Checked above
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.nodeRotation		= nodeToRotate.rotation
-	Debug.watchList.targetPosition		= targetToFace.position
-	Debug.watchList.targetPositionGlobal= targetToFace.global_position
-	Debug.watchList.didRotate			= didRotateThisFrame
+	Debug.addComponentWatchList(self, {
+		nodeRotation		= nodeToRotate.rotation,
+		targetPosition		= targetToFace.position,
+		targetPositionGlobal= targetToFace.global_position,
+		didRotate			= didRotateThisFrame,
+		})

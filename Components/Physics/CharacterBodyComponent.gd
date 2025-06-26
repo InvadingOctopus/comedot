@@ -142,13 +142,14 @@ func updateStateAfterMove(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.velocity	= body.velocity
-	Debug.watchList.lastVelocity= previousVelocity
-	Debug.watchList.lastMotion	= body.get_last_motion()
-	Debug.watchList.isOnFloor	= isOnFloor
-	Debug.watchList.wasOnFloor	= wasOnFloor
-	Debug.watchList.wasOnWall	= wasOnWall
-	Debug.watchList.wallNormal	= body.get_wall_normal()
+	Debug.addComponentWatchList(self, {
+		velocity	= body.velocity,
+		lastVelocity= previousVelocity,
+		lastMotion	= body.get_last_motion(),
+		isOnFloor	= isOnFloor,
+		wasOnFloor	= wasOnFloor,
+		wasOnWall	= wasOnWall,
+		wallNormal	= body.get_wall_normal(),
+		})
 
 #endregion

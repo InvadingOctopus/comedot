@@ -196,9 +196,10 @@ func _input(event: InputEvent) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.boundary		= self.boundary.position
-	Debug.watchList.limit_left  	= camera.limit_left
-	Debug.watchList.limit_right 	= camera.limit_right
-	Debug.watchList.limit_top		= camera.limit_top
-	Debug.watchList.limit_bottom	= camera.limit_bottom
+	Debug.addComponentWatchList(self, {
+		boundary		= self.boundary.position,
+		limit_left  	= camera.limit_left,
+		limit_right 	= camera.limit_right,
+		limit_top		= camera.limit_top,
+		limit_bottom	= camera.limit_bottom,
+		})

@@ -549,10 +549,12 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList.turnsProcessed	= turnsProcessed
-	Debug.watchList.currentTurn		= currentTurn
-	Debug.watchList.currentTurnState= currentTurnState
-	Debug.watchList.stateTimer		= stateTimer.time_left
-	Debug.watchList.entityTimer		= entityTimer.time_left
+	Debug.addCombinedWatchList("TurnBasedCoordinator", {
+		turnsProcessed	= turnsProcessed,
+		currentTurn		= currentTurn,
+		currentTurnState= currentTurnState,
+		stateTimer		= stateTimer.time_left,
+		entityTimer		= entityTimer.time_left,
+		})
 
 #endregion

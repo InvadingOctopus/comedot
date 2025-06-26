@@ -509,15 +509,16 @@ func updateIndicator() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.tileMap				= tileMap
-	Debug.watchList.entityPosition		= parentEntity.global_position
-	Debug.watchList.currentCell			= currentCellCoordinates
-	Debug.watchList.input				= inputVector
-	Debug.watchList.previousInput		= previousInputVector
-	Debug.watchList.isMovingToNewCell	= isMovingToNewCell
-	Debug.watchList.destinationCell		= destinationCellCoordinates
-	Debug.watchList.destinationPosition	= Tools.getCellGlobalPosition(tileMap, destinationCellCoordinates) if tileMap else Vector2.ZERO
+	Debug.addComponentWatchList(self, {
+		tileMap				= tileMap,
+		entityPosition		= parentEntity.global_position,
+		currentCell			= currentCellCoordinates,
+		input				= inputVector,
+		previousInput		= previousInputVector,
+		isMovingToNewCell	= isMovingToNewCell,
+		destinationCell		= destinationCellCoordinates,
+		destinationPosition	= Tools.getCellGlobalPosition(tileMap, destinationCellCoordinates) if tileMap else Vector2.ZERO,
+		})
 
 
 func onWillStartMovingToNewCell(newDestination: Vector2i) -> void:

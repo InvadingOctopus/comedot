@@ -115,11 +115,11 @@ func processFriction(_delta: float) -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.velocity = body.velocity
-	Debug.watchList.wallNormal = body.get_wall_normal()
-	Debug.watchList.lastMotion = body.get_last_motion()
-
-	Debug.watchList.bodyDirection = Vector2.from_angle(body.rotation)
-	Debug.watchList.horizontalInput = horizontalInput
-	Debug.watchList.verticalInput = verticalInput
+	Debug.addComponentWatchList(self, {
+		velocity		= body.velocity,
+		wallNormal		= body.get_wall_normal(),
+		lastMotion		= body.get_last_motion(),
+		bodyDirection	= Vector2.from_angle(body.rotation),
+		horizontalInput	= horizontalInput,
+		verticalInput	= verticalInput,
+		})

@@ -113,8 +113,9 @@ func _physics_process(delta: float) -> void: # CHECK: _physics_process() instead
 
 func showDebugInfo() -> void:
 	# if not debugMode: return # Checked above
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.nodeRotation		= nodeToRotate.rotation
-	Debug.watchList.localMousePosition	= nodeToRotate.get_local_mouse_position()
-	Debug.watchList.globalMousePosition	= nodeToRotate.get_global_mouse_position()
-	Debug.watchList.didRotate			= didRotateThisFrame
+	Debug.addComponentWatchList(self, {
+		nodeRotation		= nodeToRotate.rotation,
+		localMousePosition	= nodeToRotate.get_local_mouse_position(),
+		globalMousePosition	= nodeToRotate.get_global_mouse_position(),
+		didRotate			= didRotateThisFrame,
+		})

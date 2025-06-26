@@ -254,9 +254,10 @@ func updateWallJumpState() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.state		= currentState
-	Debug.watchList.wallTimer	= wallJumpTimer.time_left
-	Debug.watchList.coyoteTimer	= coyoteJumpTimer.time_left
-	Debug.watchList.jumpInput	= jumpInput
-	Debug.watchList.jumps		= currentNumberOfJumps
+	Debug.addComponentWatchList(self, {
+		state		= currentState,
+		wallTimer	= wallJumpTimer.time_left,
+		coyoteTimer	= coyoteJumpTimer.time_left,
+		jumpInput	= jumpInput,
+		jumps		= currentNumberOfJumps,
+		})

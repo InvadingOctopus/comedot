@@ -116,12 +116,13 @@ func updateCollisionCount() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList[str("\n —", parentEntity.name, ".", self.name)] = ""
-	Debug.watchList.NW = areaNWCollisionCount
-	Debug.watchList.NE = areaNECollisionCount
-	Debug.watchList.SE = areaSECollisionCount
-	Debug.watchList.SW = areaSWCollisionCount
-	Debug.watchList.left	= isCollidingOnLeft
-	Debug.watchList.right	= isCollidingOnRight
-	Debug.watchList.top		= isCollidingOnTop
-	Debug.watchList.bottom	= isCollidingOnBottom
+	Debug.addComponentWatchList(self, {
+		NW		= areaNWCollisionCount,
+		NE		= areaNECollisionCount,
+		SE		= areaSECollisionCount,
+		SW		= areaSWCollisionCount,
+		left	= isCollidingOnLeft,
+		right	= isCollidingOnRight,
+		top		= isCollidingOnTop,
+		bottom	= isCollidingOnBottom,
+		})

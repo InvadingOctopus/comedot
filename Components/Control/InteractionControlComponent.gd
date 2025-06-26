@@ -135,8 +135,7 @@ func interact() -> int:
 
 
 func showDebugInfo() -> void:
-	var watchName: StringName  = str(self, ":Timer")
-	Debug.watchList[watchName] = self.cooldownTimer.time_left
+	Debug.watchList.set(str(self, ":Timer"), cooldownTimer.time_left)
 
 
 #region Cooldown
