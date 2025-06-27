@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://h3pbo0mlj4je"]
+[gd_scene load_steps=18 format=3 uid="uid://h3pbo0mlj4je"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_5a21o"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="6_w2yd5"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="7_aroie"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="7_qjlrm"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="14_0223s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 size = Vector2(16, 16)
@@ -21,13 +22,10 @@ size = Vector2(16, 16)
 resource_local_to_scene = true
 resource_name = "monsterHealth"
 script = ExtResource("4_5bs4y")
-min = 0
 max = 5
 value = 5
-debugMode = false
 name = &"monsterHealth"
 displayName = "Monster HP"
-description = ""
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
@@ -81,5 +79,8 @@ randomizeInitialDirection = true
 [node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("6_w2yd5")]
 
 [node name="CharacterBodyComponent" parent="." instance=ExtResource("7_aroie")]
+
+[node name="InputComponent" parent="." instance=ExtResource("14_0223s")]
+isPlayerControlled = false
 
 [editable path="DamageComponent"]

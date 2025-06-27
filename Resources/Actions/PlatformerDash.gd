@@ -1,6 +1,6 @@
 ## A basic "dash" [Action] [ScriptPayload] script for a platformer game.
 ## Adds horizontal velocity for a single frame to the [CharacterBodyComponent],
-## based on the recent input direction of a [PlatformerControlComponent].
+## based on the recent horizontal input of an [InputComponent].
 ## @experimental
 
 extends GDScript
@@ -17,10 +17,10 @@ const shouldApplyVisualEffect: bool = true
 static func onPayload_didExecute(payload: Payload, source: Variant, target: Variant) -> Variant: # `Variant` may be replaced by specific types such as `Entity` or `Component`.
 	if source is Entity:
 		var characterBodyComponent: CharacterBodyComponent = source.components.CharacterBodyComponent
-		var platformerControlComponent: PlatformerControlComponent = source.components.PlatformerControlComponent
+		var inputComponent: InputComponent = source.components.InputComponent
 
-		if characterBodyComponent and platformerControlComponent:
-			characterBodyComponent.body.velocity.x += platformerControlComponent.lastInputDirection * force 
+		if characterBodyComponent and inputComponent:
+			characterBodyComponent.body.velocity.x += inputComponent.recentHorizontalInput * force 
 			if shouldApplyVisualEffect:
 				source.modulate = Color(10, 10, 10) # Super white
 				Animations.blinkNode(source, 1, 0.05)
@@ -28,4 +28,3 @@ static func onPayload_didExecute(payload: Payload, source: Variant, target: Vari
 			return true
 
 	return false
-

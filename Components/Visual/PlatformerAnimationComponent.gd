@@ -1,11 +1,11 @@
-## Tells the Entity's [AnimatedSprite2D] to play different animations based on the [member PlatformerControlComponent.lastInputDirection] movement.
-## If a [PlatformerControlComponent] is not present, then [member CharacterBodyComponent.previousVelocity] is used.
-## Requirements: [AnimatedSprite2D], AFTER [PlatformerControlComponent] (optional) & [CharacterBodyComponent]
+## Tells the Entity's [AnimatedSprite2D] to play different animations based on its movement and the state of the [CharacterBodyComponent] and/or an [InputComponent].
+## Requirements: [AnimatedSprite2D], AFTER [InputComponent] (optional) & [CharacterBodyComponent]
 
 class_name PlatformerAnimationComponent
 extends Component
 
 # TODO: Climbing animations
+# TODO: PERFORMANCE: Update animations only on movement events
 # TBD: A better name? :)
 
 
@@ -35,12 +35,13 @@ extends Component
 
 
 #region Dependencies
-var characterBodyComponent:		CharacterBodyComponent
-var body:						CharacterBody2D
-var platformerControlComponent: PlatformerControlComponent
+@onready var characterBodyComponent:CharacterBodyComponent 	= parentEntity.findFirstComponentSubclass(CharacterBodyComponent) # TBD: Include entity?
+@onready var body:					CharacterBody2D			= characterBodyComponent.body
+@onready var inputComponent:		InputComponent			= coComponents.get(&"InputComponent") # Optional
+@onready var climbComponent:		ClimbComponent			= coComponents.get(&"ClimbComponent") # Optional
 
 func getRequiredComponents() -> Array[Script]:
-	return [CharacterBodyComponent]
+	return [CharacterBodyComponent] # Other components are optional
 #endregion
 
 
@@ -54,20 +55,16 @@ func _ready() -> void:
 			self.animatedSprite	= parentEntity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
 		if not self.animatedSprite: printWarning("Missing AnimatedSprite2D!")
 
-	self.characterBodyComponent		= parentEntity.findFirstComponentSubclass(CharacterBodyComponent) # TBD: Include entity?
-	self.body						= characterBodyComponent.body
-	self.platformerControlComponent	= coComponents.get(&"PlatformerControlComponent") # Optional
-
-	if platformerControlComponent:
-		Tools.connectSignal(platformerControlComponent.didChangeHorizontalDirection, self.onPlatformerControlComponent_didChangeHorizontalDirection)
+	if inputComponent:
+		Tools.connectSignal(inputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
 
 	self.set_process(isEnabled and is_instance_valid(animatedSprite)) # Apply setters because Godot doesn't on initialization
 
 
-func onPlatformerControlComponent_didChangeHorizontalDirection() -> void:
+func onInputComponent_didChangeHorizontalDirection() -> void:
 	if not isEnabled: return
 	# Even if we don't have an AnimatedSprite2D we can flip a normal Sprite2D
-	(animatedSprite if self.animatedSprite else parentEntity.sprite).flip_h = true if signf(platformerControlComponent.inputDirection) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the [lastInputDirection] because that would be the opposite!
+	(animatedSprite if self.animatedSprite else parentEntity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the `previousMovementDirection` because that would be the opposite!
 
 
 func _process(_delta: float) -> void:
@@ -75,10 +72,9 @@ func _process(_delta: float) -> void:
 
 	var animationToPlay: StringName
 
-	# If there is no PlatformerControlComponent, figure out the direction from the CharacterBodyComponent
-	if not platformerControlComponent and flipWhenWalkingLeft: # Check the rarer flag first, so we don't have to check 2
+	# If there is no InputComponent, figure out the direction from the CharacterBodyComponent
+	if not inputComponent and flipWhenWalkingLeft: # Check the rarer flag first, so we don't have to check 2
 		animatedSprite.flip_h = true if signf(characterBodyComponent.previousVelocity.x) < 0 else false
-	# if debugMode and platformerControlComponent: Debug.watchList.hDirection = platformControlComponent.lastDirection
 
 	# Check and set animation in order of lowest priority to highest. e.g. walk overrides idle
 
@@ -95,7 +91,7 @@ func _process(_delta: float) -> void:
 		animationToPlay = walkAnimation
 
 	# Are we jumping or falling?
-	# if debugMode: Debug.watchList.onFloor = body.is_on_floor()
+	# DEBUG: if debugMode: Debug.watchList.onFloor = body.is_on_floor()
 
 	if not characterBodyComponent.isOnFloor:
 		var verticalDirection: float = signf(body.velocity.y)
@@ -106,8 +102,6 @@ func _process(_delta: float) -> void:
 		elif not fallAnimation.is_empty() \
 		and verticalDirection > 0.0:
 			animationToPlay = fallAnimation
-
-		# if debugMode: Debug.watchList.vDirection = verticalDirection
 
 	# Play the chosen animation
 	animatedSprite.play(animationToPlay)

@@ -1,14 +1,15 @@
-## Handles jumping. Applies velocity when the player inputs the jump control.
+## Handles jumping. Applies velocity when an [InputComponent] receives the jump event.
 ## The direction of the jump is determined by the [member CharacterBody2D.up_direction] (only the Y axis).
 ## NOTE: Gravity and friction in air is handled by [PlatformerPhysicsComponent].
 ## TIP:  For "inverted gravity" jumps, modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
 ## For climbing ladders/ropes/etc. use [ClimbComponent].
-## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent]
+## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent] & [InputComponent]
 
 class_name JumpControlComponent
 extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
+# TODO: Rename to JumpComponent
 # TODO: Stop keyboard input repetition?
 # TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TBD:  A more fail-proof way of handling short jumps. Timers?
@@ -68,30 +69,42 @@ var didWallJump:			bool ## Did we just perform a "wall jump"?
 #endregion
 
 
+#region Dependencies
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
+func getRequiredComponents() -> Array[Script]:
+	return [CharacterBodyComponent, InputComponent]
+#endregion
+
+
 func _ready() -> void:
 	self.currentState = State.idle
 	if characterBodyComponent:
 		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBodyComponent")
+	
+	# NOTE: Just handle the input event early on instead of waiting for the `didUpdateInputActionsList` signal
+	# because this component only depends on 1 event anyway: Jump.
+	Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
 
 	# Set the initial timers
-
 	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
 	wallJumpTimer.wait_time = parameters.wallJumpTimer
 
 
 #region Update Cycle
 
-func _unhandled_input(event: InputEvent) -> void:
+func oninputComponent_didProcessInput(event: InputEvent) -> void:
 	if not isEnabled \
 	or not event.is_action(GlobalInput.Actions.jump): return
+
+	# DESIGN: Cache input state as local properties, in case InputComponent's state changes while we're still processing an event/frame.
+	# TIP: AI components & demo scripts may generate synthetic [InputEvent]s for jump etc.
 
 	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
-	self.get_viewport().set_input_as_handled()
-
+	
 	if debugMode:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
 

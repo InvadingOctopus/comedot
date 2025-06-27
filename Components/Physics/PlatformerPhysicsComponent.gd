@@ -1,8 +1,9 @@
 ## Handles the physics for gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
 ## This allows player characters as well as monsters to share the same movement logic.
-## NOTE: Does NOT handle player input. Control is provided by [PlatformerControlComponent], [PlatformerJumpComponent] and AI components etc.
-## WARNING: Do NOT use in conjunction with [GravityComponent] because this component also processes gravity.
-## Requirements: BEFORE [CharacterBodyComponent], AFTER [PlatformerControlComponent] and other physics modifying components.
+## NOTE: Does NOT handle player input. Control is provided by [InputComponent], [JumpControlComponent] and/or AI components etc.
+## This component will still process gravity & friction even if no input source is present.
+## WARNING: Do NOT use in conjunction with [GravityComponent] because this component ALSO processes gravity. Using both will cause excessive gravity!
+## Requirements: BEFORE [CharacterBodyComponent] & [InputComponent], AFTER other physics modifying components.
 
 class_name PlatformerPhysicsComponent
 extends CharacterBodyDependentComponentBase
@@ -20,12 +21,10 @@ extends CharacterBodyDependentComponentBase
 
 @export var isEnabled: bool = true: ## NOTE: Does not affect manual function calls such as [method applyFrictionOnFloor] etc.
 	set(newValue):
-		isEnabled = newValue
-		if not isEnabled:
-			# Reset other flags only once
-			self.inputDirection = 0
-			self.isInputZero = true
+		if newValue != isEnabled:
+			isEnabled = newValue
 			self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+			if not isEnabled: self.inputDirection = 0 # Reset other flags only once
 
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
 
@@ -41,59 +40,54 @@ var currentState: State #:
 	# 	Debug.printChange("currentState", currentState, newValue)
 	# 	currentState = newValue
 
-@export_storage var inputDirection:		float
-@export_storage var lastInputDirection:	float
-var isInputZero: bool = true
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; this component may still process gravity & friction even if no input source is present.
+
+# TBD: Remove input state duplication? DESIGN: It's better to cache some state like `isInputZero` anyway…
+
+var isInputZero:		bool = true
+var horizontalInput:	float: ## Copied from [InputComponent]. ALERT: Should NOT be directly modified by other components!
+	set(newValue):
+		if newValue != horizontalInput:
+			if debugMode: Debug.printChange("horizontalInput", horizontalInput, newValue, self.debugModeTrace) # logAsTrace
+			horizontalInput = newValue
+			isInputZero = is_zero_approx(horizontalInput)
+			if not isInputZero: lastNonzeroHorizontalInput = horizontalInput
+
+var lastNonzeroHorizontalInput: float
 
 var gravity: float = Settings.gravity
 
 #endregion
 
 
+#region Initialization
+
 func _ready() -> void:
 	self.currentState = State.idle
 	if characterBodyComponent and characterBodyComponent.body:
 		printLog("characterBodyComponent.body.motion_mode → Grounded")
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
-		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
 
 	if coComponents.get("GravityComponent"):
 		printWarning("PlatformerPhysicsComponent & GravityComponent both process gravity; Remove one!")
-	
+
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
-
-
-#region Control
-
-## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of the [CharacterBody2D]'s [CollisionShape2D] are not fully inside the specified [Rect2],
-## then [member inputDirection] is set to make the character walk towards the rectangle's interior until the character is fully enclosed.
-## IMPORTANT: The [param targetRect] must be in the global coordinate space.
-## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
-## @experimental
-func walkIntoRect(targetRect: Rect2) -> Vector2:
-	# CHECK: Fix seemingly unnecessary inertia?
-
-	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(Tools.getShapeGlobalBounds(characterBodyComponent.body), targetRect)
-	# Walk into the interior
-	if not displacement.is_zero_approx():
-		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
-		self.inputDirection = signf(-displacement.x) # Clamp input range to 0.0…1.0
-	# Return the updated displacement
-	return displacement
 
 #endregion
 
 
 #region Update Cycle
 
+
 func _physics_process(delta: float) -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	# NOTE: The order of processing is as per Heartbeast's tutorial.
+	# DESIGN: PERFORMANCE: Putting all code in one function may improve performance,
+	# but splitting each distinct task into separate functions may help readability & makes shit easy to understand.
 
-	if not isEnabled: return
-
+	# Prep the Prep
 	# Sanitize the control input and prepare flags etc. for use by other functions.
 	processInput()
 	updateStateBeforeMove()
@@ -109,6 +103,17 @@ func _physics_process(delta: float) -> void:
 	characterBodyComponent.shouldMoveThisFrame = true
 
 
+## Prepares input provided by other components like [InputComponent] and/or AI agents.
+## [member isEnabled] should be checked by caller.
+func processInput() -> void:
+	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
+	# so that some games can let the player turn around to shoot in any direction while in air, for example.
+
+	# Cache properties that are accessed often to avoid repeated function calls on other objects.
+	# NOTE: CHECK: Also probably a good idea to create local copies in case [InputComponent]'s state changes bedcause of input received while we are still processing the current frame.
+	self.horizontalInput = inputComponent.horizontalInput if inputComponent else 0.0
+
+
 func updateStateBeforeMove() -> void:
 	# NOTE: `currentState` MUST be updated BEFORE `CharacterBody2D.move_and_slide(])` and AFTER `processInput()`
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
@@ -120,43 +125,10 @@ func updateStateBeforeMove() -> void:
 	if currentState != State.idle and body.velocity.is_zero_approx():
 		currentState = State.idle
 
-
-## Prepares player input processing, after the input is provided by other components like [PlatformerPhysicsControlComponent] and AI agents.
-## Affected by [member isEnabled].
-func processInput() -> void:
-	# TBD: Should be guarded by [isEnabled] or should the flags etc. always be updated?
-	if not isEnabled: return
-
-	# NOTE: The input direction is provided by other components like [PlatformerPhysicsControlComponent] and AI agents.
-	# self.inputDirection = Input.get_axis(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight)
-
-	# Cache properties that are accessed often to avoid repeated function calls on other objects.
-
-	self.isInputZero = is_zero_approx(inputDirection)
-
-	if not isInputZero: lastInputDirection = inputDirection
-
-	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
-	# so that some games can let the player turn around to shoot in any direction while in air, for example.
-
-
-func characterBodyComponent_didMove(_delta: float) -> void:
-	if debugMode: showDebugInfo()
-	# NOTE: PERFORMANCE: There may be a performance impact from using signals every frame,
-	# but the input is cleared after the [CharacterBodyComponent] moves so that other components may inspect and act upon the input of this component for this frame.
-
-	# Clear the input so it doesn't carry on over to the next frame.
-	clearInput()
-
-
-func clearInput() -> void:
-	inputDirection = 0 # TBD: Should the "no input" state just be a `0` or some other flag?
-
 #endregion
 
 
 #region Platformer Physics
-
 
 func processGravity(delta: float) -> void:
 	if not isGravityEnabled: return
@@ -175,14 +147,14 @@ func processHorizontalMovement(delta: float) -> void:
 
 	if characterBodyComponent.isOnFloor: # Are we on the floor?
 		if parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
-			body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
+			body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * horizontalInput, parameters.accelerationOnFloor * delta)
 		else:
-			body.velocity.x = inputDirection * parameters.speedOnFloor
+			body.velocity.x = horizontalInput * parameters.speedOnFloor
 	elif parameters.shouldAllowMovementInputInAir: # Are we in the air and are movement changes allowed in air?
 		if parameters.shouldApplyAccelerationInAir: # Apply the speed gradually or instantly?
-			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
+			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * horizontalInput, parameters.accelerationInAir * delta)
 		else:
-			body.velocity.x = inputDirection * parameters.speedInAir
+			body.velocity.x = horizontalInput * parameters.speedInAir
 
 	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
 
@@ -219,13 +191,13 @@ func processAllFriction(delta: float) -> void:
 ## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; flags should be checked by caller.
 func applyAccelerationOnFloor(delta: float) -> void:
 	if (not isInputZero) and characterBodyComponent.isOnFloor:
-		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * inputDirection, parameters.accelerationOnFloor * delta)
+		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * horizontalInput, parameters.accelerationOnFloor * delta)
 
 
 ## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; flags should be checked by caller.
 func applyAccelerationInAir(delta: float) -> void:
 	if (not isInputZero) and (not characterBodyComponent.isOnFloor):
-		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * inputDirection, parameters.accelerationInAir * delta)
+		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * horizontalInput, parameters.accelerationInAir * delta)
 
 
 ## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; flags should be checked by caller.
@@ -249,17 +221,38 @@ func applyFrictionInAir(delta: float) -> void:
 		elif parameters.shouldApplyFrictionInAir:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionInAir * delta)
 
+
+## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of the [CharacterBody2D]'s [CollisionShape2D] are not fully inside the specified [Rect2],
+## then [member horizontalInput] is set to make the character walk towards the rectangle's interior until the character is fully enclosed.
+## IMPORTANT: The [param targetRect] must be in the global coordinate space.
+## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
+## @experimental
+func walkIntoRect(targetRect: Rect2) -> Vector2:
+	# CHECK: Fix seemingly unnecessary inertia?
+
+	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(Tools.getShapeGlobalBounds(characterBodyComponent.body), targetRect)
+	# Walk into the interior
+	if not displacement.is_zero_approx():
+		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
+		self.horizontalInput = signf(-displacement.x) # Clamp input range to 0.0…1.0
+	# Return the updated displacement
+	return displacement
+
 #endregion
 
+
+#region Debugging
 
 func showDebugInfo() -> void:
 	if not debugMode: return
 	Debug.addComponentWatchList(self, {
 		state = currentState,
-		input = inputDirection,
+		input = horizontalInput,
+		lastInput = lastNonzeroHorizontalInput,
 		})
 
 	# Friction?
+	# TODO: Combine into addComponentWatchList()
 	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		Debug.watchList.friction = "floor"
 	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
@@ -267,4 +260,4 @@ func showDebugInfo() -> void:
 	else:
 		Debug.watchList.friction = "none"
 
-	# TODO: Combine into addComponentWatchList()
+#endregion

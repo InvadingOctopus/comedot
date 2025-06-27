@@ -478,7 +478,7 @@ func getBody() -> CharacterBody2D:
 #region Miscellaneous Methods
 
 ## Used to call any function only once during a single frame, such as [method CharacterBody2D.move_and_slide] on the [Entity]'s [CharacterBody2D].
-## This ensures that multiple components which interact with the same node do not perform excessive updates, such as a [PlatformerControlComponent[ and a [JumpControlComponent].
+## This ensures that multiple components which interact with the same node do not perform excessive updates, such as a [PlatformerPhysicsComponent] and a [JumpControlComponent].
 ## The `Callable` is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, which is cleared during each [method _physics_process] of this entity.
 func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 	# Has the function already been called this frame?

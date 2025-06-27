@@ -1,4 +1,4 @@
-## Monitors and stores the player's input for other components to act upon.
+## A unified source of control input for other components to act upon. The source may be a meatspace player or AI agent script or a "demo/attract" recording etc.
 ## ALERT: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
@@ -35,8 +35,10 @@ extends Component
 			shouldProcessUnhandledInputOnly = newValue
 			self.setProcess()
 
-## If `true`, then [InputEvent] are prevented from bubbling up the Scene Tree if they include any of the input actions processed by this component, such as movement, jumping, shooting etc.
-@export var shouldSetEventsAsHandled: bool = false # TODO: Start as `false` for now until we have updated/migrated all other control components to use [InputComponent]
+## If `true`, then [InputEvent]s are prevented from bubbling up the Scene Tree if they include any of the input actions processed by this component, such as movement, jumping, shooting etc.
+## May improve performance.
+## ALERT: This will prevent any OTHER [InputComponent]s from receiving events! Use this when ONLY ONE character should be controlled.
+@export var shouldSetEventsAsHandled: bool = false # DESIGN: Let's default to `false` because disabling event propagation should be an explicit decision: we may forget about it and wonder why other scripts aren't receiving input.
 
 ## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
 ## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
@@ -78,6 +80,9 @@ var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & th
 var lookDirection:		Vector2 ## The Right Joystick.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
+
+var lastNonzeroHorizontalInput:	float ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
+var lastNonzeroVerticalInput:	float ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
 
 var lastInputEvent:		InputEvent ## The most recent [InputEvent] received by [method handleInput]. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
 
@@ -171,6 +176,9 @@ func handleInput(event: InputEvent) -> void:
 		# TBD: Get the individual axes again or just copy from `movementDirection`?
 		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight) * movementDirectionScale.x
 		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)  * movementDirectionScale.y
+
+		if not is_zero_approx(horizontalInput): lastNonzeroHorizontalInput = horizontalInput
+		if not is_zero_approx(verticalInput):	lastNonzeroVerticalInput   = verticalInput
 
 		if signf(previousMovementDirection.x) != signf(movementDirection.x):
 			if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))

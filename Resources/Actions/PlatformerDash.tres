@@ -12,21 +12,13 @@ region = Rect2(352, 336, 16, 16)
 [sub_resource type="Resource" id="Resource_11y2k"]
 script = ExtResource("3_wk77y")
 payloadScript = ExtResource("2_5n12a")
-payloadScriptMethodName = &"onPayload_didExecute"
-debugMode = false
 metadata/_custom_type_script = "uid://cnho8p8evw7t0"
 
 [resource]
 script = ExtResource("4_immu7")
-requiresTarget = false
-hasFiniteUses = false
-maximumUses = 0
 cooldown = 1.0
 payload = SubResource("Resource_11y2k")
-debugMode = false
 usesRemaining = null
-cooldownRemaining = 0.0
-cost = 0
 name = &"dash"
 displayName = "Dash"
 description = "A short sprint forward."
