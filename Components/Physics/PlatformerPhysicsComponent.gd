@@ -24,7 +24,7 @@ extends CharacterBodyDependentComponentBase
 		if newValue != isEnabled:
 			isEnabled = newValue
 			self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
-			if not isEnabled: self.inputDirection = 0 # Reset other flags only once
+			if not isEnabled: self.horizontalInput = 0 # Reset other flags only once
 
 @export var parameters: PlatformerMovementParameters = PlatformerMovementParameters.new()
 
@@ -80,16 +80,20 @@ func _ready() -> void:
 
 #region Update Cycle
 
-
 func _physics_process(delta: float) -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 	# NOTE: The order of processing is as per Heartbeast's tutorial.
 	# DESIGN: PERFORMANCE: Putting all code in one function may improve performance,
 	# but splitting each distinct task into separate functions may help readability & makes shit easy to understand.
 
+	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
+	# so that some games can let the player turn around to shoot in any direction while in air, for example.
+	
 	# Prep the Prep
-	# Sanitize the control input and prepare flags etc. for use by other functions.
-	processInput()
+	# Cache properties that are accessed often to avoid repeated function calls on other objects.
+	# NOTE: CHECK: Probably a good idea to create local copies in case [InputComponent]'s state changes bedcause of input received while we are still processing the current frame.
+	self.horizontalInput = inputComponent.horizontalInput if inputComponent else 0.0
+
 	updateStateBeforeMove()
 
 	# Fall the Fall
@@ -101,17 +105,6 @@ func _physics_process(delta: float) -> void:
 
 	# Move Your Body ♪
 	characterBodyComponent.shouldMoveThisFrame = true
-
-
-## Prepares input provided by other components like [InputComponent] and/or AI agents.
-## [member isEnabled] should be checked by caller.
-func processInput() -> void:
-	# NOTE: DESIGN: Accept input in air even if [member shouldAllowMovementInputInAir] is `false`,
-	# so that some games can let the player turn around to shoot in any direction while in air, for example.
-
-	# Cache properties that are accessed often to avoid repeated function calls on other objects.
-	# NOTE: CHECK: Also probably a good idea to create local copies in case [InputComponent]'s state changes bedcause of input received while we are still processing the current frame.
-	self.horizontalInput = inputComponent.horizontalInput if inputComponent else 0.0
 
 
 func updateStateBeforeMove() -> void:
