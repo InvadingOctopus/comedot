@@ -13,21 +13,14 @@ region = Rect2(592, 208, 16, 16)
 [sub_resource type="Resource" id="Resource_7y27b"]
 script = ExtResource("2_xc7w0")
 payloadScript = ExtResource("2_to615")
-payloadScriptMethodName = &"onPayload_didExecute"
 debugMode = true
 
 [resource]
 script = ExtResource("1_cr1cv")
 requiresTarget = true
-hasFiniteUses = false
-maximumUses = 0
-cooldown = 0.0
 payload = SubResource("Resource_7y27b")
 debugMode = true
 usesRemaining = null
-cooldownRemaining = 0.0
-cost = 0
 name = &"testLook"
 displayName = "LOOK"
-description = ""
 icon = SubResource("AtlasTexture_kymal")

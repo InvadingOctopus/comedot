@@ -14,28 +14,21 @@ region = Rect2(656, 192, 16, 16)
 [sub_resource type="Resource" id="Resource_pjvd3"]
 script = ExtResource("3_n6cja")
 payloadScript = ExtResource("2_gjaki")
-payloadScriptMethodName = &"onPayload_didExecute"
-debugMode = false
 
 [sub_resource type="Resource" id="Resource_y8e5h"]
 script = ExtResource("3_n6cja")
 payloadScript = ExtResource("2_gjaki")
-payloadScriptMethodName = &"onPayload_didExecute"
-debugMode = false
 
 [resource]
 script = ExtResource("1_oo5t5")
 payloadOnAcquire = SubResource("Resource_pjvd3")
 payloadOnDiscard = SubResource("Resource_y8e5h")
 debugMode = true
-level = 0
 maxLevel = 10
-shouldAllowInfiniteLevels = false
 costStat = ExtResource("1_4bqhh")
 costs = Array[int]([10])
 shouldUseLastCostForHigherLevels = true
 requiredUpgrades = Array[ExtResource("1_oo5t5")]([ExtResource("3_nwe6d")])
-mutuallyExclusiveUpgrades = Array[StringName]([])
 name = &"cooldown"
 displayName = "COOLDOWN"
 description = "Faster pew pew!"

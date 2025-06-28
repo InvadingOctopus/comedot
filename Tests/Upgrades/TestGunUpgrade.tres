@@ -13,28 +13,18 @@ region = Rect2(592, 144, 16, 16)
 [sub_resource type="Resource" id="Resource_7sewg"]
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
-payloadScriptMethodName = &"onPayload_didExecute"
-debugMode = false
 
 [sub_resource type="Resource" id="Resource_xprmf"]
 script = ExtResource("3_q67te")
 payloadScript = ExtResource("2_3pfuh")
-payloadScriptMethodName = &"onPayload_didExecute"
-debugMode = false
 
 [resource]
 script = ExtResource("1_kkrmp")
 payloadOnAcquire = SubResource("Resource_7sewg")
 payloadOnDiscard = SubResource("Resource_xprmf")
 debugMode = true
-level = 0
-maxLevel = 0
-shouldAllowInfiniteLevels = false
 costStat = ExtResource("1_ff526")
 costs = Array[int]([500])
-shouldUseLastCostForHigherLevels = false
-requiredUpgrades = Array[ExtResource("1_kkrmp")]([])
-mutuallyExclusiveUpgrades = Array[StringName]([])
 name = &"gun"
 displayName = "GUN"
 description = "Pew Pew!"

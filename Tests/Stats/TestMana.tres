@@ -10,11 +10,8 @@ region = Rect2(656, 176, 16, 16)
 [resource]
 resource_name = "testMana"
 script = ExtResource("1_s18af")
-min = 0
 max = 100
 value = 100
-debugMode = false
 name = &"testMana"
 displayName = "MANA"
-description = ""
 icon = SubResource("AtlasTexture_17j6j")

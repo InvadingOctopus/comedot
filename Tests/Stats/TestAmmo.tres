@@ -10,11 +10,8 @@ region = Rect2(704, 144, 16, 16)
 [resource]
 resource_name = "testAmmo"
 script = ExtResource("1_m5bc5")
-min = 0
 max = 99
 value = 99
-debugMode = false
 name = &"testAmmo"
 displayName = "AMMO"
-description = ""
 icon = SubResource("AtlasTexture_t6t6a")
