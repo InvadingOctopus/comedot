@@ -1,6 +1,7 @@
 ## A unified source of control input for other components to act upon. The source may be a meatspace player or AI agent script or a "demo/attract" recording etc.
 ## ALERT: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
+## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
 ## Requirements: AFTER (below in the Scene Tree) all components that depend on player/AI control, because input events propagate UPWARD from the BOTTOM of the Scene Tree nodes list.
 
@@ -96,8 +97,14 @@ var shouldSkipNextEvent:bool = false
 #region Signals
 # TBD: Signals for axis updates?
 
-signal didProcessInput(event: InputEvent) ## Emitted after an [InputEvent] has been fully processed and all state properties have been updated. NOTE: AFTER [signal didUpdateInputActionsList].
-signal didUpdateInputActionsList ## Emitted when the list of [member inputActionsPressed] is updated. NOTE: BEFORE [signal didProcessInput].
+## Emitted when the list of [member inputActionsPressed] is updated.
+## NOTE: BEFORE [signal didProcessInput].
+signal didUpdateInputActionsList
+
+## Emitted after an [InputEvent] has been fully processed and all state properties have been updated.
+## NOTE: AFTER [signal didUpdateInputActionsList].
+## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
+signal didProcessInput(event: InputEvent)
 
 ## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the X axis, signifying a change/flip in direction from right ↔ left.
 ## May be used for sprite flipping and other animations etc.
