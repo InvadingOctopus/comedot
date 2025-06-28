@@ -1,5 +1,6 @@
 ## AutoLoad
 ## A scene for playing music or sound effects which are not dependent on any node or entity's lifetime.
+## Also contains a "synthesizer" for generating sounds via script code, through the [method beep] function.
 ## The [member process_mode] is set to [enum ProcessMode.PROCESS_MODE_ALWAYS] which ignores the [meember SceneTree.paused] flag in order to manage audio while the actual gameplay is paused.
 ## Why not GlobalAudio? Because "sonic" is more cool ;)
 
@@ -25,8 +26,9 @@ var currentMusicIndex: int = -1 ## The index in the [member musicFiles] array of
 
 
 #region Dependencies
-@onready var sounds: Node = %Sounds
-@onready var musicPlayer: AudioStreamPlayer = $MusicPlayer
+@onready var sounds:		Node = $Sounds
+@onready var musicPlayer:	AudioStreamPlayer = $MusicPlayer
+@onready var synthesizer:	AudioStreamPlayer = %Synthesizer ## Plays sounds generated via script code.
 #endregion
 
 
@@ -250,3 +252,40 @@ func _input(event: InputEvent) -> void:
 #endregion
 
 
+#region Synthesized Sounds
+
+@onready var synthesizerSampleHz: float = synthesizer.stream.mix_rate
+var phase: float = 0.0 # TBD: Should this be a class property or a local function variable?
+
+## Generates a sound via script code to play through the [member synthesizer] [AudioStreamPlayer] [AudioStreamGeneratorPlayback]
+## @experimental
+func beep(duration: float = 1.0, pulseHz: float = 440.0, volume: float = 1.0) -> void:
+	# NOTE: PERFORMANCE: Godot Documentation:
+	# Due to performance constraints, AudioStreamGenerator is best used from a compiled language.
+	# If you still want to use this class from GDScript, consider using a lower `mix_rate` such as 11,025 Hz or 22,050 Hz.
+
+	# Prep the player
+	synthesizer.play()
+	var playback:	AudioStreamGeneratorPlayback = synthesizer.get_stream_playback() # TBD: Set once @onready or on each call?
+	# var sampleHz:	float = synthesizer.stream.mix_rate # TBD: Set once @onready or on each call?
+	var framesAvailable: float = playback.get_frames_available()
+
+	# Calculate the sample
+	var length:		float = duration * synthesizerSampleHz
+	var increment:	float = pulseHz  / synthesizerSampleHz
+	var sample:		float
+	#var phase:		float # TBD: Should `phase` be reset here?
+
+	for i in range(minf(length, framesAvailable)):
+		sample = sin(phase) * volume
+		# NOTE: PERFORMANCE: Godot Documentation: 
+		# Pushes a single audio data frame to the buffer. This is usually less efficient than push_buffer() in compiled languages,
+		# but push_frame() may be more efficient in GDScript.
+		playback.push_frame(Vector2.ONE * sin(phase * TAU))
+		phase = fmod(phase + increment, 1.0)
+
+	# TBD: Stop manually?
+	# await get_tree().create_timer(duration).timeout
+	# synthesizer.stop()
+
+#endregion
