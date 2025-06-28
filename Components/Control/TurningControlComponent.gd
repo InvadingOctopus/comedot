@@ -1,10 +1,12 @@
-## Allows the player to rotate a node with left & right input actions.
+## Allows the player to rotate a node, such as a gun, with left & right input actions.
 ## May be combined with the [ThrustControlComponent] to provide "tank-like" controls, similar to Asteroids.
 ## NOTE: Mutually exclusive with [MouseRotationComponent].
-## Requirements: AFTER [InputComponent]
+## Requirements: BEFORE [InputComponent], because input events propagate UPWARD from the BOTTOM of the Scene Tree nodes list.
 
 class_name TurningControlComponent
-extends Component
+extends InputDependentComponentBase
+
+# TBD: Add angular friction i.e. slowdown/decay?
 
 
 #region Parameters
@@ -16,24 +18,30 @@ extends Component
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
-		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+		self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection)) # PERFORMANCE: Set once instead of every frame
 #endregion
 
 
-#region Dependencies
-@onready var inputComponent: InputComponent = coComponents.InputComponent # TBD: Static or dynamic?
-
-func getRequiredComponents() -> Array[Script]:
-	return [InputComponent]
+#region State
+var rotationDirection: float: ## The current rotation to apply to [param nodeToRotate] on every frame.
+	set(newValue):
+		# if newValue != rotationDirection: # PERFORMANCE: Skip comparison check
+		rotationDirection = newValue
+		self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection))
 #endregion
 
 
 func _ready() -> void:
 	if not nodeToRotate: nodeToRotate = self.parentEntity
-	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+	self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection)) # Apply setters because Godot doesn't on initialization
+
+
+func oninputComponent_didProcessInput(_event: InputEvent) -> void:
+	# TBD: PERFORMANCE: Check if event was turn input?
+	self.rotationDirection = inputComponent.turnInput
 
 
 func _physics_process(delta: float) -> void:
-	var rotationDirection: float = inputComponent.turnInput
-	if  rotationDirection: nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
+	# if not is_zero_approx(rotationDirection): # Checked by property setter
+	nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
 	# DEBUG: Debug.watchList.rotationDirection = rotationDirection

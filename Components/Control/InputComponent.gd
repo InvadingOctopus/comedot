@@ -2,7 +2,7 @@
 ## ALERT: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
-## Requirements: AFTER (below in the Scene Tree) all components that depend on player/AI control, because input events propagate from the BOTTOM of the Scene Tree nodes list UPWARD.
+## Requirements: AFTER (below in the Scene Tree) all components that depend on player/AI control, because input events propagate UPWARD from the BOTTOM of the Scene Tree nodes list.
 
 class_name InputComponent
 extends Component
@@ -78,7 +78,7 @@ var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & t
 var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & the D-pad.
 
 var lookDirection:		Vector2 ## The Right Joystick.
-var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]
+var turnInput:			float ## The horizontal X axis for the Right Joystick ONLY (NOT D-pad).
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
 
 var lastNonzeroHorizontalInput:	float ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.

@@ -1,23 +1,30 @@
 ## Processes the friction and other physics for overhead-view (i.e. "top-down") movement for the parent [Entity]'s [CharacterBodyComponent].
-## NOTE: Does NOT handle player control; Input is provided by [OverheadControlComponent] or AI agents.
-## Requirements: BEFORE [CharacterBodyComponent]
+## NOTE: Does NOT handle player input. Control is provided by [InputComponent] and/or AI agents etc.
+## This component will still process friction even if no input source is present.
+## Requirements: BEFORE [CharacterBodyComponent] & [InputComponent]
 
 class_name OverheadPhysicsComponent
 extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export var isEnabled:  bool = true
 @export var parameters: OverheadMovementParameters = OverheadMovementParameters.new()
+@export var isEnabled:  bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+			if not isEnabled: self.movementDirection = Vector2.ZERO # Reset other flags only once
 #endregion
 
 
 #region State
-var inputDirection:		Vector2 = Vector2.ZERO
-var lastInputDirection:	Vector2 = Vector2.ZERO
-var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; this component may still process friction even if no input source is present.
+var movementDirection: Vector2
 #endregion
 
+
+#region Initialization
 
 func _ready() -> void:
 	# Set the entity's [CharacterBody2D] motion mode to Floating.
@@ -27,20 +34,28 @@ func _ready() -> void:
 
 		if not characterBodyComponent.shouldResetVelocityIfZeroMotion:
 			printDebug("Recommend characterBodyComponent.shouldResetVelocityIfZeroMotion = true")
-			#characterBodyComponent.shouldResetVelocityIfZeroMotion = true
+			# characterBodyComponent.shouldResetVelocityIfZeroMotion = true
 
-		#characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
+		# UNUSED: characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove) # PERFORMANCE: Reset state directly instead of via signal for now
 	else:
 		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
 
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+
+#endregion
+
+
+#region Update Cycle
 
 func _physics_process(delta: float) -> void:
 	# DEBUG: printLog("_physics_process()")
-	if not isEnabled: return
 
+	self.movementDirection = inputComponent.movementDirection
 	processMovement(delta)
 	characterBodyComponent.shouldMoveThisFrame = true
-	clearInput() # PERFORMANCE: Done directly instead of via signal for now
+
+	# Clear the input from carrying over to the next frame
+	movementDirection = Vector2.ZERO # TBD: Should the "no input" state just be a `0` or some other flag?
 
 	if debugMode: showDebugInfo()
 
@@ -49,14 +64,12 @@ func _physics_process(delta: float) -> void:
 func processMovement(delta: float) -> void:
 	if not isEnabled: return
 
-	# Provided by [OverheadControlComponent] or an AI: self.inputDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
-
-	if not inputDirection.is_zero_approx(): lastInputDirection = inputDirection
+	# Input is provided by [InputComponent] or an AI
 
 	if parameters.shouldApplyAcceleration:
-		body.velocity = body.velocity.move_toward(inputDirection * parameters.speed, parameters.acceleration * delta)
+		body.velocity = body.velocity.move_toward(movementDirection * parameters.speed, parameters.acceleration * delta)
 	else:
-		body.velocity = inputDirection * parameters.speed
+		body.velocity = movementDirection * parameters.speed
 
 	# TODO: Compare setting vector components separately vs together
 
@@ -64,15 +77,15 @@ func processMovement(delta: float) -> void:
 
 	if parameters.shouldApplyFriction:
 
-		if is_zero_approx(inputDirection.x):
+		if is_zero_approx(movementDirection.x):
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.friction * delta)
 
-		if is_zero_approx(inputDirection.y):
+		if is_zero_approx(movementDirection.y):
 			body.velocity.y = move_toward(body.velocity.y, 0.0, parameters.friction * delta)
 
-	# Disable friction by maintaining velcoty fron the previous frame?
+	# Disable friction by maintaining velcoty from the previous frame?
 
-	if parameters.shouldMaintainPreviousVelocity and not inputDirection:
+	if parameters.shouldMaintainPreviousVelocity and not movementDirection:
 		body.velocity = characterBodyComponent.previousVelocity
 
 	# Minimum velocity?
@@ -84,25 +97,11 @@ func processMovement(delta: float) -> void:
 			else:
 				body.velocity = body.velocity.normalized() * parameters.minimumSpeed
 
-	# Last direction
-
-	if not body.velocity.is_zero_approx():
-		#if currentState == State.idle: currentState = State.walk
-		lastDirection = body.velocity.normalized()
-
-
-# func characterBodyComponent_didMove(_delta: float) -> void:
-# 	if debugMode: showDebugInfo()
-# 	# Clear the input so it doesn't carry on over to the next frame.
-# 	clearInput()
-
-
-func clearInput() -> void:
-	inputDirection = Vector2.ZERO # TBD: Should the "no input" state just be a `0` or some other flag?
+#endregion
 
 
 func showDebugInfo() -> void:
 	if not debugMode: return
 	Debug.addComponentWatchList(self, {
-		lastInput		= lastInputDirection,
-		lastDirection	= lastDirection})
+		movementDirection	= movementDirection,
+		velocity			= body.velocity})

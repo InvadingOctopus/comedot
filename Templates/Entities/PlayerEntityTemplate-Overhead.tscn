@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_at8ff"]
 [ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="3_2ybp4"]
 [ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="3_3awaj"]
-[ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="3_x16dg"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="4_4iijy"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_rwi73"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xljij"]
 atlas = ExtResource("2_at8ff")
@@ -32,9 +32,9 @@ shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="CameraComponent" parent="." instance=ExtResource("3_2ybp4")]
 
-[node name="OverheadControlComponent" parent="." instance=ExtResource("3_x16dg")]
-
 [node name="OverheadPhysicsComponent" parent="." instance=ExtResource("3_3awaj")]
 
 [node name="CharacterBodyComponent" parent="." instance=ExtResource("4_4iijy")]
 shouldResetVelocityIfZeroMotion = true
+
+[node name="InputComponent" parent="." instance=ExtResource("6_rwi73")]

@@ -3,7 +3,7 @@
 ## NOTE: Mutually exclusive with [TurningControlComponent]: Set [member shouldDisableOnTurningInput] to disable this component when the player inputs a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight]. To reenable, press any mouse button.
 
 class_name MouseRotationComponent
-extends Component
+extends Component # DESIGN: Not [InputDependentComponentBase] because [InputComponent] is optional
 
 # BUG: Custom mouse cursor disappears after mouse moves (macOS?)
 
@@ -27,7 +27,6 @@ extends Component
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
-		self.set_process_input(isEnabled)
 
 #endregion
 
@@ -43,6 +42,8 @@ var didRotateThisFrame: bool
 var haveTurningControlComponent: bool:
 	get: return parentEntity.components.has(&"TurningControlComponent") # TBD: PERFORMANCE: Use hardcoded name or not?
 
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; only for resolving conflicts with [TurningControlComponent]
+
 #endregion
 
 
@@ -50,9 +51,9 @@ func _ready() -> void:
 	if not nodeToRotate:
 		nodeToRotate = self.parentEntity
 	setMouseCursor()
-	# Apply setters because Godot doesn't on initialization
-	self.set_physics_process(isEnabled)
-	self.set_process_input(isEnabled)
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+	if inputComponent:
+		Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
 
 
 func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
@@ -61,7 +62,7 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 	else: Input.set_custom_mouse_cursor(null, Input.CursorShape.CURSOR_ARROW)
 
 
-func _input(event: InputEvent) -> void: # TBD: Should this be _unhandled_input()?
+func oninputComponent_didProcessInput(event: InputEvent) -> void:
 	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \
@@ -72,6 +73,7 @@ func _input(event: InputEvent) -> void: # TBD: Should this be _unhandled_input()
 			setMouseCursor(false)
 		elif not self.isEnabled and Input.get_mouse_button_mask() != 0:
 			printDebug("Mouse button pressed. Enabling MouseRotationComponent. TurningControlComponent may not work.")
+			GlobalUI.createTemporaryLabel("Turn control off if mouse aiming. Turn to reenable")
 			self.isEnabled = true
 			setMouseCursor(true)
 

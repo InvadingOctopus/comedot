@@ -4,4 +4,3 @@
 
 [node name="OverheadPhysicsComponent" type="Node" groups=["components"]]
 script = ExtResource("1_ptm1x")
-metadata/_edit_group_ = true
