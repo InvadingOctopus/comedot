@@ -215,7 +215,7 @@ func togglePause() -> bool:
 
 ## Returns the path for a scene from a class type.
 ## Convenient for getting the scene for a component.
-## e.g. [JumpControlComponent] returns "res://Components/Control/JumpControlComponent.tscn"
+## e.g. [JumpComponent] returns "res://Components/Control/JumpComponent.tscn"
 ## WARNING: This assumes that the scene's name is the same as the `class_name`
 func getScenePathFromClass(type: Script) -> String:
 	# var className: String = type.get_global_name()

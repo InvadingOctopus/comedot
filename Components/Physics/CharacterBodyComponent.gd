@@ -1,7 +1,7 @@
 ## Manages updates to a [CharacterBody2D]. Ensures that [method CharacterBody2D.move_and_slide] is called only once every frame (to prevent excessive movement) and updates related flags.
 ## IMPORTANT: Set the [member shouldMoveThisFrame] to `true` after modifying the [member CharacterBody2D.velocity] etc.
 ## TIP: Components which need to process updates AFTER the [CharacterBody2D] moves must connect to the [signal CharacterBodyComponent.didMove] signal.
-## Requirements: This component must come AFTER all other components which move the body, like [JumpControlComponent].
+## Requirements: This component must come AFTER all other components which move the body, like [JumpComponent].
 
 class_name CharacterBodyComponent
 extends Component

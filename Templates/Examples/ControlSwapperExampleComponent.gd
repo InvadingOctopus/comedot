@@ -13,7 +13,7 @@ const indoorZoneName := "IndoorZone"
 # Preload all the required components' scenes
 
 const platformerControlComponentScene:	PackedScene = preload("res://Components/Control/PlatformerControlComponent.tscn")
-const jumpControlComponentScene:		PackedScene = preload("res://Components/Control/JumpControlComponent.tscn")
+const jumpControlComponentScene:		PackedScene = preload("res://Components/Control/JumpComponent.tscn")
 const platformerPhysicsComponentScene:	PackedScene = preload("res://Components/Physics/PlatformerPhysicsComponent.tscn")
 
 const overheadControlComponentScene:	PackedScene = preload("res://Components/Control/OverheadControlComponent.tscn")
@@ -35,12 +35,12 @@ func onExit(exitingNode: Node2D) -> void:
 func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
-		parentEntity.removeComponents([JumpControlComponent,  PlatformerControlComponent, PlatformerPhysicsComponent]) # Types
+		parentEntity.removeComponents([JumpComponent,  PlatformerControlComponent, PlatformerPhysicsComponent]) # Types
 		parentEntity.createNewComponents([OverheadPhysicsComponent, OverheadControlComponent]) # Instances
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
 	else:
 		parentEntity.removeComponents([OverheadControlComponent, OverheadPhysicsComponent]) # Types
-		parentEntity.createNewComponents([PlatformerPhysicsComponent, PlatformerControlComponent, JumpControlComponent]) # Instances
+		parentEntity.createNewComponents([PlatformerPhysicsComponent, PlatformerControlComponent, JumpComponent]) # Instances
 		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so PlatformerControlComponent can control it each frame
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 

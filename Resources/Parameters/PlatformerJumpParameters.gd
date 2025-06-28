@@ -1,4 +1,4 @@
-## Set of jump physics parameters for [JumpControlComponent] and [PlatformerPhysicsComponent]
+## Set of jump physics parameters for [JumpComponent] and [PlatformerPhysicsComponent]
 ## IMPORTANT: NOTE: The jump velocities are multiplied by the [member CharacterBody2D.up_direction] and use the vertical axis only,
 ## so the velocities should be a POSITIVE `y` value for an UPWARDS jump even though Godot's Y axis DECREASES upwards.
 ## TIP: For "inverted gravity" situations, modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].

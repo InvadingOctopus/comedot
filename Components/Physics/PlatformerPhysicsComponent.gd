@@ -1,6 +1,6 @@
 ## Handles the physics for gravity and friction for the entity's [CharacterBody2D] in a "platform" world.
 ## This allows player characters as well as monsters to share the same movement logic.
-## NOTE: Does NOT handle player input. Control is provided by [InputComponent], [JumpControlComponent] and/or AI components etc.
+## NOTE: Does NOT handle player input. Control is provided by [InputComponent], [JumpComponent] and/or AI components etc.
 ## This component will still process gravity & friction even if no input source is present.
 ## WARNING: Do NOT use in conjunction with [GravityComponent] because this component ALSO processes gravity. Using both will cause excessive gravity!
 ## Requirements: BEFORE [CharacterBodyComponent] & [InputComponent], AFTER other physics modifying components.

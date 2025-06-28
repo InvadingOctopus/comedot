@@ -5,11 +5,10 @@
 ## For climbing ladders/ropes/etc. use [ClimbComponent].
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent] & [InputComponent]
 
-class_name JumpControlComponent
+class_name JumpComponent
 extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TODO: Rename to JumpComponent
 # TODO: Stop keyboard input repetition?
 # TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TBD:  A more fail-proof way of handling short jumps. Timers?

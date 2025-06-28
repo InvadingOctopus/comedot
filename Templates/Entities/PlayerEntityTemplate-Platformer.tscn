@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="10_7jquu"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
 [ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
-[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpControlComponent.tscn" id="12_4b1vu"]
+[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="12_4b1vu"]
 [ext_resource type="Script" uid="uid://b7mo6whtqm4nu" path="res://Scripts/Visual/MatchSpriteFlip.gd" id="12_n5pr4"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="14_usisr"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="14_xsv3n"]
@@ -253,7 +253,7 @@ spriteToMatch = NodePath("../../AnimatedSprite2D")
 
 [node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
 
-[node name="JumpControlComponent" parent="." instance=ExtResource("12_4b1vu")]
+[node name="JumpComponent" parent="." instance=ExtResource("12_4b1vu")]
 
 [node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
 
