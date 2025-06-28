@@ -105,6 +105,7 @@ func _physics_process(delta: float) -> void:
 
 	# Move Your Body ♪
 	characterBodyComponent.shouldMoveThisFrame = true
+	if debugMode: showDebugInfo()
 
 
 func updateStateBeforeMove() -> void:
@@ -237,20 +238,21 @@ func walkIntoRect(targetRect: Rect2) -> Vector2:
 #region Debugging
 
 func showDebugInfo() -> void:
-	if not debugMode: return
+	# if not debugMode: return # Checked by caller
+
+	var frictionType: String # TBD: Should this be a component property?
+	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
+		frictionType = "floor"
+	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
+		frictionType = "air"
+	else:
+		frictionType = "none"
+
 	Debug.addComponentWatchList(self, {
 		state = currentState,
 		input = horizontalInput,
 		lastInput = lastNonzeroHorizontalInput,
+		friction  = frictionType,
 		})
-
-	# Friction?
-	# TODO: Combine into addComponentWatchList()
-	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
-		Debug.watchList.friction = "floor"
-	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
-		Debug.watchList.friction = "air"
-	else:
-		Debug.watchList.friction = "none"
 
 #endregion
