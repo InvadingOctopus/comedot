@@ -1,0 +1,33 @@
+## Abstract base class for components whose functionality is dependent on player inout or AI control provided by an [InputComponent] or one of its subclasses.
+## Requirements: BEFORE (above) [InputComponent] or its subclasses, because input events propagate from the BOTTOM of the Scene Tree nodes list UPWARD.
+
+abstract class_name InputDependentComponentBase
+extends Component
+
+
+#region Dependencies
+var inputComponent: InputComponent
+
+func getRequiredComponents() -> Array[Script]:
+	return [InputComponent]
+#endregion
+
+
+func _enter_tree() -> void:
+	# DESIGN: Do common setup in _enter_tree() so subclasses can use _ready() without having to call super._ready()
+	super._enter_tree()
+	inputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
+	if inputComponent:
+		Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
+		Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.oninputComponent_didUpdateInputActionsList)
+	else:
+		printWarning(str("Missing InputComponent in ", parentEntity))
+
+
+## Astract; MUST be implemented in subclasses.
+abstract func oninputComponent_didProcessInput(event: InputEvent) -> void
+
+
+## Astract, optional; To be implemented in subclasses.
+func oninputComponent_didUpdateInputActionsList() -> void:
+	pass
