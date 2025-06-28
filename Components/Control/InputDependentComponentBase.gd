@@ -24,10 +24,14 @@ func _enter_tree() -> void:
 		printWarning(str("Missing InputComponent in ", parentEntity))
 
 
-## Astract; MUST be implemented in subclasses.
-abstract func oninputComponent_didProcessInput(event: InputEvent) -> void
-
+#region Abstract Methods
 
 ## Astract, optional; To be implemented in subclasses.
 func oninputComponent_didUpdateInputActionsList() -> void:
 	pass
+
+
+## Astract; MUST be implemented in subclasses.
+abstract func oninputComponent_didProcessInput(event: InputEvent) -> void
+
+#endregion

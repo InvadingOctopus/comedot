@@ -95,8 +95,9 @@ var shouldSkipNextEvent:bool = false
 
 #region Signals
 # TBD: Signals for axis updates?
-signal didProcessInput(event: InputEvent)
-signal didUpdateInputActionsList ## Emitted when the list of [member inputActionsPressed] is updated.
+
+signal didProcessInput(event: InputEvent) ## Emitted after an [InputEvent] has been fully processed and all state properties have been updated. NOTE: AFTER [signal didUpdateInputActionsList].
+signal didUpdateInputActionsList ## Emitted when the list of [member inputActionsPressed] is updated. NOTE: BEFORE [signal didProcessInput].
 
 ## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the X axis, signifying a change/flip in direction from right ↔ left.
 ## May be used for sprite flipping and other animations etc.
@@ -105,6 +106,7 @@ signal didChangeHorizontalDirection
 ## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the Y axis, signifying a change/flip in direction from up ↔ down.
 ## May be used for sprite flipping and other animations etc.
 signal didChangeVerticalDirection
+
 #endregion
 
 
