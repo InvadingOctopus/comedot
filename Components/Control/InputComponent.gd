@@ -36,6 +36,10 @@ extends Component
 			shouldProcessUnhandledInputOnly = newValue
 			self.setProcess()
 
+## If `true` (default) then an [InputEvent] is ignored if [method InputEvent.is_echo],
+## i.e. a repeated event "echo" generated while holding a button or key pressed down.
+@export var shouldIgnoreEchoes: bool = true # TBD: Should this default to `true`?
+
 ## If `true`, then [InputEvent]s are prevented from bubbling up the Scene Tree if they include any of the input actions processed by this component, such as movement, jumping, shooting etc.
 ## May improve performance.
 ## ALERT: This will prevent any OTHER [InputComponent]s from receiving events! Use this when ONLY ONE character should be controlled.
@@ -165,7 +169,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func handleInput(event: InputEvent) -> void:
 	# NOTE: For joystick input, events will be raised TWICE: once for both the X and Y axes.
 
-	if not isEnabled or not event.is_action_type(): return
+	if not isEnabled \
+	or not event.is_action_type() \
+	or (self.shouldIgnoreEchoes and event.is_echo()):
+		return
+
 	self.lastInputEvent = event
 
 	if updateInputActionsPressed(event) and shouldSetEventsAsHandled:
@@ -232,6 +240,7 @@ func updateInputActionsPressed(event: InputEvent = null) -> bool:
 	if isEventMonitored:
 		self.inputActionsPressed = inputActionsPressedNew
 		didUpdateInputActionsList.emit()
+		if debugMode: GlobalSonic.beep(0.1, 440)
 
 	return isEventMonitored
 
