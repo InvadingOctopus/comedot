@@ -1,4 +1,5 @@
 ## Enables vertical movement within an [Area2D] that belongs to the "climbable" Group, representing a ladder, rope or cliff etc.
+## Covers several situations & edge cases like cancelling a climb if jumping or walking out of it while on a floor, grabbing on to a ladder in mid-jump, and so on.
 ## TIP: For "inverted gravity", modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
 ## Requirements: BEFORE [JumpComponent] & [PlatformerPhysicsComponent] & [CharacterBodyComponent] & [InputComponent] (in order to suppress horizontal input & confine movement within ladders etc.)
 
@@ -252,7 +253,12 @@ func climbNearestArea() -> Area2D:
 	if activeClimbingArea:
 		characterBodyComponent.body.velocity.y = 0 # NOTE: Stop any other vertical movement. FIXES: Gradual buildup of gravity from "bouncing" outside a Climbable etc.
 		if shouldSnapToClimbableArea: snapToActiveClimbingArea()
-		elif not characterBodyComponent.isOnFloor: characterBodyComponent.body.velocity.x = 0 # Stop flying off the ladder if trying to climb in mid-air/jump!
+
+		# Stop walking or flying off the ladder if trying to climb in mid-air/jump!
+		# TBD: Is this necessary or the expected behavior?
+		inputComponent.horizontalInput = 0
+		characterBodyComponent.body.velocity.x = 0
+
 		isClimbing = true
 		didStartClimb.emit(activeClimbingArea)
 
@@ -297,9 +303,6 @@ func walkIntoArea(targetArea: Area2D) -> Vector2:
 			inputComponent.horizontalInput = signf(-displacement.x) # Set the input fully to the left or right (-1/+1)
 		else:
 			inputComponent.horizontalInput = -displacement.x # If the displacement is too minor, don't use the maximum -1/+1 input range
-	else:
-		# If we arrived in the Climbable, stop walking!
-		inputComponent.horizontalInput = 0 # TBD: Is this necessary or the expected behavior?
 
 	# TBD: Neutralize inertia so we don't slide too deep into the Climbable?
 
@@ -383,8 +386,12 @@ func oncharacterBodyComponent_didMove(_delta: float) -> void:
 
 	if not displacement.is_zero_approx(): # Are we going to be within the Climbable bounds?
 		# NOTE: Recorrect the position by applying the NEGATIVE of the displacement, to put the node back inside the target area. e.g. -1 means 1 pixel outside the container's LEFT edge, so ADD 1 pixel to X.
-		if shouldConfineHorizontally: parentEntity.position.x += -displacement.x
 		if shouldConfineVertically:   parentEntity.position.y += -displacement.y
+		if shouldConfineHorizontally:
+			if not characterBodyComponent.isOnFloor: parentEntity.position.x += -displacement.x
+			# NOTE: If we're on the floor, let us WALK OUT of the climbable!
+			# TBD: Should this be an optional flag?
+			else: stopClimbing()
 		parentEntity.reset_physics_interpolation() # TBD: Is the reset necessary?
 
 #endregion
