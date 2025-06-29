@@ -57,6 +57,28 @@ var lastNonzeroHorizontalInput: float
 
 var gravity: float = Settings.gravity
 
+# DESIGN: The "skip" flags are not a "disable" toggle because if multiple components want to disable acceleration or friction,
+# then 1 component re-enabling a flag could ruin everything.
+# TBD: Separate flags for ground & air?
+
+## When `true` then acceleration is skipped for ONE frame.
+## This allows other components to temporarily disable acceleration during special gameplay situations etc.
+## Whether it's the current frame or the next depends on whether this flag is set before or after [PlatformerPhysicsComponent]'s [method _physics_process].
+var shouldSkipAcceleration: bool:
+	set(newValue):
+		if newValue != shouldSkipAcceleration:
+			if debugMode: Debug.printChange("shouldSkipAcceleration", shouldSkipAcceleration, newValue, self.debugModeTrace) # logAsTrace
+			shouldSkipAcceleration = newValue
+
+## When `true` then friction is skipped for ONE frame.
+## This allows other components to temporarily disable friction during special gameplay situations etc.
+## Whether it's the current frame or the next depends on whether this flag is set before or after [PlatformerPhysicsComponent]'s [method _physics_process].
+var shouldSkipFriction: bool:
+	set(newValue):
+		if newValue != shouldSkipFriction:
+			if debugMode: Debug.printChange("shouldSkipFriction", shouldSkipFriction, newValue, self.debugModeTrace) # logAsTrace
+			shouldSkipFriction = newValue
+
 #endregion
 
 
@@ -100,8 +122,11 @@ func _physics_process(delta: float) -> void:
 	processGravity(delta)
 
 	# Walk the Walk
-	processHorizontalMovement(delta) # = applyAccelerationOnFloor(delta) & applyAccelerationInAir(delta)
-	processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
+	processHorizontalMovement(delta) # = applyAccelerationOnFloor(delta) & applyAccelerationInAir(delta) (`shouldSkipAcceleration` checked in function)
+
+	# Fric the Fric
+	if not shouldSkipFriction: processAllFriction(delta) # = applyFrictionOnFloor(delta) & applyFrictionInAir(delta)
+	else:  shouldSkipFriction = false # Don't skip next frame, unless another component re-enables the skip flag.
 
 	# Move Your Body ♪
 	characterBodyComponent.shouldMoveThisFrame = true
@@ -134,26 +159,30 @@ func processGravity(delta: float) -> void:
 
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.
+## Skipped by [member shouldSkipAcceleration] and resets that flag.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processHorizontalMovement(delta: float) -> void:
 	# Nothing to do if there is no player input.
 	if isInputZero: return
 
 	if characterBodyComponent.isOnFloor: # Are we on the floor?
-		if parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
+		if not shouldSkipAcceleration and parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
 			body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * horizontalInput, parameters.accelerationOnFloor * delta)
 		else:
 			body.velocity.x = horizontalInput * parameters.speedOnFloor
+
 	elif parameters.shouldAllowMovementInputInAir: # Are we in the air and are movement changes allowed in air?
-		if parameters.shouldApplyAccelerationInAir: # Apply the speed gradually or instantly?
+		if not shouldSkipAcceleration and parameters.shouldApplyAccelerationInAir: # Apply the speed gradually or instantly?
 			body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * horizontalInput, parameters.accelerationInAir * delta)
 		else:
 			body.velocity.x = horizontalInput * parameters.speedInAir
 
-	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity))
+	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity, " was shouldSkipAcceleration: ", shouldSkipAcceleration))
+	if shouldSkipAcceleration: shouldSkipAcceleration = false # TBD: PERFORMANCE: Reset without checking?
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
+## NOTE: NOT affected by [member shouldSkipFriction]; should be checked by caller.
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 ## WARNING: May prevent components like [KnockbackOnHitComponent] from working.
 func processAllFriction(delta: float) -> void:
@@ -182,19 +211,19 @@ func processAllFriction(delta: float) -> void:
 # THANKS: CREDIT: uHeartbeast@YouTube https://youtu.be/M8-JVjtJlIQ
 # DESIGN: Do not check for `isEnabled` or other flags here as they should be checked by the callers.
 
-## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor]; flags should be checked by caller.
+## Applies [member accelerationOnFloor] regardless of [member shouldApplyAccelerationOnFloor] or [member shouldSkipAcceleration]; flags should be checked by caller.
 func applyAccelerationOnFloor(delta: float) -> void:
 	if (not isInputZero) and characterBodyComponent.isOnFloor:
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedOnFloor * horizontalInput, parameters.accelerationOnFloor * delta)
 
 
-## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir]; flags should be checked by caller.
+## Applies [member accelerationInAir] regardless of [member shouldApplyAccelerationInAir] or [member shouldSkipAcceleration]; flags should be checked by caller.
 func applyAccelerationInAir(delta: float) -> void:
 	if (not isInputZero) and (not characterBodyComponent.isOnFloor):
 		body.velocity.x = move_toward(body.velocity.x, parameters.speedInAir * horizontalInput, parameters.accelerationInAir * delta)
 
 
-## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor]; flags should be checked by caller.
+## Applies [member frictionOnFloor] regardless of [member shouldApplyFrictionOnFloor] or [member shouldSkipFriction]; flags should be checked by caller.
 func applyFrictionOnFloor(delta: float) -> void:
 	# Friction on floor should only be applied if there is no input;
 	# otherwise the player would not be able to start moving in the first place!
@@ -206,7 +235,7 @@ func applyFrictionOnFloor(delta: float) -> void:
 			body.velocity.x = move_toward(body.velocity.x, 0.0, parameters.frictionOnFloor * delta)
 
 
-## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir]; flags should be checked by caller.
+## Applies [member frictionInAir] regardless of [member shouldApplyFrictionInAir] or [member shouldSkipFriction]; flags should be checked by caller.
 func applyFrictionInAir(delta: float) -> void:
 	# If movement is not allowed in air, then apply air friction regardless of player input.
 	if (isInputZero or not parameters.shouldAllowMovementInputInAir) and (not characterBodyComponent.isOnFloor):
@@ -241,6 +270,8 @@ func showDebugInfo() -> void:
 	# if not debugMode: return # Checked by caller
 
 	var frictionType: String # TBD: Should this be a component property?
+	if shouldSkipFriction:
+		frictionType = "skip" # May never be seen because it's reset in _physics_process()
 	if characterBodyComponent.isOnFloor and parameters.shouldApplyFrictionOnFloor and isInputZero:
 		frictionType = "floor"
 	elif (not characterBodyComponent.isOnFloor) and parameters.shouldApplyFrictionInAir and (isInputZero or not parameters.shouldAllowMovementInputInAir):
