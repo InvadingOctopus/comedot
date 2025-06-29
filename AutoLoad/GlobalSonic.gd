@@ -258,6 +258,7 @@ func _input(event: InputEvent) -> void:
 var phase: float = 0.0 # TBD: Should this be a class property or a local function variable?
 
 ## Generates a sound via script code to play through the [member synthesizer] [AudioStreamPlayer] [AudioStreamGeneratorPlayback]
+## TIP: May be used for debugging via audio cues!
 ## @experimental
 func beep(duration: float = 1.0, pulseHz: float = 440.0, volume: float = 1.0) -> void:
 	# NOTE: PERFORMANCE: Godot Documentation:

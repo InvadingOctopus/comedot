@@ -211,6 +211,12 @@
 		"description": "Emtis a TextBubble from a Component for quick visual debugging."
 	},
 
+	"Debug Beep": {
+		"prefix": "debugBeep",
+		"body": ["GlobalSonic.beep(${1:0.1}, ${2:440}) # DEBUG: DONTCOMMIT$0"],
+		"description": "Emtis a \"beep\" for debugging via audio cues."
+	},
+
 	"Component Debug Info": {
 		"prefix": "showDebugInfo",
 		"body": [
