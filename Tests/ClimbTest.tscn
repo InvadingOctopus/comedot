@@ -1,0 +1,128 @@
+[gd_scene load_steps=16 format=4 uid="uid://lgm6i4l10xlf"]
+
+[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16bcx"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="2_jndpr"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_6wljs"]
+[ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="6_7a8f1"]
+[ext_resource type="PackedScene" uid="uid://hmdqj5apj1fy" path="res://Components/Control/ClimbComponent.tscn" id="7_a2fsu"]
+[ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="8_dfeny"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="10_anfg2"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="11_qe4i5"]
+[ext_resource type="TileSet" uid="uid://bnuthy0vx4048" path="res://Assets/Tiles/Kenney1Bit-Monochrome.tres" id="13_5v3wv"]
+[ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="14_hkdnt"]
+[ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="15_tpseh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xeb2q"]
+size = Vector2(96, 81)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bahpj"]
+size = Vector2(16, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_65h3j"]
+size = Vector2(6, 160)
+
+[node name="ClimbTest" type="Node2D"]
+script = ExtResource("1_16bcx")
+mainGameScenePath = "uid://lgm6i4l10xlf"
+
+[node name="PlayerEntity" type="CharacterBody2D" parent="." groups=["entities", "players"]]
+z_index = 20
+position = Vector2(112, 240)
+collision_layer = 6
+collision_mask = 120
+floor_constant_speed = true
+platform_on_leave = 2
+script = ExtResource("2_jndpr")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity"]
+texture = ExtResource("3_6wljs")
+region_enabled = true
+region_rect = Rect2(768, 288, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
+shape = SubResource("RectangleShape2D_sg2kd")
+
+[node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
+
+[node name="ClimbComponent" parent="PlayerEntity" instance=ExtResource("7_a2fsu")]
+
+[node name="JumpComponent" parent="PlayerEntity" instance=ExtResource("6_7a8f1")]
+
+[node name="PlatformerPhysicsComponent" parent="PlayerEntity" instance=ExtResource("8_dfeny")]
+
+[node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("10_anfg2")]
+
+[node name="InputComponent" parent="PlayerEntity" instance=ExtResource("11_qe4i5")]
+
+[node name="WideCliffTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+modulate = Color(0, 0.735357, 1, 1)
+position = Vector2(64, 352)
+tile_map_data = PackedByteArray("AAAAAPz/AAAVABUAAAABAPz/AAAVABUAAAACAPz/AAAVABUAAAADAPz/AAAVABUAAAAEAPz/AAAVABUAAAAFAPz/AAAVABUAAAAFAP3/AAAVABUAAAAFAP7/AAAVABUAAAAFAP//AAAVABUAAAAEAP//AAAVABUAAAADAP//AAAVABUAAAADAP7/AAAVABUAAAAEAP7/AAAVABUAAAAEAP3/AAAVABUAAAADAP3/AAAVABUAAAACAP3/AAAVABUAAAACAP7/AAAVABUAAAACAP//AAAVABUAAAABAP//AAAVABUAAAABAP7/AAAVABUAAAABAP3/AAAVABUAAAAAAP3/AAAVABUAAAAAAP7/AAAVABUAAAAAAP//AAAVABUAAAAAAPv/AAAVABUAAAABAPv/AAAVABUAAAACAPv/AAAVABUAAAADAPv/AAAVABUAAAAEAPv/AAAVABUAAAAFAPv/AAAVABUAAAA=")
+tile_set = ExtResource("13_5v3wv")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+script = ExtResource("14_hkdnt")
+
+[node name="WideCliffArea" type="Area2D" parent="WideCliffTileMap" groups=["climbable"]]
+modulate = Color(1, 1, 0, 1)
+collision_layer = 576
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WideCliffTileMap/WideCliffArea"]
+position = Vector2(48, -39.5)
+shape = SubResource("RectangleShape2D_xeb2q")
+
+[node name="TerrainTileMap" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAIAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAwAAAAAAAAANAAAAAwAAAAAAAAAOAAAAAwAAAAAAAAAOAAEAAwAAAAAAAAAOAAIAAwAAAAAAAAAOAAMAAwAAAAAAAAAOAAQAAwAAAAAAAAAOAAUAAwAAAAAAAAAOAAYAAwAAAAAAAAAOAAcAAwAAAAAAAAAOAAgAAwAAAAAAAAAOAAkAAwAAAAAAAAAOAAoAAwAAAAAAAAAOAAsAAwAAAAAAAAANAAsAAwAAAAAAAAAMAAsAAwAAAAAAAAALAAsAAwAAAAAAAAAKAAsAAwAAAAAAAAAJAAsAAwAAAAAAAAAIAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAGAAsAAwAAAAAAAAAFAAsAAwAAAAAAAAAEAAsAAwAAAAAAAAADAAsAAwAAAAAAAAACAAsAAwAAAAAAAAABAAsAAwAAAAAAAAAAAAsAAwAAAAAAAAAAAAoAAwAAAAAAAAAAAAkAAwAAAAAAAAAAAAgAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAUAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAEAAwAAAAAAAAADAAgAAwAAAAAAAAAFAAYAAwAAAAAAAAAHAAQAAwAAAAAAAAAJAAYAAwAAAAAAAAALAAgAAwAAAAAAAAAGAAoAAwAAAAAAAAAHAAoAAwAAAAAAAAAIAAoAAwAAAAAAAAA=")
+tile_set = ExtResource("15_tpseh")
+occlusion_enabled = false
+navigation_enabled = false
+
+[node name="TallLadderTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+modulate = Color(1, 1, 0, 1)
+z_index = 5
+position = Vector2(136, 352)
+tile_map_data = PackedByteArray("AAAAAPz/AAAEAAYAAAAAAP3/AAAEAAYAAAAAAP7/AAAEAAYAAAAAAP//AAAEAAYAAAAAAPv/AAAEAAYAAAAAAPr/AAAEAAYAAAAAAPn/AAAEAAYAAAAAAPj/AAAEAAYAAAAAAPf/AAAEAAYAAAAAAPb/AAAEAAYAAAA=")
+tile_set = ExtResource("13_5v3wv")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+script = ExtResource("14_hkdnt")
+
+[node name="TallLadderArea" type="Area2D" parent="TallLadderTileMap" groups=["climbable"]]
+modulate = Color(0.5, 0.5, 0.5, 1)
+z_index = 5
+collision_layer = 576
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TallLadderTileMap/TallLadderArea"]
+position = Vector2(8, -80)
+shape = SubResource("RectangleShape2D_bahpj")
+
+[node name="ThinRopeTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+modulate = Color(0.735357, 1, 0, 1)
+position = Vector2(232, 320)
+tile_map_data = PackedByteArray("AAAAAPz/AAAMAAUAAAAAAP3/AAAMAAUAAAAAAP7/AAAMAAUAAAAAAP//AAAMAAUAAAAAAPv/AAAMAAUAAAAAAPr/AAAMAAUAAAAAAPn/AAAMAAUAAAAAAPj/AAAMAAUAAAAAAPf/AAAMAAUAAAAAAPb/AAAMAAUAAAAAAPX/AAAMAAUAAAA=")
+tile_set = ExtResource("13_5v3wv")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+script = ExtResource("14_hkdnt")
+
+[node name="ThinRopeArea" type="Area2D" parent="ThinRopeTileMap" groups=["climbable"]]
+modulate = Color(0.5, 0.5, 0.5, 1)
+z_index = 1
+collision_layer = 576
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ThinRopeTileMap/ThinRopeArea"]
+position = Vector2(8, -80)
+shape = SubResource("RectangleShape2D_65h3j")
