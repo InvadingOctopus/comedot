@@ -4,7 +4,7 @@
 ## The [member process_mode] is set to [enum ProcessMode.PROCESS_MODE_ALWAYS] which ignores the [meember SceneTree.paused] flag in order to manage audio while the actual gameplay is paused.
 ## Why not GlobalAudio? Because "sonic" is more cool ;)
 
-#class_name GlobalSonic 
+#class_name GlobalSonic
 extends Node
 
 
@@ -58,10 +58,10 @@ func createAudioPlayer(
 	stream:   AudioStream,
 	position: Vector2 = Vector2.ZERO,
 	bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
-	
+
 	# Check the limit on maximum number of sounds
 	# TODO: A better implementation, like [TemporaryLabelList]'s?
-	
+
 	if sounds.get_child_count() >= maximumNumberOfSounds:
 		# Delete the oldest sound (the one at the top of the subtree)
 		sounds.remove_child(sounds.get_child(0))
@@ -71,15 +71,15 @@ func createAudioPlayer(
 	audioPlayer.bus = bus
 	audioPlayer.stream = stream
 	audioPlayer.position = position
-	
+
 	sounds.add_child(audioPlayer, true) # force_readable_name
 	audioPlayer.owner = sounds # Necessary for persistence to a [PackedScene] for save/load.
-	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent 
-	
+	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent
+
 	if stream:
 		audioPlayer.play() # TBD: Add playback position argument? TBD: Find a way to move along with node and continue playing after the node is destroyed?
 		audioPlayer.finished.connect(audioPlayer.queue_free)
-	
+
 	return audioPlayer
 
 
@@ -95,7 +95,7 @@ func createAudioPlayerPool() -> Array[AudioStreamPlayer2D]:
 	for count in maximumNumberOfSounds:
 		var newAudioPlayer: AudioStreamPlayer2D = createAudioPlayer(null)
 		self.audioPlayers.append(newAudioPlayer)
-	
+
 	currentAudioPlayerIndex = 0 # Reset the index
 	return self.audioPlayers
 
@@ -109,7 +109,7 @@ func playAudioPlayerPool(
 	stream:   AudioStream,
 	position: Vector2 = Vector2.ZERO,
 	_bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
-	
+
 	# Cycle through the available AudioStreamPlayer2D nodes,
 	# so we can have a pool of simultaneous sounds up to a limit.
 
@@ -119,9 +119,9 @@ func playAudioPlayerPool(
 		createAudioPlayerPool()
 		# TBD: Debug.printWarning("No AudioStreamPlayer2D in audioPlayers pool", self)
 		# return null
-	
+
 	audioPlayer = audioPlayers[currentAudioPlayerIndex]
-	
+
 	currentAudioPlayerIndex += 1
 	if currentAudioPlayerIndex >= audioPlayers.size():
 		currentAudioPlayerIndex = 0
@@ -130,7 +130,7 @@ func playAudioPlayerPool(
 	audioPlayer.stream = stream
 	audioPlayer.position = position
 	audioPlayer.play() # TBD: Add playback position argument? TBD: Find a way to move along with node and continue playing after the node is destroyed?
-	
+
 	return audioPlayer
 
 #endregion
@@ -163,7 +163,7 @@ func playMusicIndex(index: int = self.currentMusicIndex) -> AudioStream:
 	if currentMusicIndex == 0 and self.musicFiles.is_empty(): # Silence warning for the default state of new projects: No music files.
 		if debugMode: Debug.printWarning("playMusicIndex(): musicFiles is empty!", self)
 		return null
-	
+
 	if Tools.validateArrayIndex(self.musicFiles, index):
 		self.currentMusicIndex = index
 		return self.playMusicFile(self.musicFiles[index])
@@ -221,7 +221,7 @@ func playMusicFile(path: String) -> AudioStream:
 		fileName = ResourceUID.get_id_path(ResourceUID.text_to_id(path))
 	else:
 		fileName = path
-	
+
 	# Update the current index if the song is in our playlist
 	self.currentMusicIndex = self.findMusicFile(fileName)
 
@@ -256,6 +256,7 @@ func _input(event: InputEvent) -> void:
 
 @onready var synthesizerSampleHz: float = synthesizer.stream.mix_rate
 var phase: float = 0.0 # TBD: Should this be a class property or a local function variable?
+var playback: AudioStreamGeneratorPlayback ## Plays code-generated audio for the [member synthesizer].
 
 ## Generates a sound via script code to play through the [member synthesizer] [AudioStreamPlayer] [AudioStreamGeneratorPlayback]
 ## TIP: May be used for debugging via audio cues!
@@ -266,23 +267,24 @@ func beep(duration: float = 1.0, pulseHz: float = 440.0, volume: float = 1.0) ->
 	# If you still want to use this class from GDScript, consider using a lower `mix_rate` such as 11,025 Hz or 22,050 Hz.
 
 	# Prep the player
-	synthesizer.play()
-	var playback:	AudioStreamGeneratorPlayback = synthesizer.get_stream_playback() # TBD: Set once @onready or on each call?
+	# NOTE: The `playback_type` must be `PLAYBACK_TYPE_STREAM` otherwise there is a Godot warning: "/root/GlobalSonic/Synthesizer is trying to play a sample from a stream that cannot be sampled."
+	if not synthesizer.playing: synthesizer.play()
+	if not playback: playback = synthesizer.get_stream_playback() # TBD: Set once @onready or on each call?
 	# var sampleHz:	float = synthesizer.stream.mix_rate # TBD: Set once @onready or on each call?
-	var framesAvailable: float = playback.get_frames_available()
+	playback.clear_buffer() # CHECK: Necessary?
+	var frames: float = playback.get_frames_available()
 
-	# Calculate the sample
+	# Generate the sample
+	# CHECK: No idea how any of this actually works. Just copied from the Godot documentation.
 	var length:		float = duration * synthesizerSampleHz
 	var increment:	float = pulseHz  / synthesizerSampleHz
-	var sample:		float
 	#var phase:		float # TBD: Should `phase` be reset here?
 
-	for i in range(minf(length, framesAvailable)):
-		sample = sin(phase) * volume
-		# NOTE: PERFORMANCE: Godot Documentation: 
+	for i in range(minf(length, frames)):
+		# NOTE: PERFORMANCE: Godot Documentation:
 		# Pushes a single audio data frame to the buffer. This is usually less efficient than push_buffer() in compiled languages,
 		# but push_frame() may be more efficient in GDScript.
-		playback.push_frame(Vector2.ONE * sin(phase * TAU))
+		playback.push_frame(Vector2.ONE * sin(phase * TAU) * volume) # Stereo
 		phase = fmod(phase + increment, 1.0)
 
 	# TBD: Stop manually?

@@ -18,7 +18,7 @@ unique_name_in_owner = true
 editor_description = "Plays sounds generated via script code."
 stream = SubResource("AudioStreamGenerator_cweqa")
 bus = &"SFX"
-playback_type = 2
+playback_type = 1
 
 [node name="Sounds" type="Node" parent="."]
 
