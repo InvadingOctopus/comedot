@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://lgm6i4l10xlf"]
+[gd_scene load_steps=17 format=4 uid="uid://lgm6i4l10xlf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16bcx"]
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="2_jndpr"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="6_7a8f1"]
 [ext_resource type="PackedScene" uid="uid://hmdqj5apj1fy" path="res://Components/Control/ClimbComponent.tscn" id="7_a2fsu"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="8_dfeny"]
+[ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="9_mptly"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="10_anfg2"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="11_qe4i5"]
 [ext_resource type="TileSet" uid="uid://bnuthy0vx4048" path="res://Assets/Tiles/Kenney1Bit-Monochrome.tres" id="13_5v3wv"]
@@ -49,6 +50,7 @@ shape = SubResource("RectangleShape2D_sg2kd")
 [node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
 
 [node name="ClimbComponent" parent="PlayerEntity" instance=ExtResource("7_a2fsu")]
+debugMode = true
 
 [node name="JumpComponent" parent="PlayerEntity" instance=ExtResource("6_7a8f1")]
 
@@ -57,6 +59,10 @@ shape = SubResource("RectangleShape2D_sg2kd")
 [node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("10_anfg2")]
 
 [node name="InputComponent" parent="PlayerEntity" instance=ExtResource("11_qe4i5")]
+debugMode = true
+
+[node name="DebugComponent" parent="PlayerEntity" instance=ExtResource("9_mptly")]
+propertiesToChart = Array[NodePath]([NodePath("../CharacterBodyComponent:body:velocity:x"), NodePath("../CharacterBodyComponent:body:velocity:y")])
 
 [node name="WideCliffTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
 modulate = Color(0, 0.735357, 1, 1)
