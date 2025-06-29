@@ -10,7 +10,8 @@ size = Vector2(16, 16)
 [node name="ClimbComponent" instance=ExtResource("1_h6irb")]
 collision_mask = 576
 script = ExtResource("2_5p5xn")
-shouldStayInClimbableArea = true
+shouldConfineHorizontally = true
+shouldConfineVertically = true
 shouldSnapToClimbableArea = false
 shouldWalkIntoClimbableArea = true
 shouldAllowHorizontalInput = true
