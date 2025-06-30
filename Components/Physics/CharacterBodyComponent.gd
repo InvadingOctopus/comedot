@@ -52,6 +52,13 @@ var skipFirstWarning:	bool = true
 ## Other components such as [PlatformerPhysicsComponent] should set this flag whenever modifying the [member CharacterBody2D.velocity] etc.
 var shouldMoveThisFrame:bool = false # AVOID: Do not toggle set_physics_process() here: It makes shit slower, possibly because taking effect on the next frame?
 
+## Returns [method CharacterBody2D.get_real_velocity]; the current real velocity since the last call to [method CharacterBody2D.move_and_slide].
+## For example, when climbing a slope, the body will move diagonally even though the [method CharacterBody2D.velocity] is horizontal. This property returns the final diagonal movement.
+## ALERT: PERFORMANCE: This property is provided for DEBUGGING ONLY; e.g. to quickly use as a [NodePath] for a [DebugComponent]'s [Chart]. For actual usage, just call [method CharacterBody2D.get_real_velocity] directly.
+## @experimental
+var realVelocity: Vector2:
+	get: return body.get_real_velocity()
+
 var collisionShape:		Shape2D: ## @experimental
 	get:
 		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
@@ -126,9 +133,8 @@ func updateStateAfterMove(_delta: float) -> void:
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
 	if self.shouldResetVelocityIfZeroMotion:
 		# TBD: PERFORMANCE: Should `entity.callOnceThisFrame()` be used, or call `Tools.resetBodyVelocityIfZeroMotion()` directly?
-		# DISABLED FOR PERFORMANCE: parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body])
 		# PERFORMANCE: Perform the calculations here instead of calling `Tools.resetBodyVelocityIfZeroMotion()` every frame.
-		lastMotionCached = body.get_last_motion() # Use a permanent property instead of a new variable each frame :')
+		self.lastMotionCached = body.get_last_motion() # Use a permanent property instead of a new variable each frame :')
 		if is_zero_approx(lastMotionCached.x): body.velocity.x = 0
 		if is_zero_approx(lastMotionCached.y): body.velocity.y = 0
 
