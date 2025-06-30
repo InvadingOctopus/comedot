@@ -1,5 +1,6 @@
 ## A unified source of control input for other components to act upon. The source may be a meatspace player or AI agent script or a "demo/attract" recording etc.
-## ALERT: Does NOT check mouse motion input.
+## A main advantage of having a shared input state versus checking [method Node._input] directly, is that other components/scripts can modify the shared state. e.g. a [PlatformerPatrolComponent] "injecting" movement into a [PlatformerPhysicsComponent].
+## NOTE: Does NOT check mouse motion input.
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
@@ -83,8 +84,8 @@ var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & t
 var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & the D-pad.
 
 var lookDirection:		Vector2 ## The Right Joystick.
-var turnInput:			float ## The horizontal X axis for the Right Joystick ONLY (NOT D-pad).
-var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE.
+var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
+var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
 
 var lastNonzeroHorizontalInput:	float ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
 var lastNonzeroVerticalInput:	float ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
