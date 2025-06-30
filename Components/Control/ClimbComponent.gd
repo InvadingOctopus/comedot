@@ -276,25 +276,30 @@ func findNearestClimbableArea() -> Area2D:
 	return nearestArea
 
 
-## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of this component's [Area2D] are not fully inside the nearest Climbable [Area2D],
-## then [PlatformerPhysicsComponent] is used to make the character walk towards the Climbable area's interior.
-## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
-## @experimental
-func walkIntoArea(targetArea: Area2D) -> Vector2:
-	# TODO: Fix seemingly unnecessary inertia & overlapping Climbables
-	# DESIGN: Cannot use PlatformerPhysicsComponent.walkIntoRect() because ClimbComponent uses its own Area2D, not the CharacterBody2D's CollisionShape2D.
+## Returns the offset of this component's [Area2D] in relation to the bounds of the [param targetRect].
+## If the [param targetRect] object is thinner than the character's body, e.g. a rope or vine, then displacement is ignored, and the offset attempts to align the area centers.
+func getOffsetOutsideClimbable(targetRect: Rect2) -> Vector2:
+	var displacement: Vector2
 
-	var targetAreaBounds: Rect2 = Tools.getShapeGlobalBounds(targetArea)
-	var displacement:	Vector2
-
-	if targetAreaBounds.size.x >= self.areaBoundsGlobal.size.x:
-		displacement = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetAreaBounds)
+	if targetRect.size.x >= self.areaBoundsGlobal.size.x:
+		displacement = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetRect)
 
 	# NOTE: If the Climbable object is thinner than the character's body, e.g. a rope or vine, then ignore the displacement,
 	# because then otherwise we would always stick out on either side and never "snap" in!
 	# Just try to align the centers.
 	else:
-		displacement.x = self.areaBoundsGlobal.get_center().x - targetAreaBounds.get_center().x # Make sure the displacement is negative if we're to the left
+		displacement.x = self.areaBoundsGlobal.get_center().x - targetRect.get_center().x # Make sure the displacement is negative if we're to the left
+
+	return displacement
+
+
+## If the [CharacterBodyComponent] [member CharacterBody2D.is_on_floor] and the rectangular bounds of this component's [Area2D] are not fully inside the nearest Climbable [Area2D],
+## then [PlatformerPhysicsComponent] is used to make the character walk towards the Climbable area's interior.
+## Returns: The displacement/offset outside the [param targetRect] (BEFORE the movement).
+func walkIntoArea(targetArea: Area2D) -> Vector2:
+	# DESIGN: Cannot use PlatformerPhysicsComponent.walkIntoRect() because ClimbComponent uses its own Area2D, not the CharacterBody2D's CollisionShape2D.
+
+	var displacement: Vector2 = getOffsetOutsideClimbable(Tools.getShapeGlobalBounds(targetArea))
 
 	# Walk into the interior
 	if not displacement.is_zero_approx():
@@ -315,7 +320,7 @@ func walkIntoArea(targetArea: Area2D) -> Vector2:
 ## Returns: The distance moved. (0,0) if no movement required or if there is no [member activeClimbingArea].
 func snapToActiveClimbingArea() -> Vector2:
 	if not activeClimbingArea: return Vector2.ZERO
-	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, activeClimbingAreaBoundsGlobal)
+	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
 	if not displacement.is_zero_approx():
 		characterBodyComponent.body.velocity = Vector2.ZERO # Stop all other inertia
 		parentEntity.position += -displacement # NOTE: Recorrect the position by applying the NEGATIVE of the displacement,
@@ -381,7 +386,7 @@ func oncharacterBodyComponent_didMove(_delta: float) -> void:
 	if  not isClimbing or not activeClimbingArea \
 	or (not shouldConfineHorizontally and not shouldConfineVertically): return
 
-	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, activeClimbingAreaBoundsGlobal)
+	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
 	if debugMode: Debug.watchList.displacement = displacement
 
 	if not displacement.is_zero_approx(): # Are we going to be within the Climbable bounds?
