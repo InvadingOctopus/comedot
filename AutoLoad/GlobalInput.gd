@@ -192,7 +192,27 @@ func hasActionTransitioned(action: StringName) -> bool:
 		or Input.is_action_just_released(action)
 
 
+## Returns `true` if an [InputEvent] was one of the "UI actions" built into Godot.
+## ALERT: Only checks against a limited set of UI actions such as cancel/accept, next/previous, & directions.
+## A jank workaround for Godot's lack of built-in API for a common task.
+## @experimental
+func isInputEventUIAction(event: InputEvent) -> bool:
+	# Checking strings like this is very jank but dummy Godot is dummy.
+	for eventName: StringName in [
+	&"ui_cancel", &"ui_accept", &"ui_select",
+	&"ui_focus_next", &"ui_focus_prev",
+	&"ui_page_up", &"ui_page_down",
+	&"ui_home",	&"ui_end",
+	&"ui_left", &"ui_right",
+	&"ui_up",   &"ui_down",
+	]:
+		if event.is_action(eventName): return true
+	# else
+	return false
+
+
 ## Returns all the player control input actions from [GlobalInput] that match a given [InputEvent].
+## A jank workaround for Godot's lack of built-in API for a common task.
 ## WARNING: PERFORMANCE: May be too slow; avoid calling frequently!
 ## @experimental
 func findActionsFromInputEvent(event: InputEvent) -> Array[StringName]:

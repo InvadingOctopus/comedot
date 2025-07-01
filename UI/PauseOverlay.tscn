@@ -76,6 +76,10 @@ max_lines_visible = 2
 
 [node name="OptionsUI" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource("5_bo3ty")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../../../../PauseButton")
+focus_neighbor_bottom = NodePath("../RestartButton")
+focus_next = NodePath("../RestartButton")
+focus_previous = NodePath("../../../../PauseButton")
 
 [node name="ExtraLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
@@ -94,6 +98,9 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Return to Main Menu"
+focus_neighbor_top = NodePath("../OptionsUI")
+focus_next = NodePath("../../../../PauseButton")
+focus_previous = NodePath("../OptionsUI")
 text = "REBOOT"
 
 [node name="TimeLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
@@ -112,5 +119,11 @@ offset_right = 26.0
 offset_bottom = 26.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+focus_neighbor_left = NodePath("../MarginContainer/CenterContainer/VBoxContainer/RestartButton")
+focus_neighbor_top = NodePath("../MarginContainer/CenterContainer/VBoxContainer/RestartButton")
+focus_neighbor_right = NodePath("../MarginContainer/CenterContainer/VBoxContainer/OptionsUI")
+focus_neighbor_bottom = NodePath("../MarginContainer/CenterContainer/VBoxContainer/OptionsUI")
+focus_next = NodePath("../MarginContainer/CenterContainer/VBoxContainer/OptionsUI")
+focus_previous = NodePath("../MarginContainer/CenterContainer/VBoxContainer/RestartButton")
 
 [connection signal="longPressed" from="MarginContainer/CenterContainer/VBoxContainer/RestartButton" to="." method="onRestartButton_longPressed"]

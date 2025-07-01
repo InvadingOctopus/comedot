@@ -4,24 +4,10 @@
 extends Control
 
 
-var didSetInitialFocus: bool = false
-
-
-func _ready() -> void:
+func _input(event: InputEvent) -> void: # Need to Grab all input to prevent pausing, so we can't use _unhandled_input()
+	# Reassert unpausability as long as the Main Menu is onscreen, to workaround SceneManager resetting the flag.
 	GlobalInput.isPauseShortcutAllowed = false
-
-
-func setInitialFocus() -> void:
-	if not didSetInitialFocus:
-		$StartButton.grab_focus()
-		didSetInitialFocus = true
-
-
-func _input(event: InputEvent) -> void: # TBD: Use `_unhandled_input()`
-	GlobalInput.isPauseShortcutAllowed = false # Reassert unpausability as long as the Main Menu is onscreen, to workaround SceneManager resetting the flag.
-	if not didSetInitialFocus and event is InputEventAction:
-		setInitialFocus()
-		self.get_viewport().set_input_as_handled()
+	if event.is_action(GlobalInput.Actions.pause): self.get_viewport().set_input_as_handled()
 
 
 func onStartButton_pressed() -> void:

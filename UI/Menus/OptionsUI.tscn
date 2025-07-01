@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cysctd14jlutm"]
+[gd_scene load_steps=5 format=3 uid="uid://cysctd14jlutm"]
 
 [ext_resource type="Script" uid="uid://cg3ii15hb36n5" path="res://UI/Menus/OptionsUi.gd" id="1_845vf"]
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/Views/BusVolumeUI.tscn" id="2_845vf"]
 [ext_resource type="Script" uid="uid://ygfsiorvisq" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
+[ext_resource type="Script" uid="uid://dh5u0kdy3vbfe" path="res://UI/SetInitialFocus.gd" id="3_wc8sn"]
 
 [node name="OptionsUI" type="CenterContainer"]
 anchors_preset = 15
@@ -56,6 +57,7 @@ focus_neighbor_bottom = NodePath("../InputMapButton")
 focus_next = NodePath("../InputMapButton")
 focus_previous = NodePath("../VolumeContainerShifted/VolumeContainer/MusicVolumeUI")
 text = "SKIP TUNE"
+script = ExtResource("3_wc8sn")
 
 [node name="InputMapButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(72, 0)
