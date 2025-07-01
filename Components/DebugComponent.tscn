@@ -11,6 +11,7 @@ z_index = 100
 z_as_relative = false
 material = ExtResource("2_e6xiu")
 script = ExtResource("1_sj8xd")
+propertiesToChart = Array[NodePath]([NodePath("../CharacterBodyComponent:realVelocity:x"), NodePath("../CharacterBodyComponent:realVelocity:y")])
 metadata/_edit_group_ = true
 
 [node name="Labels" type="VBoxContainer" parent="."]
