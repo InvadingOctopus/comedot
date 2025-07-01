@@ -31,16 +31,16 @@ layout_mode = 2
 
 [node name="SoundVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" instance=ExtResource("2_845vf")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../../../InputMapButton")
+focus_neighbor_right = NodePath("../MusicVolumeUI")
 focus_neighbor_bottom = NodePath("../MusicVolumeUI")
 focus_next = NodePath("../MusicVolumeUI")
-focus_previous = NodePath("../../../InputMapButton")
 busIndex = 1
 busTitle = "SFX"
 settingsKey = &"sfxVolume"
 
 [node name="MusicVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" instance=ExtResource("2_845vf")]
 layout_mode = 2
+focus_neighbor_left = NodePath("../SoundVolumeUI")
 focus_neighbor_top = NodePath("../SoundVolumeUI")
 focus_neighbor_bottom = NodePath("../../../SkipMusicButton")
 focus_next = NodePath("../../../SkipMusicButton")
@@ -64,8 +64,6 @@ custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 focus_neighbor_top = NodePath("../SkipMusicButton")
-focus_neighbor_bottom = NodePath("../VolumeContainerShifted/VolumeContainer/SoundVolumeUI")
-focus_next = NodePath("../VolumeContainerShifted/VolumeContainer/SoundVolumeUI")
 focus_previous = NodePath("../SkipMusicButton")
 text = "CONTROLS"
 script = ExtResource("3_415it")

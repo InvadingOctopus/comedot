@@ -23,6 +23,8 @@ vertical_alignment = 1
 [node name="DecreaseButton" type="Button" parent="."]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+focus_neighbor_right = NodePath("../IncreaseButton")
+focus_next = NodePath("../IncreaseButton")
 text = "«"
 
 [node name="VolumeLabel" type="Label" parent="."]
@@ -38,6 +40,8 @@ vertical_alignment = 1
 [node name="IncreaseButton" type="Button" parent="."]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+focus_neighbor_left = NodePath("../DecreaseButton")
+focus_previous = NodePath("../DecreaseButton")
 text = "»"
 
 [connection signal="pressed" from="DecreaseButton" to="." method="onDecreaseButton_pressed"]

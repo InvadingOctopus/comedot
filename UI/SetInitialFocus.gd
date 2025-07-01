@@ -16,6 +16,9 @@ var didSetInitialFocus: bool = false:
 func _ready() -> void:
 	# NOTE: If ANY other control already has focus, we don't need to set the -initial- focus anymore.
 	self.didSetInitialFocus = is_instance_valid(self.get_viewport().gui_get_focus_owner())
+	# If there is a gamepad but nothing focus, highlight a control to reduce the steps a player has to take before navigating the UI.
+	if not didSetInitialFocus and not Input.get_connected_joypads().is_empty():
+		setInitialFocus()
 
 
 func setInitialFocus() -> void:
