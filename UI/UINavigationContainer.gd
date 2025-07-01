@@ -9,7 +9,7 @@ extends Container
 
 #region Parameters
 @export var backButton: Button ## The "Back" button to show and hide depending on the navigation history.
-@export var debugMode: bool = false
+@export var debugMode:  bool = false
 #endregion
 
 
@@ -110,6 +110,9 @@ func displayNavigationDestination(newDestinationPath: String) -> bool:
 		Debug.printWarning(str("newDestinationScene is not a Control: ", newDestinationScene, " @ ", newDestinationPath), self)
 		return false
 
+	# NOTE: Clear the UI focus if the Back Button is about to disappear, so [SetInitialFocus].gd can redirect the focus.
+	if navigationStack.size() < 2: self.get_viewport().gui_release_focus()
+
 	if self.replaceFirstChildControl(newDestinationScene):
 		navigationStack.append(newDestinationPath)
 		result = true
@@ -145,5 +148,5 @@ func updateBackButton() -> void:
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.watchList.firstChild = self.findFirstChildControl()
+	Debug.watchList.navigationFirstChild = self.findFirstChildControl()
 	Debug.watchList.navigationStack = "\n⬆ ".join(self.navigationStack)
