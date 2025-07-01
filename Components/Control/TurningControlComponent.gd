@@ -15,10 +15,10 @@ extends InputDependentComponentBase
 ## Override this to rotate a different node instead of the parent [Entity], such as a [GunComponent].
 @export var nodeToRotate: Node2D = null
 
-## If `true` then [member InputComponent.lookDirection]'s X component is used for the turn direction, i.e. the Right Joystick.
-## If `false` (default) then then [member InputComponent.turnInput] is used, i.e. the Left Joystick.
+## If `true` then [member InputComponent.aimDirection]'s X component is used for the turn direction, i.e. the Right Joystick.
+## If `false` (default) then the [member InputComponent.turnInput] is used, i.e. the Left Joystick.
 ## TIP: Enable this to rotate a gun with the Right Joystick in dual-sick shoot-em-up games etc.
-@export var useLookDirectionInsteadOfTurnInput: bool = false
+@export var shouldUseSecondaryAxis: bool = false
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -43,7 +43,7 @@ func _ready() -> void:
 
 func oninputComponent_didProcessInput(_event: InputEvent) -> void:
 	# TBD: PERFORMANCE: Check if event was turn input?
-	self.rotationDirection = inputComponent.lookDirection.x if useLookDirectionInsteadOfTurnInput else inputComponent.turnInput
+	self.rotationDirection = inputComponent.aimDirection.x if shouldUseSecondaryAxis else inputComponent.turnInput
 
 
 func _physics_process(delta: float) -> void:

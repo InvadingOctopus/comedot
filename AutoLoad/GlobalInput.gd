@@ -26,12 +26,11 @@ class Actions:
 	const moveForward	:= &"moveForward"
 	const moveBackward	:= &"moveBackward"
 
-	# A secondary axis for controlling a camera or aiming cursor etc. Gamepad Right Joystick.
-	# TBD: Should these be named "aim-" instead of "look-"?
-	const lookLeft		:= &"lookLeft"
-	const lookRight		:= &"lookRight"
-	const lookUp		:= &"lookUp"
-	const lookDown		:= &"lookDown"
+	# A secondary axis for controlling a camera or aiming gun, cursor etc. Gamepad Right Joystick.
+	const aimLeft		:= &"aimLeft"
+	const aimRight		:= &"aimRight"
+	const aimUp			:= &"aimUp"
+	const aimDown		:= &"aimDown"
 
 	const jump			:= &"jump"
 	const fire			:= &"fire"

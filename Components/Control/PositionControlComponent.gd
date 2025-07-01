@@ -11,7 +11,7 @@ extends Component
 
 @export_range(0.0, 1000.0, 10.0) var speed: float = 200
 
-## If `true`, uses the "look" input actions such as [constant GlobalInput.Actions.lookLeft] etc.,
+## If `true`, uses the "aim" aka "look" input actions such as [constant GlobalInput.Actions.aimLeft] etc.,
 ## which default to a secondary input axis such as the right gamepad joystick,
 ## that may be used to control a camera angle or an aiming cursor etc.
 @export var shouldUseSecondaryAxis: bool = false
@@ -38,9 +38,9 @@ func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` 
 			GlobalInput.Actions.moveDown)
 	else:
 		lastInput = Input.get_vector(
-			GlobalInput.Actions.lookLeft,
-			GlobalInput.Actions.lookRight,
-			GlobalInput.Actions.lookUp,
-			GlobalInput.Actions.lookDown)
+			GlobalInput.Actions.aimLeft,
+			GlobalInput.Actions.aimRight,
+			GlobalInput.Actions.aimUp,
+			GlobalInput.Actions.aimDown)
 
 	parentEntity.position += lastInput * speed * delta

@@ -50,9 +50,9 @@ extends Component
 ## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
 @export var movementDirectionScale:	Vector2 = Vector2.ONE
 
-## Multiplies each of the [param lookDirection]'s axes, which is usually provided by the Right Joystick.
+## Multiplies each of the [param aimDirection]'s axes, which is usually provided by the Right Joystick.
 ## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
-@export var lookDirectionScale:		Vector2 = Vector2.ONE
+@export var aimDirectionScale:		Vector2 = Vector2.ONE
 
 ## The list of input actions to watch for and include in [member inputActionsPressed].
 ## Because dummy Godot doesn't let us directly get all the input actions from an [InputEvent],
@@ -83,7 +83,7 @@ var movementDirection:			Vector2: ## The primary movmeent input from the combine
 var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & the D-pad.
 var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & the D-pad.
 
-var lookDirection:		Vector2 ## The Right Joystick.
+var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming in dual-stick shoot-em-ups etc.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
 
@@ -208,7 +208,7 @@ func handleInput(event: InputEvent) -> void:
 
 		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
 
-	self.lookDirection	= Input.get_vector(GlobalInput.Actions.lookLeft, GlobalInput.Actions.lookRight, GlobalInput.Actions.lookUp, GlobalInput.Actions.lookDown) * lookDirectionScale
+	self.aimDirection	= Input.get_vector(GlobalInput.Actions.aimLeft, GlobalInput.Actions.aimRight, GlobalInput.Actions.aimUp, GlobalInput.Actions.aimDown) * aimDirectionScale
 	self.turnInput		= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
 	self.thrustInput	= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
@@ -260,7 +260,7 @@ func showDebugInfo() -> void:
 		actionsPressed		= inputActionsPressed,
 		previousMovementDirection = previousMovementDirection,
 		movementDirection	= movementDirection,
-		lookDirection		= lookDirection,
+		aimDirection		= aimDirection,
 		horizontalInput		= horizontalInput,
 		verticalInput		= verticalInput,
 		turnInput			= turnInput,
