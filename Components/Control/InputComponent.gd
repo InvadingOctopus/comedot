@@ -77,7 +77,7 @@ var movementDirection:			Vector2: ## The primary movmeent input from the combine
 	set(newValue):
 		if newValue != movementDirection:
 			# NOTE: Do not count "echoes" (repeated events generated when the same input is pressed and held) as changes in the input!
-			if not lastInputEvent.is_echo(): previousMovementDirection = movementDirection
+			if lastInputEvent and not lastInputEvent.is_echo(): previousMovementDirection = movementDirection # Check for `lastInputEvent` in case some other component is directly modifying this property for the first time.
 			movementDirection = newValue
 
 var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & the D-pad.
