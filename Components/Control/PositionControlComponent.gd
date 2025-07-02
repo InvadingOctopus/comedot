@@ -30,7 +30,7 @@ func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` 
 	# NOTE: Cannot use `_input()` because `delta` is needed.
 	if not isEnabled: return
 	
-	if shouldUseSecondaryAxis:
+	if not shouldUseSecondaryAxis:
 		lastInput = Input.get_vector(
 			GlobalInput.Actions.moveLeft,
 			GlobalInput.Actions.moveRight,

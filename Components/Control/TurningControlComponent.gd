@@ -43,7 +43,7 @@ func _ready() -> void:
 
 func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 	# TBD: PERFORMANCE: Check if event was turn input?
-	self.rotationDirection = inputComponent.aimDirection.x if shouldUseSecondaryAxis else inputComponent.turnInput
+	self.rotationDirection = inputComponent.turnInput if not shouldUseSecondaryAxis else inputComponent.aimDirection.x
 
 
 func _physics_process(delta: float) -> void:
