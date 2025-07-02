@@ -7,7 +7,7 @@
 #@tool # Not useful because it's not inherited :(
 @icon("res://Assets/Icons/Component.svg")
 
-abstract class_name Component
+@abstract class_name Component
 extends Node
 
 

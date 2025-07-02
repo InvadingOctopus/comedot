@@ -1,7 +1,7 @@
 ## Abstract base class for [Resource]s that represent gameplay-related resources such as health/ammo or skills etc. with a named identity and a visual representation including optionally displayed name, description and icon.
 
 @tool
-abstract class_name GameplayResourceBase
+@abstract class_name GameplayResourceBase
 extends Resource
 
 # TBD: A better name? ViewableResource? :')

@@ -79,7 +79,7 @@ func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, lo
 
 
 #region Abstract Methods
-# Cannot mark as `abstract` because they're optional, and `abstract` functions require the class itself to also be `abstract`, but [TileCollisionComponent] is not abstract as it may still be used via signals.
+# Cannot mark as `@abstract` because they're optional, and `@abstract` functions require the class itself to also be `@abstract`, but [TileCollisionComponent] is not abstract as it may still be used via signals.
 
 ## Called when a [TileMapLayer] comes into contact.
 ## NOTE: Called BEFORE [signal didEnterTileCell]

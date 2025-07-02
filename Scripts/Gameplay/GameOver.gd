@@ -85,5 +85,5 @@ func enterGameOverState() -> void:
 
 ## Abstract; To be implemented by subclasses.
 ## IMPORTANT: Check [member isDisplayingGameOver]
-func customizeGameOver() -> void: # Not marked as `abstract` because it's optional.
+func customizeGameOver() -> void: # Not marked as `@abstract` because it's optional.
 	pass # if not isDisplayingGameOver: return

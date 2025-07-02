@@ -8,7 +8,7 @@
 ##
 ## Requirements: [TurnBasedEntity], [AnimatedSprite2D]
 
-abstract class_name TurnBasedComponent
+@abstract class_name TurnBasedComponent
 extends Component # + TurnBasedObjectBase
 
 # NOTE: DESIGN: This class is almost identical to [TurnBasedEntity] and there is a lot of code duplication
@@ -115,7 +115,7 @@ func processTurnEndSignals() -> void:
 
 #region Abstract Turn Process Methods
 # NOTE: These methods MUST be overridden by subclasses to perform the actual game-specific actions.
-# Not marked as `abstract` because they are optional.
+# Not marked as `@abstract` because they are optional.
 
 ## Any "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
 ## Abstract; To be implemented by subclasses.

@@ -1,6 +1,6 @@
 ## An abstract base class for Components that depend on a [Timer].
 
-abstract class_name TimerComponentBase
+@abstract class_name TimerComponentBase
 extends Component
 
 
@@ -15,4 +15,4 @@ extends Component
 
 
 ## Abstract; override in subclasses.
-abstract func onTimeout() -> void
+@abstract func onTimeout() -> void

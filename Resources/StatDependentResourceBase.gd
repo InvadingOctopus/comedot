@@ -2,7 +2,7 @@
 ## For example, a product in a shop with a price represented as a Gold Stat, or a [TargetableAction] spell which requires a Mana Stat to cast.
 
 @warning_ignore("missing_tool")
-abstract class_name StatDependentResourceBase
+@abstract class_name StatDependentResourceBase
 extends GameplayResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 

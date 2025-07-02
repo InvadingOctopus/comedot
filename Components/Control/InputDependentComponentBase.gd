@@ -2,7 +2,7 @@
 ## IMPORTANT: [method _ready] MUST be called via `super._ready()` if overridden in a subclass.
 ## Requirements: BEFORE (above) [InputComponent] or its subclasses, because input events propagate from the BOTTOM of the Scene Tree nodes list UPWARD.
 
-abstract class_name InputDependentComponentBase
+@abstract class_name InputDependentComponentBase
 extends Component
 
 
@@ -32,6 +32,6 @@ func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 
 
 ## Astract; MUST be implemented in subclasses.
-abstract func onInputComponent_didProcessInput(event: InputEvent) -> void # TBD: Make optional?
+@abstract func onInputComponent_didProcessInput(event: InputEvent) -> void # TBD: Make optional?
 
 #endregion

@@ -94,7 +94,7 @@ func onBodyExited(bodyExited: Node2D) -> void:
 
 
 #region Abstract Methods
-# Cannot mark as `abstract` because they're optional, and `abstract` functions require the class itself to also be `abstract`, but [AreaCollisionComponent] is not abstract as it may still be used via signals.
+# Cannot mark as `@abstract` because they're optional, and `@abstract` functions require the class itself to also be `@abstract`, but [AreaCollisionComponent] is not abstract as it may still be used via signals.
 
 ## Called when any [Area2D] or [PhysicsBody2D] or [TileMapLayer] comes into contact.
 ## NOTE: Called BEFORE [signal didEnterArea] or [signal didEnterBody] is emitted, to let subclasses such as [AreaContactComponent] to modify the state before signal handlers.

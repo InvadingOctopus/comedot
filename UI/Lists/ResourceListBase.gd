@@ -1,6 +1,6 @@
 ## An abstract base class for scripts that may be attached to any [Container] [Control]s to display a list of [GameplayResourceBase] Resources such as [Stat]s or [Action]s.
 
-abstract class_name ResourceListBase
+@abstract class_name ResourceListBase
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')
@@ -20,9 +20,9 @@ func buildListItems() -> void:
 
 ## Returns the collection of [GameplayResourceBase] data to be displayed by this UI [Container].
 ## IMPORTANT: Abstract; MUST be overridden in subclasses.
-abstract func getResources() -> Array[GameplayResourceBase]
+@abstract func getResources() -> Array[GameplayResourceBase]
 
 
 ## Creates a UI [Control] for the visual representation of a [GameplayResourceBase]'s data.
 ## IMPORTANT: Abstract; MUST be overridden in subclasses
-abstract func createListItemUI(listItem: Variant) -> Control
+@abstract func createListItemUI(listItem: Variant) -> Control

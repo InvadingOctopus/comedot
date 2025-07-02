@@ -2,7 +2,7 @@
 ## Displays the name and icon, and uses the [member GameplayResourceBase.description] as the tooltip.
 
 @tool
-class_name GameplayResourceUI # NOTE: TBD: Cannot set as `abstract` because accessing it directly in [GameplayResourceBubble] causes an error & crash.
+class_name GameplayResourceUI # NOTE: TBD: Cannot set as `@abstract` because accessing it directly in [GameplayResourceBubble] causes an error & crash.
 extends Container
 
 # TODO: Better abstraction when GDScript supports overriding properties :')

@@ -6,7 +6,7 @@
 ## The Payload of an [Action] representing a Fireball Spell would be the `Fireball.gd` script that may run complex code to check the terrain for flammability etc.
 ## TIP: A Payload may be omitted if Signal handlers are enough e.g. [signal InteractionComponent.didPerformInteraction]
 
-abstract class_name Payload
+@abstract class_name Payload
 extends Resource
 
 
@@ -50,7 +50,7 @@ func execute(source: Variant, target: Variant) -> Variant:
 
 ## The actual code which performs the actual action or effect of the Payload.
 ## IMPORTANT: MUST be overridden in a subclass which `extends Payload` such as [SignalPayload] and [ScriptPayload].
-abstract func executeImplementation(source: Variant, target: Variant) -> Variant
+@abstract func executeImplementation(source: Variant, target: Variant) -> Variant
 
 
 func printLog(message: String) -> void:
