@@ -6,7 +6,7 @@
 * 🕹️ [Add Player Control and Movement](#%EF%B8%8F-add-player-control)
 * 🧩 [Add Components to Entities](#-add-components-to-entities)
 * ⚔️ [Mortal Comebat](#%EF%B8%8F-add-combat)
-* ⚡️ [Add New Functionality](#%EF%B8%8F-add-game-specific-functionality)
+* ⚡️ [Customization](#%EF%B8%8F-customization)
 * 🧩 [Create New Components](#-create-new-components)
 * 🎲 [Make a Turn-Based Game](#-make-a-turn-based-game)
 * 🔧 [Fix Common Problems](#-fix-common-problems)
@@ -86,9 +86,9 @@ _Most components require their Scene file, not just the Script, because they may
 💡 _You may also add `HealthVisualComponent` + `InvulnerabilityOnHitComponent` etc._
 
 
-# ⚡️ Add Game-specific Functionality
+# ⚡️ Customization
 
-When you need more game-specific functionality, you have the following options, in order of ease → power:
+When you need to add new functionality specific to your game, you have the following options, in order of the tradeoff between easy → powerful:
 
 * Select a component in your Scene Tree and enable **"Editable Children"** to modify its internal sub-nodes, such as a `GunComponent`'s pivot point, or collision shapes and timers. Those modifications will only apply to *that one specific instance.*
 
@@ -99,6 +99,10 @@ When you need more game-specific functionality, you have the following options, 
 * Modify the original scene/script of a component to permanently modify or replace the default functionality. Those modifications will affect *all instances* of that component.
 
 * Create your own entirely new components, by creating a new scene and attaching the `Component.gd` script to the root node.
+
+* You don't HAVE to use components: You can continue using regular old nodes & scripts wherever you see fit, or combine multiple components into a single optimized script to improve performance for game objects that may have 100s of instance copies during runtime, such as bullets or enemy swarms.
+
+💡 Don't worry about performance until you actually see a slowdown in framerate! Use the Godot Debugger/Profiler to trace the cause. Comedot has been tested for games with tons of entities each with many components, and it runs fine even in a web browser!
 
 
 ### 🧩 Create New Components
