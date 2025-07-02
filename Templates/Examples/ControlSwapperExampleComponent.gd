@@ -12,11 +12,9 @@ const indoorZoneName := "IndoorZone"
 #region Dependencies
 # Preload all the required components' scenes
 
-const platformerControlComponentScene:	PackedScene = preload("res://Components/Control/PlatformerControlComponent.tscn")
-const jumpControlComponentScene:		PackedScene = preload("res://Components/Control/JumpComponent.tscn")
+const jumpComponentScene:				PackedScene = preload("res://Components/Control/JumpComponent.tscn")
 const platformerPhysicsComponentScene:	PackedScene = preload("res://Components/Physics/PlatformerPhysicsComponent.tscn")
 
-const overheadControlComponentScene:	PackedScene = preload("res://Components/Control/OverheadControlComponent.tscn")
 const overheadPhysicsComponentScene:	PackedScene = preload("res://Components/Physics/OverheadPhysicsComponent.tscn")
 
 #endregion
@@ -35,12 +33,12 @@ func onExit(exitingNode: Node2D) -> void:
 func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
-		parentEntity.removeComponents([JumpComponent,  PlatformerControlComponent, PlatformerPhysicsComponent]) # Types
-		parentEntity.createNewComponents([OverheadPhysicsComponent, OverheadControlComponent]) # Instances
+		parentEntity.removeComponents([JumpComponent, PlatformerPhysicsComponent]) # Types
+		parentEntity.createNewComponents([OverheadPhysicsComponent]) # Instances
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
 	else:
-		parentEntity.removeComponents([OverheadControlComponent, OverheadPhysicsComponent]) # Types
-		parentEntity.createNewComponents([PlatformerPhysicsComponent, PlatformerControlComponent, JumpComponent]) # Instances
+		parentEntity.removeComponents([OverheadPhysicsComponent]) # Types
+		parentEntity.createNewComponents([PlatformerPhysicsComponent, JumpComponent]) # Instances
 		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so PlatformerControlComponent can control it each frame
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 

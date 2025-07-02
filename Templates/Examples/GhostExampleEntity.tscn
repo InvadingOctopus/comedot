@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ks8fhlam1j34"]
+[gd_scene load_steps=17 format=3 uid="uid://ks8fhlam1j34"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_cgfg7"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_8pjcr"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="9_tfk4d"]
 [ext_resource type="Script" uid="uid://g6spk2uwn3kv" path="res://Resources/Parameters/OverheadMovementParameters.gd" id="10_cn3to"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="11_kuh66"]
+[ext_resource type="Script" uid="uid://bth4n26ur8bvh" path="res://Components/Control/InputComponent.gd" id="13_m4oah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_icn6w"]
 size = Vector2(12, 14)
@@ -20,25 +21,16 @@ size = Vector2(12, 14)
 resource_local_to_scene = true
 resource_name = "monsterHealth"
 script = ExtResource("5_kedlw")
-min = 0
 max = 20
 value = 20
-debugMode = false
 name = &"monsterHealth"
 displayName = "Monster HP"
-description = ""
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="Resource" id="Resource_u3ofw"]
 script = ExtResource("10_cn3to")
 speed = 25.0
-shouldApplyAcceleration = true
 acceleration = 100.0
-shouldMaintainPreviousVelocity = false
-shouldMaintainMinimumVelocity = false
-minimumSpeed = 100.0
-shouldApplyFriction = true
-friction = 1000.0
 metadata/_custom_type_script = ExtResource("10_cn3to")
 
 [node name="Ghost" type="CharacterBody2D"]
@@ -81,5 +73,9 @@ collision_mask = 4
 parameters = SubResource("Resource_u3ofw")
 
 [node name="CharacterBodyComponent" parent="." instance=ExtResource("11_kuh66")]
+
+[node name="InputComponent" type="Node" parent="."]
+script = ExtResource("13_m4oah")
+metadata/_custom_type_script = "uid://bth4n26ur8bvh"
 
 [editable path="DamageReceivingComponent"]

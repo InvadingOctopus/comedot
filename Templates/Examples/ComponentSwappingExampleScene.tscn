@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://ce4b6wa8rpqbs"]
+[gd_scene load_steps=16 format=4 uid="uid://ce4b6wa8rpqbs"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_4lwh0"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_q3rkf"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="6_4lwh0"]
 [ext_resource type="PackedScene" uid="uid://b7jqxgeo6hi3" path="res://Templates/Examples/ControlSwapperExampleComponent.tscn" id="7_37w12"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="8_dur3v"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="9_q3rkf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kpfqw"]
 atlas = ExtResource("5_qn520")
@@ -82,6 +83,8 @@ boundary = NodePath("../../CameraBounds")
 debugMode = true
 
 [node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("8_dur3v")]
+
+[node name="InputComponent" parent="PlayerEntity" instance=ExtResource("9_q3rkf")]
 
 [node name="CameraBounds" type="Area2D" parent="."]
 visible = false
