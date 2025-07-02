@@ -16,16 +16,16 @@ _Component-based framework and project template for [Godot][godot]_
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
-🎖️ What makes Comedot most sprillific is components that go beyond basic implementation to make sure gameplay *feels* right, by solving tricky edge-case issues that all games run into sooner or later:
+🎖️ The most sprillific feature is components that go beyond basic implementation to make sure gameplay *feels* right, by handling tricky edge-case issues that all games run into sooner or later:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
-* Ladders/ropes: Snapping while holding the climb input in mid-air. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
+* Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
 *And so much more!!*
 
 
 > [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews certain conventions like ugly underscores and may change frequently:_ **No backwards compatibility is guaranteed!**
+> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
 
 ## Examples 
