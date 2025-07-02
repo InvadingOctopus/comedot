@@ -5,6 +5,9 @@
 class_name InputActionsList
 extends Container
 
+# TODO: Build a focus chain between list items and their [InputActionEventUI] subchildren
+# TODO: Icons for keys & gamepad buttons
+
 
 #region Constants
 const inputActionUIScene := preload("res://UI/InputActionUI.tscn")
