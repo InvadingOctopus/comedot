@@ -187,6 +187,28 @@ static func findFirstParentOfType(childNode: Node, parentType: Variant) -> Node:
 	return parent
 
 
+## Appends a linear/"flattened" list of ALL the child nodes AND their subchildren and so on, recursively, from the specified [param firstNode].
+## e.g. `[FirstNode, Child1ofFirstNode, Child1ofChild1ofFirstNode, Child2ofChild1ofFirstNode, Child2ofFirstNode, …]`
+## TIP: EXAMPLE USAGE: This may be useful for setting UI focus chains in trees/lists etc.
+## @experimental
+static func flatMapNodeTree(nodeToIterate: Node, existingList: Array[Node]) -> void:
+	# TODO: Better name?
+	# TODO: Filtering
+	# TODO: This should be a generic function for flattening trees of any type :')
+	existingList.append(nodeToIterate)
+	for index in nodeToIterate.get_child_count(): # No need to -1 because the end of a range is EXCLUSIVE
+		flatMapNodeTree(nodeToIterate.get_child(index), existingList)
+
+
+## Calls [method Tools.flatMapNodeTree] to return a linear/"flattened" list of ALL the child nodes AND their subchildren, recursively, from the specified [param firstNode].
+## @experimental
+static func getAllChildrenRecursively(firstNode: Node) -> Array[Node]:
+	# TBD: Merge with flatMapNodeTree()?
+	var flatList: Array[Node]
+	Tools.flatMapNodeTree(firstNode, flatList)
+	return flatList
+
+
 ## Replaces a child node with another node at the same index (order), optionally copying the position, rotation and/or scale.
 ## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free].
 ## Returns: `true` if [param childToReplace] was found and replaced.
