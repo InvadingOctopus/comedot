@@ -6,12 +6,12 @@
 ## The `$GunSprite` is a separate child node so that the [GunComponent] node can serve as a pivot for rotation etc.
 ## TIP: For aiming, use [MouseRotationComponent] or [NodeFacingComponent].
 ## TIP: To hide the internal sprite, enable "Editable Children" and set the visibility, e.g. to use the player's own sprite.
+## Requirements: [InputComponent]
 
 class_name GunComponent
 extends CooldownComponent
 
 # NOTE: The .tscn Scene file cannot inherit from CooldownComponent because CooldownComponent is a Node, but GunComponent needs to be a Node2D for positioning :')
-# TODO: Use [InputComponent]
 
 
 #region Parameters
@@ -23,10 +23,7 @@ extends CooldownComponent
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
 
 ## If `true`, the gun fires automatically without any player input.
-@export var autoFire: bool = false:
-	set(newValue):
-		autoFire = newValue
-		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
+@export var autoFire: bool = false
 
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
 @export var pressAgainToShoot: bool = false
@@ -50,16 +47,10 @@ extends CooldownComponent
 ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
 @export var ammoDepletedMessage: String = "AMMO DEPLETED"
 
-@export var isPlayerControlled: bool = true: ## Accept player input? Disable for AI-controlled enemies.
-	set(newValue):
-		isPlayerControlled = newValue
-		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
-
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
-		self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
 
 #endregion
 
@@ -78,7 +69,9 @@ var wasFireActionJustPressed: bool = false
 
 
 #region Dependencies
-var characterBodyComponent: CharacterBodyComponent:
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+
+var characterBodyComponent: CharacterBodyComponent: ## For adding the entity's velocity
 	get:
 		if not characterBodyComponent: characterBodyComponent = coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
 		return characterBodyComponent
@@ -90,31 +83,22 @@ var labelComponent: LabelComponent:
 
 func getRequiredComponents() -> Array[Script]:
 	# GODOT Dumbness: Ternary operator returns untyped array
-	if shouldAddEntityVelocity: return [CharacterBodyComponent]
-	else: return []
+	if shouldAddEntityVelocity: return [InputComponent, CharacterBodyComponent]
+	else: return [InputComponent]
 #endregion
 
 
 func _ready() -> void:
-	# Apply setters because Godot doesn't on initialization
-	self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
-	self.set_process_unhandled_input(isEnabled and isPlayerControlled and not autoFire)
+	Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.onInputComponent_didUpdateInputActionsList)
+	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 #region Process Input
 
-func _unhandled_input(event: InputEvent) -> void:
-	# NOTE: Using [_unhandled_input] allows UI buttons etc. to trap mouse clicks
-	# without causing the gun to fire, which looks janky.
-
-	# ATTENTION: If mouse input events are not reaching this component,
-	# check the [member Control.mouse_filter] property of any overlaying nodes,
-	# and set it to `MOUSE_FILTER_PASS` or `MOUSE_FILTER_IGNORE`.
-
-	if event.is_action(GlobalInput.Actions.fire):
+func onInputComponent_didUpdateInputActionsList(_event: InputEvent) -> void:
+	isFireActionPressed = inputComponent.inputActionsPressed.has(GlobalInput.Actions.fire) # DESIGN: Check state instead of InputEvent, to allow runtime modification/injection.
+	if isFireActionPressed:
 		wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
-		isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
-		# NOTE: FIXED: AVOID: self.get_viewport().set_input_as_handled() # Do NOT gobble up the event so other GunComponents can work too!
 
 
 func _process(_delta: float) -> void:
