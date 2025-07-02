@@ -8,16 +8,15 @@ extends Container
 
 #region Constants
 const inputActionUIScene := preload("res://UI/InputActionUI.tscn")
-const uiInputActionPrefix: StringName = &"ui_"
-#endregion
-
-
-#region Parameters
 #endregion
 
 
 func _ready() -> void:
 	buildList()
+	# Focus the first item
+	if self.get_child_count() > 0:
+		var firstUI: InputActionUI = get_child(0)
+		firstUI.get_node(^"%AddButton").grab_focus() # TODO: Avoid janky string searching
 
 
 func buildList() -> void:
@@ -26,6 +25,10 @@ func buildList() -> void:
 
 	# Remove the actions that don't need to be customized or aren't used in a specific game.
 	inputActions = inputActions.filter(checkActionInclusion)
+	if inputActions.is_empty(): return
+
+	# Start with a clean slate so we don't have any duplicates.
+	Tools.removeAllChildren(self)
 
 	# Add a Label for each Input Action
 	for inputActionName in inputActions:
@@ -36,5 +39,5 @@ func buildList() -> void:
 
 ## Used for filtering the list e.g. by excluding built-in Godot UI input actions.
 func checkActionInclusion(inputActionName: StringName) -> bool:
-	return  not inputActionName.begins_with(uiInputActionPrefix) \
+	return  not inputActionName.begins_with(GlobalInput.Actions.uiPrefix) \
 		and not GlobalInput.Actions.excludedFromCustomization.has(inputActionName)

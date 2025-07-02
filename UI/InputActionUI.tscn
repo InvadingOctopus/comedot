@@ -29,6 +29,7 @@ label_settings = SubResource("LabelSettings_xqos3")
 uppercase = true
 
 [node name="AddButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
 modulate = Color(0, 1, 1, 1)
 layout_mode = 2
 tooltip_text = "Add Key/Button/Axis"

@@ -7,12 +7,15 @@ extends Node
 
 #region Input Actions & Events Constants
 
+
 ## Input event labels.
 ## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each action.
 ## NOTE: This is NOT the same as the [Action] Resource which represent special actions performed by explicit in-game choices.
 class Actions:
 	# TBD: Rename to "InputAction" or "InputEventName" etc. to disambiguate from Comedot-specific "special/explicit" [Action]s?
 
+	const uiPrefix: StringName = &"ui_" ## The prefix that all Godot built-in UI input action names start with.
+	
 	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
 	const moveLeft		:= &"moveLeft"
 	const moveRight		:= &"moveRight"
