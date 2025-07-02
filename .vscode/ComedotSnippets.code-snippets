@@ -135,7 +135,7 @@
 	"Signal Connection": {
 		"prefix": "connect",
 		"body": [ 
-			"Tools.connectSignal(${1}.${2}, self.${3:on${1}_${2}})\n\n",
+			"Tools.connectSignal(${1}.${2}, self.${3:on${1/(.)/${1:/capitalize}/}_${2}})\n\n",
 			"${0:func $3() -> void:\n\tpass}"
 		],
 		"description": "A safe signal connector and a function to handle the signal."
@@ -150,8 +150,8 @@
 	"Component Temporary Reference": {
 		"prefix": "varComponent",
 		"body": [
-			"var ${2:coComponent}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
-			"${2:coComponent}.$0"
+			"var ${2:${1/(.)/${1:/downcase}/}}: ${1:ComponentType} = self.coComponents.${1:ComponentType}",
+			"${2}.$0"
 		],
 		"description": "A local function variable that stores a temporary reference to a sibling component."
 	},
