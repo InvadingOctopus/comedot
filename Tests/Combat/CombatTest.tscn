@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=4 uid="uid://dafge0n7l43qm"]
+[gd_scene load_steps=25 format=4 uid="uid://dafge0n7l43qm"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2lgxf"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="2_a6r0q"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="13_lbdmr"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="15_jt7ij"]
 [ext_resource type="PackedScene" uid="uid://d24663limqvmn" path="res://Tests/Combat/PoisonArrowTestEntity.tscn" id="15_lbdmr"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="17_446ob"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s8cv2"]
 resource_local_to_scene = true
@@ -29,25 +30,19 @@ size = Vector2(16, 48)
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
-min = 0
 max = 20
 value = 20
-debugMode = false
 name = &"health"
 displayName = "Health"
-description = ""
 
 [sub_resource type="Resource" id="Resource_jrqcu"]
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
-min = 0
 max = 20
 value = 20
-debugMode = false
 name = &"monsterHealth"
 displayName = "Health"
-description = ""
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lvn5x"]
 resource_local_to_scene = true
@@ -111,11 +106,10 @@ wall_min_slide_angle = 0.261799
 shouldClampToBoundary = true
 boundary = NodePath("../../CameraBounds")
 
-[node name="HealthComponent" parent="PlayerEntityTemplate-OverheadCombat" index="7"]
+[node name="HealthComponent" parent="PlayerEntityTemplate-OverheadCombat" index="6"]
 health = SubResource("Resource_cafj2")
 
 [node name="DebugComponent" parent="PlayerEntityTemplate-OverheadCombat" instance=ExtResource("4_a6r0q")]
-propertiesToWatch = Array[NodePath]([NodePath("../FactionComponent:factions"), NodePath("../HealthComponent:health:value")])
 
 [node name="MonsterEntity" parent="." instance=ExtResource("5_l6t3l")]
 position = Vector2(32, 48)
@@ -130,7 +124,6 @@ health = SubResource("Resource_jrqcu")
 shape = SubResource("RectangleShape2D_lvn5x")
 
 [node name="DebugComponent" parent="MonsterEntity" instance=ExtResource("4_a6r0q")]
-propertiesToWatch = Array[NodePath]([NodePath("../FactionComponent:factions"), NodePath("../HealthComponent:health:value")])
 
 [node name="ArmedMonsterEntity" type="Sprite2D" parent="." groups=["entities"]]
 modulate = Color(1, 0.5, 0, 1)
@@ -145,12 +138,10 @@ factions = 8
 [node name="GunComponent" parent="ArmedMonsterEntity" instance=ExtResource("15_jt7ij")]
 bulletEntity = ExtResource("15_lbdmr")
 autoFire = true
-isPlayerControlled = false
 cooldown = 3.0
 
-[node name="GunSprite" parent="ArmedMonsterEntity/GunComponent/Pivot" index="0"]
-position = Vector2(16, 0)
-region_rect = Rect2(592, 80, 16, 16)
+[node name="InputComponent" parent="ArmedMonsterEntity" instance=ExtResource("17_446ob")]
+isPlayerControlled = false
 
 [node name="CameraBounds" type="Area2D" parent="."]
 visible = false
