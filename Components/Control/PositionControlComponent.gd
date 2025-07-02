@@ -4,6 +4,7 @@
 class_name PositionControlComponent
 extends Component
 
+# TODO: Resolve exclusivity with [MouseTrackingComponent]
 # TBD: Optional features like inertia for a better feeling of control? 
 
 

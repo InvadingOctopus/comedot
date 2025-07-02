@@ -3,10 +3,12 @@
 class_name MouseTrackingComponent
 extends Component
 
+# TODO: Resolve exclusivity with [PositionControlComponent]
+
 
 #region Parameters
 @export var shouldRepositionImmediately: bool = true
-@export_range(0, 1000, 5) var speed: float = 100
+@export_range(0, 1000, 5) var speed: float = 100 ## Effective only if not [member shouldRepositionImmediately].
 @export var isEnabled: bool = true
 #endregion
 
