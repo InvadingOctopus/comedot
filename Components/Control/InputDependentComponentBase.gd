@@ -18,8 +18,8 @@ func _enter_tree() -> void:
 	super._enter_tree()
 	inputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
 	if inputComponent:
-		Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
-		Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.oninputComponent_didUpdateInputActionsList)
+		Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
+		Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.onInputComponent_didUpdateInputActionsList)
 	else:
 		printWarning(str("Missing InputComponent in ", parentEntity))
 
@@ -27,11 +27,11 @@ func _enter_tree() -> void:
 #region Abstract Methods
 
 ## Astract, optional; To be implemented in subclasses.
-func oninputComponent_didUpdateInputActionsList() -> void:
+func onInputComponent_didUpdateInputActionsList() -> void:
 	pass
 
 
 ## Astract; MUST be implemented in subclasses.
-abstract func oninputComponent_didProcessInput(event: InputEvent) -> void
+abstract func onInputComponent_didProcessInput(event: InputEvent) -> void # TBD: Make optional?
 
 #endregion

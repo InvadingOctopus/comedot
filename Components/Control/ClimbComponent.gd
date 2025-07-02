@@ -150,7 +150,7 @@ func _ready() -> void:
 	self.set_process_unhandled_input(isPlayerControlled and isEnabled)
 	self.set_physics_process(isInClimbableArea and isEnabled)
 
-	Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	Tools.connectSignal(characterBodyComponent.didMove, self.oncharacterBodyComponent_didMove) # For confinement
 
 #endregion
@@ -177,7 +177,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 #region Input & Interface
 
-func oninputComponent_didProcessInput(_event: InputEvent) -> void:
+func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 	if not isEnabled: return
 
 	# DESIGN: TBD: PERFORMANCE: Some of these `if` and `else` chains may seem redundant & excessive,

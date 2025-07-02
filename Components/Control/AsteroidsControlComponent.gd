@@ -51,13 +51,13 @@ func _ready() -> void:
 	else:
 		printWarning("Missing parentEntity.body: " + parentEntity.logName)
 
-	Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 #region Update
 
-func oninputComponent_didProcessInput(_event: InputEvent) -> void:
+func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 	# Cache InputComponent state for convenient local access
 	self.turnInput   = inputComponent.turnInput
 	self.thrustInput = inputComponent.thrustInput

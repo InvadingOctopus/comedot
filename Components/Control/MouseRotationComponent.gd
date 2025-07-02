@@ -53,7 +53,7 @@ func _ready() -> void:
 	setMouseCursor()
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	if inputComponent:
-		Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
+		Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 
 
 func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
@@ -62,7 +62,7 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 	else: Input.set_custom_mouse_cursor(null, Input.CursorShape.CURSOR_ARROW)
 
 
-func oninputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \

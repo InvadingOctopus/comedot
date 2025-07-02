@@ -81,10 +81,10 @@ func _ready() -> void:
 		characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else:
 		printWarning("Missing CharacterBodyComponent")
-	
+
 	# NOTE: Just handle the input event early on instead of waiting for the `didUpdateInputActionsList` signal
 	# because this component only depends on 1 event anyway: Jump.
-	Tools.connectSignal(inputComponent.didProcessInput, self.oninputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 
 	# Set the initial timers
 	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
@@ -93,7 +93,7 @@ func _ready() -> void:
 
 #region Update Cycle
 
-func oninputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	if not isEnabled \
 	or not event.is_action(GlobalInput.Actions.jump): return
 
@@ -103,7 +103,7 @@ func oninputComponent_didProcessInput(event: InputEvent) -> void:
 	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
 	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
-	
+
 	if debugMode:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
 

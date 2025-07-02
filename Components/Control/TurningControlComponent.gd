@@ -41,7 +41,7 @@ func _ready() -> void:
 	self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection)) # Apply setters because Godot doesn't on initialization
 
 
-func oninputComponent_didProcessInput(_event: InputEvent) -> void:
+func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 	# TBD: PERFORMANCE: Check if event was turn input?
 	self.rotationDirection = inputComponent.aimDirection.x if shouldUseSecondaryAxis else inputComponent.turnInput
 
