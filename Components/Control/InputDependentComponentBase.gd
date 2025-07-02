@@ -27,7 +27,7 @@ func _ready() -> void:
 #region Abstract Methods
 
 ## Astract, optional; To be implemented in subclasses.
-func onInputComponent_didUpdateInputActionsList() -> void:
+func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 	pass
 
 

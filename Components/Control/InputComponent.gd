@@ -1,6 +1,8 @@
 ## A unified source of control input for other components to act upon. The source may be a meatspace player or AI agent script or a "demo/attract" recording etc.
 ## A main advantage of having a shared input state versus checking [method Node._input] directly, is that other components/scripts can modify the shared state. e.g. a [PlatformerPatrolComponent] "injecting" movement into a [PlatformerPhysicsComponent].
 ## NOTE: Does NOT check mouse motion input.
+## ATTENTION: If mouse input events are not reaching this component, check the [member Control.mouse_filter] property of any overlaying nodes,
+## and set it to [const Control.MOUSE_FILTER_PASS] or [const Control.MOUSE_FILTER_IGNORE].
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
@@ -57,7 +59,7 @@ extends Component
 ## The list of input actions to watch for and include in [member inputActionsPressed].
 ## Because dummy Godot doesn't let us directly get all the input actions from an [InputEvent],
 ## we have to manually check every possibility, so here we shorten that list of possible events.
-const inputActionsToMonitor: PackedStringArray = [
+@export var inputActionsToMonitor: PackedStringArray = [
 	GlobalInput.Actions.jump,
 	GlobalInput.Actions.fire,
 	GlobalInput.Actions.interact,
@@ -102,9 +104,9 @@ var shouldSkipNextEvent:bool = false
 #region Signals
 # TBD: Signals for axis updates?
 
-## Emitted when the list of [member inputActionsPressed] is updated.
+## Emitted when an [InputEvent] includes one of the [member inputActionsToMonitor] and the list of [member inputActionsPressed] is updated.
 ## NOTE: BEFORE [signal didProcessInput].
-signal didUpdateInputActionsList
+signal didUpdateInputActionsList(event: InputEvent)
 
 ## Emitted after an [InputEvent] has been fully processed and all state properties have been updated.
 ## NOTE: AFTER [signal didUpdateInputActionsList].
@@ -126,7 +128,7 @@ signal didChangeVerticalDirection
 
 func _ready() -> void:
 	# Update the input actions that were pressed/released BEFORE this component is ready.
-	updateInputActionsPressed()
+	processMonitoredInputActions()
 	setProcess() # Apply setters because Godot doesn't on initialization
 
 
@@ -177,7 +179,7 @@ func handleInput(event: InputEvent) -> void:
 
 	self.lastInputEvent = event
 
-	if updateInputActionsPressed(event) and shouldSetEventsAsHandled:
+	if processMonitoredInputActions(event) and shouldSetEventsAsHandled:
 		self.get_viewport().set_input_as_handled()
 
 	# TBD: CHECK: PERFORMANCE: Use a bunch of `if`s to update state properties only when there is a relevant matching input event?
@@ -221,7 +223,7 @@ func handleInput(event: InputEvent) -> void:
 ## Updates [member inputActionsPressed].
 ## Affected by [member isEnabled] but NOT affected by [member isPlayerControlled], to allow control by AI/code.
 ## Returns `true` if [param event] contains one of the input actions included in [const inputActionsToMonitor].
-func updateInputActionsPressed(event: InputEvent = null) -> bool:
+func processMonitoredInputActions(event: InputEvent = null) -> bool:
 	if not isEnabled: return false
 
 	# DESIGN: Do NOT just listen for `event.is_action_pressed()` etc., poll the state of ALL input actions,
@@ -231,16 +233,17 @@ func updateInputActionsPressed(event: InputEvent = null) -> bool:
 	var inputActionsPressedNew: PackedStringArray
 	var isEventMonitored: bool # Does the received InputEvent include one of the input actions we monitor?
 
-	for inputActionToMonitor: StringName in inputActionsToMonitor:
-		if Input.is_action_pressed(inputActionToMonitor):
-			inputActionsPressedNew.append(inputActionToMonitor)
+	for inputActionName: StringName in inputActionsToMonitor:
+		if Input.is_action_pressed(inputActionName): # Check all input actions, not just the ones in the current event, in case they were pressed before this component was ready
+			inputActionsPressedNew.append(inputActionName)
 
-		if event and event.is_action(inputActionToMonitor): isEventMonitored = true
+		if event and event.is_action(inputActionName): # Check event because it may be null when doing a manual update
+			isEventMonitored = true
 
 	# Did we consume an InputEvent for one of the input actions we monitor?
 	if isEventMonitored:
 		self.inputActionsPressed = inputActionsPressedNew
-		didUpdateInputActionsList.emit()
+		didUpdateInputActionsList.emit(event)
 		if debugMode: GlobalSonic.beep(0.1, 440)
 
 	return isEventMonitored
