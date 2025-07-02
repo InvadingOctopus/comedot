@@ -8,24 +8,17 @@ extends Component
 # TBD: Better name? :')
 
 
-#region State
-
-var characterBodyComponent: CharacterBodyComponent:
-	get:
-		# NOTE: Use [findFirstChildOfType()] instead of [coComponents] so that subclasses of [CharacterBodyComponent] may also be usable.
-		if not characterBodyComponent:
-			characterBodyComponent = parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
-			if not characterBodyComponent: # If we STILL don't have it, raise a ruckus.
-				printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
-		return characterBodyComponent
-
-var body: CharacterBody2D:
-	get:
-		if not body: body = characterBodyComponent.body
-		return body
-
-#endregion
-
+#region Dependencies
+@onready var characterBodyComponent: CharacterBodyComponent = parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
+@onready var body: CharacterBody2D = characterBodyComponent.body
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent]
+#endregion
+
+
+## NOTE: Not required to be called via super._ready(); only for generating an error on a missing dependency.
+func _ready() -> void:
+	# DESIGN: _enter_tree() cannot be used because components that depend on CharacterBodyComponent may enter the tree before CharacterBodyComponent
+	if not characterBodyComponent:
+		printError(str("Missing CharacterBodyComponent in ", parentEntity.logFullName)) # If a component inherits this class then it means so a missing dependency is an ERROR!
