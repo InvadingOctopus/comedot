@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://dk8auhx4xrnqp"]
+[gd_scene load_steps=16 format=4 uid="uid://dk8auhx4xrnqp"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_sy48a"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
@@ -9,7 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://dyxwb73c1uv7v" path="res://Components/Physics/PushRigidBodyComponent.tscn" id="7_nnv3x"]
 [ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="8_2t0s4"]
 [ext_resource type="PackedScene" uid="uid://d36npu023mnts" path="res://Components/Control/MouseTrackingComponent.tscn" id="9_vvqi7"]
+[ext_resource type="PackedScene" uid="uid://4ufxu1c7a85o" path="res://Components/Control/PositionControlComponent.tscn" id="9_yqhs0"]
 [ext_resource type="PackedScene" uid="uid://cfw867i3q122v" path="res://Templates/Examples/TreeWithGunExampleEntity.tscn" id="10_xxxig"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="11_bek2q"]
 [ext_resource type="PackedScene" uid="uid://ks8fhlam1j34" path="res://Templates/Examples/GhostExampleEntity.tscn" id="11_xlksg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1r2ol"]
@@ -61,7 +63,11 @@ position = Vector2(0, 24)
 texture = ExtResource("5_351p7")
 region_rect = Rect2(400, 224, 16, 16)
 
+[node name="PositionControlComponent" parent="TargetCursorEntity" instance=ExtResource("9_yqhs0")]
+
 [node name="MouseTrackingComponent" parent="TargetCursorEntity" instance=ExtResource("9_vvqi7")]
+
+[node name="InputComponent" parent="TargetCursorEntity" instance=ExtResource("11_bek2q")]
 
 [node name="Trees" type="Node" parent="."]
 

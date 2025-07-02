@@ -1,5 +1,6 @@
 ## Abstract base class for components whose functionality is dependent on player inout or AI control provided by an [InputComponent] or one of its subclasses.
 ## IMPORTANT: [method _ready] MUST be called via `super._ready()` if overridden in a subclass.
+## TIP: Components where input control is optional such as [PlatformerPhysicsComponent], or components that don't have to handle all input signals, do not need to inherit from this class.
 ## Requirements: BEFORE (above) [InputComponent] or its subclasses, because input events propagate from the BOTTOM of the Scene Tree nodes list UPWARD.
 
 @abstract class_name InputDependentComponentBase
@@ -27,6 +28,7 @@ func _ready() -> void:
 #region Abstract Methods
 
 ## Astract, optional; To be implemented in subclasses.
+@warning_ignore("unused_parameter")
 func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 	pass
 

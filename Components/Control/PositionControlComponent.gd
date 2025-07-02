@@ -1,10 +1,10 @@
 ## Sets the [Entity]'s position directly on player input, without any physics.
 ## May optionally use a secondary input axis such as the right gamepad joystick, to control the camera or an aiming cursor etc.
+## TIP: An optional [InputComponent] resolves exclusivity conflicts versus mouse-based components such as [MouseTrackingComponent].
 
 class_name PositionControlComponent
 extends Component
 
-# TODO: Resolve exclusivity with [MouseTrackingComponent]
 # TBD: Optional features like inertia for a better feeling of control? 
 
 
@@ -17,19 +17,26 @@ extends Component
 ## that may be used to control a camera angle or an aiming cursor etc.
 @export var shouldUseSecondaryAxis: bool = false
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			self.set_physics_process(isEnabled)
 
 #endregion
 
 
 #region State
-var lastInput: Vector2 # NOTE: This is a class variable so that subclasses such as [PositionControlComponent] may access it.
+var lastInput: Vector2 # NOTE: This is a class variable so that subclasses such as [StationaryHidingPositionControlComponent] may access it.
 #endregion
 
 
+func _ready() -> void:
+	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+
+
 func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` or `_process()`?
-	# NOTE: Cannot use `_input()` because `delta` is needed.
-	if not isEnabled: return
+	# NOTE: Cannot use _input() because `delta` is needed.
 	
 	if not shouldUseSecondaryAxis:
 		lastInput = Input.get_vector(

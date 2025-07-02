@@ -31,6 +31,23 @@ extends Component
 			isPlayerControlled = newValue
 			self.setProcess()
 
+## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
+## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
+@export var movementDirectionScale:	Vector2 = Vector2.ONE
+
+## Multiplies each of the [param aimDirection]'s axes, which is usually provided by the Right Joystick.
+## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
+@export var aimDirectionScale:		Vector2 = Vector2.ONE
+
+## If `true`, then any movement of any gamepad joystick sets [member shouldSuppressMouseMotion] if [member aimDirection] is not (0,0).
+## This resolves conflicts between components such as [MouseRotationComponent] vs. [TurningControlComponent],
+## allowing the player to aim a gun or move a cursor with the Right Joystick (for example) by temporarily ignoring mouse motion.
+## Clicking any mouse button reenables mouse-based movement.
+@export var shouldJoystickAimingSuppressMouse: bool = true
+
+
+@export_group("Event Processing")
+
 ## If `true` (default) then only [method Node._unhandled_input] is processed to catch the input events that are NOT consumed by other components/scripts/nodes.
 ## If `false` then [method Node._input] is processed, to catch ALL events, even if they were already handled by other nodes.
 @export var shouldProcessUnhandledInputOnly: bool = true:
@@ -47,14 +64,6 @@ extends Component
 ## May improve performance.
 ## ALERT: This will prevent any OTHER [InputComponent]s from receiving events! Use this when ONLY ONE character should be controlled.
 @export var shouldSetEventsAsHandled: bool = false # DESIGN: Let's default to `false` because disabling event propagation should be an explicit decision: we may forget about it and wonder why other scripts aren't receiving input.
-
-## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
-## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
-@export var movementDirectionScale:	Vector2 = Vector2.ONE
-
-## Multiplies each of the [param aimDirection]'s axes, which is usually provided by the Right Joystick.
-## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
-@export var aimDirectionScale:		Vector2 = Vector2.ONE
 
 ## The list of input actions to watch for and include in [member inputActionsPressed].
 ## Because dummy Godot doesn't let us directly get all the input actions from an [InputEvent],
@@ -98,6 +107,16 @@ var lastInputEvent:		InputEvent ## The most recent [InputEvent] received by [met
 ## May be used to temporarily suppress player control, e.g. to implement automatic/scripted movement etc.
 var shouldSkipNextEvent:bool = false
 
+## If [member shouldJoystickAimingSuppressMouse], then any movement of any gamepad joystick sets this flag if [member aimDirection] is not (0,0).
+## This resolves conflicts between components such as [MouseRotationComponent] vs. [TurningControlComponent],
+## allowing the player to aim a gun or move a cursor with the Right Joystick (for example) by temporarily ignoring mouse motion.
+## Clicking any mouse button disables this flag.
+var shouldSuppressMouseMotion: bool = false:
+	set(newValue):
+		if newValue != shouldSuppressMouseMotion:
+			shouldSuppressMouseMotion = newValue
+			didToggleMouseSuppression.emit(shouldSuppressMouseMotion)
+
 #endregion
 
 
@@ -120,6 +139,11 @@ signal didChangeHorizontalDirection
 ## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the Y axis, signifying a change/flip in direction from up ↔ down.
 ## May be used for sprite flipping and other animations etc.
 signal didChangeVerticalDirection
+
+## Emitted when [member shouldSuppressMouseMotion] is changed.
+## Components such as [MouseRotationComponent] & [TurningControlComponent] must monitor this signal,
+## to allow the player to aim a gun or move a cursor with the Right Joystick (for example) by temporarily ignoring mouse motion.
+signal didToggleMouseSuppression(shouldSuppressMouse: bool)
 
 #endregion
 
@@ -170,10 +194,17 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Affected by [member isEnabled] but NOT affected by [member isPlayerControlled], to allow control by AI/code.
 ## NOTE: NOT affected by [member shouldSkipNextEvent], to allow manual processing of synthetic [InputEvent]s etc.
 func handleInput(event: InputEvent) -> void:
-	# NOTE: For joystick input, events will be raised TWICE: once for both the X and Y axes.
+	# NOTE: For joystick input, events will be raised TWICE: once each for the X and Y axes.
 
-	if not isEnabled \
-	or not event.is_action_type() \
+	if not isEnabled: return
+
+	# If we were suppressing mouse movement to prioritize the secondary joystick
+	# and the player clicked ANY mouse button, un-suppress the mouse.
+	if self.shouldSuppressMouseMotion and event is InputEventMouseButton and event.is_pressed():
+		self.shouldSuppressMouseMotion = false
+
+	# All other events should only be processed if they match a registered input action and are not "echoes"
+	if not event.is_action_type() \
 	or (self.shouldIgnoreEchoes and event.is_echo()):
 		return
 
@@ -211,9 +242,12 @@ func handleInput(event: InputEvent) -> void:
 		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
 
 	self.aimDirection	= Input.get_vector(GlobalInput.Actions.aimLeft, GlobalInput.Actions.aimRight, GlobalInput.Actions.aimUp, GlobalInput.Actions.aimDown) * aimDirectionScale
-	self.turnInput		= Input.get_axis(GlobalInput.Actions.turnLeft, 	 GlobalInput.Actions.turnRight)
+	self.turnInput		= Input.get_axis(GlobalInput.Actions.turnLeft,	   GlobalInput.Actions.turnRight)
 	self.thrustInput	= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
+	if shouldJoystickAimingSuppressMouse and event is InputEventJoypadMotion and not self.aimDirection.is_zero_approx():
+		self.shouldSuppressMouseMotion = true
+	
 	# TODO: self.get_viewport().set_input_as_handled() for the other input actions we handled.
 
 	if debugMode: showDebugInfo()
