@@ -11,7 +11,7 @@ class_name GunComponent
 extends CooldownComponent
 
 # NOTE: The .tscn Scene file cannot inherit from CooldownComponent because CooldownComponent is a Node, but GunComponent needs to be a Node2D for positioning :')
-# TBD:  Optional toggle for only `_unhandled_input()` or accepting all `_input()`?
+# TODO: Use [InputComponent]
 
 
 #region Parameters
@@ -72,7 +72,7 @@ signal ammoInsufficient ## Emitted when attempt to fire the gun while [member am
 
 
 #region State
-var isFireActionPressed: bool = false
+var isFireActionPressed:	  bool = false
 var wasFireActionJustPressed: bool = false
 #region
 
@@ -114,7 +114,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action(GlobalInput.Actions.fire):
 		wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
 		isFireActionPressed = Input.is_action_pressed(GlobalInput.Actions.fire)
-		self.get_viewport().set_input_as_handled()
+		# NOTE: FIXED: AVOID: self.get_viewport().set_input_as_handled() # Do NOT gobble up the event so other GunComponents can work too!
 
 
 func _process(_delta: float) -> void:
