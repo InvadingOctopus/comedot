@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://gelgkd8j8n3t"]
+
+[ext_resource type="Script" uid="uid://biod0rim8hr2u" path="res://Components/Movement/TetherComponent.gd" id="1_p8xod"]
+
+[node name="TetherComponent" type="Node" groups=["components"]]
+editor_description = "Clamps the Entity's position to within a specified distance of another \"anchor\" Node2D."
+script = ExtResource("1_p8xod")
