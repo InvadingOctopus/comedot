@@ -327,6 +327,24 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 
 #region Area & Shape Geometry
 
+static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
+	var position:	Vector2 = rectangle.position
+	var center:		Vector2 = rectangle.get_center()
+	var end:		Vector2 = rectangle.end
+
+	match compassDirection:
+		CompassVectors.northWest:	return Vector2(position.x, position.y)
+		CompassVectors.north:		return Vector2(center.x, position.y)
+		CompassVectors.northEast:	return Vector2(end.x, position.y)
+		CompassVectors.east:		return Vector2(end.x, center.y)
+		CompassVectors.southEast:	return Vector2(end.x, end.y)
+		CompassVectors.south:		return Vector2(center.x, end.y)
+		CompassVectors.southWest:	return Vector2(position.x, end.y)
+		CompassVectors.west:		return Vector2(position.x, center.y)
+
+		_: return Vector2.ZERO
+
+
 ## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
 ## NOTE: The rectangle is in the coordinates of the shape's [CollisionShape2D] container, with its anchor at the CENTER.
 ## Works most accurately & reliably for areas with a single [RectangleShape2D].
@@ -624,28 +642,25 @@ static func getCollisionShape(node: CollisionObject2D, shapeIndex: int = 0) -> S
 
 #region Visual Functions
 
+## Clamps the position of a node to within a maximum distance/radius (in any direction) from another node.
+## May be used to tether a visual effect (such as a targeting cursor) to an anchor such as a character sprite.
+## Returns the offset [param nodeToClamp] was moved by.
+static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistance: float) -> Vector2:
+	var offset:		Vector2
+	var difference:	Vector2 = nodeToClamp.global_position - anchor.global_position # Use global position in case it's a parent/child relationship e.g. a visual component staying near its entity.
+	var distance:	float   = difference.length()
+
+	if distance > maxDistance:
+		offset  = difference.normalized() * maxDistance
+		nodeToClamp.global_position = anchor.global_position + offset
+
+	return offset
+
+
 ## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
 static func getRandomQuantizedColor() -> Color:
 	const steps: Array[float] = [0.25, 0.5, 0.75, 1.0]
 	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random())
-
-
-static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
-	var position:	Vector2 = rectangle.position
-	var center:		Vector2 = rectangle.get_center()
-	var end:		Vector2 = rectangle.end
-
-	match compassDirection:
-		CompassVectors.northWest:	return Vector2(position.x, position.y)
-		CompassVectors.north:		return Vector2(center.x, position.y)
-		CompassVectors.northEast:	return Vector2(end.x, position.y)
-		CompassVectors.east:		return Vector2(end.x, center.y)
-		CompassVectors.southEast:	return Vector2(end.x, end.y)
-		CompassVectors.south:		return Vector2(center.x, end.y)
-		CompassVectors.southWest:	return Vector2(position.x, end.y)
-		CompassVectors.west:		return Vector2(position.x, center.y)
-
-		_: return Vector2.ZERO
 
 
 ## Returns the specified "design size" centered on a Node's Viewport.
