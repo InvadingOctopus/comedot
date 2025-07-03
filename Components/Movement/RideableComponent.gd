@@ -29,14 +29,21 @@ extends Component
 
 @export_group("Control")
 
-## The component types to toggle on the mount/vehicle and rider entities:
-## On the mount: When mounted, the components are ENABLED. When dismounted, the components are DISABLED.
-## On the rider: When mounted, the components are DISABLED. When the rider dismounts, the components are re-ENABLED.
+## The component types to temporarily DISABLE on the "rider" entities when the "mount" is mounted.
+## When unmounting, the components are re-enabled on the rider.
 ## [method Entity.toggleComponents] is called to flip the `isEnabled` flag on each component if available, and pause the disabled components if [member shouldTogglePause].
-## May be used to transfer player control to the vehicle/mount.
-@export var componentTypesToToggle: Array[Script] = [PlatformerControlComponent, JumpControlComponent, ActionsComponent, ActionControlComponent]
+## TIP: Use this to transfer player control from the main character to a vehicle/mount.
+## TIP: Do not disable [InputComponent] on the rider, as that is required for [GunComponent] etc. Instead, disable [PlatformerPhysicsComponent] & [JumpComponent] etc.
+@export var componentsToDisableOnRider: Array[Script] = [JumpComponent, ActionsComponent, ActionControlComponent, PlatformerPhysicsComponent]
 
-## If `true` then [method Entity.toggleComponents] also pauses each component in [member componentTypesToToggle] when it is disabled.
+## The component types to temporarily ENABLE on this "mount/vehicle" entity when mounted.
+## When unmounting, the components are disabled on the mount.
+## [method Entity.toggleComponents] is called to flip the `isEnabled` flag on each component if available, and pause the disabled components if [member shouldTogglePause].
+## TIP: Use this to temporarily transfer player control from the main character to a vehicle/mount.
+@export var componentsToEnableOnMount:  Array[Script] = [JumpComponent, ActionsComponent, ActionControlComponent, InputComponent]
+
+
+## If `true` then [method Entity.toggleComponents] also pauses each component in [member componentsToDisableOnRider] & [member componentsToEnableOnMount] when it is disabled.
 @export var shouldTogglePause: bool = false
 
 ## An optional [InputEventAction] name to let the player manually dismount.
@@ -66,7 +73,7 @@ var isMounted: bool:
 var mountSprite: Node2D
 var riderSprite: Node2D
 
-#endregion 
+#endregion
 
 
 #region Signals
@@ -96,7 +103,9 @@ func dismount() -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if self.isMounted and isEnabled and not dismountInputEventName.is_empty() and event.is_action(dismountInputEventName) and Input.is_action_just_pressed(dismountInputEventName): # Check conditions in the order of most-likely to change
+	if self.isMounted and isEnabled \
+	and not dismountInputEventName.is_empty() \
+	and event.is_action(dismountInputEventName) and Input.is_action_just_pressed(dismountInputEventName): # Check conditions in the order of most-likely to change
 		self.dismount()
 		self.get_viewport().set_input_as_handled()
 
@@ -136,8 +145,8 @@ func setInternalState() -> void:
 
 
 func onSelf_didMount(newRider: Entity) -> void:
-	if debugMode: printDebug(str("onSelf_didMount(): ", newRider, " componentsToToggle: ", componentTypesToToggle, ", shouldTogglePause: ", shouldTogglePause))
-	
+	if debugMode: printDebug(str("onSelf_didMount(): ", newRider, ", shouldTogglePause on components: ", shouldTogglePause))
+
 	if not isEnabled: return
 
 	# Sync sprite directions
@@ -145,31 +154,37 @@ func onSelf_didMount(newRider: Entity) -> void:
 	if newRider.sprite:
 		self.riderSprite = newRider.sprite
 		syncSpriteFlip()
-		if self.coComponents.PlatformerControlComponent:
-			Tools.connectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onPlatformerControlComponent_didChangeHorizontalDirection)
+		if self.coComponents.InputComponent:
+			Tools.connectSignal(self.coComponents.InputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
 
-	# Switch components from rider to mount
-	if not componentTypesToToggle.is_empty():
-		newRider.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
-		parentEntity.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
+	# Toggle components on rider & mount
+	if not componentsToDisableOnRider.is_empty():
+		if debugMode: printDebug(str("componentsToDisableOnRider: ", componentsToDisableOnRider))
+		newRider.toggleComponents(componentsToDisableOnRider,   false, shouldTogglePause)
+	if not componentsToEnableOnMount.is_empty():
+		if debugMode: printDebug(str("componentsToEnableOnMount: ", componentsToEnableOnMount))
+		parentEntity.toggleComponents(componentsToEnableOnMount, true, shouldTogglePause)
 
 
 func onSelf_didDismount(previousRider: Entity) -> void:
 	# NOTE: Removals/cleanup should NOT depend on isEnabled
-	if debugMode: printDebug(str("onSelf_didDisount(): ", previousRider, " componentsToToggle: ", componentTypesToToggle, ", shouldTogglePause: ", shouldTogglePause))
-	
+	if debugMode: printDebug(str("onSelf_didDisount(): ", previousRider, ", shouldTogglePause on components: ", shouldTogglePause))
+
 	# Disconnect sprite flips
 	self.riderSprite = null
 	if self.coComponents.PlatformerControlComponent:
-		Tools.disconnectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onPlatformerControlComponent_didChangeHorizontalDirection)
-	
-	# Switch components from mount back to previous rider
-	if not componentTypesToToggle.is_empty():
-		parentEntity.toggleComponents(componentTypesToToggle, false, shouldTogglePause)
-		previousRider.toggleComponents(componentTypesToToggle, true, shouldTogglePause)
+		Tools.disconnectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
+
+	# Toggle components on rider & mount
+	if not componentsToDisableOnRider.is_empty():
+		if debugMode: printDebug(str("Enabling componentsToDisableOnRider: ", componentsToDisableOnRider))
+		previousRider.toggleComponents(componentsToDisableOnRider, true, shouldTogglePause) # Re-enable
+	if not componentsToEnableOnMount.is_empty():
+		if debugMode: printDebug(str("Disabling componentsToEnableOnMount: ", componentsToEnableOnMount))
+		parentEntity.toggleComponents(componentsToEnableOnMount,  false, shouldTogglePause) # Disable
 
 
-func onPlatformerControlComponent_didChangeHorizontalDirection() -> void:
+func onInputComponent_didChangeHorizontalDirection() -> void:
 	# PERFORMANCE: Do it directly instead of calling syncSpriteFlip()
 	if self.mountSprite and self.riderSprite:
 		riderSprite.flip_h = mountSprite.flip_h
