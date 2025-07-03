@@ -1,5 +1,5 @@
 ## Rotates the parent [Entity] OR another specified [Node2D] to face towards another node.
-## TIP: May be used to aim a [GunComponent] towards a targetting cursor etc.
+## TIP: May be used to aim a [GunComponent] towards a targeting cursor etc.
 ## NOTE: Mutually exclusive with [TurningControlComponent]:
 ## Set [member shouldDisableOnTurningInput] to disable this component when the player inputs a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight].
 ## Will be reenabled after a [Timer] duration.
