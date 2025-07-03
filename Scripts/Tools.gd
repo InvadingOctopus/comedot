@@ -642,19 +642,19 @@ static func getCollisionShape(node: CollisionObject2D, shapeIndex: int = 0) -> S
 
 #region Visual Functions
 
-## Clamps the position of a node to within a maximum distance/radius (in any direction) from another node.
+## Returns an offset by which to modify the GLOBAL position of a node to keep it clamped within a maximum distance/radius (in any direction) from another node.
+## If the [param nodeToClamp] is within the [param maxDistance] of the [param anchor] then (0,0) is returned i.e. no movement required.
 ## May be used to tether a visual effect (such as a targeting cursor) to an anchor such as a character sprite.
-## Returns the offset [param nodeToClamp] was moved by.
+## NOTE: Does NOT return a direct position, so the [param nodeToClamp] must be updated via `+=` NOT `=`!
 static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistance: float) -> Vector2:
-	var offset:		Vector2
 	var difference:	Vector2 = nodeToClamp.global_position - anchor.global_position # Use global position in case it's a parent/child relationship e.g. a visual component staying near its entity.
 	var distance:	float   = difference.length()
 
 	if distance > maxDistance:
-		offset  = difference.normalized() * maxDistance
-		nodeToClamp.global_position = anchor.global_position + offset
-
-	return offset
+		var offset: Vector2 = difference.normalized() * maxDistance
+		return (anchor.global_position + offset) - nodeToClamp.global_position
+	else:
+		return Vector2.ZERO
 
 
 ## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
