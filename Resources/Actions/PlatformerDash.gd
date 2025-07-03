@@ -20,7 +20,7 @@ static func onPayload_didExecute(payload: Payload, source: Variant, target: Vari
 		var inputComponent: InputComponent = source.components.InputComponent
 
 		if characterBodyComponent and inputComponent:
-			characterBodyComponent.body.velocity.x += inputComponent.recentHorizontalInput * force 
+			characterBodyComponent.body.velocity.x += inputComponent.lastNonzeroHorizontalInput * force
 			if shouldApplyVisualEffect:
 				source.modulate = Color(10, 10, 10) # Super white
 				Animations.blinkNode(source, 1, 0.05)
