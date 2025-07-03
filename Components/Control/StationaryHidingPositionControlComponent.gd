@@ -17,9 +17,7 @@ const animationDuration: float = 0.5
 
 
 #region State
-
 @onready var hidingTimer: Timer = $HidingTimer
-
 var tween: Tween
 
 var haveMouseTrackingComponent: bool:
@@ -51,6 +49,8 @@ func _input(event: InputEvent) -> void:
 		if not parentEntity.visible or not hidingTimer.is_stopped(): showEntity()
 
 
+#region Visibility
+
 func showEntity() -> void:
 	# TBD: Animate?
 	hidingTimer.stop()
@@ -78,3 +78,5 @@ func hideEntity() -> void:
 
 func onHidingTimer_timeout() -> void:
 	hideEntity()
+
+#endregion

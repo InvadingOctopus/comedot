@@ -3,6 +3,8 @@
 class_name Animations
 extends GDScript
 
+# TODO: Remember ongoing [Tween]s so we can kill or continue them on repeated animation calls?
+
 
 #region Names
 
