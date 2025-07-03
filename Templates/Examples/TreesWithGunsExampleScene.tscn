@@ -64,6 +64,7 @@ texture = ExtResource("5_351p7")
 region_rect = Rect2(400, 224, 16, 16)
 
 [node name="PositionControlComponent" parent="TargetCursorEntity" instance=ExtResource("9_yqhs0")]
+shouldUseSecondaryAxis = true
 
 [node name="MouseTrackingComponent" parent="TargetCursorEntity" instance=ExtResource("9_vvqi7")]
 

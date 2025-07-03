@@ -1,6 +1,6 @@
 ## Allows the player to rotate a node, such as a gun, with left & right input actions.
 ## May be combined with the [ThrustControlComponent] to provide "tank-like" controls, similar to Asteroids.
-## NOTE: Mutually exclusive with [MouseRotationComponent].
+## ALERT: Mutually exclusive with [MouseRotationComponent] etc. Add an [InputComponent] to resolve with mouse-based components.
 ## Requirements: BEFORE [InputComponent], because input events propagate UPWARD from the BOTTOM of the Scene Tree nodes list.
 
 class_name TurningControlComponent
@@ -37,8 +37,10 @@ var rotationDirection: float: ## The current rotation to apply to [param nodeToR
 
 
 func _ready() -> void:
+	super._ready()
 	if not nodeToRotate: nodeToRotate = self.parentEntity
 	self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection)) # Apply setters because Godot doesn't on initialization
+	Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 
 
 func onInputComponent_didProcessInput(_event: InputEvent) -> void:
@@ -50,3 +52,7 @@ func _physics_process(delta: float) -> void:
 	# if not is_zero_approx(rotationDirection): # Checked by property setter
 	nodeToRotate.rotation += (rotationSpeed * rotationDirection) * delta
 	# DEBUG: Debug.watchList.rotationDirection = rotationDirection
+
+
+func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> void:
+	self.isEnabled = shouldSuppressMouse

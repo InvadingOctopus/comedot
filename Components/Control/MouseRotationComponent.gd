@@ -1,6 +1,6 @@
 ## Rotates the parent [Entity] OR an specified [Node2D] to face towards the mouse pointer.
 ## TIP: May be used to aim a [GunComponent] etc.
-## NOTE: Mutually exclusive with [TurningControlComponent]: Set [member shouldDisableOnTurningInput] to disable this component when the player inputs a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight]. To reenable, press any mouse button.
+## ALERT: Mutually exclusive with [TurningControlComponent] etc. Add an [InputComponent] to resolve conflicts with joystick or keyboard turning input.
 
 class_name MouseRotationComponent
 extends Component # DESIGN: Not [InputDependentComponentBase] because [InputComponent] is optional
@@ -19,30 +19,24 @@ extends Component # DESIGN: Not [InputDependentComponentBase] because [InputComp
 
 @export var targetingCursor: Texture2D
 
-## If `true`, this component is disabled when a [constant GlobalInput.Actions.turnLeft] or [GlobalInput.Actions.turnRight] is received, and reenabled when any mouse button is pressed.
-## This allows other components such as [TurningControlComponent] to function, supporting mouse & gamepad control on the same entity, but not at the same time.
-@export var shouldDisableOnTurningInput: bool = true
-
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_physics_process(isEnabled) # PERFORMANCE: Set once instead of every frame
+		setMouseCursor(isEnabled)
 
 #endregion
 
 
 #region State
 
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; only for resolving conflicts with [TurningControlComponent]
+
 ## The [member Node.global_rotation] in the previous frame.
-var previousRotation: float
+var previousRotation:  float
 
 ## TIP: May be used by other components.
 var didRotateThisFrame: bool
-
-var haveTurningControlComponent: bool:
-	get: return parentEntity.components.has(&"TurningControlComponent") # TBD: PERFORMANCE: Use hardcoded name or not?
-
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; only for resolving conflicts with [TurningControlComponent]
 
 #endregion
 
@@ -50,10 +44,12 @@ var haveTurningControlComponent: bool:
 func _ready() -> void:
 	if not nodeToRotate:
 		nodeToRotate = self.parentEntity
-	setMouseCursor()
+
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+	setMouseCursor()
+
 	if inputComponent:
-		Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
+		Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 
 
 func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
@@ -62,20 +58,17 @@ func setMouseCursor(useTargetingCursor: bool = self.isEnabled) -> void:
 	else: Input.set_custom_mouse_cursor(null, Input.CursorShape.CURSOR_ARROW)
 
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> void:
 	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
-	if shouldDisableOnTurningInput and haveTurningControlComponent:
-		if self.isEnabled \
-		and (event.is_action(GlobalInput.Actions.turnLeft) or event.is_action(GlobalInput.Actions.turnRight)):
-			printDebug("Turn action received. Disabling MouseRotationComponent so TurningControlComponent can be used.")
-			GlobalUI.createTemporaryLabel("Mouse aiming off if turning. Click to reenable")
-			self.isEnabled = false
-			setMouseCursor(false)
-		elif not self.isEnabled and Input.get_mouse_button_mask() != 0:
-			printDebug("Mouse button pressed. Enabling MouseRotationComponent. TurningControlComponent may not work.")
-			GlobalUI.createTemporaryLabel("Turn control off if mouse aiming. Turn to reenable")
-			self.isEnabled = true
-			setMouseCursor(true)
+	if self.isEnabled and shouldSuppressMouse:
+		if debugMode: printDebug("Aim or Turn input received. Disabling MouseRotationComponent so TurningControlComponent etc. can be used.")
+		self.isEnabled = false
+		GlobalUI.createTemporaryLabel("Mouse aiming off. Click to reenable")
+
+	elif not self.isEnabled and not shouldSuppressMouse:
+		if debugMode: printDebug("Mouse button pressed. Re-enabling MouseRotationComponent. TurningControlComponent etc. may not work.")
+		self.isEnabled = true
+		GlobalUI.createTemporaryLabel("Mouse aiming on. Joystick aiming off")
 
 
 func _physics_process(delta: float) -> void: # CHECK: _physics_process() instead of _process() because any movement may interact with physics, right?
