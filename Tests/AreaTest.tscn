@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=4 uid="uid://dnloy15xnmp4u"]
 
 [ext_resource type="Script" uid="uid://c6vdkrdu0efu8" path="res://Tests/AreaTest.gd" id="1_xp6u4"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
+[ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_6dclq"]
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="3_yuy2n"]
 [ext_resource type="PackedScene" uid="uid://d36npu023mnts" path="res://Components/Control/MouseTrackingComponent.tscn" id="5_6dclq"]
 [ext_resource type="TileSet" uid="uid://bshjeqon37qc0" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.tres" id="5_75p7t"]

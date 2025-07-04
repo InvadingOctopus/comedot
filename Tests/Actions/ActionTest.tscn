@@ -12,7 +12,7 @@
 [ext_resource type="Resource" uid="uid://hfn0hhrpo6ui" path="res://Tests/Actions/TestActionZoom.tres" id="10_faxyp"]
 [ext_resource type="Resource" uid="uid://bryqvy7gb2xaj" path="res://Tests/Actions/TestActionLook.tres" id="11_suttq"]
 [ext_resource type="PackedScene" uid="uid://dkejn1qlbxsa2" path="res://Components/Control/ActionControlComponent.tscn" id="12_jynvc"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="13_558mi"]
+[ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="13_020ow"]
 [ext_resource type="PackedScene" uid="uid://c6sthnygmcwpg" path="res://Components/Gameplay/ActionTargetableComponent.tscn" id="14_1cwln"]
 [ext_resource type="Script" uid="uid://etxev52wl7c8" path="res://UI/Lists/StatsList.gd" id="15_lia1s"]
 [ext_resource type="Script" uid="uid://ds0n1f1kv6lo6" path="res://UI/Lists/ActionButtonsList.gd" id="16_lbcpr"]
@@ -31,7 +31,7 @@ debugMode = true
 
 [node name="ActionControlComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("12_jynvc")]
 
-[node name="SpriteEntity" parent="." instance=ExtResource("13_558mi")]
+[node name="SpriteEntity" parent="." instance=ExtResource("13_020ow")]
 position = Vector2(72, 56)
 
 [node name="ActionTargetableComponent" parent="SpriteEntity" instance=ExtResource("14_1cwln")]

@@ -1,16 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cvdtnaal7d26f"]
+[gd_scene load_steps=3 format=3 uid="uid://cpgk5alwoxntp"]
 
-[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_gmsvl"]
+[ext_resource type="PackedScene" uid="uid://b5wo0quxdyggs" path="res://Entities/Nodes/AreaEntity.tscn" id="1_dwc2t"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nam4a"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dwc2t"]
 resource_local_to_scene = true
-size = Vector2(16, 16)
+size = Vector2(32, 32)
 
-[node name="AreaEntity" type="Area2D" groups=["entities"]]
-collision_layer = 2
-collision_mask = 530
-script = ExtResource("1_gmsvl")
-metadata/_edit_group_ = true
+[node name="AreaEntity" instance=ExtResource("1_dwc2t")]
+collision_mask = 595
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_nam4a")
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_dwc2t")

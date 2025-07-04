@@ -8,7 +8,7 @@
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="6_u3x77"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_c0i8c"]
 [ext_resource type="PackedScene" uid="uid://1ly7l0r0lbi2" path="res://Components/Visual/StatsVisualComponent.tscn" id="8_n8u5t"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="9_vpvxn"]
+[ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="9_vpvxn"]
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="10_hevv5"]
 [ext_resource type="Script" uid="uid://3gmi65j17bkt" path="res://Resources/Payloads/StatModifierPayload.gd" id="11_cmk47"]
 [ext_resource type="PackedScene" uid="uid://ctb31yeqt3dae" path="res://Components/Objects/InteractionWithCostComponent.tscn" id="12_johh5"]
@@ -111,18 +111,18 @@ offset_bottom = -16.0
 text = "-?? Mana to +??? Gold"
 horizontal_alignment = 1
 
-[node name="ResetGem" parent="." instance=ExtResource("9_vpvxn")]
+[node name="ResetSkull" parent="." instance=ExtResource("9_vpvxn")]
 position = Vector2(96, 200)
 region_rect = Rect2(576, 336, 16, 16)
 
-[node name="InteractionComponent" parent="ResetGem" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
+[node name="InteractionComponent" parent="ResetSkull" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
 payload = SubResource("Resource_6rq7u")
 automatic = true
 interactionIndicator = NodePath("Label")
 labelText = "-1000 All Stats"
 debugMode = true
 
-[node name="Label" type="Label" parent="ResetGem/InteractionComponent"]
+[node name="Label" type="Label" parent="ResetSkull/InteractionComponent"]
 modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(64, 0)
 offset_left = -48.0

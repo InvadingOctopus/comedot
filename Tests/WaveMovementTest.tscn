@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_5ak0q"]
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="2_dudyc"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="2_to4b2"]
 [ext_resource type="PackedScene" uid="uid://c7jqgvvksna1y" path="res://Components/Movement/WaveMotionComponent.tscn" id="3_785qx"]
+[ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="4_e10pj"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="4_n5ct3"]
 [ext_resource type="PackedScene" uid="uid://dkokjrtkb8dch" path="res://Components/Visual/ShapeDrawComponent.tscn" id="5_hc4iw"]
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="6_stcti"]
@@ -19,7 +19,7 @@ script = ExtResource("2_dudyc")
 linePoints = PackedVector2Array(-500, 0, 500, 0, -500, -64, 500, -64, -500, 64, 500, 64)
 lineColors = PackedColorArray(1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1)
 
-[node name="SpriteEntity1" parent="." instance=ExtResource("2_to4b2")]
+[node name="SpriteEntity1" parent="." instance=ExtResource("4_e10pj")]
 
 [node name="WaveMotionComponent" parent="SpriteEntity1" instance=ExtResource("3_785qx")]
 shouldUseCosineForX = true
@@ -40,7 +40,7 @@ material = ExtResource("6_stcti")
 linePoints = PackedVector2Array(-16, 0, 16, 0)
 lineColors = PackedColorArray(1, 0, 0, 0.75)
 
-[node name="SpriteEntity2" parent="." instance=ExtResource("2_to4b2")]
+[node name="SpriteEntity2" parent="." instance=ExtResource("4_e10pj")]
 position = Vector2(128, 0)
 
 [node name="WaveMotionComponent" parent="SpriteEntity2" instance=ExtResource("3_785qx")]

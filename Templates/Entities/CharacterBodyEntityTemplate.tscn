@@ -1,24 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://5mtd1vtmen1k"]
+[gd_scene load_steps=4 format=3 uid="uid://chi05ddr2pq1c"]
 
-[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_55lcw"]
-[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="1_rjfet"]
-[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="3_01lho"]
+[ext_resource type="PackedScene" uid="uid://c5yo4fioiy4a0" path="res://Entities/Nodes/CharacterBodyEntity.tscn" id="1_jb8v4"]
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="2_7ykkh"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nam4a"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ykkh"]
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="CharacterBodyEntity" type="CharacterBody2D" groups=["entities"]]
-collision_layer = 2
-collision_mask = 18
-script = ExtResource("1_55lcw")
-metadata/_edit_group_ = true
+[node name="CharacterBodyEntity" node_paths=PackedStringArray("sprite") instance=ExtResource("1_jb8v4")]
+collision_mask = 82
+sprite = NodePath("Sprite2D")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_rjfet")
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_7ykkh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_nam4a")
-
-[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("3_01lho")]
-body = NodePath("..")
+[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+texture = ExtResource("2_7ykkh")
+region_enabled = true
+region_rect = Rect2(560, 224, 16, 16)
