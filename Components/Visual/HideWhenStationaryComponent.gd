@@ -12,6 +12,13 @@ extends Component
 const animationDuration: float = 0.5
 @export var nodeToHide:  CanvasItem ## If not specified, the parent entity is used.
 @export var shouldHideOnReady: bool = true
+@export var isEnabled:		   bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			if self.is_node_ready():
+				if isEnabled: hidingTimer.start()
+				else:		  hidingTimer.stop()
 #endregion
 
 
@@ -31,8 +38,10 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	if not nodeToHide: nodeToHide = parentEntity
-	if shouldHideOnReady: nodeToHide.visible = false
-	else: hidingTimer.start()
+
+	if isEnabled:
+		if shouldHideOnReady: nodeToHide.visible = false
+		else: hidingTimer.start()
 
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
@@ -41,8 +50,9 @@ func _ready() -> void:
 #region Input
 
 func onInputComponent_didProcessInput(event: InputEvent) -> void:
+	# TODO: Ignore joysticks that don't cause any movement.
 	# Stay visible while there is movement input.
-	if not hidingTimer.is_stopped() \
+	if  (not nodeToHide.visible or not hidingTimer.is_stopped()) \
 	and (not inputComponent.movementDirection.is_zero_approx() \
 		or not inputComponent.aimDirection.is_zero_approx()
 		or (event is InputEventMouseButton and event.is_pressed())):
@@ -50,7 +60,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 
 
 func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> void:
-	self.set_process_input(not shouldSuppressMouse) # Enable mouse motion event checking
+	self.set_process_input(isEnabled and not shouldSuppressMouse) # Enable mouse motion event checking
 
 
 func _input(event: InputEvent) -> void:
@@ -88,6 +98,6 @@ func hide() -> void:
 
 
 func onTimeout() -> void:
-	hide()
+	if isEnabled: hide()
 
 #endregion
