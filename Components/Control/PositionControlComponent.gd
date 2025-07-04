@@ -1,5 +1,5 @@
 ## Sets the [Entity]'s position directly on player input, without any physics.
-## May optionally use a secondary input axis such as the right gamepad joystick, to control the camera or an aiming cursor etc.
+## May optionally use the secondary input axis such as the right gamepad joystick, to control the camera or an aiming cursor etc.
 ## TIP: An optional [InputComponent] resolves exclusivity conflicts versus mouse-based components such as [MouseTrackingComponent].
 
 class_name PositionControlComponent
@@ -27,7 +27,7 @@ extends Component
 
 
 #region State
-var lastInput: Vector2 # NOTE: This is a class variable so that subclasses such as [StationaryHidingPositionControlComponent] may access it.
+var lastInput: Vector2
 #endregion
 
 

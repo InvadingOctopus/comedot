@@ -1,6 +1,5 @@
 ## Displays a targeting reticle controlled by the Right Joystick or mouse, for aiming [GunComponent] etc.
-## Effectively combines some of the behaviors of [MouseTrackingComponent] + [PositionControlComponent] + [TetherComponent] + [NodeFacingComponent] + [StationaryHidingPositionControlComponent].
-## TIP: To automatically hide the cursor when there is no movement, use [StationaryHidingPositionControlComponent].
+## Effectively combines some of the behaviors of [MouseTrackingComponent] + [PositionControlComponent] + [TetherComponent] + [NodeFacingComponent] + [HideWhenStationaryComponent].
 ## Requirements: BEFORE [InputComponent]
 
 class_name AimingCursorComponent
