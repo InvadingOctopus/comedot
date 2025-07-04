@@ -1,7 +1,9 @@
 ## A component which is a [NavigationAgent2D] node for pathfinding. Directs the parent entity towards another node specified as the destination,
 ## while avoiding obstacles such as walls. Set the [member NavigationAgent2D.navigation_layers], [member NavigationAgent2D.avoidance_layers] and masks etc. as proper for your gameplay.
 ## Uses an internal [Timer] $DestinationUpdateTimer to update the final target destination, instead of every frame, though the immediate movement direction is calculated each frame.
-## TIP: For a simple node-chasing component without pathfinding, use [ChaseComponent]
+## Modifies the [member InputComponent.movementDirection] if an [InputComponent] is available, otherwise sets the entity's position directly.
+## ALERT: Setting the position directly does NOT apply physics collisions e.g. with terrain etc.!
+## TIP: For a simple node-chasing component without pathfinding, use [ChaseComponent].
 ## @experimental
 
 class_name NavigationComponent
@@ -41,6 +43,7 @@ var recentDirection: Vector2
 
 
 #region Dependencies
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Optional
 #endregion
 
 
@@ -78,7 +81,11 @@ func _physics_process(_delta: float) -> void:
 ## The default implementation sets the [member Node2D.position] directly, foregoing physics.
 ## NOTE: Override this method in subclasses to implement different ways to move an entity, such as via [member CharacterBody2D.velocity] physics etc.
 func moveTowardsDestination() -> void:
-	parentEntity.position += self.recentDirection
+	if inputComponent:
+		inputComponent.setMovementDirection(self.recentDirection)
+	else:
+		parentEntity.position += self.recentDirection
+		parentEntity.reset_physics_interpolation() # CHECK: Necessary?
 
 
 func showDebugInfo() -> void:

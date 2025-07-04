@@ -1,14 +1,25 @@
-[gd_scene load_steps=8 format=4 uid="uid://2w1tcs0a5lqb"]
+[gd_scene load_steps=12 format=4 uid="uid://2w1tcs0a5lqb"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_5guwh"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_t8ro4"]
 [ext_resource type="TileSet" uid="uid://emoyueri5hos" path="res://Assets/Tiles/Kenney1Bit-Colored-Physics.tres" id="3_5guwh"]
-[ext_resource type="PackedScene" uid="uid://c8l4oj33xh2qa" path="res://Entities/Entity.tscn" id="5_ydg3b"]
-[ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="6_6de5m"]
+[ext_resource type="PackedScene" uid="uid://chi05ddr2pq1c" path="res://Templates/Entities/CharacterBodyEntityTemplate.tscn" id="4_1rqm8"]
+[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="6_adevi"]
+[ext_resource type="Script" uid="uid://g6spk2uwn3kv" path="res://Resources/Parameters/OverheadMovementParameters.gd" id="7_adevi"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="7_kift3"]
 [ext_resource type="PackedScene" uid="uid://cilj7md5n141e" path="res://Components/Movement/NavigationComponent.tscn" id="7_t8ro4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p3cj8"]
 size = Vector2(14, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5guwh"]
+resource_local_to_scene = true
+size = Vector2(14, 14)
+
+[sub_resource type="Resource" id="Resource_adevi"]
+script = ExtResource("7_adevi")
+speed = 100.0
+metadata/_custom_type_script = "uid://g6spk2uwn3kv"
 
 [node name="PathfindingTest" type="Node2D"]
 script = ExtResource("1_5guwh")
@@ -26,20 +37,28 @@ position = Vector2(32, 32)
 [node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
 shape = SubResource("RectangleShape2D_p3cj8")
 
-[node name="MonsterEntity" parent="." instance=ExtResource("5_ydg3b")]
-modulate = Color(1, 0.5, 0, 1)
-light_mask = 0
+[node name="MonsterEntity" parent="." instance=ExtResource("4_1rqm8")]
 position = Vector2(288, 144)
+collision_layer = 10
+motion_mode = 1
+wall_min_slide_angle = 0.0
 
-[node name="Sprite2D" type="Sprite2D" parent="MonsterEntity"]
-texture = ExtResource("6_6de5m")
-region_enabled = true
+[node name="CollisionShape2D" parent="MonsterEntity" index="0"]
+shape = SubResource("RectangleShape2D_5guwh")
+
+[node name="Sprite2D" parent="MonsterEntity" index="1"]
+modulate = Color(1, 0.5, 0, 1)
 region_rect = Rect2(480, 128, 16, 16)
 
+[node name="OverheadPhysicsComponent" parent="MonsterEntity" instance=ExtResource("6_adevi")]
+parameters = SubResource("Resource_adevi")
+
 [node name="NavigationComponent" parent="MonsterEntity" instance=ExtResource("7_t8ro4")]
-avoidance_layers = 8
+avoidance_layers = 10
 debug_enabled = true
 debugMode = true
+
+[node name="InputComponent" parent="MonsterEntity" instance=ExtResource("7_kift3")]
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
 [editable path="MonsterEntity"]
