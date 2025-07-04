@@ -1,10 +1,10 @@
 ## Sets the [Entity]'s position directly on player input, without any physics.
 ## May optionally use the secondary input axis such as the right gamepad joystick, to control the camera or an aiming cursor etc.
-## TIP: An optional [InputComponent] resolves exclusivity conflicts versus mouse-based components such as [MouseTrackingComponent].
 
 class_name PositionControlComponent
 extends Component
 
+# TBD: Was this better as a simple standalone component that does not require [InputComponent]?
 # TBD: Optional features like inertia for a better feeling of control? 
 
 
