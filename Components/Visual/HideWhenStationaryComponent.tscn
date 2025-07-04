@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://crv0ttbddf3gt"]
+
+[ext_resource type="Script" uid="uid://84f06vjy14i4" path="res://Components/Visual/HideWhenStationaryComponent.gd" id="1_vs53f"]
+
+[node name="HideWhenStationaryComponent" type="Timer" groups=["components"]]
+editor_description = "Automatically hides & shows the Entity or another chosen node based on input & movement."
+one_shot = true
+ignore_time_scale = true
+script = ExtResource("1_vs53f")
+
+[connection signal="timeout" from="." to="." method="onTimeout"]
