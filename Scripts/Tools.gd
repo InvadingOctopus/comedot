@@ -907,7 +907,7 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 ## Sets all the Cells in the specified [TileMapLayer] region to random Tiles from the specified coordinates in the Map's [TileSet].
 ## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
 ## If [param skipEmptyCells] is `true` then empty "unpainted" cells in the TileMap will be left untouched.
-static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float, skipEmptyCells: bool = true) -> void:
+static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, tileCoordinatesMin: Vector2i, tileCoordinatesMax: Vector2i, modificationChance: float, skipEmptyCells: bool = false) -> void:
 	# TODO: Validate parameters and sizes
 	# NOTE: Rect2i is less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
