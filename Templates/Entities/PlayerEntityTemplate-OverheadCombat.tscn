@@ -49,5 +49,6 @@ nodeToRotate = NodePath("../GunComponent")
 
 [node name="TurningControlComponent" parent="." index="11" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("9_qdfo0")]
 nodeToRotate = NodePath("../GunComponent")
+shouldUseSecondaryAxis = true
 
 [editable path="GunComponent"]
