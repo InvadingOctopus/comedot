@@ -59,6 +59,7 @@ debug_enabled = true
 debugMode = true
 
 [node name="InputComponent" parent="MonsterEntity" instance=ExtResource("7_kift3")]
+isPlayerControlled = false
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
 [editable path="MonsterEntity"]
