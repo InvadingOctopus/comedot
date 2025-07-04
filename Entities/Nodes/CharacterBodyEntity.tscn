@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5yo4fioiy4a0"]
+
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_4s5au"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="2_4r0an"]
+
+[node name="CharacterBodyEntity" type="CharacterBody2D" node_paths=PackedStringArray("body") groups=["entities"]]
+editor_description = "A CharacterBody2D with the Entity script."
+collision_layer = 2
+script = ExtResource("1_4s5au")
+body = NodePath(".")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("2_4r0an")]
+body = NodePath("..")

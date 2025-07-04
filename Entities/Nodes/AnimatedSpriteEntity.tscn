@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgxlva7a6fcdj"]
+
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_1xu38"]
+
+[node name="AnimatedSpriteEntity" type="AnimatedSprite2D" node_paths=PackedStringArray("sprite") groups=["entities"]]
+editor_description = "An AnimatedSprite2D with the Entity script."
+script = ExtResource("1_1xu38")
+sprite = NodePath(".")
+metadata/_edit_group_ = true

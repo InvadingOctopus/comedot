@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5wo0quxdyggs"]
+
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_o0oqj"]
+
+[node name="AreaEntity" type="Area2D" node_paths=PackedStringArray("area") groups=["entities"]]
+editor_description = "An Area2D with the Entity script."
+script = ExtResource("1_o0oqj")
+area = NodePath(".")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
