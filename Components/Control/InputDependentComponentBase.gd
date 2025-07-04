@@ -26,14 +26,19 @@ func _ready() -> void:
 
 
 #region Abstract Methods
+@warning_ignore_start("unused_parameter")
 
 ## Astract, optional; To be implemented in subclasses.
-@warning_ignore("unused_parameter")
 func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 	pass
 
 
 ## Astract; MUST be implemented in subclasses.
 @abstract func onInputComponent_didProcessInput(event: InputEvent) -> void # TBD: Make optional?
+
+
+## Astract, optional; To be implemented in subclasses.
+func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> void:
+	pass
 
 #endregion
