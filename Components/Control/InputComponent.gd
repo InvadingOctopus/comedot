@@ -40,11 +40,19 @@ extends Component
 ## TIP: Negative values invert the camera control, e.g. (1, -1) will flip the vertical camera axis.
 @export var aimDirectionScale:		Vector2 = Vector2.ONE
 
+@export_group("Joystick vs Mouse")
+
+## If `true`, then any movement of any gamepad joystick sets [member shouldSuppressMouseMotion] if [member movementDirection] is not (0,0).
+## This resolves conflicts between components such as [MouseTrackingComponent] vs. [PositionControlComponent],
+## allowing the player to move with the Left Joystick (for example) by temporarily ignoring mouse motion.
+## Clicking any mouse button reenables mouse-controlled movement/aiming.
+@export var shouldJoystickMovementSuppressMouse: bool = false
+
 ## If `true`, then any movement of any gamepad joystick sets [member shouldSuppressMouseMotion] if [member aimDirection] is not (0,0).
 ## This resolves conflicts between components such as [MouseRotationComponent] vs. [TurningControlComponent],
 ## allowing the player to aim a gun or move a cursor with the Right Joystick (for example) by temporarily ignoring mouse motion.
-## Clicking any mouse button reenables mouse-based movement.
-@export var shouldJoystickAimingSuppressMouse: bool = true
+## Clicking any mouse button reenables mouse-controlled movement/aiming.
+@export var shouldJoystickAimingSuppressMouse:   bool = true
 
 
 @export_group("Event Processing")
@@ -219,6 +227,9 @@ func handleInput(event: InputEvent) -> void:
 	# NOTE: Do NOT check is_action_pressed() or is_action_released()
 	# because even if 1 directional input is pressed/released, an entire axis must be updated from the state of 2 input actions.
 	# Analog joystick fractional input strengths must also be accounted for.
+
+	# Primary Movement
+
 	if event.is_action(GlobalInput.Actions.moveLeft)	\
 	or event.is_action(GlobalInput.Actions.moveRight)	\
 	or event.is_action(GlobalInput.Actions.moveUp)		\
@@ -242,12 +253,18 @@ func handleInput(event: InputEvent) -> void:
 
 		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
 
+	# Aim/Turn/Thrust
+
 	self.aimDirection	= Input.get_vector(GlobalInput.Actions.aimLeft, GlobalInput.Actions.aimRight, GlobalInput.Actions.aimUp, GlobalInput.Actions.aimDown) * aimDirectionScale
 	self.turnInput		= Input.get_axis(GlobalInput.Actions.turnLeft,	   GlobalInput.Actions.turnRight)
 	self.thrustInput	= Input.get_axis(GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
 
-	if shouldJoystickAimingSuppressMouse and event is InputEventJoypadMotion and not self.aimDirection.is_zero_approx():
-		self.shouldSuppressMouseMotion = true
+	# Let the Stick rule over Mice?
+
+	if event is InputEventJoypadMotion \
+	and ((shouldJoystickMovementSuppressMouse and not self.movementDirection.is_zero_approx())
+		or (shouldJoystickAimingSuppressMouse and not self.aimDirection.is_zero_approx())):
+			self.shouldSuppressMouseMotion = true
 	
 	# TODO: self.get_viewport().set_input_as_handled() for the other input actions we handled.
 
