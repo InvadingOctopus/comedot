@@ -15,40 +15,46 @@ extends Component
 ## If `true` (default), uses the "aim" aka "look" input actions such as [constant GlobalInput.Actions.aimLeft] etc.,
 ## which default to a secondary input axis such as the right gamepad joystick,
 ## that may be used to control a camera angle or an targeting cursor etc.
+## TIP: If `true` then [member inputComponent.shouldJoystickAimingSuppressMouse] should be on.
+## If `false` then [member inputComponent.shouldJoystickMovementSuppressMouse] should be on.
 @export var shouldUseSecondaryAxis: bool = false
 
 @export var isEnabled: bool = true:
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_physics_process(isEnabled)
+			self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx())
+			Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
 
 #endregion
 
 
 #region State
-var lastInput: Vector2
+var lastDirection: Vector2:
+	set(newValue):
+		if newValue != lastDirection:
+			lastDirection = newValue
+			self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx())
+#endregion
+
+
+#region Dependencies
+@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+
+func getRequiredComponents() -> Array[Script]:
+	return [InputComponent]
 #endregion
 
 
 func _ready() -> void:
-	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
+	Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
+	self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx()) # Apply setter because Godot doesn't on initialization
+
+
+func onInputComponent_didProcessInput(_event: InputEvent) -> void:
+	self.lastDirection = inputComponent.movementDirection if not shouldUseSecondaryAxis else inputComponent.aimDirection
 
 
 func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` or `_process()`?
 	# NOTE: Cannot use _input() because `delta` is needed.
-	
-	if not shouldUseSecondaryAxis:
-		lastInput = Input.get_vector(
-			GlobalInput.Actions.moveLeft,
-			GlobalInput.Actions.moveRight,
-			GlobalInput.Actions.moveUp,
-			GlobalInput.Actions.moveDown)
-	else:
-		lastInput = Input.get_vector(
-			GlobalInput.Actions.aimLeft,
-			GlobalInput.Actions.aimRight,
-			GlobalInput.Actions.aimUp,
-			GlobalInput.Actions.aimDown)
-
-	parentEntity.position += lastInput * speed * delta
+	parentEntity.position += lastDirection * speed * delta
