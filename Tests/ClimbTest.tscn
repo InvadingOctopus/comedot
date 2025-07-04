@@ -48,6 +48,7 @@ region_rect = Rect2(768, 288, 16, 16)
 shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
+process_callback = 0
 
 [node name="ClimbComponent" parent="PlayerEntity" instance=ExtResource("7_a2fsu")]
 debugMode = true
