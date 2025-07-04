@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_op0dp"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="3_frfcy"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="3_ppngh"]
-[ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="5_nfokn"]
+[ext_resource type="PackedScene" uid="uid://b0rq0wkce5o6l" path="res://Components/Visual/NodeFacingComponent.tscn" id="5_yl0fu"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_w0eqf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8iuf5"]
@@ -32,9 +32,8 @@ factions = 6
 [node name="GunComponent" parent="." instance=ExtResource("3_ppngh")]
 cooldown = 0.1
 
-[node name="MouseRotationComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_nfokn")]
+[node name="NodeFacingComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_yl0fu")]
 nodeToRotate = NodePath("../GunComponent")
-targetingCursor = null
 
 [node name="InputComponent" parent="." instance=ExtResource("6_w0eqf")]
 

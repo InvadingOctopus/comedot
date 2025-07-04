@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://dk8auhx4xrnqp"]
+[gd_scene load_steps=13 format=4 uid="uid://dk8auhx4xrnqp"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_sy48a"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
@@ -7,11 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="5_351p7"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="6_kpabc"]
 [ext_resource type="PackedScene" uid="uid://dyxwb73c1uv7v" path="res://Components/Physics/PushRigidBodyComponent.tscn" id="7_nnv3x"]
-[ext_resource type="PackedScene" uid="uid://bwo5yflm2rjhw" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="8_2t0s4"]
-[ext_resource type="PackedScene" uid="uid://d36npu023mnts" path="res://Components/Control/MouseTrackingComponent.tscn" id="9_vvqi7"]
-[ext_resource type="PackedScene" uid="uid://4ufxu1c7a85o" path="res://Components/Control/PositionControlComponent.tscn" id="9_yqhs0"]
+[ext_resource type="PackedScene" uid="uid://ge0omhunt1go" path="res://Components/Control/AimingCursorComponent.tscn" id="8_bek2q"]
 [ext_resource type="PackedScene" uid="uid://cfw867i3q122v" path="res://Templates/Examples/TreeWithGunExampleEntity.tscn" id="10_xxxig"]
-[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="11_bek2q"]
 [ext_resource type="PackedScene" uid="uid://ks8fhlam1j34" path="res://Templates/Examples/GhostExampleEntity.tscn" id="11_xlksg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1r2ol"]
@@ -56,33 +53,33 @@ factions = 2
 
 [node name="PushRigidBodyComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("7_nnv3x")]
 
-[node name="TargetCursorEntity" parent="." instance=ExtResource("8_2t0s4")]
-modulate = Color(1, 1, 0, 0.5)
-z_index = 100
-position = Vector2(0, 24)
-texture = ExtResource("5_351p7")
-region_rect = Rect2(400, 224, 16, 16)
-
-[node name="PositionControlComponent" parent="TargetCursorEntity" instance=ExtResource("9_yqhs0")]
-shouldUseSecondaryAxis = true
-
-[node name="MouseTrackingComponent" parent="TargetCursorEntity" instance=ExtResource("9_vvqi7")]
-
-[node name="InputComponent" parent="TargetCursorEntity" instance=ExtResource("11_bek2q")]
+[node name="AimingCursorComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_bek2q")]
 
 [node name="Trees" type="Node" parent="."]
 
 [node name="TreeEntity1" parent="Trees" instance=ExtResource("10_xxxig")]
 position = Vector2(0, -64)
 
+[node name="NodeFacingComponent" parent="Trees/TreeEntity1" index="4" node_paths=PackedStringArray("targetToFace")]
+targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
+
 [node name="TreeEntity2" parent="Trees" instance=ExtResource("10_xxxig")]
 position = Vector2(64, 0)
+
+[node name="NodeFacingComponent" parent="Trees/TreeEntity2" index="4" node_paths=PackedStringArray("targetToFace")]
+targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="TreeEntity3" parent="Trees" instance=ExtResource("10_xxxig")]
 position = Vector2(-64, 0)
 
+[node name="NodeFacingComponent" parent="Trees/TreeEntity3" index="4" node_paths=PackedStringArray("targetToFace")]
+targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
+
 [node name="TreeEntity4" parent="Trees" instance=ExtResource("10_xxxig")]
 position = Vector2(0, 64)
+
+[node name="NodeFacingComponent" parent="Trees/TreeEntity4" index="4" node_paths=PackedStringArray("targetToFace")]
+targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="Monsters" type="Node" parent="."]
 
@@ -99,3 +96,11 @@ shape = SubResource("RectangleShape2D_sy48a")
 debug_color = Color(0, 0.6, 0.7, 0.1)
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
+[editable path="Trees/TreeEntity1"]
+[editable path="Trees/TreeEntity1/GunComponent"]
+[editable path="Trees/TreeEntity2"]
+[editable path="Trees/TreeEntity2/GunComponent"]
+[editable path="Trees/TreeEntity3"]
+[editable path="Trees/TreeEntity3/GunComponent"]
+[editable path="Trees/TreeEntity4"]
+[editable path="Trees/TreeEntity4/GunComponent"]
