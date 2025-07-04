@@ -22,7 +22,7 @@ func _ready() -> void:
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 	var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
-	if inputComponent:
+	if  inputComponent:
 		Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 
 
@@ -38,4 +38,4 @@ func _physics_process(delta: float) -> void:
 	else:
 		parentEntity.global_position = parentEntity.global_position.move_toward(parentEntity.get_global_mouse_position(), speed * delta)
 
-	parentEntity.reset_physics_interpolation() # CHECK: Necessary?
+	parentEntity.reset_physics_interpolation() # CHECK: Apparently necessary to avoid intermediate positioning for 1 or more frames.
