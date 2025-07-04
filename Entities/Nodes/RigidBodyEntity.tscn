@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://blfx6eqhbfswk"]
+
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_4hi8v"]
+
+[node name="RigidBodyEntity" type="RigidBody2D" groups=["entities"]]
+editor_description = "A RigidBody2D with the Entity script."
+script = ExtResource("1_4hi8v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
