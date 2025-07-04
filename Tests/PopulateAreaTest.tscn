@@ -1,16 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://b03gxqrqupyqv"]
+[gd_scene load_steps=9 format=4 uid="uid://b03gxqrqupyqv"]
 
 [ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Areas/PopulateArea.gd" id="1_1ktkj"]
+[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_ohtlj"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="3_xp3dq"]
-[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="4_7kaft"]
-[ext_resource type="PackedScene" uid="uid://ctlquc31j3uwi" path="res://Components/Physics/OverheadPhysicsComponent.tscn" id="5_1lnua"]
-[ext_resource type="PackedScene" uid="uid://u4nkdjfoamg7" path="res://Components/Control/OverheadControlComponent.tscn" id="5_jhh4l"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="4_xuc31"]
 [ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="6_m7ekq"]
-[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="7_l0agh"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_42cay"]
-resource_local_to_scene = true
-size = Vector2(144, 144)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vn7lc"]
 texture = ExtResource("3_xp3dq")
@@ -19,10 +13,22 @@ texture = ExtResource("3_xp3dq")
 [sub_resource type="TileSet" id="TileSet_1aglk"]
 sources/0 = SubResource("TileSetAtlasSource_vn7lc")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
-size = Vector2(16, 16)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_42cay"]
+resource_local_to_scene = true
+size = Vector2(144, 144)
 
-[node name="PopulateArea" type="Area2D"]
+[node name="PopulateAreaTest" type="Node2D"]
+script = ExtResource("1_ohtlj")
+mainGameScenePath = "uid://b03gxqrqupyqv"
+
+[node name="TileMap" type="TileMapLayer" parent="."]
+modulate = Color(0, 1, 1, 0.4)
+z_index = -1
+use_parent_material = true
+tile_map_data = PackedByteArray("AAD7//v/AAAAAAAAAAD8//z/AAAAAAAAAAD9//3/AAAAAAAAAAD+//7/AAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAABAAEAAAAAAAAAAAACAAIAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAQAAAAAAAAAAAD7//3/AAAAAAAAAAD8//7/AAAAAAAAAAD9////AAAAAAAAAAD+/wAAAAAAAAAAAAD//wEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAD//wMAAAAAAAAAAAD+/wIAAAAAAAAAAAD9/wEAAAAAAAAAAAD8/wAAAAAAAAAAAAD7////AAAAAAAAAAD7/wEAAAAAAAAAAAD8/wIAAAAAAAAAAAD9/wMAAAAAAAAAAAD+/wQAAAAAAAAAAAD8/wQAAAAAAAAAAAD7/wMAAAAAAAAAAAD9//v/AAAAAAAAAAD+//z/AAAAAAAAAAD///3/AAAAAAAAAAAAAP7/AAAAAAAAAAABAP//AAAAAAAAAAACAAAAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAIAAAAAAAAAAAD///v/AAAAAAAAAAAAAPz/AAAAAAAAAAABAP3/AAAAAAAAAAACAP7/AAAAAAAAAAADAP//AAAAAAAAAAAEAAAAAAAAAAAAAAABAPv/AAAAAAAAAAACAPz/AAAAAAAAAAADAP3/AAAAAAAAAAAEAP7/AAAAAAAAAAAEAPz/AAAAAAAAAAADAPv/AAAAAAAAAAA=")
+tile_set = SubResource("TileSet_1aglk")
+
+[node name="AreaToPopulate" type="Area2D" parent="."]
 collision_layer = 512
 collision_mask = 0
 monitoring = false
@@ -38,41 +44,12 @@ maximumVariation = Vector2(2, 2)
 addToGroup = &"trees"
 metadata/_edit_group_ = true
 
-[node name="PopulateAreaShape" type="CollisionShape2D" parent="."]
+[node name="ShapeToPopulate" type="CollisionShape2D" parent="AreaToPopulate"]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_42cay")
 
-[node name="TileMap" type="TileMap" parent="."]
-modulate = Color(0, 1, 1, 0.392157)
-z_index = -1
-tile_set = SubResource("TileSet_1aglk")
-format = 2
-layer_0/tile_data = PackedInt32Array(-262149, 0, 0, -196612, 0, 0, -131075, 0, 0, -65538, 0, 0, -1, 0, 0, 0, 0, 0, 65537, 0, 0, 131074, 0, 0, 196611, 0, 0, 262148, 0, 0, -131077, 0, 0, -65540, 0, 0, -3, 0, 0, 65534, 0, 0, 131071, 0, 0, 131072, 0, 0, 196609, 0, 0, 262146, 0, 0, 262144, 0, 0, 262143, 0, 0, 196606, 0, 0, 131069, 0, 0, 65532, 0, 0, -5, 0, 0, 131067, 0, 0, 196604, 0, 0, 262141, 0, 0, 327678, 0, 0, 327676, 0, 0, 262139, 0, 0, -262147, 0, 0, -196610, 0, 0, -131073, 0, 0, -131072, 0, 0, -65535, 0, 0, 2, 0, 0, 65539, 0, 0, 131076, 0, 0, -262145, 0, 0, -262144, 0, 0, -196607, 0, 0, -131070, 0, 0, -65533, 0, 0, 4, 0, 0, -327679, 0, 0, -262142, 0, 0, -196605, 0, 0, -131068, 0, 0, -262140, 0, 0, -327677, 0, 0)
-
-[node name="PlayerTemplate" type="CharacterBody2D" parent="." groups=["players"]]
+[node name="Player-Overhead" parent="." instance=ExtResource("4_xuc31")]
 position = Vector2(0, -128)
-collision_layer = 6
-collision_mask = 3640
-script = ExtResource("4_7kaft")
-metadata/_edit_group_ = true
-
-[node name="Sprite2D" type="Sprite2D" parent="PlayerTemplate" groups=["players"]]
-texture = ExtResource("3_xp3dq")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerTemplate"]
-shape = SubResource("RectangleShape2D_sg2kd")
-
-[node name="Camera2D" type="Camera2D" parent="PlayerTemplate"]
-position_smoothing_enabled = true
-position_smoothing_speed = 100.0
-rotation_smoothing_enabled = true
-rotation_smoothing_speed = 10.0
-
-[node name="OverheadControlComponent" parent="PlayerTemplate" instance=ExtResource("5_jhh4l")]
-
-[node name="OverheadPhysicsComponent" parent="PlayerTemplate" instance=ExtResource("5_1lnua")]
-
-[node name="CharacterBodyComponent" parent="PlayerTemplate" instance=ExtResource("7_l0agh")]
 
 [node name="TestSprite16" parent="." instance=ExtResource("6_m7ekq")]
 modulate = Color(1, 0.883333, 0, 0.666667)
