@@ -1,6 +1,7 @@
 ## Creates copies of the specified scene at random positions within the [Area2D].
 ## "Paints" the area from the top-left corner and jumps a random distance within a specified range between each nody copy.
 ## Currently only optimized for rectangular area shapes.
+## @experimental
 
 class_name PopulateArea
 extends Area2D
@@ -8,13 +9,14 @@ extends Area2D
 # TODO: A better implementation! Use nosie generation?
 # TODO: Avoid existing nodes
 
+
 #region Parameters
 
 @export var sceneToCopy: PackedScene
 
 @export_range(0, 100, 1) var numberOfCopies: int = 10
 
-## A number will be appeneded to the end of this string.
+## A number will be appended to the end of this string.
 @export var namePrefix: String = "Clone"
 
 @export_group("Positioning")
@@ -84,6 +86,8 @@ var totalCopiesCreated: int
 func _ready() -> void:
 	populate()
 
+
+#region Population
 
 func populate() -> void:
 
@@ -195,6 +199,10 @@ func createNewCopy(sceneResource: Resource, parent: Node2D = self) -> Node2D:
 	else:
 		return null
 
+#endregion
+
+
+#region Interface
 
 ## Deletes all the child nodes which match the [member sceneToCopy]
 ## and resets the [member totalCopiesCreated] counter.
@@ -217,3 +225,5 @@ func clearAllNodes() -> void:
 @warning_ignore("unused_parameter")
 func validateNewNode(newCopy: Node2D, parent: Node2D) -> bool:
 	return true
+
+#endregion
