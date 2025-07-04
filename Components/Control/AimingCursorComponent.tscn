@@ -11,7 +11,7 @@ z_index = 100
 material = ExtResource("1_hxmao")
 texture = ExtResource("1_eipvf")
 region_enabled = true
-region_rect = Rect2(320, 224, 16, 16)
+region_rect = Rect2(400, 224, 16, 16)
 script = ExtResource("3_hevsd")
 metadata/_edit_group_ = true
 
