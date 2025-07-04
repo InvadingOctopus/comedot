@@ -8,7 +8,7 @@ extends InteractionComponent
 
 
 #region Parameters
-@export var cost: StatDependentResourceBase ## The [Stat] cost.
+@export var cost: StatCost ## The [Stat] cost.
 #endregion
 
 
@@ -19,8 +19,8 @@ extends InteractionComponent
 
 func _ready() -> void:
 	# NOTE: If our label property is empty, save any existing text as the default so we can restore it after the cooldown is over
-	if interactionIndicator is Label and self.label.is_empty():
-		self.label = interactionIndicator.text
+	if interactionIndicator is Label and self.labelText.is_empty():
+		self.labelText = interactionIndicator.text
 
 	super._ready()
 
@@ -35,7 +35,7 @@ func updateLabel() -> void:
 
 	if interactionIndicator is Label:
 		if is_zero_approx(cooldownTimer.time_left):
-			if not self.label.is_empty(): interactionIndicator.text = self.label
+			if not self.labelText.is_empty(): interactionIndicator.text = self.labelText
 		else:
 			interactionIndicator.text = "COOLDOWN"
 

@@ -7,6 +7,10 @@
 editor_description = "Subclass of InteractionComponent with a cooldown and Stat cost."
 script = ExtResource("2_nrbwt")
 cost = null
+shouldCheckGrandparentsForEntity = null
+allowNonEntityParent = null
+debugMode = null
+debugModeTrace = null
 
 [node name="CooldownTimer" type="Timer" parent="." index="1"]
 wait_time = 3.0
