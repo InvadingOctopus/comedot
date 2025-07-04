@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="10_hevv5"]
 [ext_resource type="Script" uid="uid://3gmi65j17bkt" path="res://Resources/Payloads/StatModifierPayload.gd" id="11_cmk47"]
 [ext_resource type="PackedScene" uid="uid://ctb31yeqt3dae" path="res://Components/Objects/InteractionWithCostComponent.tscn" id="12_johh5"]
-[ext_resource type="Script" uid="uid://bphiwi05ux85u" path="res://Resources/StatDependentResourceBase.gd" id="13_poow8"]
+[ext_resource type="Script" uid="uid://dj5n8s8rxgypa" path="res://Resources/StatCost.gd" id="13_16kqk"]
 [ext_resource type="Script" uid="uid://etxev52wl7c8" path="res://UI/Lists/StatsList.gd" id="14_facn4"]
 
 [sub_resource type="Resource" id="Resource_0gg6p"]
@@ -20,24 +20,20 @@ script = ExtResource("11_cmk47")
 statsAndModifiers = Dictionary[ExtResource("5_bslwp"), int]({
 ExtResource("6_u3x77"): 25
 })
-debugMode = false
 metadata/_custom_type_script = "uid://3gmi65j17bkt"
 
-[sub_resource type="Resource" id="Resource_cdt3k"]
-script = ExtResource("13_poow8")
+[sub_resource type="Resource" id="Resource_16kqk"]
+script = ExtResource("13_16kqk")
 costStat = ExtResource("6_u3x77")
 cost = 50
-name = &""
-displayName = ""
-description = ""
-metadata/_custom_type_script = "uid://bphiwi05ux85u"
+name = &"manaCost"
+metadata/_custom_type_script = "uid://dj5n8s8rxgypa"
 
 [sub_resource type="Resource" id="Resource_j7vxj"]
 script = ExtResource("11_cmk47")
 statsAndModifiers = Dictionary[ExtResource("5_bslwp"), int]({
 ExtResource("7_c0i8c"): 500
 })
-debugMode = false
 metadata/_custom_type_script = "uid://3gmi65j17bkt"
 
 [sub_resource type="Resource" id="Resource_6rq7u"]
@@ -46,7 +42,6 @@ statsAndModifiers = Dictionary[ExtResource("5_bslwp"), int]({
 ExtResource("6_u3x77"): -1000,
 ExtResource("7_c0i8c"): -1000
 })
-debugMode = false
 metadata/_custom_type_script = "uid://3gmi65j17bkt"
 
 [node name="InteractionTest" type="Node2D"]
@@ -79,7 +74,7 @@ region_rect = Rect2(512, 208, 16, 16)
 [node name="InteractionComponent" parent="ManaPot" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
 payload = SubResource("Resource_0gg6p")
 interactionIndicator = NodePath("Label")
-label = "+25 Mana"
+labelText = "+25 Mana"
 debugMode = true
 
 [node name="Label" type="Label" parent="ManaPot/InteractionComponent"]
@@ -97,10 +92,10 @@ position = Vector2(160, 96)
 region_rect = Rect2(512, 160, 16, 16)
 
 [node name="InteractionWithCostComponent" parent="GoldPot" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("12_johh5")]
-cost = SubResource("Resource_cdt3k")
+cost = SubResource("Resource_16kqk")
 payload = SubResource("Resource_j7vxj")
 interactionIndicator = NodePath("Label")
-label = "-50 Mana to +500 Gold"
+labelText = "-50 Mana to +500 Gold"
 debugMode = true
 
 [node name="CooldownTimer" parent="GoldPot/InteractionWithCostComponent" index="1"]
@@ -124,7 +119,7 @@ region_rect = Rect2(576, 336, 16, 16)
 payload = SubResource("Resource_6rq7u")
 automatic = true
 interactionIndicator = NodePath("Label")
-label = "-1000 All Stats"
+labelText = "-1000 All Stats"
 debugMode = true
 
 [node name="Label" type="Label" parent="ResetGem/InteractionComponent"]
