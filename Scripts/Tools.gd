@@ -107,6 +107,18 @@ static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> 
 		sourceSignal.disconnect(targetCallable)
 
 
+## Connects/reconnects OR disconnects a [Signal] from a [Callable] safely, based on the [param reconnect] flag.
+## TIP: This saves having to type `if someFlag: connectSignal(…) else: disconnectSignal(…)`
+static func toggleSignal(sourceSignal: Signal, targetCallable: Callable, reconnect: bool, flags: int = 0) -> int:
+	# TBD: Should `reconnect` be a nullable Variant?
+	if reconnect and not sourceSignal.is_connected(targetCallable):
+		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
+	elif not reconnect and sourceSignal.is_connected(targetCallable):
+		sourceSignal.disconnect(targetCallable)
+	# else:
+	return 0
+
+
 ## Checks whether a script has a function/method with the specified name.
 ## NOTE: Only checks for the name, NOT the arguments or return type.
 ## ALERT: Use the EXACT SAME CASE as the method you need to find!
