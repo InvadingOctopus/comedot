@@ -100,15 +100,31 @@ var movementDirection:			Vector2: ## The primary movmeent input from the combine
 			if lastInputEvent and not lastInputEvent.is_echo(): previousMovementDirection = movementDirection # Check for `lastInputEvent` in case some other component is directly modifying this property for the first time.
 			movementDirection = newValue
 
-var horizontalInput:	float ## The primary X axis. Includes the Left Joystick & the D-pad.
-var verticalInput:		float ## The primary Y axis. Includes the Left Joystick & the D-pad.
+			if signf(previousMovementDirection.x) != signf(movementDirection.x):
+				if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))
+				didChangeHorizontalDirection.emit()
 
+			if signf(previousMovementDirection.y) != signf(movementDirection.y):
+				if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
+				didChangeVerticalDirection.emit()
+
+var lastNonzeroHorizontalInput:	float  ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
+var horizontalInput:			float: ## The primary X axis. Includes the Left Joystick & the D-pad.
+	set(newValue):
+		if newValue != horizontalInput:
+			horizontalInput = newValue
+			if not is_zero_approx(horizontalInput): lastNonzeroHorizontalInput = horizontalInput
+
+var lastNonzeroVerticalInput:	float  ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
+var verticalInput:	 			float: ## The primary Y axis. Includes the Left Joystick & the D-pad.
+	set(newValue):
+		if newValue != horizontalInput:
+			horizontalInput = newValue
+			if not is_zero_approx(verticalInput):	lastNonzeroVerticalInput   = verticalInput
+	
 var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming in dual-stick shoot-em-ups etc.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
-
-var lastNonzeroHorizontalInput:	float ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
-var lastNonzeroVerticalInput:	float ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
 
 var lastInputEvent:		InputEvent ## The most recent [InputEvent] received by [method handleInput]. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
 
@@ -240,17 +256,6 @@ func handleInput(event: InputEvent) -> void:
 		self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight) * movementDirectionScale.x
 		self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)  * movementDirectionScale.y
 
-		if not is_zero_approx(horizontalInput): lastNonzeroHorizontalInput = horizontalInput
-		if not is_zero_approx(verticalInput):	lastNonzeroVerticalInput   = verticalInput
-
-		if signf(previousMovementDirection.x) != signf(movementDirection.x):
-			if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))
-			didChangeHorizontalDirection.emit()
-
-		if signf(previousMovementDirection.y) != signf(movementDirection.y):
-			if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
-			didChangeVerticalDirection.emit()
-
 		if shouldSetEventsAsHandled: self.get_viewport().set_input_as_handled()
 
 	# Aim/Turn/Thrust
@@ -299,6 +304,18 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 		if debugMode: GlobalSonic.beep(0.1, 440)
 
 	return isEventMonitored
+
+#endregion
+
+
+#region Modification
+
+## Directly modifies the [member movementDirection], applies scaling, and updates [member horizontalInput] & [member verticalInput] accordingly.
+func setMovementDirection(newDirection: Vector2, scaleOverride: Vector2 = self.movementDirectionScale) -> void:
+	# TBD: Emit signals?
+	self.movementDirection	= newDirection * scaleOverride
+	self.horizontalInput	= movementDirection.x
+	self.verticalInput		= movementDirection.y
 
 #endregion
 
