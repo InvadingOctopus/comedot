@@ -7,12 +7,10 @@ extends GDScript
 
 
 #region Names
-
-const overlayFadeIn		:= &"overlayFadeIn"
-const overlayFadeOut	:= &"overlayFadeOut"
-
-const blink				:= &"blink"
-
+class Names:
+	const blink				:= &"blink"
+	const overlayFadeIn		:= &"overlayFadeIn"
+	const overlayFadeOut	:= &"overlayFadeOut"
 #endregion
 
 
