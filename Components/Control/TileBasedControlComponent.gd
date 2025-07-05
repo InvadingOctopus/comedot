@@ -8,6 +8,7 @@ extends Component
 
 
 #region Parameters
+
 @export var shouldAllowDiagonals:	bool = false
 @export var shouldMoveContinuously:	bool = true: ## If `true` then the entity keeps moving as long as the input direction is pressed. If `false` then the input must be released before moving again.
 	set(newValue):
@@ -19,52 +20,58 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_process_unhandled_input(isEnabled)
 			self.set_physics_process(isEnabled and shouldMoveContinuously)
+			Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
+
 #endregion
 
 
 #region State
 var recentInputVector: Vector2i:
-	set(newValue): printChange("recentInputVector", recentInputVector, newValue); recentInputVector = newValue # DEBUG
+	set(newValue):
+		if newValue != recentInputVector:
+			if debugMode: Debug.printChange("recentInputVector", recentInputVector, newValue, self.debugModeTrace) # logAsTrace
+			recentInputVector = newValue
 
-@onready var timer: Timer = $Timer
+@onready var stepTimer: Timer = self.get_node(^".") as Timer
 #endregion
 
 
 #region Dependencies
 @onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent
+@onready var inputComponent:			 InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
 
 func getRequiredComponents() -> Array[Script]:
-	return [TileBasedPositionComponent]
+	return [TileBasedPositionComponent, InputComponent]
 #endregion
 
 
 func _ready() -> void:
 	# Apply setters because Godot doesn't on initialization
-	self.set_process_unhandled_input(isEnabled)
 	self.set_physics_process(isEnabled and shouldMoveContinuously)
+	Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
+
+	# NOTE: Was an input already pressed before this component was ready?
+	if not inputComponent.movementDirection.is_zero_approx():
+		self.onInputComponent_didProcessInput(null)
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_type(): return
+func onInputComponent_didProcessInput(_event: InputEvent) -> void:
+	if not isEnabled: return
+	# Don't return if `inputComponent.movementDirection.is_zero_approx()` because we need to check for 0 to be able to stop moving!
 
-	if GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveLeft) \
-	or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveRight) \
-	or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveUp) \
-	or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveDown):
+	# TBD: PERFORMANCE: Check for presses & releases only, or accept analog input too?
+	# if GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveLeft) \
+	# or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveRight) \
+	# or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveUp) \
+	# or GlobalInput.hasActionTransitioned(GlobalInput.Actions.moveDown):
 
-		var inputVectorFloat: Vector2 = Input.get_vector(
-			GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, \
-			GlobalInput.Actions.moveUp,   GlobalInput.Actions.moveDown)
+	if shouldAllowDiagonals:
+		self.recentInputVector = Vector2i(int(signf(inputComponent.movementDirection.x)), int(signf(inputComponent.movementDirection.y)))
+	else: # Fractional axis values will get zeroed in the conversion to integers.
+		self.recentInputVector = Vector2i(inputComponent.movementDirection)
 
-		if shouldAllowDiagonals:
-			self.recentInputVector = Vector2i(int(signf(inputVectorFloat.x)), int(signf(inputVectorFloat.y))) # IGNORE: Godot Warning; `float` to `int` conversion is obvious.
-		else: # Fractional axis values will get zeroed in the conversion to integers.
-			self.recentInputVector = Vector2i(inputVectorFloat)
-
-		move()
-		self.get_viewport().set_input_as_handled()
+	move()
 
 
 func _physics_process(_delta: float) -> void:
@@ -75,9 +82,9 @@ func _physics_process(_delta: float) -> void:
 ## Uses a [Timer] to add a delay between each step.
 ## NOTE: Does not depend on [member isEnabled]
 func move() -> void:
-	if is_zero_approx(recentInputVector.length()) or not is_zero_approx(timer.time_left) or not tileBasedPositionComponent.tileMap:
+	if is_zero_approx(recentInputVector.length()) or not is_zero_approx(stepTimer.time_left) or not tileBasedPositionComponent.tileMap:
 		return
 
 	tileBasedPositionComponent.inputVector = self.recentInputVector
 	tileBasedPositionComponent.processMovementInput()
-	timer.start()
+	stepTimer.start()

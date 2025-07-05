@@ -60,7 +60,8 @@ debugMode = true
 
 [node name="DebugComponent" parent="Player-TileBased" instance=ExtResource("7_rgyjq")]
 modulate = Color(0.5, 1, 0.25, 0.75)
-propertiesToWatch = Array[NodePath]([NodePath("../TileBasedPositionComponent:currentCellCoordinates")])
+propertiesToLabel = Array[NodePath]([NodePath("../TileBasedPositionComponent:currentCellCoordinates")])
+propertiesToChart = Array[NodePath]([])
 
 [node name="UI" type="CanvasLayer" parent="."]
 
