@@ -50,4 +50,4 @@ func onStatChanged(stat: Stat) -> void:
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
-	GameplayResourceBubble.createForStat(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble) # TBD: Put a space between text & number?
+	GameplayResourceBubble.createForStatChange(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble) # TBD: Put a space between text & number?

@@ -38,7 +38,8 @@ static func create(resource: GameplayResourceBase, text: String, parentNode: Nod
 
 
 ## Creates & returns a new [GameplayResourceBubble] displaying the name of a [Stat] and its change in value.
-static func createForStat(stat: Stat, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), appendDisplayName: bool = true, colorBubble: bool = true) -> GameplayResourceBubble:
+## TIP: For bubbles that don't need to display the change in value, use [method GameplayResourceBubble.create].
+static func createForStatChange(stat: Stat, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), appendDisplayName: bool = true, colorBubble: bool = true) -> GameplayResourceBubble:
 	var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, "%+d" % stat.previousChange, parentNode, offset, appendDisplayName)
 	if colorBubble: # Tint the icon along with the label
 		if   stat.previousChange > 0: bubble.modulate = Color.GREEN

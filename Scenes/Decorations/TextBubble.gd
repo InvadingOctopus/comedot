@@ -32,7 +32,8 @@ static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 
 
 
 ## Creates & returns a new [TextBubble] displaying the name of a [Stat] and its change in value.
-static func createForStat(stat: Stat, textToApped: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), colorBubble: bool = true) -> TextBubble:
+## TIP: Use [GameplayResourceBubble] for more features.
+static func createForStatChange(stat: Stat, textToApped: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), colorBubble: bool = true) -> TextBubble:
 	var bubble: TextBubble = TextBubble.create(stat.displayName + textToApped, parentNode, offset)
 	if colorBubble:
 		if   stat.previousChange > 0: bubble.label.label_settings.font_color = Color.GREEN

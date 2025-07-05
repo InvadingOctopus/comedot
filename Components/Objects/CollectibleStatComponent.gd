@@ -75,7 +75,7 @@ func onCollectible_didCollect(collectibleComponent: CollectibleComponent, collec
 	# Create a visual indicator. # NOTE: Spawn it on the entity's parent because the entity will be destroyed after collection. To emit bubbles from the COLLECTOR, use [StatsVisualComponent]
 	# TODO: Make it customizable
 	if shouldEmitBubble:
-		GameplayResourceBubble.createForStat(stat, parentEntity.get_parent(), Vector2(parentEntity.position.x, parentEntity.position.y - 16), shouldAppendStatName, shouldColorBubble) \
+		GameplayResourceBubble.createForStatChange(stat, parentEntity.get_parent(), Vector2(parentEntity.position.x, parentEntity.position.y - 16), shouldAppendStatName, shouldColorBubble) \
 			.z_index = 100 # FIXED: Need to restore this for some reason, otherwise the bubble may be obscured by even the lowest Z index nodes.
 
 	return randomizedModifier
