@@ -40,7 +40,7 @@ size_flags_vertical = 4
 columns = 2
 script = ExtResource("1_yk82h")
 prefixes = Dictionary[StringName, String]({
-&"ammo": "AMMO:",
+&"playerAmmo": "AMMO:",
 &"playerHealth": "HP:"
 })
 
@@ -50,7 +50,7 @@ size_flags_horizontal = 3
 text = "HP:10"
 vertical_alignment = 1
 
-[node name="ammoLabel" type="Label" parent="TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
+[node name="playerAmmoLabel" type="Label" parent="TopPanelMarginContainer/PanelContainer/LabelGridMarginContainer/LabelGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "AMMO:100"
