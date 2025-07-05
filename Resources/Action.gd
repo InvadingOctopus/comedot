@@ -21,7 +21,7 @@ extends StatDependentResourceBase
 			if debugMode: Debug.printChange("maximumUses", maximumUses, newValue)
 			if debugMode: Debug.printChange("usesRemaining", usesRemaining, newValue)
 			maximumUses = newValue
-			usesRemaining = maximumUses
+			usesRemaining = maximumUses # DUMBDOT: Set usesRemaining here because [Resource]s don't have a _ready() :(
 
 @export_range(0, 6000, 0.1) var cooldown: float = 0 ## The time in seconds (or fraction of a second) to wait before this Action may be used again.
 
@@ -36,14 +36,18 @@ extends StatDependentResourceBase
 #region State
 
 ## If [member hasFiniteUses]
-@export_storage var usesRemaining: int = self.maximumUses # BUG: Does not get initialized to `maximumUses`
+@export_storage var usesRemaining: int = self.maximumUses: # BUG: DUMBDOT: Does not get initialized to `maximumUses`
+	set(newValue):
+		if newValue != usesRemaining:
+			if debugMode: Debug.printChange("usesRemaining", usesRemaining, newValue, true) # logAsTrace
+			usesRemaining = newValue
 
 ## The number of seconds remaining before this Action may be used again.
 ## NOTE: This must be reduced by an [ActionsComponent] on every frame, because [Resource]s cannot perform any per-frame updates on their own.
 @export_storage var cooldownRemaining: float:
 	set(newValue):
 		cooldownRemaining = newValue
-		if cooldownRemaining < 0 or is_zero_approx(cooldownRemaining):
+		if  cooldownRemaining < 0 or is_zero_approx(cooldownRemaining):
 			cooldownRemaining = 0
 			didFinishCooldown.emit()
 #endregion
@@ -54,7 +58,7 @@ var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
 
 var isUsable: bool: ## Returns `true` if this Action is off cooldown and has uses remaining. For [StatDependentResourceBase] validation, call [method StatDependentResourceBase.validateStatsComponent] etc.
-	get: return (not hasFiniteUses or usesRemaining > 0) and not isInCooldown
+	get: return (not hasFiniteUses or usesRemaining > 0) and not isInCooldown # Allow 0.1 uses :')
 
 var isInCooldown: bool:
 	get:
@@ -91,7 +95,7 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 		return false
 
 	# Check number of uses remaining
-	if self.hasFiniteUses and usesRemaining < 1:
+	if self.hasFiniteUses and usesRemaining <= 0: # Allow 0.1 uses :')
 		if debugMode: Debug.printDebug("hasFiniteUses, usesRemaining < 1", self)
 		return false
 
