@@ -4,5 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="2_uxaai"]
 
 [node name="CollectibleEntity" groups=["collectibles"] instance=ExtResource("1_toe87")]
+modulate = Color(0.5, 1, 0, 1)
+region_rect = Rect2(544, 288, 16, 16)
 
 [node name="CollectibleComponent" parent="." index="0" instance=ExtResource("2_uxaai")]
