@@ -65,7 +65,7 @@
 
 	"@onready Node Reference": {
 		"prefix": ["@onready", "onready", "node"],
-		"body": ["@onready var $0${1:propertyName}: ${2:NodeType} = ${3:$}${1:NodeName}"],
+		"body": ["@onready var ${1/(.)/${1:/downcase}/}: ${2:NodeType} = ${3:$}${1:NodeName}"],
 		"description": "A property that references a Node with a $Name or %Unique name."
 	},
 
