@@ -5,7 +5,6 @@
 
 [node name="CharacterBodyEntity" type="CharacterBody2D" node_paths=PackedStringArray("body") groups=["entities"]]
 editor_description = "A CharacterBody2D with the Entity script."
-collision_layer = 2
 script = ExtResource("1_4s5au")
 body = NodePath(".")
 metadata/_edit_group_ = true
