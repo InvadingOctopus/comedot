@@ -1,6 +1,6 @@
-[gd_scene load_steps=36 format=3 uid="uid://83osop4fb38w"]
+[gd_scene load_steps=33 format=3 uid="uid://bumu6nhses65v"]
 
-[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_rwmjt"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_sfh8g"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
 [ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="3_b23pp"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_gnvya"]
@@ -15,10 +15,9 @@
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
 [ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="12_4b1vu"]
-[ext_resource type="Script" uid="uid://b7mo6whtqm4nu" path="res://Scripts/Visual/MatchSpriteFlip.gd" id="12_n5pr4"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="14_usisr"]
-[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="14_xsv3n"]
-[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="19_b23pp"]
+[ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="16_1q6vm"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="18_swcld"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ipbe0"]
 atlas = ExtResource("2_rphdn")
@@ -44,7 +43,7 @@ region = Rect2(304, 144, 16, 16)
 atlas = ExtResource("2_rphdn")
 region = Rect2(320, 144, 16, 16)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_8iy51"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_rxoqp"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -148,53 +147,43 @@ _data = {
 &"invulnerabilityOnHit": SubResource("Animation_gjyar")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxoqp"]
+resource_local_to_scene = true
 size = Vector2(12, 12)
 
 [sub_resource type="Resource" id="Resource_cei4g"]
 resource_name = "health"
 script = ExtResource("9_g0ayb")
 value = 10
-name = &"health"
+name = &"playerHealth"
 
 [sub_resource type="Resource" id="Resource_puhqw"]
 resource_name = "ammo"
 script = ExtResource("9_g0ayb")
 max = 100
 value = 100
-name = &"ammo"
+name = &"playerAmmo"
 
 [sub_resource type="Resource" id="Resource_kl6l5"]
 resource_name = "score"
 script = ExtResource("9_g0ayb")
 max = 10000000
 value = 1337
-name = &"score"
+name = &"playerScore"
 
-[sub_resource type="Resource" id="Resource_b23pp"]
-resource_local_to_scene = true
-resource_name = "playerHealth"
-script = ExtResource("9_g0ayb")
-value = 10
-name = &"playerHealth"
-displayName = "HP"
-metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b23pp"]
-resource_local_to_scene = true
-size = Vector2(12, 12)
-
-[node name="Player-Platformer" type="CharacterBody2D" groups=["entities", "players"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("body") groups=["entities", "players"]]
+editor_description = "A template for the player character in a platformer game."
 z_index = 10
 collision_layer = 6
-collision_mask = 120
+collision_mask = 126
 floor_constant_speed = true
 platform_on_leave = 2
-script = ExtResource("1_rwmjt")
+script = ExtResource("1_sfh8g")
+body = NodePath(".")
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_8iy51")
+sprite_frames = SubResource("SpriteFrames_rxoqp")
 animation = &"idle"
 autoplay = "idle"
 
@@ -207,7 +196,7 @@ autoplay = "RESET"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_sg2kd")
+shape = SubResource("RectangleShape2D_rxoqp")
 
 [node name="CameraComponent" parent="." instance=ExtResource("3_b23pp")]
 position_smoothing_enabled = true
@@ -219,7 +208,7 @@ rotation_smoothing_speed = 10.0
 stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_puhqw"), SubResource("Resource_kl6l5")])
 
 [node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
-health = SubResource("Resource_b23pp")
+health = SubResource("Resource_cei4g")
 
 [node name="HealthVisualComponent" parent="." instance=ExtResource("7_kh44k")]
 
@@ -232,7 +221,7 @@ collision_mask = 40
 
 [node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_b23pp")
+shape = SubResource("RectangleShape2D_rxoqp")
 
 [node name="InvulnerabilityOnHitComponent" parent="." node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
 animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
@@ -246,10 +235,8 @@ ammo = SubResource("Resource_puhqw")
 ammoCost = 1
 cooldown = 1.0
 
-[node name="GunSprite" parent="GunComponent" index="0" node_paths=PackedStringArray("spriteToMatch")]
+[node name="GunSprite" parent="GunComponent" index="0"]
 visible = false
-script = ExtResource("12_n5pr4")
-spriteToMatch = NodePath("../../AnimatedSprite2D")
 
 [node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
 
@@ -257,11 +244,12 @@ spriteToMatch = NodePath("../../AnimatedSprite2D")
 
 [node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
 
-[node name="CharacterBodyComponent" parent="." instance=ExtResource("14_xsv3n")]
+[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("16_1q6vm")]
+body = NodePath("..")
 
 [node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
 
-[node name="InputComponent" parent="." instance=ExtResource("19_b23pp")]
+[node name="InputComponent" parent="." instance=ExtResource("18_swcld")]
 
 [editable path="DamageReceivingComponent"]
 [editable path="GunComponent"]
