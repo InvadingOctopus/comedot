@@ -20,19 +20,22 @@ extends CollectibleComponent
 
 ## Denies collection if the [Stat] is at its maximum limit.
 ## IMPORTANT: The [CollectorComponent]'s physics [member CollisionObject2D.collision_layer] must match [CollectibleStatComponent]'s [member CollisionObject2D.collision_mask] to trigger the [signal Area2D.onAreaExited] signal and ensure correct behavior.
-@export var preventCollectionIfStatIsMax: bool = true
+@export var shouldDenyIfStatMax: bool = true
+
+@export_group("Text Bubble")
 
 ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
 ## NOTE: The bubble is emitted from COLLECTIBLE item, NOT the Collector Entity. To display [Stat]-related bubbles from the player entity or other characters, use [StatsVisualComponent].
-@export var shouldEmitBubble:	  bool = true
-@export var shouldColorBubble:	  bool = true
-@export var shouldAppendStatName: bool = true
+@export var shouldEmitBubble:		bool = true
+@export var shouldEmitBubbleIfMax:	bool = true
+@export var shouldColorBubble:		bool = true
+@export var shouldAppendStatName:	bool = true
 
 #endregion
 
 
 #region State
-## Used to recheck collision with a [CollectorComponent] that was denied collection while [member preventCollectionIfStatIsMax]
+## Used to recheck collision with a [CollectorComponent] that was denied collection while [member shouldDenyIfStatMax]
 ## NOTE: This will recheck only ONE collector: the most recent one!
 @export_storage var previouslyDeniedCollector: CollectorComponent
 #endregion
@@ -51,13 +54,17 @@ func getRandomModifier() -> int:
 	return randi_range(statModifierMinimum, statModifierMaximum) if statModifierMinimum != statModifierMaximum else statModifierMaximum
 
 
-## Prevents collection if `preventCollectionIfStatIsMax` and the Stat is already at its [member Stat.max].
+## Prevents collection if `shouldDenyIfStatMax` and the Stat is already at its [member Stat.max].
 func checkCollectionConditions(collectorEntity: Entity, collectorComponent: CollectorComponent) -> bool:
 	if not super.checkCollectionConditions(collectorEntity, collectorComponent): return false
 	# Is it pointless to pick up the Stat?
-	if preventCollectionIfStatIsMax and stat.value >= stat.max:
-		if debugMode: printDebug(str("preventCollectionIfStatIsMax: stat.value ", stat.value, " >= stat.max ", stat.max))
+	if shouldDenyIfStatMax and stat.value >= stat.max:
+		if debugMode: printDebug(str("shouldDenyIfStatMax: stat.value ", stat.value, " >= stat.max ", stat.max))
 		previouslyDeniedCollector = collectorComponent # Remember the collector in case it is still in contact after the Stat decreases.
+		if shouldEmitBubbleIfMax:
+			var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, " MAX", collectorEntity)
+			bubble.modulate = Color.LIGHT_GRAY # Make it faint because a max stat isn't a particularly notable event
+			Animations.blink(bubble)
 		return false
 	else:
 		return true
@@ -89,7 +96,7 @@ func connectSignals() -> void:
 
 func onstat_changed() -> void:
 	# Monitor changes to allow collection when the Stat decreases from its max WHILE still in collision contact; otherwise we would have to "walk out" and collide again to pick it up.
-	if preventCollectionIfStatIsMax and previouslyDeniedCollector and stat.value < stat.max:
+	if shouldDenyIfStatMax and previouslyDeniedCollector and stat.value < stat.max:
 		# NOTE: PERFORMANCE: No need to recheck collisions, because previouslyDeniedCollector is removed in onAreaExited()
 		previouslyDeniedCollector.handleCollection(self) # This is a little jank, controlling the Collector from the Collectible :')
 
