@@ -18,5 +18,6 @@ tile_set = ExtResource("3_xeb2q")
 position = Vector2(240, 176)
 
 [node name="PlayerEntity" parent="." instance=ExtResource("4_an8j4")]
+position = Vector2(240, 40)
 
 [node name="HUDTemplate" parent="." instance=ExtResource("2_i2yvf")]
