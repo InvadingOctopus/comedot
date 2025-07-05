@@ -70,7 +70,7 @@ func updateTint()-> void:
 ## @experimental
 func animate(damageAmount: int) -> void:
 	if damageAmount > 0:
-		Animations.blinkNode(self.parentEntity, 3)
+		Animations.blink(self.parentEntity, 3)
 
 
 func emitBubble(damageAmount: int) -> void:

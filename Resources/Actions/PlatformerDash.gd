@@ -23,7 +23,7 @@ static func onPayload_didExecute(payload: Payload, source: Variant, target: Vari
 			characterBodyComponent.body.velocity.x += inputComponent.lastNonzeroHorizontalInput * force
 			if shouldApplyVisualEffect:
 				source.modulate = Color(10, 10, 10) # Super white
-				Animations.blinkNode(source, 1, 0.05)
+				Animations.blink(source, 1, 0.05)
 				Animations.tweenProperty(source, ^"modulate", Color.WHITE, 0.25)
 			return true
 

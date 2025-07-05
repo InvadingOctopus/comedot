@@ -62,7 +62,7 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 			var bubble: GameplayResourceBubble = GameplayResourceBubble.create(self.cost.costStat, " LOW", interactorEntity)
 			bubble.modulate = Color.RED
 			# TBD: bubble.ui.label.label_settings.outline_size = 3
-			Animations.blinkNode(bubble)
+			Animations.blink(bubble)
 	else: # If there is no cost, any offer is valid!
 		isStatsComponentValidated = true
 

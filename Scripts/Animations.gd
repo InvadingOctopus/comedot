@@ -46,11 +46,15 @@ static func fadeOut(node: CanvasItem, duration: float = 0.5) -> Tween:
 	return tween
 
 
-static func blinkNode(node: CanvasItem, loops: int = 3, duration: float = 0.1) -> Tween:
+## Toggles the [member CanvasItem.visible] flag from the INITIAL state (at the time of calling this function) to the opposite.
+## Ends at the initial state, which may NOT always be visible.
+static func blink(node: CanvasItem, loops: int = 3, duration: float = 0.1) -> Tween:
+	var isInitiallyVisible: bool = node.visible
 	var tween: Tween = node.create_tween()
+	node.visible = not isInitiallyVisible
 	tween.set_loops(loops)
-	tween.tween_property(node, ^"visible", false, duration)
-	tween.tween_property(node, ^"visible", true,  duration)
+	tween.tween_property(node, ^"visible", not isInitiallyVisible, duration)
+	tween.tween_property(node, ^"visible", isInitiallyVisible, duration)
 	return tween
 
 #endregion
