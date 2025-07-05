@@ -1,5 +1,6 @@
 ## A subclass of [InteractionComponent] with a cooldown and a [Stat] cost.
 ## To edit the cooldown [Timer], enable "Editable Children"
+## TIP: To display text bubbles for [Stat] deduction, use [StatsVisualComponent].
 
 class_name InteractionWithCostComponent
 extends InteractionComponent
@@ -57,6 +58,11 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 	if self.cost:
 		isStatsComponentValidated = cost.validateStatsComponent(statsComponent) if statsComponent else false
+		if not isStatsComponentValidated:
+			var bubble: GameplayResourceBubble = GameplayResourceBubble.create(self.cost.costStat, " LOW", interactorEntity)
+			bubble.modulate = Color.RED
+			# TBD: bubble.ui.label.label_settings.outline_size = 3
+			Animations.blinkNode(bubble)
 	else: # If there is no cost, any offer is valid!
 		isStatsComponentValidated = true
 
