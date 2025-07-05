@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbqmycxuwn5qb"]
+
+[ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="1_toe87"]
+[ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="2_uxaai"]
+
+[node name="CollectibleEntity" groups=["collectibles"] instance=ExtResource("1_toe87")]
+
+[node name="CollectibleComponent" parent="." index="0" instance=ExtResource("2_uxaai")]
