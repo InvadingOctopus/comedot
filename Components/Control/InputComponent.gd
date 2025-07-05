@@ -105,7 +105,7 @@ var movementDirection:			Vector2: ## The primary movmeent input from the combine
 				didChangeHorizontalDirection.emit()
 
 			if signf(previousMovementDirection.y) != signf(movementDirection.y):
-				if debugMode: printDebug(str("didChangeVerticalDirection: ", previousMovementDirection.y, " → ", movementDirection.y))
+				if debugMode: printDebug(str("didChangeVerticalDirection: ",   previousMovementDirection.y, " → ", movementDirection.y))
 				didChangeVerticalDirection.emit()
 
 var lastNonzeroHorizontalInput:	float  ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
@@ -113,13 +113,13 @@ var horizontalInput:			float: ## The primary X axis. Includes the Left Joystick 
 	set(newValue):
 		if newValue != horizontalInput:
 			horizontalInput = newValue
-			if not is_zero_approx(horizontalInput): lastNonzeroHorizontalInput = horizontalInput
+			if not is_zero_approx(horizontalInput):	lastNonzeroHorizontalInput = horizontalInput
 
 var lastNonzeroVerticalInput:	float  ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
 var verticalInput:	 			float: ## The primary Y axis. Includes the Left Joystick & the D-pad.
 	set(newValue):
-		if newValue != horizontalInput:
-			horizontalInput = newValue
+		if newValue != verticalInput:
+			verticalInput = newValue
 			if not is_zero_approx(verticalInput):	lastNonzeroVerticalInput   = verticalInput
 	
 var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming in dual-stick shoot-em-ups etc.
