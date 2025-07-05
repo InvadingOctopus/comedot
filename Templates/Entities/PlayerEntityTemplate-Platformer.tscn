@@ -171,7 +171,7 @@ max = 10000000
 value = 1337
 name = &"playerScore"
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("body") groups=["entities", "players"]]
+[node name="Player-Platformer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in a platformer game."
 z_index = 10
 collision_layer = 6
@@ -179,6 +179,7 @@ collision_mask = 126
 floor_constant_speed = true
 platform_on_leave = 2
 script = ExtResource("1_sfh8g")
+sprite = NodePath("AnimatedSprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 

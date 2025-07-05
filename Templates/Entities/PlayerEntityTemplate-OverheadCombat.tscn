@@ -27,6 +27,7 @@ value = 100
 name = &"ammo"
 
 [node name="Player-OverheadCombat" instance=ExtResource("1_mkdep")]
+editor_description = "A template for the player character in an \"overhead\" or \"top-down\" view game with combat functionality."
 
 [node name="FactionComponent" parent="." index="5" instance=ExtResource("2_02hnx")]
 factions = 2

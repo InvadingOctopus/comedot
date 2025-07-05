@@ -14,13 +14,16 @@ region = Rect2(560, 224, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 size = Vector2(15, 15)
 
-[node name="Player-Overhead" type="CharacterBody2D" groups=["entities", "players"]]
+[node name="Player-Overhead" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+editor_description = "A template for the player character in an \"overhead\" or \"top-down\" view game."
 collision_layer = 6
-collision_mask = 120
+collision_mask = 126
 motion_mode = 1
 wall_min_slide_angle = 0.0
 platform_on_leave = 2
 script = ExtResource("1_gtqja")
+sprite = NodePath("Sprite2D")
+body = NodePath(".")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
@@ -34,7 +37,8 @@ shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="OverheadPhysicsComponent" parent="." instance=ExtResource("3_3awaj")]
 
-[node name="CharacterBodyComponent" parent="." instance=ExtResource("4_4iijy")]
+[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("4_4iijy")]
+body = NodePath("..")
 shouldResetVelocityIfZeroMotion = true
 
 [node name="InputComponent" parent="." instance=ExtResource("6_rwi73")]
