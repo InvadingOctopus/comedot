@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://bhhvuw6ff350c"]
+
+[ext_resource type="PackedScene" uid="uid://c5yo4fioiy4a0" path="res://Entities/Nodes/CharacterBodyEntity.tscn" id="1_22fjn"]
+[ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="2_ib10f"]
+[ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="3_vb4ic"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_4mew3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_22fjn"]
+resource_local_to_scene = true
+size = Vector2(16, 16)
+
+[node name="Player" groups=["players"] instance=ExtResource("1_22fjn")]
+editor_description = "A basic template for a player character. Needs a sprite & additional components to be functional, such as PlatformerPhysicsComponent. See other templates for more features."
+collision_layer = 6
+collision_mask = 126
+script = ExtResource("2_ib10f")
+
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_22fjn")
+
+[node name="CameraComponent" parent="." index="1" instance=ExtResource("3_vb4ic")]
+
+[node name="InputComponent" parent="." index="3" instance=ExtResource("6_4mew3")]
