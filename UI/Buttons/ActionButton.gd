@@ -72,7 +72,7 @@ func updateCooldown() -> void:
 	cooldownBar.max_value = action.cooldown
 	cooldownBar.value	= action.cooldownRemaining if isInCooldown else 0.0 # Snap to 0 to avoid float funkery
 	cooldownBar.visible	= isInCooldown
-	self.disabled		= isInCooldown
+	self.disabled		= isInCooldown or action.usesRemaining <= 0 # Allow 0.1 uses :')
 	self.set_process(isInCooldown) # PERFORMANCE: Update per-frame only when needed
 
 
