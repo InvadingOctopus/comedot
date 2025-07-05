@@ -60,7 +60,7 @@ func _ready() -> void:
 	%PropertiesLabel.self_modulate = self.randomDebugColor # Differentiate from other DebugComponents
 	updateLabelsVisibility()
 	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
-	
+
 	if not isEnabled: return
 
 	entityLabel.text = parentEntity.name
@@ -77,6 +77,9 @@ func convertPathsToAbsolute(relativePaths: Array[NodePath]) -> Array[NodePath]:
 	var absolutePaths:	Array[NodePath]
 
 	for relativePath: NodePath in relativePaths:
+		if not self.get_node(relativePath):
+			printWarning(str("Invalid path: ", relativePath))
+			continue
 		absolutePath = Tools.convertRelativeNodePathToAbsolute(self, relativePath)
 		if debugMode: printDebug(str("convertPathsToAbsolute() relativePath: ", relativePath, " → ", absolutePath))
 		absolutePaths.append(absolutePath)
