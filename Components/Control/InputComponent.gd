@@ -100,27 +100,27 @@ var movementDirection:			Vector2: ## The primary movmeent input from the combine
 			if lastInputEvent and not lastInputEvent.is_echo(): previousMovementDirection = movementDirection # Check for `lastInputEvent` in case some other component is directly modifying this property for the first time.
 			movementDirection = newValue
 
-			if signf(previousMovementDirection.x) != signf(movementDirection.x):
-				if debugMode: printDebug(str("didChangeHorizontalDirection: ", previousMovementDirection.x, " → ", movementDirection.x))
-				didChangeHorizontalDirection.emit()
-
-			if signf(previousMovementDirection.y) != signf(movementDirection.y):
-				if debugMode: printDebug(str("didChangeVerticalDirection: ",   previousMovementDirection.y, " → ", movementDirection.y))
-				didChangeVerticalDirection.emit()
-
 var lastNonzeroHorizontalInput:	float  ## The last NON-ZERO [member horizontalInput] received. May be used to determine where a character should be facing etc.
 var horizontalInput:			float: ## The primary X axis. Includes the Left Joystick & the D-pad.
 	set(newValue):
 		if newValue != horizontalInput:
 			horizontalInput = newValue
-			if not is_zero_approx(horizontalInput):	lastNonzeroHorizontalInput = horizontalInput
+			if not is_zero_approx(horizontalInput):
+				if signf(lastNonzeroHorizontalInput) != signf(horizontalInput): # NOTE: Emit signals ONLY IF the direction CHANGES, not when movement STOPS.
+					if debugMode: printDebug(str("didChangeHorizontalDirection: ", lastNonzeroHorizontalInput, " → ", horizontalInput))
+					didChangeHorizontalDirection.emit()
+				lastNonzeroHorizontalInput = horizontalInput
 
 var lastNonzeroVerticalInput:	float  ## The last NON-ZERO [member verticalInput] received. May be used to determine where a character should be facing etc.
 var verticalInput:	 			float: ## The primary Y axis. Includes the Left Joystick & the D-pad.
 	set(newValue):
 		if newValue != verticalInput:
 			verticalInput = newValue
-			if not is_zero_approx(verticalInput):	lastNonzeroVerticalInput   = verticalInput
+			if not is_zero_approx(verticalInput):
+				if signf(lastNonzeroVerticalInput) != signf(verticalInput):  # NOTE: Emit signals ONLY IF the direction CHANGES, not when movement STOPS.
+					if debugMode: printDebug(str("didChangeVerticalDirection: ",   lastNonzeroVerticalInput, " → ", verticalInput))
+					didChangeVerticalDirection.emit()
+				lastNonzeroVerticalInput = verticalInput
 	
 var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming in dual-stick shoot-em-ups etc.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
@@ -157,11 +157,13 @@ signal didUpdateInputActionsList(event: InputEvent)
 ## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
 signal didProcessInput(event: InputEvent)
 
-## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the X axis, signifying a change/flip in direction from right ↔ left.
+## Emitted when [member horizontalInput] and [member lastNonzeroHorizontalInput] have an OPPOSITE SIGN (positive/negative), signifying a flip between right ↔ left.
+## 0 input is ignored, i.e. when movement stops but the direction doesn't change.
 ## May be used for sprite flipping and other animations etc.
 signal didChangeHorizontalDirection
 
-## Emitted when [member movementDirection] and [member previousMovementDirection] have a different SIGN (positive/negative) on the Y axis, signifying a change/flip in direction from up ↔ down.
+## Emitted when [member verticalInput] and [member lastNonzeroVerticalInput] have an OPPOSITE SIGN (positive/negative), signifying a flip between up ↔ down.
+## 0 input is ignored, i.e. when movement stops but the direction doesn't change.
 ## May be used for sprite flipping and other animations etc.
 signal didChangeVerticalDirection
 
