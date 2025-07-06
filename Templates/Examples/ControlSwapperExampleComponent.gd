@@ -39,7 +39,7 @@ func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	else:
 		parentEntity.removeComponents([OverheadPhysicsComponent]) # Types
 		parentEntity.createNewComponents([PlatformerPhysicsComponent, JumpComponent]) # Instances
-		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so PlatformerControlComponent can control it each frame
+		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so other components may control it
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 
-	parentEntity.move_child(coComponents.CharacterBodyComponent, -1) # Put last so other components can control it each frame
+	parentEntity.move_child(coComponents.CharacterBodyComponent, -1) # Put last so other components may control it
