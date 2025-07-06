@@ -9,7 +9,9 @@ extends InteractionComponent
 
 
 #region Parameters
+const cooldownOnFailure: float = 0.5
 @export var cost: StatCost ## The [Stat] cost.
+@export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed [Payload] (but not on insufficient [member cost] payment), to prevent UI/network spamming etc.
 #endregion
 
 
@@ -84,19 +86,38 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cost: ", cost, ", cooldown: ", cooldownTimer.time_left))
 	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false
 
+	# NOTE: DESIGN: AWESOME: Sometimes there may be interactions that fail, such as a [StatModifierPayload] skipping a [Stat] that is already maxed out.
+	# But we cannot know the `result` of a Payload before it executes.
+	# In that case, the Stat cost must be refunded.
+
 	var statsComponent: StatsComponent = interactorEntity.getComponent(StatsComponent) as StatsComponent
-	var didPayCost: bool
+	var didPayCost:  bool
+	var paymentStat: Stat
 
 	if self.cost:
-		didPayCost = cost.deductCostFromStat(cost.getPaymentStatFromStatsComponent(statsComponent)) if statsComponent else false
+		paymentStat = cost.getPaymentStatFromStatsComponent(statsComponent)
+		# NOTE: DESIGN: We have to deduct the [Stat] before executing the Payload, in case the Payload depends on the actual value of the [Stat],
+		# so we CANNOT just proxy the cost and only modify the [Stat] if the Payload's result is a success. :')
+		# TODO: FIXME: Superfluous [StatsVisualComponent] animation :')
+		didPayCost = cost.deductCostFromStat(paymentStat) if statsComponent else false
 	else: # If there is no cost, any offer is valid!
 		didPayCost = true
 
 	if didPayCost:
+		var paidCost:	int = cost.cost
 		var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
-		if  result: cooldownTimer.start()
+
+		if  Tools.checkResult(result):
+			cooldownTimer.start()
+
+		elif paymentStat: # Refund the cost if the interaction failed
+			if debugMode: printDebug(str("Payload: ", payload, ", result: ", result, " failed; refunding ", paidCost, " → ", paymentStat.logName))
+			paymentStat.value += paidCost
+			if shouldCooldownOnFailure: cooldownTimer.start(cooldownOnFailure)
+
 		updateLabel()
 		return result
-	else: return false
+	else:
+		return false
 
 #endregion
