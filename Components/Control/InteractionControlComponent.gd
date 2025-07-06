@@ -10,12 +10,16 @@ extends CooldownComponent
 
 #region Parameters
 
+const cooldownOnFailure: float = 0.5
+
 ## The limit of [InteractionComponent]s in range that may be interacted with in a single interaction.
 @export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
 @export var inputEventName: StringName = GlobalInput.Actions.interact
+
+@export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -93,6 +97,7 @@ func updateIndicator() -> void:
 
 
 func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or _input()?
+	# TBD: Use InputComponent?
 	if not isEnabled or not hasCooldownCompleted or not haveInteracionsInRange: return
 
 	if Input.is_action_just_pressed(inputEventName):
@@ -122,11 +127,11 @@ func interact() -> int:
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
 			if Tools.checkResult(result): successes += 1
 			self.didPerformInteraction.emit(result)
-			# TBD: Check interaction success?
 			
 			if count >= maximumSimultaneousInteractions: break
 
 	if successes > 0: startCooldown()
+	elif shouldCooldownOnFailure: startCooldown(cooldownOnFailure) # NOTE: Add a SHORT cooldown on a failed interaction, to prevent UI/network spamming etc.
 	return successes
 
 
