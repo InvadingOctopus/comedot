@@ -8,12 +8,14 @@ resource_local_to_scene = true
 size = Vector2(16, 16)
 
 [node name="CollectibleStatComponent" instance=ExtResource("1_m4051")]
+collision_mask = 2048
 script = ExtResource("1_1po3f")
 stat = null
 statModifierMinimum = 1
 statModifierMaximum = 1
 shouldDenyIfStatMax = true
 shouldEmitBubble = true
+shouldEmitBubbleIfMax = true
 shouldColorBubble = true
 shouldAppendStatName = true
 previouslyDeniedCollector = null
