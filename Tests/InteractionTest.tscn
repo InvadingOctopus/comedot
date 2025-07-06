@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://csiafxhl1plmi"]
+[gd_scene load_steps=23 format=3 uid="uid://csiafxhl1plmi"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16kqk"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_aydxj"]
@@ -8,12 +8,16 @@
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="6_u3x77"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_c0i8c"]
 [ext_resource type="PackedScene" uid="uid://1ly7l0r0lbi2" path="res://Components/Visual/StatsVisualComponent.tscn" id="8_n8u5t"]
+[ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="9_bslwp"]
 [ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="9_vpvxn"]
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="10_hevv5"]
 [ext_resource type="Script" uid="uid://3gmi65j17bkt" path="res://Resources/Payloads/StatModifierPayload.gd" id="11_cmk47"]
 [ext_resource type="PackedScene" uid="uid://ctb31yeqt3dae" path="res://Components/Objects/InteractionWithCostComponent.tscn" id="12_johh5"]
 [ext_resource type="Script" uid="uid://dj5n8s8rxgypa" path="res://Resources/StatCost.gd" id="13_16kqk"]
 [ext_resource type="Script" uid="uid://etxev52wl7c8" path="res://UI/Lists/StatsList.gd" id="14_facn4"]
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="14_su6gy"]
+[ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="15_bslwp"]
+[ext_resource type="PackedScene" uid="uid://nd3rpg4n6351" path="res://Components/Objects/CollectibleStatComponent.tscn" id="16_u3x77"]
 
 [sub_resource type="Resource" id="Resource_0gg6p"]
 script = ExtResource("11_cmk47")
@@ -49,6 +53,9 @@ script = ExtResource("1_16kqk")
 
 [node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_aydxj")]
 
+[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_su6gy")]
+stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
+
 [node name="InteractionControlComponent" parent="PlayerEntityTemplate-Overhead" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("3_8wl3b")]
 interactionIndicator = NodePath("Label")
 debugMode = true
@@ -62,10 +69,9 @@ offset_bottom = -16.0
 text = "Interactor"
 horizontal_alignment = 1
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_su6gy")]
-stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
-
 [node name="StatsVisualComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("8_n8u5t")]
+
+[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("9_bslwp")]
 
 [node name="ManaPot" parent="." instance=ExtResource("9_vpvxn")]
 position = Vector2(32, 96)
@@ -96,7 +102,10 @@ cost = SubResource("Resource_16kqk")
 payload = SubResource("Resource_j7vxj")
 interactionIndicator = NodePath("Label")
 labelText = "-50 Mana to +500 Gold"
+shouldCheckGrandparentsForEntity = false
+allowNonEntityParent = false
 debugMode = true
+debugModeTrace = false
 
 [node name="CooldownTimer" parent="GoldPot/InteractionWithCostComponent" index="1"]
 wait_time = 5.0
@@ -131,6 +140,36 @@ offset_right = -8.0
 offset_bottom = -16.0
 text = "-???? All Stats"
 horizontal_alignment = 1
+
+[node name="CollectibleEntity1" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
+editor_description = "A Sprite2D with the Entity script."
+modulate = Color(0.5, 1, 0, 1)
+position = Vector2(-96, 96)
+texture = ExtResource("14_su6gy")
+region_enabled = true
+region_rect = Rect2(544, 288, 16, 16)
+script = ExtResource("15_bslwp")
+sprite = NodePath(".")
+metadata/_edit_group_ = true
+
+[node name="CollectibleStatComponent" parent="CollectibleEntity1" instance=ExtResource("16_u3x77")]
+stat = ExtResource("6_u3x77")
+statModifierMaximum = 100
+
+[node name="CollectibleEntity2" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
+editor_description = "A Sprite2D with the Entity script."
+modulate = Color(0.5, 1, 0, 1)
+position = Vector2(288, 96)
+texture = ExtResource("14_su6gy")
+region_enabled = true
+region_rect = Rect2(544, 288, 16, 16)
+script = ExtResource("15_bslwp")
+sprite = NodePath(".")
+metadata/_edit_group_ = true
+
+[node name="CollectibleStatComponent" parent="CollectibleEntity2" instance=ExtResource("16_u3x77")]
+stat = ExtResource("6_u3x77")
+statModifierMaximum = 100
 
 [node name="UI" type="CanvasLayer" parent="."]
 
