@@ -172,8 +172,8 @@ func onSelf_didDismount(previousRider: Entity) -> void:
 
 	# Disconnect sprite flips
 	self.riderSprite = null
-	if self.coComponents.PlatformerControlComponent:
-		Tools.disconnectSignal(self.coComponents.PlatformerControlComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
+	if self.coComponents.InputComponent:
+		Tools.disconnectSignal(self.coComponents.InputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
 
 	# Toggle components on rider & mount
 	if not componentsToDisableOnRider.is_empty():
