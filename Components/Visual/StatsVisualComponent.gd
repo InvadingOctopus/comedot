@@ -1,6 +1,7 @@
 ## Emits [TextBubble]s and displays other UI over the Entity whenever one of the chosen [Stat]s changes in value.
 ## NOTE: The visuals are displayed at the position of the component, not the entity, so they may be offset from the entity's position.
 ## NOTE: The bubble is emitted from COLLECTOR Entity, NOT the collectible item. To display [Stat]-related bubbles from collectibles, use [CollectibleStatComponent].
+## TIP:  To suppress indicators for specific [Stat]s, use [member Stat.shouldSkipEmittingNextChange], as done by [InteractionWithCostComponent] in case of refunds if a [Payload] fails.
 
 class_name StatsVisualComponent
 extends Component
@@ -11,14 +12,14 @@ extends Component
 
 
 #region Parameters
-@export var isEnabled: bool = true
+@export var isEnabled:				 bool = true
 @export_group("Stats")
-@export var statsToMonitor: Array[Stat]
-@export var statsToExclude: Array[Stat]
+@export var statsToMonitor:			 Array[Stat]
+@export var statsToExclude:			 Array[Stat]
 @export var shouldCopyFromStatsComponent: bool = true # If `true` then [member statsToMonitor] will include the Stats from an [StatsComponent], if any.
 @export_group("Visual")
 @export var shouldAppendDisplayName: bool = false
-@export var shouldColorBubble: bool = true
+@export var shouldColorBubble:		 bool = true
 #endregion
 
 

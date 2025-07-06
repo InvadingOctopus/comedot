@@ -44,6 +44,13 @@ extends GameplayResourceBase
 #endregion
 
 
+#region Stat
+## If `true` then the next SINGLE [signal Resource.changed] signal is skipped ONCE.
+## EXAMPLE USAGE: [InteractionWithCostComponent] uses this to suppress [StatsVisualComponent] animations in case of a refund if a [Payload] fails.
+var shouldSkipEmittingNextChange: bool = false
+#endregion
+
+
 #region Value Getter/Setter
 
 ## Returns the [member value]. This method may be overridden in a subclass such as [StatWithModifiers] to provide a dynamically modifiable value i.e via gameplay buffs/debuffs etc.
@@ -68,7 +75,8 @@ func setValue(newValue: int) -> void:
 		# Signals
 		# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
 
-		emit_changed()
+		if not shouldSkipEmittingNextChange:  emit_changed()
+		else:  shouldSkipEmittingNextChange = false
 
 		# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
 

@@ -98,7 +98,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		paymentStat = cost.getPaymentStatFromStatsComponent(statsComponent)
 		# NOTE: DESIGN: We have to deduct the [Stat] before executing the Payload, in case the Payload depends on the actual value of the [Stat],
 		# so we CANNOT just proxy the cost and only modify the [Stat] if the Payload's result is a success. :')
-		# TODO: FIXME: Superfluous [StatsVisualComponent] animation :')
+		paymentStat.shouldSkipEmittingNextChange = true # Suppress superfluous [StatsVisualComponent] animations etc. in case there is a refund later.
 		didPayCost = cost.deductCostFromStat(paymentStat) if statsComponent else false
 	else: # If there is no cost, any offer is valid!
 		didPayCost = true
@@ -108,10 +108,12 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
 
 		if  Tools.checkResult(result):
+			paymentStat.emit_changed() # In case we skipped the previous deduction :)
 			cooldownTimer.start()
 
 		elif paymentStat: # Refund the cost if the interaction failed
 			if debugMode: printDebug(str("Payload: ", payload, ", result: ", result, " failed; refunding ", paidCost, " → ", paymentStat.logName))
+			paymentStat.shouldSkipEmittingNextChange = true # Suppress superfluous [StatsVisualComponent] animations etc.
 			paymentStat.value += paidCost
 			if shouldCooldownOnFailure: cooldownTimer.start(cooldownOnFailure)
 
