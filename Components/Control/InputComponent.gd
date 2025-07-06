@@ -20,6 +20,7 @@ extends Component
 		if newValue != isEnabled:
 			isEnabled = newValue
 			self.setProcess()
+			if not isEnabled: resetState()
 
 ## If `false` then system input events are not processed,
 ## but this component may still be manually modified and used by other components, such as AI agents or demo scripts.
@@ -311,6 +312,22 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 
 
 #region Modification
+
+## Sets all properties to 0
+## NOTE: EXCEPT the "should" flags: [shouldSkipNextEvent], [member shouldSuppressMouseMotion]
+func resetState() -> void: 
+	inputActionsPressed.clear()
+	previousMovementDirection	= Vector2.ZERO
+	movementDirection			= Vector2.ZERO
+	lastNonzeroHorizontalInput	= 0
+	horizontalInput				= 0
+	lastNonzeroVerticalInput	= 0
+	verticalInput				= 0
+	aimDirection				= Vector2.ZERO
+	turnInput					= 0
+	thrustInput					= 0
+	lastInputEvent				= null
+
 
 ## Directly modifies the [member movementDirection], applies scaling, and updates [member horizontalInput] & [member verticalInput] accordingly.
 func setMovementDirection(newDirection: Vector2, scaleOverride: Vector2 = self.movementDirectionScale) -> void:
