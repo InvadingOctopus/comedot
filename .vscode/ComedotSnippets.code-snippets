@@ -37,9 +37,40 @@
 		"prefix": "ready",
 		"body": [
 			"func _ready() -> void:",
-			"\t${1:pass}$0"
+			"\t${1:pass}",
+			"$0"
 		],
 		"description": "A Node's _ready() method."
+	},
+
+	"Process Method": {
+		"prefix": "process",
+		"body": [
+			"func _process(delta: float) -> void:",
+			"\t${1|pass,if not isEnabled: return|}",
+			"$0"
+		],
+		"description": "A Node's per-frame update method."
+	},
+
+	"Physics Process Method": {
+		"prefix": ["physicsprocess", "processphysics"],
+		"body": [
+			"func _physics_process(delta: float) -> void:",
+			"\t${1|pass,if not isEnabled: return|}",
+			"$0"
+		],
+		"description": "A Node's per-frame physics update method."
+	},
+
+	"Input Method": {
+		"prefix": ["input", "unhandledinput"],
+		"body": [
+			"func ${1|_input,_unhandled_input|}(event: InputEvent) -> void:",
+			"\t${2:if not isEnabled or event is not ${3:InputEventAction}: return}",
+			"$0"
+		],
+		"description": "A Node's input handling method."
 	},
 
 	"Void": {
