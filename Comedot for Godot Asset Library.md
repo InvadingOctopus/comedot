@@ -32,8 +32,8 @@ Commit URL:		d928eee234e916c0da577fac6375235a2023aa89 2025-07-06
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		https://i.imgur.com/aW0MHRu.png Logo
-Screenshot 1:	https://i.imgur.com/j5f2xna.png Components Dock
-Screenshot 2:	https://i.imgur.com/8yMMRPR.png Components Tree Example
+Screenshot 1:	https://i.imgur.com/bwv00SO.png Components Dock
+Screenshot 2:	https://i.imgur.com/mQMtIAK.png Components Tree Example
 Screenshot 3:	https://i.imgur.com/7XqChTP.png Main Menu
 Screenshot 4:	https://i.imgur.com/eiyfQ3h.png Input Map
 Screenshot 5:	https://i.imgur.com/nWJXuiX.png Pause
