@@ -94,7 +94,7 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 	var targetingComponent: ActionTargetingComponentBase = componentScene.instantiate()
 
 	if not targetingComponent:
-		printWarning(str("Cannot instantiate an instance of ActionTargetingComponentBase: ", targetingComponentPath))
+		printWarning(str("Cannot instantiate a subclass of ActionTargetingComponentBase: ", targetingComponentPath))
 		return null
 
 	targetingComponent.action = actionToPerform
