@@ -2,7 +2,7 @@
 
 ## Major
 
-- [ ] Standard architecture for game environment state and "current run" state
+- [ ] Standard architecture for game environment state and "current run/campaign" state
 
 - [ ] Save/Load ...oh my godot
 
@@ -17,7 +17,7 @@
 
 ## Done
 
-- [?] Pathfinding/Navigation Components
+- [x] Pathfinding/Navigation Components
 - [x] Player Settings
 - [x] Random populating Area2D
 - [x] Add `groups` parameter for node spawning functions
