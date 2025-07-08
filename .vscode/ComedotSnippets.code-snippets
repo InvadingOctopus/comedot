@@ -89,7 +89,7 @@
 	},
 
 	"Export Range": {
-		"prefix": ["@export", "export"],
+		"prefix": ["@exportrange", "exportrange"],
 		"body": ["@export_range(${4:0.0}, ${5:100.0}, ${6:10.0}) var ${1:speed}: ${2:float} = ${3:42.0}"],
 		"description": "An export parameter with a range."
 	},
