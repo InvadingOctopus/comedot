@@ -112,4 +112,4 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 [pew-pew-plants]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
 [debug-charts]: https://i.imgur.com/xEqbXHs.png "Debug Chart Windows"
-[comedock]: https://i.imgur.com/j5f2xna.png "Godot Dock Plugin"
+[comedock]: https://github.com/user-attachments/assets/1a4e1d4f-9ae0-4d24-b6eb-29a976311d0f "Godot Dock Plugin"
