@@ -18,9 +18,9 @@ extends StatDependentResourceBase
 @export var maximumUses:	int: ## The number of times this Action may be performed, if [member hasFiniteUses]. Setting this property resets [member usesRemaining].
 	set(newValue):
 		if newValue != maximumUses:
-			if debugMode: Debug.printChange("maximumUses", maximumUses, newValue)
+			if debugMode: Debug.printChange("maximumUses",   maximumUses,   newValue)
 			if debugMode: Debug.printChange("usesRemaining", usesRemaining, newValue)
-			maximumUses = newValue
+			maximumUses   = newValue
 			usesRemaining = maximumUses # DUMBDOT: Set usesRemaining here because [Resource]s don't have a _ready() :(
 
 @export_range(0, 6000, 0.1) var cooldown: float = 0 ## The time in seconds (or fraction of a second) to wait before this Action may be used again.
@@ -76,7 +76,7 @@ var isInCooldown: bool:
 signal didRequestTarget(source: Entity)
 
 signal didDecreaseUses ## Emitted when [member usesRemaining] decreases.
-signal didDepleteUses ## Emitted if [member hasFiniteUses] and [member usesRemaining] goes below 1
+signal didDepleteUses  ## Emitted if [member hasFiniteUses] and [member usesRemaining] goes below 1
 
 signal didStartCooldown
 signal didFinishCooldown

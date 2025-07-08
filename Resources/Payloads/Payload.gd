@@ -24,7 +24,7 @@ var logName: String: # Subclasses may add more details.
 #region Signals
 @warning_ignore("unused_signal")
 signal willExecute(source: Variant, target: Variant)
-signal didExecute(source: Variant, target: Variant, result: Variant)
+signal didExecute(source:  Variant, target: Variant, result: Variant)
 #endregion
 
 
