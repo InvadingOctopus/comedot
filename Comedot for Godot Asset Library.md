@@ -15,7 +15,9 @@ All-in-one project template & components framework: Basically Nodes but for game
 • Helper functions & debugging tools like realtime charts for monitoring variables.
 • Free-to-use 3rd-party assets for quick prototyping.
 
-This is a work of passion in constant progress! For more deets & the latest version, lookieloo the Develop branch: https://github.com/InvadingOctopus/comedot/tree/develop
+Even if you don't need the template or components, you can copy some of the logic code to use in your own scripts, or just yoink Tools.gd
+
+This is a work of pAsSiOn in constant progress! For more deets & the latest version, lookieloo the Develop branch: https://github.com/InvadingOctopus/comedot/tree/develop
 
 Tilesets: https://kenney.nl/assets/1-bit-pack  
 Font: Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font

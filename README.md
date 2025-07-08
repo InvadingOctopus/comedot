@@ -16,13 +16,13 @@ _Component-based framework and project template for [Godot][godot]_
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
 
-🎖️ The most sprillific feature is components that go beyond basic implementation to make sure gameplay *feels* right, by handling tricky edge-case issues that all games run into sooner or later:
+🎖️ The most sprillific feature is components that go beyond basic implementation to make sure gameplay *feels* right, by handling tricky edge-case issues that all games run into sooner or later, like:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-*And so much more!!*
-
+> [!TIP]
+> 🛠️ Even if you don't need the template or components, you can copy some of the logic code to use in your own scripts, or just yoink [Tools.gd][tools]
 
 > [!WARNING]
 > _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
@@ -102,6 +102,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 [conventions]:	Conventions.md
 [thanks]:		Thanks.md
 [todo]:			ToDo.md
+[tools]:		/Scripts/Tools.gd
 
 [godot]: https://github.com/godotengine/godot "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
