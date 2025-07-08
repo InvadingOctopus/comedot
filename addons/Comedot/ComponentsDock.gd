@@ -101,19 +101,20 @@ var newComponentDialog_parentTreeItem:		TreeItem
 
 #region Dependencies
 
-var plugin: EditorPlugin
+var plugin:		EditorPlugin
 
-var fileSystem: EditorFileSystem:
+var fileSystem:	EditorFileSystem:
 	get:
 		if not fileSystem: fileSystem = EditorInterface.get_resource_filesystem()
 		return fileSystem
 
+var selection:	EditorSelection
 var inspector:  EditorInspector
 
-@onready var componentsTree: Tree = %ComponentsTree
+@onready var componentsTree:			Tree		= %ComponentsTree
 @onready var newComponentDialog: ConfirmationDialog = $NewComponentDialog
-@onready var newComponentNameTextBox: LineEdit = %NewComponentNameTextBox
-@onready var newComponentFolderLabel: Label	   = %NewComponentFolderLabel
+@onready var newComponentNameTextBox:	LineEdit	= %NewComponentNameTextBox
+@onready var newComponentFolderLabel:	Label		= %NewComponentFolderLabel
 
 #endregion
 
@@ -158,9 +159,10 @@ func setupUI() -> void:
 	await get_tree().create_timer(1).timeout
 	buildComponentsTree.call_deferred() # `call_deferred` to reduce lag?
 
-	# Hook up with Inspector Gadget
+	# Hook up with Inspector Gadget & the Selection
 	inspector = EditorInterface.get_inspector()
-	inspector.edited_object_changed.connect(self.onInspector_editedObjectChanged)
+	selection = EditorInterface.get_selection()
+	selection.selection_changed.connect(self.onSelection_selectionChanged)
 
 	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
 
@@ -396,11 +398,9 @@ func onComponentsTree_itemEdited() -> void:
 
 
 ## Called when nodes are selected/unselected in the Scene Editor.
-func onInspector_editedObjectChanged() -> void:
-	var editedObject:	 Object = inspector.get_edited_object()
-	var editedNode:		 Node   = editedObject as Node
-	var editorSelection: EditorSelection = EditorInterface.get_selection()
-	var selectedNodes:	 Array[Node]     = editorSelection.get_selected_nodes()
+func onSelection_selectionChanged() -> void:
+	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
+	var firstNode: Node = selectedNodes.front() if not selectedNodes.is_empty() else null
 	# TBD: Do we need all these variables?
 
 	# Update the entity-related UI
@@ -415,7 +415,7 @@ func onInspector_editedObjectChanged() -> void:
 
 	# Update the component-related UI
 
-	if editedNode is Entity: %HelpLabel.text = str("Double-click a Component from the list to add it to ", editedNode.name)
+	if firstNode is Entity: %HelpLabel.text = str("Double-click a Component from the list to add it to ", firstNode.name)
 	else: %HelpLabel.text = defaultHelpLabelText
 
 
@@ -435,9 +435,8 @@ func reloadPlugin() -> void:
 
 func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if debugMode: printLog("addNewEntity()")
-
-	var editorSelection: EditorSelection = EditorInterface.get_selection()
-	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
+	
+	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
 
 	# TBD: Support adding multiple new Entities to more than 1 selected Node?
 
@@ -485,8 +484,8 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	newEntity.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
 
 	# Select the new Entity in the Editor, so the user can quickly modify it and add Components to it.
-	editorSelection.clear()
-	editorSelection.add_node(newEntity)
+	selection.clear()
+	selection.add_node(newEntity)
 	EditorInterface.edit_node(newEntity)
 	#EditorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
 
@@ -514,8 +513,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	if componentPath.is_empty(): return
 	if debugMode: printLog("addComponentToSelectedNode() " + componentPath)
 
-	var editorSelection: EditorSelection = EditorInterface.get_selection()
-	var selectedNodes:   Array[Node]     = editorSelection.get_selected_nodes()
+	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
 
 	# TBD: Support adding components to more than 1 selected Entity?
 
@@ -547,8 +545,8 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	newComponentNode.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Component is added to the SCENE but not to the Scene Dock TREE.
 
 	# Select the new Component in the Editor, so the user can quickly modify it in the Inspector.
-	editorSelection.clear()
-	editorSelection.add_node(newComponentNode)
+	selection.clear()
+	selection.add_node(newComponentNode)
 	EditorInterface.edit_node(newComponentNode)
 
 	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
