@@ -1,26 +1,29 @@
 ## Extends [TileBasedControlComponent] to do random movement only.
-## Requirements: Same as [TileBasedControlComponent]
+## Requirements: [TileBasedPositionComponent]
 
 class_name TileBasedRandomMovementComponent
 extends TileBasedControlComponent
 
 
 #region Parameters
-## An array of steps to take from randomly on every [signal TImer.timeout] of the [member timer].
+
+## A list of horizontal steps to choose from randomly on every [signal Timer.timeout] of the [member randomStepTimer].
 @export var horizontalMovesSet: Array[int] = [-1, 0, 1]
 
-## An array of steps to take from randomly on every [signal TImer.timeout] of the [member timer].
+## A list of vertical steps to choose from randomly on every [signal Timer.timeout] of the [member randomStepTimer].
 @export var verticalMovesSet: Array[int] = [-1, 0, 1]
 
+## If `true` (default), try random directions for [member maximumTries] times until a vacant [TileMapLayer] cell is found.
 @export var shouldKeepTryingUntilValidMove: bool = true
 
+## If [member shouldKeepTryingUntilValidMove], the number of times to try random directions until a vacant [TileMapLayer] cell is found.
 const maximumTries: int = 10
 
 #endregion
 
 
 #region State
-@onready var stepTimer: Timer = $StepTimer
+@onready var randomStepTimer: Timer = $RandomStepTimer
 #endregion
 
 
@@ -33,24 +36,9 @@ func _ready() -> void:
 	tileBasedPositionComponent.didArriveAtNewCell.connect(self.onTileBasedPositionComponent_didArriveAtNewCell)
 
 
-func _input(_event: InputEvent) -> void:
-	pass # Suppress TileBasedControlComponent
+#region Random Movement
 
-
-func _unhandled_input(_event: InputEvent) -> void:
-	pass # Suppress TileBasedControlComponent
-
-
-func _physics_process(_delta: float) -> void:
-	pass # Suppress TileBasedControlComponent
-
-
-func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
-	if not isEnabled: return
-	pass #stepTimer.start() # Unneeded if Timer is not `one_shot`
-
-
-func onStepTimer_timeout() -> void:
+func onRandomStepTimer_timeout() -> void:
 	if not isEnabled: return
 	moveRandomly()
 
@@ -73,3 +61,26 @@ func moveRandomly() -> void:
 
 func getRandomVector() -> Vector2i:
 	return Vector2i(horizontalMovesSet.pick_random(), verticalMovesSet.pick_random())
+
+#endregion
+
+
+#region Suppress Superclass
+
+func _input(_event: InputEvent) -> void:
+	pass # Suppress TileBasedControlComponent
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+	pass # Suppress TileBasedControlComponent
+
+
+func _physics_process(_delta: float) -> void:
+	pass # Suppress TileBasedControlComponent
+
+#endregion
+
+
+func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
+	if not isEnabled: return
+	pass #randomStepTimer.start() # Unneeded if Timer is not `one_shot`

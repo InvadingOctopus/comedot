@@ -5,11 +5,11 @@
 
 [node name="TileBasedRandomMovementComponent" instance=ExtResource("1_4r12v")]
 script = ExtResource("1_6lv8e")
-horizontalMovesSet = null
-verticalMovesSet = null
-shouldKeepTryingUntilValidMove = null
+horizontalMovesSet = Array[int]([-1, 0, 1])
+verticalMovesSet = Array[int]([-1, 0, 1])
+shouldKeepTryingUntilValidMove = true
 
-[node name="StepTimer" type="Timer" parent="." index="1"]
+[node name="RandomStepTimer" type="Timer" parent="." index="0"]
 autostart = true
 
-[connection signal="timeout" from="StepTimer" to="." method="onStepTimer_timeout"]
+[connection signal="timeout" from="RandomStepTimer" to="." method="onRandomStepTimer_timeout"]
