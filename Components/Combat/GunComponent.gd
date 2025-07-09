@@ -16,11 +16,10 @@ extends CooldownComponent
 
 #region Parameters
 
-## The [Entity] to instantiate a copy of when the Gun shoots.
-@export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
-
-@export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
-@export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue # Don't bother checking for a change
+		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 ## If `true`, the gun fires automatically without any player input.
 @export var autoFire: bool = false
@@ -28,10 +27,18 @@ extends CooldownComponent
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
 @export var pressAgainToShoot: bool = false
 
-## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
-## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
-## @experimental
-@export var shouldAddEntityVelocity: bool = false
+
+@export_group("Ammo")
+
+@export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
+@export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
+@export var ammoDepletedMessage: String = "AMMO DEPLETED" ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
+
+
+@export_group("Bullets")
+
+## The [Entity] to instantiate a copy of when the Gun shoots.
+@export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
 ## Any node such as a [Marker2D] where newly spawned bullets will be placed placed. Bullets will be added as children of the emitter's parent node.
 ## If omitted, this component's internal "BulletEmitter" [Marker2D] node is used by default, and bullets will be added to the entity's parent.
@@ -40,17 +47,14 @@ extends CooldownComponent
 ## The adjusted position in relation to the [member bulletEmitter] where newly spawned bullets are placed. (0,0) is the position of the emitter.
 @export var bulletPositionOffset: Vector2
 
+## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
+## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
+## @experimental
+@export var shouldAddEntityVelocity: bool = false
+
 ## An optional parent node for new bullets.
 ## DEFAULT: If omitted, then bullets are added to the Entity's parent if the [member bulletEmitter] is a child of this [GunComponent], otherwise the emitter's parent node is used.
 @export var bulletParentOverride: Node
-
-## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
-@export var ammoDepletedMessage: String = "AMMO DEPLETED"
-
-@export var isEnabled: bool = true:
-	set(newValue):
-		isEnabled = newValue # Don't bother checking for a change
-		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
