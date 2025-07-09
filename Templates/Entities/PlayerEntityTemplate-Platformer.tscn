@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://bumu6nhses65v"]
+[gd_scene load_steps=34 format=3 uid="uid://bumu6nhses65v"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_sfh8g"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
 [ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="12_4b1vu"]
+[ext_resource type="PackedScene" uid="uid://dtj1e0h73mikf" path="res://Components/Control/MovementFacingComponent.tscn" id="14_b23pp"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="14_usisr"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="16_1q6vm"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="18_swcld"]
@@ -240,6 +241,10 @@ cooldown = 1.0
 visible = false
 
 [node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
+
+[node name="MovementFacingComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_b23pp")]
+nodeToRotate = NodePath("../GunComponent")
+shouldFaceVerticalInput = false
 
 [node name="JumpComponent" parent="." instance=ExtResource("12_4b1vu")]
 
