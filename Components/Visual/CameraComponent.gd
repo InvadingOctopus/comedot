@@ -179,10 +179,8 @@ func _input(event: InputEvent) -> void:
 	# Look Ahead
 	# THANKS: Inspired by optionaldev2876@YouTube https://www.youtube.com/watch?v=Wzrw6_KDMl4
 	if shouldLookAhead and event is InputEventMouseMotion:
-		# Get the unscaled Viewport dimensions
-		var viewport: Rect2 = camera.get_viewport_rect()
-		# Get the mouse position from the center of the screen
-		var target: Vector2 = event.position - (viewport.size * 0.5)
+		var viewport: Rect2 = camera.get_viewport_rect() # Get the unscaled Viewport dimensions
+		var target: Vector2 = event.position - (viewport.size * 0.5) # Get the mouse position from the center of the screen
 
 		if target.length() < lookAheadDeadZone: # Move the camera offset only when the target is far enough from the center.
 			camera.offset = Vector2.ZERO
