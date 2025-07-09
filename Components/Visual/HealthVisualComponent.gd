@@ -73,7 +73,7 @@ func onHealthComponent_healthChanged(difference: int) -> void:
 ## @experimental
 func animate(difference: int) -> void:
 	if difference < 0:
-		Animations.blink(nodeToAnimate, self.blinkCount, self.blinkDuration)
+		Animations.blink(nodeToAnimate, self.blinkCount, self.blinkDuration, true) # initialVisibility, to avoid ending up invisible after the animation finishes
 
 	updateTint() # Always update tint in case we just got healed.
 
