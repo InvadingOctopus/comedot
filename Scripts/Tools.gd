@@ -103,7 +103,7 @@ static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags:
 
 ## Disconnects a [Signal] from a [Callable] only if the connection actually exists, to silence any annoying Godot errors about missing connections (presumably for reference counting).
 static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> void:
-	if sourceSignal.is_connected(targetCallable):
+	if  sourceSignal.is_connected(targetCallable):
 		sourceSignal.disconnect(targetCallable)
 
 
@@ -686,7 +686,7 @@ static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, desi
 	return center - (designSize / 2.0) # Center the size on the viewport
 
 
-static func addRandomDistance(position: Vector2, \
+static func addRandomDistance(position: Vector2,    \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 
