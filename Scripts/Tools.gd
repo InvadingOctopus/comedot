@@ -677,7 +677,7 @@ static func getRandomQuantizedColor() -> Color:
 
 ## Returns the specified "design size" centered on a Node's Viewport.
 ## NOTE: The viewport size may different from the scaled screen/window size.
-static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2i:
+static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2:
 	# TBD: Better name?
 	# The "design size" has to be specified because it's hard to get the actual size, accounting for scaling etc.
 	var viewport: Rect2		= node.get_viewport_rect() # First see what the viewport size is
