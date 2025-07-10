@@ -1,4 +1,4 @@
-## A script called by a [ScriptPayload] when it is executed by an [Action].
+## An example script called by the [ScriptPayload] of a "Look" [Action].
 
 extends GDScript
 

@@ -27,4 +27,5 @@ costStat = ExtResource("1_cvxns")
 cost = 5
 name = &"testZoom"
 displayName = "ZOOM"
+description = "A \"Zoom\" Action example."
 icon = SubResource("AtlasTexture_gap3j")

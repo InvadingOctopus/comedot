@@ -23,4 +23,5 @@ debugMode = true
 usesRemaining = null
 name = &"testLook"
 displayName = "LOOK"
+description = "A \"Look\" Action example."
 icon = SubResource("AtlasTexture_kymal")
