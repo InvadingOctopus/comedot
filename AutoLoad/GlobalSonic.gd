@@ -72,7 +72,7 @@ func createAudioPlayer(
 	audioPlayer.stream = stream
 	audioPlayer.position = position
 
-	sounds.add_child(audioPlayer, true) # force_readable_name
+	sounds.add_child(audioPlayer, self.debugMode) # PERFORMANCE: force_readable_name is slow so use only if debugging
 	audioPlayer.owner = sounds # Necessary for persistence to a [PackedScene] for save/load.
 	audioPlayer.add_to_group(Global.Groups.audio, true) # persistent
 

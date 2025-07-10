@@ -27,6 +27,11 @@ extends Node
 ## `watchList[value].replace("[", "[lb]")`
 @export var watchList: Dictionary[StringName, Variant] = {}
 
+## Affects the `force_readable_name` parameter of [method Node.add_child] at some call sites such as [method Tools.addChildAndSetOwner].
+## If `true`, each child node added dynamically at runtime will have a unique and "readable" name to aid debugging etc.
+## WARNING: PERFORMANCE: `force_readable_name` may be "very slow" according to Godot documentation.
+@export var shouldForceReadableName: bool = OS.is_debug_build()
+
 const customLogEntryScene: PackedScene = preload("res://UI/CustomLogEntryUI.tscn")
 const customLogMaximumEntries: int = 100
 

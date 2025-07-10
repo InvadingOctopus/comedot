@@ -140,7 +140,7 @@ static func findMethodInScript(script: Script, methodName: StringName) -> bool: 
 ## This is necessary for persistence to a [PackedScene] for save/load.
 ## NOTE: Also sets the `force_readable_name` parameter, which may slow performance if used frequently.
 static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TBD: Should `parent` be the 1st argument or 2nd? All global functions operate on the 1st argument, the parent [Node], but this method's name has "child" as the first word, so the `child` should be the 1st argument, right? :')
-	parent.add_child(child, true) # force_readable_name # NOTE: PERFORMANCE: Slower!
+	parent.add_child(child, Debug.shouldForceReadableName) # PERFORMANCE: force_readable_name only if debugging
 	child.owner = parent
 
 
@@ -152,7 +152,7 @@ static func addChildAtNode(child: Node2D, placementNode: Node2D, parent: Node, c
 	child.position = placementNode.position
 	if copyRotation: child.rotation	= placementNode.rotation
 	if copyScale:	 child.scale	= placementNode.scale
-	parent.add_child(child, true) # force_readable_name # NOTE: PERFORMANCE: Slower!
+	parent.add_child(child, Debug.shouldForceReadableName) # PERFORMANCE: force_readable_name only if debugging
 	child.owner = parent
 	return child
 

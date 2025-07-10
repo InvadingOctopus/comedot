@@ -216,7 +216,7 @@ func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 ## The component must not already be a child of another parent node.
 ## This is a convenience method for adding components created and configured in code during runtime.
 func addComponent(component: Component) -> void:
-	self.add_child(component, true) # force_readable_name
+	self.add_child(component, self.debugMode) # PERFORMANCE: force_readable_name is slow so use only if debugging
 	component.owner = self # For persistence in Save/Load
 
 
