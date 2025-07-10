@@ -62,14 +62,18 @@ func connectSignals() -> void:
 # TBD: Should removals skip the parent check?
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if debugMode:
+		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+		emitDebugBubble(str("IN:", areaEntered, "\n", areaEntered.owner), Color.YELLOW)
 	if not isEnabled or not shouldMonitorAreas or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return 
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
-	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+	if debugMode:
+		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+		emitDebugBubble(str("IN:", bodyEntered, "\n", bodyEntered.owner), Color.YELLOW)
 	if not isEnabled or not shouldMonitorBodies or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
 	self.onCollide(bodyEntered)
 	didEnterBody.emit(bodyEntered)
@@ -77,7 +81,9 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 
 ## NOTE: This is NOT affected by [member isEnabled] but IS affected by [member shouldMonitorAreas]
 func onAreaExited(areaExited: Area2D) -> void:
-	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
+	if debugMode:
+		printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
+		emitDebugBubble(str("OUT:", areaExited, "\n", areaExited.owner), Color.ORANGE)
 	if not shouldMonitorAreas or areaExited == self.parentEntity or areaExited.owner == self.parentEntity: return
 	self.onExit(areaExited)
 	didExitArea.emit(areaExited)
@@ -85,7 +91,9 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 ## NOTE: This is NOT affected by [member isEnabled] but IS affected by [member shouldMonitorBodies]
 func onBodyExited(bodyExited: Node2D) -> void:
-	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
+	if debugMode:
+		printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
+		emitDebugBubble(str("OUT:", bodyExited, "\n", bodyExited.owner), Color.ORANGE)
 	if not shouldMonitorBodies or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
 	self.onExit(bodyExited)
 	didExitBody.emit(bodyExited)

@@ -72,7 +72,9 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	or (areaEntered == parentEntity or areaEntered.owner == parentEntity) \
 	or (not groupToInclude.is_empty() and not areaEntered.is_in_group(groupToInclude)): return
 
-	if debugMode: printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+	if debugMode:
+		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+		emitDebugBubble(str("IN:", areaEntered, "\n", areaEntered.owner), Color.YELLOW)
 
 	areasInContact.append(areaEntered)
 	self.onCollide(areaEntered)
@@ -84,7 +86,9 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 	or bodyEntered == parentEntity or bodyEntered.owner == parentEntity \
 	or (not groupToInclude.is_empty() and not bodyEntered.is_in_group(groupToInclude)): return
 
-	if debugMode: printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+	if debugMode:
+		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+		emitDebugBubble(str("IN:", bodyEntered, "\n", bodyEntered.owner), Color.YELLOW)
 
 	bodiesInContact.append(bodyEntered)
 	self.onCollide(bodyEntered)
@@ -95,7 +99,9 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 ## NOTE: [method onExit] & [signal didExitArea] are only called if the exiting area is in [member areasInContact].
 func onAreaExited(areaExited: Area2D) -> void:
 	if not shouldMonitorAreas or not areasInContact.has(areaExited): return
-	if debugMode: printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
+	if debugMode:
+		printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
+		emitDebugBubble(str("OUT:", areaExited, "\n", areaExited.owner), Color.ORANGE)
 
 	areasInContact.erase(areaExited)
 	self.onExit(areaExited)
@@ -106,7 +112,9 @@ func onAreaExited(areaExited: Area2D) -> void:
 ## NOTE: [method onExit] & [signal didExitBodt] are only called if the exiting body is in [member bodiesInContact].
 func onBodyExited(bodyExited: Node2D) -> void:
 	if not shouldMonitorBodies or not bodiesInContact.has(bodyExited): return
-	if debugMode: printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
+	if debugMode:
+		printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
+		emitDebugBubble(str("OUT:", bodyExited, "\n", bodyExited.owner), Color.ORANGE)
 
 	bodiesInContact.erase(bodyExited)
 	self.onExit(bodyExited)
