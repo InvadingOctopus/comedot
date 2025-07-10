@@ -14,8 +14,6 @@ extends Node
 class Actions:
 	# TBD: Rename to "InputAction" or "InputEventName" etc. to disambiguate from Comedot-specific "special/explicit" [Action]s?
 
-	const uiPrefix: StringName = &"ui_" ## The prefix that all Godot built-in UI input action names start with.
-	
 	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
 	const moveLeft		:= &"moveLeft"
 	const moveRight		:= &"moveRight"
@@ -59,6 +57,11 @@ class Actions:
 	const debugWindow	:= &"debugWindow" ## Toggles the Debug Info Window.
 	const debugTest		:= &"debugTest"   ## Activates [TestMode]
 	const debugBreak	:= &"debugBreak"  ## Causes a debugging breakpoint.
+
+	const uiPrefix		:= &"ui_" ## The prefix that all Godot built-in UI input action names start with.
+	const accept		:= &"ui_accept"
+	const cancel		:= &"ui_cancel"
+	const select		:= &"ui_select" ## ALERT: This is Godot's built-in "UI Select" Input Action, which may NOT necessarily be a gamepad's Select button!
 
 	## List of input actions to be excluded from player customization in [InputActionsList] and other control remapping UI.
 	const excludedFromCustomization: Array[StringName] = [
