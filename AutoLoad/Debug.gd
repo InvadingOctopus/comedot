@@ -292,6 +292,20 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 		print_rich(str("[color=", color, "][b]", separator.join(values)))
 
 
+## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
+## TIP: [param logAsTrace] lists recent function calls to assist in tracking what caused the variable to change.
+## Affected by [member shouldPrintDebugLogs]
+func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
+	# TODO: Optional charting? :)
+	if shouldPrintDebugLogs and previousValue != newValue:
+		var string: String = str(previousValue, " → ", newValue)
+		if not logAsTrace: printLog(string, variableName, "dimgray", "gray")
+		else: printTrace([string], variableName, 3)
+		return string
+	else:
+		return ""
+
+
 ## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before the log method was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
@@ -325,18 +339,43 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 		isTraceLogAlternateRow = not isTraceLogAlternateRow
 
 
-## Logs and returns a string showing a variable's previous and new values, IF there is a change and [member shouldPrintDebugLogs]
-## TIP: [param logAsTrace] lists recent function calls to assist in tracking what caused the variable to change.
-## Affected by [member shouldPrintDebugLogs]
-func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
-	# TODO: Optional charting? :)
-	if shouldPrintDebugLogs and previousValue != newValue:
-		var string: String = str(previousValue, " → ", newValue)
-		if not logAsTrace: printLog(string, variableName, "dimgray", "gray")
-		else: printTrace([string], variableName, 3)
-		return string
-	else:
-		return ""
+## Prints a pretty stack dump.
+func printStack(includeGlobalVariables: bool = false, includeMemberVariables: bool = false, includeLocalVariables: bool = true) -> void:
+	var stack: Array[ScriptBacktrace] = Engine.capture_script_backtraces(includeGlobalVariables or includeMemberVariables or includeLocalVariables)
+	const globalVariableColor:	String = "[color=dimgray]"
+	const memberVariableColor:	String = "[color=dimgray]"
+	const localVariableColor:	String = "[color=gray]"
+	const backgroundColor:		String = "[bgcolor=201020]"
+
+	print_rich(str("\n\n", backgroundColor, "[color=white]↦↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000))
+
+	var backtrace: ScriptBacktrace
+	for backtraceIndex in stack.size():
+		backtrace = stack[backtraceIndex]
+		if stack.size() > 1: print(str("Backtrace ", backtraceIndex))
+
+		if includeGlobalVariables:
+			for globalVariableIndex in backtrace.get_global_variable_count():
+				print_rich(str(globalVariableColor, "\t[b]", backtrace.get_global_variable_name(globalVariableIndex), "[/b]:\t", backtrace.get_global_variable_value(globalVariableIndex)))
+
+		# The function calls
+
+		print_rich("\t[color=dimgray]0: Skipping logging call")
+
+		var topColor: String
+		for frameIndex in backtrace.get_frame_count():
+			if frameIndex == 0: continue # Skip this logging function
+			topColor = "[color=FF80FF]" if frameIndex == 1 else "[color=white]"
+
+			print_rich(str("\t", frameIndex, ": ", topColor, backtrace.get_frame_file(frameIndex), " [b]", backtrace.get_frame_function(frameIndex), "[/b]()[/color]\t Line:", backtrace.get_frame_line(frameIndex)))
+
+			if includeLocalVariables:
+				for localVariableIndex in backtrace.get_local_variable_count(frameIndex):
+					print_rich(str(localVariableColor, "\t\t[b]", backtrace.get_local_variable_name(frameIndex, localVariableIndex), "[/b]:\t", backtrace.get_local_variable_value(frameIndex, localVariableIndex)))
+
+			if includeMemberVariables:
+				for memberVariableIndex in backtrace.get_member_variable_count(frameIndex):
+					print_rich(str(memberVariableColor, "\t\t[b]", backtrace.get_member_variable_name(frameIndex, memberVariableIndex), "[/b]:\t", backtrace.get_member_variable_value(frameIndex, memberVariableIndex)))
 
 
 ## Returns a string denoting the script file & function name from the specified [param stackPosition] on the call stack.
