@@ -437,13 +437,15 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 
 ## Emits a [TextBubble] if [member debugMode] or [param ignoreDebugMode].
-func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor, ignoreDebugMode: bool = false) -> void:
+## IMPORTANT: [param emitFromEntity] must be set if the bubble is emitted from a [Node] Component (which has no position) or during a cleanup/"destructor" function,
+## because otherwise the bubble may not be visible!
+func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor, emitFromEntity: bool = not is_instance_of(self, Node2D), ignoreDebugMode: bool = false) -> void:
 	if not ignoreDebugMode and not debugMode: return
 	if textOrObject is String and textOrObject.is_empty(): textOrObject = "\"\""
 
 	@warning_ignore("incompatible_ternary")
 	var bubble: TextBubble = TextBubble.create(str(textOrObject), \
-		self if is_instance_of(self, Node2D) else parentEntity, \
+		parentEntity if emitFromEntity else self, \
 		Vector2([-16, -8, 0, +8, +16].pick_random(), [-8, 0, +8].pick_random())) # Randomize position to reduce overlap
 	bubble.label.label_settings.font_color = color
 	bubble.z_index = 220
