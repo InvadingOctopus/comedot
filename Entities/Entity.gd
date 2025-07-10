@@ -212,7 +212,7 @@ func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 	return foundComponent
 
 
-## Adds an existing [Component] [Node] instance to this entity.
+## Adds an EXISTING [Component] [Node] instance to this entity.
 ## The component must not already be a child of another parent node.
 ## This is a convenience method for adding components created and configured in code during runtime.
 func addComponent(component: Component) -> void:
@@ -229,7 +229,7 @@ func addComponents(componentsToAdd: Array[Component]) -> int:
 	return componentsToAdd.size()
 
 
-## Creates a copy of the specified component TYPE's scene and adds and returns an INSTANCE of it as a child node of this entity.
+## Creates a NEW copy of the specified component TYPE's scene and adds and returns an INSTANCE of it as a child node of this entity.
 ## Shortcut for [method load] + [method PackedScene.instantiate].
 ## ALERT: Some situations, such as adding a new component while the entity is being initialized, may cause the error: "Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead."
 func createNewComponent(type: Script) -> Component:
