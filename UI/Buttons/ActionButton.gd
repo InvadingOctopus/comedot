@@ -72,7 +72,7 @@ func updateCooldown() -> void:
 	cooldownBar.max_value = action.cooldown
 	cooldownBar.value	= action.cooldownRemaining if isInCooldown else 0.0 # Snap to 0 to avoid float funkery
 	cooldownBar.visible	= isInCooldown
-	self.disabled		= isInCooldown or (action.hasFiniteUses and action.usesRemaining <= 0) # Allow 0.1 uses :')
+	self.disabled		= not checkUsability()
 	self.set_process(isInCooldown) # PERFORMANCE: Update per-frame only when needed
 
 
@@ -127,11 +127,11 @@ func onGlobalUI_actionIsChoosingTarget(eventAction: Action, _source: Entity) -> 
 
 
 func onGlobalUI_actionDidChooseTarget(eventAction: Action, _source: Entity, _target: Variant) -> void:
-	if eventAction == self.action: self.disabled = false
+	if eventAction == self.action: self.disabled = not checkUsability()
 
 
 func onGlobalUI_actionDidCancelTarget(eventAction: Action, _source: Entity) -> void:
-	if eventAction == self.action: self.disabled = false
+	if eventAction == self.action: self.disabled = not checkUsability()
 
 
 func _process(_delta: float) -> void:
