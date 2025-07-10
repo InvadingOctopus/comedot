@@ -48,11 +48,30 @@ signal gameDidOver ## Emitted when You Died. NOTE: Multiplayer games must check 
 
 @warning_ignore("unused_signal")
 signal gameWillRestart ## Emitted when the player chooses to restart the game or level etc.
+
 #endregion
 
 
+#region Setup
+
 func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
+
+
+## Instantiates a scene and adds it as a new child node to the GameState AutoLoad, which may act as an additional game-specific global state "manager" script or UI layers etc.
+## @experimental
+func createNode(scenePath: String) -> Node:
+	# TBD: Function name
+	Debug.printDebug("createNode(): " + scenePath, self)
+	var newNode: Node = SceneManager.loadSceneAndAddInstance(scenePath, self)
+	if is_instance_valid(newNode):
+		Debug.printAutoLoadLog("Added GameState node: " + scenePath + " → " + newNode.name)
+		return newNode
+	else:
+		Debug.printError("Unable to create GameState node: " + scenePath, self)
+		return null
+
+#endregion
 
 
 #region Player Management
