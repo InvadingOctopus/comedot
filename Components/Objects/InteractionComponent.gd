@@ -8,6 +8,16 @@ extends Component
 
 #region Parameters
 
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
+		if interactionIndicator: interactionIndicator.visible = isEnabled
+		if  selfAsArea:
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			selfAsArea.set_deferred("monitoring",  isEnabled)
+			selfAsArea.set_deferred("monitorable", isEnabled)
+
 ## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`.
 ## DESIGN: Interactions may succeed even if there is no payload; this allows special [InteractionControlComponent] subclasses to perform specific effects without a payload.
 ## See [Payload] for explanation and available options.
@@ -18,6 +28,9 @@ extends Component
 ## Example: Portals or traps etc.
 ## NOTE: Does not repeat interaction after the cooldown resets.
 @export var automatic: bool = false
+
+
+@export_group("UI")
 
 @export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collisioncontact with an [InteractionControlComponent].
 
@@ -39,26 +52,14 @@ extends Component
 			description = newValue
 			if interactionIndicator is Control: interactionIndicator.tooltip_text = description
 
-@export var isEnabled: bool = true:
-	set(newValue):
-		isEnabled = newValue
-		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
-		if interactionIndicator: interactionIndicator.visible = isEnabled
-		if  selfAsArea:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			selfAsArea.set_deferred("monitoring",  isEnabled)
-			selfAsArea.set_deferred("monitorable", isEnabled)
-
 #endregion
 
 
 #region State
-
 var selfAsArea: Area2D:
 	get:
 		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
 		return selfAsArea
-
 #endregion
 
 

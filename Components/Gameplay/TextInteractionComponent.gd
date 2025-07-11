@@ -1,5 +1,5 @@
 ## Displays and cycles through a list of text strings.
-## May be used for signboards and static NPC dialogues.
+## TIP: May be used for signboards and static NPC dialogues.
 
 class_name TextInteractionComponent
 extends InteractionComponent
