@@ -20,10 +20,12 @@ extends Component
 			self.set_process(isEnabled)
 			self.set_process_input(isEnabled)
 			self.set_process_unhandled_input(isEnabled)
+
 #endregion
 
 
 #region State
+@onready var cursor: Node2D = self.get_node(^".") as Node2D
 var isChoosing: bool
 #endregion
 

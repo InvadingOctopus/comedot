@@ -13,7 +13,7 @@ extends Component
 
 #region Parameters
 ## A subclass of [ActionTargetingComponentBase] to add to the parent [Entity] to present a UI to the player for choosing a target for [Action]s which require a target, such as a "Fireball" spell or a "Talk" command.
-@export_file("*ActionTargeting*Component.tscn") var targetingComponentPath: String = "res://Components/Control/ActionTargetingMouseComponent.tscn" # Exclude the abstract "Base" components.
+@export_file("*ActionTargeting*Component.tscn") var targetingComponentPath: String = "res://Components/Control/ActionTargetingPositionComponent.tscn" # Exclude the abstract "Base" components.
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -65,7 +65,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	# TBD: According to Godot documentation: "For keyboard shortcuts, consider using _shortcut_input() instead, as it is called before this method. Finally, to handle keyboard events, consider using _unhandled_key_input() for performance reasons."
 
 	if not isEnabled or not event.is_action_type() or not event.is_pressed(): return
-	
+
 	if actionsComponent:
 		# See if a keyboard shortcut or gamepad button etc. matches any Action, and execute it
 		var action: Action = actionsComponent.findActionForInputEvent(event)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cuirhqibd34eq"]
+
+[ext_resource type="PackedScene" uid="uid://cksfufru8l0v0" path="res://Components/Control/ActionTargetingCursorComponentBase.tscn" id="1_cyulv"]
+[ext_resource type="Script" uid="uid://dxw3fva07u0wl" path="res://Components/Control/ActionTargetingPositionComponent.gd" id="2_iq2lx"]
+
+[node name="ActionTargetingPositionComponent" instance=ExtResource("1_cyulv")]
+script = ExtResource("2_iq2lx")
+joystickSpeed = 300.0
+maximumDistanceFromEntity = 0.0
