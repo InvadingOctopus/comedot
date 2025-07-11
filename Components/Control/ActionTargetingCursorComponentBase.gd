@@ -67,6 +67,8 @@ func chooseTargetsUnderCursor() -> Array[ActionTargetableComponent]:
 		super.cancelTargetSelection()
 		return []
 
+	self.isChoosing = false # NOTE: This fixes unintended cancellation in _exit_tree() or `NOTIFICATION_UNPARENTED` when this component is removed after a successful selection.
+
 	var chosenTargets: Array[ActionTargetableComponent]
 	for target in self.actionTargetableComponentInContact:
 		self.chooseTarget(target)
