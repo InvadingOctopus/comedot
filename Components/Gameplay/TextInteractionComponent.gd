@@ -35,7 +35,7 @@ func _ready() -> void:
 @warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
 	displayNextText()
-	return self.label
+	return self.labelText
 
 
 ## This function may be called by a [Timer] or other scripts to automate the text display.
@@ -47,12 +47,12 @@ func displayNextText() -> void:
 
 @warning_ignore("unused_parameter")
 func applyTextFromArray(indexOverride: int = self.currentTextIndex) -> void:
-	self.label = self.textStrings[currentTextIndex]
-	
+	self.labelText = self.textStrings[currentTextIndex]
+
 	var labelControl: Label = self.interactionIndicator as Label
 	if labelControl:
 		labelControl.label_settings.font_color = textColors[currentColorIndex]
-	
+
 	if currentTextIndex == textStrings.size() - 1: # The last index
 		didDisplayFinalText.emit()
 
@@ -62,8 +62,7 @@ func incrementIndices() -> void:
 	currentTextIndex += 1
 	if currentTextIndex >= textStrings.size():
 		currentTextIndex = 0
-		
+
 	currentColorIndex += 1
 	if currentColorIndex >= textColors.size():
 		currentColorIndex = 0
-	
