@@ -49,7 +49,7 @@ const animationDuration: float = 0.5 # For hiding/showing
 
 
 #region State
-@onready var selfAsSprite: Sprite2D = self.get_node(^".") as Sprite2D
+@onready var cursor: Sprite2D = self.get_node(^".") as Sprite2D
 @onready var hidingTimer:  Timer = $HidingTimer
 var tween: Tween
 #endregion
@@ -63,8 +63,8 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	selfAsSprite.visible = self.shouldHideOnReady
-	if shouldHideIfNotMoving and selfAsSprite.visible: hidingTimer.start()
+	cursor.visible = self.shouldHideOnReady
+	if shouldHideIfNotMoving and cursor.visible: hidingTimer.start()
 
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
@@ -78,7 +78,7 @@ func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> vo
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and not selfAsSprite.visible or not hidingTimer.is_stopped(): # Halt any ongoing hiding animation
+	if event is InputEventMouseMotion and not cursor.visible or not hidingTimer.is_stopped(): # Halt any ongoing hiding animation
 		self.show()
 
 
@@ -88,33 +88,33 @@ func _process(delta: float) -> void:
 
 		if not inputComponent.aimDirection.is_zero_approx():
 
-			if not selfAsSprite.visible or not hidingTimer.is_stopped(): # Halt any ongoing hiding animation
+			if not cursor.visible or not hidingTimer.is_stopped(): # Halt any ongoing hiding animation
 				self.show()
 
 			if shouldSnapToMaximumDistance:
-				selfAsSprite.position  = inputComponent.aimDirection.snappedf(1.0) * maximumDistanceFromEntity
+				cursor.position  = inputComponent.aimDirection.snappedf(1.0) * maximumDistanceFromEntity
 
 			elif shouldUseAbsolutePosition:
-				selfAsSprite.position  = selfAsSprite.position.move_toward(inputComponent.aimDirection * maximumDistanceFromEntity, speed * delta)
+				cursor.position  = cursor.position.move_toward(inputComponent.aimDirection * maximumDistanceFromEntity, speed * delta)
 
 			else:
-				selfAsSprite.position += inputComponent.aimDirection * self.speed * delta
-				selfAsSprite.global_position += Tools.clampPositionToAnchor(selfAsSprite, parentEntity, self.maximumDistanceFromEntity)
+				cursor.position += inputComponent.aimDirection * self.speed * delta
+				cursor.global_position += Tools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
 
 	# Following the mouse?
 	else:
 		# NOTE: Hide/Show is done in _input() because mouse motion is messy
 
 		if shouldSnapToMouse:
-			selfAsSprite.global_position = selfAsSprite.get_global_mouse_position()
+			cursor.global_position = cursor.get_global_mouse_position()
 		else:
-			selfAsSprite.global_position = selfAsSprite.global_position.move_toward(selfAsSprite.get_global_mouse_position(), speed * delta)
+			cursor.global_position = cursor.global_position.move_toward(cursor.get_global_mouse_position(), speed * delta)
 
-		selfAsSprite.global_position += Tools.clampPositionToAnchor(selfAsSprite, parentEntity, self.maximumDistanceFromEntity)
+		cursor.global_position += Tools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
 
 	self.reset_physics_interpolation() # NOTE: CHECKED: This is necessary otherwise the node will be at an intermediate position for at least 1 frame.
 
-	if nodeToRotate: nodeToRotate.look_at(selfAsSprite.global_position)
+	if nodeToRotate: nodeToRotate.look_at(cursor.global_position)
 
 
 
@@ -128,8 +128,8 @@ func show() -> void:
 	if tween: tween.kill()
 
 	# Just modify the alpha of the current modulate to maintain the tint
-	selfAsSprite.modulate = Color(selfAsSprite.modulate, 1.0)
-	selfAsSprite.visible  = true
+	cursor.modulate = Color(cursor.modulate, 1.0)
+	cursor.visible  = true
 
 	# PERFORMANCE: Start the disappearance countdown immediately, so we don't have to keep rechecking for input
 	if shouldHideIfNotMoving: hidingTimer.start()
@@ -137,11 +137,11 @@ func show() -> void:
 
 func hide() -> void:
 	if tween: tween.kill()
-	tween = selfAsSprite.create_tween()
+	tween = cursor.create_tween()
 
 	# Just modify the alpha of the current modulate to maintain the tint
-	tween.tween_property(selfAsSprite, "modulate", Color(selfAsSprite.modulate, 0), animationDuration)
-	tween.tween_property(selfAsSprite, "visible",  false, 0)
+	tween.tween_property(cursor, "modulate", Color(cursor.modulate, 0), animationDuration)
+	tween.tween_property(cursor, "visible",  false, 0)
 
 
 func onHidingTimer_timeout() -> void:
