@@ -116,7 +116,7 @@ func perform(paymentStat: Stat, source: Entity, target: Entity = null) -> Varian
 	var payloadResult: Variant = payload.execute(source, target)
 
 	# IMPORTANT: Deduct the cost from the Stat only if the payload was successfully executed!
-	if payloadResult: # Must not be `null` and not `false`
+	if Tools.checkResult(payloadResult): # Must not be `null` and not `false` and not an empty collection
 		self.deductCostFromStat(paymentStat) # TBD: Validate even if the `cost` is negative?
 		
 		# Deduct the number of uses

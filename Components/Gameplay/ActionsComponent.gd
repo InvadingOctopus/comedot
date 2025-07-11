@@ -98,14 +98,14 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 		return false
 
 	# TBD: Refund Stat cost if Action fails?
-	
+
 	# Get the Stat to pay the Action's cost with, if any,
 	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
 
 	self.willPerformAction.emit(actionToPerform)
 	var result: Variant = actionToPerform.perform(statToPayWith, self.parentEntity, target)
 
-	if result: # Must not be `null` and not `false`
+	if Tools.checkResult(result): # Must not be `null` and not `false` and not an empty collection
 		self.didPerformAction.emit(actionToPerform, result)
 
 	return result
