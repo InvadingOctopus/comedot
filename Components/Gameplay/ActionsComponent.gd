@@ -92,11 +92,13 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	if actionToPerform.requiresTarget and target == null:
 		if debugMode: printDebug("Missing target")
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity) # To be handled by ActionControlComponent
-		GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity) # This should be emitted here next to `didRequestTarget` as this is the first point where a target is requested, not ActionControlComponent.
+		GlobalUI.actionDidRequestTarget.emit(actionToPerform, self.parentEntity) # This should be emitted here next to `didRequestTarget` as this is the first point where a target is requested, not ActionControlComponent.
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionControlComponent is used, then it is the ActionControlComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
 
+	# TBD: Refund Stat cost if Action fails?
+	
 	# Get the Stat to pay the Action's cost with, if any,
 	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
 
