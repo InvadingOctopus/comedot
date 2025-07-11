@@ -14,8 +14,12 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.isChoosing = isEnabled 
-
+			self.isChoosing = isEnabled
+			# PERFORMANCE: Set once instead of checking on every frame/event
+			# NOTE: WATCHOUT: BUGCHANCE: If other flags in a subclass dictate one of these "process" states, then changing `isEnabled` will not respect those flags.
+			self.set_process(isEnabled)
+			self.set_process_input(isEnabled)
+			self.set_process_unhandled_input(isEnabled)
 #endregion
 
 
@@ -56,8 +60,32 @@ func chooseTarget(target: ActionTargetableComponent) -> Entity:
 		return null # TBD: Should the chosen Entity be returned even if `requestToChoose()` is denied?
 
 
+#region Cancellation
+
 func cancelTargetSelection() -> void:
+	TextBubble.create.call_deferred(str("CANCEL:", self.action.name), parentEntity) # call_deferred() because of Godot error: "Parent node is busy setting up children" when this Component is replaced by another targeting component, e.g. when clicking another Button while we are still choosing.
 	self.isChoosing = false
 	self.didCancel.emit()
 	GlobalUI.actionDidCancelTarget.emit(action, self.parentEntity)
 	self.requestDeletion()
+
+
+func _input(event: InputEvent) -> void:
+	# NOTE: _input() instead of _unhandled_input() because we don't want to be suppressed by Button or other UI click events etc.
+	# NOTE: Do not check `isEnabled`: Cancellation must always be allowed
+	if self.isChoosing and event.is_action(GlobalInput.Actions.cancel) and event.is_action_pressed(GlobalInput.Actions.cancel) and not event.is_echo():
+		self.cancelTargetSelection()
+		self.get_viewport().set_input_as_handled()
+
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_UNPARENTED: if isChoosing: cancelTargetSelection() # Remove selection UI etc. if we're getting forcibly evicted :')
+	# NOTE: FIXED: AVOID: _notification() is called for superclass automatically! Manually calling `super._notification(what)` causes bugs!!
+
+
+func _exit_tree() -> void:
+	if isChoosing: cancelTargetSelection() # Remove selection UI etc. if we're getting forcibly evicted :')
+	super._exit_tree()
+
+#endregion
