@@ -1,55 +1,21 @@
-## A subclass of [InteractionComponent] with a cooldown and a [Stat] cost.
+## A subclass of [InteractionWithCooldownComponent] with a [Stat] cost.
 ## To edit the cooldown [Timer], enable "Editable Children"
 ## TIP: To display text bubbles for [Stat] deduction, use [StatsVisualComponent].
 
 class_name InteractionWithCostComponent
-extends InteractionComponent
+extends InteractionWithCooldownComponent
 
 # DESIGN: Perform Stat-checking in requestToInteract() and deduction in performInteraction() and leave checkInteractionConditions() as a virtual method for game-specific subclassed.
 
 
 #region Parameters
-const cooldownOnFailure: float = 0.5
 @export var cost: StatCost ## The [Stat] cost.
-@export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed [Payload] (but not on insufficient [member cost] payment), to prevent UI/network spamming etc.
 #endregion
-
-
-#region Dependencies
-@onready var cooldownTimer: Timer = $CooldownTimer
-#endregion
-
-
-func _ready() -> void:
-	# NOTE: If our label property is empty, save any existing text as the default so we can restore it after the cooldown is over
-	if interactionIndicator is Label and self.labelText.is_empty():
-		self.labelText = interactionIndicator.text
-
-	super._ready()
-
-
-func updateLabel() -> void:
-	# OVERRIDE: super.updateLabel()
-	if not interactionIndicator: return
-
-	# Just modify `self_modulate` alpha to avoid disrupting any existing `modulate` tints
-	# NOTE: DESIGN: Modifying `visible` is problematic because making it visible onCooldownTimer_timeout() would cause it to reappear even if there is no [InteractionControlComponent] in contact.
-	interactionIndicator.self_modulate = Color(interactionIndicator.self_modulate, 1.0) if is_zero_approx(cooldownTimer.time_left) else Color(interactionIndicator.self_modulate, 0.25)
-
-	if interactionIndicator is Label:
-		if is_zero_approx(cooldownTimer.time_left):
-			if not self.labelText.is_empty(): interactionIndicator.text = self.labelText
-		else:
-			interactionIndicator.text = "COOLDOWN"
-
-
-func onCooldownTimer_timeout() -> void:
-	updateLabel()
 
 
 #region Interaction Interface
 
-## Called by an [InteractionControlComponent].
+## Overrides [InteractionControlComponent].
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
 ## Then this [InteractionWithCostComponent] checks its own conditions (such as whether the player has key to open a door, or the energy to chop a tree).
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:

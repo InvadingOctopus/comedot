@@ -75,13 +75,27 @@ signal didPerformInteraction	(result: Variant)
 func _ready() -> void:
 	# Set the initial state of the indicator
 	if interactionIndicator:
-		updateLabel()
 		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
 		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
+		
+		if interactionIndicator is Label:
+			# NOTE: If our `labelText` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
+			if self.labelText.is_empty(): self.labelText = interactionIndicator.text
+			else: updateLabel() # Otherwise set the UI to our string
+
 	if  selfAsArea: # Apply setter because Godot doesn't on initialization
 		selfAsArea.monitoring  = isEnabled
 		selfAsArea.monitorable = isEnabled
 
+
+## If the [interactionIndicator] is a [Label], display our [member labelText] parameter.
+func updateLabel() -> void:
+	# TBD: Should this be optional?
+	if not self.labelText.is_empty() and interactionIndicator is Label:
+		interactionIndicator.text = self.labelText
+
+
+#region Events
 
 func onArea_entered(area: Area2D) -> void:
 	if not isEnabled: return
@@ -110,12 +124,7 @@ func onArea_exited(area: Area2D) -> void:
 
 	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
 
-
-## If the [interactionIndicator] is a [Label], display our [labelText] parameter.
-func updateLabel() -> void:
-	# TBD: Should this be optional?
-	if not self.labelText.is_empty() and interactionIndicator is Label:
-		interactionIndicator.text = self.labelText
+#endregion
 
 
 #region Interaction Interface
@@ -123,6 +132,7 @@ func updateLabel() -> void:
 ## Called by an [InteractionControlComponent].
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
 ## Then this [InteractionComponent] checks its own conditions (such as whether the player has key to open a door, or an axe to chop a tree).
+## NOTE: If not [member isEnabled] then `false` is returned BUT [signal didDenyInteraction] is NOT emitted; the component is basically dead.
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	if not isEnabled: return false
 
