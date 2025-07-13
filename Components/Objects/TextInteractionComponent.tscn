@@ -11,7 +11,11 @@ textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 0, 1)])
 shouldAnimate = true
 shouldClearBeforeAnimation = true
 animationDurationPerCharacter = 0.05
+shouldSkipInteractorCooldown = true
 interactionIndicator = NodePath("Label")
+
+[node name="CooldownTimer" parent="." index="1"]
+wait_time = 0.2
 
 [node name="Label" type="Label" parent="." index="2"]
 offset_left = -64.0

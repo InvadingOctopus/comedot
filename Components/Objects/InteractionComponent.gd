@@ -29,6 +29,10 @@ extends Component
 ## NOTE: Does not repeat interaction after the cooldown resets.
 @export var automatic: bool = false
 
+## If `true` then [InteractionControlComponent]s will not enter a cooldown when they interact with this object.
+## TIP: Convenient for implementing NPC dialogs with [TextInteractionComponent] etc. where the cooldown is on the NPC's side.
+@export var shouldSkipInteractorCooldown: bool = false
+
 
 @export_group("UI")
 

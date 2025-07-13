@@ -115,9 +115,11 @@ func interact() -> int:
 
 	if not isEnabled or not hasCooldownCompleted: return 0
 
-	var count: int = 0
-	var successes: int = 0
-
+	var count:		int = 0
+	var successes:	int = 0
+	var cooldowns:	int = 0 # The number of InteractionComponent with shouldSkipInteractorCooldown
+	var failureCooldowns: int = 0
+	
 	for interactionComponent in self.interactionsInRange:
 		if interactionComponent.requestToInteract(self.parentEntity, self):
 			count += 1 # TBD: Increase counter at start or end?
@@ -125,13 +127,24 @@ func interact() -> int:
 
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
-			if Tools.checkResult(result): successes += 1
+			
+			if Tools.checkResult(result):
+				successes += 1
+				if not interactionComponent.shouldSkipInteractorCooldown: cooldowns += 1
+			elif not interactionComponent.shouldSkipInteractorCooldown:
+				failureCooldowns += 1
+
 			self.didPerformInteraction.emit(result)
 			
 			if count >= maximumSimultaneousInteractions: break
 
-	if successes > 0: startCooldown()
-	elif shouldCooldownOnFailure: startCooldown(cooldownOnFailure) # NOTE: Add a SHORT cooldown on a failed interaction, to prevent UI/network spamming etc.
+	if debugMode: printDebug(str("successes: ", successes, ", cooldowns: ", cooldowns, ", failureCooldowns: ", failureCooldowns))
+
+	# NOTE: If there is ANY success, enter the "full" cooldown.
+	# If there are no successes and any "failure cooldown" flags, start the "failure" cooldown (which should normally be shorter).
+	
+	if cooldowns > 0: startCooldown()
+	elif shouldCooldownOnFailure and failureCooldowns > 0: startCooldown(cooldownOnFailure) # NOTE: Add a SHORT cooldown on a failed interaction, to prevent UI/network spamming etc.
 	return successes
 
 
