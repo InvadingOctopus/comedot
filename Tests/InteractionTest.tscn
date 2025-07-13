@@ -170,6 +170,13 @@ metadata/_edit_group_ = true
 stat = ExtResource("6_u3x77")
 statModifierMaximum = 100
 
+[node name="NPC" parent="." instance=ExtResource("19_u3x77")]
+position = Vector2(192, 0)
+
+[node name="TextInteractionComponent" parent="NPC" instance=ExtResource("20_c0i8c")]
+textStrings = ["Hi! Interact to Talk!", "Message2", "Message3", "Message4 before empty", "", "Goodbye!"]
+textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(0, 1, 0, 1), Color(0, 0.735357, 1, 1)])
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="StatsUI" type="HBoxContainer" parent="UI" node_paths=PackedStringArray("statsComponent")]
@@ -177,12 +184,5 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("14_facn4")
 statsComponent = NodePath("../../PlayerEntityTemplate-Overhead/StatsComponent")
-
-[node name="CharacterBodyEntity" parent="." instance=ExtResource("19_u3x77")]
-position = Vector2(192, 0)
-
-[node name="TextInteractionComponent" parent="CharacterBodyEntity" instance=ExtResource("20_c0i8c")]
-textStrings = ["String1", "String2", "String3", "String4 before empty", "", "String6 Last"]
-textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(0, 1, 0, 1), Color(0, 0.735357, 1, 1)])
 
 [editable path="GoldPot/InteractionWithCostComponent"]
