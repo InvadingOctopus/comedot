@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bao7nrybc7152"]
+
+[ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Objects/InteractionWithCoooldownComponent.tscn" id="1_vqado"]
+[ext_resource type="LabelSettings" uid="uid://bumadvcbjs8he" path="res://Assets/Themes/Label/TextInteractionComponent.tres" id="2_6kio8"]
+[ext_resource type="Script" uid="uid://b4l4rlrn4wyha" path="res://Components/Objects/TextInteractionComponent.gd" id="2_ap0r7"]
+
+[node name="TextInteractionComponent" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("1_vqado")]
+script = ExtResource("2_ap0r7")
+textStrings = ["String1", "String2", "String3"]
+textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 0, 1)])
+shouldAnimate = true
+shouldClearBeforeAnimation = true
+animationDurationPerCharacter = 0.05
+interactionIndicator = NodePath("Label")
+
+[node name="Label" type="Label" parent="." index="2"]
+offset_left = -64.0
+offset_top = -40.0
+offset_right = 64.0
+offset_bottom = -24.0
+text = "Hi"
+label_settings = ExtResource("2_6kio8")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
