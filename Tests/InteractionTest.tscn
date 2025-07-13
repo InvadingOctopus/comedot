@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://csiafxhl1plmi"]
+[gd_scene load_steps=25 format=3 uid="uid://csiafxhl1plmi"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16kqk"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_aydxj"]
@@ -18,6 +18,8 @@
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="14_su6gy"]
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="15_bslwp"]
 [ext_resource type="PackedScene" uid="uid://nd3rpg4n6351" path="res://Components/Objects/CollectibleStatComponent.tscn" id="16_u3x77"]
+[ext_resource type="PackedScene" uid="uid://chi05ddr2pq1c" path="res://Templates/Entities/CharacterBodyEntityTemplate.tscn" id="19_u3x77"]
+[ext_resource type="PackedScene" uid="uid://bao7nrybc7152" path="res://Components/Objects/TextInteractionComponent.tscn" id="20_c0i8c"]
 
 [sub_resource type="Resource" id="Resource_0gg6p"]
 script = ExtResource("11_cmk47")
@@ -102,10 +104,7 @@ cost = SubResource("Resource_16kqk")
 payload = SubResource("Resource_j7vxj")
 interactionIndicator = NodePath("Label")
 labelText = "-50 Mana to +500 Gold"
-shouldCheckGrandparentsForEntity = false
-allowNonEntityParent = false
 debugMode = true
-debugModeTrace = false
 
 [node name="CooldownTimer" parent="GoldPot/InteractionWithCostComponent" index="1"]
 wait_time = 5.0
@@ -178,5 +177,12 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("14_facn4")
 statsComponent = NodePath("../../PlayerEntityTemplate-Overhead/StatsComponent")
+
+[node name="CharacterBodyEntity" parent="." instance=ExtResource("19_u3x77")]
+position = Vector2(192, 0)
+
+[node name="TextInteractionComponent" parent="CharacterBodyEntity" instance=ExtResource("20_c0i8c")]
+textStrings = ["String1", "String2", "String3", "String4 before empty", "", "String6 Last"]
+textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(0, 1, 0, 1), Color(0, 0.735357, 1, 1)])
 
 [editable path="GoldPot/InteractionWithCostComponent"]
