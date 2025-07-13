@@ -340,15 +340,19 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 
 
 ## Prints a pretty stack dump.
-func printStack(includeGlobalVariables: bool = false, includeMemberVariables: bool = false, includeLocalVariables: bool = true) -> void:
-	var stack: Array[ScriptBacktrace] = Engine.capture_script_backtraces(includeGlobalVariables or includeMemberVariables or includeLocalVariables)
+func printStack(object: Variant, includeChildNodes: bool = true, includeGlobalVariables: bool = false, includeMemberVariables: bool = false, includeLocalVariables: bool = true) -> void:
 	const globalVariableColor:	String = "[color=dimgray]"
 	const memberVariableColor:	String = "[color=dimgray]"
 	const localVariableColor:	String = "[color=gray]"
 	const backgroundColor:		String = "[bgcolor=201020]"
+	var stack: Array[ScriptBacktrace]  = Engine.capture_script_backtraces(includeGlobalVariables or includeMemberVariables or includeLocalVariables)
 
-	print_rich(str("\n\n", backgroundColor, "[color=white]↦↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000))
-
+	print_rich(str("\n\n", backgroundColor, "[color=white]↦↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000),
+	"\n\t[b][color=cyan]", object)
+	
+	if includeChildNodes and object is Node:
+		print_rich(str("\t[color=lightblue]", object.get_children(true))) # include_internal
+	
 	var backtrace: ScriptBacktrace
 	for backtraceIndex in stack.size():
 		backtrace = stack[backtraceIndex]
