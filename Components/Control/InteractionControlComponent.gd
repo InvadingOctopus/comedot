@@ -10,17 +10,16 @@ extends CooldownComponent
 
 #region Parameters
 
-const cooldownOnFailure: float = 0.5
-
 ## The limit of [InteractionComponent]s in range that may be interacted with in a single interaction.
 ## ALERT: A low limit may cause behavior that seems like bugs in case of nultiple [InteractionComponent]s with overlapping [Area2D]s.
 @export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
-@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
-
 @export var inputEventName: StringName = GlobalInput.Actions.interact
 
 @export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
+@export_range(0.0, 60.0, 0.1) var cooldownOnFailure: float = 0.5
+
+@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
 @export var isEnabled: bool = true:
 	set(newValue):
