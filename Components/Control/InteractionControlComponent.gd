@@ -13,6 +13,7 @@ extends CooldownComponent
 const cooldownOnFailure: float = 0.5
 
 ## The limit of [InteractionComponent]s in range that may be interacted with in a single interaction.
+## ALERT: A low limit may cause behavior that seems like bugs in case of nultiple [InteractionComponent]s with overlapping [Area2D]s.
 @export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
 @export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
@@ -131,12 +132,15 @@ func interact() -> int:
 			if Tools.checkResult(result):
 				successes += 1
 				if not interactionComponent.shouldSkipInteractorCooldown: cooldowns += 1
-			elif not interactionComponent.shouldSkipInteractorCooldown:
+			elif not interactionComponent.shouldSkipInteractorCooldown: # Did we fail and the Interaction allows cooldown? Then it's a `cooldownOnFailure`
 				failureCooldowns += 1
 
 			self.didPerformInteraction.emit(result)
 			
-			if count >= maximumSimultaneousInteractions: break
+			if count >= maximumSimultaneousInteractions:
+				# NOTE: Log skips in case `maximumSimultaneousInteractions` causes unexpected behavior that seems like bugs!
+				if debugMode: printLog(str("BREAK: Performed ", count, " >= maximumSimultaneousInteractions: ", maximumSimultaneousInteractions, ", interactionsInRange: ", interactionsInRange.size(), ", SKIPPING ", interactionsInRange.size() - count))
+				break
 
 	if debugMode: printDebug(str("successes: ", successes, ", cooldowns: ", cooldowns, ", failureCooldowns: ", failureCooldowns))
 
