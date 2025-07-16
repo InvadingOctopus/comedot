@@ -21,8 +21,8 @@ extends Component
 		self.set_process_input(isEnabled)
 		if  area:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred("monitoring",  isEnabled)
-			area.set_deferred("monitorable", isEnabled)
+			area.set_deferred(&"monitoring",  isEnabled)
+			area.set_deferred(&"monitorable", isEnabled)
 #endregion
 
 

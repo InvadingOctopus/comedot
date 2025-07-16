@@ -21,8 +21,8 @@ extends AreaComponentBase
 			isEnabled = newValue
 			if  selfAsArea:
 				# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-				selfAsArea.set_deferred("monitorable", newValue)
-				# selfAsArea.set_deferred("monitoring",  newValue) # Should be always enabled, to detect exits.
+				selfAsArea.set_deferred(&"monitorable", newValue)
+				# selfAsArea.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
 
 @export var shouldMonitorAreas:  bool = true ## If `false` no [Area2D]s are monitored when entering or exiting.
 @export var shouldMonitorBodies: bool = true ## If `false` no [PhysicsBody2D]s or [TileMapLayer]s are monitored when entering or exiting.

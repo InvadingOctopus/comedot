@@ -15,8 +15,8 @@ extends Component
 		if interactionIndicator: interactionIndicator.visible = isEnabled
 		if  selfAsArea:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			selfAsArea.set_deferred("monitoring",  isEnabled)
-			selfAsArea.set_deferred("monitorable", isEnabled)
+			selfAsArea.set_deferred(&"monitoring",  isEnabled)
+			selfAsArea.set_deferred(&"monitorable", isEnabled)
 
 ## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`.
 ## DESIGN: Interactions may succeed even if there is no payload; this allows special [InteractionControlComponent] subclasses to perform specific effects without a payload.

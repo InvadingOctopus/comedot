@@ -29,8 +29,8 @@ extends Component
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 		if  area:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred("monitoring",  isEnabled)
-			area.set_deferred("monitorable", isEnabled)
+			area.set_deferred(&"monitoring",  isEnabled)
+			area.set_deferred(&"monitorable", isEnabled)
 #endregion
 
 

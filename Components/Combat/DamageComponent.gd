@@ -72,8 +72,8 @@ extends Component
 
 		if  area:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred("monitoring",  isEnabled)
-			area.set_deferred("monitorable", isEnabled)
+			area.set_deferred(&"monitoring",  isEnabled)
+			area.set_deferred(&"monitorable", isEnabled)
 
 		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]

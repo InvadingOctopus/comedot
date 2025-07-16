@@ -27,8 +27,8 @@ extends CooldownComponent
 		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
 		if  selfAsArea:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			selfAsArea.set_deferred("monitoring",  isEnabled)
-			selfAsArea.set_deferred("monitorable", isEnabled)
+			selfAsArea.set_deferred(&"monitoring",  isEnabled)
+			selfAsArea.set_deferred(&"monitorable", isEnabled)
 		updateIndicator()
 
 #endregion
