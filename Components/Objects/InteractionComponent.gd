@@ -81,7 +81,7 @@ func _ready() -> void:
 	if interactionIndicator:
 		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
 		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
-		
+
 		if interactionIndicator is Label:
 			# NOTE: If our `labelText` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
 			if self.labelText.is_empty(): self.labelText = interactionIndicator.text
@@ -114,7 +114,7 @@ func onArea_entered(area: Area2D) -> void:
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
 
 	if self.automatic:
-		interactionControlComponent.interact()
+		interactionControlComponent.interactAll()
 
 
 func onArea_exited(area: Area2D) -> void:

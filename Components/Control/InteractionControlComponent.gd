@@ -1,6 +1,7 @@
 ## Allows the player to interact with an [InteractionComponent].
 ## "Interactions" are similar to "Collectibles"; the difference is that an interaction occurs on a button input instead of automatically on a collision.
-## Requirements: This component node must be an [Area2D]
+## TIP: To perform interactions with the mouse, use [InteractionMouseControlComponent].
+## Requirements: This component's node must be an [Area2D]
 
 class_name InteractionControlComponent
 extends CooldownComponent
@@ -67,6 +68,8 @@ func _ready() -> void:
 		selfAsArea.monitorable = isEnabled
 
 
+#region Area Collision Events
+
 func onArea_entered(area: Area2D) -> void:
 	if not isEnabled: return
 	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
@@ -95,20 +98,26 @@ func updateIndicator() -> void:
 	if interactionIndicator: 
 		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
+#endregion
+
+
+#region Control
 
 func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or _input()?
 	# TBD: Use InputComponent?
 	if not isEnabled or not hasCooldownCompleted or not haveInteracionsInRange: return
 
 	if Input.is_action_just_pressed(inputEventName):
-		interact()
+		interactAll()
 		self.get_viewport().set_input_as_handled()
 
 
-## Interacts with all [InteractionComponent]s in collision contact, and starts the cooldown if there was interaction succeeds.
-## "Success" is determined by [method Tools.checkResult] (i.e. not null and not false)
+## Interacts with all [InteractionComponent]s in collision contact, and starts the cooldown if any interaction succeeded,
+## or the [member cooldownOnFailure] if no interaction succeeded.
+## "Success" is determined by [method Tools.checkResult] (i.e. not null, not false, not empty)
+## TIP: To interact with a single [InteractionComponent], call [method interact].
 ## Returns: Number of successful interactions.
-func interact() -> int:
+func interactAll() -> int:
 	# NOTE: TBD: If there are multiple interactions within range,
 	# should they all be processed within a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
@@ -151,12 +160,31 @@ func interact() -> int:
 	return successes
 
 
-# DEBUG: func _process(delta: float) -> void:
-	# DEBUG: showDebugInfo()
+## Interacts with a single specific [InteractionComponent], starts a cooldown, and returns the result.
+## TIP: To force an interaction even if its [Area2D] is not in range/physics contact, use [param ignoreRange].
+## TIP: To interact with all [InteractionComponent]s in range, call [method interactAll].
+func interact(interactionComponent: InteractionComponent, ignoreRange: bool = false) -> Variant:
+	if not isEnabled or not hasCooldownCompleted: return null
+	
+	if not ignoreRange and not self.interactionsInRange.has(interactionComponent):
+		printLog(str("Cannot interact, out of range: ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
+		return null
 
+	if debugMode: printLog(str("interact() with ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
+	
+	if interactionComponent.requestToInteract(self.parentEntity, self):
+		self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
+		var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
+		if debugMode: printLog(str("Result: ", result))
+		startCooldown()
+		self.didPerformInteraction.emit(result)
+		return result
+	else:
+		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName))
+		startCooldown(cooldownOnFailure)
+	return null
 
-func showDebugInfo() -> void:
-	Debug.watchList.set(str(self, ":Timer"), cooldownTimer.time_left)
+#endregion
 
 
 #region Cooldown
@@ -173,3 +201,11 @@ func finishCooldown() -> void:
 	if interactionIndicator: interactionIndicator.modulate.a = 1.0
 
 #endregion
+
+
+# DEBUG: func _process(delta: float) -> void:
+	# DEBUG: showDebugInfo()
+
+
+func showDebugInfo() -> void:
+	Debug.watchList.set(str(self, ":Timer"), cooldownTimer.time_left)
