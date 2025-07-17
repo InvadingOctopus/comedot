@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16kqk"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_aydxj"]
-[ext_resource type="PackedScene" uid="uid://qkcschxa5my1" path="res://Components/Control/InteractionControlComponent.tscn" id="3_8wl3b"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="4_su6gy"]
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="5_bslwp"]
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="6_u3x77"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_c0i8c"]
+[ext_resource type="PackedScene" uid="uid://cjfet208qg7gt" path="res://Components/Control/InteractionMouseControlComponent.tscn" id="7_n8u5t"]
 [ext_resource type="PackedScene" uid="uid://1ly7l0r0lbi2" path="res://Components/Visual/StatsVisualComponent.tscn" id="8_n8u5t"]
 [ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="9_bslwp"]
 [ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="9_vpvxn"]
@@ -58,15 +58,15 @@ script = ExtResource("1_16kqk")
 [node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_su6gy")]
 stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
 
-[node name="InteractionControlComponent" parent="PlayerEntityTemplate-Overhead" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("3_8wl3b")]
+[node name="InteractionMouseControlComponent" parent="PlayerEntityTemplate-Overhead" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("7_n8u5t")]
 interactionIndicator = NodePath("Label")
 debugMode = true
 
-[node name="Label" type="Label" parent="PlayerEntityTemplate-Overhead/InteractionControlComponent"]
+[node name="Label" type="Label" parent="PlayerEntityTemplate-Overhead/InteractionMouseControlComponent"]
 modulate = Color(1, 0, 1, 1)
 offset_left = -32.0
 offset_top = -24.0
-offset_right = 8.0
+offset_right = 34.0
 offset_bottom = -16.0
 text = "Interactor"
 horizontal_alignment = 1
@@ -174,6 +174,7 @@ statModifierMaximum = 100
 position = Vector2(192, 0)
 
 [node name="TextInteractionComponent" parent="NPC" instance=ExtResource("20_c0i8c")]
+z_index = 100
 textStrings = ["Hi! Interact to Talk!", "Message2", "Message3", "Message4 before empty", "", "Goodbye!"]
 textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(0, 1, 0, 1), Color(0, 0.735357, 1, 1)])
 
