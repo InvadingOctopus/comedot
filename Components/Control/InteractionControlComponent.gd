@@ -175,13 +175,13 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 	if interactionComponent.requestToInteract(self.parentEntity, self):
 		self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 		var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
-		if debugMode: printLog(str("Result: ", result))
-		startCooldown()
+		if debugMode: printLog(str("Result: ", result, ", cooldown: ", self.cooldown if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
+		if not interactionComponent.shouldSkipInteractorCooldown: startCooldown()
 		self.didPerformInteraction.emit(result)
 		return result
 	else:
-		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName))
-		startCooldown(cooldownOnFailure)
+		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
+		if not interactionComponent.shouldSkipInteractorCooldown: startCooldown(cooldownOnFailure)
 	return null
 
 #endregion
