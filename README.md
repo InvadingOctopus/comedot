@@ -109,8 +109,8 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
 [logo]: /Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
-[components-tree]: https://i.imgur.com/mQMtIAK.png "🌳 Example Components Tree for a Player Entity"
+[components-tree]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png "🌳 Example Components Tree for a Player Entity"
 [pew-pew-plants]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
-[debug-charts]: https://i.imgur.com/xEqbXHs.png "Debug Chart Windows"
-[comedock]: https://i.imgur.com/bwv00SO.png "Godot Dock Plugin"
+[debug-charts]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Debug%20Charts%20%26%20Watchlists.png "Debug Chart Windows"
+[comedock]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Comedock.png "Godot Dock Plugin"
