@@ -155,7 +155,7 @@ func processGravity(delta: float) -> void:
 	if not body.is_on_floor(): # ATTENTION: Cache [isOnFloor] AFTER processing gravity.
 		body.velocity.y += (gravity * parameters.gravityScale * self.gravityScaleOverride) * delta
 
-	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", body.velocity))
+	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processGravity(): ", characterBodyComponent.previousVelocity, " → ", body.velocity))
 
 
 ## Applies movement with or without gradual acceleration depending on the [member shouldApplyAccelerationOnFloor] or [member shouldApplyAccelerationInAir] flags.

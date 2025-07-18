@@ -139,7 +139,7 @@ func updateStateAfterMove(_delta: float) -> void:
 		if is_zero_approx(lastMotionCached.y): body.velocity.y = 0
 
 	if debugMode and not body.velocity.is_equal_approx(previousVelocity):
-		printDebug(str("updateStateAfterMove() body.velocity: ", body.velocity))
+		printDebug(str("updateStateAfterMove() body.velocity: ", previousVelocity, " → ", body.velocity))
 
 #endregion
 
