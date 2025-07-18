@@ -208,21 +208,19 @@ func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: 
 	didAccumulateFractionalDamage.emit(damageComponent, fractionalDamage, attackerFactions)
 
 	# Drain the damage
+	# DESIGN: We basically need to floorf() the `accumulatedFractionalDamage` (e.g. 2.99 = 2 damage)
+	# but we also want to leave any remaining `accumulatedFractionalDamage` (e.g. 0.99) to add into the next "tick" of DamageComponent.damagePerSecond
 
-	var damageToApply: int = 0
+	var damageToApply: int = int(floorf(accumulatedFractionalDamage))
 
-	while accumulatedFractionalDamage > 1.0 \
-	or is_equal_approx(accumulatedFractionalDamage, 1.0):
-		# DEBUG: printLog("Time: " + str(Time.get_ticks_msec()) + " | accumulatedFractionalDamage: " + str(accumulatedFractionalDamage))
-		damageToApply += 1
-		accumulatedFractionalDamage -= 1.0
+	if damageToApply >= 1:
+		accumulatedFractionalDamage -= damageToApply
+		if is_zero_approx(accumulatedFractionalDamage): accumulatedFractionalDamage = 0 # CHECK: Is this helpful?
 
-	if damageToApply > 0:
 		# Even if there is no HealthComponent, we will still emit the signal.
 		if healthComponent: healthComponent.damage(damageToApply) # See header notes.
 
 		# CHECK: Should this signal be emitted regardless of health?
 		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
-
 
 #endregion
