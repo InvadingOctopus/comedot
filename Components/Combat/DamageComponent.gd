@@ -282,6 +282,6 @@ func processFrameDamage(damageReceivingComponent: DamageReceivingComponent, dama
 
 	# TBD: Why use `handleDamage` directly here?
 	# Let's pretend it's because of performance :')
-	damageReceivingComponent.handleFractionalDamage(self, damageForThisFrame, factionComponent.factions, self.friendlyFire)
+	damageReceivingComponent.processFractionalDamage(self, damageForThisFrame, factionComponent.factions, self.friendlyFire)
 
 #endregion

@@ -38,7 +38,7 @@ func _ready() -> void:
 
 func onDamageTimer_timeout() -> void:
 	if not isEnabled or not damageReceivingComponent: return
-	damageReceivingComponent.handleDamage(null, damagePerTick, attackerFactions, friendlyFire)
+	damageReceivingComponent.processDamage(null, damagePerTick, attackerFactions, friendlyFire)
 
 
 func onRemovalTimer_timeout() -> void:

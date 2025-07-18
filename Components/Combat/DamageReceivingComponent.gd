@@ -136,10 +136,10 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 	# Not creating an "attackerFactions" or whatever variable to improve performance, maybe?
 	# NOTE: Get damageOnCollisionWithModifier to include the damageModifier Stat from Upgrades/debuffs etc.!
 	if attackerFactionComponent:
-		return self.handleDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, attackerFactionComponent.factions, damageComponent.friendlyFire)
+		return self.processDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else: # If the attacker has no factions, damage must be dealt to everyone.
 		if debugMode: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
-		return self.handleDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, 0, damageComponent.friendlyFire)
+		return self.processDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, 0, damageComponent.friendlyFire)
 
 #endregion
 
@@ -167,10 +167,10 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 ## Passes the [param damageAmount] to a [HealthComponent] if the damage is from an opposing faction or [param friendlyFire].
 ## Returns `true` if there are opposing factions or friendly fire, or no [param attackerFactions] (which means damage is always applied).
 ## NOTE: [param damageComponent] may be `null` in case the caller is a different component.
-func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
+func processDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire): return false
 
-	if debugMode: printDebug(str("handleDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
+	if debugMode: printDebug(str("processDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
 
 	# NOTE: missChance vs DamageComponent.hitChance is calculated in DamageComponent.causeCollisionDamage()
 	
@@ -191,7 +191,7 @@ func handleDamage(damageComponent: DamageComponent, damageAmount: int, attackerF
 ## Converts float damage values to a single integer damage value.
 ## Such as damage accumulated over time/per frame.
 ## @experimental
-func handleFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
+func processFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
 	# INFO: The convention is to keep all player-facing stats as integers,
 	# to eliminate any potential bugs or inconsistencies arising from floating point math inaccuracies.
 
