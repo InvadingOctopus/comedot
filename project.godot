@@ -46,6 +46,7 @@ Debug="*res://AutoLoad/Debug.tscn"
 
 [debug]
 
+settings/crash_handler/message="Please include this when reporting the bug."
 settings/crash_handler/message.editor="Please include this when reporting the bug on: https://github.com/InvadingOctopus/comedot/issues"
 gdscript/warnings/untyped_declaration=1
 
