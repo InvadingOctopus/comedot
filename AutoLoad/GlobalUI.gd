@@ -64,7 +64,7 @@ func _ready() -> void:
 		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
-		# TODO: setRetinaScaling()
+		setRetinaScaling()
 
 	musicLabelContainer.position.y = musicLabelContainer.get_viewport_rect().end.y
 	Tools.connectSignal(GlobalSonic.musicPlayerDidPlay, self.onGlobalSonic_musicPlayerDidPlay)
@@ -90,13 +90,16 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
 
 
+## Doubles the [member Window.content_scale_factor] & window size on Mac Retina & other HiDPI displays.
 ## @experimental
 func setRetinaScaling() -> void:
 	if DisplayServer.has_feature(DisplayServer.FEATURE_HIDPI) \
 	or is_equal_approx(DisplayServer.screen_get_scale(), 2.0):
 		Debug.printAutoLoadLog(str("DisplayServer screen scale: ", DisplayServer.screen_get_scale()))
-		# TODO: self.get_window().content_scale_factor = 2.0
-		# TODO: Double Viewport size 
+		var window: Window = self.get_window()
+		window.content_scale_factor = 2.0
+		window.size *= 2 # TBD: Double the Viewport size?
+		window.move_to_center()
 
 
 func showPauseVisuals(isPaused: bool) -> void:
