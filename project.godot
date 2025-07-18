@@ -30,6 +30,7 @@ config/icon="uid://tgxprqhjkuvi"
 [audio]
 
 buses/default_bus_layout="res://Resources/DefaultAudioBusLayout.tres"
+buses/channel_disable_threshold_db=-55.0
 
 [autoload]
 

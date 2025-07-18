@@ -7,7 +7,7 @@ extends Control
 
 #region Parameters
 
-const volumeSteps: Array[float] = [-72, -60, -24, -18, -12, -6, 0, +6] # In decibels
+const volumeSteps: Array[float] = [-60, -30, -24, -18, -12, -6, 0, +6] # In decibels
 
 @export var busIndex: int
 
