@@ -36,6 +36,8 @@ size = Vector2(18, 18)
 editor_description = "A template for a monster in a platformer game."
 collision_layer = 10
 collision_mask = 126
+floor_constant_speed = true
+platform_on_leave = 2
 script = ExtResource("1_5a21o")
 sprite = NodePath("Sprite2D")
 body = NodePath(".")
@@ -68,6 +70,7 @@ collision_mask = 1060
 [node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
 collision_layer = 1032
 collision_mask = 1028
+damagePerSecond = 1.0
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 position = Vector2(2.08165e-12, 2.08165e-12)
