@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene load_steps=10 format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
@@ -6,10 +6,15 @@
 [ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="4_c88uu"]
 [ext_resource type="Shortcut" uid="uid://c4er757mljhl4" path="res://Resources/Shortcuts/BackShortcut.tres" id="4_u63o5"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="4_vibvi"]
+[ext_resource type="Shader" uid="uid://cqjevahlho7r5" path="res://Assets/Shaders/Screen/blur.gdshader" id="7_3j472"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c88uu"]
 atlas = ExtResource("4_vibvi")
 region = Rect2(624, 256, 16, 16)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_20et4"]
+shader = ExtResource("7_3j472")
+shader_parameter/amount = 0.5
 
 [node name="GlobalUI" type="Node"]
 process_mode = 3
@@ -85,17 +90,38 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 text = "Now Playing"
 
-[node name="PauseTintRect" type="ColorRect" parent="ForegroundOverlay"]
+[node name="PauseRects" type="ColorRect" parent="ForegroundOverlay"]
 unique_name_in_owner = true
 visible = false
-modulate = Color(1, 1, 1, 0)
-texture_filter = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.5, 0, 1, 0.5)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(1, 1, 1, 0)
+
+[node name="PauseShaderRect" type="ColorRect" parent="ForegroundOverlay/PauseRects"]
+unique_name_in_owner = true
+texture_filter = 2
+material = SubResource("ShaderMaterial_20et4")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseTintRect" type="ColorRect" parent="ForegroundOverlay/PauseRects"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.5, 1, 0.5)
 
 [node name="PauseOverlayContainer" type="MarginContainer" parent="ForegroundOverlay"]
 unique_name_in_owner = true

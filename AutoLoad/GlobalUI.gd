@@ -44,7 +44,7 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 @onready var navigationContainer:	UINavigationContainer	= %NavigationContainer ## For top-level UI
 @onready var tintRect:				ColorRect				= %GlobalTintRect
 
-@onready var pauseTintRect:			ColorRect				= %PauseTintRect
+@onready var pauseRect:				ColorRect				= %PauseRects
 @onready var pauseOverlayContainer:	UINavigationContainer	= %PauseOverlayContainer
 
 @onready var musicLabelContainer:	Container				= %MusicLabelContainer
@@ -132,7 +132,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		pauseOverlay.visible = true
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = self.create_tween()
-		pauseOverlayTween.tween_subtween(Animations.fadeIn(pauseTintRect, pauseAnimationDuration))
+		pauseOverlayTween.tween_subtween(Animations.fadeIn(pauseRect, pauseAnimationDuration))
 		pauseOverlayTween.parallel().tween_subtween(Animations.fadeIn(pauseOverlayContainer, pauseAnimationDuration))
 		didShowPauseOverlay.emit(pauseOverlay)
 
@@ -143,7 +143,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		if pauseOverlayTween: pauseOverlayTween.kill()
 		pauseOverlayTween = self.create_tween()
 		pauseOverlayTween.tween_subtween(Animations.fadeOut(pauseOverlayContainer, pauseAnimationDuration))
-		pauseOverlayTween.parallel().tween_subtween(Animations.fadeOut(pauseTintRect, pauseAnimationDuration))
+		pauseOverlayTween.parallel().tween_subtween(Animations.fadeOut(pauseRect, pauseAnimationDuration))
 		await pauseOverlayTween.finished
 
 		Tools.removeAllChildren(pauseOverlayContainer)
