@@ -37,7 +37,7 @@ extends Component
 @export_range(0, 1000) var damagePerSecond: float = 0: # NOTE: Should this be an integer or float?
 	set(newValue):
 		damagePerSecond = newValue # Don't bother checking for a change
-		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of every frame
+		self.set_process(not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty() and isEnabled) # PERFORMANCE: Set once instead of every frame
 
 ## If less than 100, then a collision with a [DamageReceivingComponent] may occasionally be ignored.
 ## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
@@ -75,7 +75,7 @@ extends Component
 			area.set_deferred(&"monitoring",  isEnabled)
 			area.set_deferred(&"monitorable", isEnabled)
 
-		self.set_process(isEnabled and not is_zero_approx(damagePerSecond)) # PERFORMANCE: Set once instead of checking every frame in _process()
+		self.set_process(isEnabled and not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty()) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
 #endregion
@@ -91,7 +91,11 @@ extends Component
 @export_storage var initiatorEntity: Entity
 
 ## A list of [DamageReceivingComponent]s currently in collision contact.
-var damageReceivingComponentsInContact: Array[DamageReceivingComponent]
+var damageReceivingComponentsInContact: Array[DamageReceivingComponent]:
+	set(newValue):
+		if newValue != damageReceivingComponentsInContact:
+			damageReceivingComponentsInContact = newValue
+			self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
 
 ## Returns the total damage value including the base [member damageOnCollision] +/- the [member damageModifier] [Stat] if any.
 ## @experimental
@@ -124,7 +128,7 @@ func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
 	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
 	# Apply setters because Godot doesn't on initialization
-	self.set_process(isEnabled and not is_zero_approx(damagePerSecond))
+	self.set_process(not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty() and isEnabled)
 	self.set_physics_process(isEnabled)
 	if  area:
 		area.monitoring  = isEnabled
@@ -139,7 +143,9 @@ func _ready() -> void:
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
 	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
-	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
+	if debugMode:
+		printDebug(str("onAreaEntered(): ", areaEntered, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
+		emitDebugBubble("HIT:" + areaEntered.get_parent().name)
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
 	if damageReceivingComponent:
@@ -155,6 +161,8 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
 
+		self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
+
 
 func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
@@ -162,9 +170,13 @@ func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
-	if  debugMode: printDebug(str("onAreaExited(): ", areaExited, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
+	if  debugMode:
+		printDebug(str("onAreaExited(): ", areaExited, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
+		emitDebugBubble("OUT:" + areaExited.get_parent().name)
+
 	if  damageReceivingComponent:
 		damageReceivingComponentsInContact.erase(damageReceivingComponent)
+		self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
 		didLeaveReceiver.emit(damageReceivingComponent)
 
 
@@ -250,18 +262,18 @@ func _process(delta: float) -> void: # TBD: _process() instead of _physics_proce
 	var damageForThisFrame: float = self.damagePerSecond * delta
 
 	for damageReceivingComponent in damageReceivingComponentsInContact:
-		# DEBUG: printLog("causeFrameDamage: " + str(damageReceivingComponent) + " | damageForThisFrame: " + str(damageForThisFrame))
-		causeFrameDamage(damageReceivingComponent, damageForThisFrame)
+		# DEBUG: printLog("processFrameDamage: " + str(damageReceivingComponent) + " | damageForThisFrame: " + str(damageForThisFrame))
+		processFrameDamage(damageReceivingComponent, damageForThisFrame)
 
 
-func causeFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
+func processFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
 	if not isEnabled: return
-	if debugMode: printDebug(str("causeFrameDamage() damageReceivingComponent: ", damageReceivingComponent, ", damageForThisFrame: ", damageForThisFrame))
+	if debugMode: printDebug(str("processFrameDamage() damageReceivingComponent: ", damageReceivingComponent, " ", damageReceivingComponent.parentEntity.logName, ", damageForThisFrame: ", damageForThisFrame))
 
 	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
 
 	# TBD: Should there be a signal emitted every frame??
-	#willCauseFrameDamage.emit(damageReceivingComponent)
+	#willprocessFrameDamage.emit(damageReceivingComponent)
 
 	# Do we belong to a faction?
 	# will be checked in the `factionComponent` property getter
