@@ -83,7 +83,7 @@ static func animateNumberLabel(label: Label, value: Variant, previousValue: Vari
 	else:
 		tween.tween_property(label, ^"modulate", color, duration)
 		tween.tween_property(label, ^"modulate", resetToColor, duration)
-	
+
 	return tween
 
 #endregion
@@ -113,11 +113,10 @@ static func modulateNumberDifference(node: CanvasItem, value: Variant, previousV
 	var tween: Tween = node.create_tween()
 	tween.set_trans(Tween.TRANS_BOUNCE)
 	tween.set_ease(Tween.EASE_OUT)
-	
+
 	tween.tween_property(node, ^"modulate", color, duration)
 	tween.tween_property(node, ^"modulate", previousColor, duration)
-	
+
 	return tween
 
 #endregion
-

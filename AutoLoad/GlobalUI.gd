@@ -108,6 +108,8 @@ func setRetinaScaling() -> void:
 
 #region Pause/Unpause
 
+const pauseAnimationDuration: float = 0.25
+
 func showPauseVisuals(isPaused: bool) -> void:
 	# Avoid reanimating an existing state
 	if (isPaused and pauseOverlayContainer.visible) \
@@ -128,18 +130,20 @@ func showPauseVisuals(isPaused: bool) -> void:
 		# Ensure visibility just in case
 		pauseOverlay.pauseButton.visible = true
 		pauseOverlay.visible = true
-		Animations.fadeIn(pauseTintRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
-		pauseOverlayTween = Animations.fadeIn(pauseOverlayContainer, 0.2)
+		pauseOverlayTween = self.create_tween()
+		pauseOverlayTween.tween_subtween(Animations.fadeIn(pauseTintRect, pauseAnimationDuration))
+		pauseOverlayTween.parallel().tween_subtween(Animations.fadeIn(pauseOverlayContainer, pauseAnimationDuration))
 		didShowPauseOverlay.emit(pauseOverlay)
 
 	elif not isPaused:
 
 		if pauseOverlay: pauseOverlay.pauseButton.visible = false
 
-		Animations.fadeOut(pauseTintRect)
 		if pauseOverlayTween: pauseOverlayTween.kill()
-		pauseOverlayTween = Animations.fadeOut(pauseOverlayContainer, 0.2)
+		pauseOverlayTween = self.create_tween()
+		pauseOverlayTween.tween_subtween(Animations.fadeOut(pauseOverlayContainer, pauseAnimationDuration))
+		pauseOverlayTween.parallel().tween_subtween(Animations.fadeOut(pauseTintRect, pauseAnimationDuration))
 		await pauseOverlayTween.finished
 
 		Tools.removeAllChildren(pauseOverlayContainer)
