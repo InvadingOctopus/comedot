@@ -64,6 +64,8 @@ func _ready() -> void:
 		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
+		# TODO: setRetinaScaling()
+
 	musicLabelContainer.position.y = musicLabelContainer.get_viewport_rect().end.y
 	Tools.connectSignal(GlobalSonic.musicPlayerDidPlay, self.onGlobalSonic_musicPlayerDidPlay)
 
@@ -86,6 +88,15 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 
 	if showLabel and GlobalUI: # GODOT BUG? Cannot check for `GlobalUI` validity in case this is called before the other AutoLoads have loaded :(
 		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
+
+
+## @experimental
+func setRetinaScaling() -> void:
+	if DisplayServer.has_feature(DisplayServer.FEATURE_HIDPI) \
+	or is_equal_approx(DisplayServer.screen_get_scale(), 2.0):
+		Debug.printAutoLoadLog(str("DisplayServer screen scale: ", DisplayServer.screen_get_scale()))
+		# TODO: self.get_window().content_scale_factor = 2.0
+		# TODO: Double Viewport size 
 
 
 func showPauseVisuals(isPaused: bool) -> void:
