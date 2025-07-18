@@ -52,6 +52,8 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 #endregion
 
 
+#region Setup
+
 func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
@@ -101,6 +103,10 @@ func setRetinaScaling() -> void:
 		window.size *= 2 # TBD: Double the Viewport size?
 		window.move_to_center()
 
+#endregion
+
+
+#region Pause/Unpause
 
 func showPauseVisuals(isPaused: bool) -> void:
 	# Avoid reanimating an existing state
@@ -146,9 +152,8 @@ func showPauseVisuals(isPaused: bool) -> void:
 	# Hide any other global UI when paused
 	navigationContainer.visible = not pauseOverlayContainer.visible
 
+#endregion
 
-func onGlobalSonic_musicPlayerDidPlay(fileName: String) -> void:
-	showMusicLabel(fileName.get_basename().get_file())
 
 #region Animations
 
@@ -165,6 +170,10 @@ func fadeOutTintRect() -> Tween:
 	rectFadeTween = Animations.fadeOut(tintRect)
 	return rectFadeTween
 
+#endregion
+
+
+#region Music
 
 ## @experimental
 func showMusicLabel(title: String) -> void:
@@ -207,6 +216,14 @@ func showMusicLabel(title: String) -> void:
 		musicLabelTween.tween_property(musicLabelContainer, ^"modulate", hideColor, hideTime) \
 			.set_ease(Tween.EASE_OUT)
 
+
+func onGlobalSonic_musicPlayerDidPlay(fileName: String) -> void:
+	showMusicLabel(fileName.get_basename().get_file())
+
+#endregion
+
+
+#region Miscellaneous
 
 func createTemporaryLabel(text: String) -> Label:
 	return labelsList.createTemporaryLabel(text)
