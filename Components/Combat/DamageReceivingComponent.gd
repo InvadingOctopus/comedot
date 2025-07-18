@@ -22,15 +22,19 @@ extends Component
 ## Used for e.g. highly agile characters or "ethereal" monsters such as ghosts etc.
 @export_range(0, 100, 1, "suffix:%") var missChance: int = 0
 
-@export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
-	set(newValue):
-		isEnabled = newValue
-		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
+@export var isEnabled: bool = true
+	# UNUSED: set(newValue):
+		# isEnabled = newValue
+		# NOTE: FIXED: Do not disable the Area2D collisions,
+		# otherwise `DamageComponent.damagePerFrame` will not work correctly,
+		# because this DamageReceivingComponent Area2D will trigger an `onAreaExited` signal when toggling `monitoring/able`,
+		# which will remove this DamageReceivingComponent from `DamageComponent.damageReceivingComponentsInContact`,
+		# preventing further damage even if this DamageReceivingComponent remains in contact!
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
-		if  area:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred(&"monitoring",  isEnabled)
-			area.set_deferred(&"monitorable", isEnabled)
+		# UNUSED: if area:
+			# Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			# area.set_deferred(&"monitoring",  isEnabled)
+			# area.set_deferred(&"monitorable", isEnabled)
 #endregion
 
 
