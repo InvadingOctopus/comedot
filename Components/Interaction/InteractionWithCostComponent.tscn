@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ctb31yeqt3dae"]
 
-[ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Objects/InteractionWithCoooldownComponent.tscn" id="1_755gj"]
-[ext_resource type="Script" uid="uid://tenrw04a0cxr" path="res://Components/Objects/InteractionWithCostComponent.gd" id="2_nrbwt"]
+[ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Interaction/InteractionWithCoooldownComponent.tscn" id="1_755gj"]
+[ext_resource type="Script" uid="uid://tenrw04a0cxr" path="res://Components/Interaction/InteractionWithCostComponent.gd" id="2_nrbwt"]
 
 [node name="InteractionWithCostComponent" instance=ExtResource("1_755gj")]
 editor_description = "Subclass of InteractionWithCoooldownComponent with a Stat cost."

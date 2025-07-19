@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://qkcschxa5my1"]
 
-[ext_resource type="Script" uid="uid://biw5xapr2dvcr" path="res://Components/Control/InteractionControlComponent.gd" id="1_3nqhk"]
+[ext_resource type="Script" uid="uid://biw5xapr2dvcr" path="res://Components/Interaction/InteractionControlComponent.gd" id="1_3nqhk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jn0kx"]
 resource_local_to_scene = true

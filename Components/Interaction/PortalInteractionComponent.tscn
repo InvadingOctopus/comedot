@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d1ayxdi7fyaac"]
 
-[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="1_jlbp3"]
-[ext_resource type="Script" uid="uid://05y84tivt3b3" path="res://Components/Objects/PortalInteractionComponent.gd" id="2_qpgd0"]
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="1_jlbp3"]
+[ext_resource type="Script" uid="uid://05y84tivt3b3" path="res://Components/Interaction/PortalInteractionComponent.gd" id="2_qpgd0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vmnar"]
 resource_local_to_scene = true

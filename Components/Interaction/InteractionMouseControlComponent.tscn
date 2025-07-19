@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjfet208qg7gt"]
+
+[ext_resource type="PackedScene" uid="uid://qkcschxa5my1" path="res://Components/Interaction/InteractionControlComponent.tscn" id="1_x2yas"]
+[ext_resource type="Script" uid="uid://b8vb443l1rqqh" path="res://Components/Interaction/InteractionMouseControlComponent.gd" id="2_uocm8"]
+
+[node name="InteractionMouseControlComponent" instance=ExtResource("1_x2yas")]
+script = ExtResource("2_uocm8")

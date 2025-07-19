@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cs6paddlsmrgv"]
 
 [ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="1_g7u37"]
-[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Objects/InteractionComponent.tscn" id="2_hijqq"]
+[ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="2_hijqq"]
 
 [node name="InteractiveEntity" groups=["interactions"] instance=ExtResource("1_g7u37")]
 modulate = Color(0, 0.5, 1, 1)
