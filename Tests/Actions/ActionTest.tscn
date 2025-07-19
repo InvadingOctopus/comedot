@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdryp1672xdf7"]
+[gd_scene load_steps=18 format=4 uid="uid://bdryp1672xdf7"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_baond"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_020ow"]
+[ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="2_c1c8v"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_c1c8v"]
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="4_tue7k"]
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="5_tl03x"]
@@ -20,6 +21,10 @@
 [node name="ActionsTest" type="Node2D"]
 script = ExtResource("1_baond")
 
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAD1//X/AwAAAAAAAAD2//X/AwAAAAAAAAD3//X/AwAAAAAAAAD4//X/AwAAAAAAAAAGAPX/AwAAAAAAAAAHAPX/AwAAAAAAAAAIAPX/AwAAAAAAAAAJAPX/AwAAAAAAAAAKAPX/AwAAAAAAAAAKAAoAAwAAAAAAAAAJAAoAAwAAAAAAAAAIAAoAAwAAAAAAAAAHAAoAAwAAAAAAAAAGAAoAAwAAAAAAAAAFAAoAAwAAAAAAAAAEAAoAAwAAAAAAAAADAAoAAwAAAAAAAAACAAoAAwAAAAAAAAABAAoAAwAAAAAAAAAAAAoAAwAAAAAAAAD//woAAwAAAAAAAAD+/woAAwAAAAAAAAD9/woAAwAAAAAAAAD8/woAAwAAAAAAAAD7/woAAwAAAAAAAAD6/woAAwAAAAAAAAD5/woAAwAAAAAAAAD4/woAAwAAAAAAAAD3/woAAwAAAAAAAAD2/woAAwAAAAAAAAD1/woAAwAAAAAAAAD5//X/AwAAAAAAAAD6//X/AwAAAAAAAAD7//X/AwAAAAAAAAD8//X/AwAAAAAAAAD9//X/AwAAAAAAAAD+//X/AwAAAAAAAAD///X/AwAAAAAAAAAAAPX/AwAAAAAAAAABAPX/AwAAAAAAAAACAPX/AwAAAAAAAAADAPX/AwAAAAAAAAAEAPX/AwAAAAAAAAAFAPX/AwAAAAAAAAAKAAAAAwAAAAAAAAAKAAEAAwAAAAAAAAAKAAIAAwAAAAAAAAAKAAMAAwAAAAAAAAAKAAQAAwAAAAAAAAAKAAUAAwAAAAAAAAAKAAYAAwAAAAAAAAAKAAcAAwAAAAAAAAAKAAgAAwAAAAAAAAAKAAkAAwAAAAAAAAAKAP//AwAAAAAAAAAKAP7/AwAAAAAAAAAKAP3/AwAAAAAAAAAKAPz/AwAAAAAAAAAKAPv/AwAAAAAAAAAKAPr/AwAAAAAAAAAKAPn/AwAAAAAAAAAKAPj/AwAAAAAAAAAKAPf/AwAAAAAAAAAKAPb/AwAAAAAAAAD1/wEAAwAAAAAAAAD1/wIAAwAAAAAAAAD1/wMAAwAAAAAAAAD1/wQAAwAAAAAAAAD1/wAAAwAAAAAAAAD1////AwAAAAAAAAD1//7/AwAAAAAAAAD1//3/AwAAAAAAAAD1//z/AwAAAAAAAAD1//v/AwAAAAAAAAD1//r/AwAAAAAAAAD1//n/AwAAAAAAAAD1//j/AwAAAAAAAAD1//f/AwAAAAAAAAD1//b/AwAAAAAAAAD1/wUAAwAAAAAAAAD1/wYAAwAAAAAAAAD1/wcAAwAAAAAAAAD1/wgAAwAAAAAAAAD1/wkAAwAAAAAAAAA=")
+tile_set = ExtResource("2_c1c8v")
+
 [node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_020ow")]
 
 [node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("3_c1c8v")]
@@ -32,7 +37,7 @@ debugMode = true
 [node name="ActionControlComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("12_jynvc")]
 
 [node name="SpriteEntity" parent="." instance=ExtResource("13_020ow")]
-position = Vector2(72, 56)
+position = Vector2(64, 64)
 
 [node name="ActionTargetableComponent" parent="SpriteEntity" instance=ExtResource("14_1cwln")]
 
