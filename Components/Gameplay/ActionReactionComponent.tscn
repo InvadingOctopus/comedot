@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvld40na03sjv"]
+
+[ext_resource type="PackedScene" uid="uid://c6sthnygmcwpg" path="res://Components/Gameplay/ActionTargetableComponent.tscn" id="1_cfycj"]
+[ext_resource type="Script" uid="uid://up6v8hd3samm" path="res://Components/Gameplay/ActionReactionComponent.gd" id="2_buawl"]
+[ext_resource type="Script" uid="uid://dua4cd3nlawsb" path="res://Resources/Payloads/Payload.gd" id="3_ib5yy"]
+
+[node name="ActionReactionComponent" instance=ExtResource("1_cfycj")]
+editor_description = "A component that executes its own Payload when targetted by an Action."
+script = ExtResource("2_buawl")
+payloads = Dictionary[StringName, ExtResource("3_ib5yy")]({})
+fallbackPayload = null
