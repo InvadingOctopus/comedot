@@ -52,14 +52,18 @@ func _ready() -> void:
 ## Returns the [Entity] of the chosen [ActionTargetableComponent] if [method ActionTargetableComponent.requestToChoose] is approved,
 ## otherwise returns `null`.
 func chooseTarget(target: ActionTargetableComponent) -> Entity:
-	if isEnabled and target.requestToChoose():
+	if debugMode: printLog("chooseTarget(): " + target.logFullNameWithEntity)
+	if isEnabled and target.requestToChoose(action, self.parentEntity):
 		var targetEntity: Entity = target.parentEntity
+		# Signals
 		self.didChooseTarget.emit(targetEntity)
 		GlobalUI.actionDidChooseTarget.emit(action, self.parentEntity, targetEntity)
-		actionsComponent.performAction(action.name, targetEntity) # NOTE: Perform actions by their name ID?
+		# Go!
+		actionsComponent.performAction(action.name, targetEntity) # NOTE: Perform actions by their name ID # TBD: Use the actual Action instance?
 		return targetEntity
 	else:
-		return null # TBD: Should the chosen Entity be returned even if `requestToChoose()` is denied?
+		if debugMode: printLog("chooseTarget() failed: " + target.logFullNameWithEntity)
+		return null # TBD: Should the chosen Entity be returned even if requestToChoose() is denied?
 
 
 #region Cancellation

@@ -20,7 +20,7 @@ extends AreaComponentBase
 
 
 #region Signals
-signal wasChosen
+signal wasChosen(action: Action, sourceEntity: Entity)
 #endregion
 
 
@@ -47,17 +47,21 @@ func onWillRemoveFromEntity() -> void:
 #region Action Targeting
 
 ## May be called by an [ActionTargetingComponent].
-func requestToChoose() -> bool:
-	if checkConditions():
-		self.wasChosen.emit()
+func requestToChoose(action: Action = null, sourceEntity: Entity = null) -> bool:
+	# DESIGN: The `action` & `sourceEntity` parameters are optional because most targets will not care,
+	# but some targets may only accept or decline certain specific Actions.
+	if debugMode: printLog(str("requestToChoose() action: ", action.logName, ", sourceEntity: ", sourceEntity.logFullName))
+	if checkConditions(action, sourceEntity):
+		self.wasChosen.emit(action, sourceEntity)
 		return true
 	else:
+		if debugMode: printLog("checkConditions() failed!")
 		return false
 
 
 ## Overridden in subclass to specify any conditions.
-func checkConditions() -> bool:
-	# TODO: Add arguments to specify the chooser/action etc.
+@warning_ignore("unused_parameter")
+func checkConditions(action: Action = null, sourceEntity: Entity = null) -> bool:
 	return self.isEnabled
 
 #endregion
