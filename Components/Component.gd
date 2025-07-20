@@ -380,7 +380,7 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInParen
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 ## NOTE: Does NOT affect warnings and errors!
-var isLoggingEnabled:		bool
+var isLoggingEnabled: bool
 
 var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
 	get: return "􀥭 " + self.name
@@ -389,9 +389,13 @@ var logName: String: # NOTE: This is a dynamic property because direct assignmen
 var logFullName: String:
 	get: return str("􀥭 ", self, ":", self.get_script().get_global_name())
 
-# [member Component.logName] + [member Entity.logName]
+## [member Component.logName] + [member Entity.logName]
 var logNameWithEntity: String:
 	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
+
+## [member Component.logFullName] + [member Entity.logFullName]
+var logFullNameWithEntity: String:
+	get: return self.logFullName + ((" " + parentEntity.logFullName) if parentEntity else "")
 
 var randomDebugColor: Color = Tools.getRandomQuantizedColor() ## Used by [method emitDebugBubble] etc. to distinguish different components from each other.
 
