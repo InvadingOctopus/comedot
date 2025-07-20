@@ -33,8 +33,12 @@ extends Node
 var parentEntity: Entity:
 	set(newValue):
 		if newValue != parentEntity:
-			if debugMode: printDebug(str("parentEntity: ", parentEntity, " → ", newValue))
+			if debugMode: printChange("parentEntity", parentEntity, newValue)
 			parentEntity = newValue
+			if parentEntity != self.get_parent():
+				printWarning(str("parentEntity set to: ", parentEntity, ", not the actual parent: ", self.get_parent()))
+			# NOTE: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
+			# to be in proper order with other operations such as signals etc.
 
 ## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
 ## Access via the shortcut of `coComponents.ComponentClassName` or,
@@ -97,6 +101,14 @@ func checkRequiredComponents() -> bool:
 
 
 #region Life Cycle
+# NOTIFICATION_PARENTED → _enter_tree() → _ready()
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PARENTED:   validateParent()	# Received when a node is set as the child of another node,  not necessarily when the node enters the SceneTree.
+		NOTIFICATION_UNPARENTED: unregisterEntity() # Received when a parent calls remove_child() on a child node, not necessarily when the node exit the SceneTree.
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
+
 
 ## Called by [method _notification] when the component receives [constant NOTIFICATION_PARENTED],
 ## which is when the node is added as a child of any parent node. NOTE: This does not mean the node has entered the SceneTree (yet).
@@ -145,18 +157,19 @@ func _enter_tree() -> void:
 	# Find which Entity this Component belongs to, if not already set.
 	if not self.parentEntity: registerEntity(self.findParentEntity())
 
-	update_configuration_warnings()
+	# UNUSED: update_configuration_warnings() # Only useful if @tool script
 
 	if parentEntity:
 		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
 		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
+		# CHECK: Are these flags set only ONCE when _enter_tree() the first time, or also when a new `parentEntity` is set?
 		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
-		self.debugMode = self.debugMode or parentEntity.debugMode
+		self.debugMode		  = self.debugMode or parentEntity.debugMode
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
-
 		self.checkRequiredComponents()
-	elif not allowNonEntityParent:
-		printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
+	else: 
+		self.coComponents = {} # Clear our previous memory of any siblings
+		if not allowNonEntityParent: printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
 
 ## Search up the scene tree for a parent or grandparent node which is of type [Entity] and returns it.
@@ -183,7 +196,7 @@ func registerEntity(newParentEntity: Entity) -> void:
 	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
 	if not newParentEntity: return
 	self.parentEntity = newParentEntity
-	parentEntity.registerComponent(self) # NOTE: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
+	self.parentEntity.registerComponent(self) # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
 	self.coComponents = parentEntity.components
 
 
@@ -229,7 +242,7 @@ func unregisterEntity() -> void:
 	if debugMode: printDebug(str("unregisterEntity() ", get_parent()))
 	if parentEntity:
 		willRemoveFromEntity.emit()
-		self.coComponents = {}
+		self.coComponents = {} # CHECK: PERFORMANCE: Is `= {}` faster or .clear()?
 		parentEntity.unregisterComponent(self)
 		self.parentEntity = null
 		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
@@ -239,16 +252,10 @@ func unregisterEntity() -> void:
 ## so it does not necessarily mean that this Component was removed from the ENTITY.
 func _exit_tree() -> void:
 	# Deinitialization Order: 1: Before Entity.childExitingTree(), Entity._exit_tree()
-	# AVOID: `parentEntity` must NOT be `null`ed here! nor `coComponents`!
+	# NOTE: AVOID: `parentEntity` must NOT be `null`ed here! nor `coComponents`!
+	# because a Component may _exit_tree() while it is still a child of an Entity, if the Entity itself _exit_tree()s
 	var entityName: String = parentEntity.logName if parentEntity else "null" # Check parentEntity since components may be freed without being children of an Entity
 	printLog("[color=brown]􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
-
-
-func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_PARENTED:   validateParent()	# Received when a node is set as the child of another node,  not necessarily when the node enters the SceneTree.
-		NOTIFICATION_UNPARENTED: unregisterEntity() # Received when a parent calls remove_child() on a child node, not necessarily when the node exit the SceneTree.
-		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 
 #endregion
 
@@ -338,7 +345,6 @@ func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false)
 ## If the [param node] is not an component but the node's parent/grandparent is an Entity, the Entity is searched to find the matching [param componentType] if [param findInParentEntity].
 ## @experimental
 static func castOrFindComponent(node: Node, componentType: GDScript, findInParentEntity: bool = true) -> Component:
-
 	# First, try casting the node itself.
 	var component: Component = node.get_node(^".") as Component # HACK: Find better way to cast self?
 
@@ -380,7 +386,7 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInParen
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 ## NOTE: Does NOT affect warnings and errors!
-var isLoggingEnabled: bool
+var isLoggingEnabled:		bool
 
 var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
 	get: return "􀥭 " + self.name

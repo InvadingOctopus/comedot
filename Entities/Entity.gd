@@ -60,6 +60,17 @@ signal preDelete
 
 
 #region Life Cycle
+# NOTIFICATION_PARENTED → _enter_tree() → _ready()
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PREDELETE: # NOTE: WTF: Odd Godot sends this BEFORE NOTIFICATION_UNPARENTED and the `tree_exiting` signal etc.
+			if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete")
+			preDelete.emit()
+		NOTIFICATION_UNPARENTED: # NOTE: WTF: AFTER NOTIFICATION_PREDELETE! Odd Godot naming.
+			if isLoggingEnabled: printLog("[color=brown]􀆄 UnParented")
+			# UNUSED: unParented.emit() # Not needed yet
+
 
 func _ready() -> void:
 	printDebug("_ready()")
@@ -103,16 +114,6 @@ func requestDeletion() -> bool: # TBD: Should this be renamed to `requestDeletio
 
 func _exit_tree() -> void:
 	printLog("[color=brown]􀈃 _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
-
-
-func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_PREDELETE: # NOTE: WTF: Odd Godot sends this BEFORE NOTIFICATION_UNPARENTED and the `tree_exiting` signal etc.
-			if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete")
-			preDelete.emit()
-		NOTIFICATION_UNPARENTED: # NOTE: WTF: AFTER NOTIFICATION_PREDELETE! Odd Godot naming.
-			if isLoggingEnabled: printLog("[color=brown]􀆄 UnParented")
-			# UNUSED: unParented.emit() # Not needed yet
 
 #endregion
 
