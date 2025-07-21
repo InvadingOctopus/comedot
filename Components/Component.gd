@@ -35,7 +35,7 @@ var parentEntity: Entity:
 		if newValue != parentEntity:
 			if debugMode: printChange("parentEntity", parentEntity, newValue)
 			parentEntity = newValue
-			if parentEntity != self.get_parent():
+			if parentEntity and parentEntity != self.get_parent(): # Don't verify if `null`, because during NOTIFICATION_UNPARENTED get_parent() will still return the about-to-unparent Entity.
 				printWarning(str("parentEntity set to: ", parentEntity, ", not the actual parent: ", self.get_parent()))
 			# NOTE: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
 			# to be in proper order with other operations such as signals etc.
@@ -244,7 +244,7 @@ func unregisterEntity() -> void:
 		willRemoveFromEntity.emit()
 		self.coComponents = {} # CHECK: PERFORMANCE: Is `= {}` faster or .clear()?
 		parentEntity.unregisterComponent(self)
-		self.parentEntity = null
+		self.parentEntity = null # TBD: Use .set_deferred()?
 		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
 
 

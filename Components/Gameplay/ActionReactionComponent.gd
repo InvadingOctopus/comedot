@@ -25,14 +25,17 @@ signal didExecutePayload(payload: Payload,  action: Action, sourceEntity: Entity
 
 ## May be called by an [ActionTargetingComponent].
 func requestToChoose(action: Action = null, sourceEntity: Entity = null) -> bool:
+	# TBD: Use Action StringName or the direct instance?
+	# DESIGN: Using actual Action instances may cause problems if different entities use different instances of the same Action with the same name, e.g. to keep track of different cooldowns etc.
+
 	var payload: Payload = self.payloads.get(action.name)
 
 	if not payload:
 		if fallbackPayload:
 			payload = fallbackPayload
-			if debugMode: printLog(str("requestToChoose(): No payload for " + action.name, ", using fallback: ", fallbackPayload.logName))
+			if debugMode: printLog(str("requestToChoose(): No payload for Action name: " + action.name, ", using fallback: ", fallbackPayload.logName))
 		else:
-			printWarning("requestToChoose(): No payload or fallback for " + action.name)
+			printWarning("requestToChoose(): No payload or fallback for Action name: " + action.name)
 			return false
 
 	if debugMode: printLog(str("requestToChoose() action: ", action.logName, ", sourceEntity: ", sourceEntity.logFullName, ", payload: ", payload.logName))
