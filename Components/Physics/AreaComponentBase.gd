@@ -46,9 +46,11 @@ var areaBoundsGlobal: Rect2:
 
 
 func _enter_tree() -> void:
+	super._enter_tree()
+	
 	# DESIGN: A Component-as-Area2D should override the Entity-as-Area2D, because a Component is an explicit addition to an Entity.
 	# Log before attempts, in case there are property getters/setters ahead
-
+	
 	selfAsArea = self.get_node(^".") as Area2D
 
 	if self.areaOverride:
