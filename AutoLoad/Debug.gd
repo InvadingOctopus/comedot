@@ -340,7 +340,7 @@ func printTrace(values: Array[Variant] = [], object: Variant = null, stackPositi
 
 
 ## Prints a pretty stack dump, including all child nodes and variables.
-func printStackDump(object: Variant, includeChildNodes: bool = true, includeGlobalVariables: bool = false, includeMemberVariables: bool = false, includeLocalVariables: bool = true) -> void:
+func printStackDump(object: Variant, includeChildNodes: bool = true, includeLocalVariables: bool = true, includeMemberVariables: bool = false, includeGlobalVariables: bool = false) -> void:
 	const globalVariableColor:	String = "[color=dimgray]"
 	const memberVariableColor:	String = "[color=dimgray]"
 	const localVariableColor:	String = "[color=gray]"
