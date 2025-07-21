@@ -30,13 +30,13 @@ Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
 Godot Version:	4.5
 Asset Version:	4.5.0.30.420 (First 4 numbers are the Godot version including Dev/Beta/RC)
-Commit URL:		0ad2c9baf1155f034e4fd8ef164a02adad0cf7e5 2025-07-17
+Commit URL:		01db9d3f3d31b6347a48b59ba291474fa4b1df45 2025-07-21
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
-Preview:  		https://i.imgur.com/aW0MHRu.png Logo
-Screenshot 1:	https://i.imgur.com/bwv00SO.png Components Dock
-Screenshot 2:	https://i.imgur.com/mQMtIAK.png Components Tree Example
-Screenshot 3:	https://i.imgur.com/7XqChTP.png Main Menu
-Screenshot 4:	https://i.imgur.com/eiyfQ3h.png Input Map
-Screenshot 5:	https://i.imgur.com/nWJXuiX.png Pause
-Screenshot 6:	https://i.imgur.com/xEqbXHs.png Charts
+Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
+Screenshot 1:	Dock:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Comedock.png
+Screenshot 2:	Tree:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png
+Screenshot 3:	Main Menu:	https://i.imgur.com/7XqChTP.png
+Screenshot 4:	Input Map:	https://i.imgur.com/eiyfQ3h.png
+Screenshot 5:	Pause:		https://i.imgur.com/nWJXuiX.png
+Screenshot 6:	Charts:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Debug%20Charts%20%26%20Watchlists.png
