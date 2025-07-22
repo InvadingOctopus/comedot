@@ -492,8 +492,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
 
 	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
-	if %EditableChildrenCheckBox.button_pressed:
-		newEntity.get_parent().set_editable_instance(newEntity, true)
+	newEntity.get_parent().set_editable_instance(newEntity, %EditableChildrenCheckBox.button_pressed)
 
 
 func getSelectedComponentAndAddToSelectedNode() -> void:
@@ -550,8 +549,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	EditorInterface.edit_node(newComponentNode)
 
 	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
-	if %EditableChildrenCheckBox.button_pressed:
-		newComponentNode.get_parent().set_editable_instance(newComponentNode, true)
+	newComponentNode.get_parent().set_editable_instance(newComponentNode, %EditableChildrenCheckBox.button_pressed)
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))

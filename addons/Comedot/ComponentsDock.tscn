@@ -75,7 +75,6 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Expose the sub-nodes of new Entities & Components?"
 focus_next = NodePath("../RefreshButton")
-button_pressed = true
 text = "Editable Children"
 alignment = 2
 
