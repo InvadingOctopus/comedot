@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_8uggr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boo6r"]
+resource_local_to_scene = true
 size = Vector2(16, 16)
 
 [node name="Player-TileBased" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]

@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="14_0223s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
+resource_local_to_scene = true
 size = Vector2(16, 16)
 
 [sub_resource type="Resource" id="Resource_tj7yr"]

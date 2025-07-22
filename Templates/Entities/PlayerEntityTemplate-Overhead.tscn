@@ -12,6 +12,7 @@ atlas = ExtResource("2_at8ff")
 region = Rect2(560, 224, 16, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
+resource_local_to_scene = true
 size = Vector2(15, 15)
 
 [node name="Player-Overhead" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
