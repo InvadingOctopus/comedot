@@ -7,8 +7,11 @@
 script = ExtResource("2_iq1o4")
 shouldCooldownOnFailure = true
 cooldownOnFailure = 0.5
+shouldRepeatInteractionAfterCooldown = false
+shouldModifyIndicatorInCooldown = true
+previousInteractor = null
 
 [node name="CooldownTimer" type="Timer" parent="." index="1"]
 one_shot = true
 
-[connection signal="timeout" from="CooldownTimer" to="." method="onCooldownTimer_timeout"]
+[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]

@@ -75,13 +75,14 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 
 		if  Tools.checkResult(result):
 			paymentStat.emit_changed() # In case we skipped the previous deduction :)
-			cooldownTimer.start()
+			previousInteractor = interactionControlComponent # TBD: Update only on successful interaction or always?
+			startCooldown()
 
 		elif paymentStat: # Refund the cost if the interaction failed
 			if debugMode: printDebug(str("Payload: ", payload, ", result: ", result, " failed; refunding ", paidCost, " → ", paymentStat.logName))
 			paymentStat.shouldSkipEmittingNextChange = true # Suppress superfluous [StatsVisualComponent] animations etc.
 			paymentStat.value += paidCost
-			if shouldCooldownOnFailure: cooldownTimer.start(cooldownOnFailure)
+			if shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
 
 		updateLabel()
 		return result
