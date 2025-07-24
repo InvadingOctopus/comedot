@@ -39,11 +39,11 @@ signal didFinishCooldown
 #endregion
 
 
-func updateLabel() -> void:
+func updateIndicator() -> void:
 	# TBD: Modify Label only on startCooldown() or hijack this method?
 	# CONCERN: If only on startCooldown(), then a manual Timer.start() would skip the UI update, because Timer does not have a "start" signal :'(
 	if not shouldModifyIndicatorInCooldown:
-		super.updateLabel()
+		super.updateIndicator()
 		return
 
 	if not interactionIndicator: return
@@ -54,7 +54,7 @@ func updateLabel() -> void:
 
 	if interactionIndicator is Label:
 		if is_zero_approx(cooldownTimer.time_left):
-			if not self.labelText.is_empty(): interactionIndicator.text = self.labelText
+			if not self.text.is_empty(): interactionIndicator.text = self.text
 		else:
 			interactionIndicator.text = "COOLDOWN"
 
@@ -62,7 +62,7 @@ func updateLabel() -> void:
 #region Cooldown
 # Yes, some code duplication from CooldownComponent because Godon't have interface/protocols :')
 
-## Starts the cooldown delay and dims the [member interactionIndicator] if it's a [Label].
+## Starts the cooldown delay and calls [member updateIndicator] if [member shouldModifyIndicatorInCooldown].
 func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
 	# TBD: PERFORMANCE: Do we really need all this crap just for a simple Timer.start()?
 	# Or could the `didStartCooldown` signal be helpful in chaining with other components e.g. for animations etc.?
@@ -79,14 +79,14 @@ func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
 	else: # If the time is too low, run straight to the finish
 		finishCooldown() # TBD: CHECK: BUGCHANCE: Could this cause problems with `shouldRepeatInteractionAfterCooldown`?
 
-	if shouldModifyIndicatorInCooldown: updateLabel()
+	if shouldModifyIndicatorInCooldown: updateIndicator()
 
 
-## Called when the cooldown [Timer] is over. Updates the [member interactionIndicator] if it's a [Label].
+## Called when the cooldown [Timer] is over. Calls [member updateIndicator].
 func finishCooldown() -> void:
 	if debugMode: printDebug("finishCooldown()")
 	cooldownTimer.stop()
-	updateLabel() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
+	updateIndicator() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
 	didFinishCooldown.emit()
 
 	# Again again!?

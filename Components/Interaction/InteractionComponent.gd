@@ -23,33 +23,35 @@ extends Component
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
+## If `true` then [InteractionControlComponent]s will not enter a cooldown when they interact with this object.
+## TIP: Convenient for implementing NPC dialogs with [TextInteractionComponent] etc. where the cooldown is on the NPC's side.
+@export var shouldSkipInteractorCooldown: bool = false
+
 ## Initiate an interaction automatically as soon as any [InteractionControlComponent] comes in contact.
 ## Calls [method InteractionControlComponent.interact] on an [Area2D] collision event.
 ## Example: Portals or traps etc.
 ## NOTE: Does not repeat interaction after the cooldown resets.
-@export var automatic: bool = false
-
-## If `true` then [InteractionControlComponent]s will not enter a cooldown when they interact with this object.
-## TIP: Convenient for implementing NPC dialogs with [TextInteractionComponent] etc. where the cooldown is on the NPC's side.
-@export var shouldSkipInteractorCooldown: bool = false
+@export var isAutomatic: bool = false
 
 
 @export_group("UI")
 
 @export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionComponent] is in collisioncontact with an [InteractionControlComponent].
 
-@export var alwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
+@export var shouldAlwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
 
-## An optional short label, name or phrase for the interaction to display in the UI.
+## An optional short label, name or phrase to display in the UI for this interaction.
 ## Example: "Open Door" or "Chop Tree".
-@export var labelText: String:
+## Used by [method updateIndicator] to automatically update the [member interactionIndicator] if it's a [Label].
+@export var text: String:
 	set(newValue):
-		if newValue != labelText:
-			labelText = newValue
-			if self.is_node_ready(): updateLabel()
+		if newValue != text:
+			text = newValue
+			if self.is_node_ready() and interactionIndicator is Label: updateIndicator()
 
 ## An optional detailed description of the interaction to display in the UI.
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
+## If the [member interactionIndicator] is a [Control] then it's [member Control.tooltip_text] is also set to this string.
 @export var description: String:
 	set(newValue):
 		if newValue != description:
@@ -80,43 +82,42 @@ func _ready() -> void:
 	# Set the initial state of the indicator
 	if interactionIndicator:
 		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
-		interactionIndicator.visible = alwaysShowIndicator # Start invisible if false
+		interactionIndicator.visible = shouldAlwaysShowIndicator # Start invisible if false
 
 		if interactionIndicator is Label:
-			# NOTE: If our `labelText` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
-			if self.labelText.is_empty(): self.labelText = interactionIndicator.text
-			else: updateLabel() # Otherwise set the UI to our string
+			# NOTE: If our `text` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
+			if self.text.is_empty(): self.text = interactionIndicator.text
+			else: updateIndicator() # Otherwise set the UI to our string
 
 	if  selfAsArea: # Apply setter because Godot doesn't on initialization
 		selfAsArea.monitoring  = isEnabled
 		selfAsArea.monitorable = isEnabled
 
 
-## If the [interactionIndicator] is a [Label], display our [member labelText] parameter.
-func updateLabel() -> void:
-	# TBD: Should this be optional?
-	if not self.labelText.is_empty() and interactionIndicator is Label:
-		interactionIndicator.text = self.labelText
+func updateIndicator() -> void:
+	## If the [interactionIndicator] is a [Label], display our [member text] parameter.
+	## NOTE: Do not check text.is_empty() so we can allow the UI to be cleared.
+	if  interactionIndicator is Label:
+		interactionIndicator.text = self.text
 
 
-#region Events
+#region Area Collision Events
 
 func onArea_entered(area: Area2D) -> void:
 	if not isEnabled: return
 	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
 
-	if debugMode: printDebug(str("onArea_entered(): ", area, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity if interactionControlComponent else "null", ", automatic: ", automatic))
+	if debugMode: printDebug(str("onArea_entered(): ", area, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity if interactionControlComponent else "null", ", isAutomatic: ", isAutomatic))
 
 	# Display the indicators and labels, if any.
 	if interactionIndicator:
-		updateLabel()
+		updateIndicator()
 		interactionIndicator.visible = true
 
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
 
-	if self.automatic:
-		interactionControlComponent.interact(self) # Interact only with me senpai!
+	if self.isAutomatic: performAutomaticInteraction(interactionControlComponent) # A separate method so subclasses may override it.
 
 
 func onArea_exited(area: Area2D) -> void:
@@ -125,7 +126,7 @@ func onArea_exited(area: Area2D) -> void:
 	if not interactionControlComponent: return
 
 	# Hide the indicators and labels.
-	if interactionIndicator and not alwaysShowIndicator:
+	if interactionIndicator and not shouldAlwaysShowIndicator:
 		interactionIndicator.visible = false
 
 	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
@@ -163,6 +164,14 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	self.didPerformInteraction.emit(result)
 
 	return result
+
+
+## Called by [method onArea_entered] if [member isAutomatic].
+## Implemented as a separate method so that subclasses mat override it.
+## NOTE: Does NOT check [member isAutomatic]; must be checked by caller.
+## HEADSUP: Remember to set [member previousInteractor] = [member interactionControlComponent] if using [method startCooldown].
+func performAutomaticInteraction(interactionControlComponent: InteractionControlComponent) -> void:
+	interactionControlComponent.interact(self) # Interact only with me senpai!
 
 #endregion
 

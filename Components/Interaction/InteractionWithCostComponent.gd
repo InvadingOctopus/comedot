@@ -84,7 +84,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 			paymentStat.value += paidCost
 			if shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
 
-		updateLabel()
+		updateIndicator()
 		return result
 	else:
 		return false
