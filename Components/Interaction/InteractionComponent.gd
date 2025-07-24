@@ -106,6 +106,8 @@ func onArea_entered(area: Area2D) -> void:
 	var interactionControlComponent: InteractionControlComponent = area.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
 
+	if debugMode: printDebug(str("onArea_entered(): ", area, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity if interactionControlComponent else "null", ", automatic: ", automatic))
+
 	# Display the indicators and labels, if any.
 	if interactionIndicator:
 		updateLabel()
@@ -114,7 +116,7 @@ func onArea_entered(area: Area2D) -> void:
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
 
 	if self.automatic:
-		interactionControlComponent.interactAll()
+		interactionControlComponent.interact(self) # Interact only with me senpai!
 
 
 func onArea_exited(area: Area2D) -> void:
