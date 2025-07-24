@@ -55,7 +55,7 @@ var hasCooldownCompleted: bool = true # Start with the cooldown off
 
 
 #region Signals
-signal didStartCooldown
+signal didStartCooldown(time: float) ## ALERT: NOT emitted if [method Timer.start] is called manually on [member cooldownTimer].
 signal didFinishCooldown
 #endregion
 
@@ -76,9 +76,10 @@ func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 	hasCooldownCompleted = false
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
-		cooldownTimer.wait_time = overrideTime
+		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
 		cooldownTimer.start(overrideTime)
-		didStartCooldown.emit()
+		cooldownTimer.wait_time = previousTime # Restore the default cooldown
+		didStartCooldown.emit(overrideTime)
 	else: # If the time is too low, run straight to the finish
 		finishCooldown()
 
