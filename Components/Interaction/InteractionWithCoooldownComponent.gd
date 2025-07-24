@@ -29,7 +29,7 @@ extends InteractionComponent
 
 
 #region Signals
-signal didStartCooldown ## ALERT: NOT emitted if [method Timer.start] is called manually on [member cooldownTimer].
+signal didStartCooldown(time: float) ## ALERT: NOT emitted if [method Timer.start] is called manually on [member cooldownTimer].
 signal didFinishCooldown
 #endregion
 
@@ -67,12 +67,15 @@ func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
 	# TBD: PERFORMANCE: Do we really need all this crap just for a simple Timer.start()?
 	# Or could the `didStartCooldown` signal be helpful in chaining with other components e.g. for animations etc.?
 
-	if debugMode: printDebug(str("startCooldown(): ", overrideTime))
+	if debugMode:
+		printDebug(str("startCooldown(): ", overrideTime))
+		emitDebugBubble(str("CD:", overrideTime))
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
-		cooldownTimer.wait_time = overrideTime
+		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
 		cooldownTimer.start(overrideTime)
-		didStartCooldown.emit()
+		cooldownTimer.wait_time = previousTime # Restore the default cooldown
+		didStartCooldown.emit(overrideTime)
 	else: # If the time is too low, run straight to the finish
 		finishCooldown() # TBD: CHECK: BUGCHANCE: Could this cause problems with `shouldRepeatInteractionAfterCooldown`?
 
