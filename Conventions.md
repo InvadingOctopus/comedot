@@ -130,9 +130,9 @@ func onTimeout() # in the script of a Timer node
 
 ## Design
 
-* The ultimate goal is to have minimal time between getting a new gameplay idea and seeing it on screen. And be easy to modify later. The focus is on 2D games.
+* The ultimate goal is to minimize the time and effort between braining a new gameplay idea and seeing it on screen. And be easy to modify/iterate later. The focus is on 2D games.
 
-* The core soul of this project is the library of components: Everything else is just scaffolding to support a workflow based on components (or conveniences like UI).
+* The core of this project is the library of components: Everything else is just scaffolding to support a component-based workflow (or conveniences like UI).
 
 * HOW components are actually implemented behind-the-scenes may always keep changing, but the components themselves will always be present: e.g. there will always be a HealthComponent, a DamageComponent, a DamageReceivingComponent and so on.
 
@@ -145,6 +145,8 @@ func onTimeout() # in the script of a Timer node
 	* `TreeSearchBox` instead of a search feature built into ComponentsDock.
 	* Wiring multiple components via signals: Using `ModifyOnCollisionComponent` to add a `ModifyOnTimerComponent` and connecting them to implement arrows which get stuck in walls then automatically removed, instead of creating a separate ArrowComponent.
 	* Try to solve shit using existing properties & parameters before creating new variables: TextInteractionComponent using `InteractionComponent.text` & `.isAutomatic` to resolve the visibility of the initial message, instead of adding specialized flags.
+
+* "Oversimplifying" components is NOT a goal: Each component should stick to a well-defined task, and subclasses should be used to add distinct layers of extra functionality, such as `InteractionComponent` → `InteractionWithCooldownComponent`, but they DON'T have to minimize the number of parameters or methods: Each component in a shared library should be powerful and usable in different games, and be easy to wire with each other via signals.
 
 * You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
