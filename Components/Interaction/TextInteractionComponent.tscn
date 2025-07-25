@@ -7,11 +7,13 @@
 [node name="TextInteractionComponent" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("1_vqado")]
 use_parent_material = true
 script = ExtResource("2_ap0r7")
-textStrings = ["String1", "String2", "String3"]
-textColors = Array[Color]([Color(1, 1, 1, 1), Color(1, 1, 0, 1)])
+textStrings = PackedStringArray("1st String", "String2", "Last String")
+textColors = PackedColorArray(1, 1, 1, 1, 0, 1, 1, 1)
 shouldAnimate = true
 shouldClearBeforeAnimation = true
 animationDurationPerCharacter = 0.05
+cooldownBeforeAutomaticNext = 2.0
+shouldModifyIndicatorInCooldown = false
 shouldSkipInteractorCooldown = true
 interactionIndicator = NodePath("Label")
 
@@ -21,6 +23,7 @@ wait_time = 0.2
 [node name="Label" type="Label" parent="." index="2"]
 z_index = 100
 use_parent_material = true
+anchors_preset = -1
 offset_left = -64.0
 offset_top = -40.0
 offset_right = 64.0

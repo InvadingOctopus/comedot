@@ -4,105 +4,170 @@
 class_name TextInteractionComponent
 extends InteractionWithCooldownComponent
 
+# INFO: There are multiple cooldowns which may be confusing:
+	# The cooldown after interaction: Disable skipping, after displaying the next message: InteractionComponent.cooldownTimer.wait_time
+	# The cooldown between each character when animating: `animationDurationPerCharacter`
+	# The cooldown before automatically showing the next message: `cooldownBeforeAutomaticNext`
 
 #region Parameters
+# Default placeholders in .tscn scene file
+
 ## The list of text strings to display in turn. If the player interacts again after the last string, the index will wrap around and the first string will be shown.
-@export var textStrings:	PackedStringArray = ["String1", "String2", "String3"]
+## If [member text] is empty, then the [member interactionIndicator] is set to the first string if it's a [Label].
+@export var textStrings:				PackedStringArray
 
-## The color to apply to each string. This array may be a different size than the text array; the list will just wrap around.
-@export var textColors:		Array[Color]  = [Color.WHITE, Color.YELLOW]
+## The color to apply to each string. If this array is a different size than the text array, the colors will wrap around.
+@export var textColors:					PackedColorArray
+@export var shouldAnimate:				bool = true
+@export var shouldClearBeforeAnimation:	bool = true
+@export_range(0.0, 10.0, 0.01) var animationDurationPerCharacter:	float = 0.05
+@export_range(0.0, 60.0, 0.01) var cooldownBeforeAutomaticNext:		float = 2 ## The pause before automatically displaying the next string if [member shouldRepeatInteractionAfterCooldown].
 
-@export var shouldAnimate:							  bool = true
-@export var shouldClearBeforeAnimation:				  bool = true
-@export_range(0.0, 10.0, 0.1) var animationDurationPerCharacter: float = 0.05
 #endregion
 
 
 #region State
-var currentTextIndex:		int
+var currentStringIndex:		int
 var currentColorIndex:		int
 var currentAnimation:		Tween
 
 var animationDurationForCurrentString: float: ## Returns the number of seconds to pause between each character of the current text string.
-	get: return self.animationDurationPerCharacter * self.textStrings[currentTextIndex].length()
+	get: return self.animationDurationPerCharacter * self.textStrings[currentStringIndex].length()
 
 @onready var selfAsNode2D:	Node2D = self.get_node(^".") as Node2D
-@onready var labelControl:	Label  = self.interactionIndicator as Label
+@onready var labelControl:	Label  = self.interactionIndicator as Label # TBD: Move to InteractionComponent?
 #endregion
 
 
 #region Signals
-signal didDisplayFinalText
+signal didDisplayString(index: int, animation: Tween)
+signal didDisplayFinalString(animation: Tween)
 #endregion
 
 
 func _ready() -> void:
 	super._ready()
-	applyTextFromArray()
-	updateLabel()
+	# NOTE: Let the initial message be overridden by `InteractionComponent.text`
+	# These properties are compared in displayNextText() to let the first of `textStrings` be visible and animated instead of being skipped immediately if `isAutomatic`
+	if text.is_empty():
+		applyTextFromArray(currentStringIndex, false) # Don't animate the initial text. Calls updateIndicator()
 
 
-## Suppresses the cooldown indication from [InteractionWithCooldownComponent] and just displays the text normally.
-func updateLabel() -> void:
-	# NOTE: Don't check `labelText.is_empty()` so we can have empty pauses etc.
-	if  interactionIndicator is Label:
-		interactionIndicator.text = self.labelText
-
+#region Interaction & Update
 
 ## Returns the updated label text.
 @warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return self.labelText
+	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return self.text
+
+	previousInteractor = interactionControlComponent # NOTE: Update this first in case it's accessed by any cooldown-related signals.
 
 	# Are we still animating a previous string? Skip the animation and display it all, instead of moving to the next string.
 	if currentAnimation and currentAnimation.is_running():
-		# currentAnimation.custom_step(self.animationDurationForCurrentString - currentAnimation.get_total_elapsed_time())
-		currentAnimation.kill()
-		self.labelText = self.textStrings[currentTextIndex]
-	else:
+		# UNUSED: currentAnimation.custom_step(self.animationDurationForCurrentString - currentAnimation.get_total_elapsed_time())
+		currentAnimation.kill() # TBD: kill() or fast-forward remaining time?
+		self.text = self.textStrings[currentStringIndex]
+
+		# If we're automatic, wait again before displaying the next message!
+		if shouldRepeatInteractionAfterCooldown:
+			if debugMode: emitDebugBubble("SkipText,AutoNext")
+			startCooldown(cooldownBeforeAutomaticNext)
+		elif debugMode:
+			emitDebugBubble("SkipText")
+
+	else: # If we're not animating, just display the next string.
 		displayNextText()
-		cooldownTimer.start()
+		startCooldown()
 
-	return self.labelText
+	return self.text
 
+
+## Calls [method InteractionControlComponent.interact] is called again on [member previousInteractor]
+## May be overridden by subclasses such as [TextInteractionComponent] to add further checks on whether to repeat or not.
+func repeatPreviousInteraction() -> Variant:
+	if debugMode: printLog(str("repeatPreviousInteraction() with: ", previousInteractor))
+	if is_instance_valid(previousInteractor):
+		# NOTE: Go to the next string only if there is no ongoing animation,
+		# otherwise the animation will skip and instantly display the current message,
+		# which may look and feel jank in the absence of player input.
+		if not currentAnimation or not currentAnimation.is_valid() or not currentAnimation.is_running():
+			return previousInteractor.interact(self)
+		else:
+			if debugMode: printDebug(str("Not skipping currentAnimation: ", currentAnimation))
+			return null
+	else: return null
+
+#endregion
+
+
+#region Text & Animation
 
 ## This function may be called by a [Timer] or other scripts to automate the text display.
-func displayNextText() -> void:
-	incrementIndices()
-	applyTextFromArray()
-	updateLabel()
+func displayNextText(animate: bool = self.shouldAnimate) -> void:
+	# DESIGN: Crash on invalid array indices
+	# NOTE:   If the current `text` is not the current `textStrings`, re-display the current `textStrings`.
+	# FIXED:  This lets the first message be visible and animated instead of being skipped immediately if `isAutomatic`
+	if self.text == textStrings[currentStringIndex]:
+		incrementIndices()
+	applyTextFromArray(currentStringIndex, animate)
+	# updateIndicator() called by property setter
 
 
 @warning_ignore("unused_parameter")
-func applyTextFromArray(indexOverride: int = self.currentTextIndex, animate: bool = self.shouldAnimate) -> void:
-
-	if animate:
-		if shouldClearBeforeAnimation: self.labelText = ""
-		if currentAnimation: currentAnimation.kill()
-		if labelControl:
-			labelControl.label_settings.font_color = textColors[currentColorIndex]
-
-		self.currentAnimation = Animations.tweenProperty(selfAsNode2D, ^"labelText", self.textStrings[currentTextIndex], self.animationDurationForCurrentString)
-	else:
-		self.labelText = self.textStrings[currentTextIndex]
-		if labelControl:
-			labelControl.label_settings.font_color = textColors[currentColorIndex]
-
-
-		# if animate:
-		# 	Animations.tweenProperty(labelControl, ^"label_settings:font_color", self.textColors[currentColorIndex], self.animationDurationForCurrentString)
-		# else:
-
-	if currentTextIndex == textStrings.size() - 1: # The last index
-		didDisplayFinalText.emit()
-
-
 func incrementIndices() -> void:
-	# TBD: Should this be a `Tools.incrementAndWrapArrayIndex()` or would that be slower? :)
-	currentTextIndex += 1
-	if  currentTextIndex >= textStrings.size():
-		currentTextIndex = 0
+	# TBD: Should we call `Tools.incrementAndWrapArrayIndex()` or would that be slower? :')
+	currentStringIndex += 1
+	if  currentStringIndex >= textStrings.size():
+		currentStringIndex = 0
 
 	currentColorIndex += 1
 	if  currentColorIndex >= textColors.size():
 		currentColorIndex = 0 # TBD: Cycle the colors or stop at the last color if there are fewer colors than strings?
+
+
+func applyTextFromArray(indexOverride: int = self.currentStringIndex, animate: bool = self.shouldAnimate) -> void:
+	# DESIGN: Crash on invalid array indices
+
+	# Apply the color right away
+	if labelControl:
+		# DESIGN: Animating the color looks jank
+		labelControl.label_settings.font_color = textColors[currentColorIndex] if not textColors.is_empty() else Color.WHITE
+
+	# If there's no text, there's nothing to do
+	if textStrings.is_empty():
+		self.text = ""
+		return
+
+	# Clear any previous animation, whether we're going to animate the next string or not
+	if currentAnimation:
+		currentAnimation.kill()
+		Tools.disconnectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
+
+	# Display the string
+	if animate:
+		if shouldClearBeforeAnimation: self.text = ""
+		currentAnimation = Animations.tweenProperty(selfAsNode2D, ^"text", self.textStrings[indexOverride], self.animationDurationForCurrentString)
+		if shouldRepeatInteractionAfterCooldown:
+			Tools.connectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
+
+	else:
+		self.text = self.textStrings[indexOverride] # Calls updateIndicator()
+
+	# Signals
+	didDisplayString.emit(currentStringIndex, currentAnimation)
+	if currentStringIndex == textStrings.size() - 1: # The last index(index: int)
+		didDisplayFinalString.emit(currentAnimation)
+
+
+## Suppresses the cooldown indication from [InteractionWithCooldownComponent] and just displays the text normally.
+func updateIndicator() -> void:
+	# NOTE: Don't check `text.is_empty()` so we can have empty pauses etc.
+	if  labelControl:
+		labelControl.text = self.text
+
+
+func onCurrentAnimation_finished() -> void:
+	if shouldRepeatInteractionAfterCooldown: startCooldown(cooldownBeforeAutomaticNext)
+	Tools.disconnectSignal(self.currentAnimation.finished, self.onCurrentAnimation_finished)
+
+#endregion
