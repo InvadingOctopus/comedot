@@ -10,7 +10,7 @@ extends InteractionComponent
 #region Parameters
 
 @export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed [Payload] (but not on insufficient [member cost] payment), to prevent UI/network spamming etc.
-@export_range(0.0, 60.0, 0.1) var cooldownOnFailure: float = 0.5
+@export_range(0.0, 60.0, 0.01) var cooldownOnFailure: float = 0.5
 
 ## If `true` then [method InteractionControlComponent.interact] is called again on [member previousInteractor] after the cooldown [Timer] finishes.
 ## TIP: May be useful for auto-advancing a [TextInteractionComponent] for simple NPC dialogue etc.
