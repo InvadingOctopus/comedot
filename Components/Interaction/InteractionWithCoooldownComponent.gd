@@ -59,6 +59,43 @@ func updateIndicator() -> void:
 			interactionIndicator.text = "COOLDOWN"
 
 
+#region Interaction Interface
+
+## Extends [method InteractionComponent.requestToInteract] to include a cooldown [Timer] check.
+## NOTE: Does NOT emit [signal didDenyInteraction] when on cooldown.
+func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
+	# TBD: Emit `didDenyInteraction` when on cooldown?
+	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false
+	return super.requestToInteract(interactorEntity, interactionControlComponent)
+
+
+## Extends [method performInteraction] to start a cooldown [Timer] after an interaction.
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
+	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left))
+	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
+
+	var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
+
+	if Tools.checkResult(result):
+		previousInteractor = interactionControlComponent # TBD: Update only on successful interaction or always?
+		startCooldown()
+		return result
+	else:
+		if shouldCooldownOnFailure:
+			startCooldown(cooldownOnFailure)
+		return false
+
+
+## Calls [method InteractionControlComponent.interact] is called again on [member previousInteractor]
+## May be overridden by subclasses such as [TextInteractionComponent] to add further checks on whether to repeat or not.
+func repeatPreviousInteraction() -> Variant:
+	if debugMode: printLog(str("repeatPreviousInteraction() with: ", previousInteractor))
+	if is_instance_valid(previousInteractor): return previousInteractor.interact(self)
+	else: return null
+
+#endregion
+
+
 #region Cooldown
 # Yes, some code duplication from CooldownComponent because Godon't have interface/protocols :')
 
@@ -91,42 +128,5 @@ func finishCooldown() -> void:
 
 	# Again again!?
 	if shouldRepeatInteractionAfterCooldown: repeatPreviousInteraction()
-
-#endregion
-
-
-#region Interaction Interface
-
-## Extends [method InteractionComponent.requestToInteract] to include a cooldown [Timer] check.
-## NOTE: Does NOT emit [signal didDenyInteraction] when on cooldown.
-func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
-	# TBD: Emit `didDenyInteraction` when on cooldown?
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false
-	return super.requestToInteract(interactorEntity, interactionControlComponent)
-
-
-## Extends [method performInteraction] to start a cooldown [Timer] after an interaction.
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left))
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false
-
-	var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
-
-	if Tools.checkResult(result):
-		previousInteractor = interactionControlComponent # TBD: Update only on successful interaction or always?
-		startCooldown()
-		return result
-	else:
-		if shouldCooldownOnFailure:
-			startCooldown(cooldownOnFailure)
-		return false
-
-
-## Calls [method InteractionControlComponent.interact] is called again on [member previousInteractor]
-## May be overridden by subclasses such as [TextInteractionComponent] to add further checks on whether to repeat or not.
-func repeatPreviousInteraction() -> Variant:
-	if debugMode: printLog(str("repeatPreviousInteraction() with: ", previousInteractor))
-	if is_instance_valid(previousInteractor): return previousInteractor.interact(self)
-	else: return null
 
 #endregion
