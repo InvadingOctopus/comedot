@@ -25,6 +25,10 @@ extends InteractionComponent
 ## Updated on a successful [method performInteraction] and used for [member shouldRepeatInteractionAfterCooldown].
 ## IMPORTANT: MUST be updated by subclasses that override [method performInteraction].
 @export_storage var previousInteractor: InteractionControlComponent
+
+## Allows [method requestToInteract] & [method performInteraction] to ignore the cooldown ONCE.
+## NOTE: This flag is reset in [method startCooldown], so it must be set AFTER starting a cooldown.
+@export_storage var canSkipNextCooldown: bool
 #endregion
 
 
@@ -65,14 +69,18 @@ func updateIndicator() -> void:
 ## NOTE: Does NOT emit [signal didDenyInteraction] when on cooldown.
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	# TBD: Emit `didDenyInteraction` when on cooldown?
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false
+	if  not isEnabled \
+	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)):
+		return false
 	return super.requestToInteract(interactorEntity, interactionControlComponent)
 
 
 ## Extends [method performInteraction] to start a cooldown [Timer] after an interaction.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left))
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return false # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
+	if  debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left, ", canSkipNextCooldown: ", canSkipNextCooldown))
+	if  not isEnabled \
+	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)):
+		return false # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
 
 	var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
 
@@ -108,6 +116,8 @@ func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
 		printDebug(str("startCooldown(): ", overrideTime))
 		emitDebugBubble(str("CD:", overrideTime))
 
+	canSkipNextCooldown = false
+
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
 		cooldownTimer.start(overrideTime)
@@ -121,6 +131,7 @@ func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
 
 ## Called when the cooldown [Timer] is over. Calls [member updateIndicator].
 func finishCooldown() -> void:
+	# TBD: Check canSkipNextCooldown on finish?
 	if debugMode: printDebug("finishCooldown()")
 	cooldownTimer.stop()
 	updateIndicator() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
