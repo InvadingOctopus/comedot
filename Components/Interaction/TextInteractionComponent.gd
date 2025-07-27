@@ -6,8 +6,8 @@ extends InteractionWithCooldownComponent
 
 # INFO: There are multiple cooldowns which may be confusing:
 	# The cooldown after interaction: Disable skipping, after displaying the next message: InteractionComponent.cooldownTimer.wait_time
-	# The cooldown between each character when animating: `animationDurationPerCharacter`
-	# The cooldown before automatically showing the next message: `cooldownBeforeAutomaticNext`
+	# The cooldown between each character when animating: `animationDurationPerCharacter` (skipable)
+	# The cooldown before automatically showing the next message: `cooldownBeforeAutomaticNext` (skipable)
 
 #region Parameters
 # Default placeholders in .tscn scene file
@@ -47,9 +47,12 @@ signal didDisplayFinalString(animation: Tween)
 
 func _ready() -> void:
 	super._ready()
-	# NOTE: Let the initial message be overridden by `InteractionComponent.text`
-	# These properties are compared in displayNextText() to let the first of `textStrings` be visible and animated instead of being skipped immediately if `isAutomatic`
-	if text.is_empty():
+	# NOTE: If we're automatic, do NOT apply the initial `textStrings`,
+	# because that would cause the initial `textStrings` to be IMMEDIATELY REPLACED by the next string,
+	# as soon as the Interactor enters our Area2D, before the player has a chance to see the initial `textStrings`.
+	# displayNextText() does NOT incrementIndices() if `self.text` is not the same as `textStrings[currentStringIndex]`
+	# so the initial `textStrings` will be readable.
+	if not isAutomatic:
 		applyTextFromArray(currentStringIndex, false) # Don't animate the initial text. Calls updateIndicator()
 
 
@@ -58,7 +61,9 @@ func _ready() -> void:
 ## Returns the updated label text.
 @warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
-	if not isEnabled or not is_zero_approx(cooldownTimer.time_left): return self.text
+	if  not isEnabled \
+	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)): # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
+		return labelControl.text
 
 	previousInteractor = interactionControlComponent # NOTE: Update this first in case it's accessed by any cooldown-related signals.
 
@@ -72,6 +77,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		if shouldRepeatInteractionAfterCooldown:
 			if debugMode: emitDebugBubble("SkipText,AutoNext")
 			startCooldown(cooldownBeforeAutomaticNext)
+			canSkipNextCooldown = true # Allow skipping the delay before the next message
 		elif debugMode:
 			emitDebugBubble("SkipText")
 
@@ -102,7 +108,10 @@ func repeatPreviousInteraction() -> Variant:
 
 #region Text & Animation
 
-## This function may be called by a [Timer] or other scripts to automate the text display.
+## Calls [method incrementIndices] then [method applyTextFromArray].
+## NOTE: [method incrementIndices] is NOT called if [member text] is not the same as the [member currentStringIndex] of [member textStrings];
+## This prevents the initial string from being immediately replaced on the first interaction when [member isAutomatic].
+## TIP: This function may be called by a [Timer] or other scripts to automate the text display.
 func displayNextText(animate: bool = self.shouldAnimate) -> void:
 	# DESIGN: Crash on invalid array indices
 	# NOTE:   If the current `text` is not the current `textStrings`, re-display the current `textStrings`.
@@ -167,7 +176,9 @@ func updateIndicator() -> void:
 
 
 func onCurrentAnimation_finished() -> void:
-	if shouldRepeatInteractionAfterCooldown: startCooldown(cooldownBeforeAutomaticNext)
+	if shouldRepeatInteractionAfterCooldown:
+		startCooldown(cooldownBeforeAutomaticNext)
+		canSkipNextCooldown = true # Allow skipping the delay before the next message
 	Tools.disconnectSignal(self.currentAnimation.finished, self.onCurrentAnimation_finished)
 
 #endregion

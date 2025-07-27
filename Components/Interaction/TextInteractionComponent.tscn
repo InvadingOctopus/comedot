@@ -14,6 +14,7 @@ shouldClearBeforeAnimation = true
 animationDurationPerCharacter = 0.05
 cooldownBeforeAutomaticNext = 2.0
 shouldModifyIndicatorInCooldown = false
+canSkipNextCooldown = false
 shouldSkipInteractorCooldown = true
 interactionIndicator = NodePath("Label")
 
@@ -28,7 +29,7 @@ offset_left = -64.0
 offset_top = -40.0
 offset_right = 64.0
 offset_bottom = -24.0
-text = "~"
+text = "…"
 label_settings = ExtResource("2_6kio8")
 horizontal_alignment = 1
 vertical_alignment = 1

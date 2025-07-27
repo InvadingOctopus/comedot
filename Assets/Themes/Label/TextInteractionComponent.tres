@@ -3,6 +3,7 @@
 [ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="1_4c3ue"]
 
 [resource]
+resource_local_to_scene = true
 font = ExtResource("1_4c3ue")
 font_size = 8
 outline_size = 4
