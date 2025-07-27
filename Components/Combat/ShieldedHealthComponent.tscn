@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://33kigwntmd1i"]
 
 [ext_resource type="Script" uid="uid://da3yjvlx7s4us" path="res://Components/Combat/ShieldedHealthComponent.gd" id="1_5sr7c"]
-[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="2_ujoql"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="2_ujoql"]
 
 [sub_resource type="Resource" id="Resource_xmmct"]
 resource_local_to_scene = true

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_0trfh"]
 [ext_resource type="PackedScene" uid="uid://csfqa5yos7088" path="res://Components/Gameplay/UpgradesComponent.tscn" id="5_3wt1t"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="6_3nle0"]
-[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="7_7nw6f"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="7_7nw6f"]
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="8_157i1"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="9_okulf"]
 [ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="10_fcijy"]

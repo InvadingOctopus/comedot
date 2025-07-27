@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_020ow"]
 [ext_resource type="TileSet" uid="uid://dinnvtrdv2ejn" path="res://Templates/TileSetTemplate.tres" id="2_c1c8v"]
 [ext_resource type="PackedScene" uid="uid://d06m60dgdv8ui" path="res://Components/Data/StatsComponent.tscn" id="3_c1c8v"]
-[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="4_tue7k"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="4_tue7k"]
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="5_tl03x"]
 [ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="6_ahkry"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_8gufy"]

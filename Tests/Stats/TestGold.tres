@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Stat" load_steps=4 format=3 uid="uid://cu2cyw7oyn5ae"]
 
-[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="1_4ly1t"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="1_4ly1t"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_xhuns"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gs8nh"]

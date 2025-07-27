@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="7_kh44k"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="7_nsuj0"]
 [ext_resource type="PackedScene" uid="uid://cd7vapsmxp183" path="res://Components/Combat/InvulnerabilityOnHitComponent.tscn" id="8_dmqtc"]
-[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stat.gd" id="9_g0ayb"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="9_g0ayb"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="10_7jquu"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="11_8q3fk"]
 [ext_resource type="PackedScene" uid="uid://cnwfnu6nmsdg0" path="res://Components/Physics/GunRecoilComponent.tscn" id="11_ea0yk"]
