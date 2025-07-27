@@ -191,15 +191,16 @@ region_rect = Rect2(480, 112, 16, 16)
 z_index = 100
 textStrings = PackedStringArray("I am automatic!", "Message2", "Isn\'t this fun?")
 textColors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
-animationDurationPerCharacter = 0.2
-cooldownBeforeAutomaticNext = 2.22
-cooldownOnFailure = 0.67
+shouldAutomaticallyAdvance = true
+animationDurationPerCharacter = 0.3
+cooldownOnFailure = 0.69
 shouldRepeatInteractionAfterCooldown = true
 isAutomatic = true
+shouldAlwaysShowIndicator = true
 debugMode = true
 
 [node name="CooldownTimer" parent="NPC2/TextInteractionComponent" index="1"]
-wait_time = 0.222
+wait_time = 1.111
 
 [node name="UI" type="CanvasLayer" parent="."]
 
