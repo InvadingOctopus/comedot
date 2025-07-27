@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_ug0eg"]
 [ext_resource type="Script" uid="uid://514sfycgayn" path="res://Resources/Actions/PlatformerDash.gd" id="2_5n12a"]
 [ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="3_wk77y"]
-[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Action.gd" id="4_immu7"]
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Actions/Action.gd" id="4_immu7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mysx"]
 atlas = ExtResource("1_ug0eg")

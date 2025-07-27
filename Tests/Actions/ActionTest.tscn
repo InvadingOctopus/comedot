@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://hb6usrrdkrlu" path="res://Tests/Stats/TestAmmo.tres" id="6_ahkry"]
 [ext_resource type="Resource" uid="uid://cu2cyw7oyn5ae" path="res://Tests/Stats/TestGold.tres" id="7_8gufy"]
 [ext_resource type="PackedScene" uid="uid://sh78hf5wicm6" path="res://Components/Gameplay/ActionsComponent.tscn" id="8_fib85"]
-[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Action.gd" id="9_0lnki"]
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Actions/Action.gd" id="9_0lnki"]
 [ext_resource type="Resource" uid="uid://hfn0hhrpo6ui" path="res://Tests/Actions/TestActionZoom.tres" id="10_faxyp"]
 [ext_resource type="Resource" uid="uid://bryqvy7gb2xaj" path="res://Tests/Actions/TestActionLook.tres" id="11_suttq"]
 [ext_resource type="PackedScene" uid="uid://dkejn1qlbxsa2" path="res://Components/Control/ActionControlComponent.tscn" id="12_jynvc"]

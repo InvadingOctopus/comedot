@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Action" load_steps=7 format=3 uid="uid://bryqvy7gb2xaj"]
 
-[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Action.gd" id="1_cr1cv"]
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Actions/Action.gd" id="1_cr1cv"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_sel1h"]
 [ext_resource type="Script" uid="uid://bxomhg0eo6ut0" path="res://Tests/Actions/TestActionLook.gd" id="2_to615"]
 [ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="2_xc7w0"]
