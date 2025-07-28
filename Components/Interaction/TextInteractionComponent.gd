@@ -12,12 +12,8 @@ extends InteractionWithCooldownComponent
 #region Parameters
 # Default placeholders in .tscn scene file
 
-## The list of text strings to display in turn. If the player interacts again after the last string, the index will wrap around and the first string will be shown.
-## If [member text] is empty, then the [member interactionIndicator] is set to the first string if it's a [Label].
-@export var textStrings:				PackedStringArray
-
-## The color to apply to each string. If this array is a different size than the text array, the colors will wrap around.
-@export var textColors:					PackedColorArray
+## See [TextSequence] or [ColoredTextSequence]
+@export var textSequence:				TextSequence # TBD: Is this too overengineered? :')
 @export var shouldAnimate:				bool = true
 @export var shouldClearBeforeAnimation:	bool = true
 @export_range(0.0, 10.0, 0.01) var animationDurationPerCharacter:	float = 0.05
@@ -27,15 +23,15 @@ extends InteractionWithCooldownComponent
 
 
 #region State
-var currentStringIndex:		int
-var currentColorIndex:		int
-var currentAnimation:		Tween
-
-var animationDurationForCurrentString: float: ## Returns the number of seconds to pause between each character of the current text string.
-	get: return self.animationDurationPerCharacter * self.textStrings[currentStringIndex].length()
 
 @onready var selfAsNode2D:	Node2D = self.get_node(^".") as Node2D
 @onready var labelControl:	Label  = self.interactionIndicator as Label # TBD: Move to InteractionComponent?
+
+var currentAnimation:		Tween
+
+var animationDurationForCurrentString: float: ## Returns the number of seconds to pause between each character of the current text string.
+	get: return self.animationDurationPerCharacter * textSequence.getCurrentString().length()
+
 #endregion
 
 
@@ -47,13 +43,13 @@ signal didDisplayFinalString(animation: Tween)
 
 func _ready() -> void:
 	super._ready()
-	# NOTE: If we're automatic, do NOT apply the initial `textStrings`,
-	# because that would cause the initial `textStrings` to be IMMEDIATELY REPLACED by the next string,
-	# as soon as the Interactor enters our Area2D, before the player has a chance to see the initial `textStrings`.
-	# displayNextText() does NOT incrementIndices() if `self.text` is not the same as `textStrings[currentStringIndex]`
-	# so the initial `textStrings` will be readable.
+	# NOTE: If we're automatic, do NOT apply the initial `textSequence` string,
+	# because that would cause the initial `textSequence` string to be IMMEDIATELY REPLACED by the next string,
+	# as soon as the Interactor enters our Area2D, before the player has a chance to see the initial `textSequence`.
+	# displayNextText() does NOT `textSequence.incrementIndex()` if `self.text` is not the same as `textSequence.getCurrentString()`
+	# so the initial `textSequence` will be readable.
 	if not isAutomatic:
-		applyTextFromArray(currentStringIndex, false) # Don't animate the initial text. Calls updateIndicator()
+		applyText(false) # Don't animate the initial text. Calls updateIndicator()
 
 
 #region Interaction & Update
@@ -71,7 +67,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	if currentAnimation and currentAnimation.is_running():
 		# UNUSED: currentAnimation.custom_step(self.animationDurationForCurrentString - currentAnimation.get_total_elapsed_time())
 		currentAnimation.kill() # TBD: kill() or fast-forward remaining time?
-		self.text = self.textStrings[currentStringIndex]
+		self.text = textSequence.getCurrentString()
 
 		# If we're automatic, wait again before displaying the next message!
 		if shouldRepeatInteractionAfterCooldown:
@@ -108,44 +104,31 @@ func repeatPreviousInteraction() -> Variant:
 
 #region Text & Animation
 
-## Calls [method incrementIndices] then [method applyTextFromArray].
-## NOTE: [method incrementIndices] is NOT called if [member text] is not the same as the [member currentStringIndex] of [member textStrings];
+## Calls [method TextSequence.incrementIndex] then [method applyText].
+## NOTE: [method TextSequence.incrementIndex] is NOT called if [member text] is not the same as the [method TextSequence.getCurrentString];
 ## This prevents the initial string from being immediately replaced on the first interaction when [member isAutomatic].
 ## TIP: This function may be called by a [Timer] or other scripts to automate the text display.
 func displayNextText(animate: bool = self.shouldAnimate) -> void:
-	# DESIGN: Crash on invalid array indices
-	# NOTE:   If the current `text` is not the current `textStrings`, re-display the current `textStrings`.
+	# NOTE:   If the current `text` is not the current TextSequence string, re-display the current TextSequence string.
 	# FIXED:  This lets the first message be visible and animated instead of being skipped immediately if `isAutomatic`
-	if self.text == textStrings[currentStringIndex]:
-		incrementIndices()
-	applyTextFromArray(currentStringIndex, animate)
+	if self.text == textSequence.getCurrentString():
+		textSequence.incrementIndex()
+	applyText(animate)
 	# updateIndicator() called by property setter
 
 
-@warning_ignore("unused_parameter")
-func incrementIndices() -> void:
-	# TBD: Should we call `Tools.incrementAndWrapArrayIndex()` or would that be slower? :')
-	currentStringIndex += 1
-	if  currentStringIndex >= textStrings.size():
-		currentStringIndex = 0
-
-	currentColorIndex += 1
-	if  currentColorIndex >= textColors.size():
-		currentColorIndex = 0 # TBD: Cycle the colors or stop at the last color if there are fewer colors than strings?
-
-
-func applyTextFromArray(indexOverride: int = self.currentStringIndex, animate: bool = self.shouldAnimate) -> void:
-	# DESIGN: Crash on invalid array indices
-
-	# Apply the color right away
+func applyText(animate: bool = self.shouldAnimate) -> void:
+	# Apply the color first
 	if labelControl:
 		# DESIGN: Animating the color looks jank
-		labelControl.label_settings.font_color = textColors[currentColorIndex] if not textColors.is_empty() else Color.WHITE
+		textSequence.formatLabel(labelControl)
 
 	# If there's no text, there's nothing to do
-	if textStrings.is_empty():
+	if textSequence.strings.is_empty():
 		self.text = ""
 		return
+
+	var currentString: String = textSequence.getCurrentString()
 
 	# Clear any previous animation, whether we're going to animate the next string or not
 	if currentAnimation:
@@ -155,16 +138,16 @@ func applyTextFromArray(indexOverride: int = self.currentStringIndex, animate: b
 	# Display the string
 	if animate:
 		if shouldClearBeforeAnimation: self.text = ""
-		currentAnimation = Animations.tweenProperty(selfAsNode2D, ^"text", self.textStrings[indexOverride], self.animationDurationForCurrentString)
+		currentAnimation = Animations.tweenProperty(selfAsNode2D, ^"text", currentString, self.animationDurationForCurrentString)
 		if shouldRepeatInteractionAfterCooldown:
 			Tools.connectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
 
 	else:
-		self.text = self.textStrings[indexOverride] # Calls updateIndicator()
+		self.text = currentString # Calls updateIndicator()
 
 	# Signals
-	didDisplayString.emit(currentStringIndex, currentAnimation)
-	if currentStringIndex == textStrings.size() - 1: # The last index(index: int)
+	didDisplayString.emit(textSequence.currentStringIndex, currentAnimation)
+	if textSequence.currentStringIndex == textSequence.getSize() - 1: # The last index
 		didDisplayFinalString.emit(currentAnimation)
 
 
