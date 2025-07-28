@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://csiafxhl1plmi"]
+[gd_scene load_steps=28 format=3 uid="uid://csiafxhl1plmi"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16kqk"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_aydxj"]
@@ -18,6 +18,8 @@
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="14_su6gy"]
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="15_bslwp"]
 [ext_resource type="PackedScene" uid="uid://nd3rpg4n6351" path="res://Components/Objects/CollectibleStatComponent.tscn" id="16_u3x77"]
+[ext_resource type="Script" uid="uid://c8oqfug6bro2n" path="res://Resources/Collections/ColoredTextSequence.gd" id="19_n8u5t"]
+[ext_resource type="Script" uid="uid://d1ed0yc1xwfvx" path="res://Resources/Collections/TextSequence.gd" id="19_vpvxn"]
 [ext_resource type="PackedScene" uid="uid://bao7nrybc7152" path="res://Components/Interaction/TextInteractionComponent.tscn" id="20_c0i8c"]
 
 [sub_resource type="Resource" id="Resource_0gg6p"]
@@ -49,10 +51,23 @@ ExtResource("7_c0i8c"): -1000
 })
 metadata/_custom_type_script = "uid://3gmi65j17bkt"
 
+[sub_resource type="Resource" id="Resource_cmk47"]
+script = ExtResource("19_vpvxn")
+strings = PackedStringArray("Hi! Interact to talk!", "Message2", "The next message will be empty…", "", "Goodbye!")
+metadata/_custom_type_script = "uid://d1ed0yc1xwfvx"
+
+[sub_resource type="Resource" id="Resource_vpvxn"]
+resource_local_to_scene = true
+script = ExtResource("19_n8u5t")
+colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
+strings = PackedStringArray("I am automatic!", "A really long ass message to test cooldowns etc...", "Isn\'t this fun??")
+metadata/_custom_type_script = "uid://c8oqfug6bro2n"
+
 [node name="InteractionTest" type="Node2D"]
 script = ExtResource("1_16kqk")
 
 [node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_aydxj")]
+position = Vector2(96, 0)
 
 [node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_su6gy")]
 stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
@@ -123,13 +138,13 @@ text = "-?? Mana to +??? Gold"
 horizontal_alignment = 1
 
 [node name="ResetSkull" parent="." instance=ExtResource("9_vpvxn")]
-position = Vector2(96, 200)
+position = Vector2(96, 192)
 region_rect = Rect2(576, 336, 16, 16)
 
 [node name="InteractionComponent" parent="ResetSkull" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
 payload = SubResource("Resource_6rq7u")
 interactionIndicator = NodePath("Label")
-text = "-1000 All Stats\""
+text = "-1000 All Stats"
 debugMode = true
 
 [node name="Label" type="Label" parent="ResetSkull/InteractionComponent"]
@@ -174,24 +189,22 @@ stat = ExtResource("6_u3x77")
 statModifierMaximum = 100
 
 [node name="NPC1" parent="." instance=ExtResource("9_vpvxn")]
-position = Vector2(192, 0)
+position = Vector2(-64, 0)
 flip_h = true
 region_rect = Rect2(400, 112, 16, 16)
 
 [node name="TextInteractionComponent" parent="NPC1" instance=ExtResource("20_c0i8c")]
 z_index = 100
-textStrings = PackedStringArray("Hi! Interact to Talk!", "Message2", "Message3 before empty string", "", "Goodbye!")
-textColors = PackedColorArray(1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0.7373294, 0.7373294, 0.7373294, 0.25)
+textSequence = SubResource("Resource_cmk47")
 debugMode = true
 
 [node name="NPC2" parent="." instance=ExtResource("9_vpvxn")]
-position = Vector2(-192, 0)
+position = Vector2(256, 0)
 region_rect = Rect2(480, 112, 16, 16)
 
 [node name="TextInteractionComponent" parent="NPC2" instance=ExtResource("20_c0i8c")]
 z_index = 100
-textStrings = PackedStringArray("I am automatic!", "Message2", "Isn\'t this fun?")
-textColors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
+textSequence = SubResource("Resource_vpvxn")
 animationDurationPerCharacter = 0.3
 cooldownOnFailure = 0.69
 shouldRepeatInteractionAfterCooldown = true
