@@ -97,6 +97,8 @@ signal didDeleteInputEvent(inputAction: StringName, inputEvent: InputEvent) ## E
 #endregion
 
 
+#region Global Events
+
 func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree()")
 
@@ -170,6 +172,20 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		isHandled = true
 
 	if isHandled: self.get_viewport().set_input_as_handled()
+
+
+## Generates a "fake" [InputEventAction] with the specified input action name.
+## This [InputEventAction] may then be processed by any Component or other class as any other [method _input] event.
+func generateInputEvent(inputActionName: StringName, pressed: bool = true, strength: float = 1 if pressed else 0) -> InputEvent:
+	if inputActionName.is_empty(): return null
+	var event: InputEventAction = InputEventAction.new()
+	event.action   = inputActionName
+	event.pressed  = pressed
+	event.strength = strength
+	Input.parse_input_event(event)
+	return event
+
+#endregion
 
 
 #region Helper Functions
