@@ -344,11 +344,11 @@ func printStackDump(object: Variant, includeChildNodes: bool = true, includeLoca
 	const globalVariableColor:	String = "[color=dimgray]"
 	const memberVariableColor:	String = "[color=dimgray]"
 	const localVariableColor:	String = "[color=gray]"
-	const backgroundColor:		String = "[bgcolor=201020]"
+	const backgroundColor:		String = "[bgcolor=201030]"
 	var stack: Array[ScriptBacktrace]  = Engine.capture_script_backtraces(includeGlobalVariables or includeMemberVariables or includeLocalVariables)
 
-	print_rich(str("\n\n", backgroundColor, "[color=white]↦↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000),
-	"\n\t[b][color=cyan]", object)
+	print_rich(str("\n\n", backgroundColor, "[color=orange]↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000),
+	"\n\t[color=cyan][b]", object, "[/b] ← ", object.get_parent() if object is Node else null)
 	
 	if includeChildNodes and object is Node:
 		print_rich(str("\t[color=lightblue]", object.get_children(true))) # include_internal
@@ -364,7 +364,7 @@ func printStackDump(object: Variant, includeChildNodes: bool = true, includeLoca
 
 		# The function calls
 
-		print_rich("\t[color=dimgray]0: Skipping logging call")
+		print_rich("\t[color=dimgray]0: The logging function")
 
 		var topColor: String
 		for frameIndex in backtrace.get_frame_count():
