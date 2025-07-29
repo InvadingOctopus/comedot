@@ -295,7 +295,10 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 	var isEventMonitored: bool # Does the received InputEvent include one of the input actions we monitor?
 
 	for inputActionName: StringName in inputActionsToMonitor:
-		if Input.is_action_pressed(inputActionName): # Check all input actions, not just the ones in the current event, in case they were pressed before this component was ready
+		# Check all input actions, not just the ones in the current event, in case any actions were pressed before this component was ready.
+		# NOTE: Input.is_action_pressed() will not detect "fake" events from generateEvent()
+		if (event and event.is_action_pressed(inputActionName)) \
+		or Input.is_action_pressed(inputActionName):
 			inputActionsPressedNew.append(inputActionName)
 
 		if event and event.is_action(inputActionName): # Check event because it may be null when doing a manual update
@@ -303,6 +306,7 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 
 	# Did we consume an InputEvent for one of the input actions we monitor?
 	if isEventMonitored:
+		if debugMode: printDebug(str("processMonitoredInputActions() event: ", event, ", inputActionsPressed: ", inputActionsPressed, " → ", inputActionsPressedNew))
 		self.inputActionsPressed = inputActionsPressedNew
 		didUpdateInputActionsList.emit(event)
 		if debugMode: GlobalSonic.beep(0.1, 440)
