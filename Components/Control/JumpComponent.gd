@@ -16,12 +16,7 @@ extends CharacterBodyDependentComponentBase
 
 #region Parameters
 @export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
-
-@export var isEnabled:  bool = true:
-	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			self.set_process_unhandled_input(isEnabled)
+@export var isEnabled:  bool = true
 #endregion
 
 
