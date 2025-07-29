@@ -19,7 +19,7 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.setProcess()
+			self.setAllProcess()
 			if not isEnabled: resetState()
 
 ## If `false` then system input events are not processed,
@@ -31,7 +31,7 @@ extends Component
 	set(newValue):
 		if newValue != isPlayerControlled:
 			isPlayerControlled = newValue
-			self.setProcess()
+			self.setAllProcess()
 
 ## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
 ## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
@@ -64,7 +64,7 @@ extends Component
 	set(newValue):
 		if newValue != shouldProcessUnhandledInputOnly:
 			shouldProcessUnhandledInputOnly = newValue
-			self.setProcess()
+			self.setAllProcess()
 
 ## If `true` (default) then an [InputEvent] is ignored if [method InputEvent.is_echo],
 ## i.e. a repeated event "echo" generated while holding a button or key pressed down.
@@ -122,7 +122,7 @@ var verticalInput:	 			float: ## The primary Y axis. Includes the Left Joystick 
 					if debugMode: printDebug(str("didChangeVerticalDirection: ",   lastNonzeroVerticalInput, " → ", verticalInput))
 					didChangeVerticalDirection.emit()
 				lastNonzeroVerticalInput = verticalInput
-	
+
 var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming in dual-stick shoot-em-ups etc.
 var turnInput:			float ## The horizontal X axis for the Left Joystick ONLY (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
 var thrustInput:		float ## The vertical Y axis for the Left Joystick ONLY (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
@@ -181,11 +181,11 @@ signal didToggleMouseSuppression(shouldSuppressMouse: bool)
 func _ready() -> void:
 	# Update the input actions that were pressed/released BEFORE this component is ready.
 	processMonitoredInputActions()
-	setProcess() # Apply setters because Godot doesn't on initialization
+	setAllProcess() # Apply setters because Godot doesn't on initialization
 
 
 ## Enables or disables the per-frame and event process based on flags.
-func setProcess() -> void:
+func setAllProcess() -> void:
 	self.set_process(debugMode)
 	self.set_process_input(isEnabled and isPlayerControlled and not shouldProcessUnhandledInputOnly)
 	self.set_process_unhandled_input(isEnabled and isPlayerControlled and shouldProcessUnhandledInputOnly)
@@ -193,7 +193,7 @@ func setProcess() -> void:
 #endregion
 
 
-#region Update
+#region Input Events
 
 ## Affected by [member isEnabled], [member isPlayerControlled] and [member shouldProcessUnhandledInputOnly].
 ## May be skipped ONCE by [member shouldSkipNextEvent].
@@ -225,6 +225,7 @@ func handleInput(event: InputEvent) -> void:
 	# NOTE: For joystick input, events will be raised TWICE: once each for the X and Y axes.
 
 	if not isEnabled: return
+	if debugMode: printDebug(str("handleInput(): ", event))
 
 	# If we were suppressing mouse movement to prioritize the secondary joystick
 	# and the player clicked ANY mouse button, un-suppress the mouse.
@@ -273,7 +274,7 @@ func handleInput(event: InputEvent) -> void:
 	and ((shouldJoystickMovementSuppressMouse and not self.movementDirection.is_zero_approx())
 		or (shouldJoystickAimingSuppressMouse and not self.aimDirection.is_zero_approx())):
 			self.shouldSuppressMouseMotion = true
-	
+
 	# TODO: self.get_viewport().set_input_as_handled() for the other input actions we handled.
 
 	if debugMode: showDebugInfo()
@@ -315,7 +316,7 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 
 ## Sets all properties to 0
 ## NOTE: EXCEPT the "should" flags: [shouldSkipNextEvent], [member shouldSuppressMouseMotion]
-func resetState() -> void: 
+func resetState() -> void:
 	inputActionsPressed.clear()
 	previousMovementDirection	= Vector2.ZERO
 	movementDirection			= Vector2.ZERO
@@ -335,6 +336,36 @@ func setMovementDirection(newDirection: Vector2, scaleOverride: Vector2 = self.m
 	self.movementDirection	= newDirection * scaleOverride
 	self.horizontalInput	= movementDirection.x
 	self.verticalInput		= movementDirection.y
+
+
+## Generates a "fake" [InputEventAction] with the specified input action name and calls [method handleInput], for ONLY THIS component & its entity.
+## If [param generateGlobalEvent], then a GLOBAL event is emitted, that may be processed by ALL components & scripts in their [method _input] handler.
+## May be used by AI agents or "demo" scripts etc.
+## ALERT: May NOT "fool" [method Input.is_action_just_pressed] or [method Input.get_axis] etc. unless [param generateGlobalEvent] is `true`.
+func generateEvent(inputActionName: StringName, generateGlobalEvent: bool = false, pressed: bool = true, strength: float = 1 if pressed else 0, setAsHandled: bool = self.shouldSetEventsAsHandled) -> InputEvent:
+	# TODO: Fix Input.is_action_just_pressed() etc.
+	if debugMode and isEnabled: printDebug(str("generateEvent(): ", inputActionName, ", generateGlobalEvent: ", generateGlobalEvent, ", pressed: ", pressed, ", strength: ",  strength))
+
+	if not isEnabled or inputActionName.is_empty(): return null
+
+	if shouldSkipNextEvent:
+		shouldSkipNextEvent = false
+		return null
+
+	var event: InputEventAction = InputEventAction.new()
+	event.action   = inputActionName
+	event.pressed  = pressed
+	event.strength = strength
+
+	if debugMode: printDebug(str(event))
+	if generateGlobalEvent: Input.parse_input_event(event) # TBD: Call GlobalInput.generateInputEvent() in case it does extra validation/processing etc.?
+
+	# If we're player-controlled, then handleInput() will be called by the global event anyway. If not, we need to call it manually.
+	if not self.isPlayerControlled: self.handleInput(event)
+
+	if setAsHandled: self.get_viewport().set_input_as_handled() # CHECK: Does this matter outside _input()/_unhandled_input()?
+
+	return event
 
 #endregion
 
