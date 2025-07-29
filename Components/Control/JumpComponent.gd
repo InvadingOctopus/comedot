@@ -9,7 +9,6 @@ class_name JumpComponent
 extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
-# TODO: Stop keyboard input repetition?
 # TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TBD:  A more fail-proof way of handling short jumps. Timers?
 
@@ -38,6 +37,11 @@ var jumpInput:				bool:
 	set(newValue):
 		if newValue != jumpInput:
 			if debugMode: Debug.printChange("jumpInput", jumpInput, newValue)
+			# NOTE: Derive the related flags from `jumpInput`, to allow AI/scripted input,
+			# because Input.is_action_just_pressed()/released() is not fooled by InputComponent.generateEvent()
+			# TBD: CHECK: Does this cause any jank behavior?
+			jumpInputJustPressed  = not jumpInput and newValue # false → true?
+			jumpInputJustReleased = jumpInput and not newValue # true → false?
 			jumpInput = newValue
 
 var jumpInputJustPressed:	bool:
@@ -95,9 +99,15 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	# DESIGN: Cache input state as local properties, in case InputComponent's state changes while we're still processing an event/frame.
 	# TIP: AI components & demo scripts may generate synthetic [InputEvent]s for jump etc.
 
-	self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
-	self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
-	self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
+	self.jumpInput = inputComponent.inputActionsPressed.has(GlobalInput.Actions.jump)
+	# MAGIC: jumpInputJustPressed & jumpInputJustReleased are set by jumpInput setter
+	# This allows AI/scripted input via InputComponent.generateEvent()
+	# TBD: CHECK: Does this cause any jank behavior compared to Input.is_action_just_pressed()/released()?
+
+	# UNUSED: Not compatible with AI-generated InputComponent events
+	# self.jumpInput = Input.is_action_pressed(GlobalInput.Actions.jump)
+	# self.jumpInputJustPressed  = Input.is_action_just_pressed(GlobalInput.Actions.jump)
+	# self.jumpInputJustReleased = Input.is_action_just_released(GlobalInput.Actions.jump)
 
 	if debugMode:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
