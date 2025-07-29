@@ -189,7 +189,7 @@
 
 	"Component Access": {
 		"prefix": "Component",
-		"body": ["$0(${1|self.coComponents,entity.components|}.${3:ComponentType} as ${3:ComponentType}).${4:propertyOrMethod}"],
+		"body": ["$0(${1|self.coComponents,parentEntity.components|}.${3:ComponentType} as ${3:ComponentType}).${4:propertyOrMethod}"],
 		"description": "Quick access to an Entity's components or a Component's sibling co-components."
 	},
 
@@ -234,6 +234,12 @@
 		"prefix": "trace",
 		"body": ["Debug.printTrace([${1:variables}], self) # DEBUG: DONTCOMMIT$0"],
 		"description": "Prints a list of variables and recent function calls for runtime debugging."
+	},
+
+	"Debug Stack Dump": {
+		"prefix": "stackDump",
+		"body": ["Debug.printStackDump(self) # DEBUG: DONTCOMMIT$0"],
+		"description": "Prints a detailed stack backtrace including recent function calls and all variables."
 	},
 
 	"Debug Bubble": {
