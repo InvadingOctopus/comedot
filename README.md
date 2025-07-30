@@ -15,6 +15,7 @@ _Component-based framework and project template for [Godot][godot]_
 * A neutron star spoonful of helper functions & debugging tools.
 * Commented & documented code.
 * Free-to-use 3rd-party assets for quick prototyping.
+* Snippets for VSCode/VSCodium to type common GDScript code with a single keyword.
 
 🎖️ The most sprillific feature is components that go beyond basic implementation to make sure gameplay *feels* right, by handling tricky edge-case issues that all games run into sooner or later, like:
 
