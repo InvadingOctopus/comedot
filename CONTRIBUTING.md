@@ -4,6 +4,8 @@ Check the [ToDo.md][todo] to see where you could help out, though that file is n
 
 See [Conventions.md][conventions] for a rough style guide and other coding conventions that this project tries to adhere to.
 
+If you made components for your own game that could be reusable in other games, maybe you can add them to Comedot's library!
+
 If you have an idea, suggestion, code or any other contribution, open a new issue or pull request on the [Comedot repository][repository].
 
 [repository]: https://github.com/invadingoctopus/comedot
