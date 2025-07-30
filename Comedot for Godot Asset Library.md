@@ -29,8 +29,8 @@ License:		MIT
 Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
 Godot Version:	4.5
-Asset Version:	4.5.0.30.420 (First 4 numbers are the Godot version including Dev/Beta/RC)
-Commit URL:		01db9d3f3d31b6347a48b59ba291474fa4b1df45 2025-07-21
+Asset Version:	4.5.0.40.42 (First 4 numbers are the Godot version including Dev/Beta/RC)
+Commit URL:		375b0a1801a501d2c2b1b65b5b01eeaddeb4bed5 2025-07-30
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
