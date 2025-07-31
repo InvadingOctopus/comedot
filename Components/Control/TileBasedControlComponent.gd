@@ -76,6 +76,7 @@ func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 
 func _physics_process(_delta: float) -> void:
 	move()
+	if debugMode: showDebugInfo()
 
 
 ## Tells the [TileBasedPositionComponent] to move to the [member recentInputVector].
@@ -88,3 +89,10 @@ func move() -> void:
 	tileBasedPositionComponent.inputVector = self.recentInputVector
 	tileBasedPositionComponent.processMovementInput()
 	stepTimer.start()
+
+
+func showDebugInfo() -> void:
+	# if not debugMode: return # Checked by caller
+	Debug.addComponentWatchList(self, {
+		recentInputVector	= recentInputVector,
+		stepTimer			= stepTimer.time_left })
