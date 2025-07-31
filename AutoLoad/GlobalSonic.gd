@@ -243,7 +243,7 @@ func onMusicPlayer_finished() -> void:
 	else: self.playNextMusicIndex()
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	# BUG: Gets called twice in the same frame??
 	if event.is_action(GlobalInput.Actions.skipMusic) and Input.is_action_just_pressed(GlobalInput.Actions.skipMusic):
 		self.get_viewport().set_input_as_handled()
@@ -268,10 +268,10 @@ func beep(duration: float = 1.0, pulseHz: float = 440.0, volume: float = 1.0) ->
 
 	# Prep the player
 	# NOTE: The `playback_type` must be `PLAYBACK_TYPE_STREAM` otherwise there is a Godot warning: "/root/GlobalSonic/Synthesizer is trying to play a sample from a stream that cannot be sampled."
-	if not synthesizer.playing: synthesizer.play()
+	if not synthesizer.playing: synthesizer.play() # Needed for AudioStreamPlayer.get_stream_playback()
 	if not playback: playback = synthesizer.get_stream_playback() # TBD: Set once @onready or on each call?
 	# var sampleHz:	float = synthesizer.stream.mix_rate # TBD: Set once @onready or on each call?
-	playback.clear_buffer() # CHECK: Necessary?
+	# playback.clear_buffer() # CHECK: Necessary? # BUG: Causes Godot Error: "beep(): Condition "active" is true." @ servers/audio/effects/audio_stream_generator.cpp:164
 	var frames: float = playback.get_frames_available()
 
 	# Generate the sample
