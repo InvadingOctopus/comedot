@@ -188,7 +188,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	lastVerticalInputDirection	= int(signf(lastVerticalInput))
 	isLastVerticalInputZero		= is_zero_approx(lastVerticalInput)
 
-	# Are we not climbing?
+	# Are we not climbing? Check for events that will start climbing.
 	if not isClimbing:
 
 		# Are we in a climbable area?
@@ -200,8 +200,8 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 			if lastVerticalInputDirection < 0 or not characterBodyComponent.isOnFloor:
 				startClimbing()
 
-	# Are we already climbing?
-	else:
+	# Are we already climbing? Check for events that will end the climb.
+	elif isClimbing:
 
 		# First of all, is horizontal movement not allowed during climbing?
 		if not self.shouldAllowHorizontalInput and not is_zero_approx(inputComponent.horizontalInput) \
@@ -209,23 +209,22 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 			inputComponent.horizontalInput = 0
 
 		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
+		# TBD:  Also check Input.is_action_just_pressed()?
 
 		# Did we jump?
-		if event.is_action_just_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
+		if event.is_action_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
 			stopClimbing()
-			return
 
 		# Did we cancel climbing?
 		# TBD: Cancel on "just pressed" or released?
-		if not cancelClimbInputActionName.is_empty() and event.is_action_just_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
+		elif not cancelClimbInputActionName.is_empty() and event.is_action_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
 			stopClimbing()
-			return
 
-		# Get off the ladder etc. if trying to go lower while already touching the ground
-		if lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor: # NOTE: or
+		# If we try to go lower while already touching the ground, get off the ladder etc.
+		elif lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor:
 			stopClimbing()
-			return
 
+	# TBD: set_input_as_handled() after each cancellation?
 	# NOTE: Per-frame movement occurs in _physics_process()
 
 
