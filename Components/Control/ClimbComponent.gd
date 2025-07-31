@@ -175,7 +175,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 #region Input & Interface
 
-func onInputComponent_didProcessInput(_event: InputEvent) -> void:
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	if not isEnabled: return
 
 	# DESIGN: TBD: PERFORMANCE: Some of these `if` and `else` chains may seem redundant & excessive,
@@ -208,14 +208,16 @@ func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 		and not characterBodyComponent.isOnFloor: # Cancel only when not touching the ground! To allow walking while holding a fence or cliff etc. for example.
 			inputComponent.horizontalInput = 0
 
+		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
+
 		# Did we jump?
-		if inputComponent.inputActionsPressed.has(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
+		if event.is_action_just_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
 			stopClimbing()
 			return
 
 		# Did we cancel climbing?
 		# TBD: Cancel on "just pressed" or released?
-		if not cancelClimbInputActionName.is_empty() and Input.is_action_just_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
+		if not cancelClimbInputActionName.is_empty() and event.is_action_just_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
 			stopClimbing()
 			return
 
