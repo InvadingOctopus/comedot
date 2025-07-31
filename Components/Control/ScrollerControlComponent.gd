@@ -41,7 +41,7 @@ func _ready() -> void:
 	if not self.camera: self.camera = parentEntity.findFirstChildOfType(Camera2D)
 
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
-	characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
+	characterBodyComponent.didMove.connect(self.onCharacterBodyComponent_didMove)
 
 
 func _physics_process(delta: float) -> void:
@@ -52,7 +52,7 @@ func _physics_process(delta: float) -> void:
 	characterBodyComponent.shouldMoveThisFrame = true
 
 
-func characterBodyComponent_didMove() -> void:
+func onCharacterBodyComponent_didMove(_delta: float) -> void:
 	# lastVelocity = body.velocity # Handled by CharacterBodyComponent
 
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
