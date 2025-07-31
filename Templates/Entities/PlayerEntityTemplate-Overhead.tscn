@@ -7,13 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="4_4iijy"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_rwi73"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xljij"]
-atlas = ExtResource("2_at8ff")
-region = Rect2(560, 224, 16, 16)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sg2kd"]
 resource_local_to_scene = true
 size = Vector2(15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xljij"]
+atlas = ExtResource("2_at8ff")
+region = Rect2(560, 224, 16, 16)
 
 [node name="Player-Overhead" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in an \"overhead\" or \"top-down\" view game."
@@ -27,12 +27,12 @@ sprite = NodePath("Sprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sg2kd")
+
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
 modulate = Color(0, 1, 0, 1)
 texture = SubResource("AtlasTexture_xljij")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="CameraComponent" parent="." instance=ExtResource("3_2ybp4")]
 

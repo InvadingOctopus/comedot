@@ -20,6 +20,10 @@
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="16_1q6vm"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="18_swcld"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxoqp"]
+resource_local_to_scene = true
+size = Vector2(12, 12)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ipbe0"]
 atlas = ExtResource("2_rphdn")
 region = Rect2(352, 144, 16, 16)
@@ -148,10 +152,6 @@ _data = {
 &"invulnerabilityOnHit": SubResource("Animation_gjyar")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxoqp"]
-resource_local_to_scene = true
-size = Vector2(12, 12)
-
 [sub_resource type="Resource" id="Resource_cei4g"]
 resource_name = "health"
 script = ExtResource("9_g0ayb")
@@ -184,6 +184,10 @@ sprite = NodePath("AnimatedSprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_rxoqp")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_rxoqp")
 animation = &"idle"
@@ -195,10 +199,6 @@ libraries = {
 &"": SubResource("AnimationLibrary_2co05")
 }
 autoplay = "RESET"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_rxoqp")
 
 [node name="CameraComponent" parent="." instance=ExtResource("3_b23pp")]
 position_smoothing_enabled = true

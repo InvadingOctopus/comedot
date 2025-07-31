@@ -44,14 +44,14 @@ sprite = NodePath("Sprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dpspd")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.5, 0, 1)
 texture = ExtResource("2_gepur")
 region_enabled = true
 region_rect = Rect2(448, 96, 16, 16)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_dpspd")
 
 [node name="HealthComponent" parent="." instance=ExtResource("3_wtegg")]
 health = SubResource("Resource_tj7yr")

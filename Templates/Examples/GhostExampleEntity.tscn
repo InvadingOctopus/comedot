@@ -40,14 +40,14 @@ motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_cgfg7")
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_icn6w")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.8)
 texture = ExtResource("2_8pjcr")
 region_enabled = true
 region_rect = Rect2(416, 96, 16, 16)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_icn6w")
 
 [node name="FactionComponent" parent="." instance=ExtResource("3_r0lki")]
 factions = 8

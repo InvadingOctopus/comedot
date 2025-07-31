@@ -23,12 +23,12 @@ script = ExtResource("1_rqrwr")
 isLoggingEnabled = false
 metadata/_edit_group_ = true
 
+[node name="NonDamageCollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lt4cn")
+
 [node name="BulletSprite" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0, 1)
 texture = ExtResource("2_s7agm")
-
-[node name="NonDamageCollisionShape" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_lt4cn")
 
 [node name="FactionComponent" parent="." instance=ExtResource("3_uhpuy")]
 editor_description = "Factions will be filled in by a GunComponent."
