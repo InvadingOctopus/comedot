@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhtowpxnqiyhs"]
+
+[ext_resource type="Script" uid="uid://36wl4vvdacvh" path="res://Components/Control/ClimbTileMapComponent.gd" id="1_d0t1g"]
+
+[node name="ClimbTileMapComponent" type="Node" groups=["components"]]
+script = ExtResource("1_d0t1g")

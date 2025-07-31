@@ -1,6 +1,7 @@
 ## Enables vertical movement within an [Area2D] that belongs to the "climbable" Group, representing a ladder, rope or cliff etc.
 ## Covers several situations & edge cases like cancelling a climb if jumping or walking out of it while on a floor, grabbing on to a ladder in mid-jump, and so on.
 ## TIP: For "inverted gravity", modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
+## TIP: For [TileMapLayer] cell/grid based climbing, use [ClimbTileMapComponent].
 ## Requirements: BEFORE [JumpComponent] & [PlatformerPhysicsComponent] & [CharacterBodyComponent] & [InputComponent] (in order to suppress horizontal input & confine movement within ladders etc.)
 
 class_name ClimbComponent
@@ -151,7 +152,7 @@ func _ready() -> void:
 	self.set_physics_process(isInClimbableArea and isEnabled)
 
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
-	Tools.connectSignal(characterBodyComponent.didMove, self.oncharacterBodyComponent_didMove) # For confinement
+	Tools.connectSignal(characterBodyComponent.didMove, self.oncharacterBodyComponent_didMove) # For confinement # TODO: Toggle signal based on flags
 
 #endregion
 
