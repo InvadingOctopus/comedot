@@ -17,18 +17,14 @@ const minimumTimerWaitTime: float = 0.05
 ## WARNING: A value of 0.0 may cause issues with [Timer]
 @export_range(0.05, 120, 0.05, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
-		if is_zero_approx(newValue) or newValue < 0:
+		if is_zero_approx(newValue) or newValue < 0: # Snap the new value to 0 if it's almost 0 or less
+			if debugMode: printDebug(str("Correcting cooldown newValue: ", newValue, " → 0"))
 			newValue = 0
 
 		if newValue != cooldown:
+			if debugMode: printTrace(str("cooldown: ", cooldown, " → ", newValue))
 			cooldown = newValue
-
-			if cooldownTimer:
-				if newValue > 0 and not is_zero_approx(newValue): # Avoid the annoying Godot error: "Time should be greater than zero."
-					cooldownTimer.wait_time = newValue
-				else:
-					cooldownTimer.wait_time = minimumTimerWaitTime # HACK: TODO: Find a better way
-					cooldownTimer.stop()
+			if self.is_node_ready(): self.setCooldown()
 
 ## An OPTIONAL [Stat] whose [member Stat.value] is added to or subtracted from the base [member cooldown].
 ## IMPORTANT: Since [Stats] are integers only, the cooldown time represented by this Stat must be in MILLISECONDS, i.e. 1000 = 1 second, 500 = 0.5 seconds.
@@ -61,11 +57,26 @@ signal didFinishCooldown
 
 
 func _ready() -> void:
+	setCooldown() # Property setters are not applied on _ready()
 	# Also connect the signal via code to make it more convenient for subclasses which don't inherit the .tscn scene, such as GunComponent
 	Tools.connectSignal(cooldownTimer.timeout, self.finishCooldown)
 
 
 #region Cooldown
+
+## Sets the [member cooldownTimer] [member Timer.wait_time] and returns the resulting corrected time.
+func setCooldown(newTime: float = self.cooldownWithModifier) -> float:
+	if not cooldownTimer: return 0
+
+	if newTime > 0 and not is_zero_approx(newTime): # Avoid the annoying Godot error: "Time should be greater than zero."
+		cooldownTimer.wait_time = newTime
+	else:
+		cooldownTimer.wait_time = minimumTimerWaitTime # HACK: TODO: Find a better way
+		cooldownTimer.stop()
+	
+	if debugMode: printTrace(str("newTime: ", newTime, " → ", cooldownTimer, ".wait_time: ", cooldownTimer.wait_time))
+	return cooldownTimer.wait_time
+
 
 ## Starts the cooldown delay, applying the [member cooldownMillisecondsModifier] if any to the [member cooldown].
 func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
