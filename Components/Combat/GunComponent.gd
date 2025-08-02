@@ -47,8 +47,8 @@ extends CooldownComponent
 ## The adjusted position in relation to the [member bulletEmitter] where newly spawned bullets are placed. (0,0) is the position of the emitter.
 @export var bulletPositionOffset: Vector2
 
-## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
-## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
+## Add the entity's [member CharacterBody2D.get_real_velocity] to the bullets' [LinearMotionComponent], if any.
+## IMPORTANT: Requires [CharacterBodyComponent].
 ## @experimental
 @export var shouldAddEntityVelocity: bool = false
 
@@ -216,10 +216,10 @@ func createNewBullet() -> Entity:
 
 	if shouldAddEntityVelocity and characterBodyComponent:
 		# TODO: Add support for RigidBody2D
-		var bulletLinearMotionComponent: LinearMotionComponent = newBullet.components.get(&"LinearMotionComponent")
-		if bulletLinearMotionComponent:
+		var bulletLinearMotionComponent: LinearMotionComponent = newBullet.components.get(&"LinearMotionComponent") # TBD: Include subclasses?
+		if  bulletLinearMotionComponent:
 			# TODO: CHECK: BUG: FIXME: This does not seem to be the correct way: Shooting while moving backwards makes bullets faster.
-			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.velocity.length()
+			bulletLinearMotionComponent.initialSpeed += characterBodyComponent.body.get_real_velocity().length() # NOTE: Get the REAL velocity so it LOOKS and feels natural.
 
 	# Who Shot Entity?
 	# Use `get()` to avoid crash if `null`
