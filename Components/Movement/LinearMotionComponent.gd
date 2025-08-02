@@ -44,17 +44,23 @@ signal didReachMaximumDistance
 
 func _ready() -> void:
 	self.speed = self.initialSpeed # Can't make @onready because of @export_storage
-	
+
+	# NOTE: Check the maximum distance on ready, in case a bullet etc. was loaded from a save file
 	if shouldStopAtMaximumDistance \
 	and distanceTraveled > maximumDistance or is_equal_approx(distanceTraveled, maximumDistance):
-		self.isMoving = false
+		# TBD: Emit the signal or not? because this may have happened a long time ago
+		self.isMoving = false # Calls set_physics_process()
+		if shouldDeleteParentAtMaximumDistance:
+			parentEntity.queue_free()
+			return
+
 	self.set_physics_process(isEnabled and isMoving) # Apply setters because Godot doesn't on initialization
 
 
 func _physics_process(delta: float) -> void: # TBD: _physics_process() instead of _process() because movement may interact with physics, right?
 	# Check the maximum distance limit before moving any further.
 
-	if shouldStopAtMaximumDistance or shouldDeleteParentAtMaximumDistance: # So that the distance comparisson doesn't happen every frame.
+	if shouldStopAtMaximumDistance or shouldDeleteParentAtMaximumDistance: # CHECK: PERFORMANCE: Are separate `if`s a good idea? So that the distance comparison doesn't happen every frame.
 		if distanceTraveled > maximumDistance or is_equal_approx(distanceTraveled, maximumDistance):
 			# DEBUG: printDebug("distanceTraveled: " + str(distanceTraveled) + " >= maximumDistance: " + str(maximumDistance))
 			if shouldStopAtMaximumDistance: self.isMoving = false
@@ -63,18 +69,17 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 			return
 
 	# Get the current direction
-	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation)
+	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation) # WHYNOT: Vector2.from_angle() is not guaranteed to be a 1.0 unit vector
 
 	# Acceleration or Friction
 	if shouldApplyModifier:
 		speed += modifier * delta
 		speed = clampf(speed, minimumSpeed, maximumSpeed)
 
-	# Get the upcoming movement
+	# Store the movement before applying it to the actual position, in order to limit it to the `maximumDistance` 
 	var offset: Vector2 = direction * (speed * delta)
 
 	# Should we stop at a maximum distance?
-
 	if shouldStopAtMaximumDistance:
 
 		# Check if the upcoming movement will put us past the maximum distance
