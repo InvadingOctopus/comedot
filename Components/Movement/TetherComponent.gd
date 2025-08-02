@@ -9,11 +9,11 @@ extends Component
 #region Parameters
 
 @export var anchorNode: Node2D ## The "anchor" to tether the position of this component's parent entity to.
-@export_range(0.0, 2000.0, 8.0) var maximumDistance: float = 96 ## The maximum radius the [member anchorNode] can be before this component's parent entity is moved.
+@export_range(0, 2000, 8) var maximumDistance: float = 96 ## The maximum radius the [member anchorNode] can be before this component's parent entity is moved.
 
 @export var shouldRepositionImmediately: bool = true
 @export var shouldUseInputComponent:	 bool = false ## If `true` then [member InputComponent.movementDirection] is modified instead of setting the entity's position directly. Effective only if not [member shouldRepositionImmediately].
-@export_range(0, 1000, 5) var speed:	float = 100:  ## Effective only if not [member shouldRepositionImmediately].
+@export_range(0, 1000, 4) var speed:	float = 96:  ## Effective only if not [member shouldRepositionImmediately].
 	set(newValue):
 		if newValue != speed:
 			speed = newValue

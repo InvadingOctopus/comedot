@@ -8,7 +8,7 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export_range(10.0, 100.0, 10.0) var pushingForce: float = 100.0
+@export_range(10, 100, 10) var pushingForce: float = 100
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change

@@ -11,8 +11,8 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export_range(0, 1000, 5.0) var thrust:		float = 100
-@export_range(0, 1000, 5.0) var friction:	float = 50
+@export_range(0, 1000, 4) var thrust:	float = 96
+@export_range(0, 1000, 4) var friction:	float = 48
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change

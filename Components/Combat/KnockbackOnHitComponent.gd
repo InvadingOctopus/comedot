@@ -11,7 +11,7 @@ extends CharacterBodyDependentComponentBase
 #region Parameters
 
 ## The magnitude of the knockback. A scalar which multiplies the vector of the direction of the colliding [DamageComponent].
-@export_range(0, 1000, 5) var knockbackForce: float = 150.0
+@export_range(0, 1000, 4) var knockbackForce: float = 160
 
 @export var damageDirectionScale: Vector2 = Vector2(1, 1) ## Applied to the direction of the damage source.
 

@@ -11,7 +11,7 @@ extends CharacterBodyDependentComponentBase
 
 #region Parameters
 ## The amount to multiply the normalized knockback vector by.
-@export_range(0, 1000, 50.0) var knockbackForce: float = 150.0
+@export_range(0, 1000, 8) var knockbackForce: float = 160
 @export var isEnabled: bool = true
 #endregion
 

@@ -10,7 +10,7 @@ extends Component
 
 #region Parameters
 
-@export_range(0.0, 1000.0, 10.0) var speed: float = 200
+@export_range(0, 1000, 8) var speed: float = 200
 
 ## If `true` (default), uses the "aim" aka "look" input actions such as [constant GlobalInput.Actions.aimLeft] etc.,
 ## which default to a secondary input axis such as the right gamepad joystick,

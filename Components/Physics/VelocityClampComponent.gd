@@ -11,10 +11,10 @@ extends CharacterBodyDependentComponentBase
 
 
 #region Parameters
-@export_range(0, 5000, 5) var maximumVelocityX: float = 100 ## Ignored if <= 0
-@export_range(0, 5000, 5) var maximumVelocityY: float = 100 ## Ignored if <= 0
-@export_range(0, 5000, 5) var minimumVelocityX: float ## Ignored if <= 0. NOTE: Will result in constant movement to the right.
-@export_range(0, 5000, 5) var minimumVelocityY: float ## Ignored if <= 0. NOTE: Will result in constant movement downwards.
+@export_range(0, 4800, 4) var maximumVelocityX: float = 96 ## Ignored if <= 0
+@export_range(0, 4800, 4) var maximumVelocityY: float = 96 ## Ignored if <= 0
+@export_range(0, 4800, 4) var minimumVelocityX: float ## Ignored if <= 0. NOTE: Will result in constant movement to the right.
+@export_range(0, 4800, 4) var minimumVelocityY: float ## Ignored if <= 0. NOTE: Will result in constant movement downwards.
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change

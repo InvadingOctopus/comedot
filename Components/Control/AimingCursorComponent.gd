@@ -10,8 +10,8 @@ extends Component
 
 const animationDuration: float = 0.5 # For hiding/showing
 
-@export_range(0.0, 1000.0, 10.0) var speed: float = 300
-@export_range(0.0, 1000.0, 8.0)  var maximumDistanceFromEntity: float = 96
+@export_range(0, 1000, 8) var speed: float = 320
+@export_range(0, 1000, 8)  var maximumDistanceFromEntity: float = 96
 
 ## If `true`, then the cursor instantly snaps to the edge of the circle defined by [member maximumDistanceFromEntity],
 ## corresponding to the Right Joystick's [member InputComponent.aimDirection] SNAPPED to 0 or 1, i.e. if the joystick is up (at any strength) then the cursor will be at (0, -max).

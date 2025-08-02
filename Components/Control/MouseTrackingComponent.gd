@@ -8,7 +8,7 @@ extends Component
 #region Parameters
 @export var shouldRepositionImmediately: bool = true
 
-@export_range(0, 1000, 5) var speed: float = 100 ## Effective only if not [member shouldRepositionImmediately].
+@export_range(0, 1000, 4) var speed: float = 96 ## Effective only if not [member shouldRepositionImmediately].
 
 @export var isEnabled: bool = true:
 	set(newValue):

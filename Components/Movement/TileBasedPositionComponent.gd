@@ -74,7 +74,7 @@ extends Component
 
 ## The speed of moving between tiles. Ignored if [member shouldMoveInstantly].
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
-@export_range(10.0, 1000.0, 1.0) var speed: float = 200.0
+@export_range(10, 1000, 1) var speed: float = 200
 
 @export var shouldMoveInstantly: bool = false
 

@@ -15,7 +15,7 @@ extends Component
 
 @export var nodeOverride: Node2D ## If `null` then the parentEntity is used.
 
-@export_range(0, 1000, 5) var speed: float = 50.0
+@export_range(0, 1000, 4) var speed: float = 48
 
 ## A list of vectors representing movement relative to the current position,
 ## such as "Go left 10 pixels" or "Go northwest 45 pixels".

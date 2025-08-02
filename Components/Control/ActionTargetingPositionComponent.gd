@@ -9,8 +9,8 @@ extends ActionTargetingCursorComponentBase
 
 
 #region Parameters
-@export_range(0.0, 1000.0, 10.0) var joystickSpeed:				float = 300
-@export_range(0.0, 1000.0, 10.0) var maximumDistanceFromEntity:	float ## The maximum distance for the targeting cursor when controlling with a gamepad joystick.
+@export_range(0, 1000, 8) var joystickSpeed:				float = 320
+@export_range(0, 1000, 8) var maximumDistanceFromEntity:	float ## The maximum distance for the targeting cursor when controlling with a gamepad joystick.
 #endregion
 
 
