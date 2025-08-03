@@ -61,6 +61,10 @@ class CompassVectors:
 	const north		:= Vector2i.UP
 	const northEast	:= Vector2i(+1, -1)
 
+## For use with [method Array.pick_random] with an optional scaling factor.
+## TIP: For floating point values, use [method randf] or [method randf_range].
+const plusMinusOneOrZero: Array[int] = [-1,  0, +1] # TBD: Name :')
+
 ## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
 ## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
 const sequenceNegative1toPositive1stepPoint1: Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0] # TBD: Better name pleawse :')
