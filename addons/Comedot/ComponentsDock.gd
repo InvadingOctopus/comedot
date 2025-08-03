@@ -12,7 +12,7 @@ extends Panel
 
 enum EntityTypes {
 	# NOTE: MUST correspond to the ids of the Add Entity button's PopupMenu
-	# DESIGN: Almost alphabetical, because Node2D has to be first.
+	# DESIGN: The order is almost alphabetical, because Node2D has to be first.
 	node2D = 0,
 	area2D = 1,
 	characterBody2D = 2,
@@ -66,6 +66,10 @@ const defaultHelpLabelText		:= "Select an Entity node in the scene to add Compon
 const defaultAddEntityTip		:= "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
 const editComponentTipPrefix	:= "Open the source scene of "
 
+## If `true` then one of the template scenes from `/Templates/Entities/` is instantiated when a new [Entity] is created from the Comedock.
+## If `false` then a standalone node is created and its script and properties are set directly.
+## NOTE: PERFORMANCE: Using templates MAY be slower because extra scenes have to be loaded.
+@export var shouldUseTemplatesForNewEntities: bool = false
 @export var debugMode: bool = false
 
 #endregion
@@ -452,33 +456,40 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 
 	# Create a new Entity
 
-	var newEntity: Entity
+	var newEntity: Node
 
-	# TBD: `load` or `preload`?
+	# TBD: load() or preload()? PERFORMANCE: preload() may increase the plugin startup time.
 	# TODO: CHECK: Is there a better way without `.instantiate()`?
+	# DESIGN: Node2D is first because it's the most basic type, and then the rest are ordered alphabetically.
 
 	match entityType:
 		EntityTypes.node2D:
-			newEntity = load(entityBaseScene).instantiate()
+			newEntity = load(entityBaseScene).instantiate() if shouldUseTemplatesForNewEntities else Node2D.new()
 			newEntity.name = "Entity"
 
 		EntityTypes.area2D:
-			newEntity = load(areaEntityTemplate).instantiate()
+			newEntity = load(areaEntityTemplate).instantiate() if shouldUseTemplatesForNewEntities else Area2D.new()
 			newEntity.name = "AreaEntity"
 
 		EntityTypes.characterBody2D:
-			newEntity = load(bodyEntityTemplate).instantiate()
+			newEntity = load(bodyEntityTemplate).instantiate() if shouldUseTemplatesForNewEntities else CharacterBody2D.new()
 			newEntity.name = "CharacterBodyEntity"
 
 		EntityTypes.sprite2D:
-			newEntity = load(spriteEntityTemplate).instantiate()
+			newEntity = load(spriteEntityTemplate).instantiate() if shouldUseTemplatesForNewEntities else Sprite2D.new()
 			newEntity.name = "SpriteEntity"
 
 		_: printError(str("Invalid entityType: ", entityType))
 
-	if debugMode: printLog(str(newEntity))
+	# Set common properties in case we didn't `shouldUseTemplatesForNewEntities`
+	if not shouldUseTemplatesForNewEntities:
+		newEntity.set_script(preload(entityBaseScript))
+		newEntity.add_to_group(Global.Groups.entities, true) # persistent
+		newEntity.set_meta(&"_edit_group_", true) # Select all child nodes in the Godot Editor when Entity is clicked.
 
-	# Add the component to the selected Entity
+	if debugMode: printLog(str("addNewEntity(): ", newEntity))
+
+	# Add the new Entity to the selected parent node
 	EditorInterface.edit_node(parentNode)
 	parentNode.add_child(newEntity, true) # force_readable_name
 	newEntity.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
@@ -487,7 +498,8 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	selection.clear()
 	selection.add_node(newEntity)
 	EditorInterface.edit_node(newEntity)
-	#EditorInterface.set_script(load(entityBaseScript)) # TBD: Needed?
+	# EditorInterface.set_script(preload(entityBaseScript)) # TBD: Needed?
+	# TODO: Set the focus to the Scene Tree Dock
 
 	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
 
