@@ -8,16 +8,16 @@ _Component-based framework and project template for [Godot][godot]_
 
 ![components-tree]
 
-* Comes with a library of components for different types of player movement, combat, collectibles, interactions, upgrades etc.
+* Comes with a library of components for player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.anyName = 69`
 * A neutron star spoonful of helper functions & debugging tools.
 * Commented & documented code.
+* Snippets for VSCode/VSCodium.
 * Free-to-use 3rd-party assets for quick prototyping.
-* Snippets for VSCode/VSCodium to type common GDScript code with a single keyword.
 
-🎖️ The most sprillific feature is components that go beyond basic implementation to make sure gameplay *feels* right, by handling tricky edge-case issues that all games run into sooner or later, like:
+🎖️ Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
