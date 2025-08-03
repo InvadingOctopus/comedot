@@ -4,11 +4,11 @@ _Component-based framework and project template for [Godot][godot]_
 
 ![Godot+Comedot Logo][logo]
 
-**The goal is to be an all-in-one toolkit for 2D games** (platformers, shoot-em-ups, RPGs, turn-based strategy or puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
+**The goal is to be an all-in-one toolkit for 2D games** (platformers, shoot-em-ups, RPGs, turn-based, tile-based, strategy, puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
 
 ![components-tree]
 
-* Comes with a library of components for player movement, combat, collectibles, interactions, upgrades etc.
+* Megatons of components for player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.anyName = 69`
