@@ -37,7 +37,7 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 * To simplify, it's basically a wrapper around `get_parent().do_something()` and `get_parent().get_node("OtherComponent").do_something()`
 
-* 🪆 An "**entity**" is a node whose children are components (it may also have non-component children).
+🪆 An "**entity**" is a node whose children are components (it may also have non-component children).
 
 🎬 The quickest way to learn/teach something is by example, so take a look in `/Templates/Examples/` and `/Templates/Scenes/` for very basic gameplay that you can duplicate and modify.
 
