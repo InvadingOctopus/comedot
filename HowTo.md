@@ -1,7 +1,7 @@
 # Comedot - How To Do Shit
 
 * 🏠 [Organize Your Project](#-organize-your-project)
-* 👀 [See Usage Examples](#-see-usage-examples)
+* 🐣 [Understand the Basics](#-understand-the-basics)
 * 👤 [Make a Player Entity](#-make-a-player-entity)
 * 🕹️ [Add Player Control and Movement](#%EF%B8%8F-add-player-control)
 * 🧩 [Add Components to Entities](#-add-components-to-entities)
@@ -25,11 +25,23 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 ❗️ Your main game scene must have the `/Scripts/Start.gd` script attached to the root node (or any other node as long as it runs before other scripts, just to be safe) so it can initialize the Comedot framework environment and apply global flags etc.
 
 
-# 👀 See Usage Examples
+# 🐣 Understand the Basics
 
-* The quickest way to learn/teach something is usually by example, so take a look in `/Templates/Examples/` and `/Templates/Scenes/` for very basic gameplay that you can duplicate and modify.
+🧩 A "**component**" is any Godot node that:
 
-* Scenes in  `/Tests/` are used in the development process of various components and subsystems such as `/Tests/Upgrades/UpgradeTest.tscn` and `/Tests/TurnBased/TurnBasedTest.tscn` that you can examine to see how those features work.
+* Reacts to events (like player input or collisions).
+
+* Moves or modifies its parent node or other components.
+
+* Contains data for other components to use (like character health and other stats).
+
+* To simplify, it's basically a wrapper around `get_parent().do_something()` and `get_parent().get_node("OtherComponent").do_something()`
+
+* 🪆 An "**entity**" is a node whose children are components (it may also have non-component children).
+
+🎬 The quickest way to learn/teach something is by example, so take a look in `/Templates/Examples/` and `/Templates/Scenes/` for very basic gameplay that you can duplicate and modify.
+
+🎬 Scenes in  `/Tests/` are used in the development process of various components and subsystems such as `/Tests/Upgrades/UpgradeTest.tscn` and `/Tests/TurnBased/TurnBasedTest.tscn` that you can examine to see how those features work.
 
 
 # 👤 Make a Player Entity
@@ -38,7 +50,7 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 2. Attach the `/Entities/Characters/PlayerEntity.gd` Script.
 
-3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` and set them up.
+3. Add other necessary nodes like `Sprite2D` or `AnimatedSprite2D`, `CollisionShape2D`, `Camera2D` / `CameraComponent`
 
 4. Set the Body's Physics Collision Layer to `players` and the Mask to `terrain`. Add other categories as needed.
 
@@ -51,11 +63,15 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 2. Add components from `/Components/Control/` and `/Components/Physics/` as children of the Entity node.
 
-	🍄 For platformer "run and jump" movement: `PlatformerControlComponent` + `JumpControlComponent` + `PlatformerPhysicsComponent`
+	🍄 For platformer "run and jump" movement: `JumpComponent` + `PlatformerPhysicsComponent`
 
-	🛸 For "overhead" RPG or flying movement:  `OverheadControlComponent` + `OverheadPhysicsComponent`
+	🛸 For "overhead" RPG or flying movement:  `OverheadPhysicsComponent`
 
-3. Add `/Components/Physics/CharacterBodyComponent.tscn` as the _last_ component in the Entity's tree. This component takes the velocity updates from other components and applies them to the Entity's `CharacterBody2D`.
+	♟️ For tile-based movement and board games: `TileBasedControlComponent` + `TileBasedPositionComponent`
+
+3. Add `/Components/Physics/CharacterBodyComponent.tscn` after the above components in the Entity's tree. This component takes the velocity updates from other components and applies them to the Entity's `CharacterBody2D`
+
+4. Add `/Components/Control/InputComponent.tscn`, which processes player/AI input and shares it with other components. The order of this component must be below other components, because input events propogate upwards through the scene tree.
 
 
 # 🧩 Add Components to Entities
@@ -83,7 +99,7 @@ _Most components require their Scene file, not just the Script, because they may
 
 ❕ _Remember to set the correct Physics Collision Layers and Masks for all bodies/areas, otherwise they won't be able to detect collisions with each other._
 
-💡 _You may also add `HealthVisualComponent` + `InvulnerabilityOnHitComponent` etc._
+💡 _See also: `HealthVisualComponent` + `InvulnerabilityOnHitComponent` etc._
 
 
 # ⚡️ Customization

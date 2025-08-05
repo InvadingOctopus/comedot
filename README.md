@@ -60,14 +60,6 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
 ![Custom Dock Plugin][comedock]
 
-> [!NOTE]
-> 🧩 A "component" is any Godot node that:
-> * Reacts to events (like player input or collisions).
-> * Moves or modifies its parent node or other components.
-> * Contains data for other components to use (like character health and other stats).
->
-> 🪆 An "entity" is a node whose children are components (it may also have non-component children).
-
 🎳 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive items or collectible powerups:
 
 * _Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
