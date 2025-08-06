@@ -26,6 +26,7 @@ body = NodePath(".")
 shape = SubResource("RectangleShape2D_boo6r")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+use_parent_material = true
 texture = ExtResource("2_ypl60")
 region_enabled = true
 region_rect = Rect2(432, 128, 16, 16)

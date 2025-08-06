@@ -49,6 +49,7 @@ shape = SubResource("RectangleShape2D_dpspd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.5, 0, 1)
+use_parent_material = true
 texture = ExtResource("2_gepur")
 region_enabled = true
 region_rect = Rect2(448, 96, 16, 16)

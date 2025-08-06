@@ -32,6 +32,7 @@ shape = SubResource("RectangleShape2D_sg2kd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
 modulate = Color(0, 1, 0, 1)
+use_parent_material = true
 texture = SubResource("AtlasTexture_xljij")
 
 [node name="CameraComponent" parent="." instance=ExtResource("3_2ybp4")]

@@ -28,6 +28,7 @@ shape = SubResource("RectangleShape2D_lt4cn")
 
 [node name="BulletSprite" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0, 1)
+use_parent_material = true
 texture = ExtResource("2_s7agm")
 
 [node name="FactionComponent" parent="." instance=ExtResource("3_uhpuy")]
