@@ -6,6 +6,8 @@ _Component-based framework and project template for [Godot][godot]_
 
 **The goal is to be an all-in-one toolkit for 2D games** (platformers, shoot-em-ups, RPGs, turn-based, tile-based, strategy, puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
 
+<br/>
+
 ![components-tree]
 
 * Megatons of components for player movement, combat, collectibles, interactions, upgrades etc.
@@ -17,7 +19,7 @@ _Component-based framework and project template for [Godot][godot]_
 * Snippets for VSCode/VSCodium.
 * Free-to-use 3rd-party assets for quick prototyping.
 
-🎖️ Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
+🌟 Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
@@ -28,6 +30,7 @@ _Component-based framework and project template for [Godot][godot]_
 > [!WARNING]
 > _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
+<br/>
 
 ## Examples 
 
@@ -45,6 +48,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 
 ![debug-charts]
 
+<br/>
 
 ## How To Use
 
@@ -72,6 +76,7 @@ https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**  
 > See [Conventions.md][Conventions] for the style guide and design rules this project tries to follow.
 
+<br/>
 
 ----
 
