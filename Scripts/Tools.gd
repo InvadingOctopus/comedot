@@ -304,6 +304,31 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 	return transferredNodes
 
 
+## Searches a group of nodes and returns the node nearest to the specified reference position.
+## Compares the [member Node2D.global_position]s.
+## TIP: May be used to find the closest player for monsters to chase, or the nearest mosnter for a homing missile weapon to attack, etc.
+static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: StringName) -> Node2D:
+	# NOTE: Use Engine.get_main_loop() instead of Node.get_tree()
+	# because when called by ChaseComponent etc. the parent entity may not be in a SceneTree yet
+	var nodesInGroup: Array[Node] = Engine.get_main_loop().get_nodes_in_group(targetGroup)
+	if nodesInGroup.is_empty(): return null
+
+	var nearestNode:		Node2D  = null
+	var minimumDistance:	float   = INF # Start with infinity
+	var checkingDistance:	float
+
+	for nodeToCheck in nodesInGroup:
+		if nodeToCheck is Node2D:
+			checkingDistance = referencePosition.distance_squared_to(nodeToCheck.global_position) # PERFORMANCE: distance_squared_to() is faster than distance_to()
+			if is_zero_approx(checkingDistance):
+				return nearestNode # Can't get any closer than 0!
+			elif checkingDistance < minimumDistance:
+				minimumDistance = checkingDistance
+				nearestNode = nodeToCheck
+
+	return nearestNode
+
+
 ## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
 ## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
 ## TIP: Combine with the output from [member getShapeBoundsInNode] to get an [Area2D]'s global region.
