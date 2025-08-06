@@ -490,9 +490,9 @@ static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: R
 	return displacement
 
 
-## Checks a list of [Rect2]s and returns the rectangle nearest to another specific rectangle.
-## The [param comparedRects] would usually represent static "zones" and the [param primaryRect] may be the bounds of a player Entity or another character etc.
-static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
+## Checks a list of [Rect2]s and returns the rectangle nearest to a specified reference rectangle.
+## The [param comparedRects] would usually represent static "zones" and the [param referenceRect] may be the bounds of a player Entity or another character etc.
+static func findNearestRect(referenceRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 
 	var nearestRect:	 Rect2
@@ -500,10 +500,10 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 
 	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
 
-	var primaryLeft:	float = primaryRect.position.x
-	var primaryRight:	float = primaryRect.end.x
-	var primaryTop:		float = primaryRect.position.y
-	var primaryBottom:	float = primaryRect.end.y
+	var referenceLeft:	float = referenceRect.position.x
+	var referenceRight:	float = referenceRect.end.x
+	var referenceTop:	float = referenceRect.position.y
+	var referenceBottom:float = referenceRect.end.y
 
 	var comparedLeft:	float
 	var comparedRight:	float
@@ -518,8 +518,8 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 
 		# If both regions are exactly the same position & size,
 		# or either of them completely contain the other, then you can't get any nearer than that!
-		if comparedRect.is_equal_approx(primaryRect) \
-		or comparedRect.encloses(primaryRect) or primaryRect.encloses(comparedRect):
+		if comparedRect.is_equal_approx(referenceRect) \
+		or comparedRect.encloses(referenceRect) or referenceRect.encloses(comparedRect):
 			minimumDistance = 0
 			nearestRect = comparedRect
 			break
@@ -532,12 +532,12 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 		gap				= Vector2.ZERO # Gaps will default to 0 if the edges are touching
 
 		# Compute horizontal gap
-		if   primaryRight  < comparedLeft:	gap.x = comparedLeft - primaryRight		# Primary to the left of Compared?
-		elif comparedRight < primaryLeft:	gap.x = primaryLeft  - comparedRight	# or to the right?
+		if   referenceRight < comparedLeft:  gap.x = comparedLeft  - referenceRight	# Primary to the left of Compared?
+		elif comparedRight  < referenceLeft: gap.x = referenceLeft - comparedRight	# or to the right?
 
 		# Compute vertical gap
-		if   primaryBottom  < comparedTop:	gap.y = comparedTop - primaryBottom		# Primary above Compared?
-		elif comparedBottom < primaryTop:	gap.y = primaryTop  - comparedBottom	# or below?
+		if   referenceBottom < comparedTop:	 gap.y = comparedTop  - referenceBottom	# Primary above Compared?
+		elif comparedBottom  < referenceTop: gap.y = referenceTop - comparedBottom	# or below?
 
 		# Get the Euclidean distance between edges
 		distance = sqrt(gap.x * gap.x + gap.y * gap.y)
@@ -550,10 +550,10 @@ static func findNearestRect(primaryRect: Rect2, comparedRects: Array[Rect2]) -> 
 	return nearestRect
 
 
-## Checks a list of [Area2D]s and returns the area nearest to another specific area.
-## The [param comparedAreas] would usually be static "zones" and the [param primaryArea] may be the bounds of a player Entity or another character etc.
-## NOTE: If 2 different [Area2D]s are at the same distance from [param primaryArea] then the one on top i.e. with the higher [member CanvasItem.z_index] will be used.
-static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
+## Checks a list of [Area2D]s and returns the area nearest to a specified reference area.
+## The [param comparedAreas] would usually be static "zones" and the [param referenceArea] may be the bounds of a player Entity or another character etc.
+## NOTE: If 2 different [Area2D]s are at the same distance from [param referenceArea] then the one on top i.e. with the higher [member CanvasItem.z_index] will be used.
+static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
 	# TBD: PERFORMANCE: Option to cache results?
 
 	# DESIGN: PERFORMANCE: Cannot use findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
@@ -562,15 +562,15 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 	var nearestArea:	Area2D = null # Initialize with `null` to avoid the "used before assigning a value" warning
 	var minimumDistance: float = INF  # Start with infinity
 
-	var primaryAreaBounds:  Rect2 = Tools.getShapeGlobalBounds(primaryArea)
-	var comparedAreaBounds: Rect2
+	var referenceAreaBounds: Rect2 = Tools.getShapeGlobalBounds(referenceArea)
+	var comparedAreaBounds:  Rect2
 
 	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
 
-	var primaryLeft:	float = primaryAreaBounds.position.x
-	var primaryRight:	float = primaryAreaBounds.end.x
-	var primaryTop:		float = primaryAreaBounds.position.y
-	var primaryBottom:	float = primaryAreaBounds.end.y
+	var referenceLeft:	float = referenceAreaBounds.position.x
+	var referenceRight:	float = referenceAreaBounds.end.x
+	var referenceTop:	float = referenceAreaBounds.position.y
+	var referenceBottom:float = referenceAreaBounds.end.y
 
 	var comparedLeft:	float
 	var comparedRight:	float
@@ -581,15 +581,15 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 	var distance:		float	# The Euclidean distance between edges
 
 	for comparedArea: Area2D in comparedAreas:
-		if comparedArea == primaryArea: continue
+		if comparedArea == referenceArea: continue
 
 		comparedAreaBounds = Tools.getShapeGlobalBounds(comparedArea)
 		if not comparedAreaBounds.abs().has_area(): continue # Skip area if it doesn't have an area!
 
 		# If both regions are exactly the same position & size,
 		# or either of them completely contain the other, then you can't get any nearer than that!
-		if comparedAreaBounds.is_equal_approx(primaryAreaBounds) \
-		or comparedAreaBounds.encloses(primaryAreaBounds) or primaryAreaBounds.encloses(comparedAreaBounds):
+		if comparedAreaBounds.is_equal_approx(referenceAreaBounds) \
+		or comparedAreaBounds.encloses(referenceAreaBounds) or referenceAreaBounds.encloses(comparedAreaBounds):
 			# Is this the first overlapping area? (i.e. the minimum distance is not already 0)
 			# or is it another overlapping area visually on top (with a higher Z index) of a previous overlapping area?
 			if not is_zero_approx(minimumDistance) \
@@ -606,12 +606,12 @@ static func findNearestArea(primaryArea: Area2D, comparedAreas: Array[Area2D]) -
 		gap				= Vector2.ZERO # Gaps will default to 0 if the edges are touching
 
 		# Compute horizontal gap
-		if   primaryRight  < comparedLeft:	gap.x = comparedLeft - primaryRight		# Primary to the left of Compared?
-		elif comparedRight < primaryLeft:	gap.x = primaryLeft  - comparedRight	# or to the right?
+		if   referenceRight < comparedLeft:  gap.x = comparedLeft  - referenceRight	# Primary to the left of Compared?
+		elif comparedRight  < referenceLeft: gap.x = referenceLeft - comparedRight	# or to the right?
 
 		# Compute vertical gap
-		if   primaryBottom  < comparedTop:	gap.y = comparedTop - primaryBottom		# Primary above Compared?
-		elif comparedBottom < primaryTop:	gap.y = primaryTop  - comparedBottom	# or below?
+		if   referenceBottom < comparedTop:	 gap.y = comparedTop  - referenceBottom	# Primary above Compared?
+		elif comparedBottom  < referenceTop: gap.y = referenceTop - comparedBottom	# or below?
 
 		# Get the Euclidean distance between edges
 		distance = sqrt(gap.x * gap.x + gap.y * gap.y)
