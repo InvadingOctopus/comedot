@@ -167,7 +167,7 @@ func _enter_tree() -> void:
 		self.debugMode		  = self.debugMode or parentEntity.debugMode
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 		self.checkRequiredComponents()
-	else: 
+	else:
 		self.coComponents = {} # Clear our previous memory of any siblings
 		if not allowNonEntityParent: printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
