@@ -4,6 +4,8 @@
 [ext_resource type="LabelSettings" uid="uid://i5eelmg52iqc" path="res://Assets/Themes/Label/LabelComponent.tres" id="1_yx4i1"]
 
 [node name="LabelComponent" type="Label" groups=["components"]]
+use_parent_material = true
+anchors_preset = -1
 offset_right = 97.0
 offset_bottom = 8.0
 size_flags_horizontal = 6

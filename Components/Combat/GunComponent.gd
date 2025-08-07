@@ -38,6 +38,7 @@ extends CooldownComponent
 @export_group("Bullets")
 
 ## The [Entity] to instantiate a copy of when the Gun shoots.
+## Does not necessarily have to be a "bullet": It may be an arrow or rock or any other projectile, even a monster!
 @export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
 
 ## Any node such as a [Marker2D] where newly spawned bullets will be placed placed. Bullets will be added as children of the emitter's parent node.
