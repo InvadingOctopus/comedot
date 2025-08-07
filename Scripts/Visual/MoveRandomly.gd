@@ -25,8 +25,8 @@ extends Node2D
 func _process(delta: float) -> void:
 	if timeLeft < 0 or is_zero_approx(timeLeft):
 		# NOTE: Using delta may make the movement < 1 pixel (unless the scale is large), causing no visible movement
-		self.position.x += Tools.plusMinusOneOrZero.pick_random() * movementScale.x # * delta
-		self.position.y += Tools.plusMinusOneOrZero.pick_random() * movementScale.y # * delta
+		self.position.x += Tools.plusMinusOneOrZeroFloat.pick_random() * movementScale.x # * delta
+		self.position.y += Tools.plusMinusOneOrZeroFloat.pick_random() * movementScale.y # * delta
 		timeLeft = movementInterval
 	else:
 		timeLeft -= delta
