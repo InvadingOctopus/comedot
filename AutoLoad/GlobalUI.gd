@@ -99,7 +99,7 @@ func setRetinaScaling() -> void:
 	or is_equal_approx(DisplayServer.screen_get_scale(), 2.0):
 		Debug.printAutoLoadLog(str("DisplayServer screen scale: ", DisplayServer.screen_get_scale()))
 		var window: Window = self.get_window()
-		window.content_scale_factor = 2.0
+		# window.content_scale_factor = 2.0 # UNUSED: Doubling the window size doubles the pixels anyway, right?
 		window.size *= 2 # TBD: Double the Viewport size?
 		window.move_to_center()
 
