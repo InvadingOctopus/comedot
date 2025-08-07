@@ -8,7 +8,7 @@ Description:
 All-in-one project template & components framework: Basically Nodes but for gameplay. Optimized for 2D pixel art.
 
 • Includes components for different types of player movement, combat, collectibles, inventory, turn-based logic, AI etc.
-• Takes care of tricky gameplay polish issues related to stats, interactions, physics, climbing, tile-based maps etc.
+• Handles tricky gameplay issues related to stats, interactions, physics, climbing, tile-based maps etc.
 • UI controls like a stats HUD, buttons for special skills, etc.
 • Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay and short example games.
 • Save/Load player preferences in config file with `Settings.anyName = 69`
@@ -30,7 +30,7 @@ Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
 Godot Version:	4.5
 Asset Version:	4.5.0.50.69 (First 4 numbers are the Godot version including Dev/Beta/RC)
-Commit URL:		375b0a1801a501d2c2b1b65b5b01eeaddeb4bed5 2025-07-30
+Commit URL:		4017df3ff1719922dccd83cf38e2b7a7bf776dc0 2025-08-08
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
