@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://w1qe3yxby7lf"]
+
+[ext_resource type="Script" uid="uid://btadujscs5h4w" path="res://Components/Combat/BulletlessGunComponent.gd" id="1_ofvo7"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_41psw"]
+
+[node name="BulletlessGunComponent" type="Node2D" groups=["components"]]
+use_parent_material = true
+script = ExtResource("1_ofvo7")
+metadata/_edit_group_ = true
+
+[node name="GunSprite" type="Sprite2D" parent="."]
+texture_filter = 2
+use_parent_material = true
+texture = ExtResource("2_41psw")
+region_enabled = true
+region_rect = Rect2(688, 144, 16, 16)
