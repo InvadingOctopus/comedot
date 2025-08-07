@@ -15,8 +15,9 @@ extends Component
 @export var nodeToChase: Node2D:
 	set(newValue):
 		if newValue != nodeToChase:
+			if debugMode: Debug.printChange("nodeToChase", nodeToChase, newValue, self.debugModeTrace) # logAsTrace
 			nodeToChase = newValue
-			updateTarget()
+			if self.is_node_ready(): updateTarget()
 
 ## If specified, then the nearest node that belongs to the specified group is targeted.
 ## Overridden by [member nodeToChase]. Overrides or falls back to [member playerIndexToChase].
@@ -25,7 +26,7 @@ extends Component
 	set(newValue):
 		if newValue != groupToChase:
 			groupToChase = newValue
-			updateTarget()
+			if self.is_node_ready(): updateTarget()
 
 ## If [member nodeToChase] is `null` and [member groupToChase] is empty, the specified [PlayerEntity] from the [member GameState.players] array will be targeted.
 ## An invalid index such as -1 will be ignored.
@@ -33,8 +34,9 @@ extends Component
 @export var playerIndexToChase: int = 0:
 	set(newValue):
 		if newValue != playerIndexToChase:
+			if debugMode: Debug.printChange("playerIndexToChase", playerIndexToChase, newValue, self.debugModeTrace) # logAsTrace
 			playerIndexToChase = newValue
-			updateTarget()
+			if self.is_node_ready(): updateTarget()
 
 ## If `true` then the [member activeTarget] is updated every [member updateTargetInterval] seconds.
 ## PERFORMANCE: Should be enabled only if [member groupToChase] is used and expected to have a large amount of moving targets.
