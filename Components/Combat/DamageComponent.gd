@@ -30,16 +30,6 @@ extends Component
 ## @experimental
 @export var damageModifier: Stat
 
-## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
-## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
-## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
-## TIP: For [Timer]-based repeating damage use [DamageRepeatingComponent].
-## @experimental
-@export_range(0, 1000) var damagePerSecond: float = 0: # NOTE: Should this be an integer or float?
-	set(newValue):
-		damagePerSecond = newValue # Don't bother checking for a change
-		self.set_process(not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty() and isEnabled) # PERFORMANCE: Set once instead of every frame
-
 ## If less than 100, then a collision with a [DamageReceivingComponent] may occasionally be ignored.
 ## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
 ## TIP: To ensure that a character always hits, this value may be set to greater than 100.
@@ -70,13 +60,10 @@ extends Component
 		isEnabled = newValue
 		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
 		# e.g. after an [InvulnerabilityOnHitComponent] ends.
-
 		if  area:
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
 			area.set_deferred(&"monitoring",  isEnabled)
 			area.set_deferred(&"monitorable", isEnabled)
-
-		self.set_process(isEnabled and not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty()) # PERFORMANCE: Set once instead of checking every frame in _process()
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
 #endregion
@@ -96,7 +83,6 @@ var damageReceivingComponentsInContact: Array[DamageReceivingComponent]:
 	set(newValue):
 		if newValue != damageReceivingComponentsInContact:
 			damageReceivingComponentsInContact = newValue
-			self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
 
 ## Returns the total damage value including the base [member damageOnCollision] +/- the [member damageModifier] [Stat] if any.
 ## @experimental
@@ -129,7 +115,6 @@ func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
 	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
 	# Apply setters because Godot doesn't on initialization
-	self.set_process(not is_zero_approx(damagePerSecond) and not damageReceivingComponentsInContact.is_empty() and isEnabled)
 	self.set_physics_process(isEnabled)
 	if  area:
 		area.monitoring  = isEnabled
@@ -162,8 +147,6 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
 
-		self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
-
 
 func onAreaExited(areaExited: Area2D) -> void:
 	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
@@ -177,7 +160,6 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 	if  damageReceivingComponent:
 		damageReceivingComponentsInContact.erase(damageReceivingComponent)
-		self.set_process(not damageReceivingComponentsInContact.is_empty() and not is_zero_approx(damagePerSecond) and isEnabled)
 		didLeaveReceiver.emit(damageReceivingComponent)
 
 
@@ -248,41 +230,5 @@ func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool
 func causeDamageToAllReceivers() -> void:
 	for damageReceivingComponent in self.damageReceivingComponentsInContact:
 		damageReceivingComponent.processCollision(self, factionComponent)
-
-#endregion
-
-
-#region Per-Frame Damage
-
-func _process(delta: float) -> void: # TBD: _process() instead of _physics_process because this is time-based, not physics based, right?
-	## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
-	## TBD: Skip the frame in which a collision happens?
-	## But the would require more work to keep track of each collision :(
-
-	# TODO: Verify that it is indeed per second.
-	var damageForThisFrame: float = self.damagePerSecond * delta
-
-	for damageReceivingComponent in damageReceivingComponentsInContact:
-		# DEBUG: printLog("processFrameDamage: " + str(damageReceivingComponent) + " | damageForThisFrame: " + str(damageForThisFrame))
-		processFrameDamage(damageReceivingComponent, damageForThisFrame)
-
-
-func processFrameDamage(damageReceivingComponent: DamageReceivingComponent, damageForThisFrame: float) -> void:
-	if not isEnabled: return
-	if debugMode: printDebug(str("processFrameDamage() damageReceivingComponent: ", damageReceivingComponent, " ", damageReceivingComponent.parentEntity.logName, ", damageForThisFrame: ", damageForThisFrame))
-
-	# NOTE: The "own entity" check is done once in `getDamageReceivingComponent()`
-
-	# TBD: Should there be a signal emitted every frame??
-	#willprocessFrameDamage.emit(damageReceivingComponent)
-
-	# Do we belong to a faction?
-	# will be checked in the `factionComponent` property getter
-
-	# Even if we have no faction, damage must be dealt.
-
-	# TBD: Why use `handleDamage` directly here?
-	# Let's pretend it's because of performance :')
-	damageReceivingComponent.processFractionalDamage(self, damageForThisFrame, factionComponent.factions if factionComponent else 0, self.friendlyFire)
 
 #endregion

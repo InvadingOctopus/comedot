@@ -72,7 +72,6 @@ collision_mask = 1060
 [node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
 collision_layer = 1032
 collision_mask = 1028
-damagePerSecond = 1.0
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 position = Vector2(2.08165e-12, 2.08165e-12)

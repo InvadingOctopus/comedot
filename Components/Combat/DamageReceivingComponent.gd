@@ -22,19 +22,13 @@ extends Component
 ## Used for e.g. highly agile characters or "ethereal" monsters such as ghosts etc.
 @export_range(0, 100, 1, "suffix:%") var missChance: int = 0
 
-@export var isEnabled: bool = true
-	# UNUSED: set(newValue):
-		# isEnabled = newValue
-		# NOTE: FIXED: Do not disable the Area2D collisions,
-		# otherwise `DamageComponent.damagePerFrame` will not work correctly,
-		# because this DamageReceivingComponent Area2D will trigger an `onAreaExited` signal when toggling `monitoring/able`,
-		# which will remove this DamageReceivingComponent from `DamageComponent.damageReceivingComponentsInContact`,
-		# preventing further damage even if this DamageReceivingComponent remains in contact!
-		# e.g. after an [InvulnerabilityOnHitComponent] ends.
-		# UNUSED: if area:
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		if  area:
 			# Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			# area.set_deferred(&"monitoring",  isEnabled)
-			# area.set_deferred(&"monitorable", isEnabled)
+			area.set_deferred(&"monitoring",  isEnabled)
+			area.set_deferred(&"monitorable", isEnabled)
 #endregion
 
 
@@ -48,30 +42,19 @@ signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerF
 ## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
 signal didCollideWithDamage(damageComponent: DamageComponent)
 
-signal didAccumulateFractionalDamage(damageComponent: DamageComponent, amount: float, attackerFactions: int) ## @experimental
-
 signal willRemoveEntity ## Emitted if there is no [HealthComponent] and [member shouldRemoveEntityIfNoHealthComponent]
+
 #endregion
 
 
 #region State
-
-## To eliminate any possibility of bugs or inaccuracies arising from floating point math imprecision.
-var accumulatedFractionalDamage: float
-
-## A list of [DamageComponent]s currently in collision contact.
-var damageComponentsInContact: Array[DamageComponent]
-
-## The [Area2D] "hurtbox" that this component represents, which may be this component's own node.
-var area: Area2D
-
+var area: Area2D ## The [Area2D] "hurtbox" that this component represents, which may be this component's own node.
+var damageComponentsInContact: Array[DamageComponent] ## A list of [DamageComponent]s currently in collision contact.
 #endregion
 
 
 #region Dependencies
-
-## May be a subclass such as [ShieldedHealthComponent].
-@onready var healthComponent:  HealthComponent  = parentEntity.findFirstComponentSubclass(HealthComponent)
+@onready var healthComponent:  HealthComponent  = parentEntity.findFirstComponentSubclass(HealthComponent) ## May be a subclass such as [ShieldedHealthComponent].
 @onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Avoid crash if missing
 #endregion
 
@@ -109,10 +92,6 @@ func onAreaExited(areaExited: Area2D) -> void:
 	var damageComponent: DamageComponent = areaExited.get_node(^".") as DamageComponent # HACK: Find better way to cast self?
 	if  debugMode: printDebug(str("onAreaExited(): ", areaExited, ", damageComponent: ", damageComponent.logNameWithEntity if damageComponent else "null"))
 	if  damageComponent: damageComponentsInContact.erase(damageComponent)
-
-	# Reset the `accumulatedFractionalDamage` if there is no source of damage in contact.
-	if damageComponentsInContact.is_empty():
-		accumulatedFractionalDamage = 0
 
 
 ## Returns a [DamageComponent] by casting an [Area2D] node, if possible.
@@ -190,41 +169,3 @@ func processDamage(damageComponent: DamageComponent, damageAmount: int, attacker
 		self.requestDeletionOfParentEntity()
 
 	return true # There were opposing (or no) factions or friendly fire.
-
-
-## Converts float damage values to a single integer damage value.
-## Such as damage accumulated over time/per frame.
-## @experimental
-func processFractionalDamage(damageComponent: DamageComponent, fractionalDamage: float, attackerFactions: int = 0, friendlyFire: bool = false) -> void:
-	# INFO: The convention is to keep all player-facing stats as integers,
-	# to eliminate any potential bugs or inconsistencies arising from floating point math inaccuracies.
-
-	# TBD: WTF? Do we really need this?
-
-	if not isEnabled \
-	or is_zero_approx(fractionalDamage) or fractionalDamage < 0.0 \
-	or not checkFactions(attackerFactions, friendlyFire):
-		return
-
-	self.accumulatedFractionalDamage += fractionalDamage
-
-	# TBD: Is it be costly to emit this signal each frame? Should it be emitted regardless of health?
-	didAccumulateFractionalDamage.emit(damageComponent, fractionalDamage, attackerFactions)
-
-	# Drain the damage
-	# DESIGN: We basically need to floorf() the `accumulatedFractionalDamage` (e.g. 2.99 = 2 damage)
-	# but we also want to leave any remaining `accumulatedFractionalDamage` (e.g. 0.99) to add into the next "tick" of DamageComponent.damagePerSecond
-
-	var damageToApply: int = int(floorf(accumulatedFractionalDamage))
-
-	if damageToApply >= 1:
-		accumulatedFractionalDamage -= damageToApply
-		if is_zero_approx(accumulatedFractionalDamage): accumulatedFractionalDamage = 0 # CHECK: Is this helpful?
-
-		# Even if there is no HealthComponent, we will still emit the signal.
-		if healthComponent: healthComponent.damage(damageToApply) # See header notes.
-
-		# CHECK: Should this signal be emitted regardless of health?
-		didReceiveDamage.emit(damageComponent, damageToApply, attackerFactions)
-
-#endregion
