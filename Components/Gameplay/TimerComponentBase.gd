@@ -1,16 +1,20 @@
-## An abstract base class for Components that depend on a [Timer].
+## An abstract base class for Components that depend on a [Timer] or whose node itself is a [Timer].
 
 @abstract class_name TimerComponentBase
 extends Component
 
 
 #region Parameters
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			if not isEnabled: timer.stop()
 #endregion
 
 
 #region State
-@onready var selfAsTimer: Timer = self.get_node(^".") as Timer
+@onready var timer: Timer = self.get_node(^".") as Timer
 #endregion
 
 
