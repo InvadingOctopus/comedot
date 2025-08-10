@@ -2,7 +2,7 @@
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction. If a [FactionComponent] is missing then damage is always dealt.
 ## ALERT: Set the appropriate [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] on each [Area2D] or the combat system may behave unexpectedly!
 ## NOTE: The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
-## TIP: For hazards such as pools of acid or lava that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent].
+## TIP: For hazards such as monsters chomping in sync with animation or pools of acid/lava etc. that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent].
 ## TIP: For attacks such as poison arrows etc. that cause "lingering" damage over time, add a [DamageOverTimeComponent] to the victim entity.
 ## Requirements: This component must be an [Area2D] representing the "hitbox".
 
@@ -33,6 +33,7 @@ extends Component
 ## Optional. The amount of damage to cause to the target for as long as this [DamageComponent] remains within the area of a [DamageReceivingComponent].
 ## Suitable for monsters or hazards and other nodes which remain in the scene after causing damage.
 ## NOTE: Damage-per-frame may be caused in the same frame in which a collision first happens.
+## TIP: For [Timer]-based repeating damage use [DamageRepeatingComponent].
 ## @experimental
 @export_range(0, 1000) var damagePerSecond: float = 0: # NOTE: Should this be an integer or float?
 	set(newValue):
