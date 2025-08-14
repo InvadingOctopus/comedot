@@ -1,8 +1,9 @@
-## Causes damage to another Entity when this component's [Area2D] "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox", which then passes it on to the victim entity's [HealthComponent].
+## Causes damage to another Entity when this component's [Area2D] "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox",
+## which then passes it on to the victim entity's [HealthComponent].
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction. If a [FactionComponent] is missing then damage is always dealt.
 ## ALERT: Set the appropriate [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] on each [Area2D] or the combat system may behave unexpectedly!
 ## NOTE: The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
-## TIP: For hazards such as monsters chomping in sync with animation or pools of acid/lava etc. that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent].
+## TIP: For hazards such as pools of acid/lava etc. or monsters chomping in sync with animation that cause repeated damage as long as the victim remains in contact, use [DamageRepeatingComponent] on the ATTACKER.
 ## TIP: For attacks such as poison arrows etc. that cause "lingering" damage over time, add a [DamageOverTimeComponent] to the victim entity.
 ## Requirements: This component must be an [Area2D] representing the "hitbox".
 
@@ -12,7 +13,7 @@ extends Component
 # DESIGN: An attacker's [DamageComponent] is the "active" object that initiates the combat and calls the [DamageReceivingComponent]'s damage processing code.
 # [DamageReceivingComponent] is the passive object in this system.
 # DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to casts an [Area2D] to a [DamageComponent].
-# This may REDUCE performance but it ensures a self-contained-components workflow.
+# This may REDUCE performance but it ensures a workflow of self-contained components.
 
 
 #region Parameters
