@@ -32,7 +32,7 @@ extends CooldownComponent
 
 @export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
-@export var ammoDepletedMessage: String = "AMMO DEPLETED" ## The text to display via the Entity's [LabelComponent] when the [member ammo] [Stat] reaches 0 after firing.
+@export var ammoDepletedMessage: String = "AMMO DEPLETED" ## The text to display as a [TextBubble] when the [member ammo] [Stat] reaches 0 AFTER firing.
 
 
 @export_group("Bullets")
@@ -62,7 +62,7 @@ extends CooldownComponent
 
 #region Signals
 signal didFire(bullet: Entity)
-signal didDepleteAmmo   ## Emitted when [member ammo] goes below 1 after firing the gun.
+signal didDepleteAmmo  ## Emitted when [member ammo] goes below 1 after firing the gun.
 signal ammoInsufficient ## Emitted when attempt to fire the gun while [member ammo] is < 1
 #endregion
 
@@ -80,11 +80,6 @@ var characterBodyComponent: CharacterBodyComponent: ## For adding the entity's v
 	get:
 		if not characterBodyComponent: characterBodyComponent = coComponents.get(&"CharacterBodyComponent") # Avoid crash if missing
 		return characterBodyComponent
-
-var labelComponent: LabelComponent:
-	get:
-		if not labelComponent: labelComponent = coComponents.get(&"LabelComponent")
-		return labelComponent
 
 func getRequiredComponents() -> Array[Script]:
 	# GODOT Dumbness: Ternary operator returns untyped array
@@ -182,8 +177,7 @@ func useAmmo() -> bool:
 	if ammo.previousValue > 0 and ammo.value <= 0:
 		if debugMode: printDebug("ammo depleted")
 		didDepleteAmmo.emit()
-		if not self.ammoDepletedMessage.is_empty() and labelComponent:
-			labelComponent.display(self.ammoDepletedMessage)
+		if not self.ammoDepletedMessage.is_empty(): TextBubble.create(self.ammoDepletedMessage)
 
 	return true
 
