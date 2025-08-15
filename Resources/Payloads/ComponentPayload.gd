@@ -29,12 +29,12 @@ func executeImplementation(source: Variant, target: Variant) -> Array[Component]
 
 
 func removeComponents(entity: Entity) -> void:
-	if not Entity or componentsToRemove.is_empty(): return
+	if not is_instance_valid(entity) or componentsToRemove.is_empty(): return
 	entity.removeComponents(componentsToRemove)
 
 
 ## Returns an array of the newly created [Component]s.
 func createComponents(entity: Entity) -> Array[Component]:
-	if not Entity or componentsToCreate.is_empty(): return []
+	if not is_instance_valid(entity) or componentsToCreate.is_empty(): return []
 	var newComponents: Array[Component] = entity.createNewComponents(componentsToCreate)
 	return newComponents
