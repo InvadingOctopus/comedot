@@ -36,7 +36,7 @@ editor_description = "Factions will be filled in by a GunComponent."
 factions = 0
 
 [node name="DamageComponent" parent="." instance=ExtResource("5_qww6u")]
-removeEntityOnApplyingDamage = true
+shouldRemoveEntityOnDamage = true
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0"]
 shape = SubResource("RectangleShape2D_u74jj")

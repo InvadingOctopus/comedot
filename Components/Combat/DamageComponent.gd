@@ -36,25 +36,32 @@ extends Component
 ## TIP: To ensure that a character always hits, this value may be set to greater than 100.
 @export_range(0, 1000, 1, "suffix:%") var hitChance: int = 100
 
-## Should bullets from the same faction hurt?
-@export var friendlyFire: bool = false
-
 ## Display "MISS" text when [member hitChance] fails?
 @export var shouldEmitBubbleOnMiss: bool = true
 
+
+@export_group("Flags")
+
+## Should bullets from the same faction hurt?
+@export var friendlyFire: bool = false
+
+## If `true` (default) then damage is applied as soon as a [DamageReceivingComponent] collides.
+## If `false` then damage must be applied manually via [method causeCollisionDamage] or [method causeCollisionDamageToAllReceivers].
+@export var shouldDamageOnCollision: bool = true 
+
 ## Should the parent Entity be removed when this [DamageComponent]'s "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox"?
 ## Useful for "bullet" entities (including arrows etc.) that must be blocked by all receivers.
-## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
-## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use [member removeEntityOnApplyingDamage] instead.
-@export var removeEntityOnCollisionWithReceiver: bool = false
+## ALERT: Does NOT depend on [member shouldDamageOnCollision]. This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
+## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use [member shouldRemoveEntityOnDamage] instead.
+@export var shouldRemoveEntityOnCollision: bool = false
 
 ## Should the parent Entity be removed when this [DamageComponent] causes damage to a [DamageReceivingComponent] related to an opposing [FactionComponent]?
 ## Useful for "bullet" entities (including arrows etc.) that should NOT be blocked by the entity which fired them.
 ## Ignored if the combatants do not have opposing factions or friendly fire.
-## TIP: To always remove a "bullet" etc. on ANY collision with a receiver, use [member removeEntityOnCollisionWithReceiver].
+## TIP: To always remove a "bullet" etc. on ANY collision with a receiver, use [member shouldRemoveEntityOnCollision].
 ## ALERT: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
 ## IMPORTANT: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
-@export var removeEntityOnApplyingDamage: bool = false
+@export var shouldRemoveEntityOnDamage: bool = false
 
 @export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
 	set(newValue):
@@ -106,9 +113,11 @@ var area: Area2D
 signal didCollideReceiver(damageReceivingComponent:	DamageReceivingComponent)
 signal didLeaveReceiver(damageReceivingComponent:	DamageReceivingComponent)
 
-signal willCalculateChance(damageReceivingComponent:DamageReceivingComponent) ## Emitted before [member DamageReceivingComponent.missChance] is deducted from [member DamageComponent.hitChance], allowing other scripts to animate or modify the chances.
+signal willRollChance(damageReceivingComponent:		DamageReceivingComponent) ## Emitted before [member DamageReceivingComponent.missChance] is deducted from [member DamageComponent.hitChance], allowing other scripts to animate or modify the chances.
 signal didSucceed(damageReceivingComponent:			DamageReceivingComponent, totalChance: int, roll: int)
 signal didMiss(damageReceivingComponent:			DamageReceivingComponent, totalChance: int, roll: int)
+
+signal didDamage(damageReceivingComponent:			DamageReceivingComponent, damage: int) ## Emitted if [method rollChance] & [method DamageReceivingComponent.processCollision] succeed.
 #endregion
 
 
@@ -121,6 +130,7 @@ func _ready() -> void:
 		area.monitoring  = isEnabled
 		area.monitorable = isEnabled
 	# UNUSED: Signals already connected in .tscn Scene
+	# TBD: Connect here in case some subclass forgets to?
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)
 
@@ -138,12 +148,12 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	if damageReceivingComponent:
 		damageReceivingComponentsInContact.append(damageReceivingComponent)
 		didCollideReceiver.emit(damageReceivingComponent)
-		self.causeCollisionDamage(damageReceivingComponent)
+		if shouldDamageOnCollision: self.causeCollisionDamage(damageReceivingComponent)
 
-		## ALERT: This is performed EVEN WHEN there NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
-		## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use `removeEntityOnApplyingDamage` instead.
-		if removeEntityOnCollisionWithReceiver:
-			if debugMode: printDebug("removeEntityOnCollisionWithReceiver")
+		## DESIGN: This should be performed EVEN WHEN NO actual damage is applied! i.e. even when there are no opposing factions. So a player's bullet may get blocked by the player entity itself.
+		## TIP: To remove a "bullet" etc. ONLY when damage is actually applied (i.e. on collision between opposing factions), use `shouldRemoveEntityOnDamage` instead.
+		if shouldRemoveEntityOnCollision:
+			if debugMode: printDebug("shouldRemoveEntityOnCollision")
 			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
 			self.requestDeletionOfParentEntity()
@@ -180,31 +190,13 @@ func getDamageReceivingComponent(collidingArea: Area2D) -> DamageReceivingCompon
 
 	return damageReceivingComponent
 
-
-## Calls [method DamageReceivingComponent.processCollision]
-func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
-	if not isEnabled: return
-	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName if damageModifier else "null", " to ", damageReceivingComponent))
-
-	# NOTE: The "own entity" check is done once in getDamageReceivingComponent()
-	# The signal is emitted in onAreaEntered()
-	# Factions will be checked in DamageReceivingComponent.checkFactions()
-
-	# But first, check if we actually hit or miss…
-	if not calculateChance(damageReceivingComponent): return
-
-	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
-	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
-
-	if removeEntityOnApplyingDamage and didHandleDamage:
-			if debugMode: printDebug("removeEntityOnApplyingDamage")
-			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
-			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
-			self.requestDeletionOfParentEntity()
+#endregion
 
 
-func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool:
-	self.willCalculateChance.emit(damageReceivingComponent) # Give any observers a chance to animate or modify the hit/miss calculation
+#region Damage
+
+func rollChance(damageReceivingComponent: DamageReceivingComponent) -> bool:
+	self.willRollChance.emit(damageReceivingComponent) # Give any observers a chance to animate or modify the hit/miss calculation
 
 	var totalChance: int = self.hitChance - damageReceivingComponent.missChance
 	if debugMode: printDebug(str("hitChance ", self.hitChance, "% vs missChance ", damageReceivingComponent.missChance, " = ", totalChance, "%"))
@@ -224,6 +216,30 @@ func calculateChance(damageReceivingComponent: DamageReceivingComponent) -> bool
 			self.didMiss.emit(damageReceivingComponent, totalChance, roll)
 			if shouldEmitBubbleOnMiss: TextBubble.create("MISS", damageReceivingComponent)
 		return didSucceedRoll
+
+
+## Calls [method DamageReceivingComponent.processCollision]
+func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) -> void:
+	if not isEnabled: return
+	if debugMode: printLog(str("causeCollisionDamage() damageOnCollision: ", self.damageOnCollision, " + damageModifier: ", damageModifier.logName if damageModifier else "null", " to ", damageReceivingComponent))
+
+	# NOTE: The "own entity" check is done once in getDamageReceivingComponent()
+	# The signal is emitted in onAreaEntered()
+	# Factions will be checked in DamageReceivingComponent.checkFactions()
+
+	# But first, check if we actually hit or miss…
+	if not rollChance(damageReceivingComponent): return
+
+	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
+	var didHandleDamage: bool = damageReceivingComponent.processCollision(self, factionComponent)
+	
+	if didHandleDamage:
+		didDamage.emit(damageReceivingComponent, self.damageOnCollisionWithModifier) # TBD: Emit regardless of success?
+		if shouldRemoveEntityOnDamage:
+			if debugMode: printDebug("shouldRemoveEntityOnDamage")
+			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
+			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
+			self.requestDeletionOfParentEntity()
 
 
 ## Calls [method DamageReceivingComponent.processCollision] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact]

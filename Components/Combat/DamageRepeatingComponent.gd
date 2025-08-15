@@ -45,7 +45,7 @@ func _ready() -> void:
 ## Starts the [member timer] if it's not already on.
 func onDamageComponent_didCollideReceiver(_damageReceivingComponent: DamageReceivingComponent) -> void:
 	if not isEnabled or not shouldStartOnCollision or not timer.is_stopped() \
-	or damageComponent.removeEntityOnCollisionWithReceiver: # If we're getting removed, we can't repeat damage anyway.
+	or damageComponent.shouldRemoveEntityOnCollision: # If we're getting removed, we can't repeat damage anyway.
 		return
 
 	timer.start()
