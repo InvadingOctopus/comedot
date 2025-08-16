@@ -7,9 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_8uggr"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="6_8uggr"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_boo6r"]
-resource_local_to_scene = true
-size = Vector2(16, 16)
+[sub_resource type="CircleShape2D" id="CircleShape2D_8uggr"]
+radius = 8.0
 
 [node name="Player-TileBased" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in a TileMap-based game."
@@ -23,7 +22,7 @@ sprite = NodePath("Sprite2D")
 body = NodePath(".")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_boo6r")
+shape = SubResource("CircleShape2D_8uggr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 use_parent_material = true
