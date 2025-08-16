@@ -5,6 +5,7 @@
 class_name AreaContactComponent
 extends AreaCollisionComponent
 
+# TBD: Rename to AreaContactListComponent for better clarity?
 # TBD: Add a list for [TileMapLayer]s?
 # TBD: Reduce code duplication between [CollisionsArrayArea]?
 # DESIGN: Areas cannot be shared between DamageComponent/DamageReceivingComponent etc. (why?)
