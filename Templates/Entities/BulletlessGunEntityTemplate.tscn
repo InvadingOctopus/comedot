@@ -13,6 +13,7 @@ resource_local_to_scene = true
 radius = 24.0
 
 [node name="BulletlessGunEntityTemplate" type="Node2D" groups=["entities"]]
+editor_description = "Experimental template for tower-defense games etc."
 script = ExtResource("1_3usbj")
 metadata/_edit_group_ = true
 

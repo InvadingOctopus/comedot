@@ -1,8 +1,9 @@
 ## Represents a weapon which does not emit "bullets" or other projectiles, instead causes instant damage at a target position.
 ## Other components/scripts may be used to draw "fake" projectiles as a visual indicator of the weapon firing.
+## EXAMPLE USAGE: Towers in a tower-defence game.
 ## IMPORTANT: This is NOT a standalone component; it must used with other components such as [DamageComponent] to represent the area of attack,
 ## and an [AimingCursorComponent] to control the targetting (or a [TetherComponent] + [PositionControlComponent]).
-## Those components may be combined to make a specialized "GunEntity" etc.
+## Those components may be combined to make a specialized "GunEntity" etc. such as `/Templates/Entities/BulletlessGunEntityTemplate.tscn`
 ## Requirements: [DamageComponent]. BEFORE [InputComponent]
 ## @experimental
 
