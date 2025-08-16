@@ -195,14 +195,26 @@
 
 	"Stat": {
 		"prefix": "stat",
-		"body": ["statsComponent.getStat(&\"${1:health}\").$0"],
+		"body": ["${1|coComponents.StatsComponent,statsComponent|}.getStat(&\"${1:health}\").$0"],
 		"description": "Quick access to a StatsComponent."
+	},
+
+	"StatVar": {
+		"prefix": "statVar",
+		"body": ["@onready var ${2}: Stat = ${1|statsComponent,coComponents.StatsComponent|}.getStat(&\"${2:health}\")\n$0"],
+		"description": "Store a reference to a Stat from a StatsComponent."
 	},
 
 	"SelfCast": {
 		"prefix": "selfAs",
-		"body": ["var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}$0"],
+		"body": ["var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}\n$0"],
 		"description": "Store reference to self casted as a different type."
+	},
+
+	"CastNode": {
+		"prefix": "castAs",
+		"body": ["var ${1/(.)/${1:/downcase}/}: ${1:Type} = ${2:nodeToCast}.get_node(^\".\") as ${1}\n$0"],
+		"description": "Access a Node as a different Node subclass."
 	},
 
 	"EnabledFlag": {
