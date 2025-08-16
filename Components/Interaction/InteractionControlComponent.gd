@@ -105,7 +105,7 @@ func updateIndicator() -> void:
 
 func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or _input()?
 	# TBD: Use InputComponent?
-	if not isEnabled or not hasCooldownCompleted or not haveInteracionsInRange: return
+	if not isEnabled or isOnCooldown or not haveInteracionsInRange: return
 
 	if Input.is_action_just_pressed(inputEventName):
 		interactAll()
@@ -122,7 +122,7 @@ func interactAll() -> int:
 	# should they all be processed within a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
 
-	if not isEnabled or not hasCooldownCompleted: return 0
+	if not isEnabled or isOnCooldown: return 0
 
 	var count:		int = 0
 	var successes:	int = 0
@@ -164,7 +164,7 @@ func interactAll() -> int:
 ## TIP: To force an interaction even if its [Area2D] is not in range/physics contact, use [param ignoreRange].
 ## TIP: To interact with all [InteractionComponent]s in range, call [method interactAll].
 func interact(interactionComponent: InteractionComponent, ignoreRange: bool = false) -> Variant:
-	if not isEnabled or not hasCooldownCompleted: return null
+	if not isEnabled or isOnCooldown: return null
 	
 	if not ignoreRange and not self.interactionsInRange.has(interactionComponent):
 		printLog(str("Cannot interact, out of range: ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))

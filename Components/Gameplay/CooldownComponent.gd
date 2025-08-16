@@ -46,7 +46,7 @@ var cooldownWithModifier: float:
 		if cooldownMillisecondsModifier: return self.cooldown + (float(cooldownMillisecondsModifier.value) / 1000.0) # Convert from milliseconds to seconds
 		else: return cooldown
 
-var hasCooldownCompleted: bool = true # Start with the cooldown off
+var isOnCooldown: bool = false # Start with the cooldown off. TBD: @export_storage?
 #endregion
 
 
@@ -84,7 +84,7 @@ func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 	if debugMode:
 		if cooldownMillisecondsModifier: printTrace(["cooldownMillisecondsModifier", cooldownMillisecondsModifier.value])
 		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", cooldownMillisecondsModifier.logName if cooldownMillisecondsModifier else "null"))
-	hasCooldownCompleted = false
+	isOnCooldown = true
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
@@ -98,7 +98,7 @@ func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 func finishCooldown() -> void:
 	if debugMode: printDebug("finishCooldown()")
 	cooldownTimer.stop()
-	hasCooldownCompleted = true
+	isOnCooldown = false
 	didFinishCooldown.emit()
 
 #endregion

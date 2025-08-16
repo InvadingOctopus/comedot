@@ -109,7 +109,7 @@ func _process(_delta: float) -> void:
 	# to allow UI buttons etc. to handle mouse clicks,
 	# because it looks janky if the gun fires when the player clicks on an unrelated UI button.
 
-	if autoFire and hasCooldownCompleted:
+	if autoFire and not isOnCooldown:
 		fire()
 	elif not pressAgainToShoot and isFireActionPressed:
 		fire()
@@ -125,7 +125,7 @@ func _process(_delta: float) -> void:
 ## Returns the bullet that was fired.
 func fire(ignoreCooldown: bool = false) -> Entity:
 	if not isEnabled: return null
-	if not hasCooldownCompleted and not ignoreCooldown: return null
+	if isOnCooldown and not ignoreCooldown: return null
 
 	if not bulletEntity:
 		printWarning("No bulletEntity specified!")
