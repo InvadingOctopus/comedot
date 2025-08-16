@@ -12,14 +12,21 @@ extends Component
 
 
 #region Parameters
+
 @export var isEnabled:				 bool = true
+
 @export_group("Stats")
 @export var statsToMonitor:			 Array[Stat]
 @export var statsToExclude:			 Array[Stat]
-@export var shouldCopyFromStatsComponent: bool = true # If `true` then [member statsToMonitor] will include the Stats from an [StatsComponent], if any.
+
+## If `true` then [member statsToMonitor] will include the [Stat]s from an [StatsComponent], if any.
+## IMPORTANT: TIP: Enable this if any of the relevant Stats are "Local to Scene" [member Resource.resource_local_to_scene] because the [Stat]s added via the Godot Editor Inspector may not match the locally-unique runtime instance.
+@export var shouldCopyFromStatsComponent: bool = true
+
 @export_group("Visual")
 @export var shouldAppendDisplayName: bool = false
 @export var shouldColorBubble:		 bool = true
+
 #endregion
 
 
