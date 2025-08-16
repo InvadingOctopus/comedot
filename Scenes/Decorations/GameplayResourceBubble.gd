@@ -20,7 +20,8 @@ var tween: Tween ## The default animation [Tween] that starts on [method _ready]
 #endregion
 
 
-## Creates & returns a new [GameplayResourceUI].
+## Creates & returns a new [GameplayResourceUI] "bubble" displaying the name & icon of a [GameplayResourceBase]-based [Resource] such as [Stat].
+## TIP: To display the value or change of a [Stat], call [method GameplayResourceBubble.createForStat] or [method GameplayResourceBubble.createForStatChange].
 ## TIP: The [param offset] is applied to the default position of 0,0 so the offset may also be used as a absolute position.
 static func create(resource: GameplayResourceBase, text: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), appendDisplayName: bool = true) -> GameplayResourceBubble: # The default offset is above a 16-pixel sprite.
 	# TODO: Replace string-dependence!
@@ -37,8 +38,18 @@ static func create(resource: GameplayResourceBase, text: String, parentNode: Nod
 	return newBubble
 
 
+## Creates & returns a new [GameplayResourceBubble] displaying the name of a [Stat] and its value.
+## TIP: To display the change in value, call [method GameplayResourceBubble.createForStatChange].
+static func createForStat(stat: Stat, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), appendDisplayName: bool = true, colorBubble: bool = true) -> GameplayResourceBubble:
+	var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, str(stat.value), parentNode, offset, appendDisplayName)
+	if colorBubble: # Tint the icon along with the label
+		if   stat.value <= stat.min: bubble.modulate = Color.GRAY
+		elif stat.value >= stat.max: bubble.modulate = Color.YELLOW
+	return bubble
+
+
 ## Creates & returns a new [GameplayResourceBubble] displaying the name of a [Stat] and its change in value.
-## TIP: For bubbles that don't need to display the change in value, use [method GameplayResourceBubble.create].
+## TIP: For bubbles that don't need to display the change in value, call [method GameplayResourceBubble.createForStat].
 static func createForStatChange(stat: Stat, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), appendDisplayName: bool = true, colorBubble: bool = true) -> GameplayResourceBubble:
 	var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, "%+d" % stat.previousChange, parentNode, offset, appendDisplayName)
 	if colorBubble: # Tint the icon along with the label
