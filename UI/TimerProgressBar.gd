@@ -34,9 +34,9 @@ func _ready() -> void:
 func applyNewTimer() -> void:
 	self.max_value			= timer.wait_time
 	self.value				= timer.time_left
-	self.step				= self.size.x / self.max_value # Try to make 1 step = 1 pixel
 	self.process_mode		= timer.process_mode
 	self.process_priority	= timer.process_priority # NOTSURE: Does doing this improve anything?	Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.shouldHideWhenZero)
+	if shouldSetStyle: self.step = self.size.x / self.max_value # Try to make 1 step = 1 pixel
 
 
 func _process(_delta: float) -> void:
@@ -48,7 +48,7 @@ func _process(_delta: float) -> void:
 		self.visible = true
 
 	if  self.max_value != timer.wait_time: # TBD: PERFORMANCE: Check or set always?
-		self.max_value = timer.wait_time
-		self.step = self.max_value / self.size.x
+		self.max_value  = timer.wait_time
+		if shouldSetStyle: self.step = self.max_value / self.size.x
 
 	self.value = timer.time_left
