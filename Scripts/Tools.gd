@@ -99,12 +99,6 @@ class Line: # UNUSED: Until Godot can support custom class @export :')
 
 #region Script Tools
 
-## Returns a [StringName] with the `class_name` from a [Script] type.
-## NOTE: This method is needed because we cannot directly write `SomeTypeName.get_global_name()` :(
-func getStringNameFromClass(type: Script) -> StringName:
-	return type.get_global_name()
-
-
 ## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
 static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
 	if not sourceSignal.is_connected(targetCallable):
@@ -129,6 +123,23 @@ static func toggleSignal(sourceSignal: Signal, targetCallable: Callable, reconne
 		sourceSignal.disconnect(targetCallable)
 	# else:
 	return 0
+
+
+## A safe wrapper around [method Object.call] or [method Object.callv] that does not crash if the function/method name is missing.
+## Returns the result of the call.
+## TIP: Useful for passing customizable functions such as dynamically choosing different animations on `Animations.gd`
+static func callCustom(object: Variant, functionName: StringName, ...arguments: Array) -> Variant:
+	if object.has_method(functionName):
+		return object.callv(functionName, arguments)
+	else:
+		Debug.printWarning(str("callCustom(): ", object, " has no such function: " + functionName), "Tools.gd")
+		return null
+
+
+## Returns a [StringName] with the `class_name` from a [Script] type.
+## NOTE: This method is needed because we cannot directly write `SomeTypeName.get_global_name()` :(
+func getStringNameFromClass(type: Script) -> StringName:
+	return type.get_global_name()
 
 
 ## Checks whether a script has a function/method with the specified name.
@@ -960,7 +971,7 @@ static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, 
 			if skipEmptyCells and map.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1): continue # (-1,-1) = Cell does not exist
 			if is_equal_approx(modificationChance, 1.0) or randf() < modificationChance: # TBD: Should this be an integer?
 				randomTile = Vector2i(
-					randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x), 
+					randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
 					randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
 				map.set_cell(Vector2i(x, y), 0, randomTile)
 
