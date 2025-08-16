@@ -25,6 +25,7 @@ extends Component
 
 @export_group("Visual")
 @export var shouldAppendDisplayName: bool = false
+@export var shouldDisplayChange:	 bool = true ## If `true` (default) then the CHANGE in value is displayed e.g. "+1" or "-1". If `false` then the exact value is displayed.
 @export var shouldColorBubble:		 bool = true
 
 #endregion
@@ -58,4 +59,6 @@ func onStatChanged(stat: Stat) -> void:
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
-	GameplayResourceBubble.createForStatChange(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble) # TBD: Put a space between text & number?
+	# TBD: Put a space between text & number?
+	if shouldDisplayChange: GameplayResourceBubble.createForStatChange(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
+	else: GameplayResourceBubble.createForStat(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
