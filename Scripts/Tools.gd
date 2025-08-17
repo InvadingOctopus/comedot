@@ -1016,8 +1016,8 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 		map.set_cell(cellCoordinates, 0, randomTile)
 
 
-## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
-## Returns a Dictionary of the nodes that were created, with their cell coordinates as the keys.
+## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
+## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
 	# TODO: FIXME: Handle negative cell coordinates
 	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
@@ -1025,43 +1025,47 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 	# Validation
 
 	if not sceneToCopy:
-		Debug.printWarning("No sceneToCopy specified", str(map))
+		Debug.printWarning("Tools.populateTileMap(): No sceneToCopy", str(map))
 		return {}
 
 	var mapRect: Rect2i = map.get_used_rect()
 
 	if not mapRect.has_area():
-		Debug.printWarning(str("map has no area: ", mapRect.size), str(map))
+		Debug.printWarning(str("Tools.populateTileMap(): map has no area: ", mapRect.size), str(map))
 		return {}
 
 	var totalCells: int = mapRect.size.x * mapRect.size.y
 
 	if numberOfCopies > totalCells:
-		Debug.printWarning(str("numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells), str(map))
+		Debug.printWarning(str("Tools.populateTileMap(): numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells), str(map))
 		return {}
 
 	# Spawn
 
+	var parent:  Node2D = parentOverride if parentOverride else map
+	var newNode: Node2D
+	var coordinates:  Vector2i
 	var nodesSpawned: Dictionary[Vector2i, Node2D]
-	var parent: Node2D = parentOverride if parentOverride else map
 
 	for count in numberOfCopies:
-		var newNode: Node2D = sceneToCopy.instantiate()
+		newNode = sceneToCopy.instantiate()
 
 		# Find a unoccupied cell
 		# Rect size = 1 if 1 cell, so subtract - 1
 		# TBD: A more efficient way?
 
-		var coordinates: Vector2i = Vector2i(
+		coordinates = Vector2i(
 			randi_range(0, mapRect.size.x - 1),
 			randi_range(0, mapRect.size.y - 1))
 
+		# NOTE: No chance of an infinite loop because we checked numberOfCopies <= totalCells
 		while(nodesSpawned.get(coordinates)):
 			coordinates = Vector2i(
 				randi_range(0, mapRect.size.x - 1),
 				randi_range(0, mapRect.size.y - 1))
 
 		# Position
+		
 		if parent == map:
 			newNode.position = map.map_to_local(coordinates)
 		else:
@@ -1069,8 +1073,10 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 				map.to_global(
 					map.map_to_local(coordinates)))
 
-		# Add
+		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
+			newNode.components.TileBasedPositionComponent.currentCellCoordinates = coordinates
 
+		# Add
 		Tools.addChildAndSetOwner(newNode, parent)
 		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
 		nodesSpawned[coordinates] = newNode
