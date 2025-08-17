@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=4 uid="uid://b03gxqrqupyqv"]
+
+[ext_resource type="Script" uid="uid://bliuc5mmhfcq2" path="res://Tests/PopulateTest.gd" id="1_3l7vy"]
+[ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_ymdxh"]
+[ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Areas/PopulateArea.gd" id="3_a2qwm"]
+[ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="4_jowi7"]
+[ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="5_higjy"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vn7lc"]
+texture = ExtResource("2_ymdxh")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_1aglk"]
+sources/0 = SubResource("TileSetAtlasSource_vn7lc")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_42cay"]
+resource_local_to_scene = true
+size = Vector2(144, 144)
+
+[node name="PopulateTest" type="Node2D"]
+script = ExtResource("1_3l7vy")
+maximumNumberOfCopies = 10
+mainGameScenePath = "uid://b03gxqrqupyqv"
+
+[node name="BackgroundTileMap" type="TileMapLayer" parent="."]
+modulate = Color(0, 1, 1, 0.4)
+z_index = -1
+use_parent_material = true
+tile_map_data = PackedByteArray("AAD7//v/AAAAAAAAAAD8//z/AAAAAAAAAAD9//3/AAAAAAAAAAD+//7/AAAAAAAAAAD/////AAAAAAAAAAAAAAAAAAAAAAAAAAABAAEAAAAAAAAAAAACAAIAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAQAAAAAAAAAAAD7//3/AAAAAAAAAAD8//7/AAAAAAAAAAD9////AAAAAAAAAAD+/wAAAAAAAAAAAAD//wEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAD//wMAAAAAAAAAAAD+/wIAAAAAAAAAAAD9/wEAAAAAAAAAAAD8/wAAAAAAAAAAAAD7////AAAAAAAAAAD7/wEAAAAAAAAAAAD8/wIAAAAAAAAAAAD9/wMAAAAAAAAAAAD+/wQAAAAAAAAAAAD8/wQAAAAAAAAAAAD7/wMAAAAAAAAAAAD9//v/AAAAAAAAAAD+//z/AAAAAAAAAAD///3/AAAAAAAAAAAAAP7/AAAAAAAAAAABAP//AAAAAAAAAAACAAAAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAIAAAAAAAAAAAD///v/AAAAAAAAAAAAAPz/AAAAAAAAAAABAP3/AAAAAAAAAAACAP7/AAAAAAAAAAADAP//AAAAAAAAAAAEAAAAAAAAAAAAAAABAPv/AAAAAAAAAAACAPz/AAAAAAAAAAADAP3/AAAAAAAAAAAEAP7/AAAAAAAAAAAEAPz/AAAAAAAAAAADAPv/AAAAAAAAAAA=")
+tile_set = SubResource("TileSet_1aglk")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+
+[node name="AreaToPopulate" type="Area2D" parent="."]
+collision_layer = 512
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = ExtResource("3_a2qwm")
+sceneToCopy = ExtResource("4_jowi7")
+numberOfCopies = 9
+initialOffset = Vector2(16, 16)
+horizontalSpacing = 64.0
+verticalSpacing = 64.0
+minimumVariation = Vector2(-2, -2)
+maximumVariation = Vector2(2, 2)
+addToGroup = &"testArea"
+metadata/_edit_group_ = true
+
+[node name="ShapeToPopulate" type="CollisionShape2D" parent="AreaToPopulate"]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_42cay")
+
+[node name="Player-Overhead" parent="." instance=ExtResource("5_higjy")]
+position = Vector2(0, -128)
+
+[node name="TestSprite16" parent="." instance=ExtResource("4_jowi7")]
+modulate = Color(1, 0.883333, 0, 0.666667)
+
+[node name="TileMap1" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+self_modulate = Color(0, 1, 0, 0.4)
+z_index = -1
+use_parent_material = true
+position = Vector2(128, 0)
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAEAAAAAAAAAAAABAAMAAAAAAAAAAAACAAAAAAAAAAAAAAACAAIAAAAAAAAAAAACAAQAAAAAAAAAAAADAAEAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAQAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAUAAAAAAAAAAAABAAcAAAAAAAAAAAACAAYAAAAAAAAAAAADAAUAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAEAAAAAAAAAAAAFAAMAAAAAAAAAAAAFAAUAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAAAAAAAAAAAAAAGAAIAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAcAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_1aglk")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+
+[node name="TileMap2" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 0, 0.4)
+z_index = -1
+use_parent_material = true
+position = Vector2(320, 0)
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAEAAAAAAAAAAAABAAMAAAAAAAAAAAACAAAAAAAAAAAAAAACAAIAAAAAAAAAAAACAAQAAAAAAAAAAAADAAEAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAQAAAAAAAAAAAAAAAYAAAAAAAAAAAABAAUAAAAAAAAAAAABAAcAAAAAAAAAAAACAAYAAAAAAAAAAAADAAUAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAEAAAAAAAAAAAAFAAMAAAAAAAAAAAAFAAUAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAAAAAAAAAAAAAAGAAIAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAUAAAAAAAAAAAAHAAcAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_1aglk")
+occlusion_enabled = false
+collision_enabled = false
+navigation_enabled = false
+
+[node name="RepoulationTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="timeout" from="RepoulationTimer" to="." method="onRepoulationTimer_timeout"]
