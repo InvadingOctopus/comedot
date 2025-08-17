@@ -956,24 +956,64 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	return false
 
 
-## Sets all the Cells in the specified [TileMapLayer] region to random Tiles from the specified coordinates in the Map's [TileSet] atlas.
-## The [param modificationChance] must be between 0…1 and is rolled for Cell to determine whether it will be modified.
-## If [param skipEmptyCells] is `true` then empty "unpainted" cells in the TileMap will be left untouched.
-static func randomizeTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, atlasCoordinatesMin: Vector2i, atlasCoordinatesMax: Vector2i, modificationChance: float, skipEmptyCells: bool = false) -> void:
+## Returns an array of random coordinates on a [TileMapLayer] from the specified grid range.
+static func findRandomTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, selectionChance: float, includeUsedCells: bool = true, includeEmptyCells: bool = true) -> Array[Vector2i]:
 	# TODO: Validate parameters and sizes
-	# NOTE: Rect2i is less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
+	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
-	var randomTile: Vector2i
+	if (not includeUsedCells and not includeEmptyCells) \
+	or is_zero_approx(selectionChance) or selectionChance < 0 \
+	or cellRegionEnd < cellRegionStart:
+		return []
+
+	var coordinates: Vector2i
+	var isCellEmpty: bool
+	var randomCells: Array[Vector2i]
+
+	# CHECK: PERFORMANCE: What's faster? TileMapLayer.get_used_cells() & then filtering,
+	# or building the list manually by iterating every cell?
 
 	# NOTE: +1 to range() end to make the bounds inclusive
 	for y in range(cellRegionStart.y, cellRegionEnd.y + 1):
 		for x in range(cellRegionStart.x, cellRegionEnd.x + 1):
-			if skipEmptyCells and map.get_cell_atlas_coords(Vector2i(x, y)) == Vector2i(-1, -1): continue # (-1,-1) = Cell does not exist
-			if is_equal_approx(modificationChance, 1.0) or randf() < modificationChance: # TBD: Should this be an integer?
-				randomTile = Vector2i(
-					randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
-					randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
-				map.set_cell(Vector2i(x, y), 0, randomTile)
+
+			# PERFORMANCE: Roll the chance before doing all the other checks and calculations
+			if selectionChance < 1.0 and not randf() < selectionChance: continue # TBD: Should this be an integer?
+			
+			coordinates = Vector2i(x, y)
+
+			# A cell is considered "empty" if its source & alternative identifiers are -1, and its atlas coordinates are (-1,-1).
+			# TBD: PERFORMANCE: Do we need to check ALL 3?
+			isCellEmpty = map.get_cell_source_id(coordinates)  == -1 \
+				and map.get_cell_alternative_tile(coordinates) == -1 \
+				and map.get_cell_atlas_coords(coordinates) == Vector2i(-1, -1)
+
+			if (includeUsedCells  and not isCellEmpty) \
+			or (includeEmptyCells and isCellEmpty):
+				randomCells.append(Vector2i(x, y))
+
+	return randomCells
+
+
+## "Repaints" all the specified cell coordinates in a [TileMapLayer] with random tiles from the specified range in the Map's [TileSet] atlas.
+## TIP: Call [method findRandomTileMapCells] to build an array of random cells.
+static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vector2i], atlasCoordinatesMin: Vector2i, atlasCoordinatesMax: Vector2i) -> void:
+	# TODO: Validate atlas sizes
+	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
+	# TBD:  PERFORMANCE: Add a separate modificationChance for extra control or is findRandomTileMapCells()'s selectionChance enough?
+	
+	if not map \
+	or cellsToRepaint.is_empty() \
+	or atlasCoordinatesMax < atlasCoordinatesMin:
+		return
+
+	var randomTile:  Vector2i
+
+	for cellCoordinates in cellsToRepaint:
+		randomTile = Vector2i(
+			randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
+			randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
+		map.set_cell(cellCoordinates, 0, randomTile)
 
 
 ## Creates instance copies of the specified Scene and places them in the TileMap's cells, each at a unique position in the grid.
