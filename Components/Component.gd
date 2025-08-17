@@ -29,6 +29,7 @@ extends Node
 
 
 #region Core Properties
+# TBD: @export_storage?
 
 var parentEntity: Entity:
 	set(newValue):
