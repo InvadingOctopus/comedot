@@ -1018,6 +1018,7 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 
 ## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
+## TIP: To spawn scenes at specific cell coordinates, call [method Tools.populateTileMapCells]
 static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
 	# TODO: FIXME: Handle negative cell coordinates
 	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
@@ -1080,6 +1081,59 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 		Tools.addChildAndSetOwner(newNode, parent)
 		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
 		nodesSpawned[coordinates] = newNode
+
+	return nodesSpawned
+
+
+## Creates instance copies of a specified Scene over a list of cells on a [TileMapLayer]'s grid.
+## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
+## TIP: Call [method Tools.findRandomTileMapCells] to get an array of random cells.
+## TIP: To spawn scenes at random coordinates all over the map with a fixed number of copies, call [method Tools.populateTileMap]
+static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vector2i], sceneToCopy: PackedScene, maximumNumberOfCopies: int, spawnChance: float = 1.0, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+	# Validation
+
+	if not sceneToCopy:
+		Debug.printWarning("Tools.populateTileMapCells(): No sceneToCopy", str(map))
+		return {}
+
+	if cellCoordinates.is_empty():
+		Debug.printWarning("Tools.populateTileMapCells(): No cellCoordinates!", str(map))
+		return {}
+
+	if is_zero_approx(spawnChance) or spawnChance < 0:
+		Debug.printWarning(str("Tools.populateTileMapCells(): spawnChance <= 0: ", spawnChance), str(map))
+		return {}
+
+	# Spawn
+
+	var parent:  Node2D = parentOverride if parentOverride else map
+	var newNode: Node2D
+	var nodesSpawned: Dictionary[Vector2i, Node2D]
+
+	for coordinates in cellCoordinates:
+		# PERFORMANCE: Roll the chance before doing all the other checks and calculations
+		if spawnChance < 1.0 and not randf() < spawnChance: continue # TBD: Should this be an integer?
+			
+		newNode = sceneToCopy.instantiate()
+
+		# Position
+
+		if parent == map:
+			newNode.position = map.map_to_local(coordinates)
+		else:
+			newNode.position = parent.to_local(
+				map.to_global(
+					map.map_to_local(coordinates)))
+
+		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
+			newNode.components.TileBasedPositionComponent.currentCellCoordinates = coordinates
+
+		# Add
+		Tools.addChildAndSetOwner(newNode, parent)
+		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
+		nodesSpawned[coordinates] = newNode
+
+		if nodesSpawned.size() >= maximumNumberOfCopies: break
 
 	return nodesSpawned
 
