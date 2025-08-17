@@ -27,6 +27,7 @@ extends Component
 @export var shouldAppendDisplayName: bool = false
 @export var shouldDisplayChange:	 bool = true ## If `true` (default) then the CHANGE in value is displayed e.g. "+1" or "-1". If `false` then the exact value is displayed.
 @export var shouldColorBubble:		 bool = true
+@export var customAnimation:		 StringName  ## An optional name of a method in `Animations.gd` to call on the [GameplayResourceBubble]. Example: `blink`
 
 #endregion
 
@@ -59,6 +60,10 @@ func onStatChanged(stat: Stat) -> void:
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
+	var bubble: GameplayResourceBubble
+
 	# TBD: Put a space between text & number?
-	if shouldDisplayChange: GameplayResourceBubble.createForStatChange(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
-	else: GameplayResourceBubble.createForStat(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
+	if shouldDisplayChange: bubble = GameplayResourceBubble.createForStatChange(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
+	else: bubble = GameplayResourceBubble.createForStat(stat, self, Vector2(0, -16), shouldAppendDisplayName, shouldColorBubble)
+
+	if customAnimation: Tools.callCustom(Animations, customAnimation, bubble)
