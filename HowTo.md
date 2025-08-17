@@ -159,7 +159,9 @@ When you need to add new functionality specific to your game, you have the follo
 
 * 📈 Use `DebugComponent`, `ChartWindow`, `Chart` to monitor a real-time graph of any variable or property! e.g. `../CharacterBodyComponent:body:velocity:x` to help with perfecting physics parameters etc.
 
-* The icons/emojis used in the log messages require Apple's SF Symbols which may not work on Windows or Linux: https://developer.apple.com/sf-symbols/
+* If you make a subclass of a component and it doesn't work as expected, see if you need to call `super._ready()` or `super.someOtherMethodYouOverrode()` e.g. if you `extend AreaContactComponent` and override `func onAreaEntered(areaEntered: Area2D)` then you MUST call `super.onAreaEntered(areaEntered)` otherwise the collision-registering logic and events will not work!
+
+* The icons/emojis used in the log messages require Apple's SF Symbols which may not display on Windows or Linux: https://developer.apple.com/sf-symbols/
 
 #### Common Reasons for Crashes
 
