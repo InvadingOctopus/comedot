@@ -56,10 +56,10 @@ func repaintCells() -> Array[Vector2i]:
 		if mapArea.has_area():
 			Debug.printDebug(str("RandomizeTileMapCells.gd: shouldUseEntireMap: Map area: ", mapArea), self)
 			cellRegionStart = mapArea.position
-			cellRegionEnd   = mapArea.end
+			cellRegionEnd   = mapArea.grow(-1).end # Make `end` 0-based
 		else:
 			Debug.printWarning(str("RandomizeTileMapCells.gd: shouldUseEntireMap: Map has cells = no area!"), self)
 
-	recentlyModifiedCells = Tools.findRandomTileMapCells(self, cellRegionStart, cellRegionEnd, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells)
+	recentlyModifiedCells = Tools.findRandomTileMapCells(self, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells, cellRegionStart, cellRegionEnd)
 	Tools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax)
 	return recentlyModifiedCells

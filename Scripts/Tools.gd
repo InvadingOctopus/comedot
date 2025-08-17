@@ -957,7 +957,14 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 
 
 ## Returns an array of random coordinates on a [TileMapLayer] from the specified grid range.
-static func findRandomTileMapCells(map: TileMapLayer, cellRegionStart: Vector2i, cellRegionEnd: Vector2i, selectionChance: float, includeUsedCells: bool = true, includeEmptyCells: bool = true) -> Array[Vector2i]:
+## WARNING: Do NOT use [method TileMapLayer.get_used_rect()] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
+static func findRandomTileMapCells(map: TileMapLayer,
+selectionChance:  float = 1.0,
+includeUsedCells:  bool = true,
+includeEmptyCells: bool = true,
+cellRegionStart: Vector2i = map.get_used_rect().position,
+cellRegionEnd:   Vector2i = map.get_used_rect().grow(-1).end # Make `end` 0-based
+) -> Array[Vector2i]:
 	# TODO: Validate parameters and sizes
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
