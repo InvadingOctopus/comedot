@@ -54,4 +54,4 @@ func execute(source: Variant, target: Variant) -> Variant:
 
 
 func printLog(message: String) -> void:
-	if debugMode: Debug.printLog(message, self.logName, "", "pink")
+	if debugMode: Debug.printLog(message, self.logName, "", Global.Colors.logResource)

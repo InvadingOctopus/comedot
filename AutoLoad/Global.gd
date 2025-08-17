@@ -60,6 +60,9 @@ class TileMapCustomData:
 	const isDestructible	:= &"isDestructible"	## Tile may be damaged by a [TileDamageComponent]
 	const nextTileOnDamage	:= &"nextTileOnDamage"	## If [member isDestructible], the Cell will be changed to the Tile coordinates specified here. If there is no next tile, the Cell will be destroyed/removed from the Map.
 
+
+class Colors:
+	const logResource	:= "pink"
 #endregion
 
 

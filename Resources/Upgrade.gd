@@ -384,4 +384,4 @@ func findMutuallyExclusiveConflict(upgradesComponent: UpgradesComponent) -> Upgr
 
 
 func printLog(message: String) -> void:
-	if debugMode: Debug.printLog(message, str(self.logName), "", "pink")
+	if debugMode: Debug.printLog(message, str(self.logName), "", Global.Colors.logResource)
