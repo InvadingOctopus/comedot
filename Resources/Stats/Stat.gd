@@ -14,23 +14,26 @@ extends GameplayResourceBase
 
 
 #region Parameters
+@warning_ignore_start("shadowed_global_identifier") # We don't care that there are FUNCTIONS named min(), max(), range() because ours are VARIABLES
 
-@warning_ignore("shadowed_global_identifier")
 ## Minimum value allowed. Clamps [member initial] and [member value] when set.
 ## TIP: Call [method setToMin] instead of setting [member value] to 0 directly.
-@export var min: int = 0: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
-	set(newValue):
+@export var min: int = 0:
+	set(newValue): # TBD: `if newValue != min`?
+		if debugMode: printChange("min", min, newValue)
 		min     = newValue
 		if  min > max: max = min
 		value   = clamp(value, min, max)
+		range	= max - min
 
-@warning_ignore("shadowed_global_identifier")
 ## Maximum value allowed. Clamps [member initial] and [member value] when set.
-@export var max: int = 10: # IGNORE: Godot Warning; variable names can be the same as built-in functions.
-	set(newValue):
+@export var max: int = 10:
+	set(newValue): # TBD: `if newValue != max`?
+		if debugMode: printChange("min", min, newValue)
 		max     = newValue
 		if  max < min: min = max
 		value   = clamp(value, min, max)
+		range	= max - min
 
 ## The current value of the stat. Clamped between [member min] and [member max].
 ## NOTE: The default initial value is set equal to [member min].
@@ -67,10 +70,7 @@ func setValue(newValue: int) -> void:
 
 	if value != previousValue:
 		previousChange = value - previousValue # NOTE: A decrease should be a negative change.
-
-		if debugMode:
-			# NOTE: PERFORMANCE: We don't use `Debug.printChange()` or other calls because we already checked for changes.
-			Debug.printDebug(str(previousValue, " → ", value, " (%+d" % previousChange, ")"), str(self.get_script().get_global_name(), " ", self, " ", name))
+		if debugMode: printChange("value", previousValue, value)
 
 		# Signals
 		# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
@@ -99,14 +99,19 @@ func setValue(newValue: int) -> void:
 #region Derived Properties
 
 var previousValue:  int
-var previousChange: int ## [member value] - [member previousValue] so a decrease is a negative number.
+var previousChange: int  ## [member value] - [member previousValue] so a decrease is a negative number.
+var range:			int: ## [member max] minus [member min]. Updated whenever `min` or `max` is changed.
+	set(newValue):
+		if newValue != range:
+			if debugMode: printChange("range", range, newValue)
+			range = newValue
 
 ## A property used by subclasses such as [StatWithModifiers] to denote dynamic buffs/debuffs during gameplay.
 ## @experimental
 var valueWithModifiers: int
 
 var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
-	get: return float(value) / float(max) * 100.0
+	get: return ((float(value) - float(min)) / float(range)) * 100.0 # TBD: Use `remap(value, min, max, 0.0, 100.0)` or `inverse_lerp(min, max, value) * 100.0`?
 
 var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ": ", value, " (", min, "-", max, ")")
@@ -123,6 +128,20 @@ signal didMax  ## Only emitted when [member previousChange] is >= +1
 signal didMin  ## Only emitted when [member previousChange] is <= -1
 signal didZero ## Emitted whether the value is rising or falling. See [member previousChange] to check the direction of approach to 0.
 #endregion
+
+
+#region Operations
+
+## ALERT: For internal [Stat] use only
+func printChange(variableName: String, previous: int, new: int) -> void:
+	# DESIGN: PERFORMANCE: Don't use Debug.printChange() because our callers already check for changes, and we have int type and no return.
+	# SORRY: All this mess just to have some special formatting for Stat changes while including call traces, and to cleanly close BBCode tags :')
+	const color := "[/b]\n[color=" + Global.Colors.logResource + "][b]"
+	Debug.printTrace(
+		[], # Nothing to write below trace
+		str(color, self.get_script().get_global_name(), " ", self, " ", name, "[/b].", # Title
+		variableName, ": ", previous, " → ", new, " (%+d" % (new - previous), ")[/color]\n[b]"), # Include the values in the title with the Resource log color, and THEN the call trace.
+		4) # Exclude setter from trace
 
 
 ## Applies the [param difference] to [member value] and returns the value.
@@ -145,3 +164,5 @@ func setToMax() -> void:
 ## This method should be used instead of setting [member value] to 0 directly.
 func setToMin() -> void:
 	self.value = self.min
+
+#endregion
