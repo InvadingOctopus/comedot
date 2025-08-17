@@ -298,7 +298,7 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
-		var string: String = str(previousValue, " → ", newValue)
+		var string: String = str(previousValue, " → ", newValue, " (%+f" % (newValue - previousValue), ")") # TBD: Write difference after previousValue?
 		if not logAsTrace: printLog(string, variableName, "dimgray", "gray")
 		else: printTrace([string], variableName, 3)
 		return string
