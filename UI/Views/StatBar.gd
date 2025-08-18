@@ -1,6 +1,8 @@
 ## A variant of a [StatUI] combined with a [ProgressBar].
 ## TIP: For smoother animations instead of integer-only steps, set the [member Range.step] property of the [ProgressBar] to a fractional value like 0.1
 ## TIP: For [Stats] with a small range of values like the player's lives, consider [StatPips]
+## ALERT: By default, the [member ProgressBar.step] is 1.0 so that it only shows exact integer values,
+## but that may cause choppy animation if the maximum value is small and the bar is too long. To fix, set the step to 0.1
 
 class_name StatBar
 extends StatUI
@@ -39,7 +41,7 @@ func onStat_changed() -> void:
 
 func updateUI(animate: bool = self.shouldAnimate) -> void:
 	super.updateUI(animate)
-	bar.self_modulate = self.barColor
+	Tools.setNewStyleBoxColor(bar, barColor, &"fill", &"bg_color")
 	bar.min_value = stat.min
 	bar.max_value = stat.max
 	updateBar(animate)
@@ -50,6 +52,7 @@ func updateBar(animate: bool = self.shouldAnimate) -> void:
 		if tween: tween.kill()
 		tween = bar.create_tween()
 		tween.tween_property(bar, "value", stat.value, animationDuration)
-		if shouldAnimateBar: Animations.modulateNumberDifference(bar, stat.value, stat.previousValue)
+		# TODO: Find a way to animate the StyleBox color instead of using `modulate` which does not display red/green properly on certain bar colors like blue etc.
+		# JANK: if shouldAnimateBar: Animations.modulateNumberDifference(bar, stat.value, stat.previousValue)
 	else:
 		bar.value = stat.value
