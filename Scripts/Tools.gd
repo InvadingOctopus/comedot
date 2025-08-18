@@ -1149,6 +1149,23 @@ static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vecto
 
 #region UI Functions
 
+## Creates a new copy of a [Control]'s [StyleBox] to avoid affecting other controls sharing the same StyleBox,
+## and sets the specified color on the specified property.
+## @experimental
+static func setNewStyleBoxColor(control: Control, color: Color, styleBoxName: StringName = &"fill", propertyName: StringName = &"bg_color") -> StyleBox:
+	var styleBox: StyleBox = control.get_theme_stylebox(styleBoxName)
+	if not styleBox:
+		Debug.printWarning(str("GlobalUI.setStyleBoxColor(): Cannot get StyleBox: ", styleBoxName), control)
+		return null
+
+	if styleBox is StyleBoxFlat:
+		var newStyleBox: StyleBox = styleBox.duplicate() # NOTE: Don't want to change the color of ALL controls sharing the same StyleBox!
+		newStyleBox.set(propertyName, color)
+		control.add_theme_stylebox_override(styleBoxName, newStyleBox)
+
+	return styleBox
+
+
 ## Sets the text of [Label]s from a [Dictionary].
 ## Iterates over an array of [Label]s, and takes the prefix of the node name by removing the "Label" suffix, if any, and making it LOWER CASE,
 ## and searches the [param dictionary] for any String keys which match the label's name prefix. If there is a match, sets the label's text to the dictionary value for each key.
