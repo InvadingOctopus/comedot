@@ -107,7 +107,7 @@ func setupGameState() -> void:
 	GameState.globalData.merge(self.initialGlobalData, true) # overwrite
 
 	for path in gameStateNodes:
-		GameState.addScene(path)
+		GameState.createNode(path)
 
 
 ## ATTENTION: A subclass which `extends Start` and overrides [method _ready] MUST call `super._ready()`
