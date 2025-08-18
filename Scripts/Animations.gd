@@ -28,6 +28,14 @@ static func tweenProperty(node: Node, property: NodePath, value: Variant, durati
 
 #region Visibility Animations
 
+static func fadeTo(node: CanvasItem, targetOpacity: float, duration: float = 1.0) -> Tween:
+	var currentColorWithTargetAlpha: Color = Color(node.modulate, targetOpacity)
+	var tween: Tween = node.create_tween()
+	tween.tween_property(node, ^"modulate", currentColorWithTargetAlpha, duration)
+		# TBD: .set_ease(Tween.EASE_OUT) # TBD: .set_trans(Tween.TRANS_CUBIC)
+	return tween
+
+
 static func fadeIn(node: CanvasItem, duration: float = 0.5) -> Tween:
 	var currentColorWithMaxAlpha: Color = Color(node.modulate, 1.0)
 	var tween: Tween = node.create_tween()
