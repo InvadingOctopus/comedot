@@ -201,7 +201,7 @@
 
 	"StatVar": {
 		"prefix": "statVar",
-		"body": ["@onready var ${2}: Stat = ${1|statsComponent,coComponents.StatsComponent|}.getStat(&\"${2:health}\")\n$0"],
+		"body": ["@onready var ${1:health}: Stat = ${2|statsComponent,coComponents.StatsComponent|}.getStat(&\"${1:health}\")\n$0"],
 		"description": "Store a reference to a Stat from a StatsComponent."
 	},
 
