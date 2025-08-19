@@ -3,6 +3,8 @@
 class_name StatUI
 extends Container
 
+# TBD: Add shouldShowRemainingToMin?
+
 
 #region Parameters
 
@@ -50,7 +52,9 @@ extends Container
 			if label: updateText(false) # Update the label, without animation
 
 ## If greater than 1, then smaller values will be padded with leading 0s.
-@export var minimumDigits:   int = 2
+@export_range(1, 10, 1) var minimumDigits: int = 2
+
+@export var shouldShowRemainingToMax: bool = false
 
 
 @export_group("Icon")
@@ -148,9 +152,9 @@ func buildLabelText() -> String:
 	if shouldShowValue:
 		if minimumDigits >= 1:
 			var format: String = "%0" + str(minimumDigits) + "d"
-			valueText = format % stat.value
+			valueText = format % (stat.value if not shouldShowRemainingToMax else stat.remainingToMax)
 		else:
-			valueText = str(stat.value)
+			valueText = str(stat.value if not shouldShowRemainingToMax else stat.remainingToMax)
 
 	# DEBUG: Debug.printTrace([fullPrefix, valueText, fullSuffix], self)
 	return str(fullPrefix, valueText, fullSuffix)

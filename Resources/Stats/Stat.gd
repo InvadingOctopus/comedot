@@ -123,7 +123,7 @@ var remainingToMin: int:
 
 ## Returns [member max] - [member value]. e.g. if the maximum is 100 and the value is 70, then 30 will be returned. 
 ## TIP: Use this to display the remaining amount of a goal etc.
-## EXAMPLE: `monstersToKill` could be 10 and [member remainingToMax] would show the required kills left in a [StatUI].
+## EXAMPLE: `monstersToKill` could be 10 and [member remainingToMax] would show the required kills left via [member StatUI.shouldShowRemainingToMax].
 var remainingToMax: int:
 	get: return max - value
 
