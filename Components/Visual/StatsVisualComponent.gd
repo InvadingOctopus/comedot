@@ -16,8 +16,8 @@ extends Component
 @export var isEnabled:				 bool = true
 
 @export_group("Stats")
-@export var statsToMonitor:			 Array[Stat]
-@export var statsToExclude:			 Array[Stat]
+@export var statsToMonitor:			 Array[Stat] ## ALERT: Superceded by [member statsToExclude],
+@export var statsToExclude:			 Array[Stat] ## ALERT: Supercedes entries in [member statsToMonitor],
 
 ## If `true` then [member statsToMonitor] will include the [Stat]s from an [StatsComponent], if any.
 ## IMPORTANT: TIP: Enable this if any of the relevant Stats are "Local to Scene" [member Resource.resource_local_to_scene] because the [Stat]s added via the Godot Editor Inspector may not match the locally-unique runtime instance.
@@ -42,14 +42,17 @@ var statsComponent: StatsComponent:
 
 func _ready() -> void:
 	if shouldCopyFromStatsComponent and statsComponent:
-		self.statsToMonitor.append_array(statsComponent.stats) # NOTE: append, don't override :)
+		for stat in statsComponent.stats:
+			if not self.statsToExclude.has(stat): # Respect exclusions instead of just adding everything with append_array()
+				self.statsToMonitor.append(stat)
+
 	if debugMode: printDebug(str(statsToMonitor, ", exclude: ", statsToExclude))
 	connectSignals()
 
 
 func connectSignals() -> void:
 	for stat in statsToMonitor:
-		if not statsToExclude.has(stat):
+		if not statsToExclude.has(stat): # TBD: Check again or just let _ready() take care of it?
 			Tools.connectSignal(stat.changed, self.onStatChanged.bind(stat))
 
 
