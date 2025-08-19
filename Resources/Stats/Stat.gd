@@ -116,6 +116,17 @@ var percent: int: ## The current [member value] as a percentage of the [member m
 var percentNormalized: float: ## The current [member value] as a 0.0 to 1.0 ratio within the [member max] - [member min] range.
 	get: return inverse_lerp(min, max, value)
 
+## Returns [member value] - [member min]. e.g. if the minimum is 7 and the value is 10, then 3 will be returned. 
+## ALERT: PERFORMANCE: Do NOT use if [member min] is 0 (as almost always): Just use [member value] directly.
+var remainingToMin: int:
+	get: return value - min
+
+## Returns [member max] - [member value]. e.g. if the maximum is 100 and the value is 70, then 30 will be returned. 
+## TIP: Use this to display the remaining amount of a goal etc.
+## EXAMPLE: `monstersToKill` could be 10 and [member remainingToMax] would show the required kills left in a [StatUI].
+var remainingToMax: int:
+	get: return max - value
+
 var logName: String:
 	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name, ": ", value, " (", min, "-", max, ")")
 
