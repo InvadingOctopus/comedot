@@ -261,7 +261,7 @@ var playback: AudioStreamGeneratorPlayback ## Plays code-generated audio for the
 ## Generates a sound via script code to play through the [member synthesizer] [AudioStreamPlayer] [AudioStreamGeneratorPlayback]
 ## TIP: May be used for debugging via audio cues!
 ## @experimental
-func beep(duration: float = 1.0, pulseHz: float = 440.0, volume: float = 1.0) -> void:
+func beep(pulseHz: float = 440.0, duration: float = 1.0, volume: float = 1.0) -> void: # TBD: Should Hz come before duration or vice versa?
 	# NOTE: PERFORMANCE: Godot Documentation:
 	# Due to performance constraints, AudioStreamGenerator is best used from a compiled language.
 	# If you still want to use this class from GDScript, consider using a lower `mix_rate` such as 11,025 Hz or 22,050 Hz.

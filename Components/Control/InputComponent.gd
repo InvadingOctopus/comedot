@@ -309,7 +309,7 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 		if debugMode: printDebug(str("processMonitoredInputActions() event: ", event, ", inputActionsPressed: ", inputActionsPressed, " → ", inputActionsPressedNew))
 		self.inputActionsPressed = inputActionsPressedNew
 		didUpdateInputActionsList.emit(event)
-		if debugMode: GlobalSonic.beep(0.1, 440)
+		if debugMode: GlobalSonic.beep(440, 0.1)
 
 	return isEventMonitored
 
