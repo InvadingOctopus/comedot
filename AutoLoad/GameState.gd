@@ -10,6 +10,8 @@ extends Node
 #region Game State
 
 ## A [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
+## TIP: When accessing a key for the first time, use [method Dictionary.get_or_add] with a default value.
+## EXAMPLE: `GameState.globalData.get_or_add(&"questItems", [])`
 ## TIP: [StringName] may be the optimal type to use for keys.
 @export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
