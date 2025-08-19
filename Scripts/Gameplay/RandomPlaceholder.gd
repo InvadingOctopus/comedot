@@ -9,7 +9,7 @@ extends InstancePlaceholder
 
 #region Parameters
 
-## The chance percentage of loading (spawning) the instance.
+## The chance percent of loading (spawning) the instance.
 @export_range(0, 100, 1) var chance: int = 100
 
 ## An optional group to add the instantiated nodes to.

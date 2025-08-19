@@ -82,7 +82,7 @@ func animate(difference: int) -> void:
 func updateTint()-> void:
 	if self.shouldTint and healthComponent:
 		var health: Stat  = healthComponent.health
-		var red:	float = (1.0 - (health.percentage / 100.0)) * 5.0 # Increase redness as health gets lower
+		var red:	float = (1.0 - (health.percent / 100.0)) * 5.0 # Increase redness as health gets lower
 		var targetModulate:  Color = nodeToAnimate.modulate
 		targetModulate.r = red
 		if debugMode: Debug.printVariables([health.logName, red, targetModulate])

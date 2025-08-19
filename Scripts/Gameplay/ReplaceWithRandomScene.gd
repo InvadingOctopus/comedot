@@ -10,7 +10,7 @@ extends Node2D
 
 
 #region Parameters
-## A [Dictionary] of Scene paths associated with a percentage chance.
+## A [Dictionary] of Scene paths associated with a percent chance.
 ## Each entry is "rolled" in order. If the chance succeeds, the node this script is attached to will be replaced by an instance of that random scene.
 @export var scenes: Dictionary[String, int]
 

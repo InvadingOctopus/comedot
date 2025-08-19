@@ -110,7 +110,7 @@ var range:			int: ## [member max] minus [member min]. Updated whenever `min` or 
 ## @experimental
 var valueWithModifiers: int
 
-var percentage: float: ## The current [member value] as a percentage of the [member max] limit.
+var percent: float: ## The current [member value] as a percentage of the [member max] limit.
 	get: return ((float(value) - float(min)) / float(range)) * 100.0 # TBD: Use `remap(value, min, max, 0.0, 100.0)` or `inverse_lerp(min, max, value) * 100.0`?
 
 var logName: String:
