@@ -261,33 +261,72 @@ var playback: AudioStreamGeneratorPlayback ## Plays code-generated audio for the
 ## Generates a sound via script code to play through the [member synthesizer] [AudioStreamPlayer] [AudioStreamGeneratorPlayback]
 ## TIP: May be used for debugging via audio cues!
 ## @experimental
-func beep(pulseHz: float = 440.0, duration: float = 1.0, volume: float = 1.0) -> void: # TBD: Should Hz come before duration or vice versa?
+func beep(pulseHz: float = 440.0, duration: float = 1.0, volume: float = 0.5) -> void: # TBD: Should Hz come before duration or vice versa?
+	# TODO: Multiple concurrent waveforms (chords/harmonies etc.)
+
 	# NOTE: PERFORMANCE: Godot Documentation:
 	# Due to performance constraints, AudioStreamGenerator is best used from a compiled language.
 	# If you still want to use this class from GDScript, consider using a lower `mix_rate` such as 11,025 Hz or 22,050 Hz.
 
+	# Clamp & Validate
+	pulseHz  = clamp(pulseHz,  20,   20000) # Human hearing range
+	duration = clamp(duration, 0.01, 10)  # 10 milliseconds to 10 seconds
+	volume   = clamp(volume,   0,    1)   # 0% to 100%
+
+	if is_zero_approx(volume) or is_zero_approx(duration):
+		return # TBD: Play "silent" sounds?
+
 	# Prep the player
-	# NOTE: The `playback_type` must be `PLAYBACK_TYPE_STREAM` otherwise there is a Godot warning: "/root/GlobalSonic/Synthesizer is trying to play a sample from a stream that cannot be sampled."
+	# CHECK: LEARN: No idea how any of this actually works. Just copied it from various sources :')
+
+	# var sampleHz:	float = synthesizer.stream.mix_rate # TBD: Set once @onready or on each call?
+	var totalSamples:	  int = int(duration * synthesizerSampleHz)
+	var samplesGenerated: int = 0
+	var framesThisChunk:  int
+	var time:			float
+	var sample:			float
+	var fadeTime:		float
+
+	# IMPORTANT: The `playback_type` must be `PLAYBACK_TYPE_STREAM` otherwise there is a Godot warning: "/root/GlobalSonic/Synthesizer is trying to play a sample from a stream that cannot be sampled."
 	if not synthesizer.playing: synthesizer.play() # Needed for AudioStreamPlayer.get_stream_playback()
 	if not playback: playback = synthesizer.get_stream_playback() # TBD: Set once @onready or on each call?
-	# var sampleHz:	float = synthesizer.stream.mix_rate # TBD: Set once @onready or on each call?
 	# playback.clear_buffer() # CHECK: Necessary? # BUG: Causes Godot Error: "beep(): Condition "active" is true." @ servers/audio/effects/audio_stream_generator.cpp:164
-	var frames: float = playback.get_frames_available()
 
 	# Generate the sample
-	# CHECK: No idea how any of this actually works. Just copied from the Godot documentation.
-	var length:		float = duration * synthesizerSampleHz
-	var increment:	float = pulseHz  / synthesizerSampleHz
-	#var phase:		float # TBD: Should `phase` be reset here?
 
-	for i in range(minf(length, frames)):
-		# NOTE: PERFORMANCE: Godot Documentation:
-		# Pushes a single audio data frame to the buffer. This is usually less efficient than push_buffer() in compiled languages,
-		# but push_frame() may be more efficient in GDScript.
-		playback.push_frame(Vector2.ONE * sin(phase * TAU) * volume) # Stereo
-		phase = fmod(phase + increment, 1.0)
+	var framesAvailable:  int = playback.get_frames_available() # PERFORMANCE: Init this just before starting the loop
 
-	# TBD: Stop manually?
+	while samplesGenerated < totalSamples and framesAvailable > 0:
+		framesThisChunk = min(framesAvailable, totalSamples - samplesGenerated)
+
+		for i in range(framesThisChunk):
+			time = float(samplesGenerated + i) / synthesizerSampleHz
+			sample = sin(time * pulseHz * TAU) * volume
+
+			# Apply fade in/out to prevent clicks
+			fadeTime = min(0.01, duration * 0.1) # 10 milliseconds or 10% of duration
+			if   time < fadeTime: sample *= time / fadeTime
+			elif time > duration - fadeTime: sample *= (duration - time) / fadeTime
+
+			# NOTE: PERFORMANCE: Godot Documentation:
+			# Pushes a single audio data frame to the buffer. This is usually less efficient than push_buffer() in compiled languages,
+			# but push_frame() may be more efficient in GDScript.
+			playback.push_frame(Vector2(sample, sample)) # Stereo
+
+		samplesGenerated += framesThisChunk
+
+		# Small delay to allow audio processing
+		await get_tree().process_frame
+		framesAvailable = playback.get_frames_available()
+
+	# UNUSED: Alternative Implementation:
+	# var increment:		float = pulseHz / synthesizerSampleHz
+	# var phase:		float # TBD: Should `phase` be reset here?
+	# for i in range(min(totalSamples, framesAvailable)):
+	# 	playback.push_frame(Vector2.ONE * sin(phase * TAU) * volume) # Stereo
+	# 	phase = fmod(phase + increment, 1.0)
+
+	# TBD: Stop manually? NO: Causes problems with the next beep()
 	# await get_tree().create_timer(duration).timeout
 	# synthesizer.stop()
 
