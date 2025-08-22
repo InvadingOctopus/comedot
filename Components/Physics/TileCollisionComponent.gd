@@ -70,7 +70,7 @@ func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, lo
 
 		if debugMode:
 			printDebug(str("TileMapLayer exited: ", bodyExited, " @", cellCoordinates))
-			TextBubble.create(str("EX ", cellCoordinates), self.parentEntity).label.label_settings.font_color = Color.CYAN
+			if is_instance_valid(parentEntity): TextBubble.create(str("EX ", cellCoordinates), parentEntity).label.label_settings.font_color = Color.CYAN
 
 		self.onExitCell(bodyExited, cellCoordinates)
 		didExitTileCell.emit(bodyExited, cellCoordinates)
