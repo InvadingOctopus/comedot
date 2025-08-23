@@ -169,16 +169,18 @@ func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> 
 ## EXAMPLE: `{velocity = body.velocity}` where "velocity" is the text string for the property name to show in the watchlist label.
 ## WARNING: Calling this method again with the same [param key] but with different [param variables] will remove the previous variables.
 ## This method should be called once for each specific object with the same set of variables, e.g. in a `showDebugInfo()` method.
-func addCombinedWatchList(key: StringName, variables: Dictionary[String, Variant]) -> void:
+func addCombinedWatchList(key: StringName, variables: Dictionary) -> void:
+	# FIXME: TODO: Typed Dictionary[String, Variant] worked before but is crashing in Godot 4.5 Beta 6
 	var variablesText: String = ""
-	for variable in variables:
-		variablesText += str(" [color=lightgray]", variable, ": [color=gray]", variables[variable], "\n")
+	for variableName: String in variables:
+		variablesText += str(" [color=lightgray]", variableName, ": [color=gray]", variables[variableName], "\n")
 	Debug.watchList[key] = "\n" + variablesText
 
 
 ## Adds a set of properties from a [Component] to the [member watchList] and formats them as a single watchlist entry along with the component & entity's name.
 ## Calls [method Debug.addCombinedWatchList]. See the documentation for that method for more details.
-func addComponentWatchList(component: Component, variables: Dictionary[String, Variant]) -> void:
+func addComponentWatchList(component: Component, variables: Dictionary) -> void:
+	# FIXME: TODO: Typed Dictionary[String, Variant] worked before but is crashing in Godot 4.5 Beta 6
 	Debug.addCombinedWatchList(str(component.parentEntity.name, ".", component.name), variables)
 
 #endregion
