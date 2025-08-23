@@ -151,7 +151,7 @@ var nextEntityIndex: int: ## Returns the next entity in the turn order, or the f
 	get: return currentEntityIndex + 1 if (currentEntityIndex + 1) < turnBasedEntities.size() else 0
 
 var nextEntityToProcess: TurnBasedEntity:
-	get: 
+	get:
 		if not turnBasedEntities.is_empty() and nextEntityIndex < turnBasedEntities.size():
 			return turnBasedEntities[nextEntityIndex]
 		else:
@@ -451,7 +451,7 @@ func processEntities(state: TurnBasedState) -> void:
 			TurnBasedState.turnEnd:		await turnBasedEntity.processTurnEndSignals()
 
 		self.didProcessEntity.emit(turnBasedEntity) # NOTE: Emit this signal BEFORE the delay BETWEEN entities.
-		
+
 		# Start the delay between entities
 		# NOTE: Delay even if it's the last entity in the loop, because there should be a delay before the 1st entity of the NEXT turn too!
 		await waitForEntityTimer()

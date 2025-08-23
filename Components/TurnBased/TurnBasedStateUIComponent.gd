@@ -52,29 +52,29 @@ func _ready() -> void:
 
 
 func connectSignals() -> void:
-	TurnBasedCoordinator.didAddEntity.connect(self.onTurnBasedCoordinator_didAddEntity)
-	TurnBasedCoordinator.didRemoveEntity.connect(self.onTurnBasedCoordinator_didRemoveEntity)
+	TurnBasedCoordinator.didAddEntity		.connect(self.onTurnBasedCoordinator_didAddEntity)
+	TurnBasedCoordinator.didRemoveEntity	.connect(self.onTurnBasedCoordinator_didRemoveEntity)
+	
+	TurnBasedCoordinator.willBeginTurn		.connect(self.onTurnBasedCoordinator_willBeginTurn)
+	TurnBasedCoordinator.didBeginTurn		.connect(self.onTurnBasedCoordinator_didBeginTurn)
+	TurnBasedCoordinator.willUpdateTurn		.connect(self.onTurnBasedCoordinator_willUpdateTurn)
+	TurnBasedCoordinator.didUpdateTurn		.connect(self.onTurnBasedCoordinator_didUpdateTurn)
+	TurnBasedCoordinator.willEndTurn		.connect(self.onTurnBasedCoordinator_willEndTurn)
+	TurnBasedCoordinator.didEndTurn			.connect(self.onTurnBasedCoordinator_didEndTurn)
 
-	TurnBasedCoordinator.willBeginTurn.connect(self.onTurnBasedCoordinator_willBeginTurn)
-	TurnBasedCoordinator.didBeginTurn.connect(self.onTurnBasedCoordinator_didBeginTurn)
-	TurnBasedCoordinator.willUpdateTurn.connect(self.onTurnBasedCoordinator_willUpdateTurn)
-	TurnBasedCoordinator.didUpdateTurn.connect(self.onTurnBasedCoordinator_didUpdateTurn)
-	TurnBasedCoordinator.willEndTurn.connect(self.onTurnBasedCoordinator_willEndTurn)
-	TurnBasedCoordinator.didEndTurn.connect(self.onTurnBasedCoordinator_didEndTurn)
+	TurnBasedCoordinator.willProcessEntity	.connect(self.onTurnBasedCoordinator_willProcessEntity)
+	TurnBasedCoordinator.didProcessEntity	.connect(self.onTurnBasedCoordinator_didProcessEntity)
 
-	TurnBasedCoordinator.willProcessEntity.connect(self.onTurnBasedCoordinator_willProcessEntity)
-	TurnBasedCoordinator.didProcessEntity.connect(self.onTurnBasedCoordinator_didProcessEntity)
-
-	TurnBasedCoordinator.willStartDelay.connect(self.onTurnBasedCoordinator_willStartDelay)
-	TurnBasedCoordinator.stateTimer.timeout.connect(self.onTurnBasedCoordinator_stateTimerTimeout)
+	TurnBasedCoordinator.willStartDelay		.connect(self.onTurnBasedCoordinator_willStartDelay)
+	TurnBasedCoordinator.stateTimer.timeout	.connect(self.onTurnBasedCoordinator_stateTimerTimeout)
 	TurnBasedCoordinator.entityTimer.timeout.connect(self.onTurnBasedCoordinator_entityTimerTimeout)
 
-	parentEntity.willBeginTurn.connect(self.onEntity_willBeginTurn)
-	parentEntity.didBeginTurn.connect(self.onEntity_didBeginTurn)
-	parentEntity.willUpdateTurn.connect(self.onEntity_willUpdateTurn)
-	parentEntity.didUpdateTurn.connect(self.onEntity_didUpdateTurn)
-	parentEntity.willEndTurn.connect(self.onEntity_willEndTurn)
-	parentEntity.didEndTurn.connect(self.onEntity_didEndTurn)
+	parentEntity.willBeginTurn	.connect(self.onEntity_willBeginTurn)
+	parentEntity.didBeginTurn	.connect(self.onEntity_didBeginTurn)
+	parentEntity.willUpdateTurn	.connect(self.onEntity_willUpdateTurn)
+	parentEntity.didUpdateTurn	.connect(self.onEntity_didUpdateTurn)
+	parentEntity.willEndTurn	.connect(self.onEntity_willEndTurn)
+	parentEntity.didEndTurn		.connect(self.onEntity_didEndTurn)
 
 
 #region TurnBasedCoordinator Signal Handlers

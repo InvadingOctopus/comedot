@@ -91,7 +91,7 @@ func updateTint()-> void:
 
 func emitBubble(difference: int) -> void:
 	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else "%+d" % difference
-	
+
 	var color: Color = Color(0, 1, 0) if difference > 0 else Color(1, 0.5, 0)
 	color.b += [0, +0.1, +0.2, +0.3].pick_random()
 
