@@ -5,17 +5,17 @@ https://godotengine.org/asset-library/asset/3887
 Asset Name: Comedot Ultimate Template [4.5]
 Description:
 
-All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art.
+All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art. Requires Godot 4.5 Beta 6!
 
-• Includes components for different types of player movement, combat, collectibles, inventory, turn-based logic etc.
-• Handles tricky edge cases related to stats, interactions, physics, climbing, tile-based maps etc.
-• UI controls like a stats HUD, buttons for special skills, etc.
-• Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay & short example games.
+• Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, turn-based logic etc.
+• Handles tricky edge case issues in physics, stats, collectibles, climbing etc.
+• UI controls like stat HUDs, buttons for special skills etc.
+• Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
 • Save/Load player preferences in config file with `Settings.anyName = 69`
 • Helper functions & debugging tools like realtime charts for monitoring variables.
 • Free-to-use 3rd-party assets for quick prototyping.
 
-Even if you don't need the template or components, you can copy some of the code to use in your own scripts.
+Even if you don't need the template or components, you can cherry-pick specific code to use in your own scripts.
 
 This is a work in constant progress! For delicious details & the latest version, gaze upon the glorious GitHub repository: https://github.com/InvadingOctopus/comedot/tree/develop
 
