@@ -37,7 +37,9 @@ extends Node # + TurnBasedObjectBase
 ## According to Godot documentation, it should be 0.05
 const minimumDelay: float = 0.05
 
-## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
+## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Update/End). May be used for aesthetics or debugging.
+## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
+## This ensures a delay between multiple moves of the same entity.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = 0.5:
 	set(newValue):
 		newValue = maxf(newValue, minimumDelay)
@@ -46,6 +48,7 @@ const minimumDelay: float = 0.05
 
 ## The delay after each [enum TurnBasedState]. May be used for debugging.
 ## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
+## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
 	set(newValue):
 		newValue = maxf(newValue, minimumDelay)
