@@ -66,11 +66,11 @@ const minimumTurnDelay: float = 0.05
 @export var isTurnBasedGame: bool = false
 
 ## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = 0.5
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities if TurnBasedCoordinator else 0.0
 
 ## The delay after each [enum TurnBasedCoordinator.TurnBasedState]: Begin → Update → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = 0.25
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else 0.0
 
 #endregion
 
