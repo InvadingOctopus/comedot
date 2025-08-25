@@ -300,7 +300,10 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
 	# TODO: Optional charting? :)
 	if shouldPrintDebugLogs and previousValue != newValue:
-		var string: String = str(previousValue, " → ", newValue, " (%+f" % (newValue - previousValue), ")") # TBD: Write difference after previousValue?
+		var difference: String
+		if (newValue is int or newValue is float) and (previousValue is int or previousValue is float):
+			difference = " (%+f" % (newValue - previousValue) + ")"
+		var string: String = str(previousValue, " → ", newValue, difference) # TBD: Write difference after previousValue?
 		if not logAsTrace: printLog(string, variableName, "dimgray", "gray")
 		else: printTrace([string], variableName, 3)
 		return string
@@ -351,10 +354,10 @@ func printStackDump(object: Variant, includeChildNodes: bool = true, includeLoca
 
 	print_rich(str("\n\n", backgroundColor, "[color=orange]↦ [b]STACK DUMP[/b] @ Rendering Frame:", Engine.get_frames_drawn(), " Time:", float(Time.get_ticks_msec()) / 1000),
 	"\n\t[color=cyan][b]", object, "[/b] ← ", object.get_parent() if object is Node else null)
-	
+
 	if includeChildNodes and object is Node:
 		print_rich(str("\t[color=lightblue]", object.get_children(true))) # include_internal
-	
+
 	var backtrace: ScriptBacktrace
 	for backtraceIndex in stack.size():
 		backtrace = stack[backtraceIndex]
