@@ -69,12 +69,13 @@ func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 	if shouldAllowDiagonals:
 		self.recentInputVector = Vector2i(int(signf(inputComponent.movementDirection.x)), int(signf(inputComponent.movementDirection.y)))
 	else: # Fractional axis values will get zeroed in the conversion to integers.
-		self.recentInputVector = Vector2i(inputComponent.movementDirection)
+		self.recentInputVector = inputComponent.movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
 
 	move()
 
 
 func _physics_process(_delta: float) -> void:
+	# NOTE: `isEnabled` and `shouldMoveContinuously` checked by property setters
 	move()
 	if debugMode: showDebugInfo()
 
@@ -83,7 +84,10 @@ func _physics_process(_delta: float) -> void:
 ## Uses a [Timer] to add a delay between each step.
 ## NOTE: Does not depend on [member isEnabled]
 func move() -> void:
-	if is_zero_approx(recentInputVector.length()) or not is_zero_approx(stepTimer.time_left) or not tileBasedPositionComponent.tileMap:
+	# PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
+	if recentInputVector.length_squared() == 0 \
+	or not is_zero_approx(stepTimer.time_left) \
+	or not tileBasedPositionComponent.tileMap:
 		return
 
 	tileBasedPositionComponent.inputVector = self.recentInputVector
