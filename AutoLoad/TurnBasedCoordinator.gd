@@ -7,6 +7,9 @@
 ## First, all objects perform the Begin methods, then all objects perform the Update methods, and so on.
 ##
 ## See the documentation for [TurnBasedEntity] and [TurnBasedComponent] for further details.
+##
+## IMPORTANT: [member Start.isTurnBasedGame] MUST be enabled in your `Start.gd` script for turn-based games!
+## PERFORMANCE: To remove [TurnBasedCoordinator], disable [member Start.isTurnBasedGame].
 
 #class_name TurnBasedCoordinator
 extends Node # + TurnBasedObjectBase

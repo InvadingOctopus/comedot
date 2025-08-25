@@ -55,6 +55,26 @@ extends CanvasItem
 #endregion
 
 
+#region Turn-Based
+@export_group("Turn-Based Gameplay")
+
+## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
+## According to Godot documentation, it should be 0.05
+const minimumTurnDelay: float = 0.05
+
+## If `false`, disables & removes the [TurnBasedCoordinator] AutoLoad.
+@export var isTurnBasedGame: bool = false
+
+## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = 0.5
+
+## The delay after each [enum TurnBasedCoordinator.TurnBasedState]: Begin → Update → End. May be used for aesthetics or debugging.
+## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = 0.25
+
+#endregion
+
+
 #region Debugging
 @export_group("Debugging")
 
@@ -135,7 +155,6 @@ func applyGlobalFlags() -> void:
 
 	GlobalSonic.musicFolder			= self.musicFolder
 	GlobalSonic.loadMusicFolder()
-
 	GlobalSonic.currentMusicIndex	= self.musicIndexToPlayOnStart
 
 	if not self.musicFileToPlayOnStart.is_empty():
@@ -144,6 +163,17 @@ func applyGlobalFlags() -> void:
 		GlobalSonic.playRandomMusicIndex(true) # allowRepeats to allow index 0 to be included :')
 	else:
 		GlobalSonic.playMusicIndex(self.musicIndexToPlayOnStart)
+
+	# Turn-Based
+	if isTurnBasedGame:
+		printLog("isTurnBasedGame: Setting TurnBasedCoordinator")
+		TurnBasedCoordinator.delayBetweenEntities = self.turnBasedDelayBetweenEntities
+		TurnBasedCoordinator.delayBetweenStates   = self.turnBasedDelayBetweenStates
+	else:
+		printLog("not isTurnBasedGame:[color=red] Removing TurnBasedCoordinator")
+		if is_instance_valid(TurnBasedCoordinator):
+			TurnBasedCoordinator.process_mode = Node.PROCESS_MODE_DISABLED
+			TurnBasedCoordinator.queue_free()
 
 #endregion
 
