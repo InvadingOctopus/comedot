@@ -30,16 +30,22 @@ extends Node # + TurnBasedObjectBase
 #region Parameters
 # TBD: Since this is an Autoload, should these values be flags in Start.gd or let the game's main script decide?
 
+## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
+## According to Godot documentation, it should be 0.05
+const minimumDelay: float = 0.05
+
 ## The delay after updating each [TurnBasedEntity]. May be used for aesthetics or debugging.
-@export_range(0, 10, 0.05) var delayBetweenEntities: float = 1:
+@export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = 0.5:
 	set(newValue):
+		newValue = maxf(newValue, minimumDelay)
 		delayBetweenEntities = newValue
 		if entityTimer: entityTimer.wait_time = newValue
 
 ## The delay after each [enum TurnBasedState]. May be used for debugging.
 ## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
-@export_range(0, 10, 0.05) var delayBetweenStates: float = 0.1:
+@export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
 	set(newValue):
+		newValue = maxf(newValue, minimumDelay)
 		delayBetweenStates = newValue
 		if stateTimer: stateTimer.wait_time = newValue
 

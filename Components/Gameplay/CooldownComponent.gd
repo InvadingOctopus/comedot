@@ -11,11 +11,11 @@ extends Component
 
 ## The value that [member Timer.wait_time] will be reset to if it goes <= 0
 ## According to Godot documentation, it should be 0.05
-const minimumTimerWaitTime: float = 0.05
+const minimumDelay: float = 0.05
 
 ## Number of seconds after shooting before another bullet can be emitted.
 ## WARNING: A value of 0.0 may cause issues with [Timer]
-@export_range(0.05, 120, 0.05, "suffix:seconds") var cooldown: float = 3:
+@export_range(minimumDelay, 120, 0.05, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
 		if is_zero_approx(newValue) or newValue < 0: # Snap the new value to 0 if it's almost 0 or less
 			if debugMode: printDebug(str("Correcting cooldown newValue: ", newValue, " → 0"))
@@ -71,7 +71,7 @@ func setCooldown(newTime: float = self.cooldownWithModifier) -> float:
 	if newTime > 0 and not is_zero_approx(newTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		cooldownTimer.wait_time = newTime
 	else:
-		cooldownTimer.wait_time = minimumTimerWaitTime # HACK: TODO: Find a better way
+		cooldownTimer.wait_time = minimumDelay # HACK: TODO: Find a better way
 		cooldownTimer.stop()
 	
 	if debugMode: printTrace(str("newTime: ", newTime, " → ", cooldownTimer, ".wait_time: ", cooldownTimer.wait_time))
