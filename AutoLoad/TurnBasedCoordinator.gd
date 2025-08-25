@@ -184,6 +184,8 @@ signal didAddEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
 @warning_ignore("unused_signal")
 signal didRemoveEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
 
+signal didReadyToStartTurn
+
 signal willBeginTurn
 signal didBeginTurn
 
@@ -214,6 +216,9 @@ func _ready() -> void:
 	showDebugInfo()
 
 	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
+	if isReadyToStartTurn:
+		printDebug("didReadyToStartTurn")
+		didReadyToStartTurn.emit()
 
 
 ## Returns a readable name for the [param state].
@@ -272,6 +277,10 @@ func cycleStatesUntilNextTurn() -> void:
 		await self.processState()
 		await self.waitForStateTimer() # NOTE: Delay even if it's the last entity/state in the loop, because there should be a delay before the 1st entity/state of the NEXT turn too!
 		self.incrementState()
+
+	if isReadyToStartTurn:
+		printDebug("didReadyToStartTurn")
+		didReadyToStartTurn.emit()
 
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
