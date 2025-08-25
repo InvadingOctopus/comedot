@@ -1,4 +1,5 @@
-## A subclass of [InstancePlaceholder] that may or may not be loaded (spawned) at runtime based on a specified chance, for nodes with `Load as Placeholder` enabled in the Godot Editor.
+## A subclass of [InstancePlaceholder] that may or may not be loaded (spawned) at runtime based on a specified chance,
+## for nodes with `Load as Placeholder` enabled in the Godot Editor.
 ## Useful for placing predetermined random objects in a map or level at design time, such as monsters/chests/doors/etc.
 ## TIP: To use this with other scripts, such as [Entity], enclose the actual node in a container [Node2D] and use that as the placeholder.
 ## TIP: To replace any node with another scene, see [ReplaceWithRandomScene].gd

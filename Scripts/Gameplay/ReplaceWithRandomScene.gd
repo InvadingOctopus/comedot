@@ -1,7 +1,8 @@
 ## Replaces a node with 1 other node randomly chosen from the provided list.
 ## May be used for loading different variations for monsters, maps, etc.
 ## TIP: For lazily-loaded [InstancePlaceholder]s, see [RandomPlaceholder].gd
-## NOTE: The replacement occurs during [method Node._enter_tree] BEFORE [method Node._ready] so that the replacement can be available for any other nodes/scripts which may depend on it.
+## NOTE: The replacement occurs during [method Node._enter_tree] BEFORE [method Node._ready]
+## so that the replacement can be available for any other nodes/scripts which may depend on it.
 
 class_name ReplaceWithRandomScene
 extends Node2D
