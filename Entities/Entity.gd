@@ -92,8 +92,8 @@ func _enter_tree() -> void:
 func connectSignals() -> void:
 	printDebug("connectSignals()")
 	# TBD: UNUSED: Unneeded for now
-	# Tools.connectSignal(self.child_entered_tree, self.childEnteredTree)
-	# Tools.connectSignal(self.child_exiting_tree, self.childExitingTree)
+	# Tools.connectSignal(self.child_entered_tree, self.onChildEnteredTree)
+	# Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
 
 
 func _process(_delta: float) -> void:
@@ -120,8 +120,10 @@ func _exit_tree() -> void:
 
 #region Internal Component Management
 
+## @experimental
 @warning_ignore("unused_parameter")
-func childEnteredTree(node: Node) -> void:
+func onChildEnteredTree(node: Node) -> void:
+	# UNUSED: Not necessary yet
 	# NOTE: A child node will `_enter_tree()` even when this Entity is added to the SCENE,
 	# so this method does not necessarily mean that a Component was added to the ENTITY.
 	# AVOID: So do NOT call `registerComponent()` here!
@@ -161,8 +163,10 @@ func registerComponent(newComponent: Component) -> bool:
 
 ## NOTE: A child node will [method Node._exit_tree] even when this Entity is removed from the SCENE,
 ## so this method does not necessarily mean that a Component was removed from the ENTITY.
+## @experimental
 @warning_ignore("unused_parameter")
-func childExitingTree(node: Node) -> void:
+func onChildExitingTree(node: Node) -> void:
+	# UNUSED: Not necessary yet
 	# AVOID: Do not call `unregisterComponent()` here!
 	# A Component itself should call `parentEntity.unregisterComponent()` when it receives its `NOTIFICATION_UNPARENTED` Notification.
 	pass
