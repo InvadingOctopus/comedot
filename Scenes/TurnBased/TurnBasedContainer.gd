@@ -1,32 +1,9 @@
-## Manages turn-based gameplay and updates [TurnBasedEntity]s.
-## Each turn has 3 [enum TurnBasedState]s or phases: Begin, Update, End.
-## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurnProcess].
-##
-## During each phase, the corresponding Begin/Update/End methods are called on all turn-based entities in order:
-## The entities then call the corresponding methods on each of their [TurnBasedComponent]s.
-## First, all objects perform the Begin methods, then all objects perform the Update methods, and so on.
-##
-## See the documentation for [TurnBasedEntity] and [TurnBasedComponent] for further details.
-##
-## IMPORTANT: [member Start.isTurnBasedGame] MUST be enabled in your `Start.gd` script for turn-based games!
-## PERFORMANCE: To remove [TurnBasedCoordinator], disable [member Start.isTurnBasedGame].
+## Experimental attempt at implementing multiple [TurnBasedCoordinator] in the same scene..
+## Manages turn-based gameplay and only updates the [TurnBasedEntity] nodes which are direct children of this [TurnBasedContainer].
+## @experimental
 
-#class_name TurnBasedCoordinator
-extends Node # + TurnBasedObjectBase
-
-# PLAN:
-# * Each turn has three "states" or "phases": Begin, Update, End
-# * Every turn must cycle through all 3 states
-# 	This helps game objects to play animations, perform actions, and do any setup/cleanup in the proper order every turn.
-# 	NOTE: An Entity must NOT execute Begin → Update → End all at once before the next Entity is updated;
-	# because that would be effectively just like executing only 1 method per Entity.
-# * The Coordinator must call `turnBegin()` on all entities, THEN `turnUpdate()` on all entities, THEN `turnEnd()` on all entities.
-# * Each Entity must then call the same order on all its child components.
-# * After the `turnEnd` phase, the Coordinator must increment the turn counter and return to the `turnBegin` phase again, BUT it must NOT be executed until the game receives the control input to play the next turn.
-
-# TODO: Verify Entity-side animation delays etc.
-# TODO: A cleaner, simplified, reliable implementation? :')
-# TODO: Multiple turn increments and a "delta" for process methods
+class_name TurnBasedContainer
+extends Node2D # TBD: TurnBasedObjectBase?
 
 # DESIGN: TRIEDANDFAILED: Trying to implement multiple TurnBasedCoordinators in the same scene, e.g. to support multiplayer games, is not a good idea;
 # because entities often need to be children of different VISUAL nodes, so they cannot always be placed directly under a specific TurnBasedCoordinator.
@@ -34,7 +11,6 @@ extends Node # + TurnBasedObjectBase
 
 
 #region Parameters
-# TBD: Since this is an Autoload, should these values be flags in Start.gd or let the game's main script decide?
 
 ## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
 ## According to Godot documentation, it should be 0.05
@@ -172,6 +148,8 @@ var nextEntityToProcess: TurnBasedEntity:
 		else:
 			return null
 
+var shouldRebuildEntityList: bool = true
+
 #endregion
 
 
@@ -220,8 +198,23 @@ signal willStartDelay(timer: Timer) ## Emitted when one of the timers between ea
 
 #region Life Cycle
 
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_CHILD_ORDER_CHANGED: # Received when child nodes are added, moved or removed.
+			shouldRebuildEntityList = true
+
+
 func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree()")
+	printLog("_enter_tree()")
+	connectSignals()
+
+
+## WARNING: When overriding in a subclass, call `super.connectSignals()`,
+## but do NOT call [method TurnBasedContainer.connectSignals] manually from [method _enter_tree] or [method _ready], to ensure that all signals are connected and ONLY ONCE.
+func connectSignals() -> void:
+	printDebug("connectSignals()")
+	Tools.connectSignal(self.child_entered_tree, self.onChildEnteredTree)
+	Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
 
 
 func _ready() -> void:
@@ -253,6 +246,10 @@ func startTurnProcess() -> void:
 	if not self.isReadyToStartTurn:
 		if debugMode: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
 		return
+
+	# NOTE: Ensure that any destroyed turn-based children are no longer processed
+	# and existing turn-based children are processed in the correct order, in case their order changed.
+	if shouldRebuildEntityList: rebuildEntityList()
 
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
 	cycleStatesUntilNextTurn()
@@ -378,6 +375,25 @@ func processTurnEndSignals() -> void:
 
 #region Entity Management
 
+
+## Enables [member shouldRebuildEntityList] if a new [TurnBasedEntity] child node is added.
+@warning_ignore("unused_parameter")
+func onChildEnteredTree(node: Node) -> void:
+	# NOTE: A child node will `_enter_tree()` even when the parent node (this [TurnBasedContainer]) is added to the SCENE,
+	# so this method does NOT necessarily mean that a child was added to the PARENT.
+	if node is TurnBasedEntity:
+		self.shouldRebuildEntityList = true
+
+
+## Removes disowned [TurnBasedEntity] nodes from [member turnBasedEntities].
+## NOTE: A child node will [method Node._exit_tree] even when the parent (this [TurnBasedContainer]) is removed from the SCENE,
+## so this method does NOT necessarily mean that a child was removed from the PARENT.
+@warning_ignore("unused_parameter")
+func onChildExitingTree(node: Node) -> void:
+	if node is TurnBasedEntity:
+		self.turnBasedEntities.erase(node)
+
+
 ## Inserts a [TurnBasedEntity] into the [member turnBasedEntities] array.
 ## Returns the entity's index in the array, or -1 if the insertion fails.
 ## IMPORTANT: Use this method to add entities instead of modifying the [member turnBasedEntities] array directly!
@@ -405,16 +421,35 @@ func removeEntity(entity: TurnBasedEntity) -> int:
 		return -1
 
 
-## Returns an array of all [TurnBasedEntity] nodes in the `turnBased` group.
-## NOTE: May be slow. Use the [member turnBasedEntities] array instead.
-## WARNING: This method relies on entities adding themselves to the `entities` and `turnBased` groups.
+## Clears and rebuilds the [member turnBasedEntities] array if [member shouldRebuildEntityList],
+## by scanning all the immediate child nodes of this [TurnBasedContainer] and adding any [TurnBasedEntity] nodes found.
+## Returns: The new size of [member turnBasedEntities].
+## ALERT: "Nested" children are NOT detected (nodes that are subchildren of this node's children).
+## ALERT: Does NOT emit [signal didAddEntity] or [signal didRemoveEntity] signals.
+## TIP: To search for ALL [TurnBasedEntity] nodes in the entire Scene Tree, call [method findTurnBasedEntities].
+func rebuildEntityList() -> int:
+	printLog(str("rebuildEntityList(): ", shouldRebuildEntityList))
+	if shouldRebuildEntityList:
+		self.turnBasedEntities.clear()
+		for child in self.get_children():
+			if is_instance_of(child, TurnBasedEntity):
+				self.turnBasedEntities.append(child)
+
+	shouldRebuildEntityList = false
+	return self.turnBasedEntities.size()
+
+
+## Returns an array of ALL [TurnBasedEntity] nodes in the `turnBased` group, even nodes that are NOT children of this [TurnBasedContainer].
+## TIP: To only scan children and rebuild the [member turnBasedEntities] list, call [method rebuildEntityList] if [member shouldRebuildEntityList].
+## PERFORMANCE: May be slow.
+## IMPORTANT: This method relies on entities adding themselves to the `entities` and `turnBased` groups.
 func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 	var turnBasedEntitiesFound: Array[TurnBasedEntity]
 
 	# NOTE: The number of nodes in the `entities` group will be fewer than the `turnBased` group (which also includes components),
 	# so we start with that first.
 
-	# TODO: Search within children so this code may be used for multiple [TurnBasedCoordinator] parent nodes in the future.
+	# TODO: Search within children so this code may be used for multiple [TurnBasedContainer] parent nodes in the future.
 	# NOTE: Cannot search in more than 1 group at once, but there will be more nodes in the "turnBased" than in the "entities" group,
 	# because of components, so get the smaller "entities" group then iterate over it.
 
@@ -538,7 +573,7 @@ func dummyTimerFunction() -> void:
 var logStateIndicator: String ## Text appended to log entries to indicate the current turn and state/phase.
 
 var logName: String: ## Customizes logs for the turn-based system to include the turn+phase, because it's not related to frames.
-	get: return str("TurnBasedCoordinator ", logStateIndicator, currentTurn)
+	get: return str("TurnBasedContainer ", self, logStateIndicator, currentTurn)
 
 
 ## Returns a readable name for the [param state].
@@ -564,7 +599,7 @@ func printLog(message: String) -> void:
 
 func printDebug(message: String) -> void:
 	# Even though the caller requests a "debug" log, use the regular `printLog()` but respect the debug flag,
-	# because this is a "master"/controller Autoload.
+	# because this is a "master"/controller node.
 	if debugMode: Debug.printLog(message, logName, "", "white")
 
 
@@ -578,7 +613,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 
 func showDebugInfo() -> void:
 	if not debugMode: return
-	Debug.addCombinedWatchList("TurnBasedCoordinator", {
+	Debug.addCombinedWatchList("TurnBasedContainer", {
 		turnsProcessed	= turnsProcessed,
 		currentTurn		= currentTurn,
 		currentTurnState= currentTurnState,
