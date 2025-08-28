@@ -986,7 +986,7 @@ cellRegionEnd:   Vector2i = map.get_used_rect().grow(-1).end # Make `end` 0-base
 
 			# PERFORMANCE: Roll the chance before doing all the other checks and calculations
 			if selectionChance < 1.0 and not randf() < selectionChance: continue # TBD: Should this be an integer?
-			
+
 			coordinates = Vector2i(x, y)
 
 			# A cell is considered "empty" if its source & alternative identifiers are -1, and its atlas coordinates are (-1,-1).
@@ -1008,7 +1008,7 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 	# TODO: Validate atlas sizes
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 	# TBD:  PERFORMANCE: Add a separate modificationChance for extra control or is findRandomTileMapCells()'s selectionChance enough?
-	
+
 	if not map \
 	or cellsToRepaint.is_empty() \
 	or atlasCoordinatesMax < atlasCoordinatesMin:
@@ -1073,7 +1073,7 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 				randi_range(0, mapRect.size.y - 1))
 
 		# Position
-		
+
 		if parent == map:
 			newNode.position = map.map_to_local(coordinates)
 		else:
@@ -1120,7 +1120,7 @@ static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vecto
 	for coordinates in cellCoordinates:
 		# PERFORMANCE: Roll the chance before doing all the other checks and calculations
 		if spawnChance < 1.0 and not randf() < spawnChance: continue # TBD: Should this be an integer?
-			
+
 		newNode = sceneToCopy.instantiate()
 
 		# Position
