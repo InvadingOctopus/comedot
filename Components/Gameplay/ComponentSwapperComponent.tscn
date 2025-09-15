@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://df0ukh52r8nlo"]
+
+[ext_resource type="Script" uid="uid://dpu7py42acgco" path="res://Components/Gameplay/ComponentSwapperComponent.gd" id="1_poev4"]
+
+[node name="ComponentSwapperComponent" type="Node" groups=["components"]]
+script = ExtResource("1_poev4")
