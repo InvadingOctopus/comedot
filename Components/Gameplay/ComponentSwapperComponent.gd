@@ -15,10 +15,7 @@ extends Component
 
 @export_storage var currentSetName: StringName
 
-# CHECK: PERFORMANCE: BUGCHANCE: Storing references to components here may prevent their deletion when they're removed from the entity.
-@export_storage var componentsRecentlySwappedIn: Array[Component] ## ALERT: May NOT always be the same as [member currentSet], depending on failures when loading components etc.
-
-var currentSet: ComponentSet: ## ALERT: May NOT always be the same as [member componentsRecentlySwappedIn], depending on failures when loading components etc.
+var currentSet: ComponentSet:
 	get: return componentSets.get(currentSetName)
 
 #endregion
@@ -28,7 +25,7 @@ var currentSet: ComponentSet: ## ALERT: May NOT always be the same as [member co
 signal willLoadSet(setName:		StringName)
 signal didLoadSet(setName:		StringName, components: Array[Component])
 
-signal willRemoveSet(setName:	StringName, components: Array[Component])
+signal willRemoveSet(setName:	StringName, components: Array[Script])
 signal didRemoveSet(setName:	StringName)
 #endregion
 
@@ -53,11 +50,12 @@ func swapToSet(newSetName: StringName, forceReload: bool = false) -> int:
 		if debugMode: printDebug("swapToSet() currentSetName == newSetName and not forceReload: " + newSetName)
 		return 0
 
-	printLog("swapToSet(): " + (currentSetName if not currentSetName.is_empty() else &"\"\"") + " → " + newSetName)
-
 	# Remove any currently active components from the previous set
-	if not componentsRecentlySwappedIn.is_empty():
+	if not currentSetName.is_empty() and currentSet:
+		printLog("swapToSet(): " + currentSetName + " → " + newSetName)
 		self.removeCurrentSet() # Clears componentsRecentlySwappedIn
+	else:
+		printLog("swapToSet() → " + newSetName)
 
 	# Swap the new set in
 	willLoadSet.emit(newSetName)
@@ -65,11 +63,10 @@ func swapToSet(newSetName: StringName, forceReload: bool = false) -> int:
 	var newComponents:	 Array[Component] = parentEntity.createNewComponents(newComponentSet.components)
 
 	# Update state
-	if not newComponents.is_empty():	
-		self.componentsRecentlySwappedIn = newComponents
+	if not newComponents.is_empty():
 		self.currentSetName = newSetName
 		didLoadSet.emit(currentSetName, newComponents)
-		return componentsRecentlySwappedIn.size()
+		return newComponents.size()
 	else:
 		printWarning("Entity.createNewComponents() returned 0 components when swapping in " + newSetName)
 		return 0
@@ -88,8 +85,7 @@ func removeCurrentSet(shouldFreeOverride: bool = self.shouldFree) -> int:
 		if debugMode: printDebug(str("removeCurrentSet(): currentSet has no components: ", currentSet))
 		return 0
 
-	willRemoveSet.emit(currentSetName, self.componentsRecentlySwappedIn)
-	componentsRecentlySwappedIn.clear() # TBD: Clear all or only the components that were actually removed?
+	willRemoveSet.emit(currentSetName, self.currentSet)
 
 	# DESIGN: Use [currentSet] not [componentsRecentlySwappedIn]
 	# to ensure removal even if other component instances were later added to the entiy,
@@ -98,7 +94,7 @@ func removeCurrentSet(shouldFreeOverride: bool = self.shouldFree) -> int:
 	var removedSetName: StringName = currentSetName
 	currentSetName = "" # Clear the name before the signal
 	didRemoveSet.emit(removedSetName)
-	
+
 	return removedComponentsCount
 
 #endregion
