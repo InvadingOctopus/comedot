@@ -10,8 +10,11 @@ extends Component
 @export var verticalMovementOptions:	Array[float] = [-1.0, 0.0, +1.0] ## The range to [method Array.pick_random] from for [member nextDirection]'s `y` value.
 
 @export_range(0, 60, 0.01) var randomizationInterval:	float = 1.0 ## The delay in seconds before randomizing the [member nextDirection]. 0 = change every frame.
+
 @export var dontAllowZeroDirection:		 bool = false ## If `true`, a [member nextDirection] of (0,0) will not be allowed. ALERT: This may cause [member horizontalMovementOptions] & [member verticalMovementOptions] to be ignored.
-@export var shouldUseInputComponent:	 bool = true  ## If `true`, the [member InputComponent.movementDirection] is modified. Otherwise, the entity's position is directly modified by [member currentDirection] ✕ [member speed].
+
+# DESIGN: Default to no dependency on [InputComponent] so it's quicker to use out of the box, e.g. in tests/mockups etc.
+@export var shouldUseInputComponent:	 bool = false ## If `true`, the [member InputComponent.movementDirection] is modified. Otherwise (default), the entity's position is directly modified by [member currentDirection] ✕ [member speed].
 
 @export_range(4, 2000, 4) var speed:	float = 320   ## If not [member shouldUseInputComponent], the entity's position is directly modified by [member currentDirection] multiplied by this speed.
 
