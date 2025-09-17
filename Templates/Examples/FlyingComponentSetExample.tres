@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ComponentSet" load_steps=3 format=3 uid="uid://bb5hofhaa65dt"]
+
+[ext_resource type="Script" uid="uid://d2i8b6sie6dcu" path="res://Components/Physics/OverheadPhysicsComponent.gd" id="1_f5dd1"]
+[ext_resource type="Script" uid="uid://ro5dtmodb4v0" path="res://Resources/ComponentSet.gd" id="1_j55fq"]
+
+[resource]
+script = ExtResource("1_j55fq")
+components = Array[Script]([ExtResource("1_f5dd1")])
+metadata/_custom_type_script = "uid://ro5dtmodb4v0"

@@ -1,44 +1,41 @@
 ## An example of swapping components from an [Entity] based on which [Area2D] it is in.
 
 class_name ControlSwapperExampleComponent
-extends AreaContactComponent
+extends ComponentSwapperComponent
 
 
 #region Constants
-const indoorZoneName := "IndoorZone"
+const indoorZoneName		:= &"IndoorZone"
+const walkingComponentSet	:= &"walk"
+const flyingComponentSet	:= &"fly"
 #endregion
 
 
 #region Dependencies
-# Preload all the required components' scenes
-
-const jumpComponentScene:				PackedScene = preload("res://Components/Control/JumpComponent.tscn")
-const platformerPhysicsComponentScene:	PackedScene = preload("res://Components/Physics/PlatformerPhysicsComponent.tscn")
-
-const overheadPhysicsComponentScene:	PackedScene = preload("res://Components/Physics/OverheadPhysicsComponent.tscn")
-
+@onready var areaContactComponent: AreaContactComponent = coComponents.AreaContactComponent
 #endregion
 
 
-func onCollide(collidingNode: Node2D) -> void:
-	super.onCollide(collidingNode)
-	if collidingNode.name == indoorZoneName: enableFlyingComponentSet(false)
+func _ready() -> void:
+	Tools.connectSignal(areaContactComponent.didEnterArea, self.onAreaContactComponent_didEnterArea)
+	Tools.connectSignal(areaContactComponent.didExitArea,  self.onAreaContactComponent_didExitArea)
 
 
-func onExit(exitingNode: Node2D) -> void:
-	super.onExit(exitingNode)
-	if exitingNode.name == indoorZoneName: enableFlyingComponentSet(true)
+func onAreaContactComponent_didEnterArea(area: Area2D) -> void:
+	if area.name == indoorZoneName: enableFlyingComponentSet(false)
+
+
+func onAreaContactComponent_didExitArea(area: Area2D) -> void:
+	if area.name == indoorZoneName: enableFlyingComponentSet(true)
 
 
 func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
-		parentEntity.removeComponents([JumpComponent, PlatformerPhysicsComponent]) # Types
-		parentEntity.createNewComponents([OverheadPhysicsComponent]) # Instances
+		self.swapToSet(flyingComponentSet)
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
 	else:
-		parentEntity.removeComponents([OverheadPhysicsComponent]) # Types
-		parentEntity.createNewComponents([PlatformerPhysicsComponent, JumpComponent]) # Instances
+		self.swapToSet(walkingComponentSet)
 		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so other components may control it
 		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 
