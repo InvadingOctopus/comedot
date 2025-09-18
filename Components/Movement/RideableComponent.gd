@@ -6,6 +6,7 @@ class_name RideableComponent
 extends Component
 
 # NOTE: The component node has to be a [Node2D] to have a position and reposition child nodes etc.
+# TODO: Use ComponentSwapperComponent
 # TBD: Dismount on NOTIFICATION_PREDELETE?
 # TBD: Rename to MountableComponent?
 
