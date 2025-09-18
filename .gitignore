@@ -19,6 +19,9 @@ mono_crash.*.json
 .vscode/*
 .editorconfig
 
+# AI
+.claude/
+
 # Game-specific experiments
 Lab/*
 Game/
