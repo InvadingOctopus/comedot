@@ -27,7 +27,7 @@ extends CollectibleComponent
 ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
 ## NOTE: The bubble is emitted from COLLECTIBLE item, NOT the Collector Entity. To display [Stat]-related bubbles from the player entity or other characters, use [StatsVisualComponent].
 @export var shouldEmitBubble:		bool = true
-@export var shouldEmitBubbleIfMax:	bool = true
+@export var shouldEmitBubbleIfMax:	bool = true ## Emit bubble if collection is denied because of [member shouldDenyIfStatMax]?
 @export var shouldColorBubble:		bool = true
 @export var shouldAppendStatName:	bool = true
 
@@ -63,7 +63,7 @@ func checkCollectionConditions(collectorEntity: Entity, collectorComponent: Coll
 		previouslyDeniedCollector = collectorComponent # Remember the collector in case it is still in contact after the Stat decreases.
 		if shouldEmitBubbleIfMax:
 			var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, " MAX", collectorEntity)
-			bubble.modulate = Color.LIGHT_GRAY # Make it faint because a max stat isn't a particularly notable event
+			if shouldColorBubble: bubble.modulate = Color.LIGHT_GRAY # Make it faint because a max stat isn't a particularly notable event
 			Animations.blink(bubble)
 		return false
 	else:
