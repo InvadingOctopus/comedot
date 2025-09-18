@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://wfkhubc60w2e"]
+[gd_scene load_steps=2 format=3 uid="uid://6n72bxp7jbov"]
 
-[ext_resource type="Script" uid="uid://cyaflmo6hc3d7" path="res://Scenes/TurnBased/TurnBasedContainer.gd" id="1_5qbkx"]
+[ext_resource type="Script" uid="uid://t36fnswoykhp" path="res://Scenes/TurnBased/TurnBasedContainer.gd" id="1_5qbkx"]
 
 [node name="TurnBasedContainer" type="Node2D" groups=["turnBased"]]
 script = ExtResource("1_5qbkx")
