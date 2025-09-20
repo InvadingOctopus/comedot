@@ -35,14 +35,14 @@ tile_set = ExtResource("3_yqhs0")
 [node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("4_bek2q")]
 collision_mask = 3632
 
-[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="0"]
+[node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="0"]
+shape = SubResource("RectangleShape2D_1r2ol")
+
+[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
 modulate = Color(0, 1, 1, 1)
 texture = ExtResource("5_351p7")
 region_enabled = true
 region_rect = Rect2(384, 64, 16, 16)
-
-[node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
-shape = SubResource("RectangleShape2D_1r2ol")
 
 [node name="CameraComponent" parent="PlayerEntityTemplate-OverheadBasic" index="2" node_paths=PackedStringArray("boundary")]
 shouldClampToBoundary = true
