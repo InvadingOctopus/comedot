@@ -49,7 +49,9 @@ const minimumDelay: float = 0.05
 		delayBetweenEntities = newValue
 		if entityTimer: entityTimer.wait_time = newValue
 
-## The delay after each [enum TurnBasedState]. May be used for debugging.
+@export var shouldWaitBetweenStates: bool = true ## Enables or disables [member delayBetweenStates].
+
+## The delay after each [enum TurnBasedCoordinator.TurnBasedState] if [member shouldWaitBetweenStates]: Begin → Update → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
@@ -489,7 +491,7 @@ func processEntities(state: TurnBasedState) -> void:
 #region Timers
 
 func waitForStateTimer() -> void:
-	if not is_zero_approx(delayBetweenStates):
+	if shouldWaitBetweenStates and not is_zero_approx(delayBetweenStates):
 		printDebug(str("[color=dimgray]waitForStateTimer(): ", stateTimer.wait_time))
 		self.willStartDelay.emit(stateTimer)
 		stateTimer.start()

@@ -68,12 +68,14 @@ const minimumTurnDelay: float = 0.05
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Update/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities if TurnBasedCoordinator else 0.0
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities if TurnBasedCoordinator else minimumTurnDelay
 
-## The delay after each [enum TurnBasedCoordinator.TurnBasedState]: Begin → Update → End. May be used for aesthetics or debugging.
+@export var shouldWaitBetweenTurnStates: bool = TurnBasedCoordinator.shouldWaitBetweenStates if TurnBasedCoordinator else true ## Enables or disables [member turnBasedDelayBetweenStates.
+
+## The delay after each [enum TurnBasedCoordinator.TurnBasedState] if [member shouldWaitBetweenTurnStates]: Begin → Update → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else 0.0
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else minimumTurnDelay
 
 #endregion
 
@@ -170,8 +172,10 @@ func applyGlobalFlags() -> void:
 	# Turn-Based
 	if isTurnBasedGame:
 		printLog("isTurnBasedGame: Setting TurnBasedCoordinator")
-		TurnBasedCoordinator.delayBetweenEntities = self.turnBasedDelayBetweenEntities
-		TurnBasedCoordinator.delayBetweenStates   = self.turnBasedDelayBetweenStates
+		TurnBasedCoordinator.delayBetweenEntities	 = self.turnBasedDelayBetweenEntities
+		
+		TurnBasedCoordinator.shouldWaitBetweenStates = self.shouldWaitBetweenTurnStates
+		TurnBasedCoordinator.delayBetweenStates		 = self.turnBasedDelayBetweenStates
 	else:
 		printLog("not isTurnBasedGame:[color=red] Removing TurnBasedCoordinator")
 		if is_instance_valid(TurnBasedCoordinator):
