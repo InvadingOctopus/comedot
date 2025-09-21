@@ -63,19 +63,33 @@ extends CanvasItem
 const minimumTurnDelay: float = 0.05
 
 ## If `false`, disables & removes the [TurnBasedCoordinator] AutoLoad.
-@export var isTurnBasedGame: bool = false
+@export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var isTurnBasedGame: bool = false
 
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Update/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities if TurnBasedCoordinator else minimumTurnDelay
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities if TurnBasedCoordinator else minimumTurnDelay:
+	set(newValue):
+		if newValue != turnBasedDelayBetweenEntities:
+			turnBasedDelayBetweenEntities = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.delayBetweenEntities = newValue
 
-@export var shouldWaitBetweenTurnStates: bool = TurnBasedCoordinator.shouldWaitBetweenStates if TurnBasedCoordinator else true ## Enables or disables [member turnBasedDelayBetweenStates.
+# TBD: @export_subgroup("Turn-Based States Delay")
+
+@export var shouldWaitBetweenTurnStates: bool = TurnBasedCoordinator.shouldWaitBetweenStates if TurnBasedCoordinator else true: ## Enables or disables [member turnBasedDelayBetweenStates.
+	set(newValue):
+		if newValue != shouldWaitBetweenTurnStates:
+			shouldWaitBetweenTurnStates = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitBetweenStates = newValue
 
 ## The delay after each [enum TurnBasedCoordinator.TurnBasedState] if [member shouldWaitBetweenTurnStates]: Begin → Update → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
-@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates:	 float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else minimumTurnDelay
+@export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates: float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else minimumTurnDelay:
+	set(newValue):
+		if newValue != turnBasedDelayBetweenStates:
+			turnBasedDelayBetweenStates = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.delayBetweenStates = newValue
 
 #endregion
 
@@ -173,7 +187,7 @@ func applyGlobalFlags() -> void:
 	if isTurnBasedGame:
 		printLog("isTurnBasedGame: Setting TurnBasedCoordinator")
 		TurnBasedCoordinator.delayBetweenEntities	 = self.turnBasedDelayBetweenEntities
-		
+
 		TurnBasedCoordinator.shouldWaitBetweenStates = self.shouldWaitBetweenTurnStates
 		TurnBasedCoordinator.delayBetweenStates		 = self.turnBasedDelayBetweenStates
 	else:
