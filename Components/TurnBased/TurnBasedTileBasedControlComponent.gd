@@ -8,6 +8,7 @@ extends TurnBasedComponent
 # TODO: Check for collisions?
 # TODO: Better name :')
 # TBD:  Allow diagonal movement? or is that not necessary in turn-based gameplay?
+# BUG:  `shouldMoveContinuously` doesn't work sometimes, when changing direction during movement. CHECK: Is it only during diagonal input?
 
 
 #region Parameters
