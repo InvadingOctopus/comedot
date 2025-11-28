@@ -71,6 +71,10 @@ func _ready() -> void:
 	musicLabelContainer.position.y = musicLabelContainer.get_viewport_rect().end.y
 	Tools.connectSignal(GlobalSonic.musicPlayerDidPlay, self.onGlobalSonic_musicPlayerDidPlay)
 
+#endregion
+
+
+#region Window Sizing
 
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 	var viewport:	Viewport = self.get_viewport()
@@ -102,6 +106,12 @@ func setRetinaScaling() -> void:
 		# window.content_scale_factor = 2.0 # UNUSED: Doubling the window size doubles the pixels anyway, right?
 		window.size *= 2 # TBD: Double the Viewport size?
 		window.move_to_center()
+
+
+func toggleAlwaysOnTop() -> void:
+	var isAlwaysOnTop: bool = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, not isAlwaysOnTop) # `not` because it's a toggle.
+	GlobalUI.createTemporaryLabel(str("Window Always on Top: ", not isAlwaysOnTop))
 
 #endregion
 
