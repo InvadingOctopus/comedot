@@ -17,7 +17,8 @@ extends Resource
 #region Common Parameters
 
 ## The identity for an instance of this Resource.
-## NOTE: This name MUST BE UNIQUE across all Resources of the same type, because components and other classes may search these Resources by their names.
+## NOTE: Recommended to be camelCase or all lowercase.
+## IMPORTANT: This name MUST BE UNIQUE across all Resources of the same type, because components and other classes may search these Resources by their names.
 @export var name: StringName:
 	set(newValue):
 		if newValue.is_empty():

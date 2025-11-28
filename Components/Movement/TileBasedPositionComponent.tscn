@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://c72g1b0we80vc" path="res://Components/Movement/TileBasedPositionComponent.gd" id="1_3h2nr"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_3a7at"]
 
-[node name="TileBasedPositionComponent" type="Node2D" groups=["components"]]
+[node name="TileBasedPositionComponent" type="Node2D" unique_id=1922284284 groups=["components"]]
+editor_description = "Positions the Entity on TileMapLayer cells. Requires TileMapLayerWithCellData.
+"
 script = ExtResource("1_3h2nr")
 metadata/_edit_group_ = true
 

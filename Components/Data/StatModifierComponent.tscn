@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://6wl2uoukvs4p" path="res://Components/Data/StatModifierComponent.gd" id="1_ttyqa"]
 
 [node name="StatModifierComponent" type="Node" groups=["components"]]
+editor_description = "Modifies a Stat on every Timer tick."
 script = ExtResource("1_ttyqa")
 modifier = 1
 metadata/_edit_group_ = true
