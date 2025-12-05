@@ -8,6 +8,10 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Comedot"
@@ -16,14 +20,14 @@ config/name_localized={
 "ja_Kana_JP": "カムドット"
 }
 config/description="Components Framework for Godot"
-config/version="4.5.0.100.96"
+config/version="4.6.0.5.69"
 config/tags=PackedStringArray("components", "framework", "plugin", "template")
 run/main_scene="uid://7hpq16neqhai"
 config/project_settings_override="res://Game/override.cfg"
-config/features=PackedStringArray("4.5")
+config/features=PackedStringArray("4.6")
 run/max_fps=60
 boot_splash/bg_color=Color(0.086, 0.004, 0.2, 1)
-boot_splash/fullsize=false
+boot_splash/stretch_mode=0
 boot_splash/image="res://Assets/Logos/ComedotExtraLogo.png"
 config/icon="uid://tgxprqhjkuvi"
 
