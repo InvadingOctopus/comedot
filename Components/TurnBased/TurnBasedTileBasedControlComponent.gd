@@ -47,26 +47,36 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	or event.is_action_pressed(GlobalInput.Actions.moveUp) \
 	or event.is_action_pressed(GlobalInput.Actions.moveDown):
 		self.recentInputVector = inputComponent.movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
-		validateMove() # May start the turn
+		if validateMove(): move() # May start the turn
 
 
-## Calls [method TurnBasedCoordinator.startTurnProcess] if the [TurnBasedCoordinator] is ready to start a new turn and the destination cell is vacant according to [method TileBasedPositionComponent.validateCoordinates].
+func onTurnBasedCoordinator_didReadyToStartTurn() -> void:
+	if shouldMoveContinuously: # Move automatically?
+		if debugMode: printDebug("onTurnBasedCoordinator_didReadyToStartTurn(): shouldMoveContinuously")
+		self.recentInputVector = inputComponent.movementDirection
+		if validateMove(): move() # May start the turn
+
+
+## Returns `true` if the [TurnBasedCoordinator] is ready to start a new turn and the destination cell is vacant according to [method TileBasedPositionComponent.validateCoordinates].
+## NOTE: Call [method move] to actually reposition the entity after checking [method validateMove].
+## TIP: Subclasses may override this method to add custom validation, such as checking for "action points" etc. before moving.
+## IMPORTANT: If overridden, the subclass' method MUST call `super.validateMove()` to include the necessary checks.
 func validateMove() -> bool:
 	# PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
 	if recentInputVector.length_squared() != 0  \
 	and TurnBasedCoordinator.isReadyToStartTurn \
 	and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector):
-		TurnBasedCoordinator.startTurnProcess() # TBD: Should the caller start the turn?
 		return true
 	else:
 		return false
 
 
-func onTurnBasedCoordinator_didReadyToStartTurn() -> void:
-	if shouldMoveContinuously:
-		if debugMode: printDebug("onTurnBasedCoordinator_didReadyToStartTurn(): shouldMoveContinuously")
-		self.recentInputVector = inputComponent.movementDirection
-		self.validateMove()
+## Calls [method TurnBasedCoordinator.startTurnProcess] and returns the TileMap coordinates that the entity will ATTEMPT to move into.
+## IMPORTANT: Caller must call [method validateMove] BEFORE calling this method.
+## TIP: Subclasses may override this method to add custom movement, such as deducting "action points" etc. after moving.
+func move() -> Vector2i:
+	TurnBasedCoordinator.startTurnProcess() # TBD: Should the caller start the turn?
+	return tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector
 
 
 func processTurnBegin() -> void:
