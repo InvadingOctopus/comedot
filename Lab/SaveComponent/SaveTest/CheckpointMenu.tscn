@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://b31q1n1g3lnkt"]
+
+[ext_resource type="Script" uid="uid://hjmmma8ca0y8" path="res://UI/ModalUI.gd" id="1_doogx"]
+[ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_ypy1v"]
+[ext_resource type="Script" uid="uid://crduoyt3ap6q8" path="res://Lab/SaveComponent/SaveTest/CheckpointMenuButtons.gd" id="3_83g6l"]
+
+[sub_resource type="Theme" id="Theme_xjusq"]
+default_font = ExtResource("2_ypy1v")
+default_font_size = 8
+
+[node name="SaveModal" type="CanvasLayer"]
+script = ExtResource("1_doogx")
+
+[node name="SaveMenuButtonsContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SaveMenuButtons" type="VBoxContainer" parent="SaveMenuButtonsContainer"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+theme = SubResource("Theme_xjusq")
+script = ExtResource("3_83g6l")
+
+[node name="SaveButton" type="Button" parent="SaveMenuButtonsContainer/SaveMenuButtons"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "SAVE"
+
+[node name="ClearButton" type="Button" parent="SaveMenuButtonsContainer/SaveMenuButtons"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "CLEAR"
+
+[node name="LogButton" type="Button" parent="SaveMenuButtonsContainer/SaveMenuButtons"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "LOG"
+
+[node name="CloseButton" type="Button" parent="SaveMenuButtonsContainer/SaveMenuButtons"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "CLOSE"
+
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/SaveButton" to="SaveMenuButtonsContainer/SaveMenuButtons" method="onSaveButton_pressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/SaveButton" to="SaveMenuButtonsContainer/SaveMenuButtons/SaveButton" method="onPressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/ClearButton" to="SaveMenuButtonsContainer/SaveMenuButtons" method="onClearButton_pressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/ClearButton" to="SaveMenuButtonsContainer/SaveMenuButtons/ClearButton" method="onPressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/LogButton" to="SaveMenuButtonsContainer/SaveMenuButtons" method="onLogButton_pressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/LogButton" to="SaveMenuButtonsContainer/SaveMenuButtons/LogButton" method="onPressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/CloseButton" to="SaveMenuButtonsContainer/SaveMenuButtons/CloseButton" method="onPressed"]
+[connection signal="pressed" from="SaveMenuButtonsContainer/SaveMenuButtons/CloseButton" to="." method="closeModalUI" binds= [true]]

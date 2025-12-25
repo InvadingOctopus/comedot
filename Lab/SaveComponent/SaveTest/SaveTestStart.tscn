@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://cvpv10gm2iwib"]
+
+[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_vk1ri"]
+[ext_resource type="Script" uid="uid://c1do8fuewj6tm" path="res://Lab/SaveComponent/SaveTest/StartMenuButtons.gd" id="2_1xf21"]
+[ext_resource type="Script" uid="uid://dak8y78ce0pmj" path="res://Lab/SaveComponent/SaveTest/LoadMenu.gd" id="3_dc5i0"]
+
+[node name="SaveTestStart" type="Node2D" unique_id=1177242658]
+script = ExtResource("1_vk1ri")
+mainGameScenePath = "uid://cax1vkgrfh5up"
+gameStateNodes = PackedStringArray("res://Lab/SaveComponent/SavableStateManager.tscn")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1086434045]
+
+[node name="StartMenu" type="CenterContainer" parent="CanvasLayer" unique_id=8913043]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StartMenuButtons" type="VBoxContainer" parent="CanvasLayer/StartMenu" unique_id=1853153359]
+layout_mode = 2
+alignment = 1
+script = ExtResource("2_1xf21")
+
+[node name="StartButton" type="Button" parent="CanvasLayer/StartMenu/StartMenuButtons" unique_id=141281585]
+layout_mode = 2
+text = "START"
+
+[node name="LoadButton" type="Button" parent="CanvasLayer/StartMenu/StartMenuButtons" unique_id=1736462969]
+layout_mode = 2
+disabled = true
+text = "LOAD"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/StartMenu/StartMenuButtons" unique_id=1373041633]
+layout_mode = 2
+text = "QUIT"
+
+[node name="LoadMenu" type="CenterContainer" parent="CanvasLayer" unique_id=1011157451]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_dc5i0")
+container_path = NodePath("VBoxContainer2/VBoxContainer")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/LoadMenu" unique_id=426846570]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/LoadMenu/VBoxContainer2" unique_id=350463673]
+layout_mode = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="CanvasLayer/LoadMenu/VBoxContainer2" unique_id=653570642]
+layout_mode = 2
+text = "Back"
+
+[connection signal="pressed" from="CanvasLayer/StartMenu/StartMenuButtons/StartButton" to="CanvasLayer/StartMenu/StartMenuButtons" method="onStartButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/StartMenu/StartMenuButtons/LoadButton" to="CanvasLayer/StartMenu/StartMenuButtons" method="onLoadButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/StartMenu/StartMenuButtons/QuitButton" to="CanvasLayer/StartMenu/StartMenuButtons" method="onQuitButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/LoadMenu/VBoxContainer2/Back" to="CanvasLayer/StartMenu/StartMenuButtons" method="onBack_pressed"]

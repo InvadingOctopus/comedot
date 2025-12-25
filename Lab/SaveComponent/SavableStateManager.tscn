@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cl8f48510kmm5"]
+
+[ext_resource type="Script" uid="uid://cf6j2ppur41xj" path="res://Lab/SaveComponent/SavableStateManager.gd" id="1_y3cl4"]
+
+[node name="SavableStateManager" type="Node"]
+script = ExtResource("1_y3cl4")

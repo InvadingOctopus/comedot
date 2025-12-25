@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bi7byq47ath7t"]
+
+[ext_resource type="Script" uid="uid://dpfagj4mdvo1x" path="res://Lab/SaveComponent/SaveComponent.gd" id="1_sm0fl"]
+
+[node name="SaveComponent" type="Node" unique_id=1898688949 groups=["components"]]
+script = ExtResource("1_sm0fl")
+metadata/_edit_group_ = true

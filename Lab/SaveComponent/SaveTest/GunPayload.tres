@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ComponentPayloadPersist" format=3 uid="uid://c4iuwx2xqee10"]
+
+[ext_resource type="Script" uid="uid://c4utn28cxq3h7" path="res://Components/Combat/GunComponent.gd" id="1_0f1dx"]
+[ext_resource type="Script" uid="uid://7c7nb7bxeqx1" path="res://Lab/SaveComponent/PersistComponentPayload.gd" id="2_us7nr"]
+
+[resource]
+script = ExtResource("2_us7nr")
+componentsToCreate = Array[Script]([ExtResource("1_0f1dx")])
+metadata/_custom_type_script = "uid://7c7nb7bxeqx1"
