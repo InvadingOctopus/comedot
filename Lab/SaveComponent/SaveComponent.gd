@@ -101,8 +101,20 @@ func removeComponentsPersist(componentTypes: Array[Script], shouldFree: bool = t
 func _validateProps() -> void:
 	for prop in persistProps:
 		assert(prop in parentEntity, "Invalid persisted prop %s in Entity %s" % [prop, parentEntity.name])
-		# TODO: Add support for nested props
-		# TODO: Check to make sure the prop is serializable
+
+## Records persisted prop values in [SavableState].
+## Iterates through [member persistProps] and saves each property's current value.
+func _savePersistProps() -> void:
+	if not _isSaveSystemValid():
+		return
+	
+	for prop in persistProps:
+		if not parentEntity.has(prop):
+			Debug.printWarning("Property '%s' does not exist on entity '%s', skipping" % [prop, parentEntity.name], self)
+			continue
+
+		_manager.getEntity(entityUid).recordProp(prop, parentEntity.get(prop))
+
 
 #endregion
 
@@ -118,6 +130,16 @@ func _applySavedChanges() -> void:
 			if change["action"] == "add":
 				parentEntity.createNewComponent(getScriptFromString(component))
 
+func _isSaveSystemValid() -> bool:
+	if not _manager:
+		Debug.printError("SavableStateManager not available for saving properties", self)
+		return false
+	
+	if not parentEntity:
+		Debug.printError("Parent entity not available for saving properties", self)
+		return false
+	
+	return true
 
 #region Util
 

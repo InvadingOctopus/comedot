@@ -102,11 +102,13 @@ class GameStateEntity:
 			return
 		
 		_manager.setNestedKey(["entities", _uid], {
+			"propertyChanges": {},
 			"componentChanges": {},
 			"removed": false
 		})
 		_exists = true
 
+	##region Component methods
 	
 	## Helper function for handling updates to state.
 	## Can only run if the component does not exist or is set to be removed.
@@ -148,6 +150,20 @@ class GameStateEntity:
 			["entities", _uid, "componentChanges", componentName],
 			{"action": "remove"}
 		)
+	#endregion
+
+	#region property methods
+
+	## Records the value of a property to state using [var_to_str] for serialization.
+	func recordProp(propName: String, value: Variant) -> void:
+		_initialize()
+		_manager.setNestedKey(
+			["entities", _uid, "propertyChanges", propName],
+			var_to_str(value)
+		)
+
+	#endregion
+
 	
 	
 	func getData() -> Dictionary:
