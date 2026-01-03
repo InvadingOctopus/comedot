@@ -45,4 +45,8 @@ region_rect = Rect2(592, 144, 16, 16)
 [node name="CollectibleComponent" parent="CollectibleEntity" index="0"]
 payload = ExtResource("10_m31y1")
 
+[node name="SaveComponent" parent="CollectibleEntity" unique_id=1898688949 instance=ExtResource("5_4hv2c")]
+entityUid = "gun1"
+persistFreed = true
+
 [editable path="CollectibleEntity"]

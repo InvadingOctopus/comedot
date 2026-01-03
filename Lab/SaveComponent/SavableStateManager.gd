@@ -163,6 +163,13 @@ class GameStateEntity:
 		)
 
 	#endregion
+	
+	func recordRemoved() -> void:
+		_initialize()
+		_manager.setNestedKey(
+			["entities", _uid, "removed"],
+			true
+		)
 
 	
 	

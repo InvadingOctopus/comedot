@@ -12,12 +12,12 @@ radius = 16.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kvlkm"]
 size = Vector2(16, 16.5)
 
-[node name="Checkpoint" type="Node2D" node_paths=PackedStringArray("sprite")]
+[node name="Checkpoint" type="Node2D" unique_id=177258511 node_paths=PackedStringArray("sprite")]
 script = ExtResource("1_kvlkm")
 sprite = NodePath("Sprite2D")
 metadata/_custom_type_script = "uid://b3tgnb1y0hgk1"
 
-[node name="ModalInteractionComponent" parent="." node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("2_7cc2n")]
+[node name="ModalInteractionComponent" parent="." unique_id=1893509526 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("2_7cc2n")]
 modalScene = ExtResource("3_kvlkm")
 setViewGlobalPositionToEntity = true
 interactionIndicator = NodePath("../Indicator")
@@ -25,23 +25,23 @@ interactionIndicator = NodePath("../Indicator")
 [node name="InteractionShape" parent="ModalInteractionComponent" index="0"]
 shape = SubResource("CircleShape2D_ieqsb")
 
-[node name="Indicator" type="Sprite2D" parent="."]
+[node name="Indicator" type="Sprite2D" parent="." unique_id=1469494982]
 position = Vector2(0, -15)
 texture = ExtResource("4_kvlkm")
 hframes = 49
 vframes = 22
 frame = 672
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=171559192]
 texture = ExtResource("5_7cc2n")
 hframes = 49
 vframes = 22
 frame = 826
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1347627499]
 collision_layer = 65
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=755978045]
 position = Vector2(0, -0.25)
 shape = SubResource("RectangleShape2D_kvlkm")
 

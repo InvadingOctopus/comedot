@@ -23,7 +23,9 @@ func onLogButton_pressed() -> void:
 	print(_manager.getSaveState())
 	
 func onSaveButton_pressed() -> void:
-	print('saving...')
+	var saveables: Array[Node] = get_tree().get_nodes_in_group("saveables")
+	for node in saveables:
+		node.save()
 	_manager.saveStateAsJson("user://saved_games/testSave.json")
 
 

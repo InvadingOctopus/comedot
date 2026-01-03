@@ -9,17 +9,20 @@ extends Component
 #region Parameters
 
 ## Unique identifier for this entity in the save system.
+## Used to store information in [member GameState.globalData] "saveState"
 @export var entityUid: String
 
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
-		# PERFORMANCE: Set once instead of every frame
 		self.set_process(isEnabled)
 		self.set_process_input(isEnabled)
 
 ## List of property names on the parent [Entity] to persist across saves.
 @export var persistProps: Array[String]
+
+## List of property names on the parent [Entity] to persist across saves.
+@export var persistFreed: bool = false
 
 #endregion
 
@@ -58,10 +61,10 @@ func _ready() -> void:
 	_applySavedChanges()
 
 
-#region Active Persist Methods
+#region Active Persist
 
 ## Variant of [method Entity.createNewComponent] for persisting changes.
-## Serializes added [Component] into [SavableState] which will be loaded on next session.
+## Serializes added [Component] into state using [SavableStateManager] which will be loaded on next session.
 func createNewComponentPersist(type: Script)  -> Component:
 	var newComponent: Component = parentEntity.createNewComponent(type)
 	_manager.getEntity(entityUid).recordCreateNewComponent(type)
@@ -75,7 +78,7 @@ func createNewComponentsPersist(componentTypesToCreate: Array[Script]) -> Array[
 
 
 ## Variant of [method Entity.removeComponent] for persisting changes.
-## Records component removal in [SavableState].
+## Records component removal with [SavableStateManager].
 func removeComponentPersist(type: Script) -> bool:
 	var removed: bool = parentEntity.removeComponent(type)
 	if removed:
@@ -84,7 +87,7 @@ func removeComponentPersist(type: Script) -> bool:
 
 
 ## Variant of [method Entity.removeComponents] for persisting changes.
-## Records component removals in [SavableState].
+## Records component removals with [SavableStateManager].
 func removeComponentsPersist(componentTypes: Array[Script], shouldFree: bool = true) -> int:
 	var removalCount: int = 0
 	for componentType in componentTypes:
@@ -96,25 +99,41 @@ func removeComponentsPersist(componentTypes: Array[Script], shouldFree: bool = t
 #endregion
 
 
-#region Passive Persist Methods
+#region Passive Persist
 
 func _validateProps() -> void:
 	for prop in persistProps:
 		assert(prop in parentEntity, "Invalid persisted prop %s in Entity %s" % [prop, parentEntity.name])
 
-## Records persisted prop values in [SavableState].
+## Records persisted prop values with [SavableStateManager].
 ## Iterates through [member persistProps] and saves each property's current value.
 func _savePersistProps() -> void:
 	if not _isSaveSystemValid():
 		return
 	
 	for prop in persistProps:
-		if not parentEntity.has(prop):
+		if not parentEntity.get(prop):
 			Debug.printWarning("Property '%s' does not exist on entity '%s', skipping" % [prop, parentEntity.name], self)
 			continue
 
 		_manager.getEntity(entityUid).recordProp(prop, parentEntity.get(prop))
 
+## Called for passive persist methods to save current data using [SavableStateManager]
+func save() -> void:
+	if not _isSaveSystemValid():
+		return
+	_savePersistProps()
+
+## Checks if the 
+func _exit_tree() -> void:
+	if not persistFreed:
+		return
+	
+	if not _isSaveSystemValid():
+		return
+	
+	_manager.getEntity(entityUid).recordRemoved()
+	
 
 #endregion
 
@@ -123,12 +142,23 @@ func _applySavedChanges() -> void:
 	if not _manager.checkEntityExists(entityUid):
 		return
 	
+	
 	var saveData: Dictionary = _manager.getEntity(entityUid).getData()
+	
+	if("removed" in saveData and saveData["removed"]):
+		parentEntity.queue_free()
+		return
+	
 	if "componentChanges" in saveData:
 		for component: String in saveData["componentChanges"].keys():
 			var change: Dictionary = saveData["componentChanges"][component]
 			if change["action"] == "add":
 				parentEntity.createNewComponent(getScriptFromString(component))
+	
+	if "propertyChanges" in saveData:
+		for propName: String in saveData["propertyChanges"].keys():
+			if(parentEntity.get(propName)):
+				parentEntity.set(propName, str_to_var(saveData["propertyChanges"][propName]))
 
 func _isSaveSystemValid() -> bool:
 	if not _manager:
