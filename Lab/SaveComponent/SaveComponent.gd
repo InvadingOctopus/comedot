@@ -21,7 +21,7 @@ extends Component
 ## List of property names on the parent [Entity] to persist across saves.
 @export var persistProps: Array[String]
 
-## List of property names on the parent [Entity] to persist across saves.
+## Whether to persist the freeing of an [Entity] in state.
 @export var persistFreed: bool = false
 
 #endregion
@@ -52,11 +52,14 @@ func _ready() -> void:
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
 	self.set_process_input(isEnabled)
-	# Placeholder: Add any code needed to configure and prepare the component.
+	
+	## Enforce requirements and validation
 	assert(entityUid, "No entityUid set for SaveComponent on Entity %s" % parentEntity.name)
 	_manager = GameState.get_node_or_null("SavableStateManager")
 	assert(_manager != null, "SavableStateManager is required for %s. Add it to GameStateNodes" % name)
 	_validateProps()
+
+	## Load data
 	await awaitNodeReady(parentEntity)
 	_applySavedChanges()
 
@@ -70,6 +73,8 @@ func createNewComponentPersist(type: Script)  -> Component:
 	_manager.getEntity(entityUid).recordCreateNewComponent(type)
 	return newComponent
 
+# Variant of [method Entity.createNewComponents] for persisting changes.
+## Serializes added [Component]s into state using [SavableStateManager] which will be loaded on next session.
 func createNewComponentsPersist(componentTypesToCreate: Array[Script]) -> Array[Component]:
 	var newComponents: Array[Component] = parentEntity.createNewComponents(componentTypesToCreate)
 	for newComponentType in componentTypesToCreate:
@@ -96,11 +101,25 @@ func removeComponentsPersist(componentTypes: Array[Script], shouldFree: bool = t
 			_manager.getEntity(entityUid).recordRemoveComponent(componentType)
 	return removalCount
 
+## Provides a method for setting new properties on a [Component] and persisting them using [SavableStateManager].
+func updateComponentPropertyPersist(type: Script, propertyName: String, propertyValue: Variant)  -> Component:
+	var modifiedComponent: Component = parentEntity.getComponent(type)
+	if not modifiedComponent:
+		Debug.printWarning("Component '%s' does not exist on Entity '%s'" % [type.get_global_name(), entityUid], self)
+	
+	if not modifiedComponent.get(propertyName):
+		Debug.printWarning("Property '%s' does not exist on component '%s'" % [propertyName, modifiedComponent.name], self)
+		
+	modifiedComponent.set(propertyName, propertyValue)
+	_manager.getEntity(entityUid).recordModifyComponent(type, {propertyName: var_to_str(propertyValue)})
+	return modifiedComponent
+
 #endregion
 
 
 #region Passive Persist
 
+## Verifies any prop specified to persist exists on [Entity].
 func _validateProps() -> void:
 	for prop in persistProps:
 		assert(prop in parentEntity, "Invalid persisted prop %s in Entity %s" % [prop, parentEntity.name])
@@ -118,13 +137,8 @@ func _savePersistProps() -> void:
 
 		_manager.getEntity(entityUid).recordProp(prop, parentEntity.get(prop))
 
-## Called for passive persist methods to save current data using [SavableStateManager]
-func save() -> void:
-	if not _isSaveSystemValid():
-		return
-	_savePersistProps()
 
-## Checks if the 
+## Check if the [Entity] being freed should be persisted and record the removal.
 func _exit_tree() -> void:
 	if not persistFreed:
 		return
@@ -134,10 +148,14 @@ func _exit_tree() -> void:
 	
 	_manager.getEntity(entityUid).recordRemoved()
 	
-
+## Called for passive persist to save current data using [SavableStateManager]
+func save() -> void:
+	if not _isSaveSystemValid():
+		return
+	_savePersistProps()
 #endregion
 
-
+## Method for applying changes stored in [member GameState.globalData.saveState]
 func _applySavedChanges() -> void:
 	if not _manager.checkEntityExists(entityUid):
 		return
@@ -152,14 +170,22 @@ func _applySavedChanges() -> void:
 	if "componentChanges" in saveData:
 		for component: String in saveData["componentChanges"].keys():
 			var change: Dictionary = saveData["componentChanges"][component]
-			if change["action"] == "add":
-				parentEntity.createNewComponent(getScriptFromString(component))
+			if change["action"] == "add" or change["action"] == "edit":
+				var newComponent: Script = getScriptFromString(component)
+				if not parentEntity.hasComponent(newComponent):
+					parentEntity.createNewComponent(getScriptFromString(component))
+			if change["action"] == "edit":
+				var modifiedComponent: Component = parentEntity.getComponent(getScriptFromString(component))
+				for propertyName: String in change["properties"]:
+					modifiedComponent.set(propertyName, str_to_var(change["properties"][propertyName]))
+					
 	
 	if "propertyChanges" in saveData:
 		for propName: String in saveData["propertyChanges"].keys():
 			if(parentEntity.get(propName)):
 				parentEntity.set(propName, str_to_var(saveData["propertyChanges"][propName]))
 
+## Verifies the [Entity] and [SavableStateManager] exist.
 func _isSaveSystemValid() -> bool:
 	if not _manager:
 		Debug.printError("SavableStateManager not available for saving properties", self)
@@ -173,7 +199,7 @@ func _isSaveSystemValid() -> bool:
 
 #region Util
 
-## Waits for a node to be ready, handling cases where it's not yet in the tree.
+## Waits for a [Node] to be ready, handling cases where it's not yet in the tree.
 static func awaitNodeReady(n: Node) -> void:
 	if n == null:
 		return

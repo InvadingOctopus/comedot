@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="8_vvwnu"]
 [ext_resource type="PackedScene" uid="uid://cbqmycxuwn5qb" path="res://Templates/Entities/CollectibleEntityTemplate.tscn" id="9_imv3a"]
 [ext_resource type="Resource" uid="uid://c4iuwx2xqee10" path="res://Lab/SaveComponent/SaveTest/GunPayload.tres" id="10_m31y1"]
+[ext_resource type="PackedScene" uid="uid://cmgxan0ui3p2y" path="res://Lab/SaveComponent/SaveTest/SpeedCollectable.tscn" id="11_fq3xh"]
 
 [node name="SaveComponentTest" type="Node2D" unique_id=1067535971]
 script = ExtResource("1_v6d5s")
@@ -38,15 +39,23 @@ persistProps = Array[String](["position"])
 [node name="Checkpoint" parent="." unique_id=1446138232 instance=ExtResource("6_xf1e1")]
 position = Vector2(378, 81)
 
-[node name="CollectibleEntity" parent="." unique_id=84283890 instance=ExtResource("9_imv3a")]
-position = Vector2(199, 77)
+[node name="GunCollectable" parent="." unique_id=84283890 instance=ExtResource("9_imv3a")]
+position = Vector2(272, 317)
 region_rect = Rect2(592, 144, 16, 16)
 
-[node name="CollectibleComponent" parent="CollectibleEntity" index="0"]
+[node name="CollectibleComponent" parent="GunCollectable" index="0"]
 payload = ExtResource("10_m31y1")
 
-[node name="SaveComponent" parent="CollectibleEntity" unique_id=1898688949 instance=ExtResource("5_4hv2c")]
+[node name="SaveComponent" parent="GunCollectable" unique_id=1898688949 instance=ExtResource("5_4hv2c")]
 entityUid = "gun1"
 persistFreed = true
 
-[editable path="CollectibleEntity"]
+[node name="SpeedCollectable" parent="." unique_id=898747483 instance=ExtResource("11_fq3xh")]
+position = Vector2(271, -49)
+region_rect = Rect2(384, 192, 16, 16)
+
+[node name="SaveComponent" parent="SpeedCollectable" unique_id=1631841717 instance=ExtResource("5_4hv2c")]
+entityUid = "powerup1"
+persistFreed = true
+
+[editable path="GunCollectable"]
