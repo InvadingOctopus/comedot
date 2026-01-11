@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cmgxan0ui3p2y"]
+
+[ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="1_mywf5"]
+[ext_resource type="Script" uid="uid://wxm86nsjxone" path="res://Lab/SaveComponent/SaveTest/SpeedCollectable.gd" id="2_vb8tw"]
+[ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="3_apyqg"]
+[ext_resource type="Script" uid="uid://bjhbm7a5hn686" path="res://Resources/Payloads/CallablePayload.gd" id="5_aa0nh"]
+
+[sub_resource type="Resource" id="Resource_swjm2"]
+script = ExtResource("5_aa0nh")
+metadata/_custom_type_script = "uid://bjhbm7a5hn686"
+
+[node name="SpeedCollectable" type="Sprite2D" unique_id=898747483 node_paths=PackedStringArray("sprite")]
+texture = ExtResource("1_mywf5")
+region_enabled = true
+region_rect = Rect2(656, 144, 16, 16)
+script = ExtResource("2_vb8tw")
+sprite = NodePath(".")
+
+[node name="CollectibleComponent" parent="." unique_id=542774602 instance=ExtResource("3_apyqg")]
+unique_name_in_owner = true
+payload = SubResource("Resource_swjm2")
