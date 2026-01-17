@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bt46n071vnmtk" path="res://Entities/TurnBased/TurnBasedPlayerEntity.gd" id="3_dg7w4"]
 [ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="4_cgq0n"]
 [ext_resource type="PackedScene" uid="uid://dc30psrpymtkr" path="res://Components/TurnBased/TurnBasedStateUIComponent.tscn" id="5_dg7w4"]
+[ext_resource type="PackedScene" uid="uid://dp0keqqbk06nq" path="res://Components/TurnBased/TurnBasedCounterComponent.tscn" id="6_cgq0n"]
 
 [node name="TurnBasedLab" type="Node2D" unique_id=1115896728]
 script = ExtResource("1_h1njl")
@@ -28,6 +29,7 @@ layout_mode = 2
 text = "NEXT TURN"
 
 [node name="TurnBasedPlayer" type="Sprite2D" parent="." unique_id=36379346 node_paths=PackedStringArray("sprite") groups=["entities", "turnBased"]]
+modulate = Color(0, 1, 0, 1)
 texture = ExtResource("2_wuhnv")
 region_enabled = true
 region_rect = Rect2(384, 112, 16, 16)
@@ -37,5 +39,20 @@ sprite = NodePath(".")
 [node name="CameraComponent" parent="TurnBasedPlayer" unique_id=791956240 instance=ExtResource("4_cgq0n")]
 
 [node name="TurnBasedStateUIComponent" parent="TurnBasedPlayer" unique_id=19883048 instance=ExtResource("5_dg7w4")]
+
+[node name="TurnCounterComponent" parent="TurnBasedPlayer" unique_id=186323804 instance=ExtResource("6_cgq0n")]
+
+[node name="TurnBasedEntity2" type="Sprite2D" parent="." unique_id=1885938892 node_paths=PackedStringArray("sprite") groups=["entities", "turnBased"]]
+modulate = Color(0, 1, 1, 1)
+position = Vector2(64, 0)
+texture = ExtResource("2_wuhnv")
+region_enabled = true
+region_rect = Rect2(384, 128, 16, 16)
+script = ExtResource("3_dg7w4")
+turnRatio = 2
+sprite = NodePath(".")
+debugMode = true
+
+[node name="TurnCounterComponent" parent="TurnBasedEntity2" unique_id=198454315 instance=ExtResource("6_cgq0n")]
 
 [connection signal="pressed" from="UI/MarginContainer/NextTurnButton" to="." method="onNextTurnButton_pressed"]
