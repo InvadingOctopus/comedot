@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dp0keqqbk06nq"]
+
+[ext_resource type="Script" uid="uid://1n143n5d2i7o" path="res://Components/TurnBased/TurnBasedCounterComponent.gd" id="1_8vluv"]
+[ext_resource type="LabelSettings" uid="uid://berbowt5by72n" path="res://Assets/Themes/Label/Debug Outline.tres" id="1_xgghl"]
+
+[node name="TurnBasedCounterComponent" type="Label" unique_id=186323804 groups=["components", "turnBased"]]
+text = "T?"
+label_settings = ExtResource("1_xgghl")
+script = ExtResource("1_8vluv")
