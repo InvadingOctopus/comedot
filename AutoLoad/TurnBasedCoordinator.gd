@@ -85,6 +85,8 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnEnd		=  2,
 	}
 
+const turnStateNames: Array[StringName] = [&"begin", &"update", &"end"] ## May be used to get the phase name by `turnStateNames[currentTurnState]`
+
 
 ## The number of the current ONGOING turn. The first turn is 1.
 ## Incremented BEFORE the [signal willBeginTurn] signal and the [method processTurnBegin] method.
