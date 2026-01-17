@@ -17,6 +17,18 @@ extends Entity # + TurnBasedObjectBase
 
 #region Parameters
 @export var isEnabled: bool = true
+
+## The turn-based "speed" of this entity: How many game turns it takes for this entity to "move" or play 1 turn.
+## Example: If [member turnRatio] is 2, then this entity is at "half speed": It plays 1 turn every 2 game turns.
+## NOTE: Changing this value does NOT automatically update [member turnsToSkip]!
+@export_range(1, 100, 1, "or_greater") var turnRatio: int = 1:
+	set(newValue):
+		if newValue < 1: newValue = 1
+		if newValue != turnRatio:
+			if debugMode: Debug.printChange("turnRatio", turnRatio, newValue, false) # not logAsTrace
+			turnRatio = newValue
+			# TBD: Update `turnsToSkip`?
+
 #endregion
 
 
@@ -39,11 +51,23 @@ var turnsProcessed: int:
 	get: return TurnBasedCoordinator.turnsProcessed
 	set(newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
+## This entity may only play a turn when this value is 0,
+## otherwise it skips [method processTurnBeginSignals], [method processTurnUpdateSignals], and [method processTurnEndSignals].
+## Decremented by 1 at the start of every [method processTurnEndSignals] call.
+## Reset to the [member turnRatio] at the end of [method processTurnEndSignals], if the ratio is higher than 1, which means a slower turn "speed" for this entity.
+@export_storage var turnsToSkip: int = self.turnRatio - 1: # -1 because if the turn "speed" is 1, then 0 turns to skip.
+	set(newValue):
+		if newValue < 0: newValue = 0
+		if newValue != turnsToSkip:
+			if debugMode: Debug.printChange("turnsToSkip", turnsToSkip, newValue, false) # not logAsTrace
+			turnsToSkip = newValue
+
 #endregion
 
 
 #region Signals
 # See [TurnBasedCoordinator] comments for explanation of signals.
+# TBD: didSkipTurn?
 
 signal willBeginTurn
 signal didBeginTurn
@@ -58,6 +82,7 @@ signal didEndTurn
 
 func _enter_tree() -> void:
 	super._enter_tree()
+	self.resetSkipCounter()
 	self.add_to_group(Global.Groups.turnBased, true) # IMPORTANT: Add to turn-based group BEFORE calling `TurnBasedCoordinator.addEntity()` in case the coordinator operates on that group.
 	TurnBasedCoordinator.addEntity(self)
 
@@ -72,9 +97,10 @@ func _exit_tree() -> void:
 # `await` on `self.processTurn…` ensures animations and any other delays are properly processed in order.
 
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnBegin].
+## Skipped if [member turnsToSkip] > 0.
 ## WARNING: Do NOT override in subclass.
 func processTurnBeginSignals() -> void:
-	if not isEnabled: return
+	if not isEnabled or not checkSkipCounter("willBeginTurn"): return
 	if debugMode:
 		printLog(str("processTurnBeginSignals() willBeginTurn ", currentTurn))
 		TextBubble.create(str("turnBegin ", currentTurn), self)
@@ -87,9 +113,10 @@ func processTurnBeginSignals() -> void:
 
 
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnUpdate].
+## Skipped if [member turnsToSkip] > 0.
 ## WARNING: Do NOT override in subclass.
 func processTurnUpdateSignals() -> void:
-	if not isEnabled: return
+	if not isEnabled or not checkSkipCounter("willUpdateTurn"): return
 	if debugMode:
 		printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
 		TextBubble.create(str("turnUpdate ", currentTurn), self)
@@ -102,9 +129,17 @@ func processTurnUpdateSignals() -> void:
 
 
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnEnd].
+## Skipped if [member turnsToSkip] > 0. Decrements or resets [member turnsToSkip].
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	if not isEnabled: return
+
+	# NOTE: If this is a skipped turn, the final phase should also decrement or reset the skip counter,
+	# so that the NEXT turn's processTurnBeginSignals() will be able to run.
+	if not checkSkipCounter("willEndTurn"):
+		updateSkipCounter()
+		return
+
 	if debugMode:
 		printLog(str("processTurnEndSignals() willEndTurn ", currentTurn))
 		TextBubble.create(str("turnEnd ", currentTurn), self)
@@ -112,8 +147,51 @@ func processTurnEndSignals() -> void:
 	willEndTurn.emit()
 	await self.processTurnEnd()
 
+	# NOTE: If the "speed" is slower than 1:1, reset the skip counter at the END of a PLAYED turn,
+	# to skip the NEXT turn.
+	if turnRatio > 1: updateSkipCounter()
+
 	if debugMode: printLog("didEndTurn")
 	didEndTurn.emit()
+
+
+# Turn Speed/Skipping...
+
+## Checks [member turnRatio] and [member turnsToSkip].
+## Returns `true` if the entity is ready to take a turn.
+func checkSkipCounter(phaseMessage: String = "turn") -> bool:
+	if   turnsToSkip <= 0: return true # DESIGN: Do not check `turnRatio` here; it should be used only for setting `turnsToSkip`
+	elif turnsToSkip  > 0: printLog(str("checkSkipCounter() turnsToSkip: ", turnsToSkip, ": Skipping ", phaseMessage)) # Log the turn phase from during this function was called.
+
+	return false
+
+
+## Decrements OR resets [member turnsToSkip] and returns the updated value.
+## IMPORTANT: Should be called at the END of a turn, during [method processTurnEndSignals].
+func updateSkipCounter() -> int:
+	# NOTE:   Do NOT decrement AND reset during the same call!
+	# DESIGN: The decrement should happen at the END of a SKIPPED turn,
+	# and the reset should happen at the end of a PLAYED turn.
+
+	# If there are any turn skips to skip, decrement the counter,
+	# because this function is assumed to be called at the end of an already skipped turn.
+	if  turnsToSkip  >= 1:
+		turnsToSkip  -= 1 ## TBD: Add an variable decrement step for temporarily modifying the turn-based speed?
+
+	# Otherwise if the counter is at 0, then a countdown already elapsed during the previous turn's End phase.
+	# Example: If the `turnRatio` is 2, then this will be true in Turn 2.
+	elif turnsToSkip <= 0:
+		var previousTurnsToSkip: int = turnsToSkip
+		resetSkipCounter() # Reenable the skip counter so the next turn will be skipped.
+		printLog(str("updateSkipCounter() Reset turnsToSkip: ", previousTurnsToSkip, " → ", turnsToSkip))
+
+	return turnsToSkip
+
+
+## Sets [member turnsToSkip] tp [member turnsToSkip] minus 1.
+## i.e., because if the turn "speed" is 1, then there are 0 turns to skip.
+func resetSkipCounter() -> void:
+	turnsToSkip = turnRatio - 1
 
 #endregion
 
@@ -187,3 +265,5 @@ func showDebugInfo() -> void:
 	Debug.watchList.turnsProcessed	= turnsProcessed
 	Debug.watchList.currentTurn		= currentTurn
 	Debug.watchList.currentTurnState= currentTurnState
+	Debug.watchList.turnRatio		= turnRatio
+	Debug.watchList.turnsToSkip		= turnsToSkip
