@@ -1,4 +1,4 @@
-## Displays messages & other UI to show the state of the turn-based system, in response to signals from its parent [TurnBasedEntity] and the global [TurnBasedCoordinator].
+## A UI component that shows the state of the turn-based system, in response to signals from its parent [TurnBasedEntity] and the global [TurnBasedCoordinator].
 ## IMPORTANT: Use only ONE instance of this component, on a "master" Entity which manages the turn-based UI.
 ## TIP: May be used as a base class for more complex turn-based UI.
 ## Requirements: [TurnBasedEntity]
@@ -50,8 +50,14 @@ func _ready() -> void:
 	initializeTimerBars()
 	connectSignals()
 
+	# TBD: Recheck for toggle at runtime?
+	set_process(isEnabled) # Update per-frame only when enabled
+	self.visible = isEnabled
+
 
 func connectSignals() -> void:
+	if not isEnabled: return # TBD: Recheck for toggle at runtime?
+
 	TurnBasedCoordinator.didAddEntity		.connect(self.onTurnBasedCoordinator_didAddEntity)
 	TurnBasedCoordinator.didRemoveEntity	.connect(self.onTurnBasedCoordinator_didRemoveEntity)
 	
@@ -158,7 +164,7 @@ func onEntity_didEndTurn() -> void:
 #endregion
 
 
-#region Component TUrn Cycle
+#region Component Turn Cycle
 
 func processTurnBegin() -> void:
 	displayMessage(str(self.name, ".processTurnBegin()"), colorBegin)
@@ -178,6 +184,7 @@ func processTurnEnd() -> void:
 
 ## @experimental
 func updateUI() -> void:
+	if not isEnabled: return
 	var currentEntityName: String = TurnBasedCoordinator.currentEntityProcessing.name if TurnBasedCoordinator.currentEntityProcessing else &""
 	var nextEntityName: String = TurnBasedCoordinator.nextEntityToProcess.name
 
@@ -193,7 +200,7 @@ func updateUI() -> void:
 
 
 func displayMessage(message: String, color: Color = Color.GRAY, outlineSize: int = -1) -> void:
-	if not shouldShowMessages:   return
+	if not isEnabled or not shouldShowMessages: return
 	if shouldRepeatMessageAsLog: self.printLog(message)
 
 	var labelSettings: LabelSettings = GlobalUI.createTemporaryLabel(message).label_settings
