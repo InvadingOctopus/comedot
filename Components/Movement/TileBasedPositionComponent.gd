@@ -109,6 +109,8 @@ var currentCellCoordinates: Vector2i:
 			printChange("currentCellCoordinates", currentCellCoordinates, newValue)
 			currentCellCoordinates = newValue
 
+## The [TileMapLayer] grid cell that the entity should or is moving to.
+## ALERT: Do NOT set this value directly! Call [method setDestinationCoordinates] to perform the necessary validation and update occupancy etc.
 var destinationCellCoordinates: Vector2i:
 	set(newValue):
 		if newValue != destinationCellCoordinates:
