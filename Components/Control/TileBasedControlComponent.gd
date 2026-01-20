@@ -91,7 +91,7 @@ func move() -> void:
 		return
 
 	tileBasedPositionComponent.inputVector = self.recentInputVector
-	tileBasedPositionComponent.processMovementInput()
+	tileBasedPositionComponent.processInput()
 	stepTimer.start()
 
 

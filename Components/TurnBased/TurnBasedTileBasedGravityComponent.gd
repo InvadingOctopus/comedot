@@ -74,7 +74,7 @@ func fall() -> void:
 	# Apply gravity
 	coordinates.y += 1 # Y increases downwards
 
-	tileBasedPositionComponent.setDestinationCellCoordinates(coordinates)
+	tileBasedPositionComponent.setDestinationCoordinates(coordinates)
 	self.didFall.emit()
 
 

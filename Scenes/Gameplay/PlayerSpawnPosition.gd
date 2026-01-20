@@ -61,7 +61,7 @@ func setPlayerPosition() -> void:
 		
 		# Tile-based?
 		if player.getComponent(TileBasedPositionComponent):
-			player.components.TileBasedPositionComponent.updateCurrentTileCoordinates()
+			player.components.TileBasedPositionComponent.updateCurrentCoordinates()
 
 		player.reset_physics_interpolation() # Skip interpolation, just snap!
 		if shouldCreateCamera: setCamera()

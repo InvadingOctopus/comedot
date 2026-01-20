@@ -63,7 +63,7 @@ extends Component
 
 @export_group("Initial Position")
 
-@export var setInitialCoordinatesFromEntityPosition: bool = false
+@export var setInitialCoordinatesFromEntityPosition: bool = true
 @export var initialDestinationCoordinates: Vector2i
 
 ## If `false`, the entity will be instantly positioned at the initial destination, otherwise it may be animated from where it was before this component is executed if `shouldMoveInstantly` is false.
@@ -74,7 +74,7 @@ extends Component
 
 ## The speed of moving between tiles. Ignored if [member shouldMoveInstantly].
 ## WARNING: If this is slower than the movement of the [member tileMap] then the component will never be able to catch up to the destination tile's position.
-@export_range(10, 1000, 1) var speed: float = 200
+@export_range(0, 1000, 1) var speed: float = 200
 
 @export var shouldMoveInstantly: bool = false
 
@@ -84,7 +84,7 @@ extends Component
 ## Set to `false` to disable occupancy; useful for visual-only entities such as mouse cursors and other UI/effects.
 @export var shouldOccupyCell: bool = true
 
-## If `true` then [method snapEntityPositionToTile] is called every frame to keep the Entity locked to the [TileMapLayer] grid.
+## If `true` then [method snapPositionToCell] is called every frame to keep the Entity locked to the [TileMapLayer] grid.
 ## ALERT: PERFORMANCE: Enable only if the Entity or [TileMapLayer] may be moved during runtime by other scripts or effects, to avoid unnecessary processing each frame.
 @export var shouldSnapPositionEveryFrame: bool = false:
 	set(newValue):
@@ -177,7 +177,7 @@ func validateTileMap(searchForTileMap: bool = self.shouldSearchForTileMap) -> bo
 	if not tileMap:
 		if searchForTileMap:
 			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCellData or TileMapLayer in current scene…")
-			self.tileMap = Tools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+			tileMap = Tools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
 
 		# Warn only in debugMode, in case the tileMapData will be supplied by a different script.
 		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCellData or TileMapLayer")
@@ -215,7 +215,7 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 func checkCellVacancy(coordinates: Vector2i) -> bool:
 	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`.
 	if tileMapData:
-		return Tools.checkTileAndCellVacancy(tileMap, tileMapData, coordinates, self.parentEntity) # Ignore our own entity, just in case :')
+		return Tools.checkTileAndCellVacancy(tileMap, tileMapData, coordinates, parentEntity) # Ignore our own entity, just in case :')
 	else:
 		return Tools.checkTileVacancy(tileMap, coordinates)
 
@@ -225,28 +225,38 @@ func checkCellVacancy(coordinates: Vector2i) -> bool:
 #endregion Positioning
 
 func applyInitialCoordinates() -> void:
-	# Get the entity's starting coordinates
-	updateCurrentTileCoordinates()
+	# Get the entity's starting coordinates in the scene in relation to the [TileMapLayer],
+	# NOTE: BUT do NOT use updateCurrentCoordinates() because we don't want to  "occupy" the cell yet! 
+	# because the initial cell may be different than the entity's starting pixel position,
+	# so only that destination cell where the entity will end up in should be marked as "occupied"
+	currentCellCoordinates = getNearestCoordinates()
 
 	if setInitialCoordinatesFromEntityPosition:
 		initialDestinationCoordinates = currentCellCoordinates
 
-	# Even if we `setInitialCoordinatesFromEntityPosition`, snap the entity to the center of the cell
+	# Even if we `setInitialCoordinatesFromEntityPosition`, we must snap the entity to the CENTER of the cell
 
 	# NOTE: Directly setting `destinationCellCoordinates = initialDestinationCoordinates` beforehand prevents the movement
 	# because the functions check for a change between coordinates.
 
 	if shouldSnapToInitialDestination:
-		snapEntityPositionToTile(initialDestinationCoordinates)
+		snapPositionToCell(initialDestinationCoordinates)
+		occupyCurrentCell()
 	else:
-		setDestinationCellCoordinates(initialDestinationCoordinates)
+		setDestinationCoordinates(initialDestinationCoordinates, true) # shouldForceMovement
+		# TBD: Think of a more elegant and less brute way to apply the initial coordinates?
 
 
-## Set the tile coordinates corresponding to the parent Entity's [member Node2D.global_position]
-## and set the cell's occupancy.
-func updateCurrentTileCoordinates() -> Vector2i:
+## Returns the coordinates of the [TileMapLayer] grid cell nearest to the entity's global position.
+func getNearestCoordinates() -> Vector2i:
+	return tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
+
+
+## Sets the cell coordinates corresponding to the entity's [member Node2D.global_position]
+## and sets the cell's occupancy to be "claimed" by the entity.
+func updateCurrentCoordinates() -> Vector2i:
 	self.currentCellCoordinates = tileMap.local_to_map(tileMap.to_local(parentEntity.global_position))
-	if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, true, parentEntity)
+	occupyCurrentCell()
 	return currentCellCoordinates
 
 
@@ -254,15 +264,29 @@ func updateCurrentTileCoordinates() -> Vector2i:
 ## NOTE: Does NOT validate coordinates or check the cell's vacancy etc.
 ## TIP: May be useful for UI elements like cursors etc.
 ## If [param destinationOverride] is omitted then [member currentCellCoordinates] is used.
-func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentCellCoordinates) -> void:
+func snapPositionToCell(tileCoordinates: Vector2i = self.currentCellCoordinates) -> void:
 	if not isEnabled: return
 
 	var tileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, tileCoordinates)
 
-	if parentEntity.global_position != tileGlobalPosition:
-		parentEntity.global_position = tileGlobalPosition
+	if  parentEntity.global_position != tileGlobalPosition:
+		parentEntity.global_position  = tileGlobalPosition
 
 	self.currentCellCoordinates = tileCoordinates
+
+
+## "Claims" the current [TileMapLayer] cell to be "occupied" by the entity, if [member shouldOccupyCell] is `true`,
+## so that other entities cannot enter the same cell.
+## Requires [TileMapLayerWithCellData].
+func occupyCurrentCell() -> void:
+	if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, true, parentEntity)
+
+
+## Releases the entity's "claim" on the current [TileMapLayer] cell,
+## so that other entities may enter that cell.
+## Requires [TileMapLayerWithCellData].
+func vacateCurrentCell() -> void:
+	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
 
 #endregion
 
@@ -271,23 +295,30 @@ func snapEntityPositionToTile(tileCoordinates: Vector2i = self.currentCellCoordi
 
 ## This method must be called by a control component upon receiving player input.
 ## EXAMPLE: `inputVector = Vector2i(Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown))`
-func processMovementInput(inputVectorOverride: Vector2i = self.inputVector) -> void:
+func processInput(inputVectorOverride: Vector2i = inputVector) -> void:
 	# TODO: Check for TileMap bounds.
 	# Don't accept input if already moving to a new tile.
-	if (not isEnabled) or self.isMovingToNewCell: return
-	setDestinationCellCoordinates(self.currentCellCoordinates + inputVectorOverride)
+	if (not isEnabled) or isMovingToNewCell: return
+	setDestinationCoordinates(currentCellCoordinates + inputVectorOverride)
 
 
-## Returns: `false if the new destination coordinates are not valid within the TileMap bounds.
-func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> bool:
+## Begins movement towards a new cell and updates the occupancy of the previous and new cells.
+## Returns `false if the new destination coordinates are not valid within the [TileMapLayer]'s grid bounds.
+func setDestinationCoordinates(newDestinationTileCoordinates: Vector2i, shouldForceMovement: bool = false) -> bool:
+	if debugMode: printDebug(str("setDestinationCoordinates() ", destinationCellCoordinates, " → ", newDestinationTileCoordinates))
 
-	# Is the new destination the same as the current destination? Then there's nothing to change.
-	if newDestinationTileCoordinates == self.destinationCellCoordinates: return true
+	# `shouldForceMovement` is for cases such as when setting the initial coordinates,
+	# to move the entity regardless of the old and new coordinates being the same, e.g. when initializing to (0,0)
+	# TBD: Think of a more elegant and less brute way to apply the initial coordinates?
+	if not shouldForceMovement:
+	
+		# Is the new destination the same as the current destination? Then there's nothing to change.
+		if newDestinationTileCoordinates == destinationCellCoordinates: return true
 
-	# Is the new destination the same as the current tile? i.e. was the previous move cancelled?
-	if newDestinationTileCoordinates == self.currentCellCoordinates:
-		cancelDestination()
-		return true # NOTE: Return true because arriving at the specified coordinates should be considered a success, even if already there. :)
+		# Is the new destination the same as the current tile? i.e. was the previous move cancelled?
+		if newDestinationTileCoordinates == currentCellCoordinates:
+			cancelDestination()
+			return true # NOTE: Return true because arriving at the specified coordinates should be considered a success, even if already there :)
 
 	# Validate the new destination?
 
@@ -297,18 +328,18 @@ func setDestinationCellCoordinates(newDestinationTileCoordinates: Vector2i) -> b
 	# Move Your Body ♪
 
 	willStartMovingToNewCell.emit(newDestinationTileCoordinates)
-	self.destinationCellCoordinates = newDestinationTileCoordinates
-	self.isMovingToNewCell = true
+	destinationCellCoordinates = newDestinationTileCoordinates
+	isMovingToNewCell = true
 
 	# Vacate the current (to-be previous) tile
 	# NOTE: Always clear the previous cell even if not `shouldOccupyCell`, in case it was toggled true→false at runtime.
 	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
 
-	# TODO: TBD: Occupy each cell along the way too each frame?
+	# TODO: TBD: Should we occupy each cell along the way too, during each frame?
 	if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, newDestinationTileCoordinates, true, parentEntity)
 
 	# Should we teleport?
-	if shouldMoveInstantly: snapEntityPositionToTile(destinationCellCoordinates)
+	if shouldMoveInstantly: snapPositionToCell(destinationCellCoordinates)
 
 	return true
 
@@ -324,15 +355,11 @@ func cancelDestination(snapToCurrentCell: bool = true) -> void:
 	if isMovingToNewCell and snapToCurrentCell:
 		# Then snap back to the current tile coordinates.
 		# TODO: Option to animate back?
-		self.snapEntityPositionToTile(self.currentCellCoordinates)
+		snapPositionToCell(currentCellCoordinates)
 
-	self.destinationCellCoordinates = self.currentCellCoordinates
-	if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity) # Reoccupy the current cell
-	self.isMovingToNewCell = false
-
-
-func vacateCurrentCell() -> void:
-	if tileMapData: Tools.setCellOccupancy(tileMapData, currentCellCoordinates, false, null)
+	destinationCellCoordinates = currentCellCoordinates
+	occupyCurrentCell() # Reoccupy the current cell
+	isMovingToNewCell = false
 
 
 ## Uses a new [TileMapLayer] and preserves the current PIXEL position onscreen, but may get different CELL coordinates on the new map's grid.
@@ -380,11 +407,11 @@ func setMapAndKeepPosition(newMap: TileMapLayer, useNewData: bool = true) -> Vec
 		self.currentCellCoordinates = newCoordinates
 
 		# NOTE: Use the actual `currentCellCoordinates` from hereon instead of `newCoordinates`, which may not have been applied if there was an error or bug.
-		if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity)
+		occupyCurrentCell()
 
 		# TBD: If we were on the way to a different cell during the previous map, keep moving to ensure smooth animations etc.
 		var newDestination: Vector2i = Tools.convertCoordinatesBetweenTileMaps(previousMap, previousDestination, self.tileMap)
-		if newDestination != self.currentCellCoordinates: self.setDestinationCellCoordinates(newDestination)
+		if newDestination != self.currentCellCoordinates: self.setDestinationCoordinates(newDestination)
 
 		if debugMode: printDebug(str("setMapAndKeepPosition() coordinates: ", previousCoordinates, " → ", self.currentCellCoordinates))
 		didSetNewMap.emit(previousMap, previousCoordinates, newMap, self.currentCellCoordinates)
@@ -432,11 +459,11 @@ func setMapAndKeepCoordinates(newMap: TileMapLayer, useNewData: bool = true) -> 
 		var previousMap: TileMapLayer = self.tileMap
 		self.tileMap = newMap
 		self.validateTileMap(false) # not searchForTileMap # TBD: Is this necessary?
-		if shouldOccupyCell and tileMapData: Tools.setCellOccupancy(tileMapData, self.currentCellCoordinates, true, parentEntity)
+		occupyCurrentCell()
 
 		# Animate movement to a new pixel position if needed.
 		if shouldMoveInstantly:
-			snapEntityPositionToTile(self.currentCellCoordinates)
+			snapPositionToCell(self.currentCellCoordinates)
 			self.isMovingToNewCell = false
 		else:
 			self.destinationCellCoordinates = self.currentCellCoordinates # TBD: Necessary?
@@ -463,18 +490,18 @@ func _physics_process(delta: float) -> void:
 	elif shouldSnapPositionEveryFrame and tileMap != null:
 		# If we are already at the destination, keep snapping to the current tile coordinates,
 		# to ensure alignment in case the TileMap node is moving.
-		snapEntityPositionToTile()
+		snapPositionToCell()
 
 	if debugMode: showDebugInfo()
 
 
 ## Called every frame to move the parent Entity towards the [member destinationCellCoordinates]'s onscreen position.
-## IMPORTANT: Other scripts should NOT call this method directly; use [method setDestinationCellCoordinates] to specify a new map grid cell.
+## IMPORTANT: Other scripts should NOT call this method directly; use [method setDestinationCoordinates] to specify a new map grid cell.
 func moveTowardsDestinationCell(delta: float) -> void:
 	# TODO: Handle physics collisions
 	# TODO: TBD: Occupy each cell along the way too?
 	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCellCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
-	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, speed * delta)
+	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, self.speed * delta)
 	parentEntity.reset_physics_interpolation() # CHECK: Necessary?
 
 
@@ -484,9 +511,9 @@ func checkForArrival() -> bool:
 	if parentEntity.global_position == destinationTileGlobalPosition:
 		self.currentCellCoordinates = self.destinationCellCoordinates
 		self.isMovingToNewCell = false
-		didArriveAtNewCell.emit(currentCellCoordinates)
-		previousInputVector = inputVector
-		inputVector = Vector2i.ZERO
+		self.didArriveAtNewCell.emit(currentCellCoordinates)
+		self.previousInputVector = self.inputVector
+		self.inputVector = Vector2i.ZERO
 		return true
 	else:
 		self.isMovingToNewCell = true

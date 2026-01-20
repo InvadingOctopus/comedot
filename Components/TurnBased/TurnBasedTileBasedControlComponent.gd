@@ -90,7 +90,7 @@ func processTurnUpdate() -> void:
 		self.recentInputVector = Vector2i([-1, 1].pick_random(), [-1, 1].pick_random())
 
 	tileBasedPositionComponent.inputVector = Vector2i(self.recentInputVector)
-	tileBasedPositionComponent.processMovementInput()
+	tileBasedPositionComponent.processInput()
 	if debugMode: showDebugInfo()
 
 
