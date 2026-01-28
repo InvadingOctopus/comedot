@@ -47,5 +47,5 @@ func _process(_delta: float) -> void:
 
 func updatePosition() -> void:
 	var tileMap: TileMapLayer = tileBasedPositionComponent.tileMap
-	tileBasedPositionComponent.currentCellCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
-	tileBasedPositionComponent.snapPositionToCell(tileBasedPositionComponent.currentCellCoordinates)
+	tileBasedPositionComponent.currentCoordinates = tileMap.local_to_map(tileMap.get_local_mouse_position())
+	tileBasedPositionComponent.snapPositionToCell(tileBasedPositionComponent.currentCoordinates)

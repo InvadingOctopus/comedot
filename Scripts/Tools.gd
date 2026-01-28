@@ -1082,7 +1082,7 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 					map.map_to_local(coordinates)))
 
 		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
-			newNode.components.TileBasedPositionComponent.currentCellCoordinates = coordinates
+			newNode.components.TileBasedPositionComponent.currentCoordinates = coordinates
 
 		# Add
 		Tools.addChildAndSetOwner(newNode, parent)
@@ -1133,7 +1133,7 @@ static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vecto
 					map.map_to_local(coordinates)))
 
 		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
-			newNode.components.TileBasedPositionComponent.currentCellCoordinates = coordinates
+			newNode.components.TileBasedPositionComponent.currentCoordinates = coordinates
 
 		# Add
 		Tools.addChildAndSetOwner(newNode, parent)

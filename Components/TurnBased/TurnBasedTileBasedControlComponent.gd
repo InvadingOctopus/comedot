@@ -65,7 +65,7 @@ func validateMove() -> bool:
 	# PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
 	if recentInputVector.length_squared() != 0  \
 	and TurnBasedCoordinator.isReadyToStartTurn \
-	and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector):
+	and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + self.recentInputVector):
 		return true
 	else:
 		return false
@@ -76,7 +76,7 @@ func validateMove() -> bool:
 ## TIP: Subclasses may override this method to add custom movement, such as deducting "action points" etc. after moving.
 func move() -> Vector2i:
 	TurnBasedCoordinator.startTurnProcess() # TBD: Should the caller start the turn?
-	return tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector
+	return tileBasedPositionComponent.currentCoordinates + self.recentInputVector
 
 
 func processTurnBegin() -> void:

@@ -57,7 +57,7 @@ func onGravityTimer_timeout() -> void:
 func checkForFall() -> bool:
 	# TODO: Don't fall while jumping
 
-	var currentPosition: Vector2i = tileBasedPositionComponent.currentCellCoordinates
+	var currentPosition: Vector2i = tileBasedPositionComponent.currentCoordinates
 
 	# Is there a floor below us?
 	var cellBelow: Vector2i = Vector2i(currentPosition.x, currentPosition.y + 1)
@@ -69,7 +69,7 @@ func checkForFall() -> bool:
 
 func fall() -> void:
 	# NOTE: Get and modify the current DESTINATION, in case a [TurnBasedTileBasedControlComponent] is also moving the entity.
-	var coordinates: Vector2i = tileBasedPositionComponent.destinationCellCoordinates
+	var coordinates: Vector2i = tileBasedPositionComponent.destinationCoordinates
 
 	# Apply gravity
 	coordinates.y += 1 # Y increases downwards

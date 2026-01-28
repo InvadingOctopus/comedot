@@ -51,7 +51,7 @@ func moveRandomly() -> void:
 	var tries: int = 0
 
 	if shouldKeepTryingUntilValidMove:
-		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCellCoordinates + self.recentInputVector) \
+		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + self.recentInputVector) \
 		or tries < maximumTries:
 			self.recentInputVector = getRandomVector()
 			tries += 1
