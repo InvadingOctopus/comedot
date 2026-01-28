@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Action" load_steps=7 format=3 uid="uid://bryqvy7gb2xaj"]
+[gd_resource type="Resource" script_class="Action" format=3 uid="uid://bryqvy7gb2xaj"]
 
 [ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Actions/Action.gd" id="1_cr1cv"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_sel1h"]

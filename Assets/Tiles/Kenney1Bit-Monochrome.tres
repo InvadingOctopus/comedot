@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://bnuthy0vx4048"]
+[gd_resource type="TileSet" format=3 uid="uid://bnuthy0vx4048"]
 
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="1_4wmvt"]
 

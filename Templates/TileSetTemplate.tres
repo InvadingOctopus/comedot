@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dinnvtrdv2ejn"]
+[gd_resource type="TileSet" format=3 uid="uid://dinnvtrdv2ejn"]
 
 [ext_resource type="Texture2D" uid="uid://dxm250dv5b2lo" path="res://Assets/Images/DebugCheckerboard32.png" id="1_cnbby"]
 

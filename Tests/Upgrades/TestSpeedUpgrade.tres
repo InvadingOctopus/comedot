@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=9 format=3 uid="uid://qnkhwtlbroqg"]
+[gd_resource type="Resource" script_class="Upgrade" format=3 uid="uid://qnkhwtlbroqg"]
 
 [ext_resource type="Resource" uid="uid://drkt6rhhny6b4" path="res://Tests/Stats/TestMana.tres" id="1_f00qb"]
 [ext_resource type="Script" uid="uid://cetucfberg5ss" path="res://Resources/Upgrade.gd" id="1_m1sav"]

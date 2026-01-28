@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ComponentSet" load_steps=4 format=3 uid="uid://331rgawnxn1c"]
+[gd_resource type="Resource" script_class="ComponentSet" format=3 uid="uid://331rgawnxn1c"]
 
 [ext_resource type="Script" uid="uid://ro5dtmodb4v0" path="res://Resources/ComponentSet.gd" id="1_57boh"]
 [ext_resource type="Script" uid="uid://cqa36ingwv4sx" path="res://Components/Control/JumpComponent.gd" id="1_ibxpa"]
