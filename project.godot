@@ -8,10 +8,6 @@
 
 config_version=5
 
-[animation]
-
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
-
 [application]
 
 config/name="Comedot"
@@ -20,7 +16,7 @@ config/name_localized={
 "ja_Kana_JP": "カムドット"
 }
 config/description="Components Framework for Godot"
-config/version="4.6.0.5.69"
+config/version="4.6.0.100.42"
 config/tags=PackedStringArray("components", "framework", "plugin", "template")
 run/main_scene="uid://7hpq16neqhai"
 config/project_settings_override="res://Game/override.cfg"
@@ -33,7 +29,7 @@ config/icon="uid://tgxprqhjkuvi"
 
 [audio]
 
-buses/default_bus_layout="res://Resources/DefaultAudioBusLayout.tres"
+buses/default_bus_layout="uid://dunc3vduoo4xb"
 buses/channel_disable_threshold_db=-55.0
 
 [autoload]
