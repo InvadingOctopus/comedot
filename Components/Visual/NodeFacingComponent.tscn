@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0rq0wkce5o6l"]
+[gd_scene format=3 uid="uid://b0rq0wkce5o6l"]
 
 [ext_resource type="Script" uid="uid://cbmrc6fa0mfxq" path="res://Components/Visual/NodeFacingComponent.gd" id="1_thwbx"]
 
-[node name="NodeFacingComponent" type="Node2D" groups=["components"]]
+[node name="NodeFacingComponent" type="Node2D" unique_id=669405445 groups=["components"]]
 script = ExtResource("1_thwbx")
 
-[node name="ReenablingTimer" type="Timer" parent="."]
+[node name="ReenablingTimer" type="Timer" parent="." unique_id=751718845]
 editor_description = "To re-enable this component after another mutually-exclusive component is used."
 wait_time = 3.0
 one_shot = true

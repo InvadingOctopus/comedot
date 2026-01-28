@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://rlbxlocusjth"]
+[gd_scene format=3 uid="uid://rlbxlocusjth"]
 
 [ext_resource type="Script" uid="uid://cx1hm3me38sp8" path="res://Components/AI/TimerAgentComponentBase.gd" id="1_dghyj"]
 
-[node name="TimerAgentComponentBase" type="Timer" groups=["components"]]
+[node name="TimerAgentComponentBase" type="Timer" unique_id=172132825 groups=["components"]]
 autostart = true
 script = ExtResource("1_dghyj")
 

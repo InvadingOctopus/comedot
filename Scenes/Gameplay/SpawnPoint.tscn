@@ -1,14 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dple40u81ef8t"]
+[gd_scene format=3 uid="uid://dple40u81ef8t"]
 
 [ext_resource type="Script" uid="uid://dtilqo4k5k3gj" path="res://Scenes/Gameplay/SpawnPoint.gd" id="1_ophw8"]
 [ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/Gameplay/SpawnTimer.tscn" id="2_bxqa7"]
 
-[node name="SpawnPoint" type="Marker2D" groups=["spawners"]]
+[node name="SpawnPoint" type="Marker2D" unique_id=232401123 groups=["spawners"]]
 editor_description = "A Marker2D point to spawn copies of a scene at. Enable \"Editable Children\" and edit SpawnTimer to choose scene.
 "
 script = ExtResource("1_ophw8")
 
-[node name="SpawnTimer" parent="." node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_bxqa7")]
+[node name="SpawnTimer" parent="." unique_id=333348527 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_bxqa7")]
 parentOverride = NodePath("..")
 
 [connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://d36npu023mnts"]
+[gd_scene format=3 uid="uid://d36npu023mnts"]
 
 [ext_resource type="Script" uid="uid://coj0yvypaba46" path="res://Components/Control/MouseTrackingComponent.gd" id="1_5n0bj"]
 
-[node name="MouseTrackingComponent" type="Node" groups=["components"]]
+[node name="MouseTrackingComponent" type="Node" unique_id=1597643541 groups=["components"]]
 script = ExtResource("1_5n0bj")

@@ -1,16 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://wfkhubc60w2e"]
+[gd_scene format=3 uid="uid://wfkhubc60w2e"]
 
 [ext_resource type="Script" uid="uid://cyaflmo6hc3d7" path="res://AutoLoad/TurnBasedCoordinator.gd" id="1_5qbkx"]
 
-[node name="TurnBasedCoordinator" type="Node2D" groups=["turnBased"]]
+[node name="TurnBasedCoordinator" type="Node2D" unique_id=1964436965 groups=["turnBased"]]
 script = ExtResource("1_5qbkx")
 metadata/_edit_group_ = true
 
-[node name="StateTimer" type="Timer" parent="."]
+[node name="StateTimer" type="Timer" parent="." unique_id=1112957294]
 process_callback = 0
 one_shot = true
 
-[node name="EntityTimer" type="Timer" parent="."]
+[node name="EntityTimer" type="Timer" parent="." unique_id=98954384]
 process_callback = 0
 one_shot = true
 

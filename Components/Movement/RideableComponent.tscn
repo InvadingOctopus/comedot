@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://6chqnp41m44g"]
+[gd_scene format=3 uid="uid://6chqnp41m44g"]
 
 [ext_resource type="Script" uid="uid://c74bxjofhf8ax" path="res://Components/Movement/RideableComponent.gd" id="1_4q3lr"]
 
-[node name="RideableComponent" type="Node2D" groups=["components"]]
+[node name="RideableComponent" type="Node2D" unique_id=1770231552 groups=["components"]]
 editor_description = "Allows the player to \"mount\" a vehicle or animal etc."
 script = ExtResource("1_4q3lr")
 metadata/_edit_group_ = true
 
-[node name="RiderPlaceholder" type="RemoteTransform2D" parent="."]
+[node name="RiderPlaceholder" type="RemoteTransform2D" parent="." unique_id=1915877125]
 position = Vector2(0, -16)
 update_position = false
 update_rotation = false

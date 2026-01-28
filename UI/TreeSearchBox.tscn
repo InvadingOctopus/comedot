@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://jt8bd2lsvtyp"]
+[gd_scene format=3 uid="uid://jt8bd2lsvtyp"]
 
 [ext_resource type="Script" uid="uid://ce67ye4g5xl8x" path="res://UI/TreeSearchBox.gd" id="1_mg701"]
 
-[node name="TreeSearchBox" type="LineEdit"]
+[node name="TreeSearchBox" type="LineEdit" unique_id=149865309]
 editor_description = "A text box that filters the contents of a Tree."
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ clear_button_enabled = true
 select_all_on_focus = true
 script = ExtResource("1_mg701")
 
-[node name="UpdateDelayTimer" type="Timer" parent="."]
+[node name="UpdateDelayTimer" type="Timer" parent="." unique_id=1800866029]
 wait_time = 0.3
 one_shot = true
 ignore_time_scale = true

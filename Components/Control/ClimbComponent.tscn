@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://hmdqj5apj1fy"]
+[gd_scene format=3 uid="uid://hmdqj5apj1fy"]
 
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="1_h6irb"]
 [ext_resource type="Script" uid="uid://cbs4yxseyddhi" path="res://Components/Control/ClimbComponent.gd" id="2_5p5xn"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_e7uq4"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qeok4"]
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="ClimbComponent" instance=ExtResource("1_h6irb")]
+[node name="ClimbComponent" unique_id=1417183868 instance=ExtResource("1_h6irb")]
 collision_mask = 576
 script = ExtResource("2_5p5xn")
 shouldConfineHorizontally = true
@@ -24,4 +24,4 @@ groupToInclude = &"climbable"
 shouldMonitorBodies = false
 
 [node name="AreaDetectorShape" parent="." index="0"]
-shape = SubResource("RectangleShape2D_e7uq4")
+shape = SubResource("RectangleShape2D_qeok4")

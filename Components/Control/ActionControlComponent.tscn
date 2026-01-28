@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkejn1qlbxsa2"]
+[gd_scene format=3 uid="uid://dkejn1qlbxsa2"]
 
 [ext_resource type="Script" uid="uid://bf76xw128ion4" path="res://Components/Control/ActionControlComponent.gd" id="1_4j1cu"]
 
-[node name="ActionControlComponent" type="Node" groups=["components"]]
+[node name="ActionControlComponent" type="Node" unique_id=1705046087 groups=["components"]]
 script = ExtResource("1_4j1cu")

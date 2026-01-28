@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://ynn3yny1vw1j"]
+[gd_scene format=3 uid="uid://ynn3yny1vw1j"]
 
 [ext_resource type="LabelSettings" uid="uid://crn5uj0c6san2" path="res://Assets/Themes/Label/TemporaryLabel.tres" id="1_r25na"]
 
@@ -52,21 +52,19 @@ _data = {
 &"fadeOut": SubResource("Animation_p7665")
 }
 
-[node name="FadingLabel" type="Label"]
+[node name="FadingLabel" type="Label" unique_id=264840488]
 offset_right = 1.0
 offset_bottom = 1.0
 size_flags_horizontal = 3
 text = "Fading Label"
 label_settings = ExtResource("1_r25na")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1910773025]
 wait_time = 2.0
 one_shot = true
 autostart = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_xatav")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1252162586]
+libraries/ = SubResource("AnimationLibrary_xatav")
 
 [connection signal="timeout" from="Timer" to="AnimationPlayer" method="play" binds= [&"fadeOut"]]

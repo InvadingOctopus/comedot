@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://damq04335casd"]
+[gd_scene format=3 uid="uid://damq04335casd"]
 
 [ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/GameplayResourceUI.tscn" id="1_esckq"]
 [ext_resource type="Script" uid="uid://bwceey4rmvjrq" path="res://UI/Views/UpgradeUI.gd" id="2_fhd43"]
 
-[node name="UpgradeUI" instance=ExtResource("1_esckq")]
+[node name="UpgradeUI" unique_id=1627169676 instance=ExtResource("1_esckq")]
 editor_description = "View for an Upgrade Resource"
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -12,6 +12,6 @@ script = ExtResource("2_fhd43")
 upgrade = null
 shouldBeHiddenUntilAcquired = false
 
-[node name="Label" parent="." index="1"]
+[node name="Label" parent="." index="1" unique_id=2033234159]
 text = "UPGRADE"
 vertical_alignment = 1

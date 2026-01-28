@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cj6ao7ju12nhg"]
+[gd_scene format=3 uid="uid://cj6ao7ju12nhg"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_ght07"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="3_udv4x"]
@@ -22,38 +22,37 @@
 [ext_resource type="Resource" uid="uid://btyn678insww1" path="res://Tests/Upgrades/TestCooldownUpgrade.tres" id="22_ucsfw"]
 [ext_resource type="Resource" uid="uid://dubsrpy44b7kw" path="res://Tests/Upgrades/TestAmmoUpgrade.tres" id="23_2aq68"]
 
-[node name="UpgradeTest" type="Node2D"]
+[node name="UpgradeTest" type="Node2D" unique_id=601618361]
 script = ExtResource("1_ght07")
 
-[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("3_udv4x")]
+[node name="PlayerEntityTemplate-Overhead" parent="." unique_id=405863233 instance=ExtResource("3_udv4x")]
 
-[node name="FactionComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_0trfh")]
+[node name="FactionComponent" parent="PlayerEntityTemplate-Overhead" unique_id=319332121 instance=ExtResource("4_0trfh")]
 factions = 2
 
-[node name="UpgradesComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("5_3wt1t")]
+[node name="UpgradesComponent" parent="PlayerEntityTemplate-Overhead" unique_id=698976477 instance=ExtResource("5_3wt1t")]
 debugMode = true
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("6_3nle0")]
+[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1494987211 instance=ExtResource("6_3nle0")]
 stats = Array[ExtResource("7_7nw6f")]([ExtResource("8_157i1"), ExtResource("9_okulf"), ExtResource("10_fcijy")])
 debugMode = true
 
-[node name="DebugComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("11_gj3d5")]
-propertiesToWatch = Array[NodePath]([NodePath("../OverheadPhysicsComponent")])
+[node name="DebugComponent" parent="PlayerEntityTemplate-Overhead" unique_id=50522335 instance=ExtResource("11_gj3d5")]
 
-[node name="GunComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("12_vmhuw")]
+[node name="GunComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1097893358 instance=ExtResource("12_vmhuw")]
 visible = false
+isEnabled = false
 ammo = ExtResource("10_fcijy")
 ammoCost = 1
-isEnabled = false
 cooldown = 2.0
 
-[node name="MouseRotationComponent" parent="PlayerEntityTemplate-Overhead" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_8d8lk")]
+[node name="MouseRotationComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1255033792 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_8d8lk")]
 nodeToRotate = NodePath("../GunComponent")
 isEnabled = false
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=692540780]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=518598872]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -64,27 +63,27 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=670531288]
 layout_mode = 2
 
-[node name="StatsUI" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" node_paths=PackedStringArray("statsComponent")]
+[node name="StatsUI" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" unique_id=1655675724 node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
 script = ExtResource("15_648xx")
 statsComponent = NodePath("../../../../PlayerEntityTemplate-Overhead/StatsComponent")
 
-[node name="Spacer1" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
+[node name="Spacer1" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" unique_id=71061709]
 custom_minimum_size = Vector2(4, 4)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="BuyLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
+[node name="BuyLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" unique_id=771250827]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Buy"
 
-[node name="UpgradesList" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" node_paths=PackedStringArray("targetEntity")]
+[node name="UpgradesList" type="VBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" unique_id=313990144 node_paths=PackedStringArray("targetEntity")]
 layout_mode = 2
 size_flags_horizontal = 0
 script = ExtResource("16_xr2h1")
@@ -92,54 +91,54 @@ upgrades = Array[ExtResource("17_mfdhu")]([ExtResource("18_0oqoc"), ExtResource(
 targetEntity = NodePath("../../../../PlayerEntityTemplate-Overhead")
 debugMode = true
 
-[node name="PlaceholderUpgradeChoiceUI" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" instance=ExtResource("17_dh703")]
+[node name="PlaceholderUpgradeChoiceUI" parent="CanvasLayer/MarginContainer/VBoxContainerLeft/UpgradesList" unique_id=1452200062 instance=ExtResource("17_dh703")]
 layout_mode = 2
 
-[node name="Spacer2" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft"]
+[node name="Spacer2" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainerLeft" unique_id=153596938]
 visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="InstalledListContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="InstalledListContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=642096792]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_constants/separation = 0
 
-[node name="InstalledLabel" type="Label" parent="CanvasLayer/MarginContainer/InstalledListContainer"]
+[node name="InstalledLabel" type="Label" parent="CanvasLayer/MarginContainer/InstalledListContainer" unique_id=811788196]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.5, 1, 1, 1)
 text = "___ Installed"
 
-[node name="UpgradeUISpeed" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUISpeed" parent="CanvasLayer/MarginContainer/InstalledListContainer" unique_id=79777444 instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("18_0oqoc")
 
-[node name="UpgradeUIGun" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUIGun" parent="CanvasLayer/MarginContainer/InstalledListContainer" unique_id=1098754694 instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("21_ykf3j")
 
-[node name="UpgradeUICooldown" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUICooldown" parent="CanvasLayer/MarginContainer/InstalledListContainer" unique_id=1470981385 instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("22_ucsfw")
 
-[node name="UpgradeUIAmmo" parent="CanvasLayer/MarginContainer/InstalledListContainer" instance=ExtResource("18_ft6r0")]
+[node name="UpgradeUIAmmo" parent="CanvasLayer/MarginContainer/InstalledListContainer" unique_id=721027991 instance=ExtResource("18_ft6r0")]
 layout_mode = 2
 upgrade = ExtResource("23_2aq68")
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=1989266097]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
-[node name="RechargeButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer"]
+[node name="RechargeButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer" unique_id=2109818517]
 layout_mode = 2
 mouse_filter = 1
 text = "RECHARGE"
 
-[node name="LoanButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer"]
+[node name="LoanButton" type="Button" parent="CanvasLayer/MarginContainer/ButtonsContainer" unique_id=1257886122]
 layout_mode = 2
 mouse_filter = 1
 text = "GET LOAN"

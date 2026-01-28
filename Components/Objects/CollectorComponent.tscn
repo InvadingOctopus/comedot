@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqecemgdtqhw1"]
+[gd_scene format=3 uid="uid://bqecemgdtqhw1"]
 
 [ext_resource type="Script" uid="uid://4as3sytil0jg" path="res://Components/Objects/CollectorComponent.gd" id="1_wnmgx"]
 
@@ -6,13 +6,13 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="CollectorComponent" type="Area2D" groups=["components"]]
+[node name="CollectorComponent" type="Area2D" unique_id=2130076131 groups=["components"]]
 collision_layer = 2048
 collision_mask = 2048
 script = ExtResource("1_wnmgx")
 metadata/_edit_group_ = true
 
-[node name="CollectorCollisionShape" type="CollisionShape2D" parent="."]
+[node name="CollectorCollisionShape" type="CollisionShape2D" parent="." unique_id=1746696411]
 shape = SubResource("RectangleShape2D_jw5ht")
 
 [connection signal="area_entered" from="." to="." method="onAreaEntered"]

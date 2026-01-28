@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bv4nl55gi16vx"]
+[gd_scene format=3 uid="uid://bv4nl55gi16vx"]
 
 [ext_resource type="Script" uid="uid://bx4dv58bmkyd8" path="res://Components/Physics/PlatformerPhysicsComponent.gd" id="1_pktxb"]
 
-[node name="PlatformerPhysicsComponent" type="Node" groups=["components"]]
+[node name="PlatformerPhysicsComponent" type="Node" unique_id=1793477239 groups=["components"]]
 script = ExtResource("1_pktxb")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b8evr41o1p0ea"]
+[gd_scene format=3 uid="uid://b8evr41o1p0ea"]
 
 [ext_resource type="Script" uid="uid://jke7l2qkoy7e" path="res://Tests/TurnBased/TurnBasedTestComponent.gd" id="1_du0w2"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_f63ty"]
@@ -89,17 +89,17 @@ _data = {
 &"turnBegin": SubResource("Animation_3arox")
 }
 
-[node name="TurnBasedTestComponent" type="Node2D" groups=["components", "turnBased"]]
+[node name="TurnBasedTestComponent" type="Node2D" unique_id=311884759 groups=["components", "turnBased"]]
 script = ExtResource("1_du0w2")
 metadata/_edit_group_ = true
 
-[node name="WaitSprite" type="Sprite2D" parent="."]
+[node name="WaitSprite" type="Sprite2D" parent="." unique_id=2002138837]
 visible = false
 texture = ExtResource("2_f63ty")
 region_enabled = true
 region_rect = Rect2(656, 192, 16, 16)
 
-[node name="WaitLabel" type="Label" parent="WaitSprite"]
+[node name="WaitLabel" type="Label" parent="WaitSprite" unique_id=1515681266]
 unique_name_in_owner = true
 offset_left = 8.0
 offset_top = -8.0
@@ -109,7 +109,7 @@ text = "WAITTIME"
 label_settings = ExtResource("3_omtpf")
 vertical_alignment = 1
 
-[node name="ReadyStateSprite" type="Sprite2D" parent="."]
+[node name="ReadyStateSprite" type="Sprite2D" parent="." unique_id=338175691]
 visible = false
 modulate = Color(0, 1, 0, 1)
 scale = Vector2(2, 2)
@@ -118,7 +118,7 @@ region_enabled = true
 region_rect = Rect2(464, 224, 16, 16)
 script = ExtResource("3_1q1wu")
 
-[node name="MovingStateSprite" type="Sprite2D" parent="."]
+[node name="MovingStateSprite" type="Sprite2D" parent="." unique_id=1566621865]
 visible = false
 modulate = Color(1, 1, 0, 1)
 show_behind_parent = true
@@ -127,7 +127,7 @@ texture = ExtResource("2_f63ty")
 region_enabled = true
 region_rect = Rect2(304, 336, 16, 16)
 
-[node name="EndStateSprite" type="Sprite2D" parent="."]
+[node name="EndStateSprite" type="Sprite2D" parent="." unique_id=2047506155]
 visible = false
 modulate = Color(1, 0, 0, 1)
 scale = Vector2(2, 2)
@@ -135,10 +135,8 @@ texture = ExtResource("2_f63ty")
 region_enabled = true
 region_rect = Rect2(480, 176, 16, 16)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_2f1wb")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=472618599]
+libraries/ = SubResource("AnimationLibrary_2f1wb")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=796327598]
 one_shot = true

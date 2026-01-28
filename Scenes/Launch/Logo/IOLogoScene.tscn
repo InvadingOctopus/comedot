@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://7hpq16neqhai"]
+[gd_scene format=3 uid="uid://7hpq16neqhai"]
 
 [ext_resource type="Script" uid="uid://vpdt63uswi16" path="res://Scenes/Launch/Logo/IOLogoScene.gd" id="1_hl2sk"]
 [ext_resource type="PackedScene" uid="uid://dgk7tlglaif5h" path="res://Scenes/Launch/Logo/IOLogoInvaderSprite.tscn" id="2_0utby"]
@@ -21,88 +21,88 @@ normal = Vector2(1, 0)
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_dy5vu"]
 normal = Vector2(-1, 0)
 
-[node name="IOLogoScene" type="Node2D"]
+[node name="IOLogoScene" type="Node2D" unique_id=1721393566]
 script = ExtResource("1_hl2sk")
 mainGameScenePath = "uid://dbwiosb1xulu5"
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=295158223]
 environment = SubResource("Environment_04x4y")
 
-[node name="InvadingOctopuses" type="Node2D" parent="."]
+[node name="InvadingOctopuses" type="Node2D" parent="." unique_id=1549172718]
 position = Vector2(112, 0)
 
-[node name="Invaders" type="Node2D" parent="InvadingOctopuses"]
+[node name="Invaders" type="Node2D" parent="InvadingOctopuses" unique_id=1358199116]
 
-[node name="LogoInvader1" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader1" parent="InvadingOctopuses/Invaders" unique_id=1280760125 instance=ExtResource("2_0utby")]
 
-[node name="LogoInvader2" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader2" parent="InvadingOctopuses/Invaders" unique_id=143795836 instance=ExtResource("2_0utby")]
 position = Vector2(16, 0)
 
-[node name="LogoInvader3" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader3" parent="InvadingOctopuses/Invaders" unique_id=1951193694 instance=ExtResource("2_0utby")]
 position = Vector2(32, 0)
 
-[node name="LogoInvader4" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader4" parent="InvadingOctopuses/Invaders" unique_id=233274913 instance=ExtResource("2_0utby")]
 position = Vector2(16, 16)
 
-[node name="LogoInvader5" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader5" parent="InvadingOctopuses/Invaders" unique_id=1883356727 instance=ExtResource("2_0utby")]
 position = Vector2(16, 32)
 
-[node name="LogoInvader6" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader6" parent="InvadingOctopuses/Invaders" unique_id=443716211 instance=ExtResource("2_0utby")]
 position = Vector2(0, 48)
 
-[node name="LogoInvader7" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader7" parent="InvadingOctopuses/Invaders" unique_id=701845158 instance=ExtResource("2_0utby")]
 position = Vector2(16, 48)
 
-[node name="LogoInvader8" parent="InvadingOctopuses/Invaders" instance=ExtResource("2_0utby")]
+[node name="LogoInvader8" parent="InvadingOctopuses/Invaders" unique_id=526229120 instance=ExtResource("2_0utby")]
 position = Vector2(32, 48)
 
-[node name="Octopuses" type="Node2D" parent="InvadingOctopuses"]
+[node name="Octopuses" type="Node2D" parent="InvadingOctopuses" unique_id=238536905]
 editor_description = "Yes it's \"octopuses\" because we're using it in English.
 "
 position = Vector2(64, 0)
 
-[node name="LogoOctopus1" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus1" parent="InvadingOctopuses/Octopuses" unique_id=1019322589 instance=ExtResource("3_he1sp")]
 
-[node name="LogoOctopus2" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus2" parent="InvadingOctopuses/Octopuses" unique_id=1715466241 instance=ExtResource("3_he1sp")]
 position = Vector2(16, 0)
 
-[node name="LogoOctopus3" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus3" parent="InvadingOctopuses/Octopuses" unique_id=1841123767 instance=ExtResource("3_he1sp")]
 position = Vector2(32, 0)
 
-[node name="LogoOctopus4" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus4" parent="InvadingOctopuses/Octopuses" unique_id=748915736 instance=ExtResource("3_he1sp")]
 position = Vector2(32, 16)
 
-[node name="LogoOctopus5" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus5" parent="InvadingOctopuses/Octopuses" unique_id=583544785 instance=ExtResource("3_he1sp")]
 position = Vector2(32, 32)
 
-[node name="LogoOctopus6" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus6" parent="InvadingOctopuses/Octopuses" unique_id=499106647 instance=ExtResource("3_he1sp")]
 position = Vector2(32, 48)
 
-[node name="LogoOctopus7" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus7" parent="InvadingOctopuses/Octopuses" unique_id=26831279 instance=ExtResource("3_he1sp")]
 position = Vector2(16, 48)
 
-[node name="LogoOctopus8" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus8" parent="InvadingOctopuses/Octopuses" unique_id=379422872 instance=ExtResource("3_he1sp")]
 position = Vector2(0, 48)
 
-[node name="LogoOctopus9" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus9" parent="InvadingOctopuses/Octopuses" unique_id=1879011945 instance=ExtResource("3_he1sp")]
 position = Vector2(0, 32)
 
-[node name="LogoOctopus10" parent="InvadingOctopuses/Octopuses" instance=ExtResource("3_he1sp")]
+[node name="LogoOctopus10" parent="InvadingOctopuses/Octopuses" unique_id=418072486 instance=ExtResource("3_he1sp")]
 position = Vector2(0, 16)
 
-[node name="Floor" type="StaticBody2D" parent="."]
+[node name="Floor" type="StaticBody2D" parent="." unique_id=1207089029]
 position = Vector2(0, 180)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=1952481444]
 shape = SubResource("WorldBoundaryShape2D_2pj6d")
 
-[node name="WallLeft" type="StaticBody2D" parent="."]
+[node name="WallLeft" type="StaticBody2D" parent="." unique_id=577841067]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=1745315390]
 shape = SubResource("WorldBoundaryShape2D_6vd1f")
 
-[node name="WallRight" type="StaticBody2D" parent="."]
+[node name="WallRight" type="StaticBody2D" parent="." unique_id=426518916]
 position = Vector2(320, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=1195307049]
 shape = SubResource("WorldBoundaryShape2D_dy5vu")

@@ -1,36 +1,32 @@
-[gd_scene load_steps=7 format=3 uid="uid://d24663limqvmn"]
+[gd_scene format=3 uid="uid://d24663limqvmn"]
 
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="1_5xvy3"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_ibfmm"]
 [ext_resource type="PackedScene" uid="uid://kqv1vxo06kf6" path="res://Components/Gameplay/InjectorComponent.tscn" id="3_m01pb"]
 [ext_resource type="PackedScene" uid="uid://c4cjqm3fuwkub" path="res://Components/Combat/DamageOverTimeComponent.tscn" id="4_mrnfw"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ibfmm"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jfxxg"]
 resource_local_to_scene = true
 size = Vector2(8, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nuc6d"]
-resource_local_to_scene = true
-size = Vector2(8, 8)
-
-[node name="PoisonArrow" instance=ExtResource("1_5xvy3")]
+[node name="PoisonArrow" unique_id=1208345415 instance=ExtResource("1_5xvy3")]
 isLoggingEnabled = true
 
-[node name="BulletSprite" parent="." index="0"]
+[node name="NonDamageCollisionShape" parent="." index="0" unique_id=1049746291]
+shape = SubResource("RectangleShape2D_jfxxg")
+
+[node name="BulletSprite" parent="." index="1" unique_id=260150904]
 modulate = Color(0.5, 1, 0, 1)
 texture = ExtResource("2_ibfmm")
 region_enabled = true
 region_rect = Rect2(360, 336, 8, 16)
 
-[node name="NonDamageCollisionShape" parent="." index="1"]
-shape = SubResource("RectangleShape2D_ibfmm")
+[node name="DamageCollisionShape" parent="DamageComponent" parent_id_path=PackedInt32Array(1624107160) index="0" unique_id=1217175677]
+shape = SubResource("RectangleShape2D_jfxxg")
 
-[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
-shape = SubResource("RectangleShape2D_nuc6d")
+[node name="InjectorComponent" parent="." index="7" unique_id=545806848 instance=ExtResource("3_m01pb")]
 
-[node name="InjectorComponent" parent="." index="7" instance=ExtResource("3_m01pb")]
-
-[node name="DamageOverTimeComponent" parent="InjectorComponent" index="0" instance=ExtResource("4_mrnfw")]
+[node name="DamageOverTimeComponent" parent="InjectorComponent" index="0" unique_id=1518067670 instance=ExtResource("4_mrnfw")]
 attackerFactions = 8
 allowNonEntityParent = true
 

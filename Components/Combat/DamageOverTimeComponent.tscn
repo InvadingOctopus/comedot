@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4cjqm3fuwkub"]
+[gd_scene format=3 uid="uid://c4cjqm3fuwkub"]
 
 [ext_resource type="Script" uid="uid://d17tk3ljuxs51" path="res://Components/Combat/DamageOverTimeComponent.gd" id="1_q1nbi"]
 
-[node name="DamageOverTimeComponent" type="Node" groups=["components"]]
+[node name="DamageOverTimeComponent" type="Node" unique_id=876340185 groups=["components"]]
 script = ExtResource("1_q1nbi")
 
-[node name="DamageTimer" type="Timer" parent="."]
+[node name="DamageTimer" type="Timer" parent="." unique_id=2060958945]
 
-[node name="RemovalTimer" type="Timer" parent="."]
+[node name="RemovalTimer" type="Timer" parent="." unique_id=2116248917]
 wait_time = 5.0
 one_shot = true
 

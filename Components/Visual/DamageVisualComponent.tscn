@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1bqp8r4wjcg3"]
+[gd_scene format=3 uid="uid://b1bqp8r4wjcg3"]
 
 [ext_resource type="Script" uid="uid://dqnlvy80u7w5s" path="res://Components/Visual/DamageVisualComponent.gd" id="1_55ce8"]
 
-[node name="DamageVisualComponent" type="Node2D" groups=["components"]]
+[node name="DamageVisualComponent" type="Node2D" unique_id=974188272 groups=["components"]]
 script = ExtResource("1_55ce8")
 metadata/_edit_group_ = true

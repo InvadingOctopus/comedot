@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://p5j61vitplf"]
+[gd_scene format=3 uid="uid://p5j61vitplf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_3wcaw"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_kwxr1"]
@@ -12,20 +12,20 @@
 [ext_resource type="Resource" uid="uid://g0b8g0pccipy" path="res://Tests/Inventory/TestRedKey.tres" id="9_kwxr1"]
 [ext_resource type="Resource" uid="uid://b5bjb7ftispv6" path="res://Tests/Inventory/TestBlueKey.tres" id="11_fdjm8"]
 
-[node name="InventoryTest" type="Node2D"]
+[node name="InventoryTest" type="Node2D" unique_id=157306399]
 script = ExtResource("1_3wcaw")
 
-[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_kwxr1")]
+[node name="PlayerEntityTemplate-Overhead" parent="." unique_id=1079093200 instance=ExtResource("2_kwxr1")]
 
-[node name="InventoryComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("3_fdjm8")]
+[node name="InventoryComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1085872954 instance=ExtResource("3_fdjm8")]
 debugMode = true
 
-[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_hcysf")]
+[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1981667090 instance=ExtResource("4_hcysf")]
 debugMode = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1126971210]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=272691900]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -37,74 +37,74 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/MarginContainer" node_paths=PackedStringArray("inventoryComponent")]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/MarginContainer" unique_id=1003261915 node_paths=PackedStringArray("inventoryComponent")]
 layout_mode = 2
 columns = 4
 script = ExtResource("5_koqj8")
 inventoryComponent = NodePath("../../../PlayerEntityTemplate-Overhead/InventoryComponent")
 
-[node name="RedKey" type="Sprite2D" parent="."]
+[node name="RedKey" type="Sprite2D" parent="." unique_id=222417500]
 position = Vector2(-112, 0)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(544, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="RedKey" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="RedKey" unique_id=906869016 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_kwxr1")
 debugMode = true
 
-[node name="RedKey2" type="Sprite2D" parent="."]
+[node name="RedKey2" type="Sprite2D" parent="." unique_id=789912408]
 position = Vector2(128, 64)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(544, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="RedKey2" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="RedKey2" unique_id=977594450 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_kwxr1")
 debugMode = true
 
-[node name="YellowKey" type="Sprite2D" parent="."]
+[node name="YellowKey" type="Sprite2D" parent="." unique_id=2090975829]
 position = Vector2(120, -56)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(512, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="YellowKey" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="YellowKey" unique_id=804192699 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_cdyda")
 debugMode = true
 
-[node name="YellowKey2" type="Sprite2D" parent="."]
+[node name="YellowKey2" type="Sprite2D" parent="." unique_id=1891770284]
 position = Vector2(-256, 0)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(512, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="YellowKey2" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="YellowKey2" unique_id=773524543 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("9_cdyda")
 debugMode = true
 
-[node name="BlueKey" type="Sprite2D" parent="."]
+[node name="BlueKey" type="Sprite2D" parent="." unique_id=1892449930]
 position = Vector2(0, 128)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(528, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="BlueKey" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="BlueKey" unique_id=1179454419 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("11_fdjm8")
 debugMode = true
 
-[node name="BlueKey2" type="Sprite2D" parent="."]
+[node name="BlueKey2" type="Sprite2D" parent="." unique_id=1938966041]
 position = Vector2(0, -88)
 texture = ExtResource("6_fnjw7")
 region_enabled = true
 region_rect = Rect2(528, 176, 16, 16)
 script = ExtResource("7_8ubho")
 
-[node name="CollectibleInventoryComponent" parent="BlueKey2" instance=ExtResource("8_vo3g0")]
+[node name="CollectibleInventoryComponent" parent="BlueKey2" unique_id=331157805 instance=ExtResource("8_vo3g0")]
 inventoryItem = ExtResource("11_fdjm8")
 debugMode = true

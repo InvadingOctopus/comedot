@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://c67ee4tfbi3lk"]
+[gd_scene format=3 uid="uid://c67ee4tfbi3lk"]
 
 [ext_resource type="Script" uid="uid://c7rekqoswkahw" path="res://Components/Physics/AreaCollisionComponent.gd" id="1_6xpx3"]
 
@@ -6,11 +6,11 @@
 resource_local_to_scene = true
 size = Vector2(32, 32)
 
-[node name="AreaCollisionComponent" type="Area2D" groups=["components"]]
+[node name="AreaCollisionComponent" type="Area2D" unique_id=1559788828 groups=["components"]]
 collision_layer = 0
 collision_mask = 513
 script = ExtResource("1_6xpx3")
 metadata/_edit_group_ = true
 
-[node name="AreaDetectorShape" type="CollisionShape2D" parent="."]
+[node name="AreaDetectorShape" type="CollisionShape2D" parent="." unique_id=2019209105]
 shape = SubResource("RectangleShape2D_6ljky")

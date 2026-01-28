@@ -1,16 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7jqxgeo6hi3"]
+[gd_scene format=3 uid="uid://b7jqxgeo6hi3"]
 
 [ext_resource type="PackedScene" uid="uid://dfeqql42vl720" path="res://Components/Physics/AreaContactComponent.tscn" id="1_05wgb"]
 [ext_resource type="Script" uid="uid://bk04ni7nsr7w6" path="res://Templates/Examples/ControlSwapperExampleComponent.gd" id="2_1k7qh"]
+[ext_resource type="Script" uid="uid://ro5dtmodb4v0" path="res://Resources/ComponentSet.gd" id="3_jddh1"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_okh6g"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1f82o"]
 resource_local_to_scene = true
 size = Vector2(12, 14)
 
-[node name="ControlSwapperExampleComponent" instance=ExtResource("1_05wgb")]
+[node name="ControlSwapperExampleComponent" unique_id=593957029 instance=ExtResource("1_05wgb")]
 collision_mask = 512
 script = ExtResource("2_1k7qh")
-groupToInclude = &"zones"
+componentSets = Dictionary[StringName, ExtResource("3_jddh1")]({})
+shouldFree = true
+currentSetName = &""
 
-[node name="AreaDetectorShape" parent="." index="0"]
-shape = SubResource("RectangleShape2D_okh6g")
+[node name="AreaDetectorShape" parent="." index="0" unique_id=2019209105]
+shape = SubResource("RectangleShape2D_1f82o")

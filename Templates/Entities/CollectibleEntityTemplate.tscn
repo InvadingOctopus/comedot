@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbqmycxuwn5qb"]
+[gd_scene format=3 uid="uid://cbqmycxuwn5qb"]
 
 [ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="1_toe87"]
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="2_uxaai"]
 
-[node name="CollectibleEntity" groups=["collectibles"] instance=ExtResource("1_toe87")]
+[node name="CollectibleEntity" unique_id=1313625347 groups=["collectibles"] instance=ExtResource("1_toe87")]
 modulate = Color(0.5, 1, 0, 1)
 region_rect = Rect2(544, 288, 16, 16)
 
-[node name="CollectibleComponent" parent="." index="0" instance=ExtResource("2_uxaai")]
+[node name="CollectibleComponent" parent="." index="0" unique_id=1380273917 instance=ExtResource("2_uxaai")]

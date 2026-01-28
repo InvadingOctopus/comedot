@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bfxsrq5vvp0de"]
+[gd_scene format=3 uid="uid://bfxsrq5vvp0de"]
 
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="1_mkdep"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_02hnx"]
@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="7_ywvyn"]
 [ext_resource type="PackedScene" uid="uid://cdik3ejdf7c57" path="res://Components/Control/TurningControlComponent.tscn" id="9_qdfo0"]
 
-[sub_resource type="Resource" id="Resource_1id7j"]
+[sub_resource type="Resource" id="Resource_cafj2"]
 resource_local_to_scene = true
 resource_name = "playerHealth"
 script = ExtResource("4_02hnx")
@@ -26,29 +26,29 @@ max = 100
 value = 100
 name = &"ammo"
 
-[node name="Player-OverheadCombat" instance=ExtResource("1_mkdep")]
+[node name="Player-OverheadCombat" unique_id=610726931 instance=ExtResource("1_mkdep")]
 editor_description = "A template for the player character in an \"overhead\" or \"top-down\" view game with combat functionality."
 
-[node name="FactionComponent" parent="." index="5" instance=ExtResource("2_02hnx")]
+[node name="FactionComponent" parent="." index="5" unique_id=171852289 instance=ExtResource("2_02hnx")]
 factions = 2
 
-[node name="HealthComponent" parent="." index="6" instance=ExtResource("3_ywvyn")]
-health = SubResource("Resource_1id7j")
+[node name="HealthComponent" parent="." index="6" unique_id=2138955234 instance=ExtResource("3_ywvyn")]
+health = SubResource("Resource_cafj2")
 
-[node name="HealthVisualComponent" parent="." index="7" instance=ExtResource("5_qdfo0")]
+[node name="HealthVisualComponent" parent="." index="7" unique_id=1120379009 instance=ExtResource("5_qdfo0")]
 
-[node name="DamageReceivingComponent" parent="." index="8" instance=ExtResource("5_1id7j")]
+[node name="DamageReceivingComponent" parent="." index="8" unique_id=1044778936 instance=ExtResource("5_1id7j")]
 collision_layer = 1028
 collision_mask = 1064
 
-[node name="GunComponent" parent="." index="9" instance=ExtResource("6_qdfo0")]
+[node name="GunComponent" parent="." index="9" unique_id=392950478 instance=ExtResource("6_qdfo0")]
 ammo = SubResource("Resource_qdfo0")
 ammoCost = 1
 
-[node name="MouseRotationComponent" parent="." index="10" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("7_ywvyn")]
+[node name="MouseRotationComponent" parent="." index="10" unique_id=2087875808 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("7_ywvyn")]
 nodeToRotate = NodePath("../GunComponent")
 
-[node name="TurningControlComponent" parent="." index="11" node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("9_qdfo0")]
+[node name="TurningControlComponent" parent="." index="11" unique_id=852024549 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("9_qdfo0")]
 nodeToRotate = NodePath("../GunComponent")
 shouldUseSecondaryAxis = true
 

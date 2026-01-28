@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cpfliajqwj4lf"]
+[gd_scene format=3 uid="uid://cpfliajqwj4lf"]
 
 [ext_resource type="Script" uid="uid://do4i6vrght24w" path="res://UI/InputActionUI.gd" id="1_ehik8"]
 [ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_kmpqn"]
@@ -8,7 +8,7 @@ font = ExtResource("2_kmpqn")
 font_size = 8
 font_color = Color(0, 1, 1, 1)
 
-[node name="InputActionUI" type="GridContainer"]
+[node name="InputActionUI" type="GridContainer" unique_id=1783952982]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,10 +17,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_ehik8")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1196671406]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=230358885]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -28,14 +28,14 @@ text = "Action Name"
 label_settings = SubResource("LabelSettings_xqos3")
 uppercase = true
 
-[node name="AddButton" type="Button" parent="HBoxContainer"]
+[node name="AddButton" type="Button" parent="HBoxContainer" unique_id=2019709323]
 unique_name_in_owner = true
 modulate = Color(0, 1, 1, 1)
 layout_mode = 2
 tooltip_text = "Add Key/Button/Axis"
 text = "+"
 
-[node name="EventsList" type="VBoxContainer" parent="."]
+[node name="EventsList" type="VBoxContainer" parent="." unique_id=1387538563]
 layout_mode = 2
 size_flags_horizontal = 3
 

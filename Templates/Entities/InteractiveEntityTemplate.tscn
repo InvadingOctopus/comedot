@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cs6paddlsmrgv"]
+[gd_scene format=3 uid="uid://cs6paddlsmrgv"]
 
 [ext_resource type="PackedScene" uid="uid://cw0tix585c5wr" path="res://Templates/Entities/SpriteEntityTemplate.tscn" id="1_g7u37"]
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="2_hijqq"]
 
-[node name="InteractiveEntity" groups=["interactions"] instance=ExtResource("1_g7u37")]
+[node name="InteractiveEntity" unique_id=1618396350 groups=["interactions"] instance=ExtResource("1_g7u37")]
 modulate = Color(0, 0.5, 1, 1)
 region_rect = Rect2(576, 208, 16, 16)
 
-[node name="InteractionComponent" parent="." index="0" instance=ExtResource("2_hijqq")]
+[node name="InteractionComponent" parent="." index="0" unique_id=1635004269 instance=ExtResource("2_hijqq")]

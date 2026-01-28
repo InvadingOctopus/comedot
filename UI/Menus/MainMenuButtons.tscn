@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://mwsrn6l4gw51"]
+[gd_scene format=3 uid="uid://mwsrn6l4gw51"]
 
 [ext_resource type="Script" uid="uid://bcblbngsna2b3" path="res://UI/Menus/MainMenuButtons.gd" id="1_7ifjj"]
 [ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="1_x55uw"]
@@ -10,7 +10,7 @@
 default_font = ExtResource("1_x55uw")
 default_font_size = 8
 
-[node name="MainMenuButtonsContainer" type="CenterContainer"]
+[node name="MainMenuButtonsContainer" type="CenterContainer" unique_id=780695345]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,7 +19,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MainMenuButtons" type="VBoxContainer" parent="."]
+[node name="MainMenuButtons" type="VBoxContainer" parent="." unique_id=280122885]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 6
@@ -27,7 +27,7 @@ size_flags_vertical = 3
 theme = SubResource("Theme_xjusq")
 script = ExtResource("1_7ifjj")
 
-[node name="StartButton" type="Button" parent="MainMenuButtons"]
+[node name="StartButton" type="Button" parent="MainMenuButtons" unique_id=1390882918]
 auto_translate_mode = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../QuitButton")
@@ -37,7 +37,7 @@ focus_previous = NodePath("../QuitButton")
 text = "START"
 script = ExtResource("3_ohmp7")
 
-[node name="OptionsButton" type="Button" parent="MainMenuButtons"]
+[node name="OptionsButton" type="Button" parent="MainMenuButtons" unique_id=1279313688]
 auto_translate_mode = 1
 layout_mode = 2
 focus_neighbor_top = NodePath("../StartButton")
@@ -48,7 +48,7 @@ text = "OPTIONS"
 script = ExtResource("2_phlj7")
 navigationDestination = "uid://cysctd14jlutm"
 
-[node name="QuitButton" parent="MainMenuButtons" instance=ExtResource("4_0dnri")]
+[node name="QuitButton" parent="MainMenuButtons" unique_id=378248951 instance=ExtResource("4_0dnri")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../OptionsButton")
 focus_neighbor_bottom = NodePath("../StartButton")

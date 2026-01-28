@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpklu2uieedw7"]
+[gd_scene format=3 uid="uid://cpklu2uieedw7"]
 
 [ext_resource type="Script" uid="uid://b3cetyvq4j670" path="res://Components/Combat/DamageComponent.gd" id="1_c26d6"]
 
@@ -6,13 +6,13 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="DamageComponent" type="Area2D" groups=["components"]]
+[node name="DamageComponent" type="Area2D" unique_id=203248346 groups=["components"]]
 collision_layer = 1024
 collision_mask = 1024
 script = ExtResource("1_c26d6")
 metadata/_edit_group_ = true
 
-[node name="DamageCollisionShape" type="CollisionShape2D" parent="."]
+[node name="DamageCollisionShape" type="CollisionShape2D" parent="." unique_id=1217175677]
 shape = SubResource("RectangleShape2D_jqapn")
 debug_color = Color(0.7, 0, 0, 0.419608)
 

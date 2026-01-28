@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bruoa8828rdpj"]
+[gd_scene format=3 uid="uid://bruoa8828rdpj"]
 
 [ext_resource type="Script" uid="uid://unl3pbfwqcqt" path="res://Entities/TurnBased/TurnBasedEntity.gd" id="1_t32ic"]
 
-[node name="TurnBasedEntity" type="Node2D" groups=["entities", "turnBased"]]
+[node name="TurnBasedEntity" type="Node2D" unique_id=1067528357 groups=["entities", "turnBased"]]
 script = ExtResource("1_t32ic")
 metadata/_edit_group_ = true

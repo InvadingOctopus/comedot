@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://nd3rpg4n6351"]
+[gd_scene format=3 uid="uid://nd3rpg4n6351"]
 
 [ext_resource type="Script" uid="uid://1jpom8hddq5w" path="res://Components/Objects/CollectibleStatComponent.gd" id="1_1po3f"]
 [ext_resource type="PackedScene" uid="uid://c3ufwns4q2thw" path="res://Components/Objects/CollectibleComponent.tscn" id="1_m4051"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_e5puf"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tl5pr"]
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="CollectibleStatComponent" instance=ExtResource("1_m4051")]
+[node name="CollectibleStatComponent" unique_id=1854699991 instance=ExtResource("1_m4051")]
 collision_mask = 2048
 script = ExtResource("1_1po3f")
 stat = null
@@ -20,7 +20,7 @@ shouldColorBubble = true
 shouldAppendStatName = true
 previouslyDeniedCollector = null
 
-[node name="CollectibleCollisionShape" parent="." index="0"]
-shape = SubResource("RectangleShape2D_e5puf")
+[node name="CollectibleCollisionShape" parent="." index="0" unique_id=343143025]
+shape = SubResource("RectangleShape2D_tl5pr")
 
 [connection signal="area_exited" from="." to="." method="onAreaExited"]

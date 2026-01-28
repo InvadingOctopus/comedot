@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://csq2lekj41v32"]
+[gd_scene format=3 uid="uid://csq2lekj41v32"]
 
 [ext_resource type="Script" uid="uid://c7asq3d6cvkmi" path="res://Scripts/Visual/RandomModulate.gd" id="1_k5ve7"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_4ia0u"]
@@ -13,7 +13,7 @@ region = Rect2(400, 128, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c1e8x"]
 size = Vector2(14, 14)
 
-[node name="LogoOctopus" type="RigidBody2D" groups=["logo"]]
+[node name="LogoOctopus" type="RigidBody2D" unique_id=1393817681 groups=["logo"]]
 texture_filter = 2
 physics_material_override = SubResource("PhysicsMaterial_6utrp")
 gravity_scale = 0.2
@@ -22,8 +22,8 @@ redMin = 0.05
 greenMin = 0.05
 blueMin = 0.05
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1644518306]
 texture = SubResource("AtlasTexture_hkblr")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1122020062]
 shape = SubResource("RectangleShape2D_c1e8x")

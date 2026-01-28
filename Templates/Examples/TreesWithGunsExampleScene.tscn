@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://dk8auhx4xrnqp"]
+[gd_scene format=4 uid="uid://dk8auhx4xrnqp"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_sy48a"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
@@ -17,80 +17,80 @@ size = Vector2(12, 14)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sy48a"]
 size = Vector2(384, 400)
 
-[node name="TreesWithGunsExample" type="Node2D"]
+[node name="TreesWithGunsExample" type="Node2D" unique_id=1962837040]
 script = ExtResource("1_sy48a")
 showDebugWindow = false
 shouldPrintDebugLogs = false
 showDebugLabels = false
 showDebugBackground = false
 
-[node name="DebugBackground" parent="." instance=ExtResource("2_kxnpl")]
+[node name="DebugBackground" parent="." unique_id=450280105 instance=ExtResource("2_kxnpl")]
 modulate = Color(0.4, 0.4, 0.4, 1)
 
-[node name="TerrainTileMapLayer" type="TileMapLayer" parent="."]
+[node name="TerrainTileMapLayer" type="TileMapLayer" parent="." unique_id=147079617]
 modulate = Color(0.8, 0.8, 0.8, 1)
 tile_map_data = PackedByteArray("AAAAAAsAAAARABUAAAD//wsAAAARABUAAAD+/wsAAAARABUAAAD9/wsAAAARABUAAAD8/wsAAAARABUAAAD7/wsAAAARABUAAAD6/wsAAAARABUAAAD5/wsAAAARABUAAAABAAsAAAARABUAAAACAAsAAAARABUAAAADAAsAAAARABUAAAAEAAsAAAARABUAAAAFAAsAAAARABUAAAAGAAsAAAARABUAAAAHAAsAAAARABUAAAD4/wsAAAARABUAAAAAAPT/AAARABMAAAD///T/AAARABMAAAD+//T/AAARABMAAAD9//T/AAARABMAAAD8//T/AAARABMAAAD7//T/AAARABMAAAD6//T/AAARABMAAAD5//T/AAARABMAAAABAPT/AAARABMAAAACAPT/AAARABMAAAADAPT/AAARABMAAAAEAPT/AAARABMAAAAFAPT/AAARABMAAAAGAPT/AAARABMAAAAHAPT/AAARABMAAAAIAPT/AAARABMAAAAJAPT/AAARABMAAAALAP//AAASABQAAAALAP7/AAASABQAAAALAP3/AAASABQAAAALAPz/AAASABQAAAALAPv/AAASABQAAAALAPr/AAASABQAAAALAPn/AAASABQAAAALAPj/AAASABQAAAALAPf/AAASABQAAAALAPb/AAASABQAAAALAPX/AAASABQAAAALAPT/AAASABMAAAAKAPT/AAARABMAAAALAAAAAAASABQAAAALAAEAAAASABQAAAALAAIAAAASABQAAAALAAMAAAASABQAAAALAAQAAAASABQAAAALAAUAAAASABQAAAALAAYAAAASABQAAAALAAcAAAASABQAAAALAAgAAAASABQAAAAIAAsAAAARABUAAAAJAAsAAAARABUAAAAKAAsAAAARABUAAAALAAkAAAASABQAAAALAAoAAAASABQAAAALAAsAAAASABUAAAD0/wAAAAAQABQAAAD0////AAAQABQAAAD0//7/AAAQABQAAAD0//3/AAAQABQAAAD0//z/AAAQABQAAAD0//v/AAAQABQAAAD0//r/AAAQABQAAAD0//n/AAAQABQAAAD0//j/AAAQABQAAAD0//f/AAAQABQAAAD0//b/AAAQABQAAAD0//X/AAAQABQAAAD4//T/AAARABMAAAD3//T/AAARABMAAAD2//T/AAARABMAAAD1//T/AAARABMAAAD0//T/AAAQABMAAAD0/wsAAAAQABUAAAD1/wsAAAARABUAAAD2/wsAAAARABUAAAD3/wsAAAARABUAAAD0/woAAAAQABQAAAD0/wkAAAAQABQAAAD0/wgAAAAQABQAAAD0/wcAAAAQABQAAAD0/wYAAAAQABQAAAD0/wUAAAAQABQAAAD0/wQAAAAQABQAAAD0/wMAAAAQABQAAAD0/wIAAAAQABQAAAD0/wEAAAAQABQAAAD0//P/AAAlABIAAAD1//P/AAAkABMAAAD2//P/AAAvABIAAAD3//P/AAAnABIAAAD4//P/AAAmABIAAAD5//P/AAAkABMAAAD6//P/AAApABMAAAD6//7/AAAHAA8AAAD6/wEAAAAHAA8AAAAFAP7/AAAHAA8AAAAFAAEAAAAHAA8AAAD//wUAAAAHAA8AAAAAAAUAAAAHAA8AAAABAPr/AAAHAA8AAAACAPr/AAAHAA8AAAD+//r/AAAHAA8AAAD9//r/AAAHAA8AAAA=")
 tile_set = ExtResource("3_yqhs0")
 
-[node name="PlayerEntityTemplate-OverheadBasic" parent="." instance=ExtResource("4_bek2q")]
+[node name="PlayerEntityTemplate-OverheadBasic" parent="." unique_id=859962267 instance=ExtResource("4_bek2q")]
 collision_mask = 3632
 
-[node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="0"]
+[node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="0" unique_id=303169715]
 shape = SubResource("RectangleShape2D_1r2ol")
 
-[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="1"]
+[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="1" unique_id=514791681]
 modulate = Color(0, 1, 1, 1)
 texture = ExtResource("5_351p7")
 region_enabled = true
 region_rect = Rect2(384, 64, 16, 16)
 
-[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadBasic" index="2" node_paths=PackedStringArray("boundary")]
+[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadBasic" index="2" unique_id=1618703562 node_paths=PackedStringArray("boundary")]
 shouldClampToBoundary = true
 boundary = NodePath("../../CameraBounds")
 
-[node name="FactionComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("6_kpabc")]
+[node name="FactionComponent" parent="PlayerEntityTemplate-OverheadBasic" unique_id=1980926030 instance=ExtResource("6_kpabc")]
 factions = 2
 
-[node name="PushRigidBodyComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("7_nnv3x")]
+[node name="PushRigidBodyComponent" parent="PlayerEntityTemplate-OverheadBasic" unique_id=246998227 instance=ExtResource("7_nnv3x")]
 
-[node name="AimingCursorComponent" parent="PlayerEntityTemplate-OverheadBasic" instance=ExtResource("8_bek2q")]
+[node name="AimingCursorComponent" parent="PlayerEntityTemplate-OverheadBasic" unique_id=609996757 instance=ExtResource("8_bek2q")]
 
-[node name="Trees" type="Node" parent="."]
+[node name="Trees" type="Node" parent="." unique_id=1054995060]
 
-[node name="TreeEntity1" parent="Trees" instance=ExtResource("10_xxxig")]
+[node name="TreeEntity1" parent="Trees" unique_id=234012061 instance=ExtResource("10_xxxig")]
 position = Vector2(0, -64)
 
 [node name="NodeFacingComponent" parent="Trees/TreeEntity1" index="4" node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
-[node name="TreeEntity2" parent="Trees" instance=ExtResource("10_xxxig")]
+[node name="TreeEntity2" parent="Trees" unique_id=1718656649 instance=ExtResource("10_xxxig")]
 position = Vector2(64, 0)
 
 [node name="NodeFacingComponent" parent="Trees/TreeEntity2" index="4" node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
-[node name="TreeEntity3" parent="Trees" instance=ExtResource("10_xxxig")]
+[node name="TreeEntity3" parent="Trees" unique_id=1092403872 instance=ExtResource("10_xxxig")]
 position = Vector2(-64, 0)
 
 [node name="NodeFacingComponent" parent="Trees/TreeEntity3" index="4" node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
-[node name="TreeEntity4" parent="Trees" instance=ExtResource("10_xxxig")]
+[node name="TreeEntity4" parent="Trees" unique_id=899578031 instance=ExtResource("10_xxxig")]
 position = Vector2(0, 64)
 
 [node name="NodeFacingComponent" parent="Trees/TreeEntity4" index="4" node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
-[node name="Monsters" type="Node" parent="."]
+[node name="Monsters" type="Node" parent="." unique_id=502487911]
 
-[node name="Ghost" parent="Monsters" instance=ExtResource("11_xlksg")]
+[node name="Ghost" parent="Monsters" unique_id=1922420295 instance=ExtResource("11_xlksg")]
 position = Vector2(-184, -184)
 collision_mask = 72
 
-[node name="CameraBounds" type="Area2D" parent="."]
+[node name="CameraBounds" type="Area2D" parent="." unique_id=792502766]
 visible = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds" unique_id=99048158]
 position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_sy48a")
 debug_color = Color(0, 0.6, 0.7, 0.1)

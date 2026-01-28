@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dnj2tewb1jq0n"]
+[gd_scene format=3 uid="uid://dnj2tewb1jq0n"]
 
 [ext_resource type="Script" uid="uid://dhuheh7xxxsp3" path="res://Scenes/Areas/SpawnArea.gd" id="1_k8est"]
 [ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/Gameplay/SpawnTimer.tscn" id="2_8imah"]
@@ -7,7 +7,7 @@
 resource_local_to_scene = true
 size = Vector2(64, 64)
 
-[node name="SpawnArea" type="Area2D" groups=["spawners"]]
+[node name="SpawnArea" type="Area2D" unique_id=1390599236 groups=["spawners"]]
 editor_description = "An Area2D region to randomly spawn copies of a scene in. Enable \"Editable Children\" and edit SpawnTimer to choose scene.
 "
 collision_layer = 512
@@ -17,12 +17,12 @@ monitorable = false
 script = ExtResource("1_k8est")
 metadata/_edit_group_ = true
 
-[node name="SpawnAreaShape" type="CollisionShape2D" parent="."]
+[node name="SpawnAreaShape" type="CollisionShape2D" parent="." unique_id=1648716433]
 position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
-[node name="SpawnTimer" parent="." node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_8imah")]
+[node name="SpawnTimer" parent="." unique_id=1938618345 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_8imah")]
 parentOverride = NodePath("..")
 
 [connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]

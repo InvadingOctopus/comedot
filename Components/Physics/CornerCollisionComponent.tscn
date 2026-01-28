@@ -1,58 +1,58 @@
-[gd_scene load_steps=3 format=3 uid="uid://ylultcpjxp6"]
+[gd_scene format=3 uid="uid://ylultcpjxp6"]
 
 [ext_resource type="Script" uid="uid://c3xgjlbxviyrh" path="res://Components/Physics/CornerCollisionComponent.gd" id="1_ou10c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7x1ra"]
 size = Vector2(2, 2)
 
-[node name="CornerCollisionComponent" type="Node2D" groups=["components"]]
+[node name="CornerCollisionComponent" type="Node2D" unique_id=1134030880 groups=["components"]]
 script = ExtResource("1_ou10c")
 metadata/_edit_group_ = true
 
-[node name="Areas" type="Node2D" parent="."]
+[node name="Areas" type="Node2D" parent="." unique_id=2108236529]
 unique_name_in_owner = true
 
-[node name="AreaNW" type="Area2D" parent="Areas"]
+[node name="AreaNW" type="Area2D" parent="Areas" unique_id=1842864808]
 unique_name_in_owner = true
 position = Vector2(-16, -16)
 collision_layer = 0
 collision_mask = 16
 input_pickable = false
 
-[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNW"]
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNW" unique_id=1647509324]
 shape = SubResource("RectangleShape2D_7x1ra")
 debug_color = Color(0.5, 0.5, 0, 0.5)
 
-[node name="AreaNE" type="Area2D" parent="Areas"]
+[node name="AreaNE" type="Area2D" parent="Areas" unique_id=320165494]
 unique_name_in_owner = true
 position = Vector2(16, -16)
 collision_layer = 0
 collision_mask = 16
 input_pickable = false
 
-[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNE"]
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaNE" unique_id=1546722847]
 shape = SubResource("RectangleShape2D_7x1ra")
 debug_color = Color(0.5, 0.5, 0, 0.5)
 
-[node name="AreaSE" type="Area2D" parent="Areas"]
+[node name="AreaSE" type="Area2D" parent="Areas" unique_id=1200673762]
 unique_name_in_owner = true
 position = Vector2(16, 16)
 collision_layer = 0
 collision_mask = 16
 input_pickable = false
 
-[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSE"]
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSE" unique_id=1058553895]
 shape = SubResource("RectangleShape2D_7x1ra")
 debug_color = Color(0.5, 0.5, 0, 0.5)
 
-[node name="AreaSW" type="Area2D" parent="Areas"]
+[node name="AreaSW" type="Area2D" parent="Areas" unique_id=1931465214]
 unique_name_in_owner = true
 position = Vector2(-16, 16)
 collision_layer = 0
 collision_mask = 16
 input_pickable = false
 
-[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSW"]
+[node name="SharedCollisionShape" type="CollisionShape2D" parent="Areas/AreaSW" unique_id=24984110]
 shape = SubResource("RectangleShape2D_7x1ra")
 debug_color = Color(0.5, 0.5, 0, 0.5)
 

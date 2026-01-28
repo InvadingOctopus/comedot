@@ -1,17 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7kokytnapn7b"]
+[gd_scene format=3 uid="uid://b7kokytnapn7b"]
 
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="1_g65kl"]
 [ext_resource type="Script" uid="uid://diufsb676efmn" path="res://Components/Interaction/InteractionWithCoooldownComponent.gd" id="2_iq1o4"]
 
-[node name="InteractionWithCooldownComponent" instance=ExtResource("1_g65kl")]
+[node name="InteractionWithCooldownComponent" unique_id=1614544184 instance=ExtResource("1_g65kl")]
 script = ExtResource("2_iq1o4")
 shouldCooldownOnFailure = true
 cooldownOnFailure = 0.5
 shouldRepeatInteractionAfterCooldown = false
 shouldModifyIndicatorInCooldown = true
 previousInteractor = null
+canSkipNextCooldown = false
 
-[node name="CooldownTimer" type="Timer" parent="." index="1"]
+[node name="CooldownTimer" type="Timer" parent="." index="1" unique_id=75249222]
 one_shot = true
 
 [connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]

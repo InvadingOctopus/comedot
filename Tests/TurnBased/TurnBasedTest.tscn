@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://dkm5w4ukgrpgf"]
+[gd_scene format=4 uid="uid://dkm5w4ukgrpgf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_x8hsg"]
 [ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="3_blwqs"]
@@ -404,30 +404,30 @@ _data = {
 &"turnUpdate": SubResource("Animation_s804s")
 }
 
-[node name="TurnBasedTest" type="Node2D"]
+[node name="TurnBasedTest" type="Node2D" unique_id=1918247400]
 script = ExtResource("1_x8hsg")
 
-[node name="BackgroundTileMap" type="TileMapLayer" parent="."]
+[node name="BackgroundTileMap" type="TileMapLayer" parent="." unique_id=1134528970]
 modulate = Color(0.5, 1, 1, 0.5)
 position = Vector2(-16, -16)
 tile_map_data = PackedByteArray("AAABAAEAAwAAAAAAAAADAAEAAwAAAAAAAAACAAIAAwAAAAAAAAABAAMAAwAAAAAAAAABAAUAAwAAAAAAAAACAAQAAwAAAAAAAAADAAMAAwAAAAAAAAAEAAIAAwAAAAAAAAAFAAEAAwAAAAAAAAAHAAEAAwAAAAAAAAAGAAIAAwAAAAAAAAAFAAMAAwAAAAAAAAAEAAQAAwAAAAAAAAADAAUAAwAAAAAAAAACAAYAAwAAAAAAAAABAAcAAwAAAAAAAAABAAkAAwAAAAAAAAACAAgAAwAAAAAAAAADAAcAAwAAAAAAAAAEAAYAAwAAAAAAAAAFAAUAAwAAAAAAAAAGAAQAAwAAAAAAAAAHAAMAAwAAAAAAAAAIAAIAAwAAAAAAAAAJAAEAAwAAAAAAAAALAAEAAwAAAAAAAAAKAAIAAwAAAAAAAAAJAAMAAwAAAAAAAAAIAAQAAwAAAAAAAAAHAAUAAwAAAAAAAAAGAAYAAwAAAAAAAAAFAAcAAwAAAAAAAAAEAAgAAwAAAAAAAAADAAkAAwAAAAAAAAACAAoAAwAAAAAAAAABAAsAAwAAAAAAAAADAAsAAwAAAAAAAAAEAAoAAwAAAAAAAAAFAAkAAwAAAAAAAAAGAAgAAwAAAAAAAAAHAAcAAwAAAAAAAAAIAAYAAwAAAAAAAAAJAAUAAwAAAAAAAAAKAAQAAwAAAAAAAAALAAMAAwAAAAAAAAALAAUAAwAAAAAAAAAKAAYAAwAAAAAAAAAJAAcAAwAAAAAAAAAIAAgAAwAAAAAAAAAHAAkAAwAAAAAAAAAGAAoAAwAAAAAAAAAFAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAIAAoAAwAAAAAAAAAJAAkAAwAAAAAAAAAKAAgAAwAAAAAAAAALAAcAAwAAAAAAAAALAAkAAwAAAAAAAAAKAAoAAwAAAAAAAAAJAAsAAwAAAAAAAAALAAsAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_usjrl")
 script = ExtResource("3_blwqs")
 
-[node name="TerrainTileMap" type="TileMapLayer" parent="."]
+[node name="TerrainTileMap" type="TileMapLayer" parent="." unique_id=774553313]
 tile_map_data = PackedByteArray("AAD/////AgAAAAAAAAD//wAAAgAAAAAAAAD//wEAAgAAAAAAAAD//wIAAgAAAAAAAAD//wMAAgAAAAAAAAD//wQAAgAAAAAAAAAAAP//AgAAAAAAAAABAP//AgAAAAAAAAACAP//AgAAAAAAAAADAP//AgAAAAAAAAAEAP//AgAAAAAAAAAFAP//AgAAAAAAAAAGAP//AgAAAAAAAAAHAP//AgAAAAAAAAAIAP//AgAAAAAAAAAJAP//AgAAAAAAAAAKAP//AgAAAAAAAAALAP//AgAAAAAAAAALAAAAAgAAAAAAAAALAAEAAgAAAAAAAAALAAIAAgAAAAAAAAALAAMAAgAAAAAAAAALAAQAAgAAAAAAAAALAAUAAgAAAAAAAAALAAYAAgAAAAAAAAALAAcAAgAAAAAAAAALAAgAAgAAAAAAAAALAAkAAgAAAAAAAAALAAoAAgAAAAAAAAALAAsAAgAAAAAAAAAKAAsAAgAAAAAAAAAJAAsAAgAAAAAAAAAIAAsAAgAAAAAAAAAHAAsAAgAAAAAAAAAGAAsAAgAAAAAAAAAFAAsAAgAAAAAAAAAEAAsAAgAAAAAAAAADAAsAAgAAAAAAAAACAAsAAgAAAAAAAAABAAsAAgAAAAAAAAAAAAsAAgAAAAAAAAD//wsAAgAAAAAAAAD//woAAgAAAAAAAAD//wkAAgAAAAAAAAD//wgAAgAAAAAAAAD//wcAAgAAAAAAAAD//wYAAgAAAAAAAAD//wUAAgAAAAAAAAA=")
 tile_set = SubResource("TileSet_usjrl")
 
-[node name="TurnBasedUIEntity" type="Node2D" parent="."]
+[node name="TurnBasedUIEntity" type="Node2D" parent="." unique_id=1792945206]
 script = ExtResource("3_orv1y")
 debugMode = true
 
-[node name="TurnBasedStateUIComponent" parent="TurnBasedUIEntity" instance=ExtResource("5_178cw")]
+[node name="TurnBasedStateUIComponent" parent="TurnBasedUIEntity" unique_id=709209753 instance=ExtResource("5_178cw")]
 
-[node name="TurnBasedUI" type="CanvasLayer" parent="TurnBasedUIEntity"]
+[node name="TurnBasedUI" type="CanvasLayer" parent="TurnBasedUIEntity" unique_id=1291902440]
 layer = 90
 
-[node name="LabelsMarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI"]
+[node name="LabelsMarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI" unique_id=118247900]
 offset_right = 67.0
 offset_bottom = 32.0
 theme_override_constants/margin_left = -100
@@ -435,11 +435,11 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer" unique_id=596007001]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BeginLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer"]
+[node name="BeginLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer" unique_id=1140827308]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0)
@@ -447,21 +447,21 @@ layout_mode = 2
 text = "TURN START"
 label_settings = SubResource("LabelSettings_vvp6u")
 
-[node name="UpdateLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer"]
+[node name="UpdateLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer" unique_id=1903209777]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "MOVE"
 label_settings = SubResource("LabelSettings_5kxpx")
 
-[node name="EndLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer"]
+[node name="EndLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer" unique_id=595290524]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "SHUTDOWN"
 label_settings = SubResource("LabelSettings_y0qcc")
 
-[node name="BottomCenterContainer" type="CenterContainer" parent="TurnBasedUIEntity/TurnBasedUI"]
+[node name="BottomCenterContainer" type="CenterContainer" parent="TurnBasedUIEntity/TurnBasedUI" unique_id=1740143479]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -470,29 +470,27 @@ offset_top = -32.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer" unique_id=2133730119]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 32
 
-[node name="NextTurnButton" type="Button" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer"]
+[node name="NextTurnButton" type="Button" parent="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer" unique_id=1335197172]
 unique_name_in_owner = true
 layout_mode = 2
 text = "»TURN»"
 
-[node name="UITimer" type="Timer" parent="TurnBasedUIEntity/TurnBasedUI"]
+[node name="UITimer" type="Timer" parent="TurnBasedUIEntity/TurnBasedUI" unique_id=1347063640]
 unique_name_in_owner = true
 one_shot = true
 
-[node name="UIAnimationPlayer" type="AnimationPlayer" parent="TurnBasedUIEntity/TurnBasedUI"]
+[node name="UIAnimationPlayer" type="AnimationPlayer" parent="TurnBasedUIEntity/TurnBasedUI" unique_id=603603013]
 unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_fujdc")
-}
+libraries/ = SubResource("AnimationLibrary_fujdc")
 
-[node name="TurnBasedEntity1" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
+[node name="TurnBasedEntity1" type="RigidBody2D" parent="." unique_id=1831708072 groups=["entities", "players", "turnBased"]]
 position = Vector2(88, 88)
 collision_layer = 2
 collision_mask = 16
@@ -501,32 +499,32 @@ script = ExtResource("3_udncs")
 debugMode = true
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity1" groups=["players"]]
+[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity1" unique_id=544220524 groups=["players"]]
 texture = ExtResource("4_k2j6v")
 region_enabled = true
 region_rect = Rect2(560, 288, 16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity1" unique_id=473929365]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="Camera2D" type="Camera2D" parent="TurnBasedEntity1"]
+[node name="Camera2D" type="Camera2D" parent="TurnBasedEntity1" unique_id=42116234]
 process_callback = 0
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
-[node name="TurnBasedTestComponent" parent="TurnBasedEntity1" instance=ExtResource("5_253pd")]
+[node name="TurnBasedTestComponent" parent="TurnBasedEntity1" unique_id=870672631 instance=ExtResource("5_253pd")]
 debugMode = true
 
-[node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity1" instance=ExtResource("4_3bh2s")]
+[node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity1" unique_id=1841973831 instance=ExtResource("4_3bh2s")]
 debugMode = true
 
-[node name="TileBasedPositionComponent" parent="TurnBasedEntity1" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
+[node name="TileBasedPositionComponent" parent="TurnBasedEntity1" unique_id=1669030754 node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(6, 6)
 speed = 50.0
 debugMode = true
 
-[node name="TurnBasedEntity2" type="RigidBody2D" parent="." groups=["entities", "players", "turnBased"]]
+[node name="TurnBasedEntity2" type="RigidBody2D" parent="." unique_id=1608874097 groups=["entities", "players", "turnBased"]]
 position = Vector2(88, 120)
 collision_layer = 2
 collision_mask = 16
@@ -535,35 +533,33 @@ script = ExtResource("3_udncs")
 debugMode = true
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity2" groups=["players"]]
+[node name="Sprite2D" type="Sprite2D" parent="TurnBasedEntity2" unique_id=182976523 groups=["players"]]
 texture = ExtResource("4_k2j6v")
 region_enabled = true
 region_rect = Rect2(576, 288, 16, 16)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="TurnBasedEntity2"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="TurnBasedEntity2" unique_id=397550790]
 material = ExtResource("12_s804s")
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_nwalo")
 animation = &"RESET"
 autoplay = "RESET"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnBasedEntity2" unique_id=34520838]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="TurnBasedEntity2"]
-libraries = {
-&"": SubResource("AnimationLibrary_178cw")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="TurnBasedEntity2" unique_id=524720980]
+libraries/ = SubResource("AnimationLibrary_178cw")
 
-[node name="TurnBasedAnimationComponent" parent="TurnBasedEntity2" node_paths=PackedStringArray("animationNode") instance=ExtResource("12_178cw")]
+[node name="TurnBasedAnimationComponent" parent="TurnBasedEntity2" unique_id=1574661237 node_paths=PackedStringArray("animationNode") instance=ExtResource("12_178cw")]
 animationNode = NodePath("../AnimationPlayer")
 animationForTurnDidBegin = &""
 
-[node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity2" instance=ExtResource("4_3bh2s")]
-randomMovement = true
+[node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity2" unique_id=1640595213 instance=ExtResource("4_3bh2s")]
+shouldMoveRandomly = true
 debugMode = true
 
-[node name="TileBasedPositionComponent" parent="TurnBasedEntity2" node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
+[node name="TileBasedPositionComponent" parent="TurnBasedEntity2" unique_id=1019692023 node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
 tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(8, 8)
 speed = 50.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6xnvvpqq4m4g"]
+[gd_scene format=3 uid="uid://c6xnvvpqq4m4g"]
 
 [ext_resource type="LabelSettings" uid="uid://crn5uj0c6san2" path="res://Assets/Themes/Label/TemporaryLabel.tres" id="1_lnrjs"]
 
@@ -40,23 +40,21 @@ _data = {
 &"blink": SubResource("Animation_eyfb4")
 }
 
-[node name="BlinkingLabel" type="Label"]
+[node name="BlinkingLabel" type="Label" unique_id=600295646]
 offset_right = 1.0
 offset_bottom = 1.0
 size_flags_horizontal = 3
 text = "Blinking Label"
 label_settings = ExtResource("1_lnrjs")
 
-[node name="DeleteTimer" type="Timer" parent="."]
+[node name="DeleteTimer" type="Timer" parent="." unique_id=135905230]
 wait_time = 3.0
 one_shot = true
 autostart = true
 ignore_time_scale = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_eyfb4")
-}
-autoplay = "blink"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1898518965]
+libraries/ = SubResource("AnimationLibrary_eyfb4")
+autoplay = &"blink"
 
 [connection signal="timeout" from="DeleteTimer" to="." method="queue_free"]

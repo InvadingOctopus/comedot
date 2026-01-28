@@ -1,15 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://sy8cxewwchey"]
+[gd_scene format=3 uid="uid://sy8cxewwchey"]
 
 [ext_resource type="PackedScene" uid="uid://1g4ypd7jsctc" path="res://Components/Control/TileBasedControlComponent.tscn" id="1_4r12v"]
 [ext_resource type="Script" uid="uid://b3w3xttdxtdom" path="res://Components/Movement/TileBasedRandomMovementComponent.gd" id="1_6lv8e"]
 
-[node name="TileBasedRandomMovementComponent" instance=ExtResource("1_4r12v")]
+[node name="TileBasedRandomMovementComponent" unique_id=458659322 instance=ExtResource("1_4r12v")]
 script = ExtResource("1_6lv8e")
 horizontalMovesSet = Array[int]([-1, 0, 1])
 verticalMovesSet = Array[int]([-1, 0, 1])
 shouldKeepTryingUntilValidMove = true
 
-[node name="RandomStepTimer" type="Timer" parent="." index="0"]
+[node name="RandomStepTimer" type="Timer" parent="." index="0" unique_id=492423262]
 autostart = true
 
 [connection signal="timeout" from="RandomStepTimer" to="." method="onRandomStepTimer_timeout"]

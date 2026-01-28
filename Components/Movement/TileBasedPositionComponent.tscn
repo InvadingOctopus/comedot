@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdmibnkkrpfhv"]
+[gd_scene format=3 uid="uid://bdmibnkkrpfhv"]
 
 [ext_resource type="Script" uid="uid://c72g1b0we80vc" path="res://Components/Movement/TileBasedPositionComponent.gd" id="1_3h2nr"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_3a7at"]
@@ -9,7 +9,7 @@ editor_description = "Positions the Entity on TileMapLayer cells. Requires TileM
 script = ExtResource("1_3h2nr")
 metadata/_edit_group_ = true
 
-[node name="MovementIndicator" type="Sprite2D" parent="."]
+[node name="MovementIndicator" type="Sprite2D" parent="." unique_id=2118168507]
 visible = false
 modulate = Color(1, 1, 0, 0.75)
 top_level = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://33kigwntmd1i"]
+[gd_scene format=3 uid="uid://33kigwntmd1i"]
 
 [ext_resource type="Script" uid="uid://da3yjvlx7s4us" path="res://Components/Combat/ShieldedHealthComponent.gd" id="1_5sr7c"]
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="2_ujoql"]
@@ -7,10 +7,7 @@
 resource_local_to_scene = true
 resource_name = "shield"
 script = ExtResource("2_ujoql")
-min = 0
-max = 10
 value = 10
-logChanges = false
 name = &"shield"
 displayName = "Shield"
 description = "Absorbs damage. Health cannot be decreased while Shield > 0"
@@ -19,15 +16,12 @@ description = "Absorbs damage. Health cannot be decreased while Shield > 0"
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("2_ujoql")
-min = 0
-max = 10
 value = 10
-logChanges = false
 name = &"health"
 displayName = "HP"
 description = "The actual health. Damaged when Shield is 0"
 
-[node name="ShieldedHealthComponent" type="Node" groups=["components"]]
+[node name="ShieldedHealthComponent" type="Node" unique_id=821438704 groups=["components"]]
 script = ExtResource("1_5sr7c")
 shield = SubResource("Resource_xmmct")
 health = SubResource("Resource_ty0wk")

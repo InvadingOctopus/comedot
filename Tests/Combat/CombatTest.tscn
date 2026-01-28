@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://dafge0n7l43qm"]
+[gd_scene format=4 uid="uid://dafge0n7l43qm"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_2lgxf"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="2_a6r0q"]
@@ -19,15 +19,15 @@
 [ext_resource type="PackedScene" uid="uid://d24663limqvmn" path="res://Tests/Combat/PoisonArrowTestEntity.tscn" id="15_lbdmr"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="17_446ob"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b0rrs"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mq5ic"]
 resource_local_to_scene = true
 size = Vector2(48, 144)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v2n8r"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b0rrs"]
 resource_local_to_scene = true
 size = Vector2(16, 48)
 
-[sub_resource type="Resource" id="Resource_cafj2"]
+[sub_resource type="Resource" id="Resource_nk0q8"]
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
@@ -35,8 +35,9 @@ max = 20
 value = 20
 name = &"health"
 displayName = "Health"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
-[sub_resource type="Resource" id="Resource_jrqcu"]
+[sub_resource type="Resource" id="Resource_tew8x"]
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
@@ -44,10 +45,7 @@ max = 20
 value = 20
 name = &"monsterHealth"
 displayName = "Health"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lvn5x"]
-resource_local_to_scene = true
-size = Vector2(18, 18)
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y8ehy"]
 atlas = ExtResource("13_jt7ij")
@@ -56,100 +54,97 @@ region = Rect2(400, 112, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_446ob"]
 size = Vector2(322, 178)
 
-[node name="CombatTest" type="Node2D"]
+[node name="CombatTest" type="Node2D" unique_id=238121239]
 script = ExtResource("1_2lgxf")
 mainGameScenePath = "uid://dafge0n7l43qm"
 shouldPrintDebugLogs = true
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=924628527]
 tile_map_data = PackedByteArray("AAAAAAAAAAARABEAAAABAAAAAAARABEAAAACAAAAAAARABEAAAADAAAAAAARABEAAAAEAAAAAAARABEAAAAFAAAAAAARABEAAAAGAAAAAAARABEAAAAHAAAAAAARABEAAAAIAAAAAAARABEAAAAJAAAAAAARABEAAAAKAAAAAAARABEAAAALAAAAAAARABEAAAAMAAAAAAARABEAAAANAAAAAAARABEAAAAOAAAAAAARABEAAAAPAAAAAAARABEAAAAQAAAAAAARABEAAAARAAAAAAARABEAAAASAAAAAAARABEAAAATAAAAAAARABEAAAATAAEAAAARABEAAAATAAIAAAARABEAAAATAAMAAAARABEAAAATAAQAAAARABEAAAATAAUAAAARABEAAAATAAYAAAARABEAAAATAAcAAAARABEAAAATAAgAAAARABEAAAATAAkAAAARABEAAAATAAoAAAARABEAAAASAAoAAAARABEAAAARAAoAAAARABEAAAAQAAoAAAARABEAAAAPAAoAAAARABEAAAAOAAoAAAARABEAAAANAAoAAAARABEAAAAMAAoAAAARABEAAAALAAoAAAARABEAAAAKAAoAAAARABEAAAAJAAoAAAARABEAAAAIAAoAAAARABEAAAAHAAoAAAARABEAAAAGAAoAAAARABEAAAAFAAoAAAARABEAAAAEAAoAAAARABEAAAADAAoAAAARABEAAAACAAoAAAARABEAAAABAAoAAAARABEAAAAAAAoAAAARABEAAAAAAAkAAAARABEAAAAAAAgAAAARABEAAAAAAAcAAAARABEAAAAAAAYAAAARABEAAAAAAAUAAAARABEAAAAAAAQAAAARABEAAAAAAAMAAAARABEAAAAAAAIAAAARABEAAAAAAAEAAAARABEAAAA=")
 tile_set = ExtResource("2_a6r0q")
 
-[node name="RadiationZoneEntity" parent="." instance=ExtResource("7_s6bpi")]
+[node name="RadiationZoneEntity" parent="." unique_id=1214684753 instance=ExtResource("7_s6bpi")]
 position = Vector2(256, 16)
 
-[node name="FactionComponent" parent="RadiationZoneEntity" instance=ExtResource("9_lvn5x")]
+[node name="FactionComponent" parent="RadiationZoneEntity" unique_id=963398961 instance=ExtResource("9_lvn5x")]
 factions = 16
 
-[node name="DamageComponent" parent="RadiationZoneEntity" instance=ExtResource("5_mq5ic")]
+[node name="DamageComponent" parent="RadiationZoneEntity" unique_id=2030200091 instance=ExtResource("5_mq5ic")]
 collision_layer = 32
 collision_mask = 12
 
-[node name="DamageCollisionShape" parent="RadiationZoneEntity/DamageComponent" index="0"]
+[node name="DamageCollisionShape" parent="RadiationZoneEntity/DamageComponent" index="0" unique_id=1217175677]
 position = Vector2(24, 72)
-shape = SubResource("RectangleShape2D_b0rrs")
+shape = SubResource("RectangleShape2D_mq5ic")
 
-[node name="DamageRepeatingComponent" parent="RadiationZoneEntity" instance=ExtResource("10_lvn5x")]
+[node name="DamageRepeatingComponent" parent="RadiationZoneEntity" unique_id=1108298452 instance=ExtResource("10_lvn5x")]
 
-[node name="TileMapLayer" type="TileMapLayer" parent="RadiationZoneEntity"]
+[node name="TileMapLayer" type="TileMapLayer" parent="RadiationZoneEntity" unique_id=1059538475]
 modulate = Color(1, 0, 0, 0.5)
 tile_map_data = PackedByteArray("AAAAAAAAAAAmAAsAAAAAAAEAAAAmAAsAAAAAAAIAAAAmAAsAAAAAAAMAAAAmAAsAAAAAAAQAAAAmAAsAAAAAAAUAAAAmAAsAAAAAAAYAAAAmAAsAAAAAAAcAAAAmAAsAAAAAAAgAAAAmAAsAAAABAAAAAAAmAAsAAAABAAEAAAAmAAsAAAABAAIAAAAmAAsAAAABAAMAAAAmAAsAAAABAAQAAAAmAAsAAAABAAUAAAAmAAsAAAABAAYAAAAmAAsAAAABAAcAAAAmAAsAAAABAAgAAAAmAAsAAAACAAAAAAAmAAsAAAACAAEAAAAmAAsAAAACAAIAAAAmAAsAAAACAAMAAAAmAAsAAAACAAQAAAAmAAsAAAACAAUAAAAmAAsAAAACAAYAAAAmAAsAAAACAAcAAAAmAAsAAAACAAgAAAAmAAsAAAA=")
 tile_set = ExtResource("10_s8cv2")
 
-[node name="SpawnArea" parent="." instance=ExtResource("7_q70sy")]
+[node name="SpawnArea" parent="." unique_id=1656345408 instance=ExtResource("7_q70sy")]
 position = Vector2(288, 64)
 
-[node name="SpawnAreaShape" parent="SpawnArea" index="0"]
+[node name="SpawnAreaShape" parent="SpawnArea" index="0" unique_id=1648716433]
 position = Vector2(8, 24)
-shape = SubResource("RectangleShape2D_v2n8r")
+shape = SubResource("RectangleShape2D_b0rrs")
 
-[node name="SpawnTimer" parent="SpawnArea" index="1"]
+[node name="SpawnTimer" parent="SpawnArea" index="1" unique_id=1938618345]
 wait_time = 10.0
 sceneToSpawn = "uid://ks8fhlam1j34"
 groupToAddTo = &"ghosts"
 maximumLimitInGroup = 2
 
-[node name="PlayerEntityTemplate-OverheadCombat" parent="." instance=ExtResource("2_f2vu7")]
+[node name="PlayerEntityTemplate-OverheadCombat" parent="." unique_id=1969933871 instance=ExtResource("2_f2vu7")]
 position = Vector2(160, 88)
 collision_mask = 3640
 motion_mode = 0
 wall_min_slide_angle = 0.261799
 
-[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadCombat" index="2" node_paths=PackedStringArray("boundary")]
+[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadCombat" index="2" unique_id=1618703562 node_paths=PackedStringArray("boundary")]
 shouldClampToBoundary = true
 boundary = NodePath("../../CameraBounds")
 
-[node name="HealthComponent" parent="PlayerEntityTemplate-OverheadCombat" index="6"]
-health = SubResource("Resource_cafj2")
+[node name="HealthComponent" parent="PlayerEntityTemplate-OverheadCombat" index="6" unique_id=2138955234]
+health = SubResource("Resource_nk0q8")
 
-[node name="DebugComponent" parent="PlayerEntityTemplate-OverheadCombat" instance=ExtResource("4_a6r0q")]
+[node name="DebugComponent" parent="PlayerEntityTemplate-OverheadCombat" unique_id=607041037 instance=ExtResource("4_a6r0q")]
 
-[node name="MonsterEntity" parent="." instance=ExtResource("5_l6t3l")]
+[node name="MonsterEntity" parent="." unique_id=374546587 instance=ExtResource("5_l6t3l")]
 position = Vector2(32, 48)
 
-[node name="Sprite2D" parent="MonsterEntity" index="1"]
+[node name="Sprite2D" parent="MonsterEntity" index="1" unique_id=980369812]
 texture = ExtResource("11_s8cv2")
 
-[node name="HealthComponent" parent="MonsterEntity" index="2"]
-health = SubResource("Resource_jrqcu")
+[node name="HealthComponent" parent="MonsterEntity" index="2" unique_id=1983200482]
+health = SubResource("Resource_tew8x")
 
-[node name="DamageCollisionShape" parent="MonsterEntity/DamageComponent" index="0"]
-shape = SubResource("RectangleShape2D_lvn5x")
+[node name="DebugComponent" parent="MonsterEntity" unique_id=1505013645 instance=ExtResource("4_a6r0q")]
 
-[node name="DebugComponent" parent="MonsterEntity" instance=ExtResource("4_a6r0q")]
-
-[node name="ArmedMonsterEntity" type="Sprite2D" parent="." groups=["entities"]]
+[node name="ArmedMonsterEntity" type="Sprite2D" parent="." unique_id=75734544 groups=["entities"]]
 modulate = Color(1, 0.5, 0, 1)
 position = Vector2(32, 32)
 texture = SubResource("AtlasTexture_y8ehy")
 script = ExtResource("13_lbdmr")
 metadata/_edit_group_ = true
 
-[node name="FactionComponent" parent="ArmedMonsterEntity" instance=ExtResource("9_lvn5x")]
+[node name="FactionComponent" parent="ArmedMonsterEntity" unique_id=818640093 instance=ExtResource("9_lvn5x")]
 factions = 8
 
-[node name="GunComponent" parent="ArmedMonsterEntity" instance=ExtResource("15_jt7ij")]
+[node name="GunComponent" parent="ArmedMonsterEntity" unique_id=1801695731 instance=ExtResource("15_jt7ij")]
 autoFire = true
 bulletEntity = ExtResource("15_lbdmr")
 cooldown = 3.0
 
-[node name="InputComponent" parent="ArmedMonsterEntity" instance=ExtResource("17_446ob")]
+[node name="InputComponent" parent="ArmedMonsterEntity" unique_id=1081696626 instance=ExtResource("17_446ob")]
 isPlayerControlled = false
 
-[node name="CameraBounds" type="Area2D" parent="."]
+[node name="CameraBounds" type="Area2D" parent="." unique_id=815758991]
 visible = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CameraBounds" unique_id=279028385]
 position = Vector2(159, 87)
 shape = SubResource("RectangleShape2D_446ob")
 

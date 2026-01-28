@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3ufwns4q2thw"]
+[gd_scene format=3 uid="uid://c3ufwns4q2thw"]
 
 [ext_resource type="Script" uid="uid://3rvhieb0uub8" path="res://Components/Objects/CollectibleComponent.gd" id="1_356ao"]
 
@@ -6,12 +6,12 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="CollectibleComponent" type="Area2D" groups=["collectibles", "components"]]
+[node name="CollectibleComponent" type="Area2D" unique_id=1960069131 groups=["collectibles", "components"]]
 collision_layer = 2048
 collision_mask = 0
 script = ExtResource("1_356ao")
 metadata/_edit_group_ = true
 
-[node name="CollectibleCollisionShape" type="CollisionShape2D" parent="."]
+[node name="CollectibleCollisionShape" type="CollisionShape2D" parent="." unique_id=343143025]
 shape = SubResource("RectangleShape2D_nufh5")
 debug_color = Color(0.3, 1, 0.3, 0.392157)

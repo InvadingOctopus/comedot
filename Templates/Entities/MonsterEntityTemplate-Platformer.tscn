@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://h3pbo0mlj4je"]
+[gd_scene format=3 uid="uid://h3pbo0mlj4je"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_5a21o"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="2_a5njj"]
@@ -19,7 +19,7 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[sub_resource type="Resource" id="Resource_tj7yr"]
+[sub_resource type="Resource" id="Resource_0223s"]
 resource_local_to_scene = true
 resource_name = "monsterHealth"
 script = ExtResource("4_5bs4y")
@@ -29,11 +29,7 @@ name = &"monsterHealth"
 displayName = "Monster HP"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7wvwn"]
-resource_local_to_scene = true
-size = Vector2(18, 18)
-
-[node name="MonsterEntity" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body")]
+[node name="MonsterEntity" type="CharacterBody2D" unique_id=1245323086 node_paths=PackedStringArray("sprite", "body")]
 editor_description = "A template for a monster in a platformer game."
 collision_layer = 10
 collision_mask = 126
@@ -44,51 +40,50 @@ sprite = NodePath("Sprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1133374290]
 shape = SubResource("RectangleShape2D_dpspd")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=980369812]
 modulate = Color(1, 0.5, 0, 1)
 use_parent_material = true
 texture = ExtResource("2_gepur")
 region_enabled = true
 region_rect = Rect2(448, 96, 16, 16)
 
-[node name="HealthComponent" parent="." instance=ExtResource("3_wtegg")]
-health = SubResource("Resource_tj7yr")
+[node name="HealthComponent" parent="." unique_id=1983200482 instance=ExtResource("3_wtegg")]
+health = SubResource("Resource_0223s")
 
-[node name="HealthVisualComponent" parent="." instance=ExtResource("5_u488s")]
+[node name="HealthVisualComponent" parent="." unique_id=1888399148 instance=ExtResource("5_u488s")]
 shouldShowRemainingHealth = true
 
-[node name="FactionComponent" parent="." instance=ExtResource("2_a5njj")]
+[node name="FactionComponent" parent="." unique_id=210162572 instance=ExtResource("2_a5njj")]
 factions = 8
 
-[node name="DamageReceivingComponent" parent="." instance=ExtResource("6_p3b0u")]
+[node name="DamageReceivingComponent" parent="." unique_id=1827559037 instance=ExtResource("6_p3b0u")]
 collision_layer = 1032
 collision_mask = 1060
 
-[node name="KnockbackOnHitComponent" parent="." instance=ExtResource("7_qjlrm")]
+[node name="KnockbackOnHitComponent" parent="." unique_id=960243277 instance=ExtResource("7_qjlrm")]
 
-[node name="DamageComponent" parent="." instance=ExtResource("3_1r4r1")]
+[node name="DamageComponent" parent="." unique_id=196118322 instance=ExtResource("3_1r4r1")]
 collision_layer = 1032
 collision_mask = 1028
 
-[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
+[node name="DamageCollisionShape" parent="DamageComponent" index="0" unique_id=1217175677]
 position = Vector2(2.08165e-12, 2.08165e-12)
-shape = SubResource("RectangleShape2D_7wvwn")
 
-[node name="CornerCollisionComponent" parent="." instance=ExtResource("4_pvycy")]
+[node name="CornerCollisionComponent" parent="." unique_id=615354246 instance=ExtResource("4_pvycy")]
 
-[node name="PlatformerPatrolComponent" parent="." instance=ExtResource("5_c8kjw")]
+[node name="PlatformerPatrolComponent" parent="." unique_id=900796945 instance=ExtResource("5_c8kjw")]
 detectionGap = 2.0
 randomizeInitialDirection = true
 
-[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("6_w2yd5")]
+[node name="PlatformerPhysicsComponent" parent="." unique_id=1807756268 instance=ExtResource("6_w2yd5")]
 
-[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("7_aroie")]
+[node name="CharacterBodyComponent" parent="." unique_id=2068876203 node_paths=PackedStringArray("body") instance=ExtResource("7_aroie")]
 body = NodePath("..")
 
-[node name="InputComponent" parent="." instance=ExtResource("14_0223s")]
+[node name="InputComponent" parent="." unique_id=555896481 instance=ExtResource("14_0223s")]
 isPlayerControlled = false
 
 [editable path="DamageComponent"]

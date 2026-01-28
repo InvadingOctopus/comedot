@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dgp53lgh8n5p8"]
+[gd_scene format=3 uid="uid://dgp53lgh8n5p8"]
 
 [ext_resource type="Script" uid="uid://bjvftji227wgk" path="res://Components/Visual/OffscreenRemovalComponent.gd" id="1_eukg6"]
 
-[node name="OffscreenRemovalComponent" type="VisibleOnScreenNotifier2D" groups=["components"]]
+[node name="OffscreenRemovalComponent" type="VisibleOnScreenNotifier2D" unique_id=372825301 groups=["components"]]
 rect = Rect2(-16, -16, 32, 32)
 script = ExtResource("1_eukg6")
 metadata/_edit_group_ = true

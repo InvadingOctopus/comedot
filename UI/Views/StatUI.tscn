@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdmsbf0fuwqno"]
+[gd_scene format=3 uid="uid://bdmsbf0fuwqno"]
 
 [ext_resource type="Script" uid="uid://b3tjxru7qpbpc" path="res://UI/Views/StatUI.gd" id="1_axogl"]
 [ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="1_q4sdu"]
 
-[node name="StatUI" type="GridContainer"]
+[node name="StatUI" type="GridContainer" unique_id=1856392415]
 offset_right = 73.0
 offset_bottom = 16.0
 size_flags_vertical = 3
@@ -11,14 +11,14 @@ tooltip_text = "Stat"
 columns = 2
 script = ExtResource("1_axogl")
 
-[node name="Icon" type="TextureRect" parent="."]
+[node name="Icon" type="TextureRect" parent="." unique_id=1142744684]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 stretch_mode = 2
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1625132942]
 editor_description = "View for a Stat Resource"
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2

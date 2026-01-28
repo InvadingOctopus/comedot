@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://qn8n4bqswnlr"]
+[gd_scene format=3 uid="uid://qn8n4bqswnlr"]
 
 [ext_resource type="Script" uid="uid://cbw3qr71spt8g" path="res://Components/Control/MouseRotationComponent.gd" id="1_76c2i"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_eou4p"]
@@ -7,7 +7,7 @@
 atlas = ExtResource("2_eou4p")
 region = Rect2(400, 224, 16, 16)
 
-[node name="MouseRotationComponent" type="Node" groups=["components"]]
+[node name="MouseRotationComponent" type="Node" unique_id=248242391 groups=["components"]]
 script = ExtResource("1_76c2i")
 targetingCursor = SubResource("AtlasTexture_7fl03")
 metadata/_edit_group_ = true

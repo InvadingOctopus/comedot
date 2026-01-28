@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://ct2tacc2gh3ao"]
+[gd_scene format=3 uid="uid://ct2tacc2gh3ao"]
 
 [ext_resource type="Script" uid="uid://dx01l8o46wuey" path="res://Components/Gameplay/ModifyOnTimerComponent.gd" id="1_tojn6"]
 
-[node name="ModifyOnTimerComponent" type="Node" groups=["components"]]
+[node name="ModifyOnTimerComponent" type="Node" unique_id=305333201 groups=["components"]]
 script = ExtResource("1_tojn6")
 
-[node name="InternalTimer" type="Timer" parent="."]
+[node name="InternalTimer" type="Timer" parent="." unique_id=1787791002]
 wait_time = 3.0
 one_shot = true
 autostart = true

@@ -1,33 +1,33 @@
-[gd_scene load_steps=6 format=3 uid="uid://dx0iq5k22enrr"]
+[gd_scene format=3 uid="uid://dx0iq5k22enrr"]
 
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="1_0e2cn"]
 [ext_resource type="PackedScene" uid="uid://bw620u6vv6sci" path="res://Components/Combat/TileDamageComponent.tscn" id="2_3ifp7"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyjcu"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0e2cn"]
 resource_local_to_scene = true
 size = Vector2(4, 4)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_akffb"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ifp7"]
 resource_local_to_scene = true
 size = Vector2(4, 4)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8a3n8"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hkn2s"]
 resource_local_to_scene = true
 size = Vector2(4, 4)
 
-[node name="Bullet" instance=ExtResource("1_0e2cn")]
+[node name="Bullet" unique_id=588646853 instance=ExtResource("1_0e2cn")]
 
-[node name="NonDamageCollisionShape" parent="." index="1"]
-shape = SubResource("RectangleShape2D_jyjcu")
+[node name="NonDamageCollisionShape" parent="." index="0" unique_id=1049746291]
+shape = SubResource("RectangleShape2D_0e2cn")
 
-[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
-shape = SubResource("RectangleShape2D_akffb")
+[node name="DamageCollisionShape" parent="DamageComponent" parent_id_path=PackedInt32Array(1624107160) index="0" unique_id=1217175677]
+shape = SubResource("RectangleShape2D_3ifp7")
 
-[node name="TileDamageComponent" parent="." index="7" instance=ExtResource("2_3ifp7")]
+[node name="TileDamageComponent" parent="." index="7" unique_id=1685358208 instance=ExtResource("2_3ifp7")]
 debugMode = true
 
-[node name="DamageCollisionShape" parent="TileDamageComponent" index="0"]
-shape = SubResource("RectangleShape2D_8a3n8")
+[node name="DamageCollisionShape" parent="TileDamageComponent" index="0" unique_id=508526456]
+shape = SubResource("RectangleShape2D_hkn2s")
 
 [editable path="DamageComponent"]
 [editable path="OffscreenRemovalComponent"]

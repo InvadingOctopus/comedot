@@ -1,16 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://6n72bxp7jbov"]
+[gd_scene format=3 uid="uid://6n72bxp7jbov"]
 
 [ext_resource type="Script" uid="uid://t36fnswoykhp" path="res://Scenes/TurnBased/TurnBasedContainer.gd" id="1_5qbkx"]
 
-[node name="TurnBasedContainer" type="Node2D" groups=["turnBased"]]
+[node name="TurnBasedContainer" type="Node2D" unique_id=1012223667 groups=["turnBased"]]
 script = ExtResource("1_5qbkx")
 metadata/_edit_group_ = true
 
-[node name="StateTimer" type="Timer" parent="."]
+[node name="StateTimer" type="Timer" parent="." unique_id=122508676]
 process_callback = 0
 one_shot = true
 
-[node name="EntityTimer" type="Timer" parent="."]
+[node name="EntityTimer" type="Timer" parent="." unique_id=1006477084]
 process_callback = 0
 one_shot = true
 

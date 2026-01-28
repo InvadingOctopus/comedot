@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cnwfnu6nmsdg0"]
+[gd_scene format=3 uid="uid://cnwfnu6nmsdg0"]
 
 [ext_resource type="Script" uid="uid://dx8pwi54s4xw1" path="res://Components/Physics/GunRecoilComponent.gd" id="1_rnesp"]
 
-[node name="GunRecoilComponent" type="Node" groups=["components"]]
+[node name="GunRecoilComponent" type="Node" unique_id=1200826105 groups=["components"]]
 script = ExtResource("1_rnesp")

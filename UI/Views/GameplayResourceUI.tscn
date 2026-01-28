@@ -1,15 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://bpf6syqk7dayu"]
+[gd_scene format=3 uid="uid://bpf6syqk7dayu"]
 
 [ext_resource type="Script" uid="uid://0n510dd1sjl1" path="res://UI/Views/GameplayResourceUI.gd" id="1_nw3x8"]
 [ext_resource type="LabelSettings" uid="uid://cuk4bxw1adh5v" path="res://Assets/Themes/Label/StatLabel.tres" id="2_61b0x"]
 
-[node name="GameplayResourceUI" type="GridContainer"]
+[node name="GameplayResourceUI" type="GridContainer" unique_id=1630336048]
 editor_description = "View for any NamedResourceBase-derived Resource"
 offset_right = 79.0
 offset_bottom = 20.0
 script = ExtResource("1_nw3x8")
 
-[node name="Icon" type="TextureRect" parent="."]
+[node name="Icon" type="TextureRect" parent="." unique_id=38061192]
 use_parent_material = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -17,7 +17,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 stretch_mode = 2
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=2033234159]
 use_parent_material = true
 custom_minimum_size = Vector2(8, 8)
 layout_mode = 2

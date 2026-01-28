@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dyxwb73c1uv7v"]
+[gd_scene format=3 uid="uid://dyxwb73c1uv7v"]
 
 [ext_resource type="Script" uid="uid://blxhbr6c8xe3s" path="res://Components/Physics/PushRigidBodyComponent.gd" id="1_np11u"]
 
-[node name="PushRigidBodyComponent" type="Node" groups=["components"]]
+[node name="PushRigidBodyComponent" type="Node" unique_id=981473563 groups=["components"]]
 script = ExtResource("1_np11u")

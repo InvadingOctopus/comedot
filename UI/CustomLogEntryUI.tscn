@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cn21mhevkd8se"]
+[gd_scene format=3 uid="uid://cn21mhevkd8se"]
 
 [ext_resource type="Script" uid="uid://dwmp7disshw6x" path="res://UI/CustomLogEntryUI.gd" id="1_q7q8k"]
 
@@ -11,7 +11,7 @@ bg_color = Color(0, 0.1, 0.2, 1)
 corner_detail = 1
 anti_aliasing = false
 
-[node name="CustomLogEntryUI" type="PanelContainer"]
+[node name="CustomLogEntryUI" type="PanelContainer" unique_id=1959286388]
 offset_top = 24.0
 offset_right = 408.0
 offset_bottom = 108.0
@@ -19,15 +19,15 @@ mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ry82")
 script = ExtResource("1_q7q8k")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2100546199]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="HeaderContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HeaderContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1863019174]
 layout_mode = 2
 
-[node name="MessageLabel" type="Label" parent="VBoxContainer/HeaderContainer"]
+[node name="MessageLabel" type="Label" parent="VBoxContainer/HeaderContainer" unique_id=421185060]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(240, 16)
 layout_mode = 2
@@ -38,11 +38,11 @@ text = "Some really heckin long as heck log message text string wooohooo \\(^-^)
 autowrap_mode = 1
 max_lines_visible = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HeaderContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HeaderContainer" unique_id=1938942792]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="FrameTimeLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
+[node name="FrameTimeLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer" unique_id=1961324419]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -51,7 +51,7 @@ theme_override_colors/font_color = Color(0, 0.4, 0.8, 1)
 text = "F0 0.0"
 horizontal_alignment = 2
 
-[node name="NameLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer" unique_id=646869165]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
@@ -62,7 +62,7 @@ horizontal_alignment = 2
 text_overrun_behavior = 3
 max_lines_visible = 1
 
-[node name="ParentLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
+[node name="ParentLabel" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer" unique_id=1657877387]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -73,7 +73,7 @@ text = "ShirodenPlayer:<CharacterBody2D#150709737192>:PlayerEntity"
 horizontal_alignment = 2
 text_overrun_behavior = 3
 
-[node name="ShowDetailsControl" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer"]
+[node name="ShowDetailsControl" type="Label" parent="VBoxContainer/HeaderContainer/VBoxContainer" unique_id=1273011876]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -84,15 +84,15 @@ theme_override_colors/font_color = Color(0.4, 0.4, 0.8, 1)
 text = "…"
 horizontal_alignment = 2
 
-[node name="DetailsContainer" type="GridContainer" parent="VBoxContainer"]
+[node name="DetailsContainer" type="GridContainer" parent="VBoxContainer" unique_id=214223821]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/DetailsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/DetailsContainer" unique_id=1314780544]
 layout_mode = 2
 
-[node name="ClassNameLabel" type="Label" parent="VBoxContainer/DetailsContainer/HBoxContainer"]
+[node name="ClassNameLabel" type="Label" parent="VBoxContainer/DetailsContainer/HBoxContainer" unique_id=935556115]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -102,7 +102,7 @@ theme_override_colors/font_color = Color(0.2, 0.6, 0.8, 1)
 text = "ShieldedHealthComponent"
 text_overrun_behavior = 3
 
-[node name="InstanceLabel" type="Label" parent="VBoxContainer/DetailsContainer/HBoxContainer"]
+[node name="InstanceLabel" type="Label" parent="VBoxContainer/DetailsContainer/HBoxContainer" unique_id=1642806226]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -113,7 +113,7 @@ text = "150139312029"
 horizontal_alignment = 2
 text_overrun_behavior = 3
 
-[node name="ObjectLabel" type="Label" parent="VBoxContainer/DetailsContainer"]
+[node name="ObjectLabel" type="Label" parent="VBoxContainer/DetailsContainer" unique_id=1732633751]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(80, 0)
@@ -124,7 +124,7 @@ theme_override_colors/font_color = Color(0.2, 0.4, 0.6, 1)
 text = "ShieldedHealthComponent:<Node#150139312029>"
 text_overrun_behavior = 3
 
-[node name="TypeLabel" type="Label" parent="VBoxContainer/DetailsContainer"]
+[node name="TypeLabel" type="Label" parent="VBoxContainer/DetailsContainer" unique_id=783562480]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(80, 0)
@@ -135,7 +135,7 @@ theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
 text = "Object"
 text_overrun_behavior = 3
 
-[node name="BaseScriptLabel" type="Label" parent="VBoxContainer/DetailsContainer"]
+[node name="BaseScriptLabel" type="Label" parent="VBoxContainer/DetailsContainer" unique_id=922611673]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
@@ -145,7 +145,7 @@ theme_override_colors/font_color = Color(0.6, 0.6, 0.4, 1)
 text = "HealthComponent"
 text_overrun_behavior = 3
 
-[node name="NodeClassLabel" type="Label" parent="VBoxContainer/DetailsContainer"]
+[node name="NodeClassLabel" type="Label" parent="VBoxContainer/DetailsContainer" unique_id=532905792]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2

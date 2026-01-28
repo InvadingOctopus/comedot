@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://cysctd14jlutm"]
+[gd_scene format=3 uid="uid://cysctd14jlutm"]
 
 [ext_resource type="Script" uid="uid://cg3ii15hb36n5" path="res://UI/Menus/OptionsUi.gd" id="1_845vf"]
 [ext_resource type="PackedScene" uid="uid://cdj4v68mvmp1u" path="res://UI/Views/BusVolumeUI.tscn" id="2_845vf"]
 [ext_resource type="Script" uid="uid://ygfsiorvisq" path="res://UI/Buttons/UINavigationButton.gd" id="3_415it"]
 [ext_resource type="Script" uid="uid://dh5u0kdy3vbfe" path="res://UI/SetInitialFocus.gd" id="3_wc8sn"]
 
-[node name="OptionsUI" type="CenterContainer"]
+[node name="OptionsUI" type="CenterContainer" unique_id=804676287]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,20 +16,20 @@ size_flags_vertical = 3
 script = ExtResource("1_845vf")
 metadata/_edit_group_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1716595115]
 layout_mode = 2
 
-[node name="VolumeContainerShifted" type="MarginContainer" parent="VBoxContainer"]
+[node name="VolumeContainerShifted" type="MarginContainer" parent="VBoxContainer" unique_id=592507857]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 46
 theme_override_constants/margin_bottom = 8
 
-[node name="VolumeContainer" type="VBoxContainer" parent="VBoxContainer/VolumeContainerShifted"]
+[node name="VolumeContainer" type="VBoxContainer" parent="VBoxContainer/VolumeContainerShifted" unique_id=1100726039]
 layout_mode = 2
 
-[node name="SoundVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" instance=ExtResource("2_845vf")]
+[node name="SoundVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" unique_id=304338904 instance=ExtResource("2_845vf")]
 layout_mode = 2
 focus_neighbor_right = NodePath("../MusicVolumeUI")
 focus_neighbor_bottom = NodePath("../MusicVolumeUI")
@@ -38,7 +38,7 @@ busIndex = 1
 busTitle = "SFX"
 settingsKey = &"sfxVolume"
 
-[node name="MusicVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" instance=ExtResource("2_845vf")]
+[node name="MusicVolumeUI" parent="VBoxContainer/VolumeContainerShifted/VolumeContainer" unique_id=1031337077 instance=ExtResource("2_845vf")]
 layout_mode = 2
 focus_neighbor_left = NodePath("../SoundVolumeUI")
 focus_neighbor_top = NodePath("../SoundVolumeUI")
@@ -48,7 +48,7 @@ focus_previous = NodePath("../SoundVolumeUI")
 busTitle = "TUNES"
 settingsKey = &"musicVolume"
 
-[node name="SkipMusicButton" type="Button" parent="VBoxContainer"]
+[node name="SkipMusicButton" type="Button" parent="VBoxContainer" unique_id=1356467241]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
@@ -60,7 +60,7 @@ focus_previous = NodePath("../VolumeContainerShifted/VolumeContainer/MusicVolume
 text = "SKIP TUNE"
 script = ExtResource("3_wc8sn")
 
-[node name="InputMapButton" type="Button" parent="VBoxContainer"]
+[node name="InputMapButton" type="Button" parent="VBoxContainer" unique_id=1602126592]
 custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 size_flags_horizontal = 4

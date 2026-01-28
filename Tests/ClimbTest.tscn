@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://lgm6i4l10xlf"]
+[gd_scene format=4 uid="uid://lgm6i4l10xlf"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16bcx"]
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="2_jndpr"]
@@ -25,11 +25,11 @@ size = Vector2(16, 160)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_65h3j"]
 size = Vector2(6, 160)
 
-[node name="ClimbTest" type="Node2D"]
+[node name="ClimbTest" type="Node2D" unique_id=339251070]
 script = ExtResource("1_16bcx")
 mainGameScenePath = "uid://lgm6i4l10xlf"
 
-[node name="PlayerEntity" type="CharacterBody2D" parent="." groups=["entities", "players"]]
+[node name="PlayerEntity" type="CharacterBody2D" parent="." unique_id=102116842 groups=["entities", "players"]]
 z_index = 20
 position = Vector2(112, 240)
 collision_layer = 6
@@ -39,33 +39,33 @@ platform_on_leave = 2
 script = ExtResource("2_jndpr")
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity"]
+[node name="Sprite2D" type="Sprite2D" parent="PlayerEntity" unique_id=799395816]
 texture = ExtResource("3_6wljs")
 region_enabled = true
 region_rect = Rect2(768, 288, 16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity" unique_id=598798346]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="Camera2D" type="Camera2D" parent="PlayerEntity"]
+[node name="Camera2D" type="Camera2D" parent="PlayerEntity" unique_id=879038350]
 process_callback = 0
 
-[node name="ClimbComponent" parent="PlayerEntity" instance=ExtResource("7_a2fsu")]
+[node name="ClimbComponent" parent="PlayerEntity" unique_id=913444650 instance=ExtResource("7_a2fsu")]
 debugMode = true
 
-[node name="JumpComponent" parent="PlayerEntity" instance=ExtResource("6_7a8f1")]
+[node name="JumpComponent" parent="PlayerEntity" unique_id=501570604 instance=ExtResource("6_7a8f1")]
 
-[node name="PlatformerPhysicsComponent" parent="PlayerEntity" instance=ExtResource("8_dfeny")]
+[node name="PlatformerPhysicsComponent" parent="PlayerEntity" unique_id=520424636 instance=ExtResource("8_dfeny")]
 
-[node name="CharacterBodyComponent" parent="PlayerEntity" instance=ExtResource("10_anfg2")]
+[node name="CharacterBodyComponent" parent="PlayerEntity" unique_id=447982314 instance=ExtResource("10_anfg2")]
 
-[node name="InputComponent" parent="PlayerEntity" instance=ExtResource("11_qe4i5")]
+[node name="InputComponent" parent="PlayerEntity" unique_id=42187968 instance=ExtResource("11_qe4i5")]
 debugMode = true
 
-[node name="DebugComponent" parent="PlayerEntity" instance=ExtResource("9_mptly")]
+[node name="DebugComponent" parent="PlayerEntity" unique_id=2138008080 instance=ExtResource("9_mptly")]
 propertiesToChart = Array[NodePath]([NodePath("../CharacterBodyComponent:body:velocity:x"), NodePath("../CharacterBodyComponent:body:velocity:y")])
 
-[node name="WideCliffTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+[node name="WideCliffTileMap" type="TileMapLayer" parent="." unique_id=1692200505 groups=["climbable"]]
 modulate = Color(0, 0.735357, 1, 1)
 position = Vector2(64, 352)
 tile_map_data = PackedByteArray("AAAAAPz/AAAVABUAAAABAPz/AAAVABUAAAACAPz/AAAVABUAAAADAPz/AAAVABUAAAAEAPz/AAAVABUAAAAFAPz/AAAVABUAAAAFAP3/AAAVABUAAAAFAP7/AAAVABUAAAAFAP//AAAVABUAAAAEAP//AAAVABUAAAADAP//AAAVABUAAAADAP7/AAAVABUAAAAEAP7/AAAVABUAAAAEAP3/AAAVABUAAAADAP3/AAAVABUAAAACAP3/AAAVABUAAAACAP7/AAAVABUAAAACAP//AAAVABUAAAABAP//AAAVABUAAAABAP7/AAAVABUAAAABAP3/AAAVABUAAAAAAP3/AAAVABUAAAAAAP7/AAAVABUAAAAAAP//AAAVABUAAAAAAPv/AAAVABUAAAABAPv/AAAVABUAAAACAPv/AAAVABUAAAADAPv/AAAVABUAAAAEAPv/AAAVABUAAAAFAPv/AAAVABUAAAA=")
@@ -75,23 +75,23 @@ collision_enabled = false
 navigation_enabled = false
 script = ExtResource("14_hkdnt")
 
-[node name="WideCliffArea" type="Area2D" parent="WideCliffTileMap" groups=["climbable"]]
+[node name="WideCliffArea" type="Area2D" parent="WideCliffTileMap" unique_id=941836246 groups=["climbable"]]
 modulate = Color(1, 1, 0, 1)
 collision_layer = 576
 collision_mask = 0
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WideCliffTileMap/WideCliffArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WideCliffTileMap/WideCliffArea" unique_id=2042959980]
 position = Vector2(48, -39.5)
 shape = SubResource("RectangleShape2D_xeb2q")
 
-[node name="TerrainTileMap" type="TileMapLayer" parent="."]
+[node name="TerrainTileMap" type="TileMapLayer" parent="." unique_id=1120171491]
 tile_map_data = PackedByteArray("AAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAIAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAwAAAAAAAAANAAAAAwAAAAAAAAAOAAAAAwAAAAAAAAAOAAEAAwAAAAAAAAAOAAIAAwAAAAAAAAAOAAMAAwAAAAAAAAAOAAQAAwAAAAAAAAAOAAUAAwAAAAAAAAAOAAYAAwAAAAAAAAAOAAcAAwAAAAAAAAAOAAgAAwAAAAAAAAAOAAkAAwAAAAAAAAAOAAoAAwAAAAAAAAAOAAsAAwAAAAAAAAANAAsAAwAAAAAAAAAMAAsAAwAAAAAAAAALAAsAAwAAAAAAAAAKAAsAAwAAAAAAAAAJAAsAAwAAAAAAAAAIAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAGAAsAAwAAAAAAAAAFAAsAAwAAAAAAAAAEAAsAAwAAAAAAAAADAAsAAwAAAAAAAAACAAsAAwAAAAAAAAABAAsAAwAAAAAAAAAAAAsAAwAAAAAAAAAAAAoAAwAAAAAAAAAAAAkAAwAAAAAAAAAAAAgAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAUAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAEAAwAAAAAAAAADAAgAAwAAAAAAAAAFAAYAAwAAAAAAAAAHAAQAAwAAAAAAAAAJAAYAAwAAAAAAAAALAAgAAwAAAAAAAAAGAAoAAwAAAAAAAAAHAAoAAwAAAAAAAAAIAAoAAwAAAAAAAAA=")
 tile_set = ExtResource("15_tpseh")
 occlusion_enabled = false
 navigation_enabled = false
 
-[node name="TallLadderTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+[node name="TallLadderTileMap" type="TileMapLayer" parent="." unique_id=271394481 groups=["climbable"]]
 modulate = Color(1, 1, 0, 1)
 z_index = 5
 position = Vector2(136, 352)
@@ -102,18 +102,18 @@ collision_enabled = false
 navigation_enabled = false
 script = ExtResource("14_hkdnt")
 
-[node name="TallLadderArea" type="Area2D" parent="TallLadderTileMap" groups=["climbable"]]
+[node name="TallLadderArea" type="Area2D" parent="TallLadderTileMap" unique_id=2073413520 groups=["climbable"]]
 modulate = Color(0.5, 0.5, 0.5, 1)
 z_index = 5
 collision_layer = 576
 collision_mask = 0
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TallLadderTileMap/TallLadderArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TallLadderTileMap/TallLadderArea" unique_id=1257386226]
 position = Vector2(8, -80)
 shape = SubResource("RectangleShape2D_bahpj")
 
-[node name="ThinRopeTileMap" type="TileMapLayer" parent="." groups=["climbable"]]
+[node name="ThinRopeTileMap" type="TileMapLayer" parent="." unique_id=485145394 groups=["climbable"]]
 modulate = Color(0.735357, 1, 0, 1)
 position = Vector2(232, 320)
 tile_map_data = PackedByteArray("AAAAAPz/AAAMAAUAAAAAAP3/AAAMAAUAAAAAAP7/AAAMAAUAAAAAAP//AAAMAAUAAAAAAPv/AAAMAAUAAAAAAPr/AAAMAAUAAAAAAPn/AAAMAAUAAAAAAPj/AAAMAAUAAAAAAPf/AAAMAAUAAAAAAPb/AAAMAAUAAAAAAPX/AAAMAAUAAAA=")
@@ -123,13 +123,13 @@ collision_enabled = false
 navigation_enabled = false
 script = ExtResource("14_hkdnt")
 
-[node name="ThinRopeArea" type="Area2D" parent="ThinRopeTileMap" groups=["climbable"]]
+[node name="ThinRopeArea" type="Area2D" parent="ThinRopeTileMap" unique_id=1915595953 groups=["climbable"]]
 modulate = Color(0.5, 0.5, 0.5, 1)
 z_index = 1
 collision_layer = 576
 collision_mask = 0
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ThinRopeTileMap/ThinRopeArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ThinRopeTileMap/ThinRopeArea" unique_id=113019512]
 position = Vector2(8, -80)
 shape = SubResource("RectangleShape2D_65h3j")

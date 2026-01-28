@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://gvkx3bnathwr"]
+[gd_scene format=3 uid="uid://gvkx3bnathwr"]
 
 [ext_resource type="Script" uid="uid://l2rxluvwkph8" path="res://UI/Views/UpgradeChoiceUI.gd" id="1_5bd1h"]
 
-[node name="UpgradeChoiceUI" type="HBoxContainer"]
+[node name="UpgradeChoiceUI" type="HBoxContainer" unique_id=1854562759]
 editor_description = "A list item for an UpgradesList"
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 script = ExtResource("1_5bd1h")
 
-[node name="UpgradeButton" type="Button" parent="."]
+[node name="UpgradeButton" type="Button" parent="." unique_id=1630696909]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
@@ -25,12 +25,12 @@ mouse_default_cursor_shape = 2
 text = "UPGRADE"
 alignment = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=2031482973]
 layout_mode = 2
 size_flags_horizontal = 10
 mouse_filter = 2
 
-[node name="CostStatUI" type="Label" parent="HBoxContainer"]
+[node name="CostStatUI" type="Label" parent="HBoxContainer" unique_id=980404300]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
@@ -39,7 +39,7 @@ text = "COST"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="CostAmountLabel" type="Label" parent="HBoxContainer"]
+[node name="CostAmountLabel" type="Label" parent="HBoxContainer" unique_id=1639325203]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2

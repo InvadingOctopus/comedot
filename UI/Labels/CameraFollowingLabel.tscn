@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://fmd52fai41ew"]
+[gd_scene format=3 uid="uid://fmd52fai41ew"]
 
 [ext_resource type="PackedScene" uid="uid://vbs30ah8krrp" path="res://UI/Labels/TextCyclingLabel.tscn" id="1_mgfb3"]
 [ext_resource type="Script" uid="uid://bqbce7boigad0" path="res://UI/Labels/CameraFollowingLabel.gd" id="2_mlqdl"]
 [ext_resource type="Script" uid="uid://sx08564dl0ht" path="res://Scripts/Visual/DeleteParentWhenOffscreen.gd" id="3_11c4o"]
 
-[node name="CameraFollowingLabelCanvas" type="CanvasLayer"]
+[node name="CameraFollowingLabelCanvas" type="CanvasLayer" unique_id=1298260627]
 editor_description = "A Canvas for a Label that follows the Camera for a limited time then \"sticks\" to a fixed position."
 
-[node name="LabelContainer" type="CenterContainer" parent="."]
+[node name="LabelContainer" type="CenterContainer" parent="." unique_id=728382775]
 unique_name_in_owner = true
 top_level = true
 anchors_preset = 15
@@ -16,20 +16,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="LabelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="LabelContainer" unique_id=77926304]
 layout_mode = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="TextCyclingLabel" parent="LabelContainer/MarginContainer" instance=ExtResource("1_mgfb3")]
+[node name="TextCyclingLabel" parent="LabelContainer/MarginContainer" unique_id=1863973645 instance=ExtResource("1_mgfb3")]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("2_mlqdl")
-textStrings = Array[String](["Feather Label"])
+textStrings = ["Feather Label"]
 shouldAppendText = true
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="LabelContainer/MarginContainer/TextCyclingLabel"]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="LabelContainer/MarginContainer/TextCyclingLabel" unique_id=256197296]
 rect = Rect2(160, 90, 320, 180)
 script = ExtResource("3_11c4o")

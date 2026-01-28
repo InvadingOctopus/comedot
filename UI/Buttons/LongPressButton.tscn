@@ -1,16 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://ce5yf1g66vj4o"]
+[gd_scene format=3 uid="uid://ce5yf1g66vj4o"]
 
 [ext_resource type="Script" uid="uid://b4jo80cbjjjpj" path="res://UI/Buttons/LongPressButton.gd" id="1_0i5vg"]
 
-[node name="LongPressButton" type="Button"]
+[node name="LongPressButton" type="Button" unique_id=763879397]
 editor_description = "A Button that requires confirmation by keeping it pressed for a specified time."
 script = ExtResource("1_0i5vg")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=413833495]
 one_shot = true
 ignore_time_scale = true
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=679985017]
 modulate = Color(1, 0.8, 0.2, 0.5)
 layout_mode = 1
 anchors_preset = 15

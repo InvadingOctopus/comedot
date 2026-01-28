@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://1g4ypd7jsctc"]
+[gd_scene format=3 uid="uid://1g4ypd7jsctc"]
 
 [ext_resource type="Script" uid="uid://dw48iqhtskt0r" path="res://Components/Control/TileBasedControlComponent.gd" id="1_lmkju"]
 
-[node name="TileBasedControlComponent" type="Timer" groups=["components"]]
+[node name="TileBasedControlComponent" type="Timer" unique_id=662343224 groups=["components"]]
 editor_description = "Monitors an InputComponent and controls a TileBasedPositionComponent to move the Entity on a TileMapLayer."
 wait_time = 0.1
 one_shot = true

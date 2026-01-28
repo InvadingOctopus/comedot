@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpgk5alwoxntp"]
+[gd_scene format=3 uid="uid://cpgk5alwoxntp"]
 
 [ext_resource type="PackedScene" uid="uid://b5wo0quxdyggs" path="res://Entities/Nodes/AreaEntity.tscn" id="1_dwc2t"]
 
@@ -6,8 +6,8 @@
 resource_local_to_scene = true
 size = Vector2(32, 32)
 
-[node name="AreaEntity" instance=ExtResource("1_dwc2t")]
+[node name="AreaEntity" unique_id=1349008255 instance=ExtResource("1_dwc2t")]
 collision_mask = 595
 
-[node name="CollisionShape2D" parent="." index="0"]
+[node name="CollisionShape2D" parent="." index="0" unique_id=1954005926]
 shape = SubResource("RectangleShape2D_dwc2t")

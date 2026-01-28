@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://ks8fhlam1j34"]
+[gd_scene format=3 uid="uid://ks8fhlam1j34"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_cgfg7"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_8pjcr"]
@@ -17,7 +17,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_icn6w"]
 size = Vector2(12, 14)
 
-[sub_resource type="Resource" id="Resource_tfk4d"]
+[sub_resource type="Resource" id="Resource_m4oah"]
 resource_local_to_scene = true
 resource_name = "monsterHealth"
 script = ExtResource("5_kedlw")
@@ -33,49 +33,49 @@ speed = 25.0
 acceleration = 100.0
 metadata/_custom_type_script = ExtResource("10_cn3to")
 
-[node name="Ghost" type="CharacterBody2D"]
+[node name="Ghost" type="CharacterBody2D" unique_id=580323444]
 collision_layer = 10
 collision_mask = 88
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_cgfg7")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1940599797]
 shape = SubResource("RectangleShape2D_icn6w")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=546858460]
 modulate = Color(1, 1, 1, 0.8)
 use_parent_material = true
 texture = ExtResource("2_8pjcr")
 region_enabled = true
 region_rect = Rect2(416, 96, 16, 16)
 
-[node name="FactionComponent" parent="." instance=ExtResource("3_r0lki")]
+[node name="FactionComponent" parent="." unique_id=351343167 instance=ExtResource("3_r0lki")]
 factions = 8
 
-[node name="HealthComponent" parent="." instance=ExtResource("4_vyhga")]
-health = SubResource("Resource_tfk4d")
+[node name="HealthComponent" parent="." unique_id=1738575026 instance=ExtResource("4_vyhga")]
+health = SubResource("Resource_m4oah")
 
-[node name="HealthVisualComponent" parent="." instance=ExtResource("6_70ylv")]
+[node name="HealthVisualComponent" parent="." unique_id=1177011862 instance=ExtResource("6_70ylv")]
 shouldShowRemainingHealth = true
 
-[node name="DamageReceivingComponent" parent="." instance=ExtResource("7_8kkjp")]
+[node name="DamageReceivingComponent" parent="." unique_id=616953459 instance=ExtResource("7_8kkjp")]
 
-[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
 shape = SubResource("RectangleShape2D_icn6w")
 
-[node name="ChaseComponent" parent="." instance=ExtResource("8_gm12m")]
+[node name="ChaseComponent" parent="." unique_id=1195334992 instance=ExtResource("8_gm12m")]
 
-[node name="DamageComponent" parent="." instance=ExtResource("9_tfk4d")]
+[node name="DamageComponent" parent="." unique_id=297739473 instance=ExtResource("9_tfk4d")]
 collision_layer = 8
 collision_mask = 4
 
-[node name="OverheadPhysicsComponent" parent="." instance=ExtResource("9_pwf4a")]
+[node name="OverheadPhysicsComponent" parent="." unique_id=1196362911 instance=ExtResource("9_pwf4a")]
 parameters = SubResource("Resource_u3ofw")
 
-[node name="CharacterBodyComponent" parent="." instance=ExtResource("11_kuh66")]
+[node name="CharacterBodyComponent" parent="." unique_id=1478744533 instance=ExtResource("11_kuh66")]
 
-[node name="InputComponent" type="Node" parent="."]
+[node name="InputComponent" type="Node" parent="." unique_id=770106944]
 script = ExtResource("13_m4oah")
 metadata/_custom_type_script = "uid://bth4n26ur8bvh"
 

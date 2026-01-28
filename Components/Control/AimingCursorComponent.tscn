@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://ge0omhunt1go"]
+[gd_scene format=3 uid="uid://ge0omhunt1go"]
 
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_eipvf"]
 [ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="1_hxmao"]
 [ext_resource type="Script" uid="uid://b03ahmvom7k4d" path="res://Components/Control/AimingCursorComponent.gd" id="3_hevsd"]
 
-[node name="AimingCursorComponent" type="Sprite2D" groups=["components"]]
+[node name="AimingCursorComponent" type="Sprite2D" unique_id=1708268729 groups=["components"]]
 editor_description = "Adds a visual targeting cursor to use with GunComponent etc."
 modulate = Color(1, 0.735357, 0, 1)
 z_index = 100
@@ -15,7 +15,7 @@ region_rect = Rect2(400, 224, 16, 16)
 script = ExtResource("3_hevsd")
 metadata/_edit_group_ = true
 
-[node name="HidingTimer" type="Timer" parent="."]
+[node name="HidingTimer" type="Timer" parent="." unique_id=1757716727]
 one_shot = true
 
 [connection signal="timeout" from="HidingTimer" to="." method="onHidingTimer_timeout"]

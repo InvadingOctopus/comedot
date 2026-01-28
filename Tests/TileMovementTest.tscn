@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://dptnl2r7a6q1a"]
+[gd_scene format=4 uid="uid://dptnl2r7a6q1a"]
 
 [ext_resource type="Script" uid="uid://o5n3dduj7g3" path="res://Tests/TileMovementTest.gd" id="1_rgyjq"]
 [ext_resource type="Script" uid="uid://2ow1pluircli" path="res://Scripts/Visual/Spin.gd" id="2_gqr1m"]
@@ -8,15 +8,15 @@
 [ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="4_yp2em"]
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="7_rgyjq"]
 
-[node name="TileMovementTest" type="Node2D"]
+[node name="TileMovementTest" type="Node2D" unique_id=1638467602]
 script = ExtResource("1_rgyjq")
 
-[node name="RotatingContainer" type="Node2D" parent="."]
+[node name="RotatingContainer" type="Node2D" parent="." unique_id=892390430]
 texture_filter = 2
 script = ExtResource("2_gqr1m")
 speed = 0.1
 
-[node name="TileMapA" type="TileMapLayer" parent="RotatingContainer"]
+[node name="TileMapA" type="TileMapLayer" parent="RotatingContainer" unique_id=1441026625]
 unique_name_in_owner = true
 tile_map_data = PackedByteArray("AAAAAAAAAAApABAAAAABAAAAAAAnAA4AAAACAAAAAAAnAA4AAAADAAAAAAAnAA4AAAAEAAAAAAAnAA4AAAAFAAAAAAAnAA4AAAAGAAAAAAAnAA4AAAAHAAAAAAAnAA4AAAAJAAAAAAAnAA4AAAAAAAEAAAAnAA4AAAAAAAIAAAAnAA4AAAAAAAMAAAAnAA4AAAAAAAQAAAAnAA4AAAAAAAUAAAAnAA4AAAADAAMAAAAjABIAAAADAAkAAAApAA0AAAAAAAYAAAAnAA4AAAAAAAcAAAAnAA4AAAAAAAgAAAAnAA4AAAAAAAkAAAAnAA4AAAAAAAoAAAAnAA4AAAAAAAsAAAAnAA4AAAAAAAwAAAAnAA4AAAAKAAAAAAAnAA4AAAALAAAAAAAnAA4AAAAMAAAAAAAnAA4AAAANAAAAAAAnAA4AAAAEAAoAAAApAA0AAAADAAoAAAAjABIAAAANAA0AAAAnAA4AAAAMAA0AAAAnAA4AAAALAA0AAAAnAA4AAAAKAA0AAAAnAA4AAAAJAA0AAAAnAA4AAAAHAA0AAAAnAA4AAAAGAA0AAAAnAA4AAAAFAA0AAAAnAA4AAAAEAA0AAAAnAA4AAAADAA0AAAAnAA4AAAACAA0AAAAnAA4AAAABAA0AAAAnAA4AAAAAAA0AAAATABQAAAAHAAgAAAApAA0AAAAHAAcAAAApAA0AAAAHAAYAAAApAA0AAAAHAAUAAAApAA0AAAAJAAgAAAApAA0AAAAJAAcAAAApAA0AAAAJAAYAAAApAA0AAAAJAAUAAAApAA0AAAANAAkAAAApAA0AAAANAAoAAAAjABIAAAAMAAoAAAApAA0AAAANAAMAAAAjABIAAAAOAAAAAAAnAA4AAAAPAAAAAAAnAA4AAAAQAAAAAAAVABQAAAAQAAEAAAAnAA4AAAAQAAIAAAAnAA4AAAAQAAMAAAAnAA4AAAAQAAQAAAAnAA4AAAAQAAUAAAAnAA4AAAAQAAYAAAAnAA4AAAAQAAcAAAAnAA4AAAAQAAgAAAAnAA4AAAAQAAkAAAAnAA4AAAAQAAoAAAAnAA4AAAAQAAsAAAAnAA4AAAAOAA0AAAAnAA4AAAAPAA0AAAAnAA4AAAAQAA0AAAAWABQAAAAQAAwAAAAnAA4AAAAHAAQAAAAcABQAAAAJAAQAAAAcABQAAAANAAQAAAApAA0AAAAMAAMAAAApAA0AAAAEAAMAAAApAA0AAAADAAQAAAApAA0AAAA=")
 tile_set = ExtResource("3_owc60")
@@ -24,7 +24,7 @@ occlusion_enabled = false
 collision_enabled = false
 navigation_enabled = false
 
-[node name="TileMapB" type="TileMapLayer" parent="."]
+[node name="TileMapB" type="TileMapLayer" parent="." unique_id=2028673404]
 modulate = Color(0, 1, 1, 1)
 position = Vector2(288, 0)
 tile_map_data = PackedByteArray("AAAAAAAAAAAkABIAAAAAAAEAAAAbABQAAAABAAAAAAAbABQAAAACAAAAAAAbABQAAAAAAAIAAAAbABQAAAAAAAMAAAAbABQAAAAAAAQAAAAbABQAAAADAAAAAAAbABQAAAAEAAAAAAAbABQAAAAAAAUAAAAkABIAAAAFAAAAAAAkABIAAAAFAAUAAAAkABIAAAABAAUAAAAbABQAAAACAAUAAAAbABQAAAADAAUAAAAbABQAAAAEAAUAAAAbABQAAAAFAAEAAAAbABQAAAAFAAIAAAAbABQAAAAFAAMAAAAbABQAAAAFAAQAAAAbABQAAAAEAAQAAAAbABQAAAADAAQAAAAbABQAAAACAAQAAAAbABQAAAABAAQAAAAbABQAAAABAAMAAAAbABQAAAACAAMAAAAbABQAAAADAAMAAAAbABQAAAAEAAMAAAAbABQAAAACAAIAAAAbABQAAAABAAIAAAAbABQAAAACAAEAAAAbABQAAAADAAEAAAAbABQAAAAEAAEAAAAbABQAAAAEAAIAAAAbABQAAAADAAIAAAAbABQAAAABAAEAAAAbABQAAAA=")
@@ -35,7 +35,7 @@ navigation_enabled = false
 script = ExtResource("4_yp2em")
 metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 
-[node name="TileMapC" type="TileMapLayer" parent="."]
+[node name="TileMapC" type="TileMapLayer" parent="." unique_id=1689855843]
 modulate = Color(1, 1, 0, 0.75)
 position = Vector2(368, -16)
 tile_map_data = PackedByteArray("AAAAAAAAAAAlABIAAAAAAAEAAAAtABEAAAABAAAAAAAtABEAAAACAAAAAAAtABEAAAAAAAIAAAAtABEAAAAAAAMAAAAtABEAAAAAAAQAAAAtABEAAAADAAAAAAAtABEAAAAEAAAAAAAtABEAAAAAAAUAAAAtABEAAAAFAAAAAAAtABEAAAAFAAUAAAAtABEAAAABAAUAAAAtABEAAAACAAUAAAAtABEAAAADAAUAAAAtABEAAAAEAAUAAAAtABEAAAAFAAEAAAAtABEAAAAFAAIAAAAtABEAAAAFAAMAAAAtABEAAAAFAAQAAAAtABEAAAAEAAQAAAAtABEAAAADAAQAAAAtABEAAAACAAQAAAAtABEAAAABAAQAAAAtABEAAAABAAMAAAAtABEAAAACAAMAAAAtABEAAAADAAMAAAAtABEAAAAEAAMAAAAtABEAAAACAAIAAAAtABEAAAABAAIAAAAtABEAAAACAAEAAAAtABEAAAADAAEAAAAtABEAAAAEAAEAAAAtABEAAAAEAAIAAAAtABEAAAADAAIAAAAtABEAAAABAAEAAAAtABEAAAAAAAcAAAAlABIAAAAHAAAAAAAlABIAAAAHAAcAAAAlABIAAAAGAAUAAAAtABEAAAAHAAUAAAAtABEAAAAHAAYAAAAtABEAAAAHAAQAAAAtABEAAAAHAAMAAAAtABEAAAAHAAIAAAAtABEAAAAHAAEAAAAtABEAAAAGAAAAAAAtABEAAAAGAAEAAAAtABEAAAAGAAIAAAAtABEAAAAGAAMAAAAtABEAAAAGAAQAAAAtABEAAAAGAAYAAAAtABEAAAAFAAYAAAAtABEAAAAEAAYAAAAtABEAAAADAAYAAAAtABEAAAACAAYAAAAtABEAAAABAAYAAAAtABEAAAAAAAYAAAAtABEAAAABAAcAAAAtABEAAAACAAcAAAAtABEAAAADAAcAAAAtABEAAAAEAAcAAAAtABEAAAAFAAcAAAAtABEAAAAGAAcAAAAtABEAAAA=")
@@ -46,53 +46,53 @@ navigation_enabled = false
 script = ExtResource("4_yp2em")
 metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 
-[node name="Player-TileBased" parent="." instance=ExtResource("4_e6c1b")]
+[node name="Player-TileBased" parent="." unique_id=671106302 instance=ExtResource("4_e6c1b")]
 
-[node name="TileBasedControlComponent" parent="Player-TileBased" index="3"]
+[node name="TileBasedControlComponent" parent="Player-TileBased" index="3" unique_id=879116052]
 debugMode = true
 
-[node name="TileBasedPositionComponent" parent="Player-TileBased" index="4" node_paths=PackedStringArray("tileMap")]
+[node name="TileBasedPositionComponent" parent="Player-TileBased" index="4" unique_id=928173984 node_paths=PackedStringArray("tileMap")]
 tileMap = NodePath("../../RotatingContainer/TileMapA")
 shouldSnapPositionEveryFrame = true
 debugMode = true
 
-[node name="GunComponent" parent="Player-TileBased" instance=ExtResource("4_6v6op")]
+[node name="GunComponent" parent="Player-TileBased" unique_id=949337158 instance=ExtResource("4_6v6op")]
 
-[node name="DebugComponent" parent="Player-TileBased" instance=ExtResource("7_rgyjq")]
+[node name="DebugComponent" parent="Player-TileBased" unique_id=49689741 instance=ExtResource("7_rgyjq")]
 modulate = Color(0.5, 1, 0.25, 0.75)
 propertiesToLabel = Array[NodePath]([NodePath("../TileBasedPositionComponent:currentCellCoordinates")])
 propertiesToChart = Array[NodePath]([])
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=699251385]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=1157344904]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 50.0
 offset_bottom = 24.0
 size_flags_vertical = 0
 
-[node name="ButtonACell" type="Button" parent="UI/HBoxContainer"]
+[node name="ButtonACell" type="Button" parent="UI/HBoxContainer" unique_id=812690162]
 layout_mode = 2
 size_flags_vertical = 0
 text = "A @Cell"
 
-[node name="ButtonBCell" type="Button" parent="UI/HBoxContainer"]
+[node name="ButtonBCell" type="Button" parent="UI/HBoxContainer" unique_id=1741256948]
 layout_mode = 2
 size_flags_vertical = 0
 text = "B @Cell"
 
-[node name="ButtonBPixel" type="Button" parent="UI/HBoxContainer"]
+[node name="ButtonBPixel" type="Button" parent="UI/HBoxContainer" unique_id=804331021]
 layout_mode = 2
 size_flags_vertical = 0
 text = "B @Pixel"
 
-[node name="ButtonCCell" type="Button" parent="UI/HBoxContainer"]
+[node name="ButtonCCell" type="Button" parent="UI/HBoxContainer" unique_id=719165239]
 layout_mode = 2
 size_flags_vertical = 0
 text = "C @Cell"
 
-[node name="ButtonCPixel" type="Button" parent="UI/HBoxContainer"]
+[node name="ButtonCPixel" type="Button" parent="UI/HBoxContainer" unique_id=10811297]
 layout_mode = 2
 size_flags_vertical = 0
 text = "C @Pixel"

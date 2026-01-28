@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b542d4c84ojmo"]
+[gd_scene format=3 uid="uid://b542d4c84ojmo"]
 
 [ext_resource type="Script" uid="uid://uu6y6f834tfa" path="res://Components/Control/TileBasedMouseControlComponent.gd" id="1_bdmp2"]
 
-[node name="TileBasedMouseControlComponent" type="Node2D" groups=["components"]]
+[node name="TileBasedMouseControlComponent" type="Node2D" unique_id=1770044159 groups=["components"]]
 script = ExtResource("1_bdmp2")

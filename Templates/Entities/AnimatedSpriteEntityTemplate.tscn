@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://8wl40uu4bv0w"]
+[gd_scene format=3 uid="uid://8wl40uu4bv0w"]
 
 [ext_resource type="PackedScene" uid="uid://cgxlva7a6fcdj" path="res://Entities/Nodes/AnimatedSpriteEntity.tscn" id="1_e7k1y"]
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="2_0d81l"]
@@ -27,7 +27,7 @@ region = Rect2(624, 272, 16, 16)
 atlas = ExtResource("2_0d81l")
 region = Rect2(640, 272, 16, 16)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_ujdon"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_0d81l"]
 resource_local_to_scene = true
 animations = [{
 "frames": [{
@@ -54,6 +54,6 @@ animations = [{
 "speed": 10.0
 }]
 
-[node name="AnimatedSpriteEntity" instance=ExtResource("1_e7k1y")]
-sprite_frames = SubResource("SpriteFrames_ujdon")
+[node name="AnimatedSpriteEntity" unique_id=691502979 instance=ExtResource("1_e7k1y")]
+sprite_frames = SubResource("SpriteFrames_0d81l")
 autoplay = "default"

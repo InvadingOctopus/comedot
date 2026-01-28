@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://chi05ddr2pq1c"]
+[gd_scene format=3 uid="uid://chi05ddr2pq1c"]
 
 [ext_resource type="PackedScene" uid="uid://c5yo4fioiy4a0" path="res://Entities/Nodes/CharacterBodyEntity.tscn" id="1_jb8v4"]
 [ext_resource type="Texture2D" uid="uid://dlgr48hfwadef" path="res://Assets/Tiles/Kenney1Bit-Colored.png" id="2_7ykkh"]
@@ -7,14 +7,14 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="CharacterBodyEntity" node_paths=PackedStringArray("sprite") instance=ExtResource("1_jb8v4")]
+[node name="CharacterBodyEntity" unique_id=151844895 node_paths=PackedStringArray("sprite") instance=ExtResource("1_jb8v4")]
 collision_mask = 82
 sprite = NodePath("Sprite2D")
 
-[node name="CollisionShape2D" parent="." index="0"]
+[node name="CollisionShape2D" parent="." index="0" unique_id=378729803]
 shape = SubResource("RectangleShape2D_7ykkh")
 
-[node name="Sprite2D" type="Sprite2D" parent="." index="1"]
+[node name="Sprite2D" type="Sprite2D" parent="." index="1" unique_id=994277676]
 use_parent_material = true
 texture = ExtResource("2_7ykkh")
 region_enabled = true

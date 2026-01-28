@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://c07oc8e36odyw"]
+[gd_scene format=3 uid="uid://c07oc8e36odyw"]
 
 [ext_resource type="Script" uid="uid://bou6x6sb7djji" path="res://Components/Control/AsteroidsControlComponent.gd" id="1_6dk8p"]
 
-[node name="AsteroidsControlComponent" type="Node" groups=["components"]]
+[node name="AsteroidsControlComponent" type="Node" unique_id=1850118053 groups=["components"]]
 script = ExtResource("1_6dk8p")

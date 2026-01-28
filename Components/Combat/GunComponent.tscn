@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dusjndm5o8ehr"]
+[gd_scene format=3 uid="uid://dusjndm5o8ehr"]
 
 [ext_resource type="Script" uid="uid://c4utn28cxq3h7" path="res://Components/Combat/GunComponent.gd" id="1_q51oq"]
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="2_m76jp"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_snrc7"]
 
-[node name="GunComponent" type="Node2D" node_paths=PackedStringArray("bulletEmitter") groups=["components"]]
+[node name="GunComponent" type="Node2D" unique_id=1091405865 node_paths=PackedStringArray("bulletEmitter") groups=["components"]]
 use_parent_material = true
 script = ExtResource("1_q51oq")
 bulletEntity = ExtResource("2_m76jp")
@@ -12,19 +12,19 @@ bulletEmitter = NodePath("GunSprite/BulletEmitter")
 cooldown = 0.5
 metadata/_edit_group_ = true
 
-[node name="GunSprite" type="Sprite2D" parent="."]
+[node name="GunSprite" type="Sprite2D" parent="." unique_id=750546687]
 texture_filter = 2
 use_parent_material = true
 texture = ExtResource("3_snrc7")
 region_enabled = true
 region_rect = Rect2(592, 144, 16, 16)
 
-[node name="BulletEmitter" type="Marker2D" parent="GunSprite"]
+[node name="BulletEmitter" type="Marker2D" parent="GunSprite" unique_id=954339969]
 unique_name_in_owner = true
 position = Vector2(8, 0)
 gizmo_extents = 20.0
 
-[node name="CooldownTimer" type="Timer" parent="."]
+[node name="CooldownTimer" type="Timer" parent="." unique_id=621091117]
 wait_time = 0.5
 one_shot = true
 

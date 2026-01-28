@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dnrmhhkpx5fxj"]
+[gd_scene format=3 uid="uid://dnrmhhkpx5fxj"]
 
 [ext_resource type="Script" uid="uid://d2ejkdin0pik2" path="res://Scenes/Gameplay/SpawnTimer.gd" id="1_jie15"]
 
-[node name="SpawnTimer" type="Timer" groups=["spawners"]]
+[node name="SpawnTimer" type="Timer" unique_id=743571894 groups=["spawners"]]
 editor_description = "Spawns a copy of the specified Scene at regular intervals. May be replaced by RandomSpawnTimer."
 wait_time = 3.0
 autostart = true

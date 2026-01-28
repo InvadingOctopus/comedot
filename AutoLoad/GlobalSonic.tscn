@@ -1,25 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://ck62neo4okj5o"]
+[gd_scene format=3 uid="uid://ck62neo4okj5o"]
 
 [ext_resource type="Script" uid="uid://cwn8hf36fa1v0" path="res://AutoLoad/GlobalSonic.gd" id="1_cweqa"]
 
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_cweqa"]
 mix_rate = 22050.0
 
-[node name="GlobalSonic" type="Node2D"]
+[node name="GlobalSonic" type="Node2D" unique_id=65820443]
 process_mode = 3
 script = ExtResource("1_cweqa")
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=488084981]
 bus = &"Music"
 playback_type = 1
 
-[node name="Synthesizer" type="AudioStreamPlayer" parent="."]
+[node name="Synthesizer" type="AudioStreamPlayer" parent="." unique_id=1608832239]
 unique_name_in_owner = true
 editor_description = "Plays sounds generated via script code."
 stream = SubResource("AudioStreamGenerator_cweqa")
 bus = &"SFX"
 playback_type = 1
 
-[node name="Sounds" type="Node" parent="."]
+[node name="Sounds" type="Node" parent="." unique_id=739570812]
 
 [connection signal="finished" from="MusicPlayer" to="." method="onMusicPlayer_finished"]

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://72f1ii2vh854"]
+[gd_scene format=3 uid="uid://72f1ii2vh854"]
 
 [ext_resource type="Script" uid="uid://b2gtkix02jr12" path="res://Components/Movement/PathFollowComponent.gd" id="1_763hx"]
 
-[node name="PathFollowComponent" type="Node" groups=["components"]]
+[node name="PathFollowComponent" type="Node" unique_id=1757829358 groups=["components"]]
 script = ExtResource("1_763hx")

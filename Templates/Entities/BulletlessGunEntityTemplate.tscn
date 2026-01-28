@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dl55gre783ct0"]
+[gd_scene format=3 uid="uid://dl55gre783ct0"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_3usbj"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_rtq30"]
@@ -8,37 +8,37 @@
 [ext_resource type="PackedScene" uid="uid://w1qe3yxby7lf" path="res://Components/Combat/BulletlessGunComponent.tscn" id="6_nbb7k"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="7_c21oh"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_o4nvn"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_c21oh"]
 resource_local_to_scene = true
 radius = 24.0
 
-[node name="BulletlessGunEntityTemplate" type="Node2D" groups=["entities"]]
+[node name="BulletlessGunEntityTemplate" type="Node2D" unique_id=1747184377 groups=["entities"]]
 editor_description = "Experimental template for tower-defense games etc."
 script = ExtResource("1_3usbj")
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1992842760]
 use_parent_material = true
 texture = ExtResource("2_rtq30")
 region_enabled = true
 region_rect = Rect2(688, 336, 16, 16)
 
-[node name="FactionComponent" parent="." instance=ExtResource("3_34vma")]
+[node name="FactionComponent" parent="." unique_id=194213165 instance=ExtResource("3_34vma")]
 
-[node name="DamageComponent" parent="." instance=ExtResource("4_o4nvn")]
+[node name="DamageComponent" parent="." unique_id=281080892 instance=ExtResource("4_o4nvn")]
 shouldDamageOnCollision = false
 
-[node name="DamageCollisionShape" parent="DamageComponent" index="0"]
-shape = SubResource("CircleShape2D_o4nvn")
+[node name="DamageCollisionShape" parent="DamageComponent" index="0" unique_id=1217175677]
+shape = SubResource("CircleShape2D_c21oh")
 
-[node name="AimingCursorComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_o4nvn")]
+[node name="AimingCursorComponent" parent="." unique_id=796424677 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_o4nvn")]
 nodeToRotate = NodePath("../BulletlessGunComponent/GunSprite")
 
-[node name="BulletlessGunComponent" parent="." instance=ExtResource("6_nbb7k")]
+[node name="BulletlessGunComponent" parent="." unique_id=1342007232 instance=ExtResource("6_nbb7k")]
 position = Vector2(0, -16)
 dontShootIfNoTargets = true
 
-[node name="InputComponent" parent="." instance=ExtResource("7_c21oh")]
+[node name="InputComponent" parent="." unique_id=1060454979 instance=ExtResource("7_c21oh")]
 
 [editable path="DamageComponent"]
 [editable path="BulletlessGunComponent"]

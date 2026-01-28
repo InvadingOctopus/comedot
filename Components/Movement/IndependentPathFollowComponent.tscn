@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cu6rku6r1snnp"]
+[gd_scene format=3 uid="uid://cu6rku6r1snnp"]
 
 [ext_resource type="Script" uid="uid://c6e8bfw5h6oco" path="res://Components/Movement/IndependentPathFollowComponent.gd" id="1_ic56m"]
 
-[node name="IndependentPathFollowComponent" type="Node" groups=["components"]]
+[node name="IndependentPathFollowComponent" type="Node" unique_id=1233864321 groups=["components"]]
 script = ExtResource("1_ic56m")

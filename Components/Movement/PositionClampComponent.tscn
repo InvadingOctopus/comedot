@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0lbxm2bnp0vs"]
+[gd_scene format=3 uid="uid://b0lbxm2bnp0vs"]
 
 [ext_resource type="Script" uid="uid://degp8r7vjqcc4" path="res://Components/Movement/PositionClampComponent.gd" id="1_n6if8"]
 
-[node name="PositionClampComponent" type="Node" groups=["components"]]
+[node name="PositionClampComponent" type="Node" unique_id=84986252 groups=["components"]]
 script = ExtResource("1_n6if8")

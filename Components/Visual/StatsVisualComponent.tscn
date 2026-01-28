@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://1ly7l0r0lbi2"]
+[gd_scene format=3 uid="uid://1ly7l0r0lbi2"]
 
 [ext_resource type="Script" uid="uid://5r248mprfdgn" path="res://Components/Visual/StatsVisualComponent.gd" id="1_dxve7"]
 
-[node name="StatsVisualComponent" type="Node2D" groups=["components"]]
+[node name="StatsVisualComponent" type="Node2D" unique_id=1105172000 groups=["components"]]
 script = ExtResource("1_dxve7")
 customAnimation = &"blink"
 metadata/_edit_group_ = true

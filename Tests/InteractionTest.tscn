@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://csiafxhl1plmi"]
+[gd_scene format=3 uid="uid://csiafxhl1plmi"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16kqk"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_aydxj"]
@@ -56,29 +56,28 @@ script = ExtResource("19_vpvxn")
 strings = PackedStringArray("Hi! Interact to talk!", "Message2", "The next message will be empty…", "", "Goodbye!")
 metadata/_custom_type_script = "uid://d1ed0yc1xwfvx"
 
-[sub_resource type="Resource" id="Resource_vpvxn"]
+[sub_resource type="Resource" id="Resource_n8u5t"]
 resource_local_to_scene = true
 script = ExtResource("19_n8u5t")
 colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
 strings = PackedStringArray("I am automatic!", "A really long ass message to test cooldowns etc...", "Isn\'t this fun??")
 metadata/_custom_type_script = "uid://c8oqfug6bro2n"
 
-[node name="InteractionTest" type="Node2D"]
+[node name="InteractionTest" type="Node2D" unique_id=1348727459]
 script = ExtResource("1_16kqk")
 
-[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_aydxj")]
+[node name="PlayerEntityTemplate-Overhead" parent="." unique_id=1298783313 instance=ExtResource("2_aydxj")]
 position = Vector2(96, 0)
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("4_su6gy")]
+[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" unique_id=647870841 instance=ExtResource("4_su6gy")]
 stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
 
-[node name="InteractionMouseControlComponent" parent="PlayerEntityTemplate-Overhead" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("7_n8u5t")]
+[node name="InteractionMouseControlComponent" parent="PlayerEntityTemplate-Overhead" unique_id=628595486 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("7_n8u5t")]
 interactionIndicator = NodePath("Label")
 debugMode = true
 
-[node name="Label" type="Label" parent="PlayerEntityTemplate-Overhead/InteractionMouseControlComponent"]
+[node name="Label" type="Label" parent="PlayerEntityTemplate-Overhead/InteractionMouseControlComponent" unique_id=1311385402]
 modulate = Color(1, 0, 1, 1)
-anchors_preset = -1
 offset_left = -32.0
 offset_top = -24.0
 offset_right = 34.0
@@ -86,24 +85,23 @@ offset_bottom = -16.0
 text = "Interactor"
 horizontal_alignment = 1
 
-[node name="StatsVisualComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("8_n8u5t")]
+[node name="StatsVisualComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1795678845 instance=ExtResource("8_n8u5t")]
 
-[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("9_bslwp")]
+[node name="CollectorComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1160259472 instance=ExtResource("9_bslwp")]
 
-[node name="ManaPot" parent="." instance=ExtResource("9_vpvxn")]
+[node name="ManaPot" parent="." unique_id=367078614 instance=ExtResource("9_vpvxn")]
 position = Vector2(32, 96)
 region_rect = Rect2(512, 208, 16, 16)
 
-[node name="InteractionComponent" parent="ManaPot" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
+[node name="InteractionComponent" parent="ManaPot" unique_id=1725720773 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
 payload = SubResource("Resource_0gg6p")
 interactionIndicator = NodePath("Label")
 text = "+25 Mana"
 debugMode = true
 
-[node name="Label" type="Label" parent="ManaPot/InteractionComponent"]
+[node name="Label" type="Label" parent="ManaPot/InteractionComponent" unique_id=893647553]
 modulate = Color(0, 1, 1, 1)
 custom_minimum_size = Vector2(64, 0)
-anchors_preset = -1
 offset_left = -32.0
 offset_top = -24.0
 offset_right = 8.0
@@ -111,25 +109,23 @@ offset_bottom = -16.0
 text = "+?? Mana"
 horizontal_alignment = 1
 
-[node name="GoldPot" parent="." instance=ExtResource("9_vpvxn")]
+[node name="GoldPot" parent="." unique_id=309668199 instance=ExtResource("9_vpvxn")]
 position = Vector2(160, 96)
 region_rect = Rect2(512, 160, 16, 16)
 
-[node name="InteractionWithCostComponent" parent="GoldPot" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("12_johh5")]
+[node name="InteractionWithCostComponent" parent="GoldPot" unique_id=2121789544 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("12_johh5")]
 cost = SubResource("Resource_16kqk")
-canSkipNextCooldown = false
 payload = SubResource("Resource_j7vxj")
 interactionIndicator = NodePath("Label")
 text = "-50 Mana to +500 Gold"
 debugMode = true
 
-[node name="CooldownTimer" parent="GoldPot/InteractionWithCostComponent" index="1"]
+[node name="CooldownTimer" parent="GoldPot/InteractionWithCostComponent" index="1" unique_id=75249222]
 wait_time = 5.0
 
-[node name="Label" type="Label" parent="GoldPot/InteractionWithCostComponent"]
+[node name="Label" type="Label" parent="GoldPot/InteractionWithCostComponent" unique_id=211529003]
 modulate = Color(1, 0.75, 0, 1)
 custom_minimum_size = Vector2(144, 0)
-anchors_preset = -1
 offset_left = -72.0
 offset_top = -24.0
 offset_right = -32.0
@@ -137,20 +133,19 @@ offset_bottom = -16.0
 text = "-?? Mana to +??? Gold"
 horizontal_alignment = 1
 
-[node name="ResetSkull" parent="." instance=ExtResource("9_vpvxn")]
+[node name="ResetSkull" parent="." unique_id=1331540939 instance=ExtResource("9_vpvxn")]
 position = Vector2(96, 192)
 region_rect = Rect2(576, 336, 16, 16)
 
-[node name="InteractionComponent" parent="ResetSkull" node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
+[node name="InteractionComponent" parent="ResetSkull" unique_id=2038426095 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("10_hevv5")]
 payload = SubResource("Resource_6rq7u")
 interactionIndicator = NodePath("Label")
 text = "-1000 All Stats"
 debugMode = true
 
-[node name="Label" type="Label" parent="ResetSkull/InteractionComponent"]
+[node name="Label" type="Label" parent="ResetSkull/InteractionComponent" unique_id=1831144158]
 modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(64, 0)
-anchors_preset = -1
 offset_left = -48.0
 offset_top = -24.0
 offset_right = -8.0
@@ -158,7 +153,7 @@ offset_bottom = -16.0
 text = "-???? All Stats"
 horizontal_alignment = 1
 
-[node name="CollectibleEntity1" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
+[node name="CollectibleEntity1" type="Sprite2D" parent="." unique_id=953727860 node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
 editor_description = "A Sprite2D with the Entity script."
 modulate = Color(0.5, 1, 0, 1)
 position = Vector2(-96, 96)
@@ -169,11 +164,11 @@ script = ExtResource("15_bslwp")
 sprite = NodePath(".")
 metadata/_edit_group_ = true
 
-[node name="CollectibleStatComponent" parent="CollectibleEntity1" instance=ExtResource("16_u3x77")]
+[node name="CollectibleStatComponent" parent="CollectibleEntity1" unique_id=895187903 instance=ExtResource("16_u3x77")]
 stat = ExtResource("6_u3x77")
 statModifierMaximum = 100
 
-[node name="CollectibleEntity2" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
+[node name="CollectibleEntity2" type="Sprite2D" parent="." unique_id=1211355725 node_paths=PackedStringArray("sprite") groups=["collectibles", "entities"]]
 editor_description = "A Sprite2D with the Entity script."
 modulate = Color(0.5, 1, 0, 1)
 position = Vector2(288, 96)
@@ -184,27 +179,27 @@ script = ExtResource("15_bslwp")
 sprite = NodePath(".")
 metadata/_edit_group_ = true
 
-[node name="CollectibleStatComponent" parent="CollectibleEntity2" instance=ExtResource("16_u3x77")]
+[node name="CollectibleStatComponent" parent="CollectibleEntity2" unique_id=1227069669 instance=ExtResource("16_u3x77")]
 stat = ExtResource("6_u3x77")
 statModifierMaximum = 100
 
-[node name="NPC1" parent="." instance=ExtResource("9_vpvxn")]
+[node name="NPC1" parent="." unique_id=1626816067 instance=ExtResource("9_vpvxn")]
 position = Vector2(-64, 0)
 flip_h = true
 region_rect = Rect2(400, 112, 16, 16)
 
-[node name="TextInteractionComponent" parent="NPC1" instance=ExtResource("20_c0i8c")]
+[node name="TextInteractionComponent" parent="NPC1" unique_id=182836956 instance=ExtResource("20_c0i8c")]
 z_index = 100
 textSequence = SubResource("Resource_cmk47")
 debugMode = true
 
-[node name="NPC2" parent="." instance=ExtResource("9_vpvxn")]
+[node name="NPC2" parent="." unique_id=1201538327 instance=ExtResource("9_vpvxn")]
 position = Vector2(256, 0)
 region_rect = Rect2(480, 112, 16, 16)
 
-[node name="TextInteractionComponent" parent="NPC2" instance=ExtResource("20_c0i8c")]
+[node name="TextInteractionComponent" parent="NPC2" unique_id=932116605 instance=ExtResource("20_c0i8c")]
 z_index = 100
-textSequence = SubResource("Resource_vpvxn")
+textSequence = SubResource("Resource_n8u5t")
 animationDurationPerCharacter = 0.3
 cooldownOnFailure = 0.69
 shouldRepeatInteractionAfterCooldown = true
@@ -212,13 +207,12 @@ isAutomatic = true
 shouldAlwaysShowIndicator = true
 debugMode = true
 
-[node name="CooldownTimer" parent="NPC2/TextInteractionComponent" index="1"]
+[node name="CooldownTimer" parent="NPC2/TextInteractionComponent" index="1" unique_id=75249222]
 wait_time = 1.111
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=2075220681]
 
-[node name="StatsUI" type="HBoxContainer" parent="UI" node_paths=PackedStringArray("statsComponent")]
-anchors_preset = -1
+[node name="StatsUI" type="HBoxContainer" parent="UI" unique_id=1230399963 node_paths=PackedStringArray("statsComponent")]
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("14_facn4")

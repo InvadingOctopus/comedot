@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://byku6wanllr5n"]
+[gd_scene format=3 uid="uid://byku6wanllr5n"]
 
 [ext_resource type="Script" uid="uid://crjyggcni7yry" path="res://AutoLoad/Debug.gd" id="1_rd14n"]
 [ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="2_6qwn4"]
@@ -12,37 +12,37 @@ font_color = Color(1, 1, 0, 1)
 outline_size = 1
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Debug" type="Node"]
+[node name="Debug" type="Node" unique_id=1008417000]
 script = ExtResource("1_rd14n")
 
-[node name="Canvas" type="CanvasLayer" parent="."]
+[node name="Canvas" type="CanvasLayer" parent="." unique_id=1561043142]
 layer = 110
 
-[node name="Labels" type="Node2D" parent="Canvas"]
+[node name="Labels" type="Node2D" parent="Canvas" unique_id=237227323]
 unique_name_in_owner = true
 top_level = true
 position = Vector2(8, 8)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Canvas/Labels"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Canvas/Labels" unique_id=1102040689]
 offset_right = 84.0
 offset_bottom = 32.0
 mouse_filter = 2
 
-[node name="WarningLabel" type="Label" parent="Canvas/Labels/VBoxContainer"]
+[node name="WarningLabel" type="Label" parent="Canvas/Labels/VBoxContainer" unique_id=1923145002]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Warning"
 label_settings = SubResource("LabelSettings_1rwrb")
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="Canvas/Labels/VBoxContainer"]
+[node name="Label" type="Label" parent="Canvas/Labels/VBoxContainer" unique_id=1427638876]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "General Label"
 metadata/_edit_use_anchors_ = true
 
-[node name="DebugWindow" type="Window" parent="."]
+[node name="DebugWindow" type="Window" parent="." unique_id=813557459]
 unique_name_in_owner = true
 process_mode = 3
 process_priority = 100
@@ -67,20 +67,20 @@ content_scale_aspect = 1
 content_scale_stretch = 1
 content_scale_factor = 2.0
 
-[node name="Canvas" type="CanvasLayer" parent="DebugWindow"]
+[node name="Canvas" type="CanvasLayer" parent="DebugWindow" unique_id=348387561]
 layer = 110
 
-[node name="Labels" type="Node2D" parent="DebugWindow/Canvas"]
+[node name="Labels" type="Node2D" parent="DebugWindow/Canvas" unique_id=169422925]
 top_level = true
 position = Vector2(8, 8)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DebugWindow/Canvas/Labels"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugWindow/Canvas/Labels" unique_id=222518716]
 offset_right = 84.0
 offset_bottom = 32.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="WatchListLabel" type="RichTextLabel" parent="DebugWindow/Canvas/Labels/VBoxContainer"]
+[node name="WatchListLabel" type="RichTextLabel" parent="DebugWindow/Canvas/Labels/VBoxContainer" unique_id=1190016784]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -95,7 +95,7 @@ meta_underlined = false
 hint_underlined = false
 metadata/_edit_use_anchors_ = true
 
-[node name="CustomLogWindow" type="Window" parent="."]
+[node name="CustomLogWindow" type="Window" parent="." unique_id=777488072]
 unique_name_in_owner = true
 process_mode = 3
 process_priority = 100
@@ -118,10 +118,10 @@ content_scale_aspect = 1
 content_scale_stretch = 1
 content_scale_factor = 2.0
 
-[node name="CanvasLayer" type="CanvasLayer" parent="CustomLogWindow"]
+[node name="CanvasLayer" type="CanvasLayer" parent="CustomLogWindow" unique_id=510202523]
 layer = 110
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CustomLogWindow/CanvasLayer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CustomLogWindow/CanvasLayer" unique_id=1529177925]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -129,14 +129,14 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 
-[node name="CustomLogList" type="VBoxContainer" parent="CustomLogWindow/CanvasLayer/ScrollContainer"]
+[node name="CustomLogList" type="VBoxContainer" parent="CustomLogWindow/CanvasLayer/ScrollContainer" unique_id=1562121661]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 2
 
-[node name="DebugBackground" parent="." instance=ExtResource("4_v5ev8")]
+[node name="DebugBackground" parent="." unique_id=896398566 instance=ExtResource("4_v5ev8")]
 unique_name_in_owner = true
 
 [connection signal="close_requested" from="DebugWindow" to="DebugWindow" method="hide"]

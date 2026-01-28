@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://soa07xcd6nrt"]
+[gd_scene format=3 uid="uid://soa07xcd6nrt"]
 
 [ext_resource type="Script" uid="uid://bkqwukoyijrge" path="res://Components/Visual/BlinkPauseComponent.gd" id="1_jrrci"]
 
-[node name="BlinkPauseComponent" type="Timer" groups=["components"]]
+[node name="BlinkPauseComponent" type="Timer" unique_id=1522367436 groups=["components"]]
 process_mode = 3
 wait_time = 0.1
 autostart = true

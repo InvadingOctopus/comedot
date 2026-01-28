@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://bdryp1672xdf7"]
+[gd_scene format=4 uid="uid://bdryp1672xdf7"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_baond"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_020ow"]
@@ -35,43 +35,43 @@ payloadScript = ExtResource("20_8gufy")
 debugMode = true
 metadata/_custom_type_script = "uid://cnho8p8evw7t0"
 
-[node name="ActionsTest" type="Node2D"]
+[node name="ActionsTest" type="Node2D" unique_id=1124919571]
 script = ExtResource("1_baond")
 shouldPrintDebugLogs = true
 showDebugLabels = true
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=18588270]
 tile_map_data = PackedByteArray("AAD1//X/AwAAAAAAAAD2//X/AwAAAAAAAAD3//X/AwAAAAAAAAD4//X/AwAAAAAAAAAGAPX/AwAAAAAAAAAHAPX/AwAAAAAAAAAIAPX/AwAAAAAAAAAJAPX/AwAAAAAAAAAKAPX/AwAAAAAAAAAKAAoAAwAAAAAAAAAJAAoAAwAAAAAAAAAIAAoAAwAAAAAAAAAHAAoAAwAAAAAAAAAGAAoAAwAAAAAAAAAFAAoAAwAAAAAAAAAEAAoAAwAAAAAAAAADAAoAAwAAAAAAAAACAAoAAwAAAAAAAAABAAoAAwAAAAAAAAAAAAoAAwAAAAAAAAD//woAAwAAAAAAAAD+/woAAwAAAAAAAAD9/woAAwAAAAAAAAD8/woAAwAAAAAAAAD7/woAAwAAAAAAAAD6/woAAwAAAAAAAAD5/woAAwAAAAAAAAD4/woAAwAAAAAAAAD3/woAAwAAAAAAAAD2/woAAwAAAAAAAAD1/woAAwAAAAAAAAD5//X/AwAAAAAAAAD6//X/AwAAAAAAAAD7//X/AwAAAAAAAAD8//X/AwAAAAAAAAD9//X/AwAAAAAAAAD+//X/AwAAAAAAAAD///X/AwAAAAAAAAAAAPX/AwAAAAAAAAABAPX/AwAAAAAAAAACAPX/AwAAAAAAAAADAPX/AwAAAAAAAAAEAPX/AwAAAAAAAAAFAPX/AwAAAAAAAAAKAAAAAwAAAAAAAAAKAAEAAwAAAAAAAAAKAAIAAwAAAAAAAAAKAAMAAwAAAAAAAAAKAAQAAwAAAAAAAAAKAAUAAwAAAAAAAAAKAAYAAwAAAAAAAAAKAAcAAwAAAAAAAAAKAAgAAwAAAAAAAAAKAAkAAwAAAAAAAAAKAP//AwAAAAAAAAAKAP7/AwAAAAAAAAAKAP3/AwAAAAAAAAAKAPz/AwAAAAAAAAAKAPv/AwAAAAAAAAAKAPr/AwAAAAAAAAAKAPn/AwAAAAAAAAAKAPj/AwAAAAAAAAAKAPf/AwAAAAAAAAAKAPb/AwAAAAAAAAD1/wEAAwAAAAAAAAD1/wIAAwAAAAAAAAD1/wMAAwAAAAAAAAD1/wQAAwAAAAAAAAD1/wAAAwAAAAAAAAD1////AwAAAAAAAAD1//7/AwAAAAAAAAD1//3/AwAAAAAAAAD1//z/AwAAAAAAAAD1//v/AwAAAAAAAAD1//r/AwAAAAAAAAD1//n/AwAAAAAAAAD1//j/AwAAAAAAAAD1//f/AwAAAAAAAAD1//b/AwAAAAAAAAD1/wUAAwAAAAAAAAD1/wYAAwAAAAAAAAD1/wcAAwAAAAAAAAD1/wgAAwAAAAAAAAD1/wkAAwAAAAAAAAA=")
 tile_set = ExtResource("2_c1c8v")
 
-[node name="PlayerEntityTemplate-Overhead" parent="." instance=ExtResource("2_020ow")]
+[node name="PlayerEntityTemplate-Overhead" parent="." unique_id=1591872908 instance=ExtResource("2_020ow")]
 
-[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("3_c1c8v")]
+[node name="StatsComponent" parent="PlayerEntityTemplate-Overhead" unique_id=954928237 instance=ExtResource("3_c1c8v")]
 stats = Array[ExtResource("4_tue7k")]([ExtResource("5_tl03x"), ExtResource("6_ahkry"), ExtResource("7_8gufy")])
 
-[node name="ActionsComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("8_fib85")]
+[node name="ActionsComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1965037265 instance=ExtResource("8_fib85")]
 actions = Array[ExtResource("9_0lnki")]([ExtResource("10_faxyp"), ExtResource("11_suttq")])
 debugMode = true
 
-[node name="ActionControlComponent" parent="PlayerEntityTemplate-Overhead" instance=ExtResource("12_jynvc")]
+[node name="ActionControlComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1812390736 instance=ExtResource("12_jynvc")]
 
-[node name="SpriteEntity1" parent="." instance=ExtResource("13_020ow")]
+[node name="SpriteEntity1" parent="." unique_id=1631686274 instance=ExtResource("13_020ow")]
 position = Vector2(64, 64)
 
-[node name="ActionTargetableComponent" parent="SpriteEntity1" instance=ExtResource("14_1cwln")]
+[node name="ActionTargetableComponent" parent="SpriteEntity1" unique_id=1109257366 instance=ExtResource("14_1cwln")]
 
-[node name="SpriteEntity2" parent="." instance=ExtResource("13_020ow")]
+[node name="SpriteEntity2" parent="." unique_id=1945709199 instance=ExtResource("13_020ow")]
 position = Vector2(-64, -64)
 region_rect = Rect2(608, 208, 16, 16)
 
-[node name="ActionReactionComponent" parent="SpriteEntity2" instance=ExtResource("16_c1c8v")]
+[node name="ActionReactionComponent" parent="SpriteEntity2" unique_id=1068243928 instance=ExtResource("16_c1c8v")]
 payloads = Dictionary[StringName, ExtResource("17_tue7k")]({
 &"testLook": SubResource("Resource_8gufy")
 })
 fallbackPayload = SubResource("Resource_fib85")
 debugMode = true
 
-[node name="Label" type="Label" parent="SpriteEntity2"]
+[node name="Label" type="Label" parent="SpriteEntity2" unique_id=996226924]
 offset_left = -64.0
 offset_top = -24.0
 offset_right = 66.0
@@ -80,19 +80,19 @@ text = "Reacts to \"testLook\""
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=120463761]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=163121031]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/margin_top = 24
 
-[node name="StatsList" type="GridContainer" parent="CanvasLayer/MarginContainer" node_paths=PackedStringArray("statsComponent")]
+[node name="StatsList" type="GridContainer" parent="CanvasLayer/MarginContainer" unique_id=979123715 node_paths=PackedStringArray("statsComponent")]
 layout_mode = 2
 script = ExtResource("15_lia1s")
 statsComponent = NodePath("../../../PlayerEntityTemplate-Overhead/StatsComponent")
 
-[node name="ActionsList" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("entity")]
+[node name="ActionsList" type="HBoxContainer" parent="CanvasLayer" unique_id=373045789 node_paths=PackedStringArray("entity")]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0

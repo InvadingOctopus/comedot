@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3u5roi5rwks1"]
+[gd_scene format=3 uid="uid://c3u5roi5rwks1"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_boo6r"]
 [ext_resource type="PackedScene" uid="uid://dekgkos84sljm" path="res://Components/Visual/CameraComponent.tscn" id="2_u1hgs"]
@@ -10,7 +10,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_8uggr"]
 radius = 8.0
 
-[node name="Player-TileBased" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+[node name="Player-TileBased" type="CharacterBody2D" unique_id=379998366 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in a TileMap-based game."
 collision_layer = 6
 collision_mask = 126
@@ -21,24 +21,24 @@ script = ExtResource("1_boo6r")
 sprite = NodePath("Sprite2D")
 body = NodePath(".")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=26736999]
 shape = SubResource("CircleShape2D_8uggr")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1282619220]
 use_parent_material = true
 texture = ExtResource("2_ypl60")
 region_enabled = true
 region_rect = Rect2(432, 128, 16, 16)
 
-[node name="CameraComponent" parent="." instance=ExtResource("2_u1hgs")]
+[node name="CameraComponent" parent="." unique_id=1862470103 instance=ExtResource("2_u1hgs")]
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
-[node name="TileBasedControlComponent" parent="." instance=ExtResource("4_b6e0e")]
+[node name="TileBasedControlComponent" parent="." unique_id=879116052 instance=ExtResource("4_b6e0e")]
 
-[node name="TileBasedPositionComponent" parent="." node_paths=PackedStringArray("visualIndicator") instance=ExtResource("5_8uggr")]
+[node name="TileBasedPositionComponent" parent="." unique_id=928173984 node_paths=PackedStringArray("visualIndicator") instance=ExtResource("5_8uggr")]
 visualIndicator = NodePath("MovementIndicator")
 
-[node name="InputComponent" parent="." instance=ExtResource("6_8uggr")]
+[node name="InputComponent" parent="." unique_id=1143964556 instance=ExtResource("6_8uggr")]
 
 [editable path="TileBasedPositionComponent"]

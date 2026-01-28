@@ -1,17 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://jfccby4pnore"]
+[gd_scene format=3 uid="uid://jfccby4pnore"]
 
 [ext_resource type="Script" uid="uid://cdg8ix4bwyiij" path="res://Components/Interaction/InteractionComponent.gd" id="1_bx3kd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ieqsb"]
 radius = 16.0
 
-[node name="InteractionComponent" type="Area2D" groups=["components", "interactions"]]
+[node name="InteractionComponent" type="Area2D" unique_id=1045420162 groups=["components", "interactions"]]
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_bx3kd")
 metadata/_edit_group_ = true
 
-[node name="InteractionShape" type="CollisionShape2D" parent="."]
+[node name="InteractionShape" type="CollisionShape2D" parent="." unique_id=254682034]
 shape = SubResource("CircleShape2D_ieqsb")
 debug_color = Color(0.76, 0.56, 0.8, 0.392157)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://b03gxqrqupyqv"]
+[gd_scene format=4 uid="uid://b03gxqrqupyqv"]
 
 [ext_resource type="Script" uid="uid://bliuc5mmhfcq2" path="res://Tests/PopulateTest.gd" id="1_3l7vy"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_ymdxh"]
@@ -17,12 +17,12 @@ sources/0 = SubResource("TileSetAtlasSource_vn7lc")
 resource_local_to_scene = true
 size = Vector2(144, 144)
 
-[node name="PopulateTest" type="Node2D"]
+[node name="PopulateTest" type="Node2D" unique_id=135133428]
 script = ExtResource("1_3l7vy")
 maximumNumberOfCopies = 10
 mainGameScenePath = "uid://b03gxqrqupyqv"
 
-[node name="BackgroundTileMap" type="TileMapLayer" parent="."]
+[node name="BackgroundTileMap" type="TileMapLayer" parent="." unique_id=1617083573]
 modulate = Color(0, 1, 1, 0.4)
 z_index = -1
 use_parent_material = true
@@ -32,7 +32,7 @@ occlusion_enabled = false
 collision_enabled = false
 navigation_enabled = false
 
-[node name="AreaToPopulate" type="Area2D" parent="."]
+[node name="AreaToPopulate" type="Area2D" parent="." unique_id=331817416]
 collision_layer = 512
 collision_mask = 0
 monitoring = false
@@ -48,17 +48,17 @@ maximumVariation = Vector2(2, 2)
 addToGroup = &"testArea"
 metadata/_edit_group_ = true
 
-[node name="ShapeToPopulate" type="CollisionShape2D" parent="AreaToPopulate"]
+[node name="ShapeToPopulate" type="CollisionShape2D" parent="AreaToPopulate" unique_id=1901580778]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_42cay")
 
-[node name="Player-Overhead" parent="." instance=ExtResource("5_higjy")]
+[node name="Player-Overhead" parent="." unique_id=581689019 instance=ExtResource("5_higjy")]
 position = Vector2(0, -128)
 
-[node name="TestSprite16" parent="." instance=ExtResource("4_jowi7")]
+[node name="TestSprite16" parent="." unique_id=2074753411 instance=ExtResource("4_jowi7")]
 modulate = Color(1, 0.883333, 0, 0.666667)
 
-[node name="TileMap1" type="TileMapLayer" parent="."]
+[node name="TileMap1" type="TileMapLayer" parent="." unique_id=178067363]
 unique_name_in_owner = true
 self_modulate = Color(0, 1, 0, 0.4)
 z_index = -1
@@ -70,7 +70,7 @@ occlusion_enabled = false
 collision_enabled = false
 navigation_enabled = false
 
-[node name="TileMap2" type="TileMapLayer" parent="."]
+[node name="TileMap2" type="TileMapLayer" parent="." unique_id=2037947177]
 unique_name_in_owner = true
 self_modulate = Color(1, 1, 0, 0.4)
 z_index = -1
@@ -82,7 +82,7 @@ occlusion_enabled = false
 collision_enabled = false
 navigation_enabled = false
 
-[node name="RepoulationTimer" type="Timer" parent="."]
+[node name="RepoulationTimer" type="Timer" parent="." unique_id=1422169319]
 wait_time = 3.0
 
 [connection signal="timeout" from="RepoulationTimer" to="." method="onRepoulationTimer_timeout"]

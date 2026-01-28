@@ -1,15 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://c7lv5qv211x8k"]
+[gd_scene format=3 uid="uid://c7lv5qv211x8k"]
 
 [ext_resource type="PackedScene" uid="uid://bdmsbf0fuwqno" path="res://UI/Views/StatUI.tscn" id="1_iaydn"]
 [ext_resource type="Script" uid="uid://ce5c5eqoeiw0d" path="res://UI/Views/StatBar.gd" id="1_u04ku"]
 
-[node name="StatBar" instance=ExtResource("1_iaydn")]
+[node name="StatBar" unique_id=1527767213 instance=ExtResource("1_iaydn")]
 size_flags_horizontal = 3
 columns = 3
 script = ExtResource("1_u04ku")
 animationDuration = 0.25
+barColor = Color(1, 1, 1, 1)
+shouldAnimateBar = true
 
-[node name="Bar" type="ProgressBar" parent="." index="1"]
+[node name="Bar" type="ProgressBar" parent="." index="1" unique_id=45224356]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4

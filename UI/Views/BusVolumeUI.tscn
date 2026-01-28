@@ -1,16 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://cdj4v68mvmp1u"]
+[gd_scene format=3 uid="uid://cdj4v68mvmp1u"]
 
 [ext_resource type="Script" uid="uid://b63l3dt33jnx2" path="res://UI/Views/BusVolumeUI.gd" id="1_06fqj"]
 [ext_resource type="LabelSettings" uid="uid://du8wd14pgp8fg" path="res://Assets/Themes/Label/PixelOperatorMono8.tres" id="2_fkql1"]
 
-[node name="BusVolumeUI" type="GridContainer"]
+[node name="BusVolumeUI" type="GridContainer" unique_id=1235855788]
 offset_right = 76.0
 offset_bottom = 16.0
 columns = 4
 script = ExtResource("1_06fqj")
 busIndex = 2
 
-[node name="BusLabel" type="Label" parent="."]
+[node name="BusLabel" type="Label" parent="." unique_id=1713988546]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -20,14 +20,14 @@ label_settings = ExtResource("2_fkql1")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="DecreaseButton" type="Button" parent="."]
+[node name="DecreaseButton" type="Button" parent="." unique_id=1263106861]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 focus_neighbor_right = NodePath("../IncreaseButton")
 focus_next = NodePath("../IncreaseButton")
 text = "«"
 
-[node name="VolumeLabel" type="Label" parent="."]
+[node name="VolumeLabel" type="Label" parent="." unique_id=2126990335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -37,7 +37,7 @@ label_settings = ExtResource("2_fkql1")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="IncreaseButton" type="Button" parent="."]
+[node name="IncreaseButton" type="Button" parent="." unique_id=2067970421]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 focus_neighbor_left = NodePath("../DecreaseButton")

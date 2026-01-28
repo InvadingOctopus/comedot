@@ -1,14 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dtc44pjtvbcrn"]
+[gd_scene format=3 uid="uid://dtc44pjtvbcrn"]
 
 [ext_resource type="Script" uid="uid://6wl2uoukvs4p" path="res://Components/Data/StatModifierComponent.gd" id="1_ttyqa"]
 
-[node name="StatModifierComponent" type="Node" groups=["components"]]
+[node name="StatModifierComponent" type="Node" unique_id=953456509 groups=["components"]]
 editor_description = "Modifies a Stat on every Timer tick."
 script = ExtResource("1_ttyqa")
-modifier = 1
 metadata/_edit_group_ = true
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=660540203]
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="onTimerTimeout"]

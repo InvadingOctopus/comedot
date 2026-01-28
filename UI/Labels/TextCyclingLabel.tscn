@@ -1,14 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://vbs30ah8krrp"]
+[gd_scene format=3 uid="uid://vbs30ah8krrp"]
 
 [ext_resource type="Script" uid="uid://csmv4fdxvcqlu" path="res://UI/Labels/TextCyclingLabel.gd" id="1_ytf5f"]
 
-[node name="TextCyclingLabel" type="Label"]
+[node name="TextCyclingLabel" type="Label" unique_id=370437365]
 text = "Text Cycling Label"
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("1_ytf5f")
 
-[node name="TextTimer" type="Timer" parent="."]
+[node name="TextTimer" type="Timer" parent="." unique_id=1893044337]
 unique_name_in_owner = true
 wait_time = 2.0
 autostart = true

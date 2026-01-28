@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6c5d68ty35va"]
+[gd_scene format=3 uid="uid://b6c5d68ty35va"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_gtqja"]
 [ext_resource type="Texture2D" uid="uid://u7227vs57eyx" path="res://Assets/Tiles/Kenney1Bit-Monochrome.png" id="2_at8ff"]
@@ -15,7 +15,7 @@ size = Vector2(15, 15)
 atlas = ExtResource("2_at8ff")
 region = Rect2(560, 224, 16, 16)
 
-[node name="Player-Overhead" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+[node name="Player-Overhead" type="CharacterBody2D" unique_id=1092512373 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in an \"overhead\" or \"top-down\" view game."
 collision_layer = 6
 collision_mask = 126
@@ -27,20 +27,20 @@ sprite = NodePath("Sprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=303169715]
 shape = SubResource("RectangleShape2D_sg2kd")
 
-[node name="Sprite2D" type="Sprite2D" parent="." groups=["players"]]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=514791681 groups=["players"]]
 modulate = Color(0, 1, 0, 1)
 use_parent_material = true
 texture = SubResource("AtlasTexture_xljij")
 
-[node name="CameraComponent" parent="." instance=ExtResource("3_2ybp4")]
+[node name="CameraComponent" parent="." unique_id=1618703562 instance=ExtResource("3_2ybp4")]
 
-[node name="OverheadPhysicsComponent" parent="." instance=ExtResource("3_3awaj")]
+[node name="OverheadPhysicsComponent" parent="." unique_id=95574680 instance=ExtResource("3_3awaj")]
 
-[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("4_4iijy")]
+[node name="CharacterBodyComponent" parent="." unique_id=980447629 node_paths=PackedStringArray("body") instance=ExtResource("4_4iijy")]
 body = NodePath("..")
 shouldResetVelocityIfZeroMotion = true
 
-[node name="InputComponent" parent="." instance=ExtResource("6_rwi73")]
+[node name="InputComponent" parent="." unique_id=1275682383 instance=ExtResource("6_rwi73")]

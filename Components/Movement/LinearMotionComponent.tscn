@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://frr2yhuof6v5"]
+[gd_scene format=3 uid="uid://frr2yhuof6v5"]
 
 [ext_resource type="Script" uid="uid://jkgo0sosnd1y" path="res://Components/Movement/LinearMotionComponent.gd" id="1_s2djg"]
 
-[node name="LinearMotionComponent" type="Node" groups=["components"]]
+[node name="LinearMotionComponent" type="Node" unique_id=202830062 groups=["components"]]
 script = ExtResource("1_s2djg")

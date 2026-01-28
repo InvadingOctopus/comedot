@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bumu6nhses65v"]
+[gd_scene format=3 uid="uid://bumu6nhses65v"]
 
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="1_sfh8g"]
 [ext_resource type="Texture2D" uid="uid://2pkst6hcbtlp" path="res://Assets/Tiles/Kenney1Bit-Colored-Transparent.png" id="2_rphdn"]
@@ -20,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="16_1q6vm"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="18_swcld"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxoqp"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1q6vm"]
 resource_local_to_scene = true
 size = Vector2(12, 12)
 
@@ -172,7 +172,7 @@ max = 10000000
 value = 1337
 name = &"playerScore"
 
-[node name="Player-Platformer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+[node name="Player-Platformer" type="CharacterBody2D" unique_id=1971183666 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in a platformer game."
 z_index = 10
 collision_layer = 6
@@ -184,79 +184,77 @@ sprite = NodePath("AnimatedSprite2D")
 body = NodePath(".")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1903598439]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_rxoqp")
+shape = SubResource("RectangleShape2D_1q6vm")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=505059650]
 use_parent_material = true
 sprite_frames = SubResource("SpriteFrames_rxoqp")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D" unique_id=475006829]
 root_node = NodePath("../..")
-libraries = {
-&"": SubResource("AnimationLibrary_2co05")
-}
-autoplay = "RESET"
+libraries/ = SubResource("AnimationLibrary_2co05")
+autoplay = &"RESET"
 
-[node name="CameraComponent" parent="." instance=ExtResource("3_b23pp")]
+[node name="CameraComponent" parent="." unique_id=1479131319 instance=ExtResource("3_b23pp")]
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 10.0
 
-[node name="StatsComponent" parent="." instance=ExtResource("4_gnvya")]
+[node name="StatsComponent" parent="." unique_id=922307392 instance=ExtResource("4_gnvya")]
 stats = Array[ExtResource("9_g0ayb")]([SubResource("Resource_cei4g"), SubResource("Resource_puhqw"), SubResource("Resource_kl6l5")])
 
-[node name="HealthComponent" parent="." instance=ExtResource("5_1y43j")]
+[node name="HealthComponent" parent="." unique_id=1201304901 instance=ExtResource("5_1y43j")]
 health = SubResource("Resource_cei4g")
 
-[node name="HealthVisualComponent" parent="." instance=ExtResource("7_kh44k")]
+[node name="HealthVisualComponent" parent="." unique_id=1010795576 instance=ExtResource("7_kh44k")]
 
-[node name="FactionComponent" parent="." instance=ExtResource("7_3141c")]
+[node name="FactionComponent" parent="." unique_id=417629176 instance=ExtResource("7_3141c")]
 factions = 2
 
-[node name="DamageReceivingComponent" parent="." instance=ExtResource("7_nsuj0")]
+[node name="DamageReceivingComponent" parent="." unique_id=427106045 instance=ExtResource("7_nsuj0")]
 collision_layer = 4
 collision_mask = 40
 
-[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0"]
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_rxoqp")
+shape = SubResource("RectangleShape2D_1q6vm")
 
-[node name="InvulnerabilityOnHitComponent" parent="." node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
+[node name="InvulnerabilityOnHitComponent" parent="." unique_id=1034421986 node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
 animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
 
-[node name="KnockbackOnHitComponent" parent="." instance=ExtResource("11_8q3fk")]
+[node name="KnockbackOnHitComponent" parent="." unique_id=665215421 instance=ExtResource("11_8q3fk")]
 knockbackForce = 200.0
 additionalVector = Vector2(2.08165e-12, -100)
 
-[node name="GunComponent" parent="." instance=ExtResource("10_7jquu")]
+[node name="GunComponent" parent="." unique_id=2053531727 instance=ExtResource("10_7jquu")]
 ammo = SubResource("Resource_puhqw")
 ammoCost = 1
 cooldown = 1.0
 
-[node name="GunSprite" parent="GunComponent" index="0"]
+[node name="GunSprite" parent="GunComponent" index="0" unique_id=750546687]
 visible = false
 
-[node name="GunRecoilComponent" parent="." instance=ExtResource("11_ea0yk")]
+[node name="GunRecoilComponent" parent="." unique_id=825286223 instance=ExtResource("11_ea0yk")]
 
-[node name="MovementFacingComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_b23pp")]
+[node name="MovementFacingComponent" parent="." unique_id=1522539505 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_b23pp")]
 nodeToRotate = NodePath("../GunComponent")
 shouldFaceVerticalInput = false
 
-[node name="JumpComponent" parent="." instance=ExtResource("12_4b1vu")]
+[node name="JumpComponent" parent="." unique_id=753958864 instance=ExtResource("12_4b1vu")]
 
-[node name="PlatformerPhysicsComponent" parent="." instance=ExtResource("14_usisr")]
+[node name="PlatformerPhysicsComponent" parent="." unique_id=1617475570 instance=ExtResource("14_usisr")]
 
-[node name="CharacterBodyComponent" parent="." node_paths=PackedStringArray("body") instance=ExtResource("16_1q6vm")]
+[node name="CharacterBodyComponent" parent="." unique_id=709892523 node_paths=PackedStringArray("body") instance=ExtResource("16_1q6vm")]
 body = NodePath("..")
 
-[node name="PlatformerAnimationComponent" parent="." instance=ExtResource("6_30kxi")]
+[node name="PlatformerAnimationComponent" parent="." unique_id=900724150 instance=ExtResource("6_30kxi")]
 
-[node name="InputComponent" parent="." instance=ExtResource("18_swcld")]
+[node name="InputComponent" parent="." unique_id=1492055703 instance=ExtResource("18_swcld")]
 
 [editable path="DamageReceivingComponent"]
 [editable path="GunComponent"]

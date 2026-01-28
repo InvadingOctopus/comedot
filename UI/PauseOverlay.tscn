@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3o0h88u2yifr"]
+[gd_scene format=3 uid="uid://b3o0h88u2yifr"]
 
 [ext_resource type="PackedScene" uid="uid://bf1fy8up8a6j2" path="res://UI/Buttons/PauseButton.tscn" id="1_38uin"]
 [ext_resource type="Script" uid="uid://dvjnpk58or41e" path="res://UI/PauseOverlay.gd" id="1_sck66"]
@@ -19,7 +19,7 @@ font_size = 8
 outline_size = 2
 outline_color = Color(1, 1, 1, 0.25)
 
-[node name="PauseOverlay" type="Control"]
+[node name="PauseOverlay" type="Control" unique_id=693012419]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,7 +29,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_sck66")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1525415418]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,15 +42,15 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer" unique_id=359724820]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer" unique_id=1036882690]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=560774559]
 unique_name_in_owner = true
 layout_mode = 2
 text = "COMEDOT"
@@ -62,7 +62,7 @@ uppercase = true
 script = ExtResource("3_7sumf")
 hueModifier = 0.5
 
-[node name="SubtitleLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
+[node name="SubtitleLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=1291749044]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.8)
 custom_minimum_size = Vector2(80, 8)
@@ -74,14 +74,14 @@ vertical_alignment = 1
 autowrap_mode = 3
 max_lines_visible = 2
 
-[node name="OptionsUI" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource("5_bo3ty")]
+[node name="OptionsUI" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=183577487 instance=ExtResource("5_bo3ty")]
 layout_mode = 2
 focus_neighbor_top = NodePath("../../../../PauseButton")
 focus_neighbor_bottom = NodePath("../RestartButton")
 focus_next = NodePath("../RestartButton")
 focus_previous = NodePath("../../../../PauseButton")
 
-[node name="ExtraLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
+[node name="ExtraLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=614750730]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(312, 8)
 layout_mode = 2
@@ -89,12 +89,12 @@ size_flags_vertical = 6
 label_settings = ExtResource("5_su7p3")
 autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="MarginContainer/CenterContainer/VBoxContainer"]
+[node name="Spacer" type="Control" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=1075172982]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RestartButton" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource("8_38uin")]
+[node name="RestartButton" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=1316098960 instance=ExtResource("8_38uin")]
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Return to Main Menu"
@@ -103,14 +103,14 @@ focus_next = NodePath("../../../../PauseButton")
 focus_previous = NodePath("../OptionsUI")
 text = "REBOOT"
 
-[node name="TimeLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
+[node name="TimeLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=2067080099]
 unique_name_in_owner = true
 layout_mode = 2
 text = "TIME"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseButton" parent="." instance=ExtResource("1_38uin")]
+[node name="PauseButton" parent="." unique_id=143483779 instance=ExtResource("1_38uin")]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 8.0

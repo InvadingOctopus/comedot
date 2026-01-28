@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6sthnygmcwpg"]
+[gd_scene format=3 uid="uid://c6sthnygmcwpg"]
 
 [ext_resource type="Script" uid="uid://3eb5x88pfvph" path="res://Components/Gameplay/ActionTargetableComponent.gd" id="1_bmle7"]
 
@@ -6,7 +6,7 @@
 resource_local_to_scene = true
 size = Vector2(16, 16)
 
-[node name="ActionTargetableComponent" type="Area2D" groups=["components", "targetables"]]
+[node name="ActionTargetableComponent" type="Area2D" unique_id=1645221006 groups=["components", "targetables"]]
 collision_layer = 8192
 collision_mask = 0
 input_pickable = false
@@ -14,5 +14,5 @@ monitoring = false
 script = ExtResource("1_bmle7")
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=986726483]
 shape = SubResource("RectangleShape2D_gis5n")

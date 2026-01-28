@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://qkcschxa5my1"]
+[gd_scene format=3 uid="uid://qkcschxa5my1"]
 
 [ext_resource type="Script" uid="uid://biw5xapr2dvcr" path="res://Components/Interaction/InteractionControlComponent.gd" id="1_3nqhk"]
 
@@ -6,17 +6,17 @@
 resource_local_to_scene = true
 radius = 16.0
 
-[node name="InteractionControlComponent" type="Area2D" groups=["components"]]
+[node name="InteractionControlComponent" type="Area2D" unique_id=1502676897 groups=["components"]]
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_3nqhk")
 metadata/_edit_group_ = true
 
-[node name="InteractionControlShape" type="CollisionShape2D" parent="."]
+[node name="InteractionControlShape" type="CollisionShape2D" parent="." unique_id=218436281]
 shape = SubResource("CircleShape2D_jn0kx")
 debug_color = Color(0.76, 0.56, 0.8, 0.392157)
 
-[node name="CooldownTimer" type="Timer" parent="."]
+[node name="CooldownTimer" type="Timer" parent="." unique_id=293018892]
 wait_time = 0.5
 
 [connection signal="area_entered" from="." to="." method="onArea_entered"]

@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://hy0kb8n2h48a"]
+[gd_scene format=3 uid="uid://hy0kb8n2h48a"]
 
 [ext_resource type="PackedScene" uid="uid://cksfufru8l0v0" path="res://Components/Control/ActionTargetingCursorComponentBase.tscn" id="1_cyulv"]
 [ext_resource type="Script" uid="uid://bvy7qvuyw38ae" path="res://Components/Control/ActionTargetingMouseComponent.gd" id="2_xkt3h"]
 
-[node name="ActionTargetingMouseComponent" instance=ExtResource("1_cyulv")]
+[node name="ActionTargetingMouseComponent" unique_id=296470143 instance=ExtResource("1_cyulv")]
 script = ExtResource("2_xkt3h")

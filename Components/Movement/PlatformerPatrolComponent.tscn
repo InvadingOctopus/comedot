@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cwposw6wqg1mi"]
+[gd_scene format=3 uid="uid://cwposw6wqg1mi"]
 
 [ext_resource type="Script" uid="uid://bdb2j8a73nsfb" path="res://Components/Movement/PlatformerPatrolComponent.gd" id="1_w6gon"]
 
-[node name="PlatformerPatrolComponent" type="Node" groups=["components"]]
+[node name="PlatformerPatrolComponent" type="Node" unique_id=655496658 groups=["components"]]
 script = ExtResource("1_w6gon")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cfw867i3q122v"]
+[gd_scene format=3 uid="uid://cfw867i3q122v"]
 
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="1_3cwn3"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_op0dp"]
@@ -10,31 +10,31 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8iuf5"]
 size = Vector2(14, 14)
 
-[node name="ArmedTree" type="RigidBody2D"]
+[node name="ArmedTree" type="RigidBody2D" unique_id=1970333382]
 collision_layer = 64
 collision_mask = 83
 gravity_scale = 0.0
 linear_damp = 5.0
 script = ExtResource("1_3cwn3")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1486530445]
 modulate = Color(0, 1, 0, 1)
 texture = ExtResource("2_op0dp")
 region_enabled = true
 region_rect = Rect2(64, 32, 16, 16)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1009014369]
 shape = SubResource("RectangleShape2D_8iuf5")
 
-[node name="FactionComponent" parent="." instance=ExtResource("3_frfcy")]
+[node name="FactionComponent" parent="." unique_id=1660880498 instance=ExtResource("3_frfcy")]
 factions = 6
 
-[node name="GunComponent" parent="." instance=ExtResource("3_ppngh")]
+[node name="GunComponent" parent="." unique_id=335321454 instance=ExtResource("3_ppngh")]
 cooldown = 0.1
 
-[node name="NodeFacingComponent" parent="." node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_yl0fu")]
+[node name="NodeFacingComponent" parent="." unique_id=1728329491 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("5_yl0fu")]
 nodeToRotate = NodePath("../GunComponent")
 
-[node name="InputComponent" parent="." instance=ExtResource("6_w0eqf")]
+[node name="InputComponent" parent="." unique_id=1261892612 instance=ExtResource("6_w0eqf")]
 
 [editable path="GunComponent"]

@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://qskvvxdkwgod"]
+[gd_scene format=3 uid="uid://qskvvxdkwgod"]
 
 [ext_resource type="Script" uid="uid://bunosf1onumch" path="res://Components/Combat/DamageRepeatingComponent.gd" id="2_l10pg"]
 
-[node name="DamageRepeatingComponent" type="Timer" groups=["components"]]
+[node name="DamageRepeatingComponent" type="Timer" unique_id=1370270861 groups=["components"]]
 script = ExtResource("2_l10pg")
 
 [connection signal="timeout" from="." to="." method="onTimeout"]

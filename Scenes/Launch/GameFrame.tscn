@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://celt7hx1gstld"]
+[gd_scene format=3 uid="uid://celt7hx1gstld"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_jd6d7"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="1_uhj4x"]
@@ -25,51 +25,51 @@ texture_region_size = Vector2i(32, 32)
 tile_size = Vector2i(32, 32)
 sources/3 = SubResource("TileSetAtlasSource_jd6d7")
 
-[node name="GameFrame" type="Node2D"]
+[node name="GameFrame" type="Node2D" unique_id=1155482863]
 editor_description = "The Main Menu"
 script = ExtResource("1_jd6d7")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1692521394]
 environment = SubResource("Environment_ljcfk")
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=233968757]
 color = Color(0.5, 0.5, 0.5, 1)
 
-[node name="CleanDebugBackground" parent="." instance=ExtResource("1_uhj4x")]
+[node name="CleanDebugBackground" parent="." unique_id=1329290838 instance=ExtResource("1_uhj4x")]
 
-[node name="TileMap1Solid" parent="CleanDebugBackground/Parallax2D1" index="0"]
+[node name="TileMap1Solid" parent="CleanDebugBackground/Parallax2D1" parent_id_path=PackedInt32Array(1329290838, 958660220) index="0" unique_id=609670000]
 tile_set = SubResource("TileSet_t25e2")
 
-[node name="TileMap2Checkered" parent="CleanDebugBackground/Parallax2D2" index="0"]
+[node name="TileMap2Checkered" parent="CleanDebugBackground/Parallax2D2" parent_id_path=PackedInt32Array(1329290838, 1221721316) index="0" unique_id=339816259]
 tile_set = SubResource("TileSet_t25e2")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1360074557]
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 editor_draw_limits = true
 script = ExtResource("4_uf5dw")
 
-[node name="PointLight2D" type="PointLight2D" parent="Camera2D"]
+[node name="PointLight2D" type="PointLight2D" parent="Camera2D" unique_id=1468781960]
 shadow_filter = 1
 shadow_filter_smooth = 4.0
 texture = ExtResource("3_r7qai")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1503236170]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1264029505]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LogoMarginContainer" type="MarginContainer" parent="CanvasLayer/VBoxContainer"]
+[node name="LogoMarginContainer" type="MarginContainer" parent="CanvasLayer/VBoxContainer" unique_id=1753375925]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Logo" type="TextureRect" parent="CanvasLayer/VBoxContainer/LogoMarginContainer"]
+[node name="Logo" type="TextureRect" parent="CanvasLayer/VBoxContainer/LogoMarginContainer" unique_id=929683228]
 modulate = Color(1, 1, 1, 0.5)
 texture_filter = 2
 layout_mode = 2
@@ -79,12 +79,12 @@ texture = ExtResource("6_jd6d7")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="LogoSpacer" type="HSeparator" parent="CanvasLayer/VBoxContainer"]
+[node name="LogoSpacer" type="HSeparator" parent="CanvasLayer/VBoxContainer" unique_id=1216523706]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UIMarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="UIMarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=347267054]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -97,16 +97,16 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/UIMarginContainer" node_paths=PackedStringArray("backButton")]
+[node name="UINavigationContainer" type="VBoxContainer" parent="CanvasLayer/UIMarginContainer" unique_id=2131364660 node_paths=PackedStringArray("backButton")]
 layout_mode = 2
 script = ExtResource("2_y2sis")
 backButton = NodePath("BackButton")
 
-[node name="MainMenuButtons" parent="CanvasLayer/UIMarginContainer/UINavigationContainer" instance=ExtResource("7_wy4rx")]
+[node name="MainMenuButtons" parent="CanvasLayer/UIMarginContainer/UINavigationContainer" unique_id=425700688 instance=ExtResource("7_wy4rx")]
 layout_mode = 2
 focus_mode = 2
 
-[node name="BackButton" type="Button" parent="CanvasLayer/UIMarginContainer/UINavigationContainer"]
+[node name="BackButton" type="Button" parent="CanvasLayer/UIMarginContainer/UINavigationContainer" unique_id=1443485399]
 layout_mode = 2
 size_flags_horizontal = 4
 shortcut = ExtResource("9_t25e2")

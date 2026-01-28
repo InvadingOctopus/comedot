@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://befwp6wwbuk0r"]
+[gd_scene format=3 uid="uid://befwp6wwbuk0r"]
 
 [ext_resource type="Script" uid="uid://4i2bqn3cl5ej" path="res://Components/Movement/RelativePathMovementComponent.gd" id="1_xcdol"]
 
-[node name="RelativePathMovementComponent" type="Node" groups=["components"]]
+[node name="RelativePathMovementComponent" type="Node" unique_id=310854524 groups=["components"]]
 script = ExtResource("1_xcdol")

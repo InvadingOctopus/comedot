@@ -1,15 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://cdqcgv7dyhwid"]
+[gd_scene format=3 uid="uid://cdqcgv7dyhwid"]
 
 [ext_resource type="PackedScene" uid="uid://bpf6syqk7dayu" path="res://UI/Views/GameplayResourceUI.tscn" id="1_2nomy"]
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="1_jdtr4"]
 [ext_resource type="Script" uid="uid://2fvjfjeddswh" path="res://Scenes/Decorations/GameplayResourceBubble.gd" id="1_y46m7"]
 
-[node name="GameplayResourceBubble" type="Node2D"]
+[node name="GameplayResourceBubble" type="Node2D" unique_id=1388847926]
 process_mode = 3
 z_index = 100
 script = ExtResource("1_y46m7")
 
-[node name="GameplayResourceUI" parent="." instance=ExtResource("1_2nomy")]
+[node name="GameplayResourceUI" parent="." unique_id=1826264114 instance=ExtResource("1_2nomy")]
 material = ExtResource("1_jdtr4")
 anchors_preset = 10
 anchor_right = 1.0

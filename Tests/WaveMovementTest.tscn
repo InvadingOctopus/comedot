@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cn7oaxowiga7m"]
+[gd_scene format=3 uid="uid://cn7oaxowiga7m"]
 
 [ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_5ak0q"]
 [ext_resource type="Script" uid="uid://b3tgnb1y0hgk1" path="res://Entities/Entity.gd" id="2_dudyc"]
@@ -8,52 +8,52 @@
 [ext_resource type="PackedScene" uid="uid://dkokjrtkb8dch" path="res://Components/Visual/ShapeDrawComponent.tscn" id="5_hc4iw"]
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="6_stcti"]
 
-[node name="WaveMovementTest" type="Node2D"]
+[node name="WaveMovementTest" type="Node2D" unique_id=1042628289]
 script = ExtResource("1_5ak0q")
 showDebugWindow = false
 
-[node name="Grid" type="Node2D" parent="."]
+[node name="Grid" type="Node2D" parent="." unique_id=549364325]
 script = ExtResource("2_dudyc")
 
-[node name="ShapeDrawComponent" parent="Grid" instance=ExtResource("5_hc4iw")]
+[node name="ShapeDrawComponent" parent="Grid" unique_id=1773850982 instance=ExtResource("5_hc4iw")]
 linePoints = PackedVector2Array(-500, 0, 500, 0, -500, -64, 500, -64, -500, 64, 500, 64)
 lineColors = PackedColorArray(1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1)
 
-[node name="SpriteEntity1" parent="." instance=ExtResource("4_e10pj")]
+[node name="SpriteEntity1" parent="." unique_id=947285023 instance=ExtResource("4_e10pj")]
 
-[node name="WaveMotionComponent" parent="SpriteEntity1" instance=ExtResource("3_785qx")]
+[node name="WaveMotionComponent" parent="SpriteEntity1" unique_id=1045752739 instance=ExtResource("3_785qx")]
 shouldUseCosineForX = true
 xAmplitude = 64.0
 xFrequency = 1.0
 debugMode = true
 
-[node name="DebugComponent" parent="SpriteEntity1" instance=ExtResource("4_n5ct3")]
+[node name="DebugComponent" parent="SpriteEntity1" unique_id=1271906617 instance=ExtResource("4_n5ct3")]
 propertiesToChart = Array[NodePath]([NodePath("..:position:x"), NodePath("../WaveMotionComponent:wavePosition:x"), NodePath("..:position:y"), NodePath("../WaveMotionComponent:wavePosition:y../WaveMotionComponent")])
 chartVerticalHeight = 200.0
 chartValueScale = 1.0
 
-[node name="EntityLabel" parent="SpriteEntity1/DebugComponent/Labels" index="0"]
+[node name="EntityLabel" parent="SpriteEntity1/DebugComponent/Labels" parent_id_path=PackedInt32Array(1271906617, 2121881212) index="0" unique_id=1219470630]
 visible = false
 
-[node name="ShapeDrawComponent" parent="SpriteEntity1" instance=ExtResource("5_hc4iw")]
+[node name="ShapeDrawComponent" parent="SpriteEntity1" unique_id=853192982 instance=ExtResource("5_hc4iw")]
 material = ExtResource("6_stcti")
 linePoints = PackedVector2Array(-16, 0, 16, 0)
 lineColors = PackedColorArray(1, 0, 0, 0.75)
 
-[node name="SpriteEntity2" parent="." instance=ExtResource("4_e10pj")]
+[node name="SpriteEntity2" parent="." unique_id=1105826296 instance=ExtResource("4_e10pj")]
 position = Vector2(128, 0)
 
-[node name="WaveMotionComponent" parent="SpriteEntity2" instance=ExtResource("3_785qx")]
+[node name="WaveMotionComponent" parent="SpriteEntity2" unique_id=608404407 instance=ExtResource("3_785qx")]
 yAmplitude = 0.0
 yFrequency = 0.0
 isEnabled = false
 debugMode = true
 
-[node name="ShapeDrawComponent" parent="SpriteEntity2" instance=ExtResource("5_hc4iw")]
+[node name="ShapeDrawComponent" parent="SpriteEntity2" unique_id=1474564252 instance=ExtResource("5_hc4iw")]
 material = ExtResource("6_stcti")
 linePoints = PackedVector2Array(-16, 0, 16, 0)
 lineColors = PackedColorArray(1, 0, 0, 0.75)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=947034103]
 
 [editable path="SpriteEntity1/DebugComponent"]

@@ -1,10 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwl0ugf1uvhqt"]
+[gd_scene format=3 uid="uid://dwl0ugf1uvhqt"]
 
 [ext_resource type="Script" uid="uid://diucg6kl1b657" path="res://Components/Visual/CompassComponent.gd" id="1_6ha6n"]
 
-[node name="CompassComponent" type="Node2D" groups=["components"]]
+[node name="CompassComponent" type="Node2D" unique_id=468279438 groups=["components"]]
 script = ExtResource("1_6ha6n")
 metadata/_edit_group_ = true
 
-[node name="CompassIndicator" type="Sprite2D" parent="."]
+[node name="CompassIndicator" type="Sprite2D" parent="." unique_id=1285080572]
 unique_name_in_owner = true

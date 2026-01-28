@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bqsh8lrdxmljt"]
+[gd_scene format=3 uid="uid://bqsh8lrdxmljt"]
 
 [ext_resource type="Script" uid="uid://152oaj1p6c27" path="res://AutoLoad/GlobalUI.gd" id="1_6ujyj"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_vibvi"]
@@ -16,15 +16,15 @@ region = Rect2(624, 256, 16, 16)
 shader = ExtResource("7_3j472")
 shader_parameter/amount = 0.5
 
-[node name="GlobalUI" type="Node"]
+[node name="GlobalUI" type="Node" unique_id=1991404077]
 process_mode = 3
 script = ExtResource("1_6ujyj")
 
-[node name="ForegroundOverlay" type="CanvasLayer" parent="."]
+[node name="ForegroundOverlay" type="CanvasLayer" parent="." unique_id=1719351788]
 unique_name_in_owner = true
 layer = 120
 
-[node name="NavigationContainer" type="MarginContainer" parent="ForegroundOverlay" node_paths=PackedStringArray("backButton")]
+[node name="NavigationContainer" type="MarginContainer" parent="ForegroundOverlay" unique_id=1903001597 node_paths=PackedStringArray("backButton")]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,7 +37,7 @@ mouse_filter = 2
 script = ExtResource("2_vibvi")
 backButton = NodePath("../NavigationBackButton")
 
-[node name="NavigationBackButton" type="Button" parent="ForegroundOverlay"]
+[node name="NavigationBackButton" type="Button" parent="ForegroundOverlay" unique_id=504188181]
 visible = false
 custom_minimum_size = Vector2(18, 18)
 offset_left = 32.0
@@ -49,7 +49,7 @@ size_flags_vertical = 4
 shortcut = ExtResource("4_u63o5")
 text = "<"
 
-[node name="GlobalTintRect" type="ColorRect" parent="ForegroundOverlay"]
+[node name="GlobalTintRect" type="ColorRect" parent="ForegroundOverlay" unique_id=383008986]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0)
@@ -61,7 +61,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.15, 0, 0.3, 1)
 
-[node name="MusicLabelContainer" type="HBoxContainer" parent="ForegroundOverlay"]
+[node name="MusicLabelContainer" type="HBoxContainer" parent="ForegroundOverlay" unique_id=2080804966]
 unique_name_in_owner = true
 process_mode = 3
 modulate = Color(0, 1, 1, 1)
@@ -77,20 +77,20 @@ grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 8
 
-[node name="MusicIcon" type="TextureRect" parent="ForegroundOverlay/MusicLabelContainer"]
+[node name="MusicIcon" type="TextureRect" parent="ForegroundOverlay/MusicLabelContainer" unique_id=15993098]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 texture = SubResource("AtlasTexture_c88uu")
 stretch_mode = 2
 
-[node name="MusicLabel" type="Label" parent="ForegroundOverlay/MusicLabelContainer"]
+[node name="MusicLabel" type="Label" parent="ForegroundOverlay/MusicLabelContainer" unique_id=804767170]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 text = "Now Playing"
 
-[node name="PauseRects" type="ColorRect" parent="ForegroundOverlay"]
+[node name="PauseRects" type="ColorRect" parent="ForegroundOverlay" unique_id=1913393536]
 unique_name_in_owner = true
 visible = false
 anchors_preset = 15
@@ -102,7 +102,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(1, 1, 1, 0)
 
-[node name="PauseShaderRect" type="ColorRect" parent="ForegroundOverlay/PauseRects"]
+[node name="PauseShaderRect" type="ColorRect" parent="ForegroundOverlay/PauseRects" unique_id=1552241772]
 unique_name_in_owner = true
 texture_filter = 2
 material = SubResource("ShaderMaterial_20et4")
@@ -113,7 +113,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PauseTintRect" type="ColorRect" parent="ForegroundOverlay/PauseRects"]
+[node name="PauseTintRect" type="ColorRect" parent="ForegroundOverlay/PauseRects" unique_id=576590188]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -123,7 +123,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0.5, 1, 0.5)
 
-[node name="PauseOverlayContainer" type="MarginContainer" parent="ForegroundOverlay"]
+[node name="PauseOverlayContainer" type="MarginContainer" parent="ForegroundOverlay" unique_id=1784423274]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0)
@@ -141,7 +141,7 @@ theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 script = ExtResource("2_vibvi")
 
-[node name="LabelsList" type="VBoxContainer" parent="ForegroundOverlay"]
+[node name="LabelsList" type="VBoxContainer" parent="ForegroundOverlay" unique_id=440765123]
 unique_name_in_owner = true
 offset_left = 8.0
 offset_top = 8.0

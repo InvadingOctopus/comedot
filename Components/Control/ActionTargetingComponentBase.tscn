@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bujgiieyrjfwd"]
+[gd_scene format=3 uid="uid://bujgiieyrjfwd"]
 
 [ext_resource type="Script" uid="uid://c87kbb4qfxr8o" path="res://Components/Control/ActionTargetingComponentBase.gd" id="1_wl6nn"]
 
-[node name="ActionTargetingComponentBase" type="Node2D" groups=["components"]]
+[node name="ActionTargetingComponentBase" type="Node2D" unique_id=1228964591 groups=["components"]]
 script = ExtResource("1_wl6nn")
 metadata/_edit_group_ = true
