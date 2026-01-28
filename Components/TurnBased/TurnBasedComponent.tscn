@@ -1,6 +1,3 @@
-[gd_scene load_steps=2 format=3 uid="uid://dixv8vyn8lsod"]
+[gd_scene format=3 uid="uid://dixv8vyn8lsod"]
 
-[ext_resource type="Script" uid="uid://css7c37ak7ujm" path="res://Components/TurnBased/TurnBasedComponent.gd" id="1_s5y5f"]
-
-[node name="TurnBasedComponent" type="Node" groups=["components", "turnBased"]]
-script = ExtResource("1_s5y5f")
+[node name="TurnBasedComponent" type="Node" unique_id=1307301253 groups=["components", "turnBased"]]

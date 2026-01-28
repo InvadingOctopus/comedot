@@ -1,8 +1,5 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqyq2ndxv4w3v"]
+[gd_scene format=3 uid="uid://bqyq2ndxv4w3v"]
 
-[ext_resource type="Script" uid="uid://bx7dkoidy7qj6" path="res://Components/Gameplay/TimerComponentBase.gd" id="1_5b3mf"]
-
-[node name="TimerComponentBase" type="Timer" groups=["components"]]
-script = ExtResource("1_5b3mf")
+[node name="TimerComponentBase" type="Timer" unique_id=232549338 groups=["components"]]
 
 [connection signal="timeout" from="." to="." method="onTimeout"]

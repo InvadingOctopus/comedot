@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://cksfufru8l0v0"]
+[gd_scene format=3 uid="uid://cksfufru8l0v0"]
 
-[ext_resource type="Script" uid="uid://ct1clllws2mgc" path="res://Components/Control/ActionTargetingCursorComponentBase.gd" id="1_knses"]
 [ext_resource type="Material" uid="uid://d21lgwadan5lv" path="res://Assets/Materials/Unshaded.tres" id="2_1cpyc"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="2_k24fg"]
 
@@ -11,26 +10,25 @@ region = Rect2(480, 224, 16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57er2"]
 size = Vector2(14, 14)
 
-[node name="ActionTargetingCursorComponentBase" type="Area2D" groups=["components"]]
+[node name="ActionTargetingCursorComponentBase" type="Area2D" unique_id=781245581 groups=["components"]]
 top_level = true
 z_index = 200
 collision_layer = 0
 collision_mask = 8192
 input_pickable = false
 monitorable = false
-script = ExtResource("1_knses")
 metadata/_edit_group_ = true
 
-[node name="CursorSprite" type="Sprite2D" parent="."]
+[node name="CursorSprite" type="Sprite2D" parent="." unique_id=118907109]
 unique_name_in_owner = true
 modulate = Color(0, 1, 1, 1)
 material = ExtResource("2_1cpyc")
 texture = SubResource("AtlasTexture_op1y3")
 
-[node name="CursorAreaShape" type="CollisionShape2D" parent="."]
+[node name="CursorAreaShape" type="CollisionShape2D" parent="." unique_id=1589686567]
 shape = SubResource("RectangleShape2D_57er2")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=2087546034]
 material = ExtResource("2_1cpyc")
 anchors_preset = 5
 anchor_left = 0.5
