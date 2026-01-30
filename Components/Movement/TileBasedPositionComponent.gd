@@ -22,7 +22,7 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame))
+			set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame))
 
 
 @export_group("Tile Map")
@@ -104,7 +104,7 @@ extends Component
 	set(newValue):
 		if newValue != shouldSnapPositionEveryFrame:
 			shouldSnapPositionEveryFrame = newValue
-			self.set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame)) # PERFORMANCE: Update per-frame only when needed
+			set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame)) # PERFORMANCE: Update per-frame only when needed
 
 ## A [Sprite2D] or any other [Node2D] to temporarily display at the destination tile while moving, such as a square cursor etc.
 ## NOTE: An example cursor is provided in the component scene but not enabled by default. Enable `Editable Children` to use it.
@@ -147,7 +147,7 @@ var isMovingToNewCell: bool = false:
 		if newValue != isMovingToNewCell:
 			isMovingToNewCell = newValue
 			updateIndicator()
-			self.set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame)) # PERFORMANCE: Update per-frame only when needed
+			set_physics_process(isEnabled and (isMovingToNewCell or shouldSnapPositionEveryFrame)) # PERFORMANCE: Update per-frame only when needed
 			# Warn if we're trying to move with no speed
 			if debugMode and isMovingToNewCell and is_zero_approx(speed): printDebug("isMovingToNewCell: true but speed is 0!")
 
@@ -310,7 +310,7 @@ func snapPositionToCell(tileCoordinates: Vector2i = self.currentCoordinates) -> 
 ## ALERT: [param replaceOtherOccupants] is `true` by default if [member shouldOccupyCell] and [member shouldIgnoreVacancy] are both `true`.
 func occupyCell(coordinates: Vector2i = self.currentCoordinates, replaceOtherOccupants: bool = shouldOccupyCell and shouldIgnoreVacancy) -> bool:
 	# TBD: Should this function be part of Tools.gd?
-	
+	if not isEnabled: return false
 	if debugMode: printDebug(str("occupyCell() @", coordinates, ", shouldOccupyCell: ", shouldOccupyCell, ", replaceOtherOccupants: ", replaceOtherOccupants))
 
 	if not shouldOccupyCell: return false # TBD: Return `true` or `false` if we're not supposed to occupy? # DESIGN: It should probably be `false`, as it doesn not accomplish the intent of occupying a cell.
@@ -335,7 +335,7 @@ func occupyCell(coordinates: Vector2i = self.currentCoordinates, replaceOtherOcc
 ## NOTE: This method does not check [member shouldOccupyCell].
 func vacateCell(coordinates: Vector2i = self.currentCoordinates) -> bool:
 	# TBD: Should this function be part of Tools.gd?
-	
+	# DESIGN: Cleaning up or cancelling should never be blocked, so ignore isEnabled
 	if debugMode: printDebug(str("vacateCell() @", coordinates))
 
 	if not is_instance_valid(tileMapData): return false # TBD: Return `true` if `shouldOccupyCell` is not set? # TBD: Log warning?
@@ -379,6 +379,7 @@ func processInput(inputVectorOverride: Vector2i = inputVector) -> void:
 ## Begins movement towards a new cell and updates the occupancy of the previous and new cells.
 ## Returns `false if the new destination coordinates are not valid within the [TileMapLayer]'s grid bounds, or if the cell is not a "walkable" tile and [member shouldIgnoreVacancy] is not set.
 func setDestinationCoordinates(newDestinationTileCoordinates: Vector2i, skipDifferenceCheck: bool = false) -> bool:
+	if not isEnabled: return false
 	if debugMode: printDebug(str("setDestinationCoordinates() ", destinationCoordinates, " → ", newDestinationTileCoordinates))
 
 	var isNewDestination: bool = destinationCoordinates != newDestinationTileCoordinates
@@ -440,6 +441,7 @@ func setDestinationCoordinates(newDestinationTileCoordinates: Vector2i, skipDiff
 ## Aborts the current movement, vacates the previous [member destinationCoordinates] and snaps back to the [member currentCoordinates] if needed.
 ## WARNING: If another entity occupied the starting cell during the movie, then this entity will NOT re-occupy the [member currentCoordinates]!
 func cancelMove(snapToCurrentCell: bool = true) -> void:
+	# DESIGN: Cleaning up or cancelling should never be blocked, so ignore isEnabled
 	# First, clear the previous destination's occupancy in case we hogged it
 	# NOTE: Vacate regardless of `shouldOccupyCell`
 	vacateCell(destinationCoordinates)
@@ -592,7 +594,7 @@ func setMapAndKeepCoordinates(newMap: TileMapLayer, useNewData: bool = true) -> 
 
 func _physics_process(delta: float) -> void:
 	# TODO: TBD: Occupy each cell along the way too?
-	if not isEnabled: return
+	# UNUSED: if not isEnabled: return # Checked by property setter
 
 	if isMovingToNewCell:
 		moveTowardsDestinationCell(delta)
@@ -633,6 +635,10 @@ func checkForArrival() -> bool:
 
 func updateIndicator() -> void:
 	if not visualIndicator: return
+	if not isEnabled:
+		visualIndicator.visible = false
+		return
+
 	if tileMap:
 		visualIndicator.global_position = Tools.getCellGlobalPosition(tileMap, self.destinationCoordinates)
 		visualIndicator.visible = isMovingToNewCell
