@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bhtew2qk3trno"]
+
+[ext_resource type="Script" uid="uid://dbctjdriuhrie" path="res://Components/Movement/TileBasedLinearMotionComponent.gd" id="1_hugni"]
+
+[node name="TileBasedLinearMotionComponent" type="Node" unique_id=481816501 groups=["components"]]
+script = ExtResource("1_hugni")
