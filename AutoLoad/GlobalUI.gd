@@ -8,6 +8,11 @@
 extends Node
 
 
+#region Parameters
+const minimumWindowSize: Vector2i = Vector2i(320, 180)
+#endregion
+
+
 #region State
 var pauseOverlay:		PauseOverlay
 var pauseOverlayTween:	Tween
@@ -63,7 +68,7 @@ func _ready() -> void:
 		# Do not set the window size if we're starting in fullscreen
 		# TBD: How to handle going to windowed mode for the first time? Should the first size be read from Settings?
 		var windowMode: int = DisplayServer.window_get_mode()
-		if windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+		if  windowMode != DisplayServer.WINDOW_MODE_FULLSCREEN and windowMode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
 			GlobalUI.setWindowSize(Settings.windowWidth, Settings.windowHeight, false) # !showLabel to avoid clutter
 
 		setRetinaScaling()
@@ -76,10 +81,20 @@ func _ready() -> void:
 
 #region Window Sizing
 
+## Maintains a minimum of [member minimumWindowSize].
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
+	
+	Debug.printAutoLoadLog(str("setWindowSize(): ", width, " × ", height, " (minimum: ", minimumWindowSize.x, " × ", minimumWindowSize.y, ")"))
+
+	# Ensure a minimum size of 320×180
+	width  = max(minimumWindowSize.x, width)
+	height = max(minimumWindowSize.y, height)
+
 	var viewport:	Viewport = self.get_viewport()
 	var window:		Window   = viewport.get_window()
 	var newSize:	Vector2  = (Vector2i(width, height))
+
+	window.min_size = minimumWindowSize
 
 	# NOTE: BUG: WORKAROUND: It seems `size` has to be set twice to properly resize and position the window,
 	# at least on macOS with non-Retina displays.
@@ -96,16 +111,17 @@ func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
 		GlobalUI.createTemporaryLabel(str("Window Size: ", width, " x ", height))
 
 
-## Doubles the [member Window.content_scale_factor] & window size on Mac Retina & other HiDPI displays.
+## Tries to ensure the correct scaling & window size on Mac Retina & other HiDPI displays.
+# UNUSED: This method is no longer needed, but is kept in case some games or peculiar system configurations need to adjust the scaling.
 ## @experimental
 func setRetinaScaling() -> void:
 	if DisplayServer.has_feature(DisplayServer.FEATURE_HIDPI) \
 	or is_equal_approx(DisplayServer.screen_get_scale(), 2.0):
 		Debug.printAutoLoadLog(str("DisplayServer screen scale: ", DisplayServer.screen_get_scale()))
-		var window: Window = self.get_window()
-		# window.content_scale_factor = 2.0 # UNUSED: Doubling the window size doubles the pixels anyway, right?
-		window.size *= 2 # TBD: Double the Viewport size?
-		window.move_to_center()
+		# var window: Window = self.get_window()
+		# window.content_scale_factor = 2.0
+		# window.size *= 2
+		# window.move_to_center()
 
 
 func toggleAlwaysOnTop() -> void:
