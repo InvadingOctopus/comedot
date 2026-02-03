@@ -2,7 +2,7 @@
 
 https://godotengine.org/asset-library/asset/3887
 
-Asset Name: Comedot Ultimate Template [4.5]
+Asset Name: Comedot Ultimate Template
 Description:
 
 All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art. 
@@ -28,9 +28,9 @@ Category:		Templates
 License:		MIT
 Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
-Godot Version:	4.5
-Asset Version:	4.5.0.100.96 (First 3 numbers are the Godot version, 4th is Dev/Beta/RC where 100 = release)
-Commit URL:		7c9cdf221dc74f41b351f98d3e145e953e2f9ab8 2025-10-01
+Godot Version:	4.6
+Asset Version:	4.6.0.100.42 (First 3 numbers are the Godot version, 4th is Dev/Beta/RC where 100 = release)
+Commit URL:		? 2026-02-02
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
