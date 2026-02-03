@@ -36,11 +36,11 @@ _Component-based framework and project template for [Godot][godot]_
 
 ⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ [(imgur)][pew-pew-plants]  
 
-https://github.com/user-attachments/assets/bc76f0b2-62f7-4fd5-8d26-fef27b182e22
+https://github.com/user-attachments/assets/43853546-159f-4184-a7a4-da857ba5e75c
 
 ⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead movement: [(imgur)][swapping-components]  
 
-https://github.com/user-attachments/assets/9c71c166-4e0c-47c7-afc1-3334022366cd
+https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 ⬆️ _These scenes are included in_ `/Templates/Examples/`
 
