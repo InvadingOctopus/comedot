@@ -30,7 +30,7 @@ Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
 Godot Version:	4.6
 Asset Version:	4.6.0.100.42 (First 3 numbers are the Godot version, 4th is Dev/Beta/RC where 100 = release)
-Commit URL:		? 2026-02-02
+Commit URL:		052f0fb78f8890fdaad517e36395a85cc836d82a 2026-02-02
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
