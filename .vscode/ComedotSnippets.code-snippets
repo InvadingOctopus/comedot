@@ -310,7 +310,16 @@
 		],
 		"description": "A function for creating a customizable animation at runtime."
 	},
-	
+
+	"Turn-Based Function": {
+		"prefix": "turnBased",
+		"body": [
+			"func processTurn${1|Begin,Update,End|}() -> void:",			
+			"\t${2:pass}\n\n"
+		],
+		"description": "A function for processing a phase of a turn-based game."
+	},
+
 	"Experimental Tag": {
 		"prefix": ["@experimental", "experimental"],
 		"body": ["## @experimental$0"],
