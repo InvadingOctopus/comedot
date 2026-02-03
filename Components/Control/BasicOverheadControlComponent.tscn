@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://d1t8uo06blucq"]
+
+[ext_resource type="Script" uid="uid://gvtxakawpqon" path="res://Components/Control/BasicOverheadControlComponent.gd" id="1_is31k"]
+
+[node name="BasicOverheadControlComponent" type="Node" unique_id=1775987217 groups=["components"]]
+script = ExtResource("1_is31k")
