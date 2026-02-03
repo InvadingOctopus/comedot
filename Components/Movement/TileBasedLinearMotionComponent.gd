@@ -20,6 +20,11 @@ extends Component
 #endregion
 
 
+#region State
+@export_storage var cellsMoved: int
+#endregion
+
+
 #region Signals
 ## Emitted if [method TileBasedPositionComponent.validateCoordinates] or [method TileBasedPositionComponent.setDestinationCoordinates] fails
 ## after calling [method move] with a non-zero [member direction] and [member movementScale].
@@ -61,7 +66,13 @@ func move(directionOverride: Vector2i = self.direction) -> Vector2i:
 		if debugMode: emitDebugBubble(str(previousCoordinates, "->", newCoordinates), randomDebugColor, true) # emitFromEntity
 
 		if tileBasedPositionComponent.validateCoordinates(newCoordinates):
-			if not tileBasedPositionComponent.setDestinationCoordinates(newCoordinates):
+			if tileBasedPositionComponent.setDestinationCoordinates(newCoordinates):
+				# Integrate the total number of cells moved, in any direction
+				# NOTE: TBD: Count diagonal steps as 1?
+				var xDistance: int = abs(offset.x)
+				var yDistance: int = abs(offset.y)
+				cellsMoved += xDistance if xDistance > yDistance else yDistance # TODO: Verify
+			else:
 				didFailToMove.emit() # Coordinates valid but setting the destination failed?
 		else:
 			didFailToMove.emit() # Coordinates invalid?
