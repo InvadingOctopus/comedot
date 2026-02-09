@@ -1,10 +1,10 @@
-# Comedot
+# Comedot: Entities, Components & Shit* for [Godot][godot]
 
-_Component-based framework and project template for [Godot][godot]_
+\* _ECS but without that "systems" crap._
 
 ![Godot+Comedot Logo][logo]
 
-**The goal is to be an all-in-one toolkit for 2D games** (platformers, shoot-em-ups, RPGs, turn-based, tile-based, strategy, puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
+**The goal is to be an all-in-one project template for 2D games** (platformers, shoot-em-ups, RPGs, turn-based, tile-based, strategy, puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
 
 <br/>
 
@@ -21,7 +21,7 @@ _Component-based framework and project template for [Godot][godot]_
 
 🌟 Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
-* Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, then it gets picked up!
+* Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
 > [!TIP]
@@ -53,10 +53,12 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 ## How To Use
 
 > [!IMPORTANT]  
-> _Requires Godot 4.6 ~Embrace the Future_ ✨  
+> _Requires Godot 4.6_
 
-1. Clone this repository; This is a Godot template so you must make a local copy of this entire project for each of your games.
-	* Or you can cherry-pick files from Comedot to use in other templates.
+🚀 **Quickstart:** To try right away, open `project.godot` and run `PlatformerSceneTemplate.tscn` in `/Templates/Scenes/`
+
+1. Clone this repository; this is a Godot template so you should make a local copy of this entire project for each of your games.
+	* or you can cherry-pick files from Comedot to use in other templates.
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
 	* `/Templates/` contains scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* `/Scripts/` contains code for non-Entity nodes.
@@ -80,15 +82,15 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 ----
 
-[Comedot][repository] ©? MMXXV [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • [Syntaks@Mastodon][mastodon]
+[Comedot][repository] © MMXXVI [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • [Syntaks@Mastodon][mastodon]
 
-> 💕 THANKS:  
+> ### 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
 > * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
 
 [repository]: https://github.com/invadingoctopus/comedot
 [website]: https://invadingoctopus.io
-[license]: License.txt
+[license]: LICENSE.txt
 [patreon]: https://www.patreon.com/invadingoctopus
 [discord]: https://discord.gg/jZG3cBFt7u
 [github]:  https://github.com/ShinryakuTako
@@ -100,13 +102,13 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [conventions]:	Conventions.md
 [thanks]:		Thanks.md
 [todo]:			ToDo.md
-[tools]:		/Scripts/Tools.gd
+[tools]:		Scripts/Tools.gd
 
 [godot]: https://github.com/godotengine/godot "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
-[logo]: /Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
+[logo]: Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png "🌳 Example Components Tree for a Player Entity"
 [pew-pew-plants]: https://i.imgur.com/1XyiqVr.mp4 "Trees with Guns"
 [swapping-components]: https://i.imgur.com/Y7vbdpl.mp4 "Swapping Control Components"
