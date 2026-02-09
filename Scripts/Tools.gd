@@ -196,6 +196,7 @@ static func findFirstChildOfType(parentNode: Node, childType: Variant, includePa
 ## Calls [method Tools.findFirstChildOfType] to return the first child of [param parentNode] which matches ANY of the specified [param types]  (searched in the array order).
 ## If [param includeParent] is `true` (default) then the [param parentNode] ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes of an entity to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
+## WARNING: [param returnParentIfNoMatches] returns the [param parentNode] even if it is NOT one of the [param childTypes]!
 ## PERFORMANCE: Should be the same as multiple calls to [method Tools.findFirstChildOfType] in order of the desired types.
 static func findFirstChildOfAnyTypes(parentNode: Node, childTypes: Array[Variant], returnParentIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
@@ -301,6 +302,42 @@ static func removeAllChildren(parent: Node) -> int:
 		parent.remove_child(child) # TBD: Is this needed? Does NOT delete nodes, unlike queue_free()
 		child.queue_free()
 		removalCount += 1
+
+	return removalCount
+
+
+## Asks a node's parent to remove all other children of the same class/type/script as the calling [param node].
+## NOTE: If there are multiple children of the same "type" such as [Label] but they have different SCRIPTS, they will NOT count as the "same type"!
+## Returns: The number of nodes removed.
+## @experimental
+static func removeSiblingsOfSameType(node: Node, shouldFree: bool = false) -> int:
+	# TODO: Handle subclasses
+	# NOTE: "Built‑in" Godot types such as Sprite2D, Label etc. may have an empty get_script()
+	# so we may have to try checking the "class name" too.
+
+	var parent:		Node	= node.get_parent()
+	var nodeScript:	Variant	= node.get_script()
+	var nodeClass:	String	= node.get_class()
+
+	if not is_instance_valid(parent):
+		Debug.printWarning(str("removeSiblingsOfSameType(): ", node, " has no valid parent!"))
+		return 0
+
+	var removalCount: int = 0
+
+	for sibling: Node in parent.get_children(false): # Don't include sub-children
+		if sibling == node: continue # Is it us?
+
+		var isSameType: bool = false
+
+		# CHECK: Does this work in all cases?
+		if nodeScript: isSameType = sibling.get_script() == nodeScript # Do we have the same script?
+		else: isSameType = sibling.get_class() == nodeClass # Otherwise compare the class
+
+		if isSameType:
+			parent.remove_child(sibling)
+			if shouldFree: sibling.queue_free()
+			removalCount += 1
 
 	return removalCount
 

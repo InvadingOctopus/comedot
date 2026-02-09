@@ -38,7 +38,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 #region State
 
 ## A dictionary of {StringName:Component} where the key is the `class_name` of each Component, which may be discovered via [method Script.get_global_name].
-## Updated by the [signal Node.child_entered_tree] signal.
+## Updated by [method registerComponent] which is called by each COMPONENT itself during the component's [constant NOTIFICATION_PARENTED].
 ## Used by components to quickly find other sibling components, without a dynamic search at runtime.
 var components: Dictionary[StringName, Component]
 
@@ -96,13 +96,15 @@ func connectSignals() -> void:
 	# Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
 
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
-	# TBD: Assess performance impact
-	if not functionsAlreadyCalledOnceThisFrame.is_empty():
-		functionsAlreadyCalledOnceThisFrame.clear()
-	self.set_process(false) # No need to check every frame again. CHECK: Does this mess up anything unexpected?
+	# NOTE: Use _physics_process() because it is called before _process() each frame: https://docs.godotengine.org/en/stable/tutorials/scripting/idle_and_physics_processing.html
+	# and callOnceThisFrame() is mostly used for physics anyway.
+	# TBD: PERFORMANCE: Assess impact
+	# if not functionsAlreadyCalledOnceThisFrame.is_empty(): # TBD: PERFORMANCE: Clear without checking?
+	functionsAlreadyCalledOnceThisFrame.clear() # PERFORMANCE: Faster than = []
+	self.set_physics_process(false) # No need to check every frame again. CHECK: Does this mess up anything unexpected?
 
 
 ## May be called by a child component such as a [HealthComponent] when this parent [Entity] is supposed to be removed from the scene.
@@ -341,7 +343,7 @@ func transferComponents(componentTypesToTransfer: Array[Script], newParent: Enti
 				Debug.printWarning(str("transferComponents(): ", component, " could not be moved from ", self.logFullName, " to ", newParent.logFullName))
 				continue
 		else:
-			printWarning(str("transferComponents(): ", self.logFullName, " does not have ", component))
+			printWarning(str("transferComponents(): ", self.logFullName, " does not have ", type))
 			continue
 
 	return transferredComponents
@@ -380,6 +382,7 @@ func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 ## Returns the first child of [param parentNode] which matches ANY of the specified [param types] (searched in the array order).
 ## If [param includeEntity] is `true` (default) then this ENTITY ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
+## WARNING: [param returnEntityIfNoMatches] returns the entity even if it is NOT one of the [param types]!
 ## PERFORMANCE: Should be the same as multiple calls to [method ]indFirstChildOfType] in order of the desired types.
 func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
@@ -425,11 +428,14 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO
 
 #region Lazy Property Initialization
 
-## Returns the [member sprite] property or searches for an [AnimatedSprite2D] or [Sprite2D].
+## Returns the [member sprite] property or searches for an [AnimatedSprite2D] (searched first) or [Sprite2D].
 ## The sprite may be this [Entity] node itself, or the first matching child node.
 func getSprite() -> Node2D:
 	if self.sprite == null:
-		self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
+		if is_instance_of(self, AnimatedSprite2D) or is_instance_of(self, Sprite2D): # Check ourselves first
+			self.sprite = self
+		else:
+			self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D], false) # not returnEntityIfNoMatches
 
 		if self.sprite == self: printLog("getSprite(): self")
 		else: printLog(str("getSprite(): ", sprite))
@@ -451,7 +457,7 @@ func getArea() -> Area2D:
 			self.area = selfAsArea
 			printLog("getArea(): self")
 		else:
-			self.area = findFirstChildOfType(Area2D, false) # not includeEntity because already checked
+			self.area = findFirstChildOfType(Area2D, false) # not includeEntity because it was already checked
 			printLog(str("getArea(): ", area))
 
 	if self.area == null: printWarning("getArea(): No Area2D found!")
@@ -471,7 +477,7 @@ func getBody() -> CharacterBody2D:
 			self.body = selfAsBody
 			printLog("getBody(): self")
 		else:
-			self.body = findFirstChildOfType(CharacterBody2D, false) # not includeEntity because already checked
+			self.body = findFirstChildOfType(CharacterBody2D, false) # not includeEntity because it was already checked
 			printLog(str("getBody(): ", body))
 
 	if self.body == null: printWarning("getBody(): No CharacterBody2D found!")
@@ -493,18 +499,18 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 		# First add it to the list so it doesn't get called again; this should avoid any recursion.
 		self.functionsAlreadyCalledOnceThisFrame[str(function)] = function
 		function.callv(arguments)
-		self.set_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
+		self.set_physics_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
 
 ## Loads and instantiates a Scene and adds it to this Entity's parent node at the specified offset from this Entity's position.
 ## Returns the new instance (Node).
 func spawnPath(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
-	var myParent: Node = self.get_parent()
-	if not myParent:
+	var entityParent: Node = self.get_parent()
+	if not entityParent:
 		printWarning(str("spawnPath(): This Entity has no parent: ", self.logFullName))
 		return
 	
-	var newNode: Node = SceneManager.loadSceneAndAddInstance(scenePath, myParent, self.position + positionOffset)
+	var newNode: Node = SceneManager.loadSceneAndAddInstance(scenePath, entityParent, self.position + positionOffset)
 	if  copyZIndex and newNode is CanvasItem: newNode.z_index = self.z_index
 	return newNode
 
@@ -512,17 +518,24 @@ func spawnPath(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZI
 ## Adds an existing node it to this Entity's parent node at the specified offset from this Entity's position.
 ## Removes the node from any other parent. Returns the same node.
 func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
-	var myParent: Node = self.get_parent()
-	if not myParent:
+	var entityParent: Node = self.get_parent()
+	if not entityParent:
 		printWarning(str("spawnNode(): This Entity has no parent: ", self.logFullName))
 		return
 	
-	if node.get_parent(): node.get_parent().remove_child(node)
+	if debugMode: printDebug(str("spawnNode(): ", node, " @", self.position, "+", positionOffset, " in ", entityParent))
 
-	node.position = self.position + positionOffset
+	# Kidnap it from any other parent
+	var otherParent: Node = node.get_parent()
+	if otherParent != entityParent:
+		if is_instance_valid(otherParent):
+			if debugMode: printDebug(str("Removing from other parent: ", otherParent))
+			otherParent.remove_child(node)
+		entityParent.add_child(node)
+		node.owner = entityParent
+	
+	if node is Node2D: node.position = self.position + positionOffset
 	if copyZIndex and node is CanvasItem: node.z_index = self.z_index
-	myParent.add_child(node)
-	node.owner = myParent
 
 	return node
 

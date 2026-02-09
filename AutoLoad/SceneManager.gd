@@ -55,20 +55,24 @@ signal didSetPause(isPaused: bool)	## TIP: May be used to modify UI such as [Pau
 
 ## Transitions to the specified scene with an optional animation.
 ## NOTE: Does NOT use the [member sceneStack]; see [method pushCurrentSceneAndTransition] and [method popSceneFromStack].
-func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = animateDefault) -> void:
+func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> void:
 	if not is_instance_valid(nextScene):
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
 
-	GlobalInput.isPauseShortcutAllowed = false # Disable the Pause Overlay during transitions
-
 	# Prevent multiple transitions to the same scene
+	# DESIGN: Transitions to different scenes are allowed during an ongoing transition to enable quick menu screen navigation etc.
+	# TBD: Should transitions to different scenes be allowed during an ongoing transition?
 	if ongoingTransitionScene == nextScene:
 		Debug.printWarning(str("transitionToScene() called for the same scene during a transition: ", nextScene, " ", nextScene.resource_path), logName)
 		return
+	elif ongoingTransitionScene != null: # Log an interrupted transition in case it is or leads to a bug
+		Debug.printDebug(str("transitionToScene() called during an ongoing transition: ", nextScene, " ", nextScene.resource_path), logName)
 
 	var sceneBeforeTransition: Node = sceneTree.current_scene
 	Debug.printAutoLoadLog(str("transitionToScene(): ", sceneBeforeTransition, " → ", nextScene, " ", nextScene.resource_path))
+	
+	GlobalInput.isPauseShortcutAllowed = false # Disable the Pause Overlay during transitions
 
 	# Track the scene to prevent bugs from multiple calls to transition to the same scene during animations etc.
 	ongoingTransitionScene = nextScene
@@ -80,16 +84,25 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 	if animate: await GlobalUI.fadeInTintRect().finished # Fade the overlay in, fade the game out.
 
 	# Transition
+<<<<<<< fix/scene-transition-scene-changed
 	var error :Error = sceneTree.change_scene_to_packed(nextScene)
 	if error != OK:
 		Debug.printError(str("transitionToScene(): Change scene failed: ", nextScene), logName)
 		return
 	await sceneTree.scene_changed
 	sceneTree.paused = true # Repause just in case the new scene unpaused before we fade-in
+=======
+	sceneTree.change_scene_to_packed(nextScene)
+	
+	# Repause just in case the new scene unpaused before we fade-in
+	# NOTE: If this method was called without an intent to pause, leave the paused state as whatever the new scene has set.
+	# TBD: Should this always be `true`?
+	if pauseSceneTree: sceneTree.paused = true
+>>>>>>> develop
 
 	# Unpause
 	await sceneTree.create_timer(0.1).timeout # A little breath before showing the next scene
-	sceneTree.paused = false # Unpause to begin the gameplay motion before the overlay fades-out for a smoother feel, instead of an abrupt movement.
+	if unpauseSceneTree: sceneTree.paused = false # Unpause to begin the gameplay motion before the overlay fades-out for a smoother feel, instead of an abrupt movement.
 	if animate: await GlobalUI.fadeOutTintRect().finished # Fade the overlay out, fade the game in.
 
 	ongoingTransitionScene = null # Clear the transition tracker
@@ -101,9 +114,9 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, anim
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].
 ## Call [method popSceneFromStack] from the [param nextScene] to return to the previous scene.
-func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, animate: bool = animateDefault) -> void:
+func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> void:
 	self.pushCurrentSceneToStack()
-	await self.transitionToScene(nextScene, pauseSceneTree, animate) # IMPORTANT: await for animations
+	await self.transitionToScene(nextScene, pauseSceneTree, unpauseSceneTree, animate) # IMPORTANT: await for animations
 
 
 ## Adds a scene path to the [member sceneStack] and returns the resulting stack size.
@@ -147,7 +160,7 @@ func pushCurrentSceneToStack() -> int:
 
 ## Transitions to the PREVIOUS scene from the top/end of the [member sceneStack], if any, and returns it.
 ## NOTE: Returns the previous scene from the stack EVEN IF the transition was NOT successful.
-func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefault) -> PackedScene:
+func popSceneFromStack(pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> PackedScene:
 
 	if sceneStack.is_empty(): # Can't pop if there are no scenes on the stack.
 		Debug.printWarning("popSceneFromStack(): sceneStack is empty!", logName)
@@ -160,17 +173,16 @@ func popSceneFromStack(pauseSceneTree: bool = true, animate: bool = animateDefau
 	# GODOT: Why is there no pop_back() for PackedArrays??
 	# PERFORMANCE: Don't use pop_front() because of slower performance.
 	var previousScenePathFromStack: String  = sceneStack[sceneStack.size() - 1]
-	sceneStack.remove_at(sceneStack.size() - 1)
-
 	var previousSceneFromStack: PackedScene = load(previousScenePathFromStack)
-
+	
 	if previousSceneFromStack:
+		sceneStack.remove_at(sceneStack.size() - 1) # TBD: Pop stack even on failure?
 		Debug.printAutoLoadLog(str("popSceneFromStack() → ", previousScenePathFromStack, " → stack size: ", sceneStack.size()))
 	else:
 		Debug.printError("popSceneFromStack(): Cannot load path: " + previousScenePathFromStack, logName)
 		return null
 
-	await self.transitionToScene(previousSceneFromStack, pauseSceneTree, animate)# IMPORTANT: await for animations
+	await self.transitionToScene(previousSceneFromStack, pauseSceneTree, unpauseSceneTree, animate) # IMPORTANT: await for animations
 
 	# Verify the transition
 

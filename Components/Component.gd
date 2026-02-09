@@ -124,8 +124,7 @@ func validateParent() -> void:
 	# If the parent node is not an Entity, print a warning if needed
 	if not is_instance_of(newParent, Entity):
 		var message: String = str("validateParent(): Parent node is not an Entity: ", newParent, " ／ This may prevent sibling components from finding this component.")
-		if self.allowNonEntityParent:
-			printLog(message + " allowNonEntityParent: true")
+		if self.allowNonEntityParent: printLog(message + " allowNonEntityParent: true")
 		else: printWarning(message)
 
 	if not parentEntity: # Are we a new Component [or] not owned by an Entity?
@@ -156,7 +155,23 @@ func _enter_tree() -> void:
 	self.add_to_group(Global.Groups.components, true) # persistent
 
 	# Find which Entity this Component belongs to, if not already set.
-	if not self.parentEntity: registerEntity(self.findParentEntity())
+	if not self.parentEntity:
+		var parentNode := self.get_parent()
+		
+		# First, what should be the most common case, see if the immediate parent node is an Entity
+		if parentNode is Entity:
+			registerEntity(parentNode)
+		
+		# Otherwise, see if it's ok to have a non-entity parent, which should be a rare exception
+		elif allowNonEntityParent:
+			if self.get_parent() != null: # TBD: Use is_instance_valid()?
+				printLog(str("􀈅 [b]_enter_tree() → [/b]allowNonEntityParent: [b]", self.get_parent(), "[/b]"), self.logFullName)
+			else:
+				printWarning("􀈅 [b]_enter_tree(): No valid parent![/b]")
+		
+		# Finally, try to find an entity parent/grandparent in our tree
+		else:
+			registerEntity(findParentEntity())
 
 	# UNUSED: update_configuration_warnings() # Only useful if @tool script
 
@@ -267,16 +282,23 @@ func _exit_tree() -> void:
 ## Returns a sibling [Component] from the [member coComponents] [Dictionary],
 ## after converting the [param type] [method Script.get_global_name] to a [StringName].
 ## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSubclass] is called to find the first [Component] which extends/inherits the specified type.
-## ALERT: Slower performance compared to accessing the [member coComponents] [Dictionary] directly! Use this method only if a warning is needed instead of a crash, in case of a missing component.
+## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
+## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
 func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
+	
+	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
+		printWarning("findCoComponent(): No parent entity!")
+		return null
+
+	if coComponents.is_empty(): return null
+	
 	var coComponent: Component = coComponents.get(type.get_global_name())
+	if not coComponent: # TBD: Use is_instance_valid()?
 
-	if not coComponent:
-
-		if includeSubclasses:
+		if includeSubclasses: # Try subclasses
 			coComponent = parentEntity.findFirstComponentSubclass(type)
-			printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
+			if debugMode: printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
 
 		if not coComponent: # Did we still not find any match? :(
 			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName))
@@ -287,18 +309,8 @@ func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
 ## Asks the parent [Entity] to remove all other components of the same class as this component.
 ## Useful for replacing components when there should be only one component of a specific class, such as a [FactionComponent].
 ## Returns: The number of components removed.
-func removeSiblingComponentsOfSameType() -> int:
-	var removalCount: int = 0
-
-	for sibling: Component in parentEntity.get_children(false): # Don't include sub-children
-		# Is it us?
-		if sibling == self: continue
-
-		if is_instance_of(sibling, self.get_script().get_global_name()):
-			sibling.requestDeletion()
-			removalCount += 1
-
-	return removalCount
+func removeSiblingComponentsOfSameType(shouldFree: bool = true) -> int:
+	return Tools.removeSiblingsOfSameType(self, shouldFree)
 
 #endregion
 
@@ -342,29 +354,31 @@ func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false)
 
 #region Static Methods
 
-## Attempts to cast any Node as a Component, since the `Component.gd` script may be attached to any Node.
-## If the [param node] is not an component but the node's parent/grandparent is an Entity, the Entity is searched to find the matching [param componentType] if [param findInParentEntity].
+## Attempts to cast any [Node] subtype as a specific component, since the `Component.gd` script may be attached to any Node.
+## If the [param node] is not a [Component] of [param componentType] but the node's parent/grandparent is an [Entity], the entity is searched to find the matching [param componentType] if [param findInParentEntity].
 ## @experimental
 static func castOrFindComponent(node: Node, componentType: GDScript, findInParentEntity: bool = true) -> Component:
 	# First, try casting the node itself.
 	var component: Component = node.get_node(^".") as Component # HACK: Find better way to cast self?
 
-	if not component:
-		Debug.printDebug(str("Cannot cast ", node, " as ", componentType.get_global_name()), "Component.castOrFindComponent()")
-
-		# Try to see if the node's grand/parent is an Entity
-		if findInParentEntity:
-			var nodeParent: Entity = Tools.findFirstParentOfType(node, Entity)
-			if nodeParent:
-				component = nodeParent.components.get(componentType.get_global_name())
-				if not component:
-					Debug.printDebug(str("node parent ", nodeParent, " has no ", componentType.get_global_name()), "Component.castOrFindComponent()")
-					return null
+	if is_instance_of(component, componentType): # CHECK: How does this handle subclasses?
+		return component
+	elif findInParentEntity: # Try to see if the node's grand/parent is an Entity
+		var nodeParent: Entity = Tools.findFirstParentOfType(node, Entity)
+		if nodeParent:
+			component = nodeParent.components.get(componentType.get_global_name())
+			# Does the entity have any matching component?
+			if is_instance_of(component, componentType):
+				return component
 			else:
-				Debug.printDebug(str("node parent is not an Entity: ", nodeParent), "Component.castOrFindComponent()")
+				Debug.printDebug(str("Node parent ", nodeParent, " has no ", componentType.get_global_name()), "Component.castOrFindComponent()")
 				return null
-
-	return component
+		else:
+			Debug.printDebug(str("Node parent is not an Entity: ", nodeParent), "Component.castOrFindComponent()")
+			return null
+	# Fail :(
+	Debug.printDebug(str("Cannot cast ", node, " as ", componentType.get_global_name()), "Component.castOrFindComponent()")
+	return null
 
 #endregion
 
@@ -458,12 +472,14 @@ func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor
 	var bubble: TextBubble = TextBubble.create(str(textOrObject), \
 		parentEntity if emitFromEntity else self, \
 		Vector2([-16, -8, 0, +8, +16].pick_random(), [-8, 0, +8].pick_random())) # Randomize position to reduce overlap
+
 	bubble.label.label_settings.font_color = color
 	bubble.z_index = 220
+	
 	# Customize the animation to improve readability
-	bubble.tween.kill()
+	if bubble.tween: bubble.tween.kill() # Stop the default TextBubble._ready() behavior...
 	bubble.cancel_free()
-	await Animations.bubble(bubble, Vector2(0, -32), 1.0, 1.0).finished
-	bubble.queue_free()
+	bubble.tween = Animations.bubble(bubble, Vector2(0, -32), 1.0, 1.0)
+	bubble.tween.tween_callback(bubble.queue_free)
 
 #endregion

@@ -42,6 +42,16 @@ static func createForStatChange(stat: Stat, textToApped: String, parentNode: Nod
 
 
 func _ready() -> void:
-	self.tween = Animations.bubble(self)
-	await tween.finished
-	self.queue_free()
+	if not tween: tween = Animations.bubble(self) # Check in case whatever created this bubble applied a different animation # TBD: Check is_running()?
+	tween.tween_callback(self.queue_free) # Always end in deletion, just in case
+
+
+## Overrides any ongoing [member tween] and appends [method Node.queue_free].
+## @experimental
+func applyNewAnimation(newTween: Tween) -> Tween:
+	# TODO: Accept callbacks so that they can be started AFTER aborting the previous animation
+	if self.tween: self.tween.kill()
+	self.cancel_free() # Just in case we were headed for deletion
+	self.tween = newTween
+	tween.tween_callback(self.queue_free)
+	return self.tween
