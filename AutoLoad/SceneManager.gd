@@ -84,8 +84,12 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpa
 	if animate: await GlobalUI.fadeInTintRect().finished # Fade the overlay in, fade the game out.
 
 	# Transition
-	sceneTree.change_scene_to_packed(nextScene)
-	
+	var error: Error = sceneTree.change_scene_to_packed(nextScene)
+	if error != OK:
+		Debug.printError(str("transitionToScene(): ", nextScene, " failed: ", error), logName)
+		return
+	await sceneTree.scene_changed # IMPORTANT: Because change_scene_to_packed() is async
+
 	# Repause just in case the new scene unpaused before we fade-in
 	# NOTE: If this method was called without an intent to pause, leave the paused state as whatever the new scene has set.
 	# TBD: Should this always be `true`?
@@ -178,7 +182,6 @@ func popSceneFromStack(pauseSceneTree: bool = true, unpauseSceneTree: bool = pau
 	# Verify the transition
 
 	# Make sure there IS a scene after the transition.
-	# TODO: BUG: Because if `animate` is false, `current_scene` is `null` here?
 	if sceneTree.current_scene:
 		var scenePathAfterTransition: String = sceneTree.current_scene.scene_file_path
 		if not scenePathAfterTransition == previousScenePathFromStack:
