@@ -22,8 +22,8 @@ class Actions:
 
 	# Relative-movement controls in games where a character rotates left/right and "thrusts" forward or "reverses" backward.
 	# Also known as "tank controls", and used in games like Asteroids.
-	const turnLeft		:= &"turnLeft"  ## Gamepad Right Joystick
-	const turnRight		:= &"turnRight" ## Gamepad Right Joystick
+	const turnLeft		:= &"turnLeft"  ## Gamepad Left Joystick
+	const turnRight		:= &"turnRight" ## Gamepad Left Joystick
 	const moveForward	:= &"moveForward"
 	const moveBackward	:= &"moveBackward"
 
