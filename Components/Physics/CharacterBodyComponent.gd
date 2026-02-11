@@ -1,4 +1,5 @@
 ## Manages updates to a [CharacterBody2D]. Ensures that [method CharacterBody2D.move_and_slide] is called only once every frame (to prevent excessive movement) and updates related flags.
+## IMPORTANT: The order of components in the scene tree is crucial: Components that depend on [CharacterBodyComponent] must be updated BEFORE this component on each frame; i.e. they should be higher in the entity's child node list and this component should be last.
 ## IMPORTANT: Set the [member shouldMoveThisFrame] to `true` after modifying the [member CharacterBody2D.velocity] etc.
 ## TIP: Components which need to process updates AFTER the [CharacterBody2D] moves must connect to the [signal CharacterBodyComponent.didMove] signal.
 ## Requirements: This component must come AFTER all other components which move the body, like [JumpComponent].
@@ -11,12 +12,8 @@ extends Component
 
 #region Parameters
 
-## If `null` then it will be acquired from the parent [Entity] on [method _enter_tree()]
-@export var body: CharacterBody2D:
-	get:
-		if body == null and not skipFirstWarning:
-			printWarning("body is null! Call parentEntity.getBody() to find and remember the Entity's CharacterBody2D")
-		return body
+## If `null` then it will be acquired from the parent [Entity] on this component's [method _enter_tree]
+@export var body: CharacterBody2D
 
 ## Removes any leftover "ghost" velocity when the net motion is zero.
 ## Enable to avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
@@ -41,25 +38,22 @@ var previousVelocity:	Vector2:
 			if debugMode: self.printChange("previousVelocity", previousVelocity, newValue)
 			previousVelocity = newValue
 
-var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with.
+var previousWallNormal:	Vector2 ## The direction of the wall we were in contact with. ALERT: Check [member wasOnWall] to ensure that this vector was updated in a recent frame.
 var lastMotionCached:	Vector2 ## NOTE: Used for and updated ONLY IF [member shouldResetVelocityIfZeroMotion] is `true`.
-
-## Avoids the superfluous warning when checking the [member body] for the first time in [method _enter_tree()].
-var skipFirstWarning:	bool = true
 
 ## When `true`, [method CharacterBody2D.move_and_slide] is called during the current frame, ONLY ONCE, then this flag is reset before the next frame,
 ## This ensures that multiple physics-modifying components do not cause excessive movement.
 ## Other components such as [PlatformerPhysicsComponent] should set this flag whenever modifying the [member CharacterBody2D.velocity] etc.
-var shouldMoveThisFrame:bool = false # AVOID: Do not toggle set_physics_process() here: It makes shit slower, possibly because taking effect on the next frame?
+var shouldMoveThisFrame:bool = false # NOTE: AVOID: Do NOT toggle set_physics_process() here: It makes shit slower, possibly because taking effect on the next frame?
 
 ## Returns [method CharacterBody2D.get_real_velocity]; the current real velocity since the last call to [method CharacterBody2D.move_and_slide].
 ## For example, when climbing a slope, the body will move diagonally even though the [method CharacterBody2D.velocity] is horizontal. This property returns the final diagonal movement.
 ## ALERT: PERFORMANCE: This property is provided for DEBUGGING ONLY; e.g. to quickly use as a [NodePath] for a [DebugComponent]'s [Chart]. For actual usage, just call [method CharacterBody2D.get_real_velocity] directly.
 ## @experimental
-var realVelocity: Vector2:
+var realVelocity:	Vector2:
 	get: return body.get_real_velocity()
 
-var collisionShape:		Shape2D: ## @experimental
+var collisionShape:	Shape2D: ## @experimental
 	get:
 		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
 		return collisionShape
@@ -76,17 +70,20 @@ signal didMove(delta: float) ## Emitted after [method CharacterBody2D.move_and_s
 
 # Called whenever the node enters the scene tree.
 func _enter_tree() -> void:
+	# DESIGN: Crash if no entity
 	super._enter_tree()
 
 	if self.body == null and parentEntity != null:
 		self.body = parentEntity.getBody()
 
-	if not body:
+	if not is_instance_valid(body):
 		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
+		# TBD: set_physics_process(false)
 
 
 func _ready() -> void:
 	# Cache the initial state of body flags.
+	# DESIGN: Crash if no body
 	self.isOnFloor = body.is_on_floor()
 
 #endregion
@@ -121,7 +118,7 @@ func updateStateBeforeMove(_delta: float) -> void:
 
 	self.previousVelocity = body.velocity
 
-	if wasOnWall: self.previousWallNormal = body.get_wall_normal()
+	if wasOnWall: self.previousWallNormal = body.get_wall_normal() # NOTE: This vector may become "stale" so `wasOnWall` should be checked before accessing `previousWallNormal`
 
 
 ## NOTE: If a subclass overrides this function, it MUST call super.
