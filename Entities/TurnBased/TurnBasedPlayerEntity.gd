@@ -1,5 +1,5 @@
 ## A subclass of [Entity] specialized for turn-based player-controlled characters.
-## ALERT: Game-specific subclasses which extend [TurnBasedPlayerEntity] MUST call `_super.ready()` etc. if those methods are overridden.
+## ALERT: Game-specific subclasses which extend [TurnBasedPlayerEntity] MUST call `super._ready()` etc. if those methods are overridden.
 
 class_name TurnBasedPlayerEntity
 extends TurnBasedEntity
@@ -37,11 +37,11 @@ func _enter_tree() -> void:
 	super._enter_tree()
 	self.add_to_group(Global.Groups.players,   true) # persistent
 	self.add_to_group(Global.Groups.turnBased, true) # persistent
+	GameState.addPlayer(self) # TBD: Add player in _enter_tree() or _ready()? Apparently _enter_tree() can run multiple times but _ready() runs only once?
 
 
 func _ready() -> void:
-	printLog("_ready()")
-	GameState.addPlayer(self)
+	printLog("􀆅 [b]_ready()")
 	GameState.playerReady.emit(self)
 
 

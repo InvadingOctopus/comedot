@@ -1,5 +1,5 @@
 ## A subclass of [Entity] specialized for player-controlled characters.
-## ALERT: Game-specific subclasses which extend [PlayerEntity] MUST call `_super.ready()` etc. if those methods are overridden.
+## ALERT: Game-specific subclasses which extend [PlayerEntity] MUST call `super._ready()` etc. if those methods are overridden.
 
 class_name PlayerEntity
 extends Entity
@@ -35,11 +35,11 @@ var upgradesComponent: UpgradesComponent:
 func _enter_tree() -> void:
 	super._enter_tree()
 	self.add_to_group(Global.Groups.players, true) # persistent
+	GameState.addPlayer(self) # TBD: Add player in _enter_tree() or _ready()? Apparently _enter_tree() can run multiple times but _ready() runs only once?
 
 
 func _ready() -> void:
 	printLog("􀆅 [b]_ready()")
-	GameState.addPlayer(self)
 	GameState.playerReady.emit(self)
 
 
