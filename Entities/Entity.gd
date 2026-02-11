@@ -96,6 +96,7 @@ func connectSignals() -> void:
 	# Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
 
 
+## NOTE: Any subclass calling `super._physics_process()` must be aware that this method disables the per-frame processing by calling `set_physics_process(false)`
 func _physics_process(_delta: float) -> void:
 	# Clear the list of functions that are supposed to be called once per frame,
 	# so they can be called again in the next frame.
@@ -151,7 +152,7 @@ func registerComponent(newComponent: Component) -> bool:
 		existingComponent.removeFromEntity(true) # shouldFree
 
 	self.components[componentType] = newComponent
-	newComponent.parentEntity = self # Is this useful? It will be done anyway by the component.
+	newComponent.parentEntity = self # TBD: Should the entity set this? It will be set anyway by the component.
 
 	if debugMode: printDebug(str("registerComponent(): \"", componentType, "\" = ", newComponent.logFullName))
 
@@ -380,10 +381,10 @@ func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 
 
 ## Returns the first child of [param parentNode] which matches ANY of the specified [param types] (searched in the array order).
-## If [param includeEntity] is `true` (default) then this ENTITY ITSELF is returned AFTER none of the requested types are found.
+## If [param returnEntityIfNoMatches] is `true` (default) then this ENTITY ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
 ## WARNING: [param returnEntityIfNoMatches] returns the entity even if it is NOT one of the [param types]!
-## PERFORMANCE: Should be the same as multiple calls to [method ]indFirstChildOfType] in order of the desired types.
+## PERFORMANCE: Should be the same as multiple calls to [method findFirstChildOfType] in order of the desired types.
 func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
 	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, returnEntityIfNoMatches)
@@ -490,7 +491,7 @@ func getBody() -> CharacterBody2D:
 
 ## Used to call any function only once during a single frame, such as [method CharacterBody2D.move_and_slide] on the [Entity]'s [CharacterBody2D].
 ## This ensures that multiple components which interact with the same node do not perform excessive updates, such as a [PlatformerPhysicsComponent] and a [JumpComponent].
-## The `Callable` is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, which is cleared during each [method _physics_process] of this entity.
+## The [Callable] is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, and that list is then cleared during each [method _physics_process] frame/tick of this entity.
 func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 	# Has the function already been called this frame?
 	if not functionsAlreadyCalledOnceThisFrame.has(str(function)):
