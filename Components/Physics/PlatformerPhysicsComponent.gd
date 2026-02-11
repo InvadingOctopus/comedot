@@ -64,6 +64,7 @@ var gravity: float = Settings.gravity
 ## When `true` then acceleration is skipped for ONE frame.
 ## This allows other components to temporarily disable acceleration during special gameplay situations etc.
 ## Whether it's the current frame or the next depends on whether this flag is set before or after [PlatformerPhysicsComponent]'s [method _physics_process].
+## NOTE: This flag is reset if there is no input during a frame.
 var shouldSkipAcceleration: bool:
 	set(newValue):
 		if newValue != shouldSkipAcceleration:
@@ -163,7 +164,9 @@ func processGravity(delta: float) -> void:
 ## NOTE: NOT affected by [member isEnabled], so other components such as Enemy AI may drive this component without player input.
 func processHorizontalMovement(delta: float) -> void:
 	# Nothing to do if there is no player input.
-	if isInputZero: return
+	if isInputZero:
+		shouldSkipAcceleration = false # TBD: Reset if not moving so that we don't skip on the next frame?
+		return
 
 	if characterBodyComponent.isOnFloor: # Are we on the floor?
 		if not shouldSkipAcceleration and parameters.shouldApplyAccelerationOnFloor: # Apply the speed gradually or instantly?
@@ -178,7 +181,7 @@ func processHorizontalMovement(delta: float) -> void:
 			body.velocity.x = horizontalInput * parameters.speedInAir
 
 	if debugMode and not body.velocity.is_equal_approx(characterBodyComponent.previousVelocity): printDebug(str("body.velocity after processHorizontalMovement(): ", body.velocity, " was shouldSkipAcceleration: ", shouldSkipAcceleration))
-	if shouldSkipAcceleration: shouldSkipAcceleration = false # TBD: PERFORMANCE: Reset without checking?
+	shouldSkipAcceleration = false # TBD: PERFORMANCE: Reset without checking?
 
 
 ## Applies friction if there is no player input and either [member shouldApplyFrictionOnFloor] or [member shouldApplyFrictionInAir] is `true`.
