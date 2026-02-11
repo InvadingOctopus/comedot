@@ -41,9 +41,9 @@ var parentEntity: Entity:
 			# NOTE: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
 			# to be in proper order with other operations such as signals etc.
 
-## A [Dictionary] of other [Component]s in the [parentEntity]'s [member Entity.components].
-## Access via the shortcut of `coComponents.ComponentClassName` or,
-## TIP: Use `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing, and return `null`
+## A [Dictionary] of other [Component]s in the [member parentEntity]'s [member Entity.components], including this component itself.
+## TIP: Access via the shortcut of `coComponents.ComponentClassName` or,
+## use `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
@@ -82,16 +82,18 @@ func getRequiredComponents() -> Array[Script]:
 	return []
 
 
+## Verifies the presence of dependencies as returned by [method getRequiredComponents].
+## NOTE: Does not include subclasses of required components.
 func checkRequiredComponents() -> bool:
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
 	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
-
-	if not parentEntity or parentEntity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :()
+	elif not parentEntity or parentEntity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :(
 
 	var haveAllRequirements: bool = true # Start `true` then make it `false` if there is any missing requirement.
 
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
+		# TBD: Include subclasses?
 		if not parentEntity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
 			printWarning(str("Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
 			haveAllRequirements = false
@@ -211,9 +213,9 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 func registerEntity(newParentEntity: Entity) -> void:
 	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
 	if not newParentEntity: return
-	self.parentEntity = newParentEntity
-	self.parentEntity.registerComponent(self) # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
-	self.coComponents = parentEntity.components
+	if newParentEntity.registerComponent(self): # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
+		self.parentEntity = newParentEntity
+		self.coComponents = parentEntity.components # Meet our new siblings!
 
 
 ## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
@@ -356,6 +358,7 @@ func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false)
 
 ## Attempts to cast any [Node] subtype as a specific component, since the `Component.gd` script may be attached to any Node.
 ## If the [param node] is not a [Component] of [param componentType] but the node's parent/grandparent is an [Entity], the entity is searched to find the matching [param componentType] if [param findInParentEntity].
+## WARNING: May not find subclasses of [param componentType].
 ## @experimental
 static func castOrFindComponent(node: Node, componentType: GDScript, findInParentEntity: bool = true) -> Component:
 	# First, try casting the node itself.
