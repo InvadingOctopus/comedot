@@ -96,7 +96,7 @@ signal willRemoveFromEntity
 * Functions that handle signals should be named in this form: `on[ObjectThatEmittedSignal]_[signal]`
 	- If the script is attached to the node which emits the signal, then simply: `on[Signal]`
 	- If the object name is short enough or a single word, then the _ underscore may be omitted.
-	- Yes, this is the ONLY place where underscores are used, because we can't use a — dash etc. :')
+	- Yes, this is the ONLY place where underscores are tolerated, because we can't use a — dash etc. :')
 
 _Examples:_
 ```
