@@ -16,8 +16,8 @@ config/name_localized={
 "ja_Kana_JP": "カムドット"
 }
 config/description="Components Framework for Godot"
-config/version="4.6.0.100.42"
-config/tags=PackedStringArray("components", "framework", "plugin", "template")
+config/version="4.6.0.100.69"
+config/tags=PackedStringArray("components", "framework", "ecs", "plugin", "template")
 run/main_scene="uid://7hpq16neqhai"
 config/project_settings_override="res://Game/override.cfg"
 config/features=PackedStringArray("4.6")
