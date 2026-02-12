@@ -356,7 +356,7 @@ func _physics_process(delta: float) -> void:
 	if not isClimbing: return
 
 	# TODO: Disable acceleration/friction in "air" to avoid slippy-sliding while climbing
-	platformerPhysicsComponent.shouldSkipAcceleration = true # FIXME: Does not produce expected behavior
+	platformerPhysicsComponent.shouldSkipVelocity = true # FIXME: Does not produce expected behavior
 
 	# Process vertical input
 	# Multiply velocities by `lastVerticalInput` to allow for analog joystick fine-control.
