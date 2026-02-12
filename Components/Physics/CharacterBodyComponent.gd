@@ -50,10 +50,10 @@ var shouldMoveThisFrame:bool = false # NOTE: AVOID: Do NOT toggle set_physics_pr
 ## For example, when climbing a slope, the body will move diagonally even though the [method CharacterBody2D.velocity] is horizontal. This property returns the final diagonal movement.
 ## ALERT: PERFORMANCE: This property is provided for DEBUGGING ONLY; e.g. to quickly use as a [NodePath] for a [DebugComponent]'s [Chart]. For actual usage, just call [method CharacterBody2D.get_real_velocity] directly.
 ## @experimental
-var realVelocity:	Vector2:
+var realVelocity:		Vector2:
 	get: return body.get_real_velocity()
 
-var collisionShape:	Shape2D: ## @experimental
+var collisionShape:		Shape2D: ## @experimental
 	get:
 		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
 		return collisionShape
