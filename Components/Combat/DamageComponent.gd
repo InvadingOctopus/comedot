@@ -33,8 +33,9 @@ extends Component
 
 ## If less than 100, then a collision with a [DamageReceivingComponent] may occasionally be ignored.
 ## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
-## TIP: To ensure that a character always hits, this value may be set to greater than 100.
-@export_range(0, 1000, 1, "suffix:%") var hitChance: int = 100
+## TIP: To ensure that a character always hits, this value may be set to greater than 100. Modifiers such as debuffs may [temporarily] reduce the chance below 0.
+## NOTE: Chance is calculated BEFORE factions are checked!
+@export_range(-1000, 1000, 1, "suffix:%") var hitChance: int = 100
 
 ## Display "MISS" text when [member hitChance] fails?
 @export var shouldEmitBubbleOnMiss: bool = true
@@ -46,7 +47,7 @@ extends Component
 @export var friendlyFire: bool = false
 
 ## If `true` (default) then damage is applied as soon as a [DamageReceivingComponent] collides.
-## If `false` then damage must be applied manually via [method causeCollisionDamage] or [method causeCollisionDamageToAllReceivers].
+## If `false` then damage must be applied manually via [method causeCollisionDamage] or [method causeDamageToAllReceivers].
 @export var shouldDamageOnCollision: bool = true 
 
 ## Should the parent Entity be removed when this [DamageComponent]'s "hitbox" collides with a [DamageReceivingComponent]'s "hurtbox"?
@@ -145,7 +146,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		emitDebugBubble("HIT:" + areaEntered.get_parent().name)
 
 	# If the Area2D is not a DamageReceivingComponent, there's nothing to do.
-	if damageReceivingComponent:
+	if damageReceivingComponent: # TBD: PERFORMANCE: BUGRISK: Check if area is already in array?
 		damageReceivingComponentsInContact.append(damageReceivingComponent)
 		didCollideReceiver.emit(damageReceivingComponent)
 		if shouldDamageOnCollision: self.causeCollisionDamage(damageReceivingComponent)
@@ -159,11 +160,10 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 			self.requestDeletionOfParentEntity()
 
 
+## NOTE: Cleanup is NOT affected by `isEnabled`; areas that exit should ALWAYS be removed!
 func onAreaExited(areaExited: Area2D) -> void:
-	# NOTE: This should NOT be affected by `isEnabled`; areas that exit should ALWAYS be removed!
-
 	# NOTE: Even though we don't need to use a [DamageReceivingComponent] here, we have to cast the type, to fix this Godot runtime error:
-	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
+	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(	
 	var damageReceivingComponent: DamageReceivingComponent = areaExited.get_node(^".") as DamageReceivingComponent # HACK: Find better way to cast self?
 	if  debugMode:
 		printDebug(str("onAreaExited(): ", areaExited, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
@@ -171,7 +171,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 
 	if  damageReceivingComponent:
 		damageReceivingComponentsInContact.erase(damageReceivingComponent)
-		didLeaveReceiver.emit(damageReceivingComponent)
+		didLeaveReceiver.emit(damageReceivingComponent) # TBD: Emit only for areas that were in the array?
 
 
 ## Returns a [DamageReceivingComponent] by casting an [Area2D] node, if possible.
@@ -201,21 +201,23 @@ func rollChance(damageReceivingComponent: DamageReceivingComponent) -> bool:
 	var totalChance: int = self.hitChance - damageReceivingComponent.missChance
 	if debugMode: printDebug(str("hitChance ", self.hitChance, "% vs missChance ", damageReceivingComponent.missChance, " = ", totalChance, "%"))
 
+	var didSucceedRoll: bool
+
 	if totalChance >= 100: # Always succeed? :)
 		self.didSucceed.emit(damageReceivingComponent, totalChance, 100)
-		return true
+		didSucceedRoll = true
 	elif totalChance < 1: # Always miss? :(
 		self.didMiss.emit(damageReceivingComponent, totalChance, 0)
-		return false
+		didSucceedRoll = false
 	else:
 		var roll: int = randi_range(1, 100)
-		var didSucceedRoll: bool = roll <= totalChance # i.e. If totalChance is 10 then a roll of 1-10 will succeed but 11 will fail.
+		didSucceedRoll = roll <= totalChance # i.e. If totalChance is 10 then a roll of 1-10 will succeed but 11 will fail.
 		if debugMode: printDebug(str("Rolled ", roll, ": Missed!" if not didSucceedRoll else ""))
-		if didSucceedRoll: self.didSucceed.emit(damageReceivingComponent	, totalChance, roll)
-		else:
-			self.didMiss.emit(damageReceivingComponent, totalChance, roll)
-			if shouldEmitBubbleOnMiss: TextBubble.create("MISS", damageReceivingComponent)
-		return didSucceedRoll
+		if didSucceedRoll: self.didSucceed.emit(damageReceivingComponent, totalChance, roll)
+		else: self.didMiss.emit(damageReceivingComponent, totalChance, roll)
+	
+	if shouldEmitBubbleOnMiss and not didSucceedRoll: TextBubble.create("MISS", damageReceivingComponent)
+	return didSucceedRoll
 
 
 ## Calls [method DamageReceivingComponent.processCollision]
@@ -228,6 +230,8 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 	# Factions will be checked in DamageReceivingComponent.checkFactions()
 
 	# But first, check if we actually hit or miss…
+	# NOTE: We roll BEFORE checking factions, so that bullets may still get blocked by allies instead of going through.
+	# TBD: Check factions here?
 	if not rollChance(damageReceivingComponent): return
 
 	# NOTE: This does NOT ALWAYS mean that the target entity's health actually decreased, because of factors like [ShieldedHealthComponent] etc.
@@ -242,10 +246,11 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 			self.requestDeletionOfParentEntity()
 
 
-## Calls [method DamageReceivingComponent.processCollision] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact]
-## Used by [DamageRepeatingComponent]
+## Calls [method causeCollisionDamage] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact].
+## Used by [DamageRepeatingComponent] etc.
 func causeDamageToAllReceivers() -> void:
-	for damageReceivingComponent in self.damageReceivingComponentsInContact:
-		damageReceivingComponent.processCollision(self, factionComponent)
+	# TBD: Rename to causeCollisionDamageToAllReceivers()?
+	for damageReceivingComponent in self.damageReceivingComponentsInContact: # TBD: PERFORMANCE: BUGRISK: Use .duplicate() to avoid risk of mutation during iteration?
+		self.causeCollisionDamage(damageReceivingComponent) # Use this DamageComponent's logic path instead of damageReceivingComponent.processCollision(), to ensure hit chance rolls etc.
 
 #endregion

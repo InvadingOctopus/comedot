@@ -37,6 +37,7 @@ extends Component
 ## Emitted when the factions are opposing or there is friendly fire, EVEN if there is no [HealthComponent].
 ## NOTE: The [param amount] may NOT be the ACTUAL amount of "health" deducted, which depends on the implementation of [HealthComponent], if there are any healing effects or "shields" etc.
 ## TIP:  To monitor actual changes in entity's "health", connect to [HealthComponent] signals.
+## ALERT: [param damageComponent] may be `null` in some cases, such as if [method processDamage] is called by a different component or script.
 signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int)
 
 ## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
@@ -77,16 +78,15 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", damageComponent: ", damageComponent.logNameWithEntity if damageComponent else "null"))
 
 	# If the Area2D is not a DamageComponent, there's nothing to do.
-	if damageComponent:
+	if damageComponent: # TBD: PERFORMANCE: BUGRISK: Check if area is already in array?
 		damageComponentsInContact.append(damageComponent)
 		didCollideWithDamage.emit(damageComponent)
 
 	# processCollision(damageComponent, null) # NOTE: Damage-causing area collision is initiated by the [DamageComponent] script.
 
 
+## NOTE: Cleanup is NOT affected by `isEnabled`; areas that exit should ALWAYS be removed!
 func onAreaExited(areaExited: Area2D) -> void:
-	if not isEnabled: return
-
 	# NOTE: Even though we don't need to use a [DamageComponent] here, we have to cast the type, to fix this Godot runtime error:
 	# "Attempted to erase an object into a TypedArray, that does not inherit from 'GDScript'." :(
 	var damageComponent: DamageComponent = areaExited.get_node(^".") as DamageComponent # HACK: Find better way to cast self?
@@ -136,12 +136,10 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
 	var shouldReceiveDamage: bool = false
 
-	if friendlyFire or not self.factionComponent:
-		shouldReceiveDamage = true
-	else:
-		shouldReceiveDamage = self.factionComponent.checkOpposition(attackerFactions)
+	if friendlyFire or not self.factionComponent: shouldReceiveDamage = true # DESIGN: Always accept damage if there is no FactionComponent
+	else: shouldReceiveDamage = self.factionComponent.checkOpposition(attackerFactions) # TBD: PERFORMANCE: Check directly instead of making a function call?
 
-	if debugMode: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
+	if debugMode: printDebug(str("checkFactions() attackerFactions: ", attackerFactions, ", selfFactions: ", self.factionComponent.factions if factionComponent else -1, ", friendlyFire: ", friendlyFire, ", shouldReceiveDamage: ", shouldReceiveDamage))
 	return shouldReceiveDamage
 
 
@@ -149,7 +147,7 @@ func checkFactions(attackerFactions: int = 0, friendlyFire: bool = false) -> boo
 
 ## Passes the [param damageAmount] to a [HealthComponent] if the damage is from an opposing faction or [param friendlyFire].
 ## Returns `true` if there are opposing factions or friendly fire, or no [param attackerFactions] (which means damage is always applied).
-## NOTE: [param damageComponent] may be `null` in case the caller is a different component.
+## NOTE: [param damageComponent] may be `null` in case the caller is a different component or script.
 func processDamage(damageComponent: DamageComponent, damageAmount: int, attackerFactions: int = 0, friendlyFire: bool = false) -> bool:
 	if not isEnabled or not checkFactions(attackerFactions, friendlyFire): return false
 
@@ -169,3 +167,5 @@ func processDamage(damageComponent: DamageComponent, damageAmount: int, attacker
 		self.requestDeletionOfParentEntity()
 
 	return true # There were opposing (or no) factions or friendly fire.
+
+#endregion
