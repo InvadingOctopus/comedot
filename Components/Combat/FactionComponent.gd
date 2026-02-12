@@ -9,12 +9,13 @@ extends Component
 
 #region Constants
 
+## Bitflags representing different factions
 enum Factions {
 	neutral = 1, # TBD: Should `neutral` be 0?
 	players = 2,
-	playerAllies = 3,
-	enemies = 4,
-	hazards = 5
+	playerAllies = 4,
+	enemies = 8,
+	hazards = 16
 	}
 
 const factionStrings: PackedStringArray = [
@@ -46,13 +47,13 @@ const factionStrings: PackedStringArray = [
 ## Returns `true` if there is ANY match between this component's [member factions] and the [param otherFactions].
 ## Example: [player, playerAllies] vs [playerAllies, enemies]
 func checkAlliance(otherFactions: int) -> bool:
-	return (self.factions & otherFactions) # Bitwise `AND` means `true` if ANY bits match.
+	return (self.factions & otherFactions) != 0 # Bitwise `AND` means `true` if ANY bits match.
 
 
 ## Returns `true` if there is NO match between this component's [member factions] and the [param otherFactions].
 ## Example: [player, playerAllies] vs [enemies]
 func checkOpposition(otherFactions: int) -> bool:
-	return not (self.factions & otherFactions) # Bitwise `AND` means `true` if ANY bits match.
+	return (self.factions & otherFactions) == 0 # Bitwise `AND` means `true` if ANY bits match.
 
 #endregion
 
