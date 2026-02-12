@@ -7,6 +7,9 @@
 class_name KnockbackOnHitComponent
 extends CharacterBodyDependentComponentBase
 
+# TODO: CHECK: BUGRISK: Apply knockback immediately on damage signal or queued via _physics_process()?
+# Impulses may apply on the next physics tick rather than immediately on hit,
+
 
 #region Parameters
 
@@ -23,7 +26,14 @@ extends CharacterBodyDependentComponentBase
 ## This ensures that the knockback is always noticeable even if the player is moving at a high speed towards the damage source.
 @export var shouldZeroCurrentVelocity: bool = true
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			# Avoid "stale"/"queued" knockback when disabling/re-enabling 
+			shouldApplyKnockback	= false
+			recentDamageDirection	= Vector2.ZERO
+			isEnabled				= newValue
+			self.set_physics_process(false) # Always false until we get hurt again 
 
 #endregion
 
@@ -33,7 +43,10 @@ extends CharacterBodyDependentComponentBase
 ## If `true`, calls [method knockback] to apply the [member recentDamageDirection] during [method physics_process].
 ## NOTE: This helps avoid negation of the knockback force by other components,
 ## such as [method PlatformerPhysicsComponent.processAllFriction] if any of the [PlatformerMovementParameters] `.shouldStopInstantly…` flags are true.
-var shouldApplyKnockback:  bool
+var shouldApplyKnockback:  bool:
+	set(newValue):
+		shouldApplyKnockback = newValue
+		self.set_physics_process(shouldApplyKnockback and isEnabled)
 
 ## The direction of the last damage source, to be applied during [method physics_process] if [member shouldApplyKnockback].
 var recentDamageDirection: Vector2
@@ -51,6 +64,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	connectSignals()
+	self.set_physics_process(isEnabled and shouldApplyKnockback) # Apply setters because Godot doesn't on initialization
 
 
 func connectSignals() -> void:
@@ -58,21 +72,29 @@ func connectSignals() -> void:
 		damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
 
 
-func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, _amount: int, _attackerFactions: int) -> void:
+func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponent, amount: int, _attackerFactions: int) -> void:
 	# TODO: Get the POINT OF CONTACT of the collision, not the positions of the entities/bodies/sprites etc.
-
+	
 	if not isEnabled: return
 
 	# Get the direction of the colliding damage source
 	# TBD: Should we get the position of the components, or their Area2D, or their parent entities?
 	# TBD: Use velocities?
+	# TBD: Check for non-zero `amount` or ignore?
 
-	var damageDirection: Vector2 = self.body.global_position.direction_to(damageComponent.global_position)
-	self.recentDamageDirection = damageDirection
-	self.shouldApplyKnockback = true
+	self.shouldApplyKnockback = is_instance_valid(damageComponent) and amount > 0
+	
+	if shouldApplyKnockback:
+		self.recentDamageDirection = self.body.global_position.direction_to(damageComponent.global_position)
+		# TODO: CHECK: Call knockback(recentDamageDirection) right away here or wait for _physics_process() to do it?
+	else:
+		# Just stay put if there is no identifiable attacker position, e.g. when hurting from poison damage-over-time etc.
+		self.recentDamageDirection = Vector2.ZERO
 
 
 func _physics_process(_delta: float) -> void:
+	# TODO: CHECK: Should set_physics_process() be toggled based on flags?
+	# ALERT: BUGRISK: Changing set_physics_process() probably starts _physics_process() on the NEXT frame, NOT the frame when impact occurs.
 	if shouldApplyKnockback and isEnabled: # Check rarer flag first for performance
 		knockback(recentDamageDirection)
 		shouldApplyKnockback  = false
