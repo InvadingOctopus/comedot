@@ -69,6 +69,7 @@ var didWallJump:			bool ## Did we just perform a "wall jump"?
 
 #region Dependencies
 @onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
+@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.get(&"PlatformerPhysicsComponent") # Optional
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, InputComponent]
 #endregion
@@ -134,13 +135,14 @@ func characterBodyComponent_didMove(_delta: float) -> void:
 
 
 ## Resets the [currentNumberOfJumps] counter & [member coyoteJumpTimer] if the body is on a floor.
-## NOTE: MUST be called BEFORE [method CharacterBody2D.move_and_slide] and AFTER [processInput].
+## NOTE: MUST be called AFTER processing the input and AFTER [method CharacterBody2D.move_and_slide].
 func resetState() -> void:
 	# NOTE: It may be more efficient to check `currentNumberOfJumps` instead of writing these values every frame?
 	if currentNumberOfJumps != 0 and characterBodyComponent.isOnFloor:
 		# DEBUG: printDebug("currentNumberOfJumps = 0")
 		currentNumberOfJumps = 0
 		coyoteJumpTimer.stop()
+		currentState = State.idle
 
 
 func clearInput() -> void:
@@ -211,34 +213,48 @@ func updateCoyoteJumpState() -> void:
 
 	if not isEnabled or not parameters.allowCoyoteJump: return
 
-	var didWalkOffFloor: bool = characterBodyComponent.wasOnFloor \
-		and not body.is_on_floor() \
-		and body.velocity.y >= 0 # Are we falling?
+	# Are we falling?
+	var fallVelocity: float = body.velocity.y * body.up_direction.y # Check for inverted gravity!
 
-	if didWalkOffFloor:
-		coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
-		coyoteJumpTimer.start() # beep beep!
+	if  characterBodyComponent.wasOnFloor \
+		and not body.is_on_floor() \
+		and (fallVelocity < 0.0 or is_zero_approx(fallVelocity)):
+			coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
+			coyoteJumpTimer.start() # beep beep!
 
 #endregion
 
 
 #region Wall Jumping
 
+## Implements jumping when hanging on to a wall.
 func processWallJump() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 
-	if  not isEnabled \
-		or not parameters.allowWallJump \
+	# PERFORMANCE: `isEnabled` would be rarely `false` at this point because it should have been checked by the caller of this function,
+	# so check the more commonly-changing conditions first:
+	# 1: Can we wall-jump?
+	# 2: Do we have any jumps left?
+	# 3: Is the component enabled?
+	# 4: Are we on a wall and not a floor?
+	# 5: Are we off the wall but still have a grace timer left?
+	# TBD: Use is_on_floor_only() and/or is_on_wall_only()?
+	if  not parameters.allowWallJump \
 		or currentNumberOfJumps >= parameters.maxNumberOfJumps \
-		or (not body.is_on_wall_only() \
+		or not isEnabled \
+		or body.is_on_floor() \
+		or (not body.is_on_wall() \
 			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
 				return
 
-	# NOTE: The current flow of conditions ensures that `wallNormal` will always = `previousWallNormal`,
-	# but let's keep the code as was presented in Heartbeast's tutorial.
+	# Get the current OR most recent wall direction (in case we're in the grace timer)
+	var wallNormal: Vector2
+	if body.is_on_wall(): wallNormal = body.get_wall_normal()
+	elif characterBodyComponent.wasOnWall: wallNormal = characterBodyComponent.previousWallNormal
 
-	var wallNormal: Vector2 = characterBodyComponent.previousWallNormal
+	if wallNormal.is_zero_approx(): return
 
+	# le boing
 	if self.jumpInputJustPressed:
 		# NOTE: Respect the `up_direction` to allow for flipped-gravity situations!
 		body.velocity.x = wallNormal.x * parameters.wallJumpVelocityX
@@ -247,6 +263,11 @@ func processWallJump() -> void:
 		# Allow unlimited jumps between walls?
 		if parameters.decreaseJumpCountOnWallJump and currentNumberOfJumps > 0:
 			currentNumberOfJumps -= 1
+
+		# Skip normal acceleration/friction for one frame to preserve the feeling of pushing off from a wall
+		if platformerPhysicsComponent:
+			platformerPhysicsComponent.shouldSkipVelocity = true
+			platformerPhysicsComponent.shouldSkipFriction = true
 
 		didWallJump = true
 
