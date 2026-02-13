@@ -29,6 +29,10 @@ name = &"monsterHealth"
 displayName = "Monster HP"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oknhl"]
+resource_local_to_scene = true
+size = Vector2(18, 18)
+
 [node name="MonsterEntity" type="CharacterBody2D" unique_id=1245323086 node_paths=PackedStringArray("sprite", "body")]
 editor_description = "A template for a monster in a platformer game."
 collision_layer = 10
@@ -63,6 +67,9 @@ factions = 8
 collision_layer = 1032
 collision_mask = 1060
 
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
+shape = SubResource("RectangleShape2D_oknhl")
+
 [node name="KnockbackOnHitComponent" parent="." unique_id=960243277 instance=ExtResource("7_qjlrm")]
 
 [node name="DamageComponent" parent="." unique_id=196118322 instance=ExtResource("3_1r4r1")]
@@ -71,6 +78,7 @@ collision_mask = 1028
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0" unique_id=1217175677]
 position = Vector2(2.08165e-12, 2.08165e-12)
+shape = SubResource("RectangleShape2D_oknhl")
 
 [node name="CornerCollisionComponent" parent="." unique_id=615354246 instance=ExtResource("4_pvycy")]
 
@@ -86,4 +94,5 @@ body = NodePath("..")
 [node name="InputComponent" parent="." unique_id=555896481 instance=ExtResource("14_0223s")]
 isPlayerControlled = false
 
+[editable path="DamageReceivingComponent"]
 [editable path="DamageComponent"]

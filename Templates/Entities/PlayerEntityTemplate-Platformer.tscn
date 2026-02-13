@@ -172,6 +172,10 @@ max = 10000000
 value = 1337
 name = &"playerScore"
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b23pp"]
+resource_local_to_scene = true
+size = Vector2(14, 14)
+
 [node name="Player-Platformer" type="CharacterBody2D" unique_id=1971183666 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
 editor_description = "A template for the player character in a platformer game."
 z_index = 10
@@ -222,7 +226,7 @@ collision_mask = 40
 
 [node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_1q6vm")
+shape = SubResource("RectangleShape2D_b23pp")
 
 [node name="InvulnerabilityOnHitComponent" parent="." unique_id=1034421986 node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
 animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
