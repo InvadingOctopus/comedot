@@ -92,8 +92,6 @@ componentSets = Dictionary[StringName, ExtResource("9_37w12")]({
 &"fly": ExtResource("11_uvdhk"),
 &"walk": ExtResource("10_dur3v")
 })
-shouldFree = true
-currentSetName = &""
 debugMode = true
 
 [node name="CharacterBodyComponent" parent="PlayerEntity" unique_id=1538712100 instance=ExtResource("8_dur3v")]

@@ -36,8 +36,7 @@ rotation_smoothing_enabled = true
 
 [node name="TileBasedControlComponent" parent="." unique_id=879116052 instance=ExtResource("4_b6e0e")]
 
-[node name="TileBasedPositionComponent" parent="." unique_id=928173984 node_paths=PackedStringArray("visualIndicator") instance=ExtResource("5_8uggr")]
-visualIndicator = NodePath("MovementIndicator")
+[node name="TileBasedPositionComponent" parent="." unique_id=928173984 instance=ExtResource("5_8uggr")]
 
 [node name="InputComponent" parent="." unique_id=1143964556 instance=ExtResource("6_8uggr")]
 

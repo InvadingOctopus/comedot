@@ -23,5 +23,5 @@ activeClimbingArea = null
 groupToInclude = &"climbable"
 shouldMonitorBodies = false
 
-[node name="AreaDetectorShape" parent="." index="0"]
+[node name="AreaDetectorShape" parent="." index="0" unique_id=2019209105]
 shape = SubResource("RectangleShape2D_qeok4")
