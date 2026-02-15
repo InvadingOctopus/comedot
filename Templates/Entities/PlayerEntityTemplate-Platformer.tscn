@@ -220,20 +220,8 @@ health = SubResource("Resource_cei4g")
 [node name="FactionComponent" parent="." unique_id=417629176 instance=ExtResource("7_3141c")]
 factions = 2
 
-[node name="DamageReceivingComponent" parent="." unique_id=427106045 instance=ExtResource("7_nsuj0")]
-collision_layer = 4
-collision_mask = 40
-
-[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
-position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_b23pp")
-
 [node name="InvulnerabilityOnHitComponent" parent="." unique_id=1034421986 node_paths=PackedStringArray("animationPlayer") instance=ExtResource("8_dmqtc")]
 animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
-
-[node name="KnockbackOnHitComponent" parent="." unique_id=665215421 instance=ExtResource("11_8q3fk")]
-knockbackForce = 200.0
-additionalVector = Vector2(2.08165e-12, -100)
 
 [node name="GunComponent" parent="." unique_id=2053531727 instance=ExtResource("10_7jquu")]
 ammo = SubResource("Resource_puhqw")
@@ -253,6 +241,18 @@ shouldFaceVerticalInput = false
 
 [node name="PlatformerPhysicsComponent" parent="." unique_id=1617475570 instance=ExtResource("14_usisr")]
 
+[node name="KnockbackOnHitComponent" parent="." unique_id=665215421 instance=ExtResource("11_8q3fk")]
+knockbackForce = 200.0
+additionalVector = Vector2(2.08165e-12, -100)
+
+[node name="DamageReceivingComponent" parent="." unique_id=427106045 instance=ExtResource("7_nsuj0")]
+collision_layer = 4
+collision_mask = 40
+
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_b23pp")
+
 [node name="CharacterBodyComponent" parent="." unique_id=709892523 node_paths=PackedStringArray("body") instance=ExtResource("16_1q6vm")]
 body = NodePath("..")
 
@@ -260,5 +260,5 @@ body = NodePath("..")
 
 [node name="InputComponent" parent="." unique_id=1492055703 instance=ExtResource("18_swcld")]
 
-[editable path="DamageReceivingComponent"]
 [editable path="GunComponent"]
+[editable path="DamageReceivingComponent"]

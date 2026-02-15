@@ -29,7 +29,7 @@ name = &"monsterHealth"
 displayName = "Monster HP"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_oknhl"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n3xsw"]
 resource_local_to_scene = true
 size = Vector2(18, 18)
 
@@ -63,12 +63,13 @@ shouldShowRemainingHealth = true
 [node name="FactionComponent" parent="." unique_id=210162572 instance=ExtResource("2_a5njj")]
 factions = 8
 
-[node name="DamageReceivingComponent" parent="." unique_id=1827559037 instance=ExtResource("6_p3b0u")]
-collision_layer = 1032
-collision_mask = 1060
+[node name="CornerCollisionComponent" parent="." unique_id=615354246 instance=ExtResource("4_pvycy")]
 
-[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
-shape = SubResource("RectangleShape2D_oknhl")
+[node name="PlatformerPatrolComponent" parent="." unique_id=900796945 instance=ExtResource("5_c8kjw")]
+detectionGap = 2.0
+randomizeInitialDirection = true
+
+[node name="PlatformerPhysicsComponent" parent="." unique_id=1807756268 instance=ExtResource("6_w2yd5")]
 
 [node name="KnockbackOnHitComponent" parent="." unique_id=960243277 instance=ExtResource("7_qjlrm")]
 
@@ -78,15 +79,14 @@ collision_mask = 1028
 
 [node name="DamageCollisionShape" parent="DamageComponent" index="0" unique_id=1217175677]
 position = Vector2(2.08165e-12, 2.08165e-12)
-shape = SubResource("RectangleShape2D_oknhl")
+shape = SubResource("RectangleShape2D_n3xsw")
 
-[node name="CornerCollisionComponent" parent="." unique_id=615354246 instance=ExtResource("4_pvycy")]
+[node name="DamageReceivingComponent" parent="." unique_id=1827559037 instance=ExtResource("6_p3b0u")]
+collision_layer = 1032
+collision_mask = 1060
 
-[node name="PlatformerPatrolComponent" parent="." unique_id=900796945 instance=ExtResource("5_c8kjw")]
-detectionGap = 2.0
-randomizeInitialDirection = true
-
-[node name="PlatformerPhysicsComponent" parent="." unique_id=1807756268 instance=ExtResource("6_w2yd5")]
+[node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
+shape = SubResource("RectangleShape2D_n3xsw")
 
 [node name="CharacterBodyComponent" parent="." unique_id=2068876203 node_paths=PackedStringArray("body") instance=ExtResource("7_aroie")]
 body = NodePath("..")
@@ -94,5 +94,5 @@ body = NodePath("..")
 [node name="InputComponent" parent="." unique_id=555896481 instance=ExtResource("14_0223s")]
 isPlayerControlled = false
 
-[editable path="DamageReceivingComponent"]
 [editable path="DamageComponent"]
+[editable path="DamageReceivingComponent"]
