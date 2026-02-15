@@ -2,13 +2,10 @@
 ## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away.
 ## WARNING: The knockback may not be applied if [member PlatformerMovementParameters.shouldStopInstantlyOnFloor] or [member PlatformerMovementParameters.shouldStopInstantlyInAir] is `true`.
 ## To fix, this component should be BELOW other such components in the entity's scene tree.
-## Requirements: BEFORE [CharacterBodyComponent], [DamageReceivingComponent], AFTER [PlatformerPhysicsComponent]
+## Requirements: BEFORE [CharacterBodyComponent], AFTER [PlatformerPhysicsComponent]
 
 class_name KnockbackOnHitComponent
 extends CharacterBodyDependentComponentBase
-
-# TODO: CHECK: BUGRISK: Apply knockback immediately on damage signal or queued via _physics_process()?
-# Impulses may apply on the next physics tick rather than immediately on hit,
 
 
 #region Parameters
@@ -29,11 +26,11 @@ extends CharacterBodyDependentComponentBase
 @export var isEnabled: bool = true:
 	set(newValue):
 		if newValue != isEnabled:
-			# Avoid "stale"/"queued" knockback when disabling/re-enabling 
+			# Avoid "stale"/"queued" knockback when disabling/re-enabling
 			shouldApplyKnockback	= false
 			recentDamageDirection	= Vector2.ZERO
 			isEnabled				= newValue
-			self.set_physics_process(false) # Always false until we get hurt again 
+			self.set_physics_process(false) # Always false until we get hurt again
 
 #endregion
 
@@ -55,7 +52,8 @@ var recentDamageDirection: Vector2
 
 
 #region Dependencies
-@onready var damageReceivingComponent: DamageReceivingComponent = coComponents.DamageReceivingComponent # TBD: Static or dynamic?
+@onready var damageReceivingComponent:   DamageReceivingComponent   = coComponents.DamageReceivingComponent # TBD: Static or dynamic?
+@onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.get(&"PlatformerPhysicsComponent") # Optional
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, DamageReceivingComponent] # Cannot easily join with `super.getRequiredComponents()` because Godot goes dumb and treats it as an untyped Array
@@ -86,15 +84,15 @@ func onDamageReceivingComponent_didReceiveDamage(damageComponent: DamageComponen
 	
 	if shouldApplyKnockback:
 		self.recentDamageDirection = self.body.global_position.direction_to(damageComponent.global_position)
-		# TODO: CHECK: Call knockback(recentDamageDirection) right away here or wait for _physics_process() to do it?
+		# TBD: Call knockback(recentDamageDirection) right away here or let _physics_process() to do it?
 	else:
 		# Just stay put if there is no identifiable attacker position, e.g. when hurting from poison damage-over-time etc.
 		self.recentDamageDirection = Vector2.ZERO
 
 
 func _physics_process(_delta: float) -> void:
-	# TODO: CHECK: Should set_physics_process() be toggled based on flags?
-	# ALERT: BUGRISK: Changing set_physics_process() probably starts _physics_process() on the NEXT frame, NOT the frame when impact occurs.
+	# CHECKED: Should set_physics_process() be toggled based on flags? Yes, doesn't seem to cause a frame delay.
+	# CHECKED: Changing set_physics_process() does NOT start _physics_process() on the NEXT frame: The physics update runs right after the damage signal is received.
 	if shouldApplyKnockback and isEnabled: # Check rarer flag first for performance
 		knockback(recentDamageDirection)
 		shouldApplyKnockback  = false
@@ -124,6 +122,13 @@ func knockback(damageDirection: Vector2) -> Vector2:
 	# Apply force in the opposite direction + any other vector, such as a upwards jump when taking damage in a platform game.
 	var totalForce: Vector2 = ((-damageDirection) * knockbackForce) + additionalVector
 	body.velocity += totalForce
+
+	# Supress normal movement for 1 frame
+	# CHECK: Does this improve the feel of the knockback?
+	# TODO: CHECK: Will this cause a 1 frame delay if the KnockbackOnHitComponent comes AFTER PlatformerPhysicsComponent?
+	if platformerPhysicsComponent: 
+		platformerPhysicsComponent.shouldSkipVelocity = true
+		platformerPhysicsComponent.shouldSkipFriction = true
 
 	if debugMode: printDebug(str("damageDirection: ", damageDirection, ", knockbackForce: ", knockbackForce, ", additionalVector: ", additionalVector, ", totalForce:, ", totalForce, ", body.velocity: ", body.velocity))
 
