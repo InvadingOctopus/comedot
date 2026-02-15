@@ -2,7 +2,7 @@
 
 https://godotengine.org/asset-library/asset/3887
 
-Asset Name: Comedot Ultimate Template
+Asset Name: Comedot ECS Template
 Description:
 
 All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art. 
@@ -29,8 +29,8 @@ License:		MIT
 Repository URL:	https://github.com/invadingoctopus/comedot
 Issues URL:		https://github.com/invadingoctopus/comedot/issues
 Godot Version:	4.6
-Asset Version:	4.6.0.100.42 (First 3 numbers are the Godot version, 4th is Dev/Beta/RC where 100 = release)
-Commit URL:		052f0fb78f8890fdaad517e36395a85cc836d82a 2026-02-02
+Asset Version:	4.6.0.100.69 (First 3 numbers are the Godot version, 4th is Dev/Beta/RC where 100 = release)
+Commit URL:		a8c873d3ea3c2f6aa0de94a11f9cae98679236fe 2026-02-14
 
 Icon URL:		https://i.imgur.com/UJnNERn.png
 Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
