@@ -63,6 +63,7 @@ extends CanvasItem
 const minimumTurnDelay: float = 0.05
 
 ## If `false`, disables & removes the [TurnBasedCoordinator] AutoLoad.
+## WARNING: If disabled, turn-based nodes and scripts may cause a crash.
 @export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var isTurnBasedGame: bool = false
 
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Update/End). May be used for aesthetics or debugging.
@@ -195,6 +196,7 @@ func applyGlobalFlags() -> void:
 		if is_instance_valid(TurnBasedCoordinator):
 			TurnBasedCoordinator.process_mode = Node.PROCESS_MODE_DISABLED
 			TurnBasedCoordinator.queue_free()
+			# NOTE: DESIGN: Accessing TurnBasedCoordinator after starting a non-turn-based game will cause a crash, which is the intended behavior.
 
 #endregion
 

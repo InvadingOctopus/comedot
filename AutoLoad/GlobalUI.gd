@@ -160,7 +160,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		pauseOverlayTween = self.create_tween()
 		pauseOverlayTween.tween_subtween(Animations.fadeIn(pauseRect, pauseAnimationDuration))
 		pauseOverlayTween.parallel().tween_subtween(Animations.fadeIn(pauseOverlayContainer, pauseAnimationDuration))
-		didShowPauseOverlay.emit(pauseOverlay)
+		didShowPauseOverlay.emit(pauseOverlay) # NOTE: DESIGN: May be emitted before the fade-in animation completes
 
 	elif not isPaused:
 

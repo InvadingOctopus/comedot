@@ -1,5 +1,6 @@
 ## Base class for turn-based entities. Performs actions by issuing commands to its child [TurnBasedComponent]s.
-## Each turn, the [TurnBasedCoordinator] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods on each entity in order.
+## Each turn, the [TurnBasedCoordinator] calls the [method processTurnBegin], [method processTurnUpdate] and [method processTurnEnd] methods on each entity in order.
+## TIP: In most cases, just using [method processTurnUpdate] only is enough to implement gameplay.
 ##
 ## NOTE: The begin/update/end methods are NOT executed at once for a single entity:
 ## First, all entities perform the "Begin" phase: Entity1.processTurnBegin → Entity2.processTurnBegin ...

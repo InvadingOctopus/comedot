@@ -1,6 +1,9 @@
 ## Base class for all turn-based components.
 ## Each turn, the parent [TurnBasedEntity] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods on each of its component in order.
 ## NOTE: These methods MUST be overridden by subclasses to perform the game-specific actions every turn.
+## TIP: In most cases, just using [method processTurnUpdate] only is enough to implement gameplay.
+## TIP: EXAMPLE: [method processTurnBegin] may be used for effects like healing-over-time that must occur at the START of a turn.
+## TIP: EXAMPLE: [method processTurnEnd] may be used for effects like poison etc. damage-over-time that must occur at the END of a turn.
 ##
 ## NOTE: The begin/update/end methods are NOT executed at once for a single component:
 ## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ...

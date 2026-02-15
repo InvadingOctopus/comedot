@@ -22,7 +22,7 @@ extends Resource
 
 @export_group("Friction")
 
-## Gradually slows the velocity down each frame. If `false` then the movement stops abruptly when there is no input,
+## Gradually slows the velocity down each frame if there is no input. If `false` then the movement stops abruptly when there is no input,
 ## unless [member shouldMaintainPreviousVelocity] or [member shouldMaintainMinimumVelocity] is `true`.
 @export var shouldApplyFriction:			bool  = true
 @export_range(8, 2000, 4) var friction:		float = 1000
