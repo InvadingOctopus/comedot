@@ -85,7 +85,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 	turnEnd		=  2,
 	}
 
-const turnStateNames: Array[StringName] = [&"begin", &"update", &"end"] ## May be used to get the phase name by `turnStateNames[currentTurnState]`
+const turnStateNames: Array[StringName] = [&"begin", &"update", &"end", &"invalid"] ## May be used to get the phase name by `turnStateNames[currentTurnState]`. NOTE: Godot indexes -1 from the end of an array, so we include the "invalid" state.
 
 
 ## The number of the current ONGOING turn. The first turn is 1.
@@ -137,9 +137,14 @@ const turnStateNames: Array[StringName] = [&"begin", &"update", &"end"] ## May b
 ## Returns: `true` if the [member currentTurnState] is [constant TurnBasedState.turnBegin], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
 var isReadyToStartTurn: bool:
 	get: return self.currentTurnState == TurnBasedState.turnBegin \
+			and not isCyclingStates \
 			and not isProcessingEntities \
 			and is_zero_approx(stateTimer.time_left) \
 			and is_zero_approx(entityTimer.time_left)
+
+## If `true` then the coordinator is in the process of cycling the current turn from Begin → Update → End.
+## Set by [method startTurnProcess] and [method cycleStatesUntilNextTurn] to avoid multiple calls: a new turn cannot be started while this is `true`.
+@export_storage var isCyclingStates: bool
 
 #endregion
 
@@ -147,29 +152,29 @@ var isReadyToStartTurn: bool:
 #region State: Entities
 
 ## NOTE: This depends on [TurnBasedEntity]s to add & remove themselves in [method TurnBasedEntity._enter_tree] & [method TurnBasedEntity._exit_tree]
-@export_storage var turnBasedEntities: Array[TurnBasedEntity]
+@export_storage var turnBasedEntities:	Array[TurnBasedEntity]
 
 ## This flag helps decide [member isReadyToStartTurn], because some the Coordiantor may be `await`ing on an Entities while still in the `turnBegin` state.
 @export_storage var isProcessingEntities: bool
 
 ## The index in the [member turnBasedEntities] of the entity that is currently being processed
 ## NOTE: The value will be -1 (an invalid index) if there is no ongoing turn process loop.
-@export_storage var currentEntityIndex: int
+@export_storage var currentEntityIndex:	int = -1
 
 ## The index in the [member turnBasedEntities] of the entity that was most recently processed.
 ## May be equal to [member currentEntityIndex] only during an ongoing turn process loop.
-@export_storage var recentEntityIndex: int
+@export_storage var recentEntityIndex:	int = -1
 
-var currentEntityProcessing: TurnBasedEntity: ## Returns `null` if there is no ongoing turn process loop.
+var currentEntityProcessing:	TurnBasedEntity: ## Returns `null` if there is no ongoing turn process loop.
 	get: return turnBasedEntities[currentEntityIndex] if currentEntityIndex >= 0 and currentEntityIndex < turnBasedEntities.size() else null
 
-var recentEntityProcessed: TurnBasedEntity:
-	get: return turnBasedEntities[recentEntityIndex]
+var recentEntityProcessed:		TurnBasedEntity:
+	get: return turnBasedEntities[recentEntityIndex]  if recentEntityIndex >= 0  and recentEntityIndex < turnBasedEntities.size()  else null
 
 var nextEntityIndex: int: ## Returns the next entity in the turn order, or the first entry if the current entity is the last one.
 	get: return currentEntityIndex + 1 if (currentEntityIndex + 1) < turnBasedEntities.size() else 0
 
-var nextEntityToProcess: TurnBasedEntity:
+var nextEntityToProcess:		TurnBasedEntity:
 	get:
 		if not turnBasedEntities.is_empty() and nextEntityIndex < turnBasedEntities.size():
 			return turnBasedEntities[nextEntityIndex]
@@ -247,7 +252,7 @@ func _ready() -> void:
 
 #region Coordinator External Interface
 
-## The beginning of processing 1 full turn and its 3 states.
+## Begins the processing of 1 full turn and cycling through each of its 3 states.
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
 func startTurnProcess() -> void:
 	if debugMode: printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
@@ -259,7 +264,7 @@ func startTurnProcess() -> void:
 		return
 
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
-	cycleStatesUntilNextTurn()
+	await cycleStatesUntilNextTurn()
 
 
 ## @experimental
@@ -285,6 +290,11 @@ func cycleStatesUntilNextTurn() -> void:
 	# TODO: A less complex/ambiguous implementation
 	printDebug("cycleStatesUntilNextTurn()")
 
+	# Make sure we're not already in the middle of a cycle
+	if isCyclingStates: return
+	
+	isCyclingStates = true
+
 	# If we're already at `turnBegin`, advance the state once.
 	if self.currentTurnState == TurnBasedState.turnBegin:
 		await self.processState()
@@ -297,9 +307,14 @@ func cycleStatesUntilNextTurn() -> void:
 		await self.waitForStateTimer() # NOTE: Delay even if it's the last entity/state in the loop, because there should be a delay before the 1st entity/state of the NEXT turn too!
 		self.incrementState()
 
-	if isReadyToStartTurn:
+	if self.currentTurnState == TurnBasedState.turnBegin:
+		isCyclingStates = false
+	
+	# TBD: BUGRISK: Let the `didReadyToStartTurn` signal be emitted multiple times if this method is called repeatedly?
+	if isReadyToStartTurn: 
 		printDebug("didReadyToStartTurn")
 		didReadyToStartTurn.emit()
+
 
 
 ## Calls one of the signals processing methods based on the [member currentTurnState].
@@ -340,7 +355,7 @@ func processTurnBeginSignals() -> void:
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
 	currentTurnState = TurnBasedState.turnBegin
 
-	self.set_process(true) # TBD: Enable the `_process` method so it can perform per-frame updates and display the debug info.
+	self.set_process(debugMode) # Enable the `_process` method so it can perform per-frame updates and display the debug info.
 
 	willBeginTurn.emit()
 	@warning_ignore("redundant_await")
@@ -383,14 +398,14 @@ func processTurnEndSignals() -> void:
 #region Entity Management
 
 ## Inserts a [TurnBasedEntity] into the [member turnBasedEntities] array.
-## Returns the entity's index in the array, or -1 if the insertion fails.
+## Returns the entity's index in the array (normally the array size-1), or -1 if the insertion fails.
 ## IMPORTANT: Use this method to add entities instead of modifying the [member turnBasedEntities] array directly!
 func addEntity(entity: TurnBasedEntity) -> int:
 	if not turnBasedEntities.has(entity): # Add only if the entity not already in the array!
 		entity.add_to_group(Global.Groups.turnBased, true) # Just in case, even though it should be already done by TurnBasedEntity. IMPORTANT: May be required by functions which operate on this group.
 		self.turnBasedEntities.append(entity)
 		self.didAddEntity.emit(entity)
-		return turnBasedEntities.size()
+		return turnBasedEntities.size() - 1 # NOTE: Return the INDEX of the last item!
 	else:
 		printWarning(str("addEntity(): Entity already in turnBasedEntities: ", entity))
 		return -1
@@ -465,7 +480,7 @@ func processEntities(state: TurnBasedState) -> void:
 	self.currentEntityIndex = -1 # Let the loop start from 0
 	self.isProcessingEntities = true
 
-	for turnBasedEntity in self.turnBasedEntities:
+	for turnBasedEntity in self.turnBasedEntities: # TBD: BUGRISK: Use .duplicate() and is_instance_valid() to avoid mutation-during-iteration etc. bugs?
 		self.currentEntityIndex += 1
 		recentEntityIndex = currentEntityIndex
 

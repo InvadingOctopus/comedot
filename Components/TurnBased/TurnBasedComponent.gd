@@ -57,6 +57,8 @@ signal didEndTurn
 #endregion
 
 
+#region Life Cycle
+
 func _enter_tree() -> void:
 	super._enter_tree()
 	self.add_to_group(Global.Groups.turnBased, true)
@@ -64,8 +66,11 @@ func _enter_tree() -> void:
 
 func registerEntity(newParentEntity: Entity) -> void:
 	super.registerEntity(newParentEntity)
-	if not is_instance_of(self.parentEntity, TurnBasedEntity):
-		printWarning("Parent Entity is not a TurnBasedEntity! " + parentEntity.logFullName)
+	if newParentEntity == null: return
+	if not is_instance_of(parentEntity, TurnBasedEntity):
+		printWarning("Parent Entity is not a TurnBasedEntity! " + parentEntity.logFullName) # DESIGN: Crash if no parentEntity
+
+#endregion
 
 
 #region Turn State Cycle

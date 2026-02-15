@@ -21,14 +21,19 @@ extends Entity # + TurnBasedObjectBase
 
 ## The turn-based "speed" of this entity: How many game turns it takes for this entity to "move" or play 1 turn.
 ## Example: If [member turnRatio] is 2, then this entity is at "half speed": It plays 1 turn every 2 game turns.
-## NOTE: Changing this value does NOT automatically update [member turnsToSkip]!
+## NOTE: [member turnsToSkip] is automatically updated when changing this value!
 @export_range(1, 100, 1, "or_greater") var turnRatio: int = 1:
 	set(newValue):
 		if newValue < 1: newValue = 1
 		if newValue != turnRatio:
 			if debugMode: Debug.printChange("turnRatio", turnRatio, newValue, false) # not logAsTrace
 			turnRatio = newValue
-			# TBD: Update `turnsToSkip`?
+			if shouldResetSkipCounterOnRatioChange: resetSkipCounter() # Reset to 0?
+			else: turnsToSkip = mini(turnsToSkip, turnRatio - 1) # or keep the current value and keep counting down at the new "speed".
+
+## If `true` then [member turnsToSkip] is reset to.0 when [member turnRatio] is changed.
+## If `false` then the current value of [member turnsToSkip] is preserved and only counts down to the new ratio.
+@export var shouldResetSkipCounterOnRatioChange: bool = false
 
 #endregion
 
@@ -81,6 +86,8 @@ signal didEndTurn
 #endregion
 
 
+#region Life Cycle
+
 func _enter_tree() -> void:
 	super._enter_tree()
 	self.resetSkipCounter()
@@ -91,6 +98,8 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	TurnBasedCoordinator.removeEntity(self)
 	super._exit_tree()
+
+#endregion
 
 
 #region Turn State Cycle
@@ -200,6 +209,7 @@ func resetSkipCounter() -> void:
 #endregion Component Process Cycle
 
 # NOTE: Use `await` to allow any visual components to perform animations etc.
+# TBD: BUGRISK: Use turnBasedComponents.duplicate() and is_instance_valid() to avoid mutation-during-iteration etc. bugs?
 
 
 ## Calls [method TurnBasedComponent.processTurnBeginSignals] on all child components.
