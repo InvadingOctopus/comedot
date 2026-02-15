@@ -115,7 +115,9 @@ func removePlayer(playerToRemove: Entity) -> bool:
 		playersChanged.emit()
 
 		# Did everyone die?
-		if players.is_empty(): gameDidOver.emit()
+		if players.is_empty() \
+		and not SceneManager.ongoingTransitionScene: # NOTE: Don't end the game if players were removed because of a scene transition!
+			gameDidOver.emit()
 
 		return true
 
@@ -140,8 +142,8 @@ func startMainScene() -> void:
 		Debug.printError("Cannot load mainGameScenePath: " + Settings.mainGameScenePath, self)
 		return
 
-	SceneManager.transitionToScene(mainGameScene)
-	GlobalInput.isPauseShortcutAllowed = true
+	await SceneManager.transitionToScene(mainGameScene) # `await` to let the transition complete before allowing pause
+	GlobalInput.isPauseShortcutAllowed = true # Just in case
 
 
 ## Called when the user or a condition like Game Over causes the game (or level) to be restarted.
