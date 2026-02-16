@@ -191,12 +191,12 @@ func applyGlobalFlags() -> void:
 
 		TurnBasedCoordinator.shouldWaitBetweenStates = self.shouldWaitBetweenTurnStates
 		TurnBasedCoordinator.delayBetweenStates		 = self.turnBasedDelayBetweenStates
-	else:
+	
+	elif is_instance_valid(TurnBasedCoordinator):
 		printLog("not isTurnBasedGame:[color=red] Removing TurnBasedCoordinator")
-		if is_instance_valid(TurnBasedCoordinator):
-			TurnBasedCoordinator.process_mode = Node.PROCESS_MODE_DISABLED
-			TurnBasedCoordinator.queue_free()
-			# NOTE: DESIGN: Accessing TurnBasedCoordinator after starting a non-turn-based game will cause a crash, which is the intended behavior.
+		TurnBasedCoordinator.process_mode = Node.PROCESS_MODE_DISABLED
+		TurnBasedCoordinator.queue_free()
+		# NOTE: DESIGN: Accessing TurnBasedCoordinator after starting a non-turn-based game will cause a crash, which is the intended behavior.
 
 #endregion
 
