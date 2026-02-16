@@ -14,7 +14,7 @@ All-in-one project template & components framework: Basically nodes but for game
 • Save/Load player preferences in config file with `Settings.anyName = 69`
 • Helper functions & debugging tools like realtime charts for monitoring variables.
 • Free-to-use 3rd-party assets for quick prototyping.
-• Meat-crafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. *(Comedot itself has no AI-generated code.)
+• Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. *(Comedot itself has no AI-generated code.)
 
 Even if you don't need the template or components, you can cherry-pick specific code to use in your own scripts.
 
