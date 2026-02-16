@@ -1,4 +1,4 @@
-# Comedot Coding Conventions & Design Philosophilizy
+# Comedot Coding Conventions & Design Guidelines
 
 ## Axioms of Goom
 
@@ -105,6 +105,15 @@ func onGunComponent_ammoDepleted()
 func onHealthChanged(…)
 func onTimeout() # in the script of a Timer node
 ```
+
+### Files
+
+* Filenames should be clear and precise. 
+* Add suffixes like `Entity` and `Component` to assist referencing and searching etc.: `MonsterEntity.gd`, `MonsterAttackComponent.gd` etc.
+	- There may be exceptions for brevity for certain resources such as `Health.gd` instead of `HealthStat.gd` unless there is ambiguity.
+* Filenames should be _concise_ but they don't have to be _short:_ e.g. `TurnBasedTileBasedPlatformerControlComponent` :')
+* Standalone scripts that are not for an entity or component, should be named as a verb describing the action if applicable, e.g. `Spin.gd` and `SnapToMouse.gd`.
+* Game-specific files should generally start with the short form of the game's name or codename, e.g. `EldenPlayerEntity.gd` or `ERPlayerEntity.gd` if the game's name is "Elden Ring", or `InvadersMonsterEntity.gd` if the game's codename is "Invaderslike".
 
 
 ## Resources
