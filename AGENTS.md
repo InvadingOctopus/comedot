@@ -25,6 +25,9 @@
 - Open the project in Godot by selecting `project.godot`.
 - See `project.godot` for the required Godot version; Comedot always targets the latest version (release or beta).
 - Run locally from the editor (F5) or run individual scenes (F6) for focused testing.
+- To check parser errors etc. run Godot in "headless" mode by passing the following flags to the Godot executable: `--headless --check-only --path [path] --script [filename]`
+	- To run for N frames, use `--quit-after [frame count]`
+- For other commands and flags, see the Godot documentation at `https://docs.godotengine.org/en/latest/tutorials/editor/command_line_tutorial.html`
 - Exports are driven by Godot’s export presets (`export_presets.cfg`); use the editor’s Export dialog for builds.
 - Tests are represented as Godot scenes/scripts under `Tests/` to be played manually. `*Test.tscn` with companion `.gd` where needed.
 - Run tests by opening a test scene and manually running it in the editor.
