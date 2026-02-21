@@ -5,7 +5,7 @@
 ## TIP: If you need to use Stats for objects that require floats, such as [member Timer.wait_time] or [member CooldownComponent.cooldownMillisecondsModifier],
 ## then let the Stat be multiples of 1000, e.g. milliseconds instead of whole seconds. Then to convert from a Stat to a float, divide by 1000. Vice versa, multiply by 1000.
 
-#@tool # To clamp values when editing stats in the editor. # WARNING: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
+#@tool # To clamp values when editing stats in the editor. # WARNING: UNUSED: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
 @warning_ignore("missing_tool")
 class_name Stat
 extends GameplayResourceBase
@@ -16,24 +16,22 @@ extends GameplayResourceBase
 #region Parameters
 @warning_ignore_start("shadowed_global_identifier") # We don't care that there are FUNCTIONS named min(), max(), range() because ours are VARIABLES
 
-## Minimum value allowed. Clamps [member initial] and [member value] when set.
+## Minimum value allowed. Clamps [member value] when set.
 ## TIP: Call [method setToMin] instead of setting [member value] to 0 directly.
 @export var min: int = 0:
 	set(newValue): # TBD: `if newValue != min`?
 		if debugMode: printChange("min", min, newValue)
 		min     = newValue
 		if  min > max: max = min
-		value   = clamp(value, min, max)
-		range	= max - min
+		value   = clampi(value, min, max)
 
-## Maximum value allowed. Clamps [member initial] and [member value] when set.
+## Maximum value allowed. Clamps [member value] when set.
 @export var max: int = 10:
 	set(newValue): # TBD: `if newValue != max`?
-		if debugMode: printChange("min", min, newValue)
+		if debugMode: printChange("max", max, newValue)
 		max     = newValue
 		if  max < min: min = max
-		value   = clamp(value, min, max)
-		range	= max - min
+		value   = clampi(value, min, max)
 
 ## The current value of the stat. Clamped between [member min] and [member max].
 ## NOTE: The default initial value is set equal to [member min].
@@ -82,14 +80,14 @@ func setValue(newValue: int) -> void:
 
 		if previousChange > 0: # Were we rising?
 			if value >= max: didMax.emit()
-			if value >= 0:	 didZero.emit()
+			if previousValue < 0 and value >= 0: didZero.emit() # Did we rise from below 0 to 0+?
 
 		if previousChange < 0: # Were we falling?
 			if value <= min: didMin.emit()
-			if value <= 0:	 didZero.emit()
+			if previousValue > 0 and value <= 0: didZero.emit() # Did we fall to or below 0?
 
 		valueWithModifiers = value # TBD: Should this be here?
-		GameState.statUpdated.emit(self) # TBD: Should this be optional?
+		GameState.statUpdated.emit(self) # TBD: Should this be made optional, to let Stat work without GameState?
 
 	else: previousChange = 0 # IMPORTANT: If the value did not change due to clamping etc., reset previousChange so TextBubble etc. can properly show the actual difference!
 
@@ -99,12 +97,9 @@ func setValue(newValue: int) -> void:
 #region Derived Properties
 
 var previousValue:  int
-var previousChange: int  ## [member value] - [member previousValue] so a decrease is a negative number.
-var range:			int: ## [member max] minus [member min]. Updated whenever `min` or `max` is changed.
-	set(newValue):
-		if newValue != range:
-			if debugMode: printChange("range", range, newValue)
-			range = newValue
+var previousChange: int  ## [member value] minus [member previousValue] so a decrease is a negative number. Updated/cached by the [member value] property setter; NOTE: PERFORMANCE: NOT an automatically computed property!
+var range:			int: ## [member max] minus [member min]: the total span of integers (NON-inclusive).
+	get: return max - min
 
 ## A property used by subclasses such as [StatWithModifiers] to denote dynamic buffs/debuffs during gameplay.
 ## @experimental
@@ -133,14 +128,13 @@ var logName: String:
 #endregion
 
 
-
 #region Signals
 
 # NOTE: More than one signal may be emitted during a single change, if [member min] & [member max] are equal, or also equal to 0.
 
-signal didMax  ## Only emitted when [member previousChange] is >= +1
-signal didMin  ## Only emitted when [member previousChange] is <= -1
-signal didZero ## Emitted whether the value is rising or falling. See [member previousChange] to check the direction of approach to 0.
+signal didMax  ## Emitted when the value >= [member max] and [member previousChange] is >= +1
+signal didMin  ## Emitted when the value <= [member min] and [member previousChange] is <= -1
+signal didZero ## Emitted whenever the value CROSSES 0: if falling from a positive value to 0 OR a negative value, or vice versa: rising from <0 to >=0. Check [member previousChange] to check the direction of approach to/past 0.
 #endregion
 
 
