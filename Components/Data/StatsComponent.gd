@@ -47,9 +47,11 @@ func cacheStats() -> int:
 	for stat in self.stats:
 		statsDictionary[stat.name] = stat
 		# Also store the UID for name-independent access.
-		# NOTE: Trim "uid://" prefix for brevity and to access the Dictionary via dot notation.
-		if stat.uid != -1 or stat.uid != 0: statsUIDDictionary[stat.uidString.trim_prefix("uid://")] = stat # Because 0 and -1 are invalid UIDs.
+		if stat.uid != -1 and stat.uid != 0: # Because 0 and -1 are invalid UIDs
+			# NOTE: Trim "uid://" prefix for brevity and to access the Dictionary via dot notation.
+			statsUIDDictionary[stat.uidString.trim_prefix("uid://")] = stat
 		if debugMode: printDebug(str(stat.name, " ", stat.uidString.trim_prefix("uid://")))
+
 	return statsDictionary.size()
 
 
