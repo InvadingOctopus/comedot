@@ -1,4 +1,4 @@
-## Set of movement physics parameters for [OverheadControlComponent].
+## Set of movement physics parameters for [OverheadPhysicsComponent].
 
 class_name OverheadMovementParameters
 extends Resource
