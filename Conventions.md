@@ -155,11 +155,16 @@ func onTimeout() # in the script of a Timer node
 	* Wiring multiple components via signals: Using `ModifyOnCollisionComponent` to add a `ModifyOnTimerComponent` and connecting them to implement arrows which get stuck in walls then automatically removed, instead of creating a separate ArrowComponent.
 	* Try to solve shit using existing properties & parameters before creating new variables: TextInteractionComponent using `InteractionComponent.text` & `.isAutomatic` to resolve the visibility of the initial message, instead of adding specialized flags.
 
-* "Oversimplifying" components is NOT a goal: Each component should stick to a well-defined task, and subclasses should be used to add distinct layers of extra functionality, such as `InteractionComponent` → `InteractionWithCooldownComponent`, but they DON'T have to minimize the number of parameters or methods: Each component in a shared library should be powerful and usable in different games, and be easy to wire with each other via signals.
-
 * You don't HAVE to break your game into small modular components: You can have large "monolithic" components like a `PlayerComponent` and `MonsterComponent` and put all your game-specific logic in a single script.
 
-* Try not add too many new features before perfecting or at least stabilizing the existing stuff!
+
+## Avoid
+
+* "Oversimplifying" components is NOT a goal: Each component should stick to a well-defined task, and subclasses should be used to add distinct layers of extra functionality, such as `InteractionComponent` → `InteractionWithCooldownComponent`, *but* they DON'T HAVE to always minimize the number of features, parameters or functions: Each component in the shared library should be powerful and usable in different games, and be easy to wire with each other via signals.
+
+* Premature Optimization is Poo / "Correctness" before Performance: Don't try to simplify validation checks by skipping on ifs/guards etc.: Bugs may be harder to track down and fix than performance issues! 
+
+* Try not to add too many new features before stabilizing the existing stuff!
 
 
 ## Miscellaneous
