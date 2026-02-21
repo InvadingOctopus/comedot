@@ -21,6 +21,18 @@
 - `Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. Everything outside the `Game/` subtree is part of the framework that is shared between multiple games. When generating code for a game, only the files in the `Game/` subtree should be modified. `Game/AGENTS.override.md` takes precedence for any activity inside the `Game/` subtree.
 
 
+## Subsystems
+- Certain sets or "chains" of scripts/scenes/types are used together to implement various "subsystems" involved in gameplay:
+	- Combat or passive damage: `DamageComponent`, `DamageReceivingComponent`, `FactionComponent`, `HealthComponent`
+	- Stats: `Stat`, `StatsComponent`, `StatUI`
+	- Collectibles (items that can be picked up): `CollectibleComponent`, `CollectorComponent`
+	- Interactive objects: `InteractionComponent`, `InteractionControlComponent`
+	- Special actions (such as a "dash" move, or magic spells, or abilities in an RPG etc.): `Action`, `ActionsComponent`, `ActionControlComponent`
+	- and their auxiliaries etc.
+- Classes with a "Base" suffix are used as the foundation for several other classes/systems, such as `GameplayResourceBase.gd` and `StatDependentResourceBase.gd`
+- In general, when a certain gameplay mechanic or feature is needed, search the framework for synonyms of that system to see if there is a component or script for it.
+
+
 ## Build, Test, Run & Export
 - Open the project in Godot by selecting `project.godot`.
 - See `project.godot` for the required Godot version; Comedot always targets the latest version (release or beta).

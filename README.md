@@ -78,6 +78,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**  
 > See [Conventions.md][Conventions] for the style guide and design rules this project tries to follow.
+> [Agents.md] contains instructions for AI assistants that may also be helpful for meat-based coders.
 
 <br/>
 
