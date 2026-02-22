@@ -6,6 +6,7 @@
 extends GameplayResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 # TBD: Allow negative costs? :')
+# TRIED: FAILED: "Refund" functionality: Fails if there are multiple users of the same state; too much work to keep track of which caller "spent" how much etc.
 
 
 #region Common Parameters
@@ -73,18 +74,7 @@ func connectToStatSignals() -> void:
 
 
 func onCostStat_changed() -> void:
-	if not costStat: return
-
-	# Emit our signals only when the usability CHANGES.
-	if  costStat.value >= self.cost \
-	and costStat.previousValue < self.cost:
-		self.isUsableWithCostStat = true
-		self.didBecomeUsable.emit()
-	
-	elif costStat.value < self.cost \
-	and  costStat.previousValue >= self.cost:
-		self.isUsableWithCostStat = false
-		self.didBecomeUnusable.emit()
+	updateFlags()
 
 #endregion
 
@@ -95,14 +85,17 @@ func onCostStat_changed() -> void:
 ## and if the offered [member Stat.value] is equal to or higher than this resource's [member cost].
 ## NOTE: If there is no [member costStat], the result is always `true`, because then this resource may always be used or "purchased" without "paying" any cost.
 ## NOTE: Only the Stat NAMES are compared, because the Stats may be different INSTANCES of the same Stat Resource. e.g. a player may also have a "Money" Stat and an NPC or monster may also have "Money".
+## ALERT: BUGRISK: If the [member Stat.min] is non-0 then this checking [member Stat.value] >= [member cost] may not work as expected,
+## or it could be intentional, e.g. temporary buffs that prevent a Stat from falling too low etc.
 func validateOfferedStat(offeredStat: Stat) -> bool:
+	# TBD: Handle `offeredStat.min` != 0
 	# GODOT:  Apparently `if not` is better than `== null` because it implies is_instance_valid() (not sure)
 	# DESIGN: If there is no `costStat`, always return `true`, because that means there is no cost, and we can't compare against a non-existent `offeredStat` anyway.
 	if not costStat: return true
 	# If there is no Stat offered, return `false`, because there's nothing to validate
 	elif not offeredStat: return false 
 	# If there is a cost and an offer, check if the offer can pay for the cost
-	else: return offeredStat.name == costStat.name and offeredStat.value >= self.cost
+	else: return offeredStat.name == costStat.name and offeredStat.value >= self.cost # ALERT: BUGRISK: May not work correctly if `offeredStat.min` != 0
 
 
 ## Checks if the specified [StatsComponent] has the [Stat] required to "pay" for or use this resource, such as "mana" or "money",
@@ -131,9 +124,16 @@ func getPaymentStatFromStatsComponent(statsComponent: StatsComponent) -> Stat:
 
 
 func updateFlags() -> void:
+	var wasUsable: bool = self.isUsableWithCostStat # Monitor for change
+
 	## DESIGN: If there is no `costStat` then `isUsableWithCostStat` should be `false` even though this resource is always free.
-	self.isUsableWithCostStat = costStat != null \
-		and (self.cost <= 0 or costStat.value >= self.cost) # NOTE: Allows a negative cost to succeed! TBD: Should this be `== 0` only?
+	self.isUsableWithCostStat = is_instance_valid(costStat) \
+		and (self.cost <= 0 or costStat.value >= self.cost) # NOTE: Allows a negative cost to succeed! TBD: Should this be `== 0` only? ALERT: BUGRISK: May cause unexpected behavior if `costStat.min` != 0
+
+	# Emit our signals only when the usability CHANGES
+	if self.isUsableWithCostStat != wasUsable:
+		if  isUsableWithCostStat: didBecomeUsable.emit()
+		else: didBecomeUnusable.emit()
 
 #endregion
 
@@ -144,12 +144,15 @@ func updateFlags() -> void:
 ## Calls [method validateOfferedStat] if [param validateStat], which may be skipped if the caller has already performed the validation.
 ## NOTE: DESIGN: If there is NO cost, then this method returns `true`, EVEN IF there the [param offeredStat] is invalid,
 ## because the purpose of this function is to deduct the cost, so if there is no cost, then the intended task has already succeeded.
+## ALERT: If [param offeredStat]'s [member Stat.min] is not 0, then the cost may not be deducted fully.
 func deductCostFromStat(offeredStat: Stat, validateStat: bool = true) -> bool:
 	# TBD: Review & replace with a better interface if needed
 	if self.cost == 0 or not self.costStat:
 		return true
 	elif offeredStat and (not validateStat or validateOfferedStat(offeredStat)): # Make sure the Stat exists even if we skip validation
 		offeredStat.value -= self.cost
+		if offeredStat.debugMode and offeredStat.previousChange != -self.cost: # If the actual change in the stat's value was not the inverse of our cost, which may happen if the `min` was not 0 etc., then log a headsup in case it leads to bugs
+			Debug.printDebug(str("deductCostFromStat(): ", offeredStat.logName, " previousChange: ", offeredStat.previousChange, " != -cost: ", -cost), self)
 		return true
 	else:
 		return false
