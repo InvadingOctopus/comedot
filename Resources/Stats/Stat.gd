@@ -45,10 +45,7 @@ extends GameplayResourceBase
 #endregion
 
 
-#region Stat
-## If `true` then the next SINGLE [signal Resource.changed] signal is skipped ONCE.
-## EXAMPLE USAGE: [InteractionWithCostComponent] uses this to suppress [StatsVisualComponent] animations in case of a refund if a [Payload] fails.
-var shouldSkipEmittingNextChange: bool = false
+#region State
 #endregion
 
 
@@ -61,44 +58,37 @@ var shouldSkipEmittingNextChange: bool = false
 #	return value
 
 
-## Sets the [member value] while clamping it between [member min] and [member max]. This method may be overridden in a subclass such as [StatWithModifiers] to provide custom validation or restrictions i.e. via gameplay buffs/debuffs etc.
+## Sets the [member value] while clamping it between [member min] and [member max].
+## This method may be overridden in a subclass such as [StatWithModifiers] to provide custom validation or restrictions i.e. via gameplay buffs/debuffs etc.
 func setValue(newValue: int) -> void:
-	previousValue = value
-	value = clampi(newValue, min, max)
+	# DESIGN: Clamped values should not count as changes!
+	# e.g. if the current value is 0 and the minimum is 0 and someone tries `value = -69` then it's not a change!
+	# First, clamp the newValue between the min & max so we don't run all the updating logic if nothing's changed
+	newValue = clampi(newValue, min, max)
+	
+	if value == newValue: return # TBD: Should there be a signal for failed/attempted/"no op" updates?
 
-	if value != previousValue:
-		previousChange = value - previousValue # NOTE: A decrease should be a negative change.
-		if debugMode: printChange("value", previousValue, value)
+	previousValue = value # Store a copy of the about-to-be-changed value
+	value = newValue
+	if debugMode: printChange("value", previousValue, value)
 
-		# Signals
-		# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently updated stats?
+	# Signals
+	# TBD: CHECK: PERFORMANCE: Are signals expensive for frequently-updated stats such as cooldown bars etc.?
+	emitSignals() # A separate function for clarity and ease of override
 
-		if not shouldSkipEmittingNextChange:  emit_changed()
-		else:  shouldSkipEmittingNextChange = false
-
-		# NOTE: Don't use `elif` because more than one signal may be emitted during a single change, if min/max/0 are equal.
-
-		if previousChange > 0: # Were we rising?
-			if value >= max: didMax.emit()
-			if previousValue < 0 and value >= 0: didZero.emit() # Did we rise from below 0 to 0+?
-
-		if previousChange < 0: # Were we falling?
-			if value <= min: didMin.emit()
-			if previousValue > 0 and value <= 0: didZero.emit() # Did we fall to or below 0?
-
-		valueWithModifiers = value # TBD: Should this be here?
-		GameState.statUpdated.emit(self) # TBD: Should this be made optional, to let Stat work without GameState?
-
-	else: previousChange = 0 # IMPORTANT: If the value did not change due to clamping etc., reset previousChange so TextBubble etc. can properly show the actual difference!
+	valueWithModifiers = value # TBD: Should this be here?
 
 #endregion
 
 
 #region Derived Properties
 
-var previousValue:  int
-var previousChange: int  ## [member value] minus [member previousValue] so a decrease is a negative number. Updated/cached by the [member value] property setter; NOTE: PERFORMANCE: NOT an automatically computed property!
-var range:			int: ## [member max] minus [member min]: the total span of integers (NON-inclusive).
+var previousValue:  int  ## Copies [member value] before [member value] changes.
+
+var previousChange: int: ## [member value] minus [member previousValue] so a decrease is a negative number.
+	get: return value - previousValue
+
+var range: int: ## [member max] minus [member min]: the total span of integers (NON-inclusive).
 	get: return max - min
 
 ## A property used by subclasses such as [StatWithModifiers] to denote dynamic buffs/debuffs during gameplay.
@@ -129,12 +119,34 @@ var logName: String:
 
 
 #region Signals
-
 # NOTE: More than one signal may be emitted during a single change, if [member min] & [member max] are equal, or also equal to 0.
+# ALERT: BUGRISK: Mutating the Stat's state during one signal handler may affect the other signals!
 
-signal didMax  ## Emitted when the value >= [member max] and [member previousChange] is >= +1
-signal didMin  ## Emitted when the value <= [member min] and [member previousChange] is <= -1
-signal didZero ## Emitted whenever the value CROSSES 0: if falling from a positive value to 0 OR a negative value, or vice versa: rising from <0 to >=0. Check [member previousChange] to check the direction of approach to/past 0.
+signal didMin  ## Emitted AFTER [signal Resource.changed] when the value FALLS <= [member min] and [member previousChange] is <= -1
+signal didMax  ## Emitted AFTER [signal Resource.changed] when the value RISES >= [member max] and [member previousChange] is >= +1
+signal didZero ## Emitted AFTER [signal Resource.changed] when the value becomes 0 after a nonzero [member previousValue]
+
+
+## Called after [member value] changes. Emits [signal Resource.changed] then [signal didMin]/Max/Zero if applicable, then finally [signal GameState.statUpdated]
+## [method Resource.emit_changed] because that only emits [method Resource.changed] and not the other signals.
+func emitSignals() -> void:
+	# DESIGN: Emit the `Resource.changed` signal FIRST, and THEN the other `did…` signals, because the change is the first thing that happens and it's a builtin Godot signal.
+	emit_changed()
+	
+	# Check for min/max/zero
+	# WARNING: BUGRISK: HEADSUP: If one of the signal handlers mutates any of the properties like `min` or `max`,
+	# then the remaining signals may be emitted for a different state.
+	# DESIGN: This is intentional, allowing a game to modify the flow however it needs, but it may cause bugs.
+
+	# IMPORTANT: DESIGN: Do NOT use `elif` because more than one signal may be emitted during a single change! e.g. if min/max/0 are equal or changed by a previous signal handler!
+	# TBD: Does the order matter?
+	if previousChange < 0 and value <= min:	didMin.emit()  # Were we falling and hit rock bottom?
+	if previousChange > 0 and value >= max:	didMax.emit()  # Were we rising and hit the sky?
+	if previousValue != 0 and value == 0:	didZero.emit() # May occur together with min/max
+
+	# TBD: Emit the `GameState` signal first or last? If it's only intended for UI, it should be emitted last, right?
+	GameState.statUpdated.emit(self) # TBD: Should this be made optional, to let Stat work without GameState?
+
 #endregion
 
 

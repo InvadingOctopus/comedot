@@ -34,7 +34,7 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 	else: # If there is no cost, any offer is valid!
 		isStatsComponentValidated = true
 
-	if debugMode: printDebug(str("requestToInteract() cost: ", cost, ", statsComponent: ", statsComponent.logNameWithEntity, " ", isStatsComponentValidated))
+	if debugMode: printDebug(str("requestToInteract() cost: ", cost, ", statsComponent: ", statsComponent.logNameWithEntity if statsComponent else str(statsComponent), " ", isStatsComponentValidated))
 
 	var isInteractionApproved: bool = checkInteractionConditions(interactorEntity, interactionControlComponent)
 
@@ -62,9 +62,15 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 
 	if self.cost:
 		paymentStat = cost.getPaymentStatFromStatsComponent(statsComponent)
-		# NOTE: DESIGN: We have to deduct the [Stat] before executing the Payload, in case the Payload depends on the actual value of the [Stat],
-		# so we CANNOT just proxy the cost and only modify the [Stat] if the Payload's result is a success. :')
-		paymentStat.shouldSkipEmittingNextChange = true # Suppress superfluous [StatsVisualComponent] animations etc. in case there is a refund later.
+		if not paymentStat:
+			if debugMode: printDebug(str("performInteraction() cant find ", cost.costStatName, " in ", statsComponent))
+			return false
+
+		# NOTE: DESIGN: We have to deduct the [Stat] before executing the Payload, in case the Payload depends on the actual new value of the [Stat],
+		# EXAMPLE: A card that costs mana to play but adds extra effects if the mana becomes 0.
+		# so we CANNOT just "proxy" the cost and delay mutating the [Stat] until only when the Payload's result is a success :')
+		# TODO: Find a way to suppress superfluous [StatsVisualComponent] animations etc. in case there is a refund later.
+		# TRIED: WITHOUT "skipping signals" as a previous implementation tried; it was too confusing and inelegant.
 		didPayCost = cost.deductCostFromStat(paymentStat) if statsComponent else false
 	else: # If there is no cost, any offer is valid!
 		didPayCost = true
@@ -74,13 +80,12 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
 
 		if  Tools.checkResult(result):
-			paymentStat.emit_changed() # In case we skipped the previous deduction :)
 			previousInteractor = interactionControlComponent # TBD: Update only on successful interaction or always?
 			startCooldown()
 
 		elif paymentStat: # Refund the cost if the interaction failed
 			if debugMode: printDebug(str("Payload: ", payload, ", result: ", result, " failed; refunding ", paidCost, " → ", paymentStat.logName))
-			paymentStat.shouldSkipEmittingNextChange = true # Suppress superfluous [StatsVisualComponent] animations etc.
+			# TODO: Suppress superfluous [StatsVisualComponent] animations etc. in case of a refund
 			paymentStat.value += paidCost
 			if shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
 
