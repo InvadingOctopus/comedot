@@ -1,35 +1,36 @@
-## Abstract base class for Resources that may have cost a certain amount of an [Stat] to "purchase" or use.
-## For example, a product in a shop with a price represented as a Gold Stat, or a [TargetableAction] spell which requires a Mana Stat to cast.
+## Abstract base class for [Resource]s that may cost a certain amount of an [Stat] to "purchase" or use.
+## For example, an item in a shop with a price represented as a Gold Stat, or a [TargetableAction] spell which requires a Mana Stat to cast.
 
 @warning_ignore("missing_tool")
 @abstract class_name StatDependentResourceBase
 extends GameplayResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 # TBD: Allow negative costs? :')
-# TRIED: FAILED: "Refund" functionality: Fails if there are multiple users of the same state; too much work to keep track of which caller "spent" how much etc.
+# TRIED: FAILED: "Refund" functionality: Fails if there are multiple users of the same resource; too much work to keep track of which caller "spent" how much etc.
 
 
 #region Common Parameters
 
-## The [Stat] required to "pay" for this resource, such as spending Money at a shop or using innate Mana to cast a spell.
-## If no Stat is specified, then this resource is always free.
-## NOTE: If a Stat is specified but not present in an Entity's [StatsComponent], this resource CANNOT be purchased EVEN IF the cost is <= 0.
-## This acts as a further layer of validation: The Entity must have the Stat type in its [StatsComponent], i.e. be able to HOLD a "currency" such as gold etc., but it may be 0.
-## NOTE: This exact [Stat] instance should not be used for comparison when searching in a [StatsComponent] etc., ONLY THE STAT'S NAME: [member Stat.name]
-## Searching by the name allows any Entity, even monsters etc. to use this resource, by having different instances of the same Stat.
-## DESIGN: This parameter accepts a [Stat] to eliminate bugs from typing incorrect names, and to be able to use the [member Stat.displayName].
+## The "currency" [Stat] required to "pay" for this gameplay resource or action, such as spending Money at a shop or using innate Mana to cast a spell.
+## If no Stat is specified, then this resource is considered to be always "free", e.g. moves such as "dash" etc. that are only limited by a cooldown and so on.
+## NOTE: This exact [Stat] instance should not be used for comparison when searching in a [StatsComponent] etc., ONLY THE STAT'S [member Stat.name]
+## Searching by the name allows multiple entities to have different instances of the same Stat, e.g. the player and a monster may both have a "mana" Stat with different values.
+## DESIGN: This parameter accepts a [Stat] instead of a [StringName] to eliminate the risk of typo bugs, and to use the [member Stat.displayName].
+## ALERT: Methods such as [method validateStatsComponent] & [method deductCostFromStat] may fail if this property is missing or invalid; callers should check [member hasCost] first.
+## TIP: To enforce a requirement that an Entity must have the [member costStat] type in its [StatsComponent], i.e. a character must be able to HOLD a "currency" such as gold etc., even if the price is 0,
+## call [method validateStatsComponent] regardless of [member hasCost]
 @export var costStat: Stat:
 	set(newValue):
 		if newValue != costStat:
-			# Disconnect from the previous Stat first
+			# Disconnect from any previous Stat
 			if costStat: Tools.disconnectSignal(costStat.changed, self.onCostStat_changed)
 			# Connect to the new Stat and update our state
 			costStat = newValue
 			if costStat: self.connectToStatSignals()
 			self.updateFlags()
 
-## The cost for "purchasing" or using this resource. This amount will be SUBTRACTED from an [Stat].
-## This may be the price for a product in a shop, or the mana required to cast a spell etc.
+## The cost for using or "purchasing" this resource. This should be a POSITIVE value that will be SUBTRACTED from an [Stat] that matches [member costStat].
+## This may be the price for a product in a shop, or the amount of mana required to cast a spell etc.
 @export_range(0, 1000, 1, "or_greater") var cost: int:
 	set(newValue):
 		if newValue != cost:
@@ -40,7 +41,7 @@ extends GameplayResourceBase # because we cannot have multiple inheritance in Go
 
 
 #region State
-## Returns `true` if the [member Stat.value] of the specific Stat instance provided for the [member costStat] property is equal to or greater than [member cost].
+## Returns `true` if the [member Stat.value] of the specific Stat instance provided for the [member costStat] property is >= [member cost].
 ## Updated whenever the [member costStat] or [member cost] properties are reassigned, or on [signal Stat.changed] if [method connectToStatSignals] is used 
 ## NOTE: Unlike the other validation functions, this flag is `false` if [member costStat] is `null`, even though a missing `costStat` means this resource is ALWAYS FREE.
 ## NOTE: A negative cost also sets this flag to `true`
@@ -49,11 +50,20 @@ var isUsableWithCostStat: bool
 
 
 #region Derived Properties
-
 ## The property used to search for the required Stat in a [StatsComponent] etc., so that ANY instance of a particular Stat resource may be usable.
 var costStatName: StringName:
-	get: return self.costStat.name if self.costStat else &""
+	get: return costStat.name if costStat else &""
 
+## `true` if the [member cost] is not 0 and a valid [member costStat] is present.
+## If either conditions are false, then this resource or action is considered to be free, and "payment" may be skipped.
+## IMPORTANT: Check this flag before calling [method validateOfferedStat], [method deductCostFromStat] etc.
+## because an invalid or missing [member costStat] will cause an error.
+## costStat == null and cost == 0: Free
+## costStat != null and cost == 0: Free but requires Stat
+## costStat == null and cost > 0:  Invalid state; error
+## costStat != null and cost > 0:  Normal cost & payment
+var hasCost: bool:
+	get: return true if (self.cost != 0 and costStat) else false # Using `if` because `if costStat` includes is_instance_valid() TBD: Also check for nonempty `costStat.name`?
 #endregion
 
 
@@ -81,53 +91,63 @@ func onCostStat_changed() -> void:
 
 #region Validation
 
-## Checks if the offered [Stat] has the same [member Stat.name] as the name of this resource's [member costStat],
-## and if the offered [member Stat.value] is equal to or higher than this resource's [member cost].
-## NOTE: If there is no [member costStat], the result is always `true`, because then this resource may always be used or "purchased" without "paying" any cost.
-## NOTE: Only the Stat NAMES are compared, because the Stats may be different INSTANCES of the same Stat Resource. e.g. a player may also have a "Money" Stat and an NPC or monster may also have "Money".
-## ALERT: BUGRISK: If the [member Stat.min] is non-0 then this checking [member Stat.value] >= [member cost] may not work as expected,
-## or it could be intentional, e.g. temporary buffs that prevent a Stat from falling too low etc.
-func validateOfferedStat(offeredStat: Stat) -> bool:
-	# TBD: Handle `offeredStat.min` != 0
-	# GODOT:  Apparently `if not` is better than `== null` because it implies is_instance_valid() (not sure)
-	# DESIGN: If there is no `costStat`, always return `true`, because that means there is no cost, and we can't compare against a non-existent `offeredStat` anyway.
-	if not costStat: return true
-	# If there is no Stat offered, return `false`, because there's nothing to validate
-	elif not offeredStat: return false 
-	# If there is a cost and an offer, check if the offer can pay for the cost
-	else: return offeredStat.name == costStat.name and offeredStat.value >= self.cost # ALERT: BUGRISK: May not work correctly if `offeredStat.min` != 0
+# DESIGN: Raise error/crash if there is no `costStat` because the purpose of these methods is validation, and we can't compare against a non-existent `offeredStat`
+# Callers should check `hasCost` first.
+# TRIED: Treating a missing `costStat` as a "free" purchase and returning `true` caused confusion, ambiguity and too many exceptions down the line in other scripts.
 
 
-## Checks if the specified [StatsComponent] has the [Stat] required to "pay" for or use this resource, such as "mana" or "money",
-## and calls [method validateOfferedStat].
-## If this resource has no [member costStat], returns `true`, because this resource may always be "purchased" or used without "paying" any cost.
+## Checks if the specified [StatsComponent] has the [Stat] required to use or "pay" for this resource, such as "mana" or "gold",
+## and then calls and returns the result of [method validateOfferedStat].
+## IMPORTANT: PERFORMANCE: Check [member hasCost] BEFORE calling this method; a missing [member costStat] is an error!
+## TIP: To enforce a requirement that an Entity must have the [member costStat] type in its [StatsComponent], i.e. be able to HOLD a "currency" such as gold etc., even if the price is 0,
+## call [method validateStatsComponent] regardless of the [member cost] value.
 func validateStatsComponent(statsComponent: StatsComponent) -> bool:
-	if not self.costStat: 
-		return true
-	elif not statsComponent:
-		Debug.printWarning("validateStatsComponent(): null", self)
+	if   not statsComponent: Debug.printWarning("validateStatsComponent(): null", self)
+	elif not self.costStat:
+		Debug.printError("validateStatsComponent(): No costStat • Check hasCost first!", self)
 		return false
 	else:
 		var offeredStat: Stat = statsComponent.getStat(self.costStat.name)
-		return self.validateOfferedStat(offeredStat)
+		return self.validateOfferedStat(offeredStat) if offeredStat else false
+	# else
+	return false
 
 
-## Queries the specified [StatsComponent] and returns the [Stat] matching the [member Stat.name] of this Resource's [member costStat].
-## If this Resource has not [member costStat], `null` is returned.
+## Queries the specified [StatsComponent] to get the [Stat] matching the [member Stat.name] of this Resource's [member costStat].
+## If this Resource has no [member costStat], `null` is returned.
 func getPaymentStatFromStatsComponent(statsComponent: StatsComponent) -> Stat:
 	# TBD: Review & replace with a better interface if needed
-	if not self.costStat: return null # Avoid printing a warning if there's no cost, so check the cost first.
+	if not self.costStat: return null # DESIGN: Avoid logging a warning/error if there's no cost; the purpose of this method is to simply get a Stat, not validation.
 	elif not statsComponent:
-		Debug.printWarning("getPaymentStatFromStatsComponent(): null", self)
+		Debug.printWarning("getPaymentStatFromStatsComponent(): invalid StatsComponent", self)
 		return null
 	else: return statsComponent.getStat(self.costStat.name)
+
+
+## Checks if the offered [Stat] has the same [member Stat.name] as this Resource's [member costStat],
+## and if the offered [member Stat.value] is equal to or higher than this Resource's [member cost].
+## NOTE: Only the Stat NAMES are compared, because the Stats may be different INSTANCES of the same Stat [Resource].
+## e.g. a player may also have a "gold" Stat and an NPC or monster may also have "gold".
+## IMPORTANT: PERFORMANCE: Check [member hasCost] BEFORE calling this method; a missing [member costStat] is an error!
+## ALERT: BUGRISK: If the [member Stat.min] is non-0 then this checking [member Stat.value] >= [member cost] may not work as expected,
+## or it could be intentional, e.g. temporary buffs that prevent a Stat from falling too low etc.
+func validateOfferedStat(offeredStat: Stat) -> bool:
+	# TBD: Handle `offeredStat.min != 0`?
+	if not costStat:
+		Debug.printError("validateOfferedStat(): No costStat • Check hasCost first!", self)
+		return false
+	# If there is no Stat offered, return `false`, because there's nothing to validate
+	elif not offeredStat: return false		
+	# If there is a cost and an offer, check if the offer can pay for the cost
+	else: return offeredStat.name == costStat.name and offeredStat.value >= self.cost # ALERT: BUGRISK: May not work correctly if `offeredStat.min` != 0
 
 
 func updateFlags() -> void:
 	var wasUsable: bool = self.isUsableWithCostStat # Monitor for change
 
-	## DESIGN: If there is no `costStat` then `isUsableWithCostStat` should be `false` even though this resource is always free.
-	self.isUsableWithCostStat = is_instance_valid(costStat) \
+	## DESIGN: If there is no `costStat` then `isUsableWithCostStat` should be `false` because there is no `costStat`
+	## even though this resource is always free.
+	self.isUsableWithCostStat = is_instance_valid(self.costStat) \
 		and (self.cost <= 0 or costStat.value >= self.cost) # NOTE: Allows a negative cost to succeed! TBD: Should this be `== 0` only? ALERT: BUGRISK: May cause unexpected behavior if `costStat.min` != 0
 
 	# Emit our signals only when the usability CHANGES
@@ -140,21 +160,32 @@ func updateFlags() -> void:
 
 #region Interface 
 
-## Deducts this Resource's [member cost] from the offered "payment" [Stat] and returns `true` if the "payment" was successful.
-## Calls [method validateOfferedStat] if [param validateStat], which may be skipped if the caller has already performed the validation.
-## NOTE: DESIGN: If there is NO cost, then this method returns `true`, EVEN IF there the [param offeredStat] is invalid,
-## because the purpose of this function is to deduct the cost, so if there is no cost, then the intended task has already succeeded.
-## ALERT: If [param offeredStat]'s [member Stat.min] is not 0, then the cost may not be deducted fully.
-func deductCostFromStat(offeredStat: Stat, validateStat: bool = true) -> bool:
+## Deducts this Resource's [member cost] from the offered "payment" [Stat] and returns the resulting change in the Stat's [member Stat.value].
+## Returns 0 if [member cost] is 0 or if a Stat is missing/invalid.
+## Calls [method validateOfferedStat] if [param validateOffer], which may be skipped if the caller has already performed validation.
+## IMPORTANT: PERFORMANCE: The caller must check [member hasCost] BEFORE offering any "payment" or doing any other validation; a missing [member costStat] is an error!
+## ALERT: If [param offeredStat]'s [member Stat.min] is not 0, then the cost may not be fully deducted.
+## TIP: When tracking a [Stat]'s value for "refunds" (in the case of cancelled actions etc.), compare [Stat.previousChange] with the return value of this method,
+## to make sure the [param offeredStat]'s previous change was not caused by a different source!
+func deductCostFromStat(offeredStat: Stat, validateOffer: bool = true) -> int:
 	# TBD: Review & replace with a better interface if needed
-	if self.cost == 0 or not self.costStat:
-		return true
-	elif offeredStat and (not validateStat or validateOfferedStat(offeredStat)): # Make sure the Stat exists even if we skip validation
+	if not self.costStat:
+		Debug.printError("deductCostFromStat(): No costStat • Check hasCost first!", self)
+		return 0
+
+	elif offeredStat and (not validateOffer or validateOfferedStat(offeredStat)): # Make sure the Stat exists even if we're free or skip validation
+		if self.cost == 0: return 0 # Cut the crap early
+
+		# IMPORTANT: Do our own change tracking, because `offeredStat.previousChange` might be from a different source if our cost is 0 or the change is clamped to 0
+		var previousValue: int = offeredStat.value
 		offeredStat.value -= self.cost
-		if offeredStat.debugMode and offeredStat.previousChange != -self.cost: # If the actual change in the stat's value was not the inverse of our cost, which may happen if the `min` was not 0 etc., then log a headsup in case it leads to bugs
-			Debug.printDebug(str("deductCostFromStat(): ", offeredStat.logName, " previousChange: ", offeredStat.previousChange, " != -cost: ", -cost), self)
-		return true
-	else:
-		return false
+		var change: int = offeredStat.value - previousValue
+
+		if offeredStat.debugMode and change != -self.cost: # If the actual change in the stat's value was not the inverse of our cost, which may happen if the `min` was not 0 etc., then log a headsup in case it leads to bugs
+			Debug.printDebug(str("deductCostFromStat(): ", offeredStat.logName, " change: ", change, " != -cost: ", -cost), self)
+
+		return change
+	# else
+	return 0
 
 #endregion
