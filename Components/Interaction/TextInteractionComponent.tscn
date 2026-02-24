@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bao7nrybc7152"]
 
-[ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Interaction/InteractionWithCoooldownComponent.tscn" id="1_vqado"]
+[ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Interaction/InteractionWithCooldownComponent.tscn" id="1_vqado"]
 [ext_resource type="LabelSettings" uid="uid://bumadvcbjs8he" path="res://Assets/Themes/Label/TextInteractionComponent.tres" id="2_6kio8"]
 [ext_resource type="Script" uid="uid://b4l4rlrn4wyha" path="res://Components/Interaction/TextInteractionComponent.gd" id="2_ap0r7"]
 [ext_resource type="Script" uid="uid://c8oqfug6bro2n" path="res://Resources/Collections/ColoredTextSequence.gd" id="3_nlhr5"]

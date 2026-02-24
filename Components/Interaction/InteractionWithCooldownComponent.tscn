@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b7kokytnapn7b"]
 
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="1_g65kl"]
-[ext_resource type="Script" uid="uid://diufsb676efmn" path="res://Components/Interaction/InteractionWithCoooldownComponent.gd" id="2_iq1o4"]
+[ext_resource type="Script" uid="uid://diufsb676efmn" path="res://Components/Interaction/InteractionWithCooldownComponent.gd" id="2_iq1o4"]
 
 [node name="InteractionWithCooldownComponent" unique_id=1614544184 instance=ExtResource("1_g65kl")]
 script = ExtResource("2_iq1o4")
