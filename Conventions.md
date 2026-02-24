@@ -73,6 +73,8 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 
 * Functions that _create_ a new object and then add it to a parent, should be named starting with `create`: e.g. `createLabel(…)`
 
+* Single Godot is a dummy about argument labels, some arguments like `true`/`false` may be mysterious and ambiguous at the point of use; add manual labels in a trailing comment: e.g. `doSomeAction(someObject, true, false) # logResult, skipCooldown`
+
 
 ### Signals
 
