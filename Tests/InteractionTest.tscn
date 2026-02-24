@@ -53,14 +53,14 @@ metadata/_custom_type_script = "uid://3gmi65j17bkt"
 
 [sub_resource type="Resource" id="Resource_cmk47"]
 script = ExtResource("19_vpvxn")
-strings = PackedStringArray("Hi! Interact to talk!", "Message2", "The next message will be empty…", "", "Goodbye!")
+strings = PackedStringArray("1/5: Hi! Interact to talk!", "2/5: Message2", "3/5: The next message will be empty…", "", "5/5: Goodbye!")
 metadata/_custom_type_script = "uid://d1ed0yc1xwfvx"
 
-[sub_resource type="Resource" id="Resource_n8u5t"]
+[sub_resource type="Resource" id="Resource_hevv5"]
 resource_local_to_scene = true
 script = ExtResource("19_n8u5t")
 colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
-strings = PackedStringArray("I am automatic!", "A really long ass message to test cooldowns etc...", "Isn\'t this fun??")
+strings = PackedStringArray("1/3: I am automatic!", "2/3: A really long ass message to test cooldowns etc...", "3/3: Isn\'t this fun??")
 metadata/_custom_type_script = "uid://c8oqfug6bro2n"
 
 [node name="InteractionTest" type="Node2D" unique_id=1348727459]
@@ -199,7 +199,7 @@ region_rect = Rect2(480, 112, 16, 16)
 
 [node name="TextInteractionComponent" parent="NPC2" unique_id=932116605 instance=ExtResource("20_c0i8c")]
 z_index = 100
-textSequence = SubResource("Resource_n8u5t")
+textSequence = SubResource("Resource_hevv5")
 animationDurationPerCharacter = 0.3
 cooldownOnFailure = 0.69
 shouldRepeatInteractionAfterCooldown = true
