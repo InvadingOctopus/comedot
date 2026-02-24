@@ -57,14 +57,18 @@ func _input(event: InputEvent) -> void:
 	if not eventName.to_lower().begins_with(GlobalInput.Actions.specialActionPrefix.to_lower()): return
 
 	var actionName: StringName = eventName.trim_prefix(GlobalInput.Actions.specialActionPrefix)
-	if  actionsComponent: actionsComponent.performAction(actionName)
+	if  actionsComponent:
+		actionsComponent.performAction(actionName)
+		self.get_viewport().set_input_as_handled()
 
 
+## Handles keyboard shortcuts/controller buttons mapped to Actions
 func _unhandled_input(event: InputEvent) -> void:
-	# TBD: Execute Action shorts on press or on release?
+	# TBD: Execute Action shortcuts on press or on release?
 	# TBD: According to Godot documentation: "For keyboard shortcuts, consider using _shortcut_input() instead, as it is called before this method. Finally, to handle keyboard events, consider using _unhandled_key_input() for performance reasons."
 
-	if not isEnabled or not event.is_action_type() or not event.is_pressed(): return
+	if not isEnabled or not event.is_action_type() or not event.is_pressed() \
+	or (event is InputEventKey and event.is_echo()): return # Prevent held keys from spamming actions
 
 	if actionsComponent:
 		# See if a keyboard shortcut or gamepad button etc. matches any Action, and execute it
@@ -84,14 +88,14 @@ func _ready() -> void:
 
 
 func onActionsComponent_didRequestTarget(action: Action, source: Entity) -> void:
+	if not isEnabled: return
 	if debugMode: printDebug(str("onActionsComponent_didRequestTarget() ", action, ", source: ", source))
 	if source == self.parentEntity: createTargetingComponent(action) # Create & add a component which prompt the player to choose a target.
 	else: printDebug(str("Action source: ", source, " is not parentEntity: ", parentEntity))
 
 
 func createTargetingComponent(actionToPerform: Action) -> ActionTargetingComponentBase:
-	var componentScene: PackedScene = load(targetingComponentPath)
-	var targetingComponent: ActionTargetingComponentBase = componentScene.instantiate()
+	var targetingComponent: ActionTargetingComponentBase = SceneManager.instantiateSceneFromPath(targetingComponentPath)
 
 	if not targetingComponent:
 		printWarning(str("Cannot instantiate a subclass of ActionTargetingComponentBase: ", targetingComponentPath))

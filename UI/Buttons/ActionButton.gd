@@ -16,8 +16,12 @@ extends Button
 @export var action: Action:
 	set(newValue):
 		if newValue != action:
+			# TBD: Disconnect signals from previous Action?
 			action = newValue
-			if self.is_node_ready(): updateUI()
+			if self.is_node_ready():
+				# CHECK: Are we calling these functions multiple times during initialization?
+				connectSignals() # Reconnect in case it's a new/different Action
+				updateUI()
 
 @export var shouldShowTargetPrompt: bool = true
 @export var debugMode: bool
@@ -26,20 +30,24 @@ extends Button
 
 
 #region Dependencies
+
 var player: PlayerEntity:
 	get: return GameState.players.front()
 
 var actionsComponent: ActionsComponent:
 	get:
-		if not actionsComponent: actionsComponent = entity.getComponent(ActionsComponent)
+		if   not entity: actionsComponent = null
+		elif not actionsComponent: actionsComponent = entity.getComponent(ActionsComponent)
 		return actionsComponent
 
 var statsComponent: StatsComponent:
 	get:
-		if not statsComponent: statsComponent = entity.getComponent(StatsComponent)
+		if   not entity: statsComponent = null
+		if   not statsComponent: statsComponent = entity.getComponent(StatsComponent)
 		return statsComponent
 
 @onready var cooldownBar: ProgressBar = $CooldownBar
+
 #endregion
 
 
@@ -66,20 +74,20 @@ func updateUI() -> void:
 
 
 func updateCooldown() -> void:
-	# TBD: PERFORMANCE: Just check action.isInCooldown or avoid property access/temporary variable creation for some reason? :')
-	var isInCooldown: bool = action.cooldownRemaining > 0 or not is_zero_approx(action.cooldownRemaining) # Multiple checks in case of float funkery
+	# TBD: PERFORMANCE: Just check action.isOnCooldown or avoid property access/temporary variable creation for some reason? :')
+	var isOnCooldown: bool = action.cooldownRemaining > 0 or not is_zero_approx(action.cooldownRemaining) # Multiple checks in case of float funkery
 	
 	cooldownBar.max_value = action.cooldown
-	cooldownBar.value	= action.cooldownRemaining if isInCooldown else 0.0 # Snap to 0 to avoid float funkery
-	cooldownBar.visible	= isInCooldown
+	cooldownBar.value	= action.cooldownRemaining if isOnCooldown else 0.0 # Snap to 0 to avoid float funkery
+	cooldownBar.visible	= isOnCooldown
 	self.disabled		= not checkUsability()
-	self.set_process(isInCooldown) # PERFORMANCE: Update per-frame only when needed
+	self.set_process(isOnCooldown) # PERFORMANCE: Update per-frame only when needed
 
 
 ## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
 func checkUsability() -> bool:
-	return action.isUsable \
-		and action.validateStatsComponent(statsComponent)
+	return entity and action and action.isReady \
+		and (not action.hasCost or action.validateStatsComponent(statsComponent))
 
 
 #region Events

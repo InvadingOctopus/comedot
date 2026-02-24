@@ -6,6 +6,7 @@
 extends GameplayResourceBase # because we cannot have multiple inheritance in Godot, so include the most common combination :')
 
 # TBD: Allow negative costs? :')
+# TBD: Warn if cost != 0 but invalid costStat?
 # TRIED: FAILED: "Refund" functionality: Fails if there are multiple users of the same resource; too much work to keep track of which caller "spent" how much etc.
 
 
@@ -46,7 +47,7 @@ extends GameplayResourceBase # because we cannot have multiple inheritance in Go
 ## Updated whenever the [member costStat] or [member cost] properties are reassigned, or on [signal Stat.changed] if [method connectToStatSignals] is used 
 ## NOTE: Unlike the other validation functions, this flag is `false` if [member costStat] is `null`, even though a missing `costStat` means this resource is ALWAYS FREE.
 ## NOTE: A negative cost also sets this flag to `true`
-var isUsableWithCostStat: bool
+var isUsableWithCostStat: bool # DESIGN: Not a computed property because we need to emit signals when the usability changes
 #endregion
 
 
@@ -65,7 +66,7 @@ var costStatName: StringName:
 ## costStat != null and cost > 0:  Normal cost & payment
 ## NOTE: Subclasses and other scripts may have exceptions to these rules.
 var hasCost: bool:
-	get: return true if (self.cost != 0 and costStat) else false # Using `if` because `if costStat` includes is_instance_valid() TBD: Also check for nonempty `costStat.name`?
+	get: return self.cost != 0 and is_instance_valid(costStat) and not costStat.name.is_empty() # TBD: Should we check for nonempty `costStat.name`?
 #endregion
 
 
@@ -79,7 +80,7 @@ signal didBecomeUnusable
 ## WARNING: May decrease performance if used with rapidly-changing Stats.
 func connectToStatSignals() -> void:
 	if not is_instance_valid(costStat):
-		Debug.printWarning("connectToStatSignals() costStat is null", self)
+		Debug.printWarning("connectToStatSignals(): Invalid costStat", self)
 		return
 
 	Tools.connectSignal(costStat.changed, self.onCostStat_changed)
@@ -146,6 +147,10 @@ func validateOfferedStat(offeredStat: Stat) -> bool:
 
 func updateFlags() -> void:
 	var wasUsable: bool = self.isUsableWithCostStat # Monitor for change
+
+	# UNUSED: This warning may cause too much logspam
+	# if cost != 0 and not costStat: # Has a nonzero cost been set but no "currency" specified? Warn about this odd configuration in case it leads to gameplay bugs
+	#	Debug.printWarning("cost != 0 but costStat invalid", self) # TBD: Place warning in a different function?
 
 	## DESIGN: If there is no `costStat` then `isUsableWithCostStat` should be `false` because there is no `costStat`
 	## even though this resource is always free.

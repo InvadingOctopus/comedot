@@ -79,16 +79,33 @@ func findActionForInputEvent(inputEvent: InputEvent) -> Action:
 	return null
 
 
-## Returns the result of the [Action]'s [member Action.payload], or `false` if the Action or a required [param target] is missing.
+## Performs an [Action] and returns the result of it's [member Action.payload], or `false` if the Action does not exist or cannot be performed: i.e. a required [param target] is missing or if [method Action.checkUsability] fails.
 ## To perform Actions in response to player control and handle targeting, use [ActionControlComponent].
 func performAction(actionName: StringName, target: Entity = null) -> Variant:
 	# TBD: PERFORMANCE: Use a Dictionary to cache Name:Action?
 	# TBD: PERFORMANCE: Should we to_lower() to avoid any typo bugs? Or is that a bad idea for StringName?
+	if not isEnabled: return false
+
+	# First off, see if the requested Action is available
 	var actionToPerform: Action = self.findAction(actionName)
-	if debugMode: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName, ") target: ", target))
+	if debugMode: printLog(str("performAction(): ", actionName, " (", actionToPerform.logName if actionToPerform else "NOT FOUND", ") target: ", target))
 	if not actionToPerform: return false
 
-	# Check for target
+	# Next, if the Action has any associated cost, get the Stat to pay that cost
+	var statToPayWith: Stat
+	if actionToPerform.hasCost:
+		statToPayWith = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
+		if not statToPayWith: # `null` Stat while `hasCost` means a payment failure
+			if debugMode: printLog(str("actionToPerform.getPaymentStatFromStatsComponent() can't find Stat ", actionToPerform.costStatName, " in ", statsComponent))
+			return false
+
+	# NOTE: Make sure the Action can be performed with the current state and parameters,
+	# BEFORE choosing a target, in case the targeting UI has side-effects etc.
+	if not actionToPerform.checkUsability(self.parentEntity, target, statToPayWith):
+		return false
+
+	# If the Action requires a target and we haven't been provided one,
+	# let the UI prompt the player for a target.
 	if actionToPerform.requiresTarget and target == null:
 		if debugMode: printDebug("Missing target")
 		self.didRequestTarget.emit(actionToPerform, self.parentEntity) # To be handled by ActionControlComponent
@@ -97,14 +114,12 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 		# What would be the behavior expected by objects connecting to these signals? If an ActionControlComponent is used, then it is the ActionControlComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
 
-	# TBD: Refund Stat cost if Action fails?
-
-	# Get the Stat to pay the Action's cost with, if any,
-	var statToPayWith: Stat = actionToPerform.getPaymentStatFromStatsComponent(statsComponent)
-
+	# Alakazam!
 	self.willPerformAction.emit(actionToPerform)
-	var result: Variant = actionToPerform.perform(statToPayWith, self.parentEntity, target)
+	var result: Variant = actionToPerform.perform(self.parentEntity, target, statToPayWith)
 
+	# Check the result
+	# NOTE: If the Action's Payload fails the Stat cost is refunded by Action.perform()
 	if Tools.checkResult(result): # Must not be `null` and not `false` and not an empty collection
 		self.didPerformAction.emit(actionToPerform, result)
 
@@ -116,12 +131,12 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 #region Cooldowns
 
 ## Resets the [member actionsOnCooldown] array and checks each [Action] in the [member actions] array,
-## adding it to [member actionsOnCooldown] if [member Action.isInCooldown].
+## adding it to [member actionsOnCooldown] if [member Action.isOnCooldown].
 ## The cooldowns list is used by [method _process] to countdown the cooldown time of each Action on every frame.
 func createCooldownsList() -> void:
 	self.actionsOnCooldown.clear()
 	for action in self.actions:
-		if action.isInCooldown: self.actionsOnCooldown.append(action)
+		if action.isOnCooldown: self.actionsOnCooldown.append(action)
 	self.set_process(not self.actionsOnCooldown.is_empty()) # PERFORMANCE: Update per-frame only if needed
 
 
