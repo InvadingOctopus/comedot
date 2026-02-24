@@ -13,6 +13,7 @@ extends GameplayResourceBase # because we cannot have multiple inheritance in Go
 
 ## The "currency" [Stat] required to "pay" for this gameplay resource or action, such as spending Money at a shop or using innate Mana to cast a spell.
 ## If no Stat is specified, then this resource is considered to be always "free", e.g. moves such as "dash" etc. that are only limited by a cooldown and so on.
+## Subclasses and other scripts may have exceptions to these rules.
 ## NOTE: This exact [Stat] instance should not be used for comparison when searching in a [StatsComponent] etc., ONLY THE STAT'S [member Stat.name]
 ## Searching by the name allows multiple entities to have different instances of the same Stat, e.g. the player and a monster may both have a "mana" Stat with different values.
 ## DESIGN: This parameter accepts a [Stat] instead of a [StringName] to eliminate the risk of typo bugs, and to use the [member Stat.displayName].
@@ -62,6 +63,7 @@ var costStatName: StringName:
 ## costStat != null and cost == 0: Free but requires Stat
 ## costStat == null and cost > 0:  Invalid state; error
 ## costStat != null and cost > 0:  Normal cost & payment
+## NOTE: Subclasses and other scripts may have exceptions to these rules.
 var hasCost: bool:
 	get: return true if (self.cost != 0 and costStat) else false # Using `if` because `if costStat` includes is_instance_valid() TBD: Also check for nonempty `costStat.name`?
 #endregion

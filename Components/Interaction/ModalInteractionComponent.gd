@@ -55,6 +55,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	modalView.didFinish.connect(self.modalView_didFinish)
 	
 	self.currentModalUI = modalView
+	# TODO: `await` for the result, e.g. until a popup is closed etc.
 	return modalView.lastResult
 
 

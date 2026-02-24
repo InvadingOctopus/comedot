@@ -80,6 +80,8 @@ func setCooldown(newTime: float = self.cooldownWithModifier) -> float:
 
 ## Starts the cooldown delay, applying the [member cooldownMillisecondsModifier] if any to the [member cooldown].
 func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
+	# TODO: Handle ongoing Timer
+
 	## The Stat is reapplied above in case its value has changed
 	if debugMode:
 		if cooldownMillisecondsModifier: printTrace(["cooldownMillisecondsModifier", cooldownMillisecondsModifier.value])

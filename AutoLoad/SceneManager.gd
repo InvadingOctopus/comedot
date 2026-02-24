@@ -222,12 +222,12 @@ func togglePause() -> bool:
 
 #region General Functions
 
-
 ## Returns the path for a scene from a class type.
 ## Convenient for getting the scene for a component.
 ## e.g. [JumpComponent] returns "res://Components/Control/JumpComponent.tscn"
 ## WARNING: This assumes that the scene's name is the same as the `class_name`
-func getScenePathFromClass(type: Script) -> String:
+func getScenePathFromClass(type: Script) -> String: # TBD: Make `static`?
+	# TBD: Cache frequent paths?
 	# var className: String = type.get_global_name()
 	var scriptPath:	String = type.resource_path
 	var scenePath:	String = scriptPath.replace(".gd", ".tscn")
@@ -236,14 +236,14 @@ func getScenePathFromClass(type: Script) -> String:
 
 ## Returns a new instance (Node) of a scene from the specified path.
 ## Shortcut for [method @GDScript.load] + [method PackedScene.instantiate]
-func instantiateSceneFromPath(path: String) -> Node:
+func instantiateSceneFromPath(path: String) -> Node: # TBD: Make `static`?
+	# TBD: Cache frequent scenes?
 	var scene: PackedScene = load(path) as PackedScene
 
 	if is_instance_valid(scene):
 		var instance := scene.instantiate()
 		if is_instance_valid(instance): return instance
-		else:
-			Debug.printWarning(str("SceneManager.instantiateSceneFromPath(): Cannot instantiate ", scene, " from ", path))
+		else: Debug.printWarning(str("SceneManager.instantiateSceneFromPath(): Cannot instantiate ", scene, " from ", path))
 	else:
 		Debug.printWarning("SceneManager.instantiateSceneFromPath(): Cannot load " + path)
 
@@ -251,18 +251,18 @@ func instantiateSceneFromPath(path: String) -> Node:
 
 
 ## Loads the specified Scene path and adds a new copy of it as a child node of the specified parent.
-## Shortcut for [load] and [method addSceneInstance].
+## Shortcut for [method @GDScript.load] + [method addSceneInstance].
 ## Returns: The new instance.
-func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+func loadSceneAndAddInstance(path: String, parent: Node, position: Vector2 = Vector2.ZERO) -> Node: # TBD: Make `static`?
 	var scene: PackedScene = load(path)
 	return addSceneInstance(scene, parent, position)
 
 
 ## Instantiates a new copy of the specified Scene and adds it as a child node of the specified parent.
-## Shortcut for [method PackedScene.instantiate] and [method Node.add_child].
+## Shortcut for [method PackedScene.instantiate] + [method Node.add_child].
 ## ALERT: Some situations may cause the error: "Parent node is busy setting up children". To solve, use `addSceneInstance.call_deferred(…)`
 ## Returns: The new instance.
-func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node:
+func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vector2.ZERO) -> Node: # TBD: Make `static`?
 	if scene == null:
 		Debug.printWarning(str("SceneManager.addSceneInstance(): scene is null!"))
 		return null
