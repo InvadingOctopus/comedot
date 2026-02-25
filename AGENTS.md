@@ -70,6 +70,7 @@ There is no automated formatter configured; match existing style manually.
 
 
 ## Generating New Code & Scenes
+- DO NOT EDIT ANY FILES UNLESS EXPLICITLY TOLD TO.
 - New gameplay behaviors should generally be implemented as components that can be reused in multiple games. 
 - "Components" are any node with a script that is a subclass of `Components/Component.gd`, and "entities" are any node with the `Entities/Entity.gd` script or its subclasses. Entities are just a container for components and multiple components can be added to an entity. Components are generally standalone and provide a single specific behavior or set of closely-related behaviors, but components may depend on each other and modify each other at runtime, such as `DamageComponent` + `DamageReceivingComponent` + `KnockbackOnHitComponent`.
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
