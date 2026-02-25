@@ -66,6 +66,7 @@ There is no automated formatter configured; match existing style manually.
 - Ignore the contents of `Game/` unless the prompt and context involves a specific game being made with the main framework project.
 - The contents of `Game/` are subject to the instructions in `Game/AGENTS.override.md`.
 - Functions and types marked with an `@experimental` comment are expected to have bugs and incomplete implementations. Findings involving experimental code should be a lower priority and not expected to be fixed, unless more important non-experimental code depends on that experimental code.
+- Not all `null` references need to be guarded: In some cases, a crash may be better than a warning or a silent failure/skip, specially if it's a core object which should never be missing at runtime under normal circumstances.
 
 
 ## Generating New Code & Scenes
