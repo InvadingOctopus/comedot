@@ -4,7 +4,7 @@
 class_name CooldownComponent
 extends Component
 
-# NOTE: The Component Node itself should NOT be a [Timer] in order to allow other types of Nodes to extend this script, such as GunComponent which is Node2D
+# IMPORTANT: DESIGN: The Component Node itself should NOT be a [Timer] in order to allow other types of Nodes to extend this script, such as GunComponent which is Node2D
 
 
 #region Parameters
@@ -13,7 +13,7 @@ extends Component
 ## According to Godot documentation, it should be 0.05
 const minimumDelay: float = 0.05
 
-## Number of seconds after shooting before another bullet can be emitted.
+## Number of seconds between repeating an action, such as shooting another bullet or performing another dash.
 ## WARNING: A value of 0.0 may cause issues with [Timer]
 @export_range(minimumDelay, 120, 0.05, "suffix:seconds") var cooldown: float = 3:
 	set(newValue):
@@ -37,6 +37,7 @@ const minimumDelay: float = 0.05
 
 
 #region State
+
 @onready var cooldownTimer: Timer = $CooldownTimer
 
 ## Returns the total cooldown value including the base [member cooldown] seconds +/- the [member cooldownMillisecondsModifier] [Stat] if any.
@@ -46,7 +47,15 @@ var cooldownWithModifier: float:
 		if cooldownMillisecondsModifier: return self.cooldown + (float(cooldownMillisecondsModifier.value) / 1000.0) # Convert from milliseconds to seconds
 		else: return cooldown
 
-var isOnCooldown: bool = false # Start with the cooldown off. TBD: @export_storage?
+## Returns `true` if the `cooldownTimer` still has remaining [Timer.time_left].
+## ALERT: Does NOT check [Timer.paused]
+var isOnCooldown: bool: 
+	get: return not is_zero_approx(cooldownTimer.time_left) # Apparently `not is_zero_approx()` is better than checking > 0
+
+## Allows [method startCooldown] to ignore the cooldown ONCE.
+## NOTE: This flag is reset in [method startCooldown], so it must be set AFTER starting a cooldown.
+@export_storage var shouldSkipNextCooldown: bool
+
 #endregion
 
 
@@ -68,7 +77,8 @@ func _ready() -> void:
 func setCooldown(newTime: float = self.cooldownWithModifier) -> float:
 	if not cooldownTimer: return 0
 
-	if newTime > 0 and not is_zero_approx(newTime): # Avoid the annoying Godot error: "Time should be greater than zero."
+	if (newTime > minimumDelay or is_equal_approx(newTime, minimumDelay)) \
+	and not is_zero_approx(newTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		cooldownTimer.wait_time = newTime
 	else:
 		cooldownTimer.wait_time = minimumDelay # HACK: TODO: Find a better way
@@ -79,14 +89,27 @@ func setCooldown(newTime: float = self.cooldownWithModifier) -> float:
 
 
 ## Starts the cooldown delay, applying the [member cooldownMillisecondsModifier] if any to the [member cooldown].
-func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
+## If the [member cooldownTimer] is already running and [member Timer.paused], this method unpauses the [Timer].
+## If [param restartIfOnCooldown] then an ongoing OR pause cooldown is restarted.
+## May be skipped for one call by [member shouldSkipNextCooldown] which is always reset in this function.
+## IMPORTANT: Check [member isOnCooldown] before calling this method to avoid restarting an ongoing cooldown!
+func startCooldown(overrideTime: float = self.cooldownWithModifier, restartIfOnCooldown: bool = false) -> void:
 	# TODO: Handle ongoing Timer
 
 	## The Stat is reapplied above in case its value has changed
 	if debugMode:
 		if cooldownMillisecondsModifier: printTrace(["cooldownMillisecondsModifier", cooldownMillisecondsModifier.value])
-		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", cooldownMillisecondsModifier.logName if cooldownMillisecondsModifier else "null"))
-	isOnCooldown = true
+		printDebug(str("startCooldown() cooldown: ", self.cooldown, ", previous Timer.wait_time: ", cooldownTimer.wait_time, " → overrideTime/cooldownWithModifier: ", overrideTime, ", cooldownMillisecondsModifier: ", (cooldownMillisecondsModifier.logName if cooldownMillisecondsModifier else "null"), ", shouldSkipNextCooldown: ", shouldSkipNextCooldown))
+	
+	if  shouldSkipNextCooldown:
+		shouldSkipNextCooldown = false
+		return
+
+	# Check for an ongoing cooldown to avoid unintended resets or redundant processing
+	if self.isOnCooldown:
+		if debugMode: printDebug(str("cooldownTimer already isOnCooldown: ", cooldownTimer.time_left, " paused: ", cooldownTimer.paused))
+		if cooldownTimer.paused: cooldownTimer.paused = false # Unpause because running a Timer would be the behavior expected by the caller
+		if not restartIfOnCooldown: return
 
 	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
 		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
@@ -95,12 +118,13 @@ func startCooldown(overrideTime: float = self.cooldownWithModifier) -> void:
 		didStartCooldown.emit(overrideTime)
 	else: # If the time is too low, run straight to the finish
 		finishCooldown()
+	
+	shouldSkipNextCooldown = false # Don't skip the NEXT next cooldown
 
 
 func finishCooldown() -> void:
 	if debugMode: printDebug("finishCooldown()")
 	cooldownTimer.stop()
-	isOnCooldown = false
 	didFinishCooldown.emit()
 
 #endregion
