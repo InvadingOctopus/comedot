@@ -32,12 +32,14 @@ const actionButtonScene: PackedScene = preload("res://UI/Buttons/ActionButton.ts
 
 var actionsComponent: ActionsComponent:
 	get:
-		if not actionsComponent: actionsComponent = entity.getComponent(ActionsComponent)
+		if   not entity: actionsComponent = null
+		elif not actionsComponent: actionsComponent = entity.getComponent(ActionsComponent)
 		return actionsComponent
 
 var targetStatsComponent: StatsComponent:
 	get:
-		if not targetStatsComponent: targetStatsComponent = entity.getComponent(StatsComponent)
+		if   not entity: targetStatsComponent = null
+		elif not targetStatsComponent: targetStatsComponent = entity.getComponent(StatsComponent)
 		return targetStatsComponent
 
 var player: PlayerEntity:

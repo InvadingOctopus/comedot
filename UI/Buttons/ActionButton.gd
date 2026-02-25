@@ -20,6 +20,7 @@ extends Button
 			action = newValue
 			if self.is_node_ready():
 				# CHECK: Are we calling these functions multiple times during initialization?
+				getPaymentStat() # Get the new [member StatDependentResourceBase.costStat] match from the [statsComponent]
 				connectSignals() # Reconnect in case it's a new/different Action
 				updateUI()
 
@@ -43,9 +44,18 @@ var actionsComponent: ActionsComponent:
 var statsComponent: StatsComponent:
 	get:
 		if   not entity: statsComponent = null
-		if   not statsComponent: statsComponent = entity.getComponent(StatsComponent)
+		elif not statsComponent: statsComponent = entity.getComponent(StatsComponent)
 		return statsComponent
 
+var paymentStat: Stat: # Monitor the mana/gold/etc. value for changes and update the Button accordingly
+	set(newValue):
+		if newValue != paymentStat:
+			# Stop watching the previous Stat if any
+			if paymentStat: Tools.disconnectSignal(paymentStat.changed, self.onPaymentStat_changed)
+			paymentStat = newValue
+			# Monitor the new Stat to disable/enable the Button when the value changes
+			if paymentStat: Tools.connectSignal(paymentStat.changed, self.onPaymentStat_changed)
+			
 @onready var cooldownBar: ProgressBar = $CooldownBar
 
 #endregion
@@ -58,10 +68,19 @@ func _ready() -> void:
 		if not entity: Debug.printWarning("Missing entity", self)
 
 	if action:
+		getPaymentStat()
 		connectSignals()
 		updateUI()
 
 	self.set_process(false) # PERFORMANCE: Update per-frame only when needed
+
+
+## Queries the [member statsComponent] to get the [Stat] that matches the [Action]'s [member StatDependentResourceBase.costStat]
+## The [member Stat.value] is monitored to disable/enable this [Button] as the amount of mana/gold/enegery/etc. changes.
+func getPaymentStat() -> Stat:
+	if action and action.hasCost and statsComponent: paymentStat = action.getPaymentStatFromStatsComponent(statsComponent)
+	else: paymentStat = null
+	return paymentStat
 
 
 func updateUI() -> void:
@@ -85,6 +104,7 @@ func updateCooldown() -> void:
 
 
 ## Checks if the [member entity]'s [StatsComponent] has the [Stat] required to perform the [member action].
+## WARNING: May not be updated accurately if the "payment" Stat changes outside the monitored signals/events.
 func checkUsability() -> bool:
 	return entity and action and action.isReady \
 		and (not action.hasCost or action.validateStatsComponent(statsComponent))
@@ -100,6 +120,10 @@ func connectSignals() -> void:
 	Tools.connectSignal(GlobalUI.actionIsChoosingTarget, self.onGlobalUI_actionIsChoosingTarget)
 	Tools.connectSignal(GlobalUI.actionDidChooseTarget,  self.onGlobalUI_actionDidChooseTarget)
 	Tools.connectSignal(GlobalUI.actionDidCancelTarget,  self.onGlobalUI_actionDidCancelTarget)
+
+
+func onPaymentStat_changed() -> void:
+	self.disabled = not self.checkUsability()
 
 
 func onPressed() -> void:
