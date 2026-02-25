@@ -45,12 +45,19 @@ func _ready() -> void:
 	if not action: printWarning("No action provided")
 	self.isChoosing = self.isEnabled
 
+	# Apply setters because Godot doesn't on initialization
+	self.set_process(isEnabled)
+	self.set_process_input(isEnabled)
+	self.set_process_unhandled_input(isEnabled)
+
 	if action and self.isChoosing:
 		GlobalUI.actionIsChoosingTarget.emit(action, self.parentEntity) # Let any UI such as ActionButton update itself.
 
 
-## Returns the [Entity] of the chosen [ActionTargetableComponent] if [method ActionTargetableComponent.requestToChoose] is approved,
-## otherwise returns `null`.
+#region Selection
+
+## Calls [method ActionTargetableComponent.requestToChoose] then if approved, calls [ActionsComponent.performAction] with the entity of that [ActionTargetableComponent].
+## Returns the [Entity] of the chosen [ActionTargetableComponent] if successful.
 func chooseTarget(target: ActionTargetableComponent) -> Entity:
 	if debugMode: printLog("chooseTarget(): " + target.logFullNameWithEntity)
 	if isEnabled and target.requestToChoose(action, self.parentEntity):
@@ -65,6 +72,8 @@ func chooseTarget(target: ActionTargetableComponent) -> Entity:
 		if debugMode: printLog("chooseTarget() failed: " + target.logFullNameWithEntity)
 		return null # TBD: Should the chosen Entity be returned even if requestToChoose() is denied?
 
+#endregion
+
 
 #region Cancellation
 
@@ -76,10 +85,11 @@ func cancelTargetSelection() -> void:
 	self.requestDeletion()
 
 
+## IMPORTANT: Subclasses MUST call `super._input()` to handle cancellation.
 func _input(event: InputEvent) -> void:
 	# NOTE: _input() instead of _unhandled_input() because we don't want to be suppressed by Button or other UI click events etc.
-	# NOTE: Do not check `isEnabled`: Cancellation must always be allowed
-	if self.isChoosing and event.is_action(GlobalInput.Actions.cancel) and event.is_action_pressed(GlobalInput.Actions.cancel) and not event.is_echo():
+	# DESIGN: Do NOT check `isEnabled` because cancellation must always be allowed
+	if  self.isChoosing and event.is_action(GlobalInput.Actions.cancel) and event.is_action_pressed(GlobalInput.Actions.cancel) and not event.is_echo():
 		self.cancelTargetSelection()
 		self.get_viewport().set_input_as_handled()
 

@@ -65,7 +65,7 @@ position = Vector2(-64, -64)
 region_rect = Rect2(608, 208, 16, 16)
 
 [node name="ActionReactionComponent" parent="SpriteEntity2" unique_id=1068243928 instance=ExtResource("16_c1c8v")]
-payloads = Dictionary[StringName, ExtResource("17_tue7k")]({
+reactionPayloads = Dictionary[StringName, ExtResource("17_tue7k")]({
 &"testLook": SubResource("Resource_8gufy")
 })
 fallbackPayload = SubResource("Resource_fib85")

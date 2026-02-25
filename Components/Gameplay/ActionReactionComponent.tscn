@@ -7,5 +7,5 @@
 [node name="ActionReactionComponent" unique_id=1605715762 instance=ExtResource("1_cfycj")]
 editor_description = "A component that executes its own Payload when targetted by an Action."
 script = ExtResource("2_buawl")
-payloads = Dictionary[StringName, ExtResource("3_ib5yy")]({})
+reactionPayloads = Dictionary[StringName, ExtResource("3_ib5yy")]({})
 fallbackPayload = null

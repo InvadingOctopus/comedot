@@ -169,6 +169,12 @@ startCooldown:	bool = true) -> Variant:
 	# IMPORTANT: Deduct the cost from the Stat only if the payload was successfully executed!
 	if Tools.checkResult(payloadResult): # Must not be `null` and not `false` and not an empty collection
 
+		# Let the target know, if any
+		if target:
+			var actionTargetableComponent: ActionTargetableComponent = target.findFirstComponentSubclass(ActionTargetableComponent) # TBD: Allow sublasses such as ActionReactionComponent
+			if  actionTargetableComponent:
+				actionTargetableComponent.didTarget(self, source, payloadResult)
+
 		# Deduct the number of uses
 		if decrementUses and self.hasFiniteUses:
 			self.usesRemaining -= 1

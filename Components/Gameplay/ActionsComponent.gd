@@ -10,6 +10,8 @@
 class_name ActionsComponent
 extends Component
 
+# TBD: Reset cooldowns for each Action when its added to this component?
+
 
 #region Parameters
 @export var actions: Array[Action] ## The list of available [Action]s that the Entity may choose to perform.
@@ -134,6 +136,7 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 ## adding it to [member actionsOnCooldown] if [member Action.isOnCooldown].
 ## The cooldowns list is used by [method _process] to countdown the cooldown time of each Action on every frame.
 func createCooldownsList() -> void:
+	# TBD: Reset cooldowns for each Action when its added?
 	self.actionsOnCooldown.clear()
 	for action in self.actions:
 		if action.isOnCooldown: self.actionsOnCooldown.append(action)

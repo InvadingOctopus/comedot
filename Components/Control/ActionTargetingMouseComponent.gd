@@ -17,8 +17,10 @@ func _process(_delta: float) -> void:
 	cursor.global_position = parentEntity.get_global_mouse_position()
 
 
-func _input(event: InputEvent) -> void:
-	if event is not InputEventMouseButton: return
+func _unhandled_input(event: InputEvent) -> void:
+	# NOTE: CHECK: Cancellations will be handled by `ActionTargetingComponentBase._input()` if this event is unhandled, right?
+	if not isEnabled or event is not InputEventMouseButton: return
 
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT): # TBD: Use "just pressed"?
 		chooseTargetsUnderCursor()
+		self.get_viewport().set_input_as_handled()

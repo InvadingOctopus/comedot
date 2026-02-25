@@ -20,7 +20,8 @@ extends AreaComponentBase
 
 
 #region Signals
-signal wasChosen(action: Action, sourceEntity: Entity)
+signal wasChosen  (action: Action, sourceEntity: Entity) # Emitted when this component's entity is CHOSEN for an [Action] via [ActionTargetingComponentBase] etc., but BEFORE the Action's [Payload] is executed.
+signal wasTargeted(action: Action, sourceEntity: Entity, actionResult: Variant) # Emitted AFTER an [Action]'s [Payload] is executed with this component's entity as the target.
 #endregion
 
 
@@ -41,17 +42,20 @@ func connectSignals() -> void:
 
 
 func onWillRemoveFromEntity() -> void:
-	parentEntity.remove_from_group(Global.Groups.targetables)
+	parentEntity.remove_from_group(Global.Groups.targetables) # CHECK: Will this cause problems if there are somehow multiple ActionTargetableComponent subclasses on an Entity?
 
 
 #region Action Targeting
 
-## May be called by an [ActionTargetingComponent].
+## May be called by an [ActionTargetingComponent] BEFORE an [Action]'s [Payload] is executed.
 func requestToChoose(action: Action = null, sourceEntity: Entity = null) -> bool:
 	# DESIGN: The `action` & `sourceEntity` parameters are optional because most targets will not care,
 	# but some targets may only accept or decline certain specific Actions.
-	if debugMode: printLog(str("requestToChoose() action: ", action.logName, ", sourceEntity: ", sourceEntity.logFullName))
-	if checkConditions(action, sourceEntity):
+	
+	if not isEnabled: return false
+	if debugMode: printLog(str("requestToChoose() action: ", (action.logName if action else "null"), ", sourceEntity: ", sourceEntity.logFullName if sourceEntity else "null"))
+	
+	if checkConditions(action, sourceEntity): # Arguments should be validated by checkConditions()
 		self.wasChosen.emit(action, sourceEntity)
 		return true
 	else:
@@ -59,10 +63,18 @@ func requestToChoose(action: Action = null, sourceEntity: Entity = null) -> bool
 		return false
 
 
-## Overridden in subclass to specify any conditions.
+## Overridden in subclass to specify specific conditions, i.e. to potentially reject/refuse an [Action].
 @warning_ignore("unused_parameter")
 func checkConditions(action: Action = null, sourceEntity: Entity = null) -> bool:
 	return self.isEnabled
+
+
+## May be called by an targeted [Action] AFTER the [Action]'s [Payload] is successfully executed.
+## May optionally return the result of a "reaction" or just nothing etc.
+func didTarget(action: Action, sourceEntity: Entity, actionResult: Variant) -> Variant:
+	if not isEnabled: return false
+	wasTargeted.emit(action, sourceEntity, actionResult)
+	return null
 
 #endregion
 
