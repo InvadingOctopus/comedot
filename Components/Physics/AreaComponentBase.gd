@@ -68,10 +68,8 @@ func _enter_tree() -> void:
 		self.area = parentEntity.getArea()
 
 	# Still nothing? :(
-	if not self.area:
-		printWarning("Missing area. Cannot cast self as Area2D & cannot get area from parentEntity: " + parentEntity.logFullName)
-	elif debugMode:
-		printDebug(str("area parent: ", area.get_parent()))
+	if not self.area: printWarning("Missing area. Cannot cast self as Area2D & cannot get area from parentEntity: " + parentEntity.logFullName)
+	elif debugMode:   printDebug(str("area parent: ", area.get_parent()))
 
 
 ## Updates [member areaBounds] and returns the rectangular bounds of the [Area2D]'s [CollisionShape2D].
