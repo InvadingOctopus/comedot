@@ -8,7 +8,8 @@ extends AreaCollisionComponent
 # TBD: Rename to AreaContactListComponent for better clarity?
 # TBD: Add a list for [TileMapLayer]s?
 # TBD: Reduce code duplication between [CollisionsArrayArea]?
-# DESIGN: Areas cannot be shared between DamageComponent/DamageReceivingComponent etc. (why?)
+# TRIED: Areas cannot be shared between DamageComponent/DamageReceivingComponent etc. FORGOT: why?
+# CHECK: Use get_parent() instead of `.owner`?
 
 
 #region Parameters
@@ -26,9 +27,13 @@ var bodiesInContact: Array[Node2D] ## A list of [PhysicsBody2D]s OR [TileMapLaye
 
 
 func _ready() -> void:
-	readdAllContacts()
 	super._ready() # Start monitoring exits after adding existing overlaps
 	self.set_physics_process(self.debugMode) # Disable per-frame debugging until needed
+	# NOTE: Other compenents may not receive signals for already overlapping nodes,
+	# because they may connect to signals later in their own _ready() if they're ordered lower on the scene tree,
+	# so we call_deferred() instead of right away.
+	# CHECK: Is this correct/reliable?
+	readdAllContacts.call_deferred()
 
 
 ## Clears the [member areasInContact] & [member bodiesInContact] arrays and re-adds all [Area2D]s, [PhysicsBody2D]s or [TileMapLayer]s that are currently in contact with the [Area2D] of this component.
@@ -45,21 +50,26 @@ func readdAllContacts() -> void:
 	# Signals should be emitted for existing overlaps, so that other scripts can react.
 	# like picking up a collectible item if we were already standing on it. (not that CollectibleComponent uses AreaContactComponent :')
 
+	# NOTE: Start from the beginning of the event/signal chain: on*Entered() which calls onCollide() & didEnter*
+	# so subclasses may override at any point.
+
 	if shouldMonitorAreas:
 		for overlappingArea in area.get_overlapping_areas():
 			if not (overlappingArea == parentEntity or overlappingArea.owner == parentEntity) \
 			and (groupToInclude.is_empty() or overlappingArea.is_in_group(groupToInclude)):
-				areasInContact.append(overlappingArea)
-				self.onCollide(overlappingArea)
-				self.didEnterArea.emit(overlappingArea)
+				self.onAreaEntered(overlappingArea) # also calls the functions below:
+				# areasInContact.append(overlappingArea)
+				# self.onCollide(overlappingArea)
+				# self.didEnterArea.emit(overlappingArea)
 
 	if shouldMonitorBodies:
 		for overlappingBody in area.get_overlapping_bodies():
 			if not (overlappingBody == parentEntity or overlappingBody.owner == parentEntity) \
 			and (groupToInclude.is_empty() or overlappingBody.is_in_group(groupToInclude)):
-				bodiesInContact.append(overlappingBody)
-				self.onCollide(overlappingBody)
-				self.didEnterBody.emit(overlappingBody)
+				self.onBodyEntered(overlappingBody) # also calls the functions below:
+				# bodiesInContact.append(overlappingBody)
+				# self.onCollide(overlappingBody)
+				# self.didEnterBody.emit(overlappingBody)
 
 
 #region Events
@@ -79,7 +89,10 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 		emitDebugBubble(str("IN:", areaEntered, "\n", areaEntered.owner), Color.YELLOW)
 
-	areasInContact.append(areaEntered)
+	# If the node is already in the list, then that's a weird situation, but we must still emit the other signals because the physics event is real.
+	if not areasInContact.has(areaEntered): areasInContact.append(areaEntered)
+	elif debugMode: printWarning("Already in areasInContact")
+
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
 
@@ -93,7 +106,10 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
 		emitDebugBubble(str("IN:", bodyEntered, "\n", bodyEntered.owner), Color.YELLOW)
 
-	bodiesInContact.append(bodyEntered)
+	# If the node is already in the list, then that's a weird situation, but we must still emit the other signals because the physics event is real.
+	if not bodiesInContact.has(bodyEntered): bodiesInContact.append(bodyEntered)
+	elif debugMode: printWarning("Already in bodiesInContact")
+
 	self.onCollide(bodyEntered)
 	didEnterBody.emit(bodyEntered)
 

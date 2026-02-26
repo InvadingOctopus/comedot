@@ -8,6 +8,7 @@ extends AreaComponentBase
 
 # TODO: Disconnect signals when flags disabled
 # TBD: Use this as the base for DamageComponent etc.?
+# CHECK: Use get_parent() instead of `.owner`?
 
 
 #region Parameters
@@ -19,10 +20,10 @@ extends AreaComponentBase
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			if  selfAsArea:
+			if  area: # TBD: Only/also use selfAsArea?
 				# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-				selfAsArea.set_deferred(&"monitorable", newValue)
-				# selfAsArea.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
+				area.set_deferred(&"monitorable", newValue)
+				# area.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
 
 @export var shouldMonitorAreas:  bool = true ## If `false` no [Area2D]s are monitored when entering or exiting.
 @export var shouldMonitorBodies: bool = true ## If `false` no [PhysicsBody2D]s or [TileMapLayer]s are monitored when entering or exiting.
@@ -40,7 +41,7 @@ signal didExitBody(body:  Node2D) ## NOTE: Emitted AFTER [method onExit]
 
 
 func _ready() -> void:
-	if selfAsArea: selfAsArea.monitorable = isEnabled # Apply setter because Godot doesn't on initialization
+	if area: area.monitorable = isEnabled # Apply setter because Godot doesn't on initialization
 	if shouldConnectSignalsOnReady: connectSignals()
 
 
