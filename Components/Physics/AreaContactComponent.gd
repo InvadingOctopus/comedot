@@ -13,7 +13,9 @@ extends AreaCollisionComponent
 
 #region Parameters
 ## If not empty, only physics nodes belonging to this group will be included in the contact lists, e.g. "zones" etc.
-@export var groupToInclude: StringName # PERFORMANCE: Only 1 group is checked because comparing array-with-array "intersection" is slower.
+## IMPORTANT: The [CollisionObject2D] collision and layer masks still apply.
+## PERFORMANCE: Only 1 group is checked because comparing array-with-array "intersection" search is slower.
+@export var groupToInclude: StringName
 #endregion
 
 
@@ -44,17 +46,17 @@ func readdAllContacts() -> void:
 	# like picking up a collectible item if we were already standing on it. (not that CollectibleComponent uses AreaContactComponent :')
 
 	if shouldMonitorAreas:
-		for overlappingArea in selfAsArea.get_overlapping_areas():
-			if  (overlappingArea != parentEntity or overlappingArea.owner != parentEntity) \
-			and (not groupToInclude.is_empty()  and overlappingArea.is_in_group(groupToInclude)):
+		for overlappingArea in area.get_overlapping_areas():
+			if not (overlappingArea == parentEntity or overlappingArea.owner == parentEntity) \
+			and (groupToInclude.is_empty() or overlappingArea.is_in_group(groupToInclude)):
 				areasInContact.append(overlappingArea)
 				self.onCollide(overlappingArea)
 				self.didEnterArea.emit(overlappingArea)
 
 	if shouldMonitorBodies:
-		for overlappingBody in selfAsArea.get_overlapping_bodies():
-			if  (overlappingBody != parentEntity or overlappingBody.owner != parentEntity) \
-			and (not groupToInclude.is_empty()  and overlappingBody.is_in_group(groupToInclude)):
+		for overlappingBody in area.get_overlapping_bodies():
+			if not (overlappingBody == parentEntity or overlappingBody.owner == parentEntity) \
+			and (groupToInclude.is_empty() or overlappingBody.is_in_group(groupToInclude)):
 				bodiesInContact.append(overlappingBody)
 				self.onCollide(overlappingBody)
 				self.didEnterBody.emit(overlappingBody)
