@@ -16,6 +16,8 @@ extends InteractionWithCooldownComponent
 @export var textSequence:				TextSequence # TBD: Is this too overengineered? :')
 @export var shouldAnimate:				bool = true
 @export var shouldClearBeforeAnimation:	bool = true
+@export var shouldResetOnExit:			bool = false
+@export var shouldStopAtFinalString:	bool = false
 @export_range(0.0, 10.0, 0.01) var animationDurationPerCharacter:	float = 0.05
 @export_range(0.0, 60.0, 0.01) var cooldownBeforeAutomaticNext:		float = 2 ## The pause before automatically displaying the next string if [member shouldRepeatInteractionAfterCooldown].
 
@@ -50,6 +52,8 @@ func _ready() -> void:
 	# so the initial `textSequence` will be readable.
 	if not isAutomatic:
 		applyText(false) # Don't animate the initial text. Calls updateIndicator()
+	
+	Tools.connectSignal(self.didExitInteractionArea, self.onSelf_didExitInteractionArea)
 
 
 #region Interaction & Update
@@ -93,6 +97,11 @@ func repeatPreviousInteraction() -> Variant:
 		# otherwise the animation will skip and instantly display the current message,
 		# which may look and feel jank in the absence of player input.
 		if not currentAnimation or not currentAnimation.is_valid() or not currentAnimation.is_running():
+			if(shouldStopAtFinalString and textSequence.currentStringIndex +1 == textSequence.getSize()):
+				self.text=""
+				textSequence.currentStringIndex = 0
+				return null
+				
 			return previousInteractor.interact(self)
 		else:
 			if debugMode: printDebug(str("Not skipping currentAnimation: ", currentAnimation))
@@ -163,5 +172,19 @@ func onCurrentAnimation_finished() -> void:
 		startCooldown(cooldownBeforeAutomaticNext)
 		canSkipNextCooldown = true # Allow skipping the delay before the next message
 	Tools.disconnectSignal(self.currentAnimation.finished, self.onCurrentAnimation_finished)
+
+func onSelf_didExitInteractionArea(_entity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+	if(shouldResetOnExit and interactionControlComponent == previousInteractor):
+		if currentAnimation:
+			currentAnimation.kill()
+		
+		if(not is_zero_approx(cooldownTimer.time_left)):
+			cooldownTimer.stop()
+		
+		textSequence.currentStringIndex = 0
+		if isAutomatic:
+			self.text=""
+		else:
+			self.text=textSequence.getCurrentString()
 
 #endregion
