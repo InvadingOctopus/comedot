@@ -16,7 +16,7 @@ This is the Truth of the Universe.
 > [!TIP]
 > Most of this is the opinion of the sole maintainer @ShinryakuTako on GitHub but if you're smart it should be yours too.
 
-I come from Swift and I love it so this framework attempts to follow the Swift API Design Guidelines unless when it's highly inconvenient within Godot: https://www.swift.org/documentation/api-design-guidelines/
+I come from Swift and I love it so this framework attempts to mimic the Swift API Design Guidelines unless when it's highly inconvenient within Godot: https://www.swift.org/documentation/api-design-guidelines/
 
 
 ## Voidspace
@@ -60,6 +60,8 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 	- Avoid ambiguity with "verbs" e.g.`showDebugInfo` could be a function name.
 	- `bool` parameters in function/methods calls may be named as verbs/commands to match the function convention e.g. `skipEmptyCells` in `randomizeTileMapCells()`
 
+* Components that manage a collection of a certain Resource may pluralize the name of that resource, such as `StatsComponent` because `StatComponent` may be ambiguous and imply that it is a certain specific single stat (such as `HealthComponent` which specifically names the state).
+
 
 ### Functions & Methods
 
@@ -73,7 +75,7 @@ I come from Swift and I love it so this framework attempts to follow the Swift A
 
 * Functions that _create_ a new object and then add it to a parent, should be named starting with `create`: e.g. `createLabel(…)`
 
-* Single Godot is a dummy about argument labels, some arguments like `true`/`false` may be mysterious and ambiguous at the point of use; add manual labels in a trailing comment: e.g. `doSomeAction(someObject, true, false) # logResult, skipCooldown`
+* Godot is a dummy about not having argument labels, so some arguments like `true`/`false` may be mysterious and ambiguous at the call point; add labels manually in a trailing comment: e.g. `doSomeAction(someObject, true, false) # logResult, skipCooldown`
 
 
 ### Signals
@@ -122,7 +124,9 @@ func onTimeout() # in the script of a Timer node
 
 * Resources like [Stat] and [Upgrade] should ONLY CONTAIN INFORMATION and validation functions.
 * Resources should NOT contain WHERE THEY ARE USED; an Upgrade should NOT hold a reference to the [UpgradesComponent] where it's "installed"; that should be the job of the component.
-* "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between UpgradesComponents, should be done via signals.
+* "Passing" Resources that are supposed to stay "unique" between different "owners", like a special Upgrade between 2 UpgradesComponents, should be done via a "request" flow.
+	- Example: An "UltimaSword" of which there is only one in the world. Instead of directly setting `previousOwner.removeItem(&"ultimasword")` and `newOwner.addItem(&"ultimasword")`, consider `newOwner.request(previousOwner, &"ultimasword")`
+	- Signals may be helpful such as `didTransferItem.emit(item, previousOwner, newOwner)`
 
 
 ## Comments
@@ -137,6 +141,21 @@ func onTimeout() # in the script of a Timer node
 	- WORKAROUND: Code that temporarily solves a bug in Godot etc. and may be removed after the bug has been eradicated.
 	- CREDIT: For people/sources who created certain code or resources, such as other open-source projects/contributors or third-party asset providers.
 	- THANKS: For people/sources who suggested or were the inspiration behind an idea or solution.
+
+
+## Order
+
+* Comedot generally maintains a consistent order for the common code sections in each script file:
+	1. Header: The documentation comment about what that file/class is for.
+	2. `class_name` and `extends`
+	3. Parameters: The list of `@exports` should come first because it's the external "interface".
+	4. State: The internal state that may also be relevant and accessible externally.
+	5. Signals
+	6. Dependencies
+	7. Life Cycle: `_enter_tree()`, `_ready()`, `_exit_tree()` etc. in the order that Godot calls them.
+	8. Any other functions
+	9. Debugging functions and temporary experimental code
+* The different sections may be enclosed with `#region` and `#endregion` unless they are very short, e.g. fewer than 4 lines.
 
 
 ## Design
