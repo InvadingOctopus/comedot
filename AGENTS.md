@@ -35,7 +35,7 @@
 - In general, when a certain gameplay mechanic or feature is needed, search the framework for synonyms of that system to see if there is a component or script for it.
 
 
-## Build, Test, Run & Export
+## Build, Run, Test & Export
 - Open the Comedot template in Godot by selecting `project.godot` 
 - `project.godot` contains the required Godot version under `config/features` and other metadata. Comedot always targets the latest version (release or beta).
 - Refer to the official documentation when needed, at `https://docs.godotengine.org/en/latest/`
@@ -69,7 +69,7 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 - Function/method names should be imperative verbs wherever it makes grammatical sense: `doSomething()`, `checkRequirements()`
 - Signal handlers should be named as `on[Emitter]_[signal]`
 - Prefer strong static typing: Write out explicit types, e.g. `var number: int = 42` instead of `var number := 42`, but `:=` may be used where the type isn't certain at coding time.
-- If instructions conflict, `Conventions.md` takes precedence and includes exceptions for some rules. In case of ambiguity, match existing patterns.
+- If instructions conflict or drift, `Conventions.md` takes precedence and includes exceptions for some rules. In case of ambiguity, match existing patterns.
 - There is no automated formatter configured; match existing style manually.
 
 
@@ -81,7 +81,7 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
 - A `class_name` must be used for all components and entities, and also for other types that are expected to be referenced from code or instantiated at runtime. Exceptions are short specific scripts such as `Spin.gd`
 - The root node of component scenes must be the closest relevant Godot builtin node type that matches the component's core purpose: For example, if the component uses a `Timer` and no other nodes, then the root node must be a `Timer` instead of `Node` with a `Timer` child.
-	- Components that do not have any visual features must use `Node` as the root node instead of `Node2D`
+	- Basic components that don't need a specific builtin node and don't have any visual features must use `Node` as the root node instead of `Node2D`
 	- If a single specialized node component needs to be changed to include more subnodes, consider refactoring the root to a `Node` or `Node2D` and make the former root a child of the new root, e.g. `/Timer` -> `/Node/Timer`
 	- If a component has visual child nodes that have position etc. the root node should be `Node2D` to allow offsetting all children from the entity etc.
 - Entities may be any node type with the `Entity.gd` script or one of its subclasses. Entities are just containers for components: Games should not create new entity scripts except in rare unavoidable cases; game-specific functionality should always be implemented as new components. Entity nodes must be added to the `entities` node group. Entities do not have to be just visual/interactive elements: "abstract" concepts such as the "WorldEnvironment" may also be an entity, with components for "Weather", "DayNightCycle", "GlobalBuffs" etc.
