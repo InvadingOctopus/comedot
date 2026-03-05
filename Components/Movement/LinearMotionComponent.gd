@@ -37,7 +37,7 @@ var isMoving: bool = true: ## Set to `false` after reaching the [member maximumD
 #endregion
 
 
-#region signals
+#region Signals
 signal didReachMaximumDistance
 #endregion
 
