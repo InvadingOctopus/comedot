@@ -1,5 +1,6 @@
 ## Applies a knockback to the [CharacterBody2D] of the parent [Entity] when a [GunComponent] fires a bullet.
 ## TIP: Use a [VelocityClampComponent] to prevent the entity from "rocketing" away when too many bullets are fired too quickly.
+## Requirements: [GunComponent]
 
 class_name GunRecoilComponent
 extends CharacterBodyDependentComponentBase
@@ -18,6 +19,9 @@ extends CharacterBodyDependentComponentBase
 
 #region Dependencies
 @onready var gunComponent: GunComponent = coComponents.GunComponent if coComponents.GunComponent else null # TBD: Static or dynamic?
+
+func getRequiredComponents() -> Array[Script]:
+	return [GunComponent, CharacterBodyComponent]
 #endregion
 
 
