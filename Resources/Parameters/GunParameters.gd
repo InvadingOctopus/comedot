@@ -19,7 +19,7 @@ extends Resource
 @export var autoFire: bool = false
 
 ## If `true`, the button input has to be unpressed and pressed again for each bullet. If `false`, keep firing as long as the button input is pressed.
-@export var pressAgainToShoot: bool = false
+@export var shouldPressAgainToShoot: bool = false
 
 ## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
 ## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
