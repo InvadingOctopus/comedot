@@ -10,7 +10,7 @@ extends Resource
 #region Parameters
 
 ## The [Entity] to instantiate a copy of when the Gun shoots.
-@export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
+@export var bulletTemplate: PackedScene # TODO: Enforce `Entity` type
 
 @export var ammo:Stat ## The [Stat] Resource to use as the ammo. If omitted, no ammo is required to fire the gun.
 @export var ammoCost: int = 0 ## The ammo used per shot. 0 == Unlimited ammo. NOTE: A negative number will INCREASE the ammo when firing.
@@ -22,7 +22,7 @@ extends Resource
 @export var shouldPressAgainToShoot: bool = false
 
 ## Add the parent entity's [CharacterBody2D] node's velocity to bullets.
-## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletEntity] should have a [LinearMotionComponent].
+## IMPORTANT: Requires [CharacterBodyComponent] and the [member bulletTemplate] should have a [LinearMotionComponent].
 ## @experimental
 @export var shouldAddEntityVelocity: bool = false
 

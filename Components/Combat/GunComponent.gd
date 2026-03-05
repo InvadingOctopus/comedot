@@ -50,7 +50,7 @@ extends CooldownComponent
 
 ## The [Entity] to instantiate a copy of when the Gun shoots.
 ## Does not necessarily have to be a "bullet": It may be an arrow or rock or any other projectile, even a monster!
-@export var bulletEntity: PackedScene # TODO: Enforce `Entity` type
+@export var bulletTemplate: PackedScene # TODO: Enforce `Entity` type
 
 ## Any node such as a [Marker2D] where newly spawned bullets will be placed placed. Bullets will be added as children of the emitter's parent node.
 ## If omitted, this component's internal "%BulletEmitter" [Marker2D] node is used by default, and bullets will be added to the entity's parent.
@@ -178,8 +178,8 @@ func fire(emitter: Node2D = self.bulletEmitter, ignoreCooldown: bool = false) ->
 	if not isEnabled: return null
 	if isOnCooldown and not ignoreCooldown: return null
 
-	if not bulletEntity:
-		printWarning("No bulletEntity specified!")
+	if not bulletTemplate:
+		printWarning("No bulletTemplate specified!")
 		return null
 
 	# Create a new bullet, but it may fail if there is not enough ammo or any other errors.
@@ -250,7 +250,7 @@ func useAmmo(shouldCheckAmmo: bool = true) -> bool:
 	return true
 
 
-## Decreases the [member ammo] [Stat] and forges a new [member bulletEntity] [Entity].
+## Decreases the [member ammo] [Stat] and forges a new [member bulletTemplate] [Entity].
 ## Does NOT check [member isEnabled] so that external scripts may use this method to create bullets,
 ## NOTE: but will fail if [member shouldUseAmmo] but not [member isEnabled].
 func createBullet(emitter: Node2D = self.bulletEmitter, shouldUseAmmo: bool = true) -> Entity:
@@ -266,10 +266,10 @@ func createBullet(emitter: Node2D = self.bulletEmitter, shouldUseAmmo: bool = tr
 
 	# Forge a new bullet and validate it.
 	# PERFORMANCE: This happens after the ammo check because it's a more expensive task
-	var newBullet: Entity = bulletEntity.instantiate() as Entity
+	var newBullet: Entity = bulletTemplate.instantiate() as Entity
 
 	if not newBullet:
-		printError("Cannot instantiate a new bullet: " + bulletEntity.resource_path)
+		printError("Cannot instantiate a new bullet: " + bulletTemplate.resource_path)
 		return null
 
 	# If we successfully made a bullet, eat the ammo

@@ -7,7 +7,7 @@
 [node name="GunComponent" type="Node2D" unique_id=1091405865 node_paths=PackedStringArray("bulletEmitter") groups=["components"]]
 use_parent_material = true
 script = ExtResource("1_q51oq")
-bulletEntity = ExtResource("2_m76jp")
+bulletTemplate = ExtResource("2_m76jp")
 bulletEmitter = NodePath("GunSprite/BulletEmitter")
 cooldown = 0.5
 metadata/_edit_group_ = true

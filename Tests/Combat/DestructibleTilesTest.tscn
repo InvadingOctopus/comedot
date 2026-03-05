@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 [node name="PlayerEntityTemplate-OverheadCombat" parent="." unique_id=448139783 instance=ExtResource("4_223hs")]
 
 [node name="GunComponent" parent="PlayerEntityTemplate-OverheadCombat" index="9" unique_id=392950478]
-bulletEntity = ExtResource("6_g6vvj")
+bulletTemplate = ExtResource("6_g6vvj")
 cooldown = 0.25
 
 [node name="CooldownTimer" parent="PlayerEntityTemplate-OverheadCombat/GunComponent" index="1" unique_id=621091117]

@@ -135,7 +135,7 @@ factions = 8
 
 [node name="GunComponent" parent="ArmedMonsterEntity" unique_id=1801695731 instance=ExtResource("15_jt7ij")]
 autoFire = true
-bulletEntity = ExtResource("15_lbdmr")
+bulletTemplate = ExtResource("15_lbdmr")
 cooldown = 3.0
 
 [node name="InputComponent" parent="ArmedMonsterEntity" unique_id=1081696626 instance=ExtResource("17_446ob")]
