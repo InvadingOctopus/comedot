@@ -161,6 +161,7 @@ var shouldSuppressMouseMotion: bool = false:
 
 ## Emitted when an [InputEvent] includes one of the [member inputActionsToMonitor] and the list of [member inputActionsPressed] is updated.
 ## NOTE: BEFORE [signal didProcessInput].
+## NOTE: Emitted with a `null` [param event] on [method _ready] to let dependent components sync with the input state of buttons etc. that were held BEFORE the first update.
 signal didUpdateInputActionsList(event: InputEvent)
 
 ## Emitted after an [InputEvent] has been fully processed and all state properties have been updated.
@@ -189,8 +190,9 @@ signal didToggleMouseSuppression(shouldSuppressMouse: bool)
 #region Initialization
 
 func _ready() -> void:
-	processMonitoredInputActions() # Update the input actions that were pressed/released BEFORE this component is ready.
 	setAllProcess() # Apply setters because Godot doesn't on initialization
+	processMonitoredInputActions() # Sync with the input actions that were pressed/released BEFORE this component is ready.
+	didUpdateInputActionsList.emit.call_deferred(null) # Emit a "dummy" signal to let other components sync with the input state before the first update. Defer the call to help it be independent of node _ready() order
 
 
 ## Enables or disables the per-frame and event processing according to the various flags.
