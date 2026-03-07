@@ -31,21 +31,19 @@ signal didExecute(source:  Variant, target: Variant, result: Variant)
 ## Called by other objects to execute, perform, or apply the actual effect of this Payload, such as a [CollectorComponent] picking up a [CollectibleComponent].
 ## NOTE: This method does NOT contain any actual implementation or effect; it is only the interface for other objects to call.
 ## A subclass which `extends Payload` (such as [ScriptPayload]) MUST implement the [method executeImplementation].
+## Returns: The result of the Payload.
 func execute(source: Variant, target: Variant) -> Variant:
 	# printLog(str("execute() source: ", source, " target: ", target)) # Logged by subclasses.
-	
-	var result: Variant = false
-	
-	# Let a subclass implement this.
-	result = executeImplementation(source, target)
+
+	# Let a subclass implement exactly how a Payload executes, such as ScriptPayload etc.
+	var result: Variant = executeImplementation(source, target)
 
 	# NOTE: The `willExecute` signal must be emitted by subclasses, if their requirements are met.
 	
 	if Tools.checkResult(result): # Must not be `null` and not `false` and not an empty Array or Dictionary.
 		self.didExecute.emit(source, target, result)
-		return result
-	else:
-		return false # TBD: Should we return `null`?
+
+	return result # NOTE: Return the ACTUAL result as-is, not `false` on a failure!
 
 
 ## The actual code which performs the actual action or effect of the Payload.
