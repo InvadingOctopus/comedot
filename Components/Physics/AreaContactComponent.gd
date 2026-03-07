@@ -21,8 +21,15 @@ extends AreaCollisionComponent
 
 
 #region State
+
 var areasInContact:  Array[Area2D] ## A list of [Area2D]s currently in collision contact.
 var bodiesInContact: Array[Node2D] ## A list of [PhysicsBody2D]s OR [TileMapLayer]s currently in collision contact.
+
+
+func setIsEnabled(newValue: bool) -> void:
+	super.setIsEnabled(newValue)
+	if isEnabled: resetContactLists()
+
 #endregion
 
 
@@ -33,13 +40,13 @@ func _ready() -> void:
 	# because they may connect to signals later in their own _ready() if they're ordered lower on the scene tree,
 	# so we call_deferred() instead of right away.
 	# CHECK: Is this correct/reliable?
-	readdAllContacts.call_deferred()
+	resetContactLists.call_deferred()
 
 
 ## Clears the [member areasInContact] & [member bodiesInContact] arrays and re-adds all [Area2D]s, [PhysicsBody2D]s or [TileMapLayer]s that are currently in contact with the [Area2D] of this component.
-## If not [member isEnabled], the lists are cleared but no node are added. Affected by [member shouldMonitorAreas] and [member shouldMonitorBodies].
-## NOTE: [signal didEnterArea], [signal didEnterBody] & [method onCollide] are called from here allow other scripts to react to any existing physical contact.
-func readdAllContacts() -> void:
+## If not [member isEnabled], the lists are cleared but no nodes are added. Affected by [member shouldMonitorAreas] and [member shouldMonitorBodies].
+## NOTE: [signal didEnterArea], [signal didEnterBody] & [method onCollide] wtc. are called from here allow other scripts to react to any existing physical contact.
+func resetContactLists() -> void:
 	# NOTE: Clear the list but don't add new areas/bodies if not enabled.
 	# Because that seems like it would be the expected behavior.
 	self.areasInContact.clear()
@@ -50,26 +57,46 @@ func readdAllContacts() -> void:
 	# Signals should be emitted for existing overlaps, so that other scripts can react.
 	# like picking up a collectible item if we were already standing on it. (not that CollectibleComponent uses AreaContactComponent :')
 
-	# NOTE: Start from the beginning of the event/signal chain: on*Entered() which calls onCollide() & didEnter*
-	# so subclasses may override at any point.
+	# For each node, just call the beginning of the event/signal chain: on*Entered()
+	# which calls all the other functions, so subclasses can override at any "hook"
 
 	if shouldMonitorAreas:
 		for overlappingArea in area.get_overlapping_areas():
-			if not (overlappingArea == parentEntity or overlappingArea.owner == parentEntity) \
-			and (groupToInclude.is_empty() or overlappingArea.is_in_group(groupToInclude)):
-				self.onAreaEntered(overlappingArea) # also calls the functions below:
-				# areasInContact.append(overlappingArea)
-				# self.onCollide(overlappingArea)
-				# self.didEnterArea.emit(overlappingArea)
+			self.onAreaEntered(overlappingArea) # also calls:
+			# shouldIncludeArea(overlappingArea)
+			# areasInContact.append(overlappingArea)
+			# self.onCollide(overlappingArea)
+			# self.didEnterArea.emit(overlappingArea)
 
 	if shouldMonitorBodies:
 		for overlappingBody in area.get_overlapping_bodies():
-			if not (overlappingBody == parentEntity or overlappingBody.owner == parentEntity) \
-			and (groupToInclude.is_empty() or overlappingBody.is_in_group(groupToInclude)):
-				self.onBodyEntered(overlappingBody) # also calls the functions below:
-				# bodiesInContact.append(overlappingBody)
-				# self.onCollide(overlappingBody)
-				# self.didEnterBody.emit(overlappingBody)
+			self.onBodyEntered(overlappingBody) # also calls:
+			# shouldIncludeBody(overlappingBody)
+			# bodiesInContact.append(overlappingBody)
+			# self.onCollide(overlappingBody)
+			# self.didEnterBody.emit(overlappingBody)
+
+
+#region Validation
+
+## Checks if an [Area2D] matches the criteria for being included in [areasInContact]
+## Subclasses may override this function to specify different conditions.
+## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorAreas] or [isEnabled] or duplicate areas already in [areasInContact]
+func shouldIncludeArea(areaToCheck: Area2D) -> bool:
+	# TBD: Use .get_parent() instead of .owner?
+	return  not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck)) \
+			and (groupToInclude.is_empty()   or areaToCheck.is_in_group(groupToInclude))
+
+
+## Checks if a [PhysicsBody2D] or [TileMapLayer] matches the criteria for being included in [bodiesInContact]
+## Subclasses may override this function to specify different conditions.
+## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorBodies] or [isEnabled] or duplicate bodies already in [bodiesInContact]
+func shouldIncludeBody(bodyToCheck: Node2D) -> bool:
+	# TBD: Use .get_parent() instead of .owner?
+	return  not (bodyToCheck == parentEntity or parentEntity.is_ancestor_of(bodyToCheck)) \
+			and (groupToInclude.is_empty()   or bodyToCheck.is_in_group(groupToInclude))
+
+#endregion
 
 
 #region Events
@@ -81,9 +108,7 @@ func readdAllContacts() -> void:
 
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled or not shouldMonitorAreas \
-	or (areaEntered == parentEntity or areaEntered.owner == parentEntity) \
-	or (not groupToInclude.is_empty() and not areaEntered.is_in_group(groupToInclude)): return
+	if not isEnabled or not shouldMonitorAreas or not shouldIncludeArea(areaEntered): return
 
 	if debugMode:
 		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
@@ -98,9 +123,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 
 
 func onBodyEntered(bodyEntered: Node2D) -> void:
-	if not isEnabled or not shouldMonitorBodies \
-	or bodyEntered == parentEntity or bodyEntered.owner == parentEntity \
-	or (not groupToInclude.is_empty() and not bodyEntered.is_in_group(groupToInclude)): return
+	if not isEnabled or not shouldMonitorBodies or not shouldIncludeBody(bodyEntered): return
 
 	if debugMode:
 		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
