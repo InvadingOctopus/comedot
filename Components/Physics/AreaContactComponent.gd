@@ -83,7 +83,6 @@ func resetContactLists() -> void:
 ## Subclasses may override this function to specify different conditions.
 ## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorAreas] or [isEnabled] or duplicate areas already in [areasInContact]
 func shouldIncludeArea(areaToCheck: Area2D) -> bool:
-	# TBD: Use .get_parent() instead of .owner?
 	return  not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck)) \
 			and (groupToInclude.is_empty()   or areaToCheck.is_in_group(groupToInclude))
 
@@ -92,7 +91,6 @@ func shouldIncludeArea(areaToCheck: Area2D) -> bool:
 ## Subclasses may override this function to specify different conditions.
 ## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorBodies] or [isEnabled] or duplicate bodies already in [bodiesInContact]
 func shouldIncludeBody(bodyToCheck: Node2D) -> bool:
-	# TBD: Use .get_parent() instead of .owner?
 	return  not (bodyToCheck == parentEntity or parentEntity.is_ancestor_of(bodyToCheck)) \
 			and (groupToInclude.is_empty()   or bodyToCheck.is_in_group(groupToInclude))
 

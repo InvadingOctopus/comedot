@@ -56,16 +56,14 @@ func _ready() -> void:
 ## Subclasses may override this function to specify different conditions.
 ## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorAreas] or [isEnabled]
 func shouldIncludeArea(areaToCheck: Area2D) -> bool:
-	# TBD: Use .get_parent() instead of .owner?
-	return  not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck))
+	return not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck))
 
 
 ## Checks if a [PhysicsBody2D] or [TileMapLayer] matches the criteria for emitting [method onCollide]/[signal didEnterBody]/[signal didExitBody] for.
 ## Subclasses may override this function to specify different conditions.
 ## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorBodies] or [isEnabled]
 func shouldIncludeBody(bodyToCheck: Node2D) -> bool:
-	# TBD: Use .get_parent() instead of .owner?
-	return  not (bodyToCheck == parentEntity or parentEntity.is_ancestor_of(bodyToCheck))
+	return not (bodyToCheck == parentEntity or parentEntity.is_ancestor_of(bodyToCheck))
 
 #endregion
 
