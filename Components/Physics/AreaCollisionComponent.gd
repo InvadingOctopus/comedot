@@ -13,17 +13,22 @@ extends AreaComponentBase
 
 #region Parameters
 
-## If `false`, no new areas/bodies are reported.
+## If `false`, no new collisiones are reported.
 ## Also effects [member Area2D.monitorable] but NOT [member Area2D.monitoring]
 ## NOTE: Does NOT affect the EXIT signals or REMOVAL of areas/bodies which leave contact with this component.
-@export var isEnabled: bool = true:
-	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			if  area: # TBD: Only/also use selfAsArea?
-				# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-				area.set_deferred(&"monitorable", newValue)
-				# area.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
+@export var isEnabled: bool = true: # TBD: Move to AreaComponentBase?
+	set = setIsEnabled # Use a separate function for the property setter so that subclasses may override it.
+
+## Property setter for [member isEnabled] as a separate function to let subclasses override it.
+## IMPORTANT: Subclasses MUST call super.setIsEnabled(newValue)
+func setIsEnabled(newValue: bool) -> void:
+	if newValue != isEnabled:
+		isEnabled = newValue
+		if  area: # TBD: Only/also use selfAsArea?
+			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			area.set_deferred(&"monitorable", newValue)
+			# area.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
+
 
 @export var shouldMonitorAreas:  bool = true ## If `false` no [Area2D]s are monitored when entering or exiting.
 @export var shouldMonitorBodies: bool = true ## If `false` no [PhysicsBody2D]s or [TileMapLayer]s are monitored when entering or exiting.
@@ -34,15 +39,35 @@ extends AreaComponentBase
 
 #region Signals
 signal didEnterArea(area: Area2D) ## This signal is also emitted for each [Area2D] that was ALREADY in contact when this component is [method _ready]. NOTE: Emitted AFTER [method onCollide]
-signal didExitArea(area:  Area2D) ## NOTE: Emitted AFTER [method onExit]
+signal didExitArea (area: Area2D) ## NOTE: Emitted AFTER [method onExit]
 signal didEnterBody(body: Node2D) ## This signal is also emitted for each [PhysicsBody2D] OR [TileMapLayer] that was ALREADY in contact when this component is [method _ready]. NOTE: Emitted AFTER [method onCollide]
-signal didExitBody(body:  Node2D) ## NOTE: Emitted AFTER [method onExit]
+signal didExitBody (body: Node2D) ## NOTE: Emitted AFTER [method onExit]
 #endregion
 
 
 func _ready() -> void:
 	if area: area.monitorable = isEnabled # Apply setter because Godot doesn't on initialization
 	if shouldConnectSignalsOnReady: connectSignals()
+
+
+#region Validation
+
+## Checks if an [Area2D] matches the criteria for emitting [method onCollide]/[signal didEnterArea]/[signal didExitArea] for.
+## Subclasses may override this function to specify different conditions.
+## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorAreas] or [isEnabled]
+func shouldIncludeArea(areaToCheck: Area2D) -> bool:
+	# TBD: Use .get_parent() instead of .owner?
+	return  not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck))
+
+
+## Checks if a [PhysicsBody2D] or [TileMapLayer] matches the criteria for emitting [method onCollide]/[signal didEnterBody]/[signal didExitBody] for.
+## Subclasses may override this function to specify different conditions.
+## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorBodies] or [isEnabled]
+func shouldIncludeBody(bodyToCheck: Node2D) -> bool:
+	# TBD: Use .get_parent() instead of .owner?
+	return  not (bodyToCheck == parentEntity or parentEntity.is_ancestor_of(bodyToCheck))
+
+#endregion
 
 
 #region Events
@@ -59,14 +84,14 @@ func connectSignals() -> void:
 		Tools.connectSignal(area.body_exited,  self.onBodyExited)
 
 
-# DESIGN: All functions below: Ignore collisions when the node is the parent Entity or any of its children.
+# DESIGN: All functions below: Ignore collisions when the node is the parent Entity or any of its sub/children.
 # TBD: Should removals skip the parent check?
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	if debugMode:
 		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
 		emitDebugBubble(str("IN:", areaEntered, "\n", areaEntered.owner), Color.YELLOW)
-	if not isEnabled or not shouldMonitorAreas or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return 
+	if not isEnabled or not shouldMonitorAreas or not shouldIncludeArea(areaEntered): return 
 	self.onCollide(areaEntered)
 	didEnterArea.emit(areaEntered)
 
@@ -75,7 +100,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 	if debugMode:
 		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
 		emitDebugBubble(str("IN:", bodyEntered, "\n", bodyEntered.owner), Color.YELLOW)
-	if not isEnabled or not shouldMonitorBodies or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
+	if not isEnabled or not shouldMonitorBodies or not shouldIncludeBody(bodyEntered): return
 	self.onCollide(bodyEntered)
 	didEnterBody.emit(bodyEntered)
 
@@ -85,7 +110,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 	if debugMode:
 		printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
 		emitDebugBubble(str("OUT:", areaExited, "\n", areaExited.owner), Color.ORANGE)
-	if not shouldMonitorAreas or areaExited == self.parentEntity or areaExited.owner == self.parentEntity: return
+	if not shouldMonitorAreas or not shouldIncludeArea(areaExited): return
 	self.onExit(areaExited)
 	didExitArea.emit(areaExited)
 
@@ -95,7 +120,7 @@ func onBodyExited(bodyExited: Node2D) -> void:
 	if debugMode:
 		printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
 		emitDebugBubble(str("OUT:", bodyExited, "\n", bodyExited.owner), Color.ORANGE)
-	if not shouldMonitorBodies or bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
+	if not shouldMonitorBodies or not shouldIncludeBody(bodyExited): return
 	self.onExit(bodyExited)
 	didExitBody.emit(bodyExited)
 
