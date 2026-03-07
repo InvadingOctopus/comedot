@@ -109,7 +109,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	if not isEnabled or not shouldMonitorAreas or not shouldIncludeArea(areaEntered): return
 
 	if debugMode:
-		printDebug(str("areaEntered: ", areaEntered, ", owner: ", areaEntered.owner))
+		printDebug(str("onAreaEntered(): ", areaEntered, ", owner: ", areaEntered.owner))
 		emitDebugBubble(str("IN:", areaEntered, "\n", areaEntered.owner), Color.YELLOW)
 
 	# If the node is already in the list, then that's a weird situation, but we must still emit the other signals because the physics event is real.
@@ -124,7 +124,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 	if not isEnabled or not shouldMonitorBodies or not shouldIncludeBody(bodyEntered): return
 
 	if debugMode:
-		printDebug(str("bodyEntered: ", bodyEntered, ", owner: ", bodyEntered.owner))
+		printDebug(str("onBodyEntered(): ", bodyEntered, ", owner: ", bodyEntered.owner))
 		emitDebugBubble(str("IN:", bodyEntered, "\n", bodyEntered.owner), Color.YELLOW)
 
 	# If the node is already in the list, then that's a weird situation, but we must still emit the other signals because the physics event is real.
@@ -140,7 +140,7 @@ func onBodyEntered(bodyEntered: Node2D) -> void:
 func onAreaExited(areaExited: Area2D) -> void:
 	if not shouldMonitorAreas or not areasInContact.has(areaExited): return
 	if debugMode:
-		printDebug(str("areaExited: ", areaExited, ", owner: ", areaExited.owner))
+		printDebug(str("onAreaExited(): ", areaExited, ", owner: ", areaExited.owner))
 		emitDebugBubble(str("OUT:", areaExited, "\n", areaExited.owner), Color.ORANGE)
 
 	areasInContact.erase(areaExited)
@@ -153,7 +153,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 func onBodyExited(bodyExited: Node2D) -> void:
 	if not shouldMonitorBodies or not bodiesInContact.has(bodyExited): return
 	if debugMode:
-		printDebug(str("bodyExited: ", bodyExited, ", owner: ", bodyExited.owner))
+		printDebug(str("onBodyExited(): ", bodyExited, ", owner: ", bodyExited.owner))
 		emitDebugBubble(str("OUT:", bodyExited, "\n", bodyExited.owner), Color.ORANGE)
 
 	bodiesInContact.erase(bodyExited)
