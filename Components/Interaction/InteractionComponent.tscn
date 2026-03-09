@@ -9,11 +9,12 @@ radius = 16.0
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_bx3kd")
+shouldMonitorBodies = false
 metadata/_edit_group_ = true
 
 [node name="InteractionShape" type="CollisionShape2D" parent="." unique_id=254682034]
 shape = SubResource("CircleShape2D_ieqsb")
 debug_color = Color(0.76, 0.56, 0.8, 0.392157)
 
-[connection signal="area_entered" from="." to="." method="onArea_entered"]
-[connection signal="area_exited" from="." to="." method="onArea_exited"]
+[connection signal="area_entered" from="." to="." method="onAreaEntered"]
+[connection signal="area_exited" from="." to="." method="onAreaExited"]
