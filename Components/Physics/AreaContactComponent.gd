@@ -28,7 +28,7 @@ var bodiesInContact: Array[Node2D] ## A list of [PhysicsBody2D]s OR [TileMapLaye
 
 func setIsEnabled(newValue: bool) -> void:
 	super.setIsEnabled(newValue)
-	if isEnabled: resetContactLists()
+	if isEnabled and self.is_node_ready(): resetContactLists() # Get the existing touchies when we're re-enabled
 
 #endregion
 
