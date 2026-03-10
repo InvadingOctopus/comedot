@@ -74,7 +74,7 @@ signal didEnterInteractionArea	(entity: Entity, interactionControlComponent: Int
 signal didExitInteractionArea	(entity: Entity, interactionControlComponent: InteractionControlComponent)
 signal didDenyInteraction		(interactorEntity: Entity)
 signal willPerformInteraction	(interactorEntity: Entity)
-signal didPerformInteraction	(result: Variant) ## Contains the result of the [Payload] or `null` if no Payload.
+signal didPerformInteraction	(interactorEntity: Entity, result: Variant) ## Contains the result of the [Payload] or `null` if no Payload.
 #endregion
 
 
@@ -192,7 +192,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	if payload or allowNoPayload: # TBD: Emit signals even if no `payload` & no `allowNoPayload`?
 		self.willPerformInteraction.emit(interactorEntity)
 		result = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
-		self.didPerformInteraction.emit(result) # TBD: Make it the same as the function result, i.e. `true` if missing & `allowNoPayload`?
+		self.didPerformInteraction.emit(interactorEntity, result) # TBD: Make it the same as the function result, i.e. `true` if missing & `allowNoPayload`?
 
 	# DESIGN: Return `true` if missing & allowNoPayload, to let components like [TextInteractionComponent] be their own payload.
 	if   payload:		 return result
