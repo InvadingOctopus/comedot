@@ -103,6 +103,7 @@ The commit message content should be a bullet list, using this notation for the 
 - A minus sign for removal of properties/methods deleted from a class/type/file.
 ! An exclamation sign for high impact fixes or the most important changes in the commit.
 ? A question mark for some comments such as possible bugs, uncertain behavior, "TBD" (To Be Decided) remarks, etc.
+! TODO: An exclamation sign + `TODO:` etc. for updating dependents etc. affected by this commit, to be included in the following next commits, especially if this commit leaves the project in a broken state.
 
 For PRs:
 - The submitter should describe the gameplay impact and affected components/scenes.
