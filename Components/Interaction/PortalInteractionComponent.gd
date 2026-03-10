@@ -1,4 +1,5 @@
-## A door or teleporter.
+## A subclass of [InteractionComponent] specialized for doors or teleporters etc.
+## [member payload] may be used to require a key etc. or be omitted via [member allowNoPayload]
 
 class_name PortalInteractionComponent
 extends InteractionComponent
@@ -10,8 +11,11 @@ extends InteractionComponent
 #endregion
 
 
-## Returns the updated [member Ndoe2D.global_position] of the interactor [Entity].
-@warning_ignore("unused_parameter")
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Vector2:
-	interactorEntity.global_position = destinationNode.global_position
-	return interactorEntity.global_position
+func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
+	return super.requestToInteract(interactorEntity, interactionControlComponent) \
+		and is_instance_valid(destinationNode)
+
+
+func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
+	if Tools.checkResult(result) or (allowNoPayload and not payload):
+		interactorEntity.global_position = destinationNode.global_position
