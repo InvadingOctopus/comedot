@@ -6,6 +6,7 @@
 class_name InteractionControlComponent
 extends CooldownComponent
 
+# TODO: Inherit from AreaContactComponent
 # TODO: Update indicator only on collision events.
 # TBD:  Check interaction success?
 
@@ -20,7 +21,7 @@ extends CooldownComponent
 @export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
 @export_range(0.0, 60.0, 0.1) var cooldownOnFailure: float = 0.5
 
-@export var interactionIndicator: Node ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
+@export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
 @export var isEnabled: bool = true:
 	set(newValue):
@@ -30,6 +31,7 @@ extends CooldownComponent
 			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
 			selfAsArea.set_deferred(&"monitoring",  isEnabled)
 			selfAsArea.set_deferred(&"monitorable", isEnabled)
+		# TODO: Update interactionsInRange when re-enabled
 		updateIndicator()
 
 #endregion
@@ -77,7 +79,7 @@ func onArea_entered(area: Area2D) -> void:
 
 	printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
 
-	self.interactionsInRange.append(interactionComponent)
+	self.interactionsInRange.append(interactionComponent) # TBD: Check for existing duplicates?
 	updateIndicator()
 	didEnterInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
@@ -89,7 +91,7 @@ func onArea_exited(area: Area2D) -> void:
 
 	printDebug(self.logName + " onArea_exited: " + str(interactionComponent))
 
-	self.interactionsInRange.erase(interactionComponent)
+	self.interactionsInRange.erase(interactionComponent) # TBD: Check for duplicates?
 	updateIndicator()
 	didExitInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
@@ -114,10 +116,12 @@ func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or 
 
 ## Interacts with all [InteractionComponent]s in collision contact, and starts the cooldown if any interaction succeeded,
 ## or the [member cooldownOnFailure] if no interaction succeeded.
-## "Success" is determined by [method Tools.checkResult] (i.e. not null, not false, not empty)
+## "Success" is determined by [method Tools.checkResult] i.e. not `null`, not `false`, not `empty`
+## If [param continueOnFailure] is `false` then the first failure prevents the remaining interactions from being performed.
 ## TIP: To interact with a single [InteractionComponent], call [method interact].
+## ALERT: BUGRISK: If an interaction moves the entity, like [PortalInteractionComponent], this method will continue interacting with all the interactions from the previous location!
 ## Returns: Number of successful interactions.
-func interactAll() -> int:
+func interactAll(continueOnFailure: bool = true) -> int:
 	# NOTE: TBD: If there are multiple interactions within range,
 	# should they all be processed within a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
@@ -126,29 +130,35 @@ func interactAll() -> int:
 
 	var count:		int = 0
 	var successes:	int = 0
-	var cooldowns:	int = 0 # The number of InteractionComponent with shouldSkipInteractorCooldown
+	var cooldowns:	int = 0 # The number of InteractionComponent with `shouldSkipInteractorCooldown`
 	var failureCooldowns: int = 0
-	
-	for interactionComponent in self.interactionsInRange:
+
+	for interactionComponent in self.interactionsInRange: # TBD: Keep updating `interactionsInRange` after each interaction in case an interaction moves the entity, like PortalInteractionComponent?
+		# Ask each interaction if it's ready and ok with us
 		if interactionComponent.requestToInteract(self.parentEntity, self):
-			count += 1 # TBD: Increase counter at start or end?
-			if debugMode: printDebug(str("interact() ", count, " of ", maximumSimultaneousInteractions))
+			if debugMode: printDebug(str("interact() ", count + 1, " of ", maximumSimultaneousInteractions))
 
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
 			
-			if Tools.checkResult(result):
+			count += 1 # TBD: Increase counter at start or end?
+			self.didPerformInteraction.emit(result) # NOTE: Always emit the raw result even on failures
+			
+			if Tools.checkResult(result): # TODO: Add shouldSucceedIfNoPayload for "reactions" or whatever
 				successes += 1
 				if not interactionComponent.shouldSkipInteractorCooldown: cooldowns += 1
-			elif not interactionComponent.shouldSkipInteractorCooldown: # Did we fail and the Interaction allows cooldown? Then it's a `cooldownOnFailure`
+			elif not interactionComponent.shouldSkipInteractorCooldown: # Did we fail and the interaction allows cooldown? Then it's a `cooldownOnFailure`
 				failureCooldowns += 1
+				if not continueOnFailure: break 
 
-			self.didPerformInteraction.emit(result)
-			
 			if count >= maximumSimultaneousInteractions:
 				# NOTE: Log skips in case `maximumSimultaneousInteractions` causes unexpected behavior that seems like bugs!
 				if debugMode: printLog(str("BREAK: Performed ", count, " >= maximumSimultaneousInteractions: ", maximumSimultaneousInteractions, ", interactionsInRange: ", interactionsInRange.size(), ", SKIPPING ", interactionsInRange.size() - count))
 				break
+
+		elif not interactionComponent.shouldSkipInteractorCooldown: # TBD: Treat a rejection as a failure too?
+				failureCooldowns += 1
+				if not continueOnFailure: break
 
 	if debugMode: printDebug(str("successes: ", successes, ", cooldowns: ", cooldowns, ", failureCooldowns: ", failureCooldowns))
 
@@ -176,12 +186,19 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 		self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 		var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
 		if debugMode: printLog(str("Result: ", result, ", cooldown: ", self.cooldown if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
-		if not interactionComponent.shouldSkipInteractorCooldown: startCooldown()
+
+		# Start the regular cooldown or the failure cooldown or neither?
+		if not interactionComponent.shouldSkipInteractorCooldown:
+			if Tools.checkResult(result): startCooldown()
+			elif shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
+
 		self.didPerformInteraction.emit(result)
 		return result
+
 	else:
 		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
-		if not interactionComponent.shouldSkipInteractorCooldown: startCooldown(cooldownOnFailure)
+		if self.shouldCooldownOnFailure and not interactionComponent.shouldSkipInteractorCooldown: startCooldown(cooldownOnFailure)
+
 	return null
 
 #endregion
@@ -191,14 +208,12 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 
 func startCooldown(overrideTime: float = self.cooldownWithModifier, restartIfOnCooldown: bool = false) -> void:
 	super.startCooldown(overrideTime, restartIfOnCooldown)
-	# Reduce the alpha
-	if interactionIndicator: interactionIndicator.modulate.a = 0.1
+	if interactionIndicator: interactionIndicator.modulate.a = 0.1 # Fade while unusable
 
 
 func finishCooldown() -> void:
 	super.finishCooldown()
-	# Restore the alpha
-	if interactionIndicator: interactionIndicator.modulate.a = 1.0
+	if interactionIndicator: interactionIndicator.modulate.a = 1.0 # Fade in # TBD: Remember previous un-faded opacity?
 
 #endregion
 
