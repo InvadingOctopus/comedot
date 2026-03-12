@@ -137,7 +137,7 @@ func shouldIncludeBody(_bodyToCheck: Node2D) -> bool:
 func onCollide(collidingNode: Node2D) -> void:
 	var interactionControlComponent: InteractionControlComponent = collidingNode.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
-	if debugMode: printDebug(str("onAreaEntered(): ", collidingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity if interactionControlComponent else "null", ", isAutomatic: ", isAutomatic))
+	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity, ", isAutomatic: ", isAutomatic))
 	
 	if self.interactionIndicator: updateIndicator() # Display the indicators and labels, if any
 	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
@@ -147,10 +147,9 @@ func onCollide(collidingNode: Node2D) -> void:
 ## Handles collisions with [InteractionControlComponent]
 func onExit(exitingNode: Node2D) -> void:
 	# NOTE: Exits should not check isEnabled to ensure cleanups are always performed.
-
 	var interactionControlComponent: InteractionControlComponent = exitingNode.get_node(^".") as InteractionControlComponent # HACK: Find better way to cast self?
 	if not interactionControlComponent: return
-	if debugMode: printDebug(str("onAreaExited(): ", exitingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity if interactionControlComponent else "null"))
+	if debugMode: printDebug(str("onExit(): ", exitingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity))
 
 	if self.interactionIndicator: updateIndicator() # Hide the indicators and labels.
 	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
