@@ -1,13 +1,21 @@
 [gd_scene format=3 uid="uid://bpul2g7ruucqk"]
 
 [ext_resource type="Script" uid="uid://cvewbwci5t0q" path="res://Components/Gameplay/CooldownComponent.gd" id="1_8iofe"]
+[ext_resource type="PackedScene" uid="uid://5c6fjvrw0w4a" path="res://Scenes/Gameplay/CooldownTimer.tscn" id="2_4t4vb"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="3_qnfer"]
+
+[sub_resource type="Resource" id="Resource_qnfer"]
+resource_local_to_scene = true
+script = ExtResource("3_qnfer")
+max = 60000
+value = 1000
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="CooldownComponent" type="Node" unique_id=618686078 groups=["components"]]
 script = ExtResource("1_8iofe")
 metadata/_edit_group_ = true
 
-[node name="CooldownTimer" type="Timer" parent="." unique_id=1230612684]
-wait_time = 3.0
-one_shot = true
-
-[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]
+[node name="CooldownTimer" parent="." unique_id=57790064 instance=ExtResource("2_4t4vb")]
+cooldownMilliseconds = SubResource("Resource_qnfer")

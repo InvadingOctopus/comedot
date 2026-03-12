@@ -3,13 +3,23 @@
 [ext_resource type="Script" uid="uid://c4utn28cxq3h7" path="res://Components/Combat/GunComponent.gd" id="1_q51oq"]
 [ext_resource type="PackedScene" uid="uid://3ousmbcfyuac" path="res://Templates/Entities/BulletEntityTemplate.tscn" id="2_m76jp"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_snrc7"]
+[ext_resource type="PackedScene" uid="uid://5c6fjvrw0w4a" path="res://Scenes/Gameplay/CooldownTimer.tscn" id="4_vlkke"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="5_3eilu"]
+
+[sub_resource type="Resource" id="Resource_vlkke"]
+resource_local_to_scene = true
+script = ExtResource("5_3eilu")
+max = 10000
+value = 500
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="GunComponent" type="Node2D" unique_id=1091405865 node_paths=PackedStringArray("bulletEmitter") groups=["components"]]
 use_parent_material = true
 script = ExtResource("1_q51oq")
 bulletTemplate = ExtResource("2_m76jp")
 bulletEmitter = NodePath("GunSprite/BulletEmitter")
-cooldown = 0.5
 metadata/_edit_group_ = true
 
 [node name="GunSprite" type="Sprite2D" parent="." unique_id=750546687]
@@ -24,8 +34,5 @@ unique_name_in_owner = true
 position = Vector2(8, 0)
 gizmo_extents = 20.0
 
-[node name="CooldownTimer" type="Timer" parent="." unique_id=621091117]
-wait_time = 0.5
-one_shot = true
-
-[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]
+[node name="CooldownTimer" parent="." unique_id=57790064 instance=ExtResource("4_vlkke")]
+cooldownMilliseconds = SubResource("Resource_vlkke")

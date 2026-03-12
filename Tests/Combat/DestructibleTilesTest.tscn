@@ -4,8 +4,18 @@
 [ext_resource type="TileSet" uid="uid://emoyueri5hos" path="res://Assets/Tiles/Kenney1Bit-Colored-Physics.tres" id="2_7rv1j"]
 [ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="3_crwg5"]
 [ext_resource type="PackedScene" uid="uid://bfxsrq5vvp0de" path="res://Templates/Entities/PlayerEntityTemplate-OverheadCombat.tscn" id="4_223hs"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="5_223hs"]
 [ext_resource type="PackedScene" uid="uid://dx0iq5k22enrr" path="res://Tests/Combat/TileDamageBullet.tscn" id="6_g6vvj"]
 [ext_resource type="PackedScene" uid="uid://b0530vu7n5mri" path="res://Components/Physics/TileCollisionComponent.tscn" id="8_s07v7"]
+
+[sub_resource type="Resource" id="Resource_eugu1"]
+resource_local_to_scene = true
+script = ExtResource("5_223hs")
+max = 10000
+value = 250
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="DestructibleTilesTest" type="Node2D" unique_id=1502350910]
 script = ExtResource("1_eugu1")
@@ -23,10 +33,10 @@ metadata/_custom_type_script = "uid://ciflnc7p46rqm"
 
 [node name="GunComponent" parent="PlayerEntityTemplate-OverheadCombat" index="9" unique_id=392950478]
 bulletTemplate = ExtResource("6_g6vvj")
-cooldown = 0.25
 
-[node name="CooldownTimer" parent="PlayerEntityTemplate-OverheadCombat/GunComponent" index="1" unique_id=621091117]
+[node name="CooldownTimer" parent="PlayerEntityTemplate-OverheadCombat/GunComponent" index="1" unique_id=57790064]
 wait_time = 0.25
+cooldownMilliseconds = SubResource("Resource_eugu1")
 
 [node name="MouseRotationComponent" parent="PlayerEntityTemplate-OverheadCombat" index="10" unique_id=2087875808]
 rotationSpeed = 15.0
