@@ -322,8 +322,14 @@
 
 	"Experimental Tag": {
 		"prefix": ["@experimental", "experimental"],
-		"body": ["## @experimental$0"],
+		"body": ["## @experimental\n$0"],
 		"description": "Adds a comment to mark a script, method or property as experimental."
+	},
+
+	"Deprecated Tag": {
+		"prefix": ["@deprecated", "deprecated"],
+		"body": ["## @deprecated${1: optional explanation}\n$0"],
+		"description": "Adds a comment to mark a script, method or property as deprecated."
 	},
 
 	"GDScript File Template": {
