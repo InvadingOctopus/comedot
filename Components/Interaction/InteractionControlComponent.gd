@@ -4,11 +4,12 @@
 ## Requirements: This component's node must be an [Area2D]
 
 class_name InteractionControlComponent
-extends CooldownComponent
+extends AreaContactComponent
 
 # TODO: Inherit from AreaContactComponent
 # TODO: Update indicator only on collision events.
 # TBD:  Check interaction success?
+
 
 #region Parameters
 
@@ -23,31 +24,23 @@ extends CooldownComponent
 
 @export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
 
-@export var isEnabled: bool = true:
-	set(newValue):
-		isEnabled = newValue
-		# AVOID: self.visible = isEnabled # Don't hide self in case some child visual effect nodes are present!
-		if  selfAsArea:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			selfAsArea.set_deferred(&"monitoring",  isEnabled)
-			selfAsArea.set_deferred(&"monitorable", isEnabled)
-		# TODO: Update interactionsInRange when re-enabled
-		updateIndicator()
-
 #endregion
 
 
 #region State
 
-var interactionsInRange: Array[InteractionComponent]
+@onready var cooldownTimer: CooldownTimer = $CooldownTimer
 
 var haveInteracionsInRange: bool:
-	get: return self.interactionsInRange.size() >= 1
+	get: return self.areasInContact.size() >= 1
 
-var selfAsArea: Area2D:
-	get:
-		if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
-		return selfAsArea
+func setIsEnabled(newValue: bool) -> void:
+	super.setIsEnabled(newValue)
+	if self.is_node_ready():
+		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+		# UNUSED: Done by AreaCollisionComponent: area.set_deferred(&"monitoring",  isEnabled)
+		area.set_deferred(&"monitorable", isEnabled) # Not done by AreaCollisionComponent
+		updateIndicator()
 
 #endregion
 
@@ -61,43 +54,52 @@ signal didPerformInteraction	(result: Variant)
 
 
 func _ready() -> void:
-	# Set the initial state of the indicator
-	if interactionIndicator:
+	# TODO: Make sure `self.groupToInclude` contains `Global.Groups.interactions` # Just in case the .tscn doesn't get it right
+	super._ready()
+	if  interactionIndicator: # Set the initial state of the indicator
 		interactionIndicator.visible = false
 		updateIndicator()
-	if  selfAsArea: # Apply setter because Godot doesn't on initialization
-		selfAsArea.monitoring  = isEnabled
-		selfAsArea.monitorable = isEnabled
 
 
 #region Area Collision Events
 
-func onArea_entered(area: Area2D) -> void:
-	if not isEnabled: return
-	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
+## Checks if an [Area2D] is an [InteractionComponent]
+## Subclasses may override this function to specify different conditions.
+## ALERT: PERFORMANCE: The default implementation does NOT check [member shouldMonitorAreas] or [isEnabled] or duplicate areas already in [areasInContact]
+func shouldIncludeArea(areaToCheck: Area2D) -> bool:
+	# NOTE: Don't check isEnabled so we can still allow exits
+	return  is_instance_of(areaToCheck, InteractionComponent) \
+			and not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck)) \
+			and (groupToInclude.is_empty() or areaToCheck.is_in_group(groupToInclude))
+
+
+func shouldIncludeBody(_bodyToCheck: Node2D) -> bool:
+	return false # We don't deal in [PhysicsBody2D] or [TileMapLayer] collisions
+
+
+## Handles collisions with [InteractionComponent]
+func onCollide(collidingNode: Node2D) -> void:
+	var interactionComponent: InteractionComponent = collidingNode.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
 	if not interactionComponent: return
+	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", interactionComponent: ", interactionComponent.logNameWithEntity, ", isAutomatic: ", interactionComponent.isAutomatic))
 
-	printDebug(self.logName + " onArea_entered: " + str(interactionComponent))
-
-	self.interactionsInRange.append(interactionComponent) # TBD: Check for existing duplicates?
 	updateIndicator()
 	didEnterInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
 
-func onArea_exited(area: Area2D) -> void:
+## Handles collisions with [InteractionComponent]
+func onExit(exitingNode: Node2D) -> void:
 	# NOTE: Exits should not check isEnabled to ensure cleanups are always performed.
-	var interactionComponent: InteractionComponent = area.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
+	var interactionComponent: InteractionComponent = exitingNode.get_node(^".") as InteractionComponent # HACK: Find better way to cast self?
 	if not interactionComponent: return
+	if debugMode: printDebug(str("onCollide(): ", exitingNode, ", interactionComponent: ", interactionComponent.logNameWithEntity, ", isAutomatic: ", interactionComponent.isAutomatic))
 
-	printDebug(self.logName + " onArea_exited: " + str(interactionComponent))
-
-	self.interactionsInRange.erase(interactionComponent) # TBD: Check for duplicates?
 	updateIndicator()
 	didExitInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
 
 
 func updateIndicator() -> void:
-	if interactionIndicator: 
+	if  interactionIndicator:
 		interactionIndicator.visible = isEnabled and haveInteracionsInRange
 
 #endregion
@@ -107,7 +109,7 @@ func updateIndicator() -> void:
 
 func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or _input()?
 	# TBD: Use InputComponent?
-	if not isEnabled or isOnCooldown or not haveInteracionsInRange: return
+	if not isEnabled or cooldownTimer.isOnCooldown or not haveInteracionsInRange: return
 
 	if Input.is_action_just_pressed(inputEventName):
 		interactAll()
@@ -126,34 +128,36 @@ func interactAll(continueOnFailure: bool = true) -> int:
 	# should they all be processed within a single cooldown?
 	# Or should the first one start the cooldown, causing the other interactions to fail?
 
-	if not isEnabled or isOnCooldown: return 0
+	if not isEnabled or cooldownTimer.isOnCooldown: return 0
 
 	var count:		int = 0
 	var successes:	int = 0
 	var cooldowns:	int = 0 # The number of InteractionComponent with `shouldSkipInteractorCooldown`
 	var failureCooldowns: int = 0
 
-	for interactionComponent in self.interactionsInRange: # TBD: Keep updating `interactionsInRange` after each interaction in case an interaction moves the entity, like PortalInteractionComponent?
+	for interactionComponent in self.areasInContact: # TBD: Keep updating `areasInContact` after each interaction in case an interaction moves the entity, like PortalInteractionComponent?
+		if not is_instance_of(interactionComponent, InteractionComponent): continue # Just in case
+
 		# Ask each interaction if it's ready and ok with us
 		if interactionComponent.requestToInteract(self.parentEntity, self):
 			if debugMode: printDebug(str("interact() ", count + 1, " of ", maximumSimultaneousInteractions))
 
 			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
-			
+
 			count += 1 # TBD: Increase counter at start or end?
 			self.didPerformInteraction.emit(result) # NOTE: Always emit the raw result even on failures
-			
+
 			if Tools.checkResult(result): # TODO: Add shouldSucceedIfNoPayload for "reactions" or whatever
 				successes += 1
 				if not interactionComponent.shouldSkipInteractorCooldown: cooldowns += 1
 			elif not interactionComponent.shouldSkipInteractorCooldown: # Did we fail and the interaction allows cooldown? Then it's a `cooldownOnFailure`
 				failureCooldowns += 1
-				if not continueOnFailure: break 
+				if not continueOnFailure: break
 
 			if count >= maximumSimultaneousInteractions:
 				# NOTE: Log skips in case `maximumSimultaneousInteractions` causes unexpected behavior that seems like bugs!
-				if debugMode: printLog(str("BREAK: Performed ", count, " >= maximumSimultaneousInteractions: ", maximumSimultaneousInteractions, ", interactionsInRange: ", interactionsInRange.size(), ", SKIPPING ", interactionsInRange.size() - count))
+				if debugMode: printLog(str("BREAK: Performed ", count, " >= maximumSimultaneousInteractions: ", maximumSimultaneousInteractions, ", areasInContact: ", areasInContact.size(), ", SKIPPING ", areasInContact.size() - count))
 				break
 
 		elif not interactionComponent.shouldSkipInteractorCooldown: # TBD: Treat a rejection as a failure too?
@@ -164,9 +168,9 @@ func interactAll(continueOnFailure: bool = true) -> int:
 
 	# NOTE: If there is ANY success, enter the "full" cooldown.
 	# If there are no successes and any "failure cooldown" flags, start the "failure" cooldown (which should normally be shorter).
-	
-	if cooldowns > 0: startCooldown()
-	elif shouldCooldownOnFailure and failureCooldowns > 0: startCooldown(cooldownOnFailure) # NOTE: Add a SHORT cooldown on a failed interaction, to prevent UI/network spamming etc.
+
+	if cooldowns > 0: cooldownTimer.startCooldown()
+	elif shouldCooldownOnFailure and failureCooldowns > 0: cooldownTimer.startCooldown(cooldownOnFailure) # NOTE: Add a SHORT cooldown on a failed interaction, to prevent UI/network spamming etc.
 	return successes
 
 
@@ -174,30 +178,30 @@ func interactAll(continueOnFailure: bool = true) -> int:
 ## TIP: To force an interaction even if its [Area2D] is not in range/physics contact, use [param ignoreRange].
 ## TIP: To interact with all [InteractionComponent]s in range, call [method interactAll].
 func interact(interactionComponent: InteractionComponent, ignoreRange: bool = false) -> Variant:
-	if not isEnabled or isOnCooldown: return null
-	
-	if not ignoreRange and not self.interactionsInRange.has(interactionComponent):
+	if not isEnabled or cooldownTimer.isOnCooldown: return null
+
+	if not ignoreRange and not self.areasInContact.has(interactionComponent):
 		printLog(str("Cannot interact, out of range: ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
 		return null
 
 	if debugMode: printLog(str("interact() with ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
-	
+
 	if interactionComponent.requestToInteract(self.parentEntity, self):
 		self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
 		var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
-		if debugMode: printLog(str("Result: ", result, ", cooldown: ", self.cooldown if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
+		if debugMode: printLog(str("Result: ", result, ", cooldown: ", cooldownTimer.cooldownSeconds if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
 
 		# Start the regular cooldown or the failure cooldown or neither?
 		if not interactionComponent.shouldSkipInteractorCooldown:
-			if Tools.checkResult(result): startCooldown()
-			elif shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
+			if Tools.checkResult(result): cooldownTimer.startCooldown()
+			elif shouldCooldownOnFailure: cooldownTimer.startCooldown(cooldownOnFailure)
 
 		self.didPerformInteraction.emit(result)
 		return result
 
 	else:
 		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
-		if self.shouldCooldownOnFailure and not interactionComponent.shouldSkipInteractorCooldown: startCooldown(cooldownOnFailure)
+		if self.shouldCooldownOnFailure and not interactionComponent.shouldSkipInteractorCooldown: cooldownTimer.startCooldown(cooldownOnFailure)
 
 	return null
 
@@ -206,13 +210,13 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 
 #region Cooldown
 
-func startCooldown(overrideTime: float = self.cooldownWithModifier, restartIfOnCooldown: bool = false) -> void:
-	super.startCooldown(overrideTime, restartIfOnCooldown)
+## Called by [method CooldownTimer.startCooldown] and updates the [member interactionIndicator]
+func onCooldownTimer_didStartCooldown(_time: float) -> void:
 	if interactionIndicator: interactionIndicator.modulate.a = 0.1 # Fade while unusable
 
 
-func finishCooldown() -> void:
-	super.finishCooldown()
+## Called by [method CooldownTimer.finishCooldown] and updates the [member interactionIndicator]
+func onCooldownTimer_didFinishCooldown() -> void:
 	if interactionIndicator: interactionIndicator.modulate.a = 1.0 # Fade in # TBD: Remember previous un-faded opacity?
 
 #endregion

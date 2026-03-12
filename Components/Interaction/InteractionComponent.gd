@@ -206,7 +206,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 func performAutomaticInteraction(interactionControlComponent: InteractionControlComponent) -> void:
 	# TODO: Handle InteractionControlComponent cooldown
 	# NOTE: If InteractionComponent.onArea_entered() runs before InteractionControlComponent's collision events,
-	# then the InteractionControlComponent will not have this component in `interactionsInRange` yet
+	# then the InteractionControlComponent will not have this component in `areasInContact` yet
 	# so we must set `ignoreRange` when calling interact()
 	interactionControlComponent.interact(self, true) # ignoreRange # Interact only with me senpai!
 

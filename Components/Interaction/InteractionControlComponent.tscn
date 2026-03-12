@@ -1,24 +1,42 @@
 [gd_scene format=3 uid="uid://qkcschxa5my1"]
 
 [ext_resource type="Script" uid="uid://biw5xapr2dvcr" path="res://Components/Interaction/InteractionControlComponent.gd" id="1_3nqhk"]
+[ext_resource type="PackedScene" uid="uid://5c6fjvrw0w4a" path="res://Scenes/Gameplay/CooldownTimer.tscn" id="2_0frt4"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="3_1pbc0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jn0kx"]
 resource_local_to_scene = true
 radius = 16.0
 
+[sub_resource type="Resource" id="Resource_0frt4"]
+resource_local_to_scene = true
+script = ExtResource("3_1pbc0")
+max = 10000
+value = 500
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
+
 [node name="InteractionControlComponent" type="Area2D" unique_id=1502676897 groups=["components"]]
 collision_layer = 4096
 collision_mask = 4096
 script = ExtResource("1_3nqhk")
+groupToInclude = &"interactions"
+shouldMonitorBodies = false
+shouldCheckGrandparentsForEntity = null
+allowNonEntityParent = null
+debugMode = null
+debugModeTrace = null
 metadata/_edit_group_ = true
 
 [node name="InteractionControlShape" type="CollisionShape2D" parent="." unique_id=218436281]
 shape = SubResource("CircleShape2D_jn0kx")
 debug_color = Color(0.76, 0.56, 0.8, 0.392157)
 
-[node name="CooldownTimer" type="Timer" parent="." unique_id=293018892]
-wait_time = 0.5
+[node name="CooldownTimer" parent="." unique_id=57790064 instance=ExtResource("2_0frt4")]
+cooldownMilliseconds = SubResource("Resource_0frt4")
 
-[connection signal="area_entered" from="." to="." method="onArea_entered"]
-[connection signal="area_exited" from="." to="." method="onArea_exited"]
-[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]
+[connection signal="area_entered" from="." to="." method="onAreaEntered"]
+[connection signal="area_exited" from="." to="." method="onAreaExited"]
+[connection signal="didFinishCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didFinishCooldown"]
+[connection signal="didStartCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didStartCooldown"]
