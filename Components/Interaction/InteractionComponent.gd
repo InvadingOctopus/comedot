@@ -186,15 +186,16 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	# DESIGN: The value in the signal and this function's return value are not the same thing;
 	# the signal contains the "raw" result of the Payload;
 	# but this function may be the result, `true` if missing & `allowNoPayload`, or `null`
-	var result: Variant = null
+	var payloadResult: Variant = null
 
 	if payload or allowNoPayload: # TBD: Emit signals even if no `payload` & no `allowNoPayload`?
 		self.willPerformInteraction.emit(interactorEntity)
-		result = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
-		self.didPerformInteraction.emit(interactorEntity, result) # TBD: Make it the same as the function result, i.e. `true` if missing & `allowNoPayload`?
+		# TBD: Add an executePayload() hook here for subclasses?
+		payloadResult = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
+		self.didPerformInteraction.emit(interactorEntity, payloadResult) # TBD: Make it the same as the function result, i.e. `true` if missing & `allowNoPayload`?
 
 	# DESIGN: Return `true` if missing & allowNoPayload, to let components like [TextInteractionComponent] be their own payload.
-	if   payload:		 return result
+	if   payload:		 return payloadResult
 	elif allowNoPayload: return true
 	else:				 return null # TBD: Return `false` if missing? `null` makes more sense; non-existence or "not-even-wrong"
 
