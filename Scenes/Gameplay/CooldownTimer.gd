@@ -43,7 +43,10 @@ var isOnCooldown: bool:
 
 ## Allows [method startCooldown] to ignore the cooldown ONCE; the function will return without starting the [Timer].
 ## IMPORTANT: This flag is always reset in [method startCooldown], so it must be set AFTER starting a cooldown.
-@export_storage var shouldSkipNextCooldown: bool
+@export_storage var shouldSkipNextCooldown:		 bool
+
+## Enabled by [method startCooldown] to make sure repeated calls to [method finishCooldown] don't emit redundant [signal didFinishCooldown] signals.
+@export_storage var shouldEmitDidFinishCooldown: bool
 
 #endregion
 
@@ -88,6 +91,7 @@ func startCooldown(overrideTime: float = self.cooldownSeconds, restartIfOnCooldo
 	# UNUSED: TBD: var previousTime: float = self.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
 	self.wait_time = clampedTime
 	self.start()
+	self.shouldEmitDidFinishCooldown = true
 	# UNUSED: TBD: self.wait_time = previousTime # Restore the default cooldown?
 	didStartCooldown.emit(clampedTime)
 	# TBD: If the new time is too low, just run straight to the finish?
@@ -100,9 +104,10 @@ func startCooldown(overrideTime: float = self.cooldownSeconds, restartIfOnCooldo
 ## May be called manually to call [method Timer.stop] and emit the signal.
 func finishCooldown() -> void:
 	# TBD: Check shouldSkipNextCooldown on finish?
-	if debugMode: Debug.printDebug("finishCooldown()", self)
-	var wasTimerRunning: bool = not is_zero_approx(self.time_left)
-	self.stop()
-	if wasTimerRunning:  didFinishCooldown.emit() # NOTE: Emit only if we were actually on cooldown
+	if debugMode: Debug.printDebug(str("finishCooldown() shouldEmitDidFinishCooldown: ", shouldEmitDidFinishCooldown), self)
+	self.stop() # GODOT: Calling stop() does not emit the `timeout` signal
+	if  self.shouldEmitDidFinishCooldown:
+		self.shouldEmitDidFinishCooldown = false # IMPORTANT: Clear BEFORE emitting because handlers may immediately start a new cooldown
+		didFinishCooldown.emit() # TBD: Emit only if we were actually on cooldown? But that won't work for the "natural" `Timer.timeout` signal which is emitted after the Timer stops
 
 #endregion
