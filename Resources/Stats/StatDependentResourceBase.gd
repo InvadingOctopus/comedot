@@ -133,16 +133,25 @@ func getPaymentStatFromStatsComponent(statsComponent: StatsComponent) -> Stat:
 ## e.g. a player may also have a "gold" Stat and an NPC or monster may also have "gold".
 ## IMPORTANT: PERFORMANCE: Check [member hasCost] BEFORE calling this method; a missing [member costStat] is an error!
 ## ALERT: BUGRISK: If the [member Stat.min] is non-0 then this checking [member Stat.value] >= [member cost] may not work as expected,
-## or it could be intentional, e.g. temporary buffs that prevent a Stat from falling too low etc.
-func validateOfferedStat(offeredStat: Stat) -> bool:
+## or it could be intentional, e.g. temporary buffs or "god mode" that prevent a Stat from falling too low etc. Use [param warnIfClamped] to catch this case.
+func validateOfferedStat(offeredStat: Stat, warnIfClamped: bool = false) -> bool:
 	# TBD: Handle `offeredStat.min != 0`?
+	# If there is no costStat, return `false`, because there's nothing to check against
 	if not costStat:
 		Debug.printError("validateOfferedStat(): No costStat • Check hasCost first!", self)
 		return false
 	# If there is no Stat offered, return `false`, because there's nothing to validate
 	elif not offeredStat: return false		
+
 	# If there is a cost and an offer, check if the offer can pay for the cost
-	else: return offeredStat.name == costStat.name and offeredStat.value >= self.cost # ALERT: BUGRISK: May not work correctly if `offeredStat.min` != 0
+	var isOfferValid: bool = offeredStat.name == costStat.name and offeredStat.value >= self.cost
+
+	# NOTE: Warn if clamped `Stat.min` may lead to unexpected bugs # TBD: Also check `max` clamping?
+	if warnIfClamped and isOfferValid and self.cost != 0 \
+		and offeredStat.testChange(-self.cost) != offeredStat.value - self.cost:
+			Debug.printWarning(str("validateOfferedStat(): Clamped Stat prevents full deduction! ", offeredStat.logName, ".min: ", offeredStat.min, ", cost: ", cost, ", clamped value after deduction: ", offeredStat.testChange(-self.cost)), self)
+
+	return isOfferValid
 
 
 func updateFlags() -> void:

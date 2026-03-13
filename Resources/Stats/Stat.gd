@@ -170,7 +170,7 @@ func change(difference: int) -> int:
 	return self.value
 
 
-## Returns a COPY of the Stat's [member value] + the [param difference] after clamping it between [member min] and [member max].
+## Returns a COPY of the Stat's [member value] + the [param difference] AFTER clamping it between [member min] and [member max].
 ## NOTE: Does NOT modify the [member value].
 ## TIP: May be used to test for a clamped result before altering the value.
 func testChange(difference: int) -> int:
