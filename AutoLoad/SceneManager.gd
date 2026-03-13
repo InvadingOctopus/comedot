@@ -164,8 +164,8 @@ func pushCurrentSceneToStack() -> int:
 	return sceneStack.size()
 
 
-## Transitions to the PREVIOUS scene from the top/end of the [member sceneStack], if any, and returns it.
-## NOTE: Returns the previous scene from the stack EVEN IF the transition was NOT successful.
+## Transitions to the PREVIOUS scene from the top/end of the [member sceneStack], if any, and returns that scene,
+## or returns `null` if the transition was not successful.
 func popSceneFromStack(pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> PackedScene:
 
 	if sceneStack.is_empty(): # Can't pop if there are no scenes on the stack.
@@ -181,25 +181,25 @@ func popSceneFromStack(pauseSceneTree: bool = true, unpauseSceneTree: bool = pau
 	var previousScenePathFromStack: String  = sceneStack[sceneStack.size() - 1]
 	var previousSceneFromStack: PackedScene = load(previousScenePathFromStack)
 	
-	if previousSceneFromStack:
-		sceneStack.remove_at(sceneStack.size() - 1) # TBD: Pop stack even on failure?
-		Debug.printAutoLoadLog(str("popSceneFromStack() → ", previousScenePathFromStack, " → stack size: ", sceneStack.size()))
-	else:
+	if not previousSceneFromStack:
 		Debug.printError("popSceneFromStack(): Cannot load path: " + previousScenePathFromStack, logName)
 		return null
 
 	await self.transitionToScene(previousSceneFromStack, pauseSceneTree, unpauseSceneTree, animate) # IMPORTANT: await for animations
 
-	# Verify the transition
-
 	# Make sure there IS a scene after the transition.
-	if sceneTree.current_scene:
-		var scenePathAfterTransition: String = sceneTree.current_scene.scene_file_path
-		if not scenePathAfterTransition == previousScenePathFromStack:
-			Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
+	var scenePathAfterTransition: String = sceneTree.current_scene.scene_file_path if sceneTree.current_scene else "null"
 
-	didPopScene.emit(previousScenePathFromStack)
-	return previousSceneFromStack
+	# Verify the transition
+	if scenePathAfterTransition == previousScenePathFromStack:
+		# NOTE: Make sure the transition succeeded before popping the stack
+		sceneStack.remove_at(sceneStack.size() - 1) # TBD: Pop stack even on failure?
+		Debug.printAutoLoadLog(str("popSceneFromStack() → ", previousScenePathFromStack, " → stack size: ", sceneStack.size()))
+		didPopScene.emit(previousScenePathFromStack)
+		return previousSceneFromStack
+	else:
+		Debug.printWarning(str("SceneTree.current_scene.scene_file_path: ", scenePathAfterTransition, " != previousScenePathFromStack: ", previousScenePathFromStack), logName)
+		return null
 
 #endregion
 
