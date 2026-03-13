@@ -16,7 +16,7 @@ extends AreaCollisionComponent
 ## If not empty, only physics nodes belonging to this group will be included in the contact lists, e.g. "zones" etc.
 ## IMPORTANT: The [CollisionObject2D] collision and layer masks still apply.
 ## PERFORMANCE: Only 1 group is checked because comparing array-with-array "intersection" search is slower.
-@export var groupToInclude: StringName
+@export var groupToInclude: StringName # TBD: Allow multiple groups by comparing substrings?
 #endregion
 
 
@@ -36,11 +36,10 @@ func setIsEnabled(newValue: bool) -> void:
 func _ready() -> void:
 	super._ready() # Start monitoring exits after adding existing overlaps
 	self.set_physics_process(self.debugMode) # Disable per-frame debugging until needed
-	# NOTE: Other compenents may not receive signals for already overlapping nodes,
-	# because they may connect to signals later in their own _ready() if they're ordered lower on the scene tree,
-	# so we call_deferred() instead of right away.
-	# CHECK: Is this correct/reliable?
-	resetContactLists.call_deferred()
+	# ALERT: Other compenents may not receive signals for already overlapping nodes,
+	# because they may connect to signals later in their own _ready() if they're ordered lower on the scene tree.
+	# TBD: Should we call_deferred() instead of right away?
+	resetContactLists()
 
 
 ## Clears the [member areasInContact] & [member bodiesInContact] arrays and re-adds all [Area2D]s, [PhysicsBody2D]s or [TileMapLayer]s that are currently in contact with the [Area2D] of this component.
