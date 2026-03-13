@@ -22,13 +22,23 @@ extends InteractionComponent
 
 
 #region State
+
+@onready var cooldownTimer: CooldownTimer = $CooldownTimer
+
 ## Updated on a successful [method performInteraction] and used for [member shouldRepeatInteractionAfterCooldown].
 ## IMPORTANT: MUST be updated by subclasses that override [method performInteraction].
 @export_storage var previousInteractor: InteractionControlComponent
 
-## Allows [method requestToInteract] & [method performInteraction] to ignore the cooldown ONCE.
+## Allows [method requestToInteract] & [method performInteraction] to ignore an ONGOING cooldown ONCE.
 ## NOTE: This flag is reset in [method startCooldown], so it must be set AFTER starting a cooldown.
-@export_storage var canSkipNextCooldown: bool
+## NOTE: This is DIFFERENT from [member CooldownTimer.shouldSkipNextCooldown] which prevents STARTING a cooldown once.
+@export_storage var canSkipCurrentCooldown: bool
+
+## Returns `true` if the `cooldownTimer` still has remaining [Timer.time_left].
+## ALERT: Does NOT check [Timer.paused]
+var isOnCooldown: bool: 
+	get: return cooldownTimer.isOnCooldown
+
 #endregion
 
 
@@ -38,29 +48,27 @@ signal didFinishCooldown
 #endregion
 
 
-#region Dependencies
-@onready var cooldownTimer: Timer = $CooldownTimer
-#endregion
+# TBD: Tools.connectSignal(cooldownTimer.timeout, self.finishCooldown) # In case the scene file forgets to wire signals?
 
 
 func updateIndicator() -> void:
 	# TBD: Modify Label only on startCooldown() or hijack this method?
-	# CONCERN: If only on startCooldown(), then a manual Timer.start() would skip the UI update, because Timer does not have a "start" signal :'(
-	if not shouldModifyIndicatorInCooldown:
-		super.updateIndicator()
-		return
-
+	# CONCERN: If only on startCooldown(), then a manual Timer.start() would skip the UI update, because Timer does not have a "started" signal :'(
 	if not interactionIndicator: return
+	interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0)
 
-	# Just modify `self_modulate` alpha to avoid disrupting any existing `modulate` tints
-	# NOTE: DESIGN: Modifying `visible` is problematic because making it visible onCooldownTimer_timeout() would cause it to reappear even if there is no [InteractionControlComponent] in contact.
-	interactionIndicator.self_modulate = Color(interactionIndicator.self_modulate, 1.0) if is_zero_approx(cooldownTimer.time_left) else Color(interactionIndicator.self_modulate, 0.25)
+	# Should the indicator indicate the cooldown?
+	if shouldModifyIndicatorInCooldown:
+		# Just modify `self_modulate` alpha to avoid disrupting any existing `modulate` tints
+		# NOTE: DESIGN: Modifying `visible` is unreliable because making it visible onCooldownTimer_timeout() would cause it to reappear even if there is no [InteractionControlComponent] in contact.
+		interactionIndicator.self_modulate = Color(interactionIndicator.self_modulate, 1.0) if is_zero_approx(cooldownTimer.time_left) else Color(interactionIndicator.self_modulate, 0.25)
 
 	if interactionIndicator is Label:
-		if is_zero_approx(cooldownTimer.time_left):
-			if not self.text.is_empty(): interactionIndicator.text = self.text
-		else:
+		# Are we off cooldown?
+		if shouldModifyIndicatorInCooldown and not is_zero_approx(cooldownTimer.time_left):
 			interactionIndicator.text = "COOLDOWN"
+		else:
+			interactionIndicator.text = self.text # TBD: Allow empty strings?
 
 
 #region Interaction Interface
@@ -70,27 +78,28 @@ func updateIndicator() -> void:
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	# TBD: Emit `didDenyInteraction` when on cooldown?
 	if  not isEnabled \
-	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)):
+	or (not canSkipCurrentCooldown and not is_zero_approx(cooldownTimer.time_left)):
 		return false
 	return super.requestToInteract(interactorEntity, interactionControlComponent)
 
 
 ## Extends [method performInteraction] to start a cooldown [Timer] after an interaction.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	if  debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left, ", canSkipNextCooldown: ", canSkipNextCooldown))
+	if  debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left, ", canSkipCurrentCooldown: ", canSkipCurrentCooldown))
 	if  not isEnabled \
-	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)):
+	or (not canSkipCurrentCooldown and not is_zero_approx(cooldownTimer.time_left)):
 		return false # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
 
 	var result: Variant = super.performInteraction(interactorEntity, interactionControlComponent)
 
-	if Tools.checkResult(result):
+	# NOTE: Call our own self.startCooldown() wrapper to ensure `canSkipCurrentCooldown` etc.
+	if Tools.checkResult(result): # TODO: Add shouldSucceedIfNoPayload for "reactions" or whatever
 		previousInteractor = interactionControlComponent # TBD: Update only on successful interaction or always?
-		startCooldown()
+		self.startCooldown()
 		return result
 	else:
 		if shouldCooldownOnFailure:
-			startCooldown(cooldownOnFailure)
+			self.startCooldown(cooldownOnFailure)
 		return false
 
 
@@ -105,39 +114,29 @@ func repeatPreviousInteraction() -> Variant:
 
 
 #region Cooldown
-# Yes, some code duplication from CooldownComponent because Godon't have interface/protocols :')
 
-## Starts the cooldown delay and calls [member updateIndicator] if [member shouldModifyIndicatorInCooldown].
-func startCooldown(overrideTime: float = cooldownTimer.wait_time) -> void:
-	# TBD: PERFORMANCE: Do we really need all this crap just for a simple Timer.start()?
-	# Or could the `didStartCooldown` signal be helpful in chaining with other components e.g. for animations etc.?
-
-	if debugMode:
-		printDebug(str("startCooldown(): ", overrideTime))
-		emitDebugBubble(str("CD:", overrideTime))
-
-	canSkipNextCooldown = false
-
-	if overrideTime > 0 and not is_zero_approx(overrideTime): # Avoid the annoying Godot error: "Time should be greater than zero."
-		var previousTime: float = cooldownTimer.wait_time # Save the "actual" cooldown because Timer.start(overrideTime) modifies Timer.wait_time
-		cooldownTimer.start(overrideTime)
-		cooldownTimer.wait_time = previousTime # Restore the default cooldown
-		didStartCooldown.emit(overrideTime)
-	else: # If the time is too low, run straight to the finish
-		finishCooldown() # TBD: CHECK: BUGCHANCE: Could this cause problems with `shouldRepeatInteractionAfterCooldown`?
-
-	if shouldModifyIndicatorInCooldown: updateIndicator()
+## Resets [member canSkipCurrentCooldown] and calls [method CooldownTimer.startCooldown]
+func startCooldown(overrideTime: float = cooldownTimer.cooldownSeconds, restartIfOnCooldown: bool = false) -> void:
+	self.canSkipCurrentCooldown = false # TBD: Should this be in onCooldownTimer_didStartCooldown()?
+	cooldownTimer.startCooldown(overrideTime, restartIfOnCooldown)
 
 
-## Called when the cooldown [Timer] is over. Calls [member updateIndicator].
+## Calls [method CooldownTimer.finishCooldown]
 func finishCooldown() -> void:
-	# TBD: Check canSkipNextCooldown on finish?
-	if debugMode: printDebug("finishCooldown()")
-	cooldownTimer.stop()
-	updateIndicator() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
-	didFinishCooldown.emit()
+	# TBD: Check `canSkipCurrentCooldown` on finish?
+	cooldownTimer.finishCooldown()
 
-	# Again again!?
-	if shouldRepeatInteractionAfterCooldown: repeatPreviousInteraction()
+
+## Calls [method updateIndicator] if [member shouldModifyIndicatorInCooldown]
+func onCooldownTimer_didStartCooldown(time: float) -> void:
+	if shouldModifyIndicatorInCooldown: updateIndicator()
+	self.didStartCooldown.emit(time)
+
+
+## Calls [method updateIndicator] then if [member shouldRepeatInteractionAfterCooldown], calls [method repeatPreviousInteraction]
+func onCooldownTimer_didFinishCooldown() -> void:
+	updateIndicator() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
+	if shouldRepeatInteractionAfterCooldown: repeatPreviousInteraction() # Again again!?
+	self.didFinishCooldown.emit()
 
 #endregion

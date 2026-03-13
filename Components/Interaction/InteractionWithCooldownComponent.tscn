@@ -2,6 +2,17 @@
 
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="1_g65kl"]
 [ext_resource type="Script" uid="uid://diufsb676efmn" path="res://Components/Interaction/InteractionWithCooldownComponent.gd" id="2_iq1o4"]
+[ext_resource type="PackedScene" uid="uid://5c6fjvrw0w4a" path="res://Scenes/Gameplay/CooldownTimer.tscn" id="3_0cotc"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="4_4hyxb"]
+
+[sub_resource type="Resource" id="Resource_0cotc"]
+resource_local_to_scene = true
+script = ExtResource("4_4hyxb")
+max = 60000
+value = 1000
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionWithCooldownComponent" unique_id=1614544184 instance=ExtResource("1_g65kl")]
 script = ExtResource("2_iq1o4")
@@ -10,9 +21,10 @@ cooldownOnFailure = 0.5
 shouldRepeatInteractionAfterCooldown = false
 shouldModifyIndicatorInCooldown = true
 previousInteractor = null
-canSkipNextCooldown = false
+canSkipCurrentCooldown = false
 
-[node name="CooldownTimer" type="Timer" parent="." index="1" unique_id=75249222]
-one_shot = true
+[node name="CooldownTimer" parent="." index="1" unique_id=57790064 instance=ExtResource("3_0cotc")]
+cooldownMilliseconds = SubResource("Resource_0cotc")
 
-[connection signal="timeout" from="CooldownTimer" to="." method="finishCooldown"]
+[connection signal="didFinishCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didFinishCooldown"]
+[connection signal="didStartCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didStartCooldown"]
