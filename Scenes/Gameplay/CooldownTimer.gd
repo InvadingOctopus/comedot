@@ -99,7 +99,7 @@ func startCooldown(overrideTime: float = self.cooldownSeconds, restartIfOnCooldo
 ## Connected to [signal Timer.timeout] to be called when the cooldown [Timer] is over and emits [signal didFinishCooldown]
 ## May be called manually to call [method Timer.stop] and emit the signal.
 func finishCooldown() -> void:
-	# TBD: Check canSkipNextCooldown on finish?
+	# TBD: Check shouldSkipNextCooldown on finish?
 	if debugMode: Debug.printDebug("finishCooldown()", self)
 	var wasTimerRunning: bool = not is_zero_approx(self.time_left)
 	self.stop()

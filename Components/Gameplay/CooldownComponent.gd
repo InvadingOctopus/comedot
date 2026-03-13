@@ -46,7 +46,7 @@ func startCooldown(overrideTime: float = cooldownTimer.cooldownSeconds, restartI
 	cooldownTimer.startCooldown(overrideTime, restartIfOnCooldown)
 
 
-## Wrapper for [signal CooldownTimer.finishCooldown]
+## Wrapper for [method CooldownTimer.finishCooldown]
 func finishCooldown() -> void:
 	cooldownTimer.finishCooldown()
 
