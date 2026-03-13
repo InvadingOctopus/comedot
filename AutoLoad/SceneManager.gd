@@ -56,6 +56,7 @@ signal didSetPause(isPaused: bool)	## TIP: May be used to modify UI such as [Pau
 ## Transitions to the specified scene with an optional animation.
 ## NOTE: Does NOT use the [member sceneStack]; see [method pushCurrentSceneAndTransition] and [method popSceneFromStack].
 func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> void:
+	# TBD: Should we return some value? bool or scene?
 	if not is_instance_valid(nextScene):
 		Debug.printError(str("transitionToScene(): Invalid scene: ", nextScene), logName)
 		return
@@ -68,10 +69,12 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpa
 		return
 	elif ongoingTransitionScene != null: # Log an interrupted transition in case it is or leads to a bug
 		Debug.printDebug(str("transitionToScene() called during an ongoing transition: ", nextScene, " ", nextScene.resource_path), logName)
+		# TODO: Abort previous ongoing transition to avoid "re-entrancy race" or return without starting new transition
 
 	var sceneBeforeTransition: Node = sceneTree.current_scene
 	Debug.printAutoLoadLog(str("transitionToScene(): ", sceneBeforeTransition, " → ", nextScene, " ", nextScene.resource_path))
 	
+	var previousIsPauseShortcutAllowed: bool = GlobalInput.isPauseShortcutAllowed # Store for restore on failure
 	GlobalInput.isPauseShortcutAllowed = false # Disable the Pause Overlay during transitions
 
 	# Track the scene to prevent bugs from multiple calls to transition to the same scene during animations etc.
@@ -80,14 +83,22 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpa
 	willTransitionToScene.emit(nextScene)
 
 	# Pause
+	var previousPauseState: bool = sceneTree.paused # Store for restore on failure
 	sceneTree.paused = pauseSceneTree
 	if animate: await GlobalUI.fadeInTintRect().finished # Fade the overlay in, fade the game out.
 
 	# Transition
+
 	var error: Error = sceneTree.change_scene_to_packed(nextScene)
-	if error != OK:
+	if  error != OK:
 		Debug.printError(str("transitionToScene(): ", nextScene, " failed: ", error), logName)
+		# Restore previous state on failure
+		ongoingTransitionScene = null
+		sceneTree.paused = previousPauseState
+		if animate: await GlobalUI.fadeOutTintRect().finished
+		GlobalInput.isPauseShortcutAllowed = previousIsPauseShortcutAllowed
 		return
+
 	await sceneTree.scene_changed # IMPORTANT: Because change_scene_to_packed() is async
 
 	# Repause just in case the new scene unpaused before we fade-in
@@ -104,7 +115,7 @@ func transitionToScene(nextScene: PackedScene, pauseSceneTree: bool = true, unpa
 	if Debug.shouldPrintDebugLogs: Debug.printDebug(str("SceneTree.current_scene: ", sceneTree.current_scene), logName)
 	didTransitionToScene.emit(nextScene)
 
-	GlobalInput.isPauseShortcutAllowed = true # Reenable the Pause Overlay
+	GlobalInput.isPauseShortcutAllowed = true # Reenable the Pause Overlay # TBD: Restore previousIsPauseShortcutAllowed?
 
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].
