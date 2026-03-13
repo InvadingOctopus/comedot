@@ -11,8 +11,8 @@ resource_local_to_scene = true
 script = ExtResource("5_3eilu")
 max = 10000
 value = 500
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"gunCooldown"
+displayName = "Gun Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="GunComponent" type="Node2D" unique_id=1091405865 node_paths=PackedStringArray("bulletEmitter") groups=["components"]]

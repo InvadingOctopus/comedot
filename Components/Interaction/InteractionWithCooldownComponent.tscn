@@ -10,8 +10,8 @@ resource_local_to_scene = true
 script = ExtResource("4_4hyxb")
 max = 60000
 value = 1000
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"interactionCooldown"
+displayName = "Interaction Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionWithCooldownComponent" unique_id=1614544184 instance=ExtResource("1_g65kl")]

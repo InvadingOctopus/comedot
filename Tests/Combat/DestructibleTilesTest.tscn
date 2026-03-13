@@ -13,8 +13,8 @@ resource_local_to_scene = true
 script = ExtResource("5_223hs")
 max = 10000
 value = 250
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"gunCooldown"
+displayName = "Gun Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="DestructibleTilesTest" type="Node2D" unique_id=1502350910]

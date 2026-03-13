@@ -31,8 +31,8 @@ resource_local_to_scene = true
 script = ExtResource("5_bslwp")
 max = 10000
 value = 1000
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"interactorCooldown"
+displayName = "Interactor Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="Resource" id="Resource_0gg6p"]
@@ -61,8 +61,8 @@ resource_local_to_scene = true
 script = ExtResource("5_bslwp")
 max = 60000
 value = 5000
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"interactionCooldown"
+displayName = "Interaction Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="Resource" id="Resource_6rq7u"]
@@ -90,8 +90,8 @@ resource_local_to_scene = true
 script = ExtResource("5_bslwp")
 max = 60000
 value = 1111
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"textCooldown"
+displayName = "Text Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionTest" type="Node2D" unique_id=1348727459]

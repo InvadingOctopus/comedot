@@ -13,8 +13,8 @@ resource_local_to_scene = true
 script = ExtResource("3_iwaej")
 max = 10000
 value = 500
-name = &"cooldown"
-displayName = "Cooldown"
+name = &"interactorCooldown"
+displayName = "Interactor Cooldown"
 metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionMouseControlComponent" unique_id=1494182240 instance=ExtResource("1_x2yas")]
