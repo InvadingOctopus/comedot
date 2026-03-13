@@ -1,5 +1,6 @@
 ## Displays and cycles through a list of text strings.
 ## TIP: May be used for signboards and static NPC dialogues.
+## @experimental
 
 class_name TextInteractionComponent
 extends InteractionWithCooldownComponent
@@ -17,7 +18,7 @@ extends InteractionWithCooldownComponent
 @export var shouldAnimate:				bool = true
 @export var shouldClearBeforeAnimation:	bool = true
 @export_range(0.0, 10.0, 0.01) var animationDurationPerCharacter:	float = 0.05
-@export_range(0.0, 60.0, 0.01) var cooldownBeforeAutomaticNext:		float = 2 ## The pause before automatically displaying the next string if [member shouldRepeatInteractionAfterCooldown].
+@export_range(0.0, 60.0, 0.01) var cooldownBeforeAutomaticNext:		float = 2 ## The pause before automatically displaying the next string if [member shouldRepeatInteractionAfterCooldown]
 
 #endregion
 
@@ -54,33 +55,66 @@ func _ready() -> void:
 
 #region Interaction & Update
 
-## Returns the updated label text.
+func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
+	return super.requestToInteract(interactorEntity, interactionControlComponent) \
+		and self.textSequence and not self.textSequence.strings.is_empty()
+
+
+## Executes the [member payload] and cycles through the [member textSequence]
+## Returns: The updated label text, or the [Payload] result if the [Payload] FAILED.
+## @experimental
 @warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
+	# Are we on cooldown or disabled? Then just return the current text
 	if  not isEnabled \
-	or (not canSkipNextCooldown and not is_zero_approx(cooldownTimer.time_left)): # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
-		return labelControl.text
+	or (not canSkipCurrentCooldown and not is_zero_approx(cooldownTimer.time_left)): # TBD: Check cooldown again in performInteraction() or only in requestToInteract()?
+		return labelControl.text if labelControl else self.text
+
+	if not payload and not allowNoPayload:
+		printWarning("performInteraction(): No payload and not allowNoPayload")
+		return labelControl.text if labelControl else self.text
+
+	self.willPerformInteraction.emit(interactorEntity)
+
+	# If there is a Payload, run it
+	if payload:
+		var payloadResult: Variant = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
+		# If the Payload failed, do not advance the text
+		if not Tools.checkResult(payloadResult):
+			# TBD: Return payloadResult on failure or text as always?
+			self.didPerformInteraction.emit(interactorEntity, payloadResult)
+			return payloadResult
+
+	# Carry on with the text stuff
 
 	previousInteractor = interactionControlComponent # NOTE: Update this first in case it's accessed by any cooldown-related signals.
 
-	# Are we still animating a previous string? Skip the animation and display it all, instead of moving to the next string.
+	# Are we still animating a previous string?
+	# Skip the animation and display it all at once, instead of moving to the next string before the player can fully read the previous one.
 	if currentAnimation and currentAnimation.is_running():
 		# UNUSED: currentAnimation.custom_step(self.animationDurationForCurrentString - currentAnimation.get_total_elapsed_time())
 		currentAnimation.kill() # TBD: kill() or fast-forward remaining time?
 		self.text = textSequence.getCurrentString()
 
-		# If we're automatic, wait again before displaying the next message!
+		# After the previous animation has been finished, give the player some time to read;
+		# if we're automatic, wait again before displaying the next message!
 		if shouldRepeatInteractionAfterCooldown:
 			if debugMode: emitDebugBubble("SkipText,AutoNext")
-			startCooldown(cooldownBeforeAutomaticNext)
-			canSkipNextCooldown = true # Allow skipping the delay before the next message
+			startCooldown(cooldownBeforeAutomaticNext, true) # restartIfOnCooldown
+			canSkipCurrentCooldown = true # Allow skipping the delay before the next message
 		elif debugMode:
 			emitDebugBubble("SkipText")
 
-	else: # If we're not animating, just display the next string.
+	else: # If we're not animating, there is no need to make sure the previous string has been fully displayed, just display the next string.
 		displayNextText()
-		startCooldown()
+		# Which cooldown to use?
+		if shouldRepeatInteractionAfterCooldown and not shouldAnimate:
+			startCooldown(cooldownBeforeAutomaticNext, true) # restartIfOnCooldown
+			canSkipCurrentCooldown = true
+		else:
+			startCooldown()
 
+	self.didPerformInteraction.emit(interactorEntity, self.text)
 	return self.text
 
 
@@ -139,6 +173,7 @@ func applyText(animate: bool = self.shouldAnimate) -> void:
 	if animate:
 		if shouldClearBeforeAnimation: self.text = ""
 		currentAnimation = Animations.tweenProperty(selfAsNode2D, ^"text", currentString, self.animationDurationForCurrentString)
+		# Wait for the animation to finish before showing the next message
 		if shouldRepeatInteractionAfterCooldown:
 			Tools.connectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
 
@@ -153,15 +188,20 @@ func applyText(animate: bool = self.shouldAnimate) -> void:
 
 ## Suppresses the cooldown indication from [InteractionWithCooldownComponent] and just displays the text normally.
 func updateIndicator() -> void:
+	if not interactionIndicator: return
+	super.updateIndicator()
+	
+	# Update the Label in our own way, to avoid the "COOLDOWN" text from InteractionWithCooldownComponent etc.
 	# NOTE: Don't check `text.is_empty()` so we can have empty pauses etc.
 	if  labelControl:
-		labelControl.text = self.text
+		labelControl.text = self.text if isEnabled else "" # Clear the text when the component is disabled
 
 
 func onCurrentAnimation_finished() -> void:
 	if shouldRepeatInteractionAfterCooldown:
-		startCooldown(cooldownBeforeAutomaticNext)
-		canSkipNextCooldown = true # Allow skipping the delay before the next message
+		startCooldown(cooldownBeforeAutomaticNext, true) # restartIfOnCooldown
+		canSkipCurrentCooldown = true # Allow skipping the delay before the next message
+	# Don't repeat automatically here; let applyText() determine whether to animate again
 	Tools.disconnectSignal(self.currentAnimation.finished, self.onCurrentAnimation_finished)
 
 #endregion
