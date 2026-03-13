@@ -2,6 +2,30 @@
 
 [ext_resource type="PackedScene" uid="uid://qkcschxa5my1" path="res://Components/Interaction/InteractionControlComponent.tscn" id="1_x2yas"]
 [ext_resource type="Script" uid="uid://b8vb443l1rqqh" path="res://Components/Interaction/InteractionMouseControlComponent.gd" id="2_uocm8"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="3_iwaej"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yoroa"]
+resource_local_to_scene = true
+radius = 16.0
+
+[sub_resource type="Resource" id="Resource_v16c7"]
+resource_local_to_scene = true
+script = ExtResource("3_iwaej")
+max = 10000
+value = 500
+name = &"cooldown"
+displayName = "Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionMouseControlComponent" unique_id=1494182240 instance=ExtResource("1_x2yas")]
 script = ExtResource("2_uocm8")
+shouldCheckGrandparentsForEntity = false
+allowNonEntityParent = false
+debugMode = false
+debugModeTrace = false
+
+[node name="InteractionControlShape" parent="." index="0" unique_id=218436281]
+shape = SubResource("CircleShape2D_yoroa")
+
+[node name="CooldownTimer" parent="." index="1" unique_id=57790064]
+cooldownMilliseconds = SubResource("Resource_v16c7")
