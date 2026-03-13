@@ -15,6 +15,7 @@ extends InteractionComponent
 ## If `true` then [method InteractionControlComponent.interact] is called again on [member previousInteractor] after the cooldown [Timer] finishes.
 ## TIP: May be useful for auto-advancing a [TextInteractionComponent] for simple NPC dialogue etc.
 ## TIP: Set [member shouldSkipInteractorCooldown] to ensure that the [InteractionControlComponent] is not in cooldown when this [InteractionWithCooldownComponent] comes out of cooldown.
+## ALERT: Even failed/rejected interaction may be repeated!
 @export var shouldRepeatInteractionAfterCooldown: bool = false
 @export var shouldModifyIndicatorInCooldown:	  bool = true  ## If `true` then the [member interactionIndicator] is dimmed and modified during a cooldown.
 
@@ -136,7 +137,7 @@ func onCooldownTimer_didStartCooldown(time: float) -> void:
 ## Calls [method updateIndicator] then if [member shouldRepeatInteractionAfterCooldown], calls [method repeatPreviousInteraction]
 func onCooldownTimer_didFinishCooldown() -> void:
 	updateIndicator() # NOTE: Restoration should not depend on `shouldModifyIndicatorInCooldown`
-	if shouldRepeatInteractionAfterCooldown: repeatPreviousInteraction() # Again again!?
+	if shouldRepeatInteractionAfterCooldown: repeatPreviousInteraction() # Again again!? # TBD: Should we repeat failed interactions?
 	self.didFinishCooldown.emit()
 
 #endregion
