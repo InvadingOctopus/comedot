@@ -2,11 +2,22 @@
 
 [ext_resource type="PackedScene" uid="uid://b7kokytnapn7b" path="res://Components/Interaction/InteractionWithCooldownComponent.tscn" id="1_755gj"]
 [ext_resource type="Script" uid="uid://tenrw04a0cxr" path="res://Components/Interaction/InteractionWithCostComponent.gd" id="2_nrbwt"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="3_v8scs"]
+
+[sub_resource type="Resource" id="Resource_v8scs"]
+resource_local_to_scene = true
+script = ExtResource("3_v8scs")
+max = 60000
+value = 3000
+name = &"interactionCooldown"
+displayName = "Interaction Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionWithCostComponent" unique_id=1688779945 instance=ExtResource("1_755gj")]
 editor_description = "Subclass of InteractionWithCooldownComponent with a Stat cost."
 script = ExtResource("2_nrbwt")
 cost = null
 
-[node name="CooldownTimer" parent="." index="1" unique_id=75249222]
+[node name="CooldownTimer" parent="." index="1" unique_id=57790064]
 wait_time = 3.0
+cooldownMilliseconds = SubResource("Resource_v8scs")
