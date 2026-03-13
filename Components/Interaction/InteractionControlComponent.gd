@@ -54,11 +54,22 @@ signal didPerformInteraction	(result: Variant)
 
 
 func _ready() -> void:
-	# TODO: Make sure `self.groupToInclude` contains `Global.Groups.interactions` # Just in case the .tscn doesn't get it right
+	# Some checks to avoid bugrisks just in case the .tscn scene didn't get it right
+	if debugMode:
+		if self.inputEventName != GlobalInput.Actions.interact:
+			printWarning(str("inputEventName: ", inputEventName, " ≠ GlobalInput.Actions.interact: \"", GlobalInput.Actions.interact, "\" • Ignore if intendend"))
+		if not self.groupToInclude.is_empty() and self.groupToInclude != Global.Groups.interactions: # Ignore empty strings
+			printWarning(str("groupToInclude: ", groupToInclude, " ∉ Global.Groups.interactions: \"", Global.Groups.interactions, "\" • Ignore if intendend"))
+
+	if interactionIndicator: interactionIndicator.visible = false # Set the initial state of the indicator
+		# updateIndicator() will be called by resetContactLists()
+
 	super._ready()
-	if  interactionIndicator: # Set the initial state of the indicator
-		interactionIndicator.visible = false
-		updateIndicator()
+
+
+func resetContactLists() -> void:
+	super.resetContactLists()
+	if interactionIndicator: updateIndicator()
 
 
 #region Area Collision Events
@@ -111,7 +122,7 @@ func _unhandled_input(_event: InputEvent) -> void: # TBD: _unhandled_input() or 
 	# TBD: Use InputComponent?
 	if not isEnabled or cooldownTimer.isOnCooldown or not haveInteracionsInRange: return
 
-	if Input.is_action_just_pressed(inputEventName):
+	if Input.is_action_just_pressed(inputEventName): # TBD: Interact on PRESS or RELEASE?
 		interactAll()
 		self.get_viewport().set_input_as_handled()
 
