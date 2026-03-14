@@ -28,6 +28,8 @@ script = ExtResource("2_ap0r7")
 textSequence = SubResource("Resource_ykqwo")
 shouldAnimate = true
 shouldClearBeforeAnimation = true
+shouldResetOnExit = false
+shouldStopAtFinalString = false
 animationDurationPerCharacter = 0.05
 cooldownBeforeAutomaticNext = 2.0
 shouldModifyIndicatorInCooldown = false
@@ -51,3 +53,5 @@ label_settings = ExtResource("2_6kio8")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[connection signal="didExitInteractionArea" from="." to="." method="onDidExitInteractionArea"]

@@ -17,6 +17,9 @@ extends InteractionWithCooldownComponent
 @export var textSequence:				TextSequence # TBD: Is this too overengineered? :')
 @export var shouldAnimate:				bool = true
 @export var shouldClearBeforeAnimation:	bool = true
+@export var shouldResetOnExit:			bool = false ## Resets the [member textSequence] back to the 1st string (index 0) when a [InteractionControlComponent] leaves contact.
+@export var shouldClearAfterFinalString:bool = false ## Stops automatically advancing and clears the text AFTER the final string in the [member textSequence] is displayed.
+
 @export_range(0.0, 10.0, 0.01) var animationDurationPerCharacter:	float = 0.05
 @export_range(0.0, 60.0, 0.01) var cooldownBeforeAutomaticNext:		float = 2 ## The pause before automatically displaying the next string if [member shouldRepeatInteractionAfterCooldown]
 
@@ -127,7 +130,15 @@ func repeatPreviousInteraction() -> Variant:
 		# otherwise the animation will skip and instantly display the current message,
 		# which may look and feel jank in the absence of player input.
 		if not currentAnimation or not currentAnimation.is_valid() or not currentAnimation.is_running():
+			
+			# Should we stop after the last string?
+			if shouldClearAfterFinalString and textSequence.currentStringIndex + 1 == textSequence.strings.size():
+				textSequence.reset()
+				self.text = ""
+				return null
+				
 			return previousInteractor.interact(self)
+
 		else:
 			if debugMode: printDebug(str("Not skipping currentAnimation: ", currentAnimation))
 			return null
@@ -205,3 +216,13 @@ func onCurrentAnimation_finished() -> void:
 	Tools.disconnectSignal(self.currentAnimation.finished, self.onCurrentAnimation_finished)
 
 #endregion
+
+
+func onDidExitInteractionArea(_entity: Entity, interactionControlComponent: InteractionControlComponent) -> void:
+	if shouldResetOnExit and interactionControlComponent == previousInteractor:
+		if currentAnimation: currentAnimation.kill()
+
+		if cooldownTimer.isOnCooldown: cooldownTimer.stop() # IMPORTANT: Do NOT call cooldownTimer.finishCooldown() because that may call repeatPreviousInteraction() and emit didFinishCooldown; so just abort the timer
+		textSequence.reset()
+		if self.isAutomatic: self.text = ""
+		else: self.text = textSequence.getCurrentString()
