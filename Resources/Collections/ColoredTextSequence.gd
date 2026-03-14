@@ -25,6 +25,12 @@ func incrementIndex(step: int = 1) -> void:
 		currentColorIndex = 0
 
 
+## Resets the indices
+func reset() -> void:
+	super.reset()
+	currentColorIndex = 0
+
+
 func formatLabel(label: Control) -> void:
 	if  label is Label:
 		label.label_settings.font_color = colors[currentColorIndex] if not colors.is_empty() else Color.WHITE

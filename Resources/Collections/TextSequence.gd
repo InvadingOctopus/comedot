@@ -51,6 +51,12 @@ func incrementIndex(step: int = 1) -> void:
 	if  currentStringIndex >= strings.size():
 		currentStringIndex = 0
 
+
+## Resets the indices
+func reset() -> void:
+	previousString = strings[currentStringIndex] if Tools.validateArrayIndex(strings, currentStringIndex) else ""
+	currentStringIndex = 0
+
 #endregion
 
 
