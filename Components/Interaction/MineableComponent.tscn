@@ -3,8 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://jfccby4pnore" path="res://Components/Interaction/InteractionComponent.tscn" id="1_3365v"]
 [ext_resource type="Script" uid="uid://dlj47t2ch7rwr" path="res://Components/Interaction/MineableComponent.gd" id="2_4r01q"]
 [ext_resource type="Script" uid="uid://bscihgh6dxcqo" path="res://Resources/Payloads/NodePayload.gd" id="3_ld8mv"]
+[ext_resource type="PackedScene" uid="uid://5c6fjvrw0w4a" path="res://Scenes/Gameplay/CooldownTimer.tscn" id="4_avsat"]
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="5_fwm6q"]
 
-[sub_resource type="Resource" id="Resource_kab3q"]
+[sub_resource type="Resource" id="Resource_10k55"]
 resource_local_to_scene = true
 script = ExtResource("3_ld8mv")
 parentChoice = 3
@@ -14,6 +16,15 @@ randomPositionOffsetMax = Vector2(16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0tho5"]
 size = Vector2(18, 18)
 
+[sub_resource type="Resource" id="Resource_ftxou"]
+resource_local_to_scene = true
+script = ExtResource("5_fwm6q")
+max = 60000
+value = 1000
+name = &"mineCooldown"
+displayName = "Mine Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
+
 [node name="MineableComponent" unique_id=1523802535 instance=ExtResource("1_3365v")]
 script = ExtResource("2_4r01q")
 contents = null
@@ -21,9 +32,24 @@ minimumContentDeduction = 1
 maximumContentDeduction = 1
 allowCostHigherThanContents = true
 shouldRemoveEntityOnDepletion = true
-payload = SubResource("Resource_kab3q")
+collectibleValueToSpawn = 0
+shouldCooldownOnFailure = true
+cooldownOnFailure = 0.5
+shouldRepeatInteractionAfterCooldown = false
+shouldModifyIndicatorInCooldown = true
+previousInteractor = null
+canSkipCurrentCooldown = false
+payload = SubResource("Resource_10k55")
 text = "MINE"
 description = "Mine resources"
 
 [node name="InteractionShape" parent="." index="0" unique_id=254682034]
 shape = SubResource("RectangleShape2D_0tho5")
+
+[node name="CooldownTimer" parent="." index="1" unique_id=57790064 instance=ExtResource("4_avsat")]
+cooldownMilliseconds = SubResource("Resource_ftxou")
+
+[connection signal="didPerformInteraction" from="." to="." method="onDidPerformInteraction"]
+[connection signal="willPerformInteraction" from="." to="." method="onWillPerformInteraction"]
+[connection signal="didFinishCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didFinishCooldown"]
+[connection signal="didStartCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didStartCooldown"]
