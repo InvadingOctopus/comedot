@@ -1,5 +1,5 @@
 ## A subclass of [InteractionWithCooldownComponent] with a [Stat] cost.
-## To edit the cooldown [Timer], enable "Editable Children"
+## NOTE: To edit the [CooldownTimer], enable "Editable Children" 
 ## TIP: To display text bubbles for [Stat] deduction, use [StatsVisualComponent].
 
 class_name InteractionWithCostComponent

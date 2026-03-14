@@ -1,5 +1,6 @@
 ## Allows the player to interact with an [InteractionComponent].
 ## "Interactions" are similar to "Collectibles"; the difference is that an interaction occurs on a button input instead of automatically on a collision.
+## NOTE: To edit the [CooldownTimer], enable "Editable Children" 
 ## TIP: To perform interactions with the mouse, use [InteractionMouseControlComponent].
 ## Requirements: This component's node must be an [Area2D]
 

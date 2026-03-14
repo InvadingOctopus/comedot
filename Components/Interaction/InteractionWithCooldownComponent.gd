@@ -1,5 +1,5 @@
-## A subclass of [InteractionComponent] with a cooldown [Timer]].
-## To edit the cooldown [Timer], enable "Editable Children"
+## A subclass of [InteractionComponent] with a [CooldownTimer].
+## To change the cooldown, enable "Editable Children"
 
 class_name InteractionWithCooldownComponent
 extends InteractionComponent
