@@ -3,11 +3,8 @@
 #class_name MainMenu
 extends Control
 
-
-func _input(event: InputEvent) -> void: # Need to Grab all input to prevent pausing, so we can't use _unhandled_input()
-	# Reassert unpausability as long as the Main Menu is onscreen, to workaround SceneManager resetting the flag.
-	GlobalInput.isPauseShortcutAllowed = false
-	if event.is_action(GlobalInput.Actions.pause): self.get_viewport().set_input_as_handled()
+func _enter_tree() -> void:
+	GlobalInput.isPauseShortcutAllowed = false # Doesn't make sense to pause during the Main Menu
 
 
 func onStartButton_pressed() -> void:
