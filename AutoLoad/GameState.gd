@@ -131,19 +131,20 @@ func removePlayer(playerToRemove: Entity) -> bool:
 
 #region Game Cycle
 
-## Transitions to the [member Settings.mainGameScenePath].
-func startMainScene() -> void:
+## Transitions to the [member Settings.mainGameScenePath] and returns the result of [method SceneManager.transitionToScene]
+func startMainScene() -> bool:
 	if not Settings.mainGameScenePath:
 		Debug.printError("Settings.mainGameScenePath not set!", self)
-		return
+		return false
 		
 	var mainGameScene: PackedScene = load(Settings.mainGameScenePath)
 	if not mainGameScene:
 		Debug.printError("Cannot load mainGameScenePath: " + Settings.mainGameScenePath, self)
-		return
+		return false
 
-	await SceneManager.transitionToScene(mainGameScene) # `await` to let the transition complete before allowing pause
-	GlobalInput.isPauseShortcutAllowed = true # Just in case
+	var didTransitionSucceed: bool = await SceneManager.transitionToScene(mainGameScene) # `await` to let the transition complete before allowing pause
+	if  didTransitionSucceed: GlobalInput.isPauseShortcutAllowed = true # Just in case
+	return didTransitionSucceed
 
 
 ## Called when the user or a condition like Game Over causes the game (or level) to be restarted.
