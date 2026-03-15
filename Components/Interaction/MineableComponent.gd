@@ -164,12 +164,13 @@ func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
 			# TBD: Apply `collectibleValue` even if 0?
 			collectibleStatComponent.statModifierMinimum = self.collectibleValueToSpawn
 			collectibleStatComponent.statModifierMaximum = self.collectibleValueToSpawn
-			self.didMine.emit(interactorEntity, result, collectibleValueToSpawn)
 			self.collectibleValueToSpawn = 0 # Reset the value to avoid subsequent reuse
 		else:
 			printDebug(str("onWillPerformInteraction(): Entity created by Payload missing CollectibleStatComponent: ", result.logFullName))
 	else:
 		printDebug("onWillPerformInteraction(): Payload result is not an Entity")
+
+	self.didMine.emit(interactorEntity, result, collectibleValueToSpawn) # NOTE: Emit after deduction, whether there was a CollectibleStatComponent or not
 
 	if shouldRemoveEntityOnDepletion and contents.value <= 0 and contents.previousValue > 0:
 		printDebug("onWillPerformInteraction(): shouldRemoveEntityOnDepletion")
