@@ -1,4 +1,5 @@
 ## A list of text strings and associated colors, for basic NPC dialogues or "signboards" etc.
+## WARNING: Modifying the font/color/etc. of a [LabelSettings] will affect ALL [Label]s that use the same [LabelSettings] unless that [Resource] is set "Local to Scene"
 ## @experimental
 
 class_name ColoredTextSequence
@@ -31,6 +32,7 @@ func reset() -> void:
 	currentColorIndex = 0
 
 
+## WARNING: Modifying the font/color/etc. of a [LabelSettings] will affect ALL [Label]s that use the same [LabelSettings] unless that [Resource] is set "Local to Scene"
 func formatLabel(label: Control) -> void:
 	if  label is Label:
 		label.label_settings.font_color = colors[currentColorIndex] if not colors.is_empty() else Color.WHITE
