@@ -126,10 +126,19 @@ func transitionToScene(nextScene: PackedScene, shouldPauseSceneTree: bool = true
 
 
 ## Shortcut for calling [method pushCurrentSceneToStack] then [method transitionToScene].
-## Call [method popSceneFromStack] from the [param nextScene] to return to the previous scene.
-func pushCurrentSceneAndTransition(nextScene: PackedScene, pauseSceneTree: bool = true, unpauseSceneTree: bool = pauseSceneTree, animate: bool = animateDefault) -> void:
-	self.pushCurrentSceneToStack()
-	await self.transitionToScene(nextScene, pauseSceneTree, unpauseSceneTree, animate) # IMPORTANT: await for animations
+## TIP: Call [method popSceneFromStack] from the [param nextScene] to return to the previous scene.
+func pushCurrentSceneAndTransition(nextScene: PackedScene, shouldPauseSceneTree: bool = true, shouldUnpauseSceneTree: bool = shouldPauseSceneTree, animate: bool = animateDefault) -> bool:
+	# DESIGN: Push BEFORE transition, in case the upcoming scene inspects or accesses `SceneManager.sceneStack`
+	self.pushCurrentSceneToStack()	
+
+	var didTransitionSucceed: bool = await self.transitionToScene(nextScene, shouldPauseSceneTree, shouldUnpauseSceneTree, animate) # IMPORTANT: await for animations
+	
+	if not didTransitionSucceed:
+		# TBD: Rollback and pop the pushed scene?
+		return false
+
+	return true
+
 
 
 ## Adds a scene path to the [member sceneStack] and returns the resulting stack size.
