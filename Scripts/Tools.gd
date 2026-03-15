@@ -1313,6 +1313,21 @@ static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
 #endregion
 
 
+#region Array Functions
+
+static func validateArrayIndex(array: Array, index: int) -> bool:
+	return index >= 0 and index < array.size()
+
+
+## Takes a [param index] and increments it by the specified amount, wrapping it around to 0 + remainder if it exceeds an [param array]'s size.
+## Returns 0 if the array is empty, which will be an invalid index.
+static func wrapArrayIndex(array: Variant, index: int, increment: int) -> int: # NOTE: Typed as [Variant] instead of [Array] in order to also accept [PackedStringArray] etc.
+	if not array.is_empty(): return Tools.wrapInteger(0, index + increment, array.size() - 1)
+	else: return 0
+
+#endregion
+
+
 #region File System Functions
 
 ## Returns a copy of the specified [param path] with the specified [param prefix] added if the path does not begin with "res://" or "user://".
@@ -1420,10 +1435,6 @@ static func getPathWithDifferentExtension(sourcePath: String, replacementExtensi
 
 
 #region Miscellaneous Functions
-
-static func validateArrayIndex(array: Array, index: int) -> bool:
-	return index >= 0 and index < array.size()
-
 
 ## Checks whether a [Variant] value may be considered a "success", for example the return of a function.
 ## If [param value] is a [bool], then it is returned as is.
