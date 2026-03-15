@@ -43,13 +43,11 @@ func getSize() -> int:
 	return strings.size()
 
 
+## Advances [member currentStringIndex] and wraps it around to 0 + remainder if it exceeds the total number of [member strings]
 ## NOTE: [param step] will always be converted to a positive integer.
 func incrementIndex(step: int = 1) -> void:
-	# TBD: Should we call `Tools.incrementAndWrapArrayIndex()` or would that be slower? :')
 	previousString = strings[currentStringIndex] if Tools.validateArrayIndex(strings, currentStringIndex) else ""
-	currentStringIndex += absi(step)
-	if  currentStringIndex >= strings.size():
-		currentStringIndex = 0
+	currentStringIndex = Tools.wrapArrayIndex(strings, currentStringIndex, absi(step)) # Wrap to 0 + remainder
 
 
 ## Resets the indices

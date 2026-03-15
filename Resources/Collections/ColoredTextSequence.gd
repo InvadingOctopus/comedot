@@ -17,13 +17,12 @@ var currentColorIndex:	int
 #endregion
 
 
+## Advances [member currentStringIndex] and [member currentColorIndex] and wraps around to 0 + remainder if either exceeds its associated array's size.
+## NOTE: [param step] will always be converted to a positive integer.
+## NOTE: If [member colors] is of a different size than [member strings], the colors may drift, which may be an intentional effect or not.
 func incrementIndex(step: int = 1) -> void:
-	# TBD: Cycle the colors or stop at the last color if there are fewer colors than strings?
-	super.incrementIndex()
-
-	currentColorIndex += absi(step)
-	if  currentColorIndex >= colors.size():
-		currentColorIndex = 0
+	super.incrementIndex(step)
+	currentColorIndex = Tools.wrapArrayIndex(colors, currentColorIndex, absi(step)) # Wrap to 0 + remainder
 
 
 ## Resets the indices
