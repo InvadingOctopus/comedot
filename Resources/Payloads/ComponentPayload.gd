@@ -11,8 +11,10 @@ extends Payload
 #endregion
 
 
-## Returns an array of [Component]s that were created from the [member componentsToCreate] list.
-func executeImplementation(source: Variant, target: Variant) -> Array[Component]:
+## Returns an array of [Component]s that were created from the [member componentsToCreate] list, if [member componentsToCreate] isn't empty,
+## otherwise the number of components that were removed, if any,
+## otherwise returns `false`.
+func executeImplementation(source: Variant, target: Variant) -> Variant:
 	printLog(str("executeImplementation() componentsToRemove: ", componentsToRemove, ", componentsToCreate: ", componentsToCreate, ", source: ", source, ", target: ", target))
 	
 	if self.componentsToRemove.is_empty() and self.componentsToCreate.is_empty():
@@ -24,13 +26,19 @@ func executeImplementation(source: Variant, target: Variant) -> Array[Component]
 		return []
 	
 	self.willExecute.emit(source, target)
-	removeComponents(target as Entity)
-	return createComponents(target as Entity)
+	var removedComponentCount:			int = removeComponents(target as Entity)
+	var createdComponents: Array[Component] = createComponents(target as Entity)
+
+	# NOTE: Tools.checkResult() treats an empty array as a failure
+	if   not componentsToCreate.is_empty():	return createdComponents	 # Trying to create components but creating none = [] = failure
+	elif removedComponentCount > 0:			return removedComponentCount # Trying to create components but removing none = 0  = failure
+	else: return false # Doing nothing = failure
 
 
-func removeComponents(entity: Entity) -> void:
-	if not is_instance_valid(entity) or componentsToRemove.is_empty(): return
-	entity.removeComponents(componentsToRemove)
+
+func removeComponents(entity: Entity) -> int:
+	if not is_instance_valid(entity) or componentsToRemove.is_empty(): return 0
+	return entity.removeComponents(componentsToRemove)
 
 
 ## Returns an array of the newly created [Component]s.
