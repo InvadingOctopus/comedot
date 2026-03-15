@@ -189,6 +189,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 
 ## Fades in the global overlay, which may be a solid black rectangle, effectively fading OUT the actual game content.
 func fadeInTintRect() -> Tween:
+	# TBD: Check `SceneManager.ongoingTransitionScene`?
 	if rectFadeTween: rectFadeTween.kill()
 	rectFadeTween = Animations.fadeIn(tintRect)
 	return rectFadeTween

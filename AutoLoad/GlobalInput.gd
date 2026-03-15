@@ -112,8 +112,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# Game
 
-	if isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
-		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: HACK: Is this necessary?
+	if  self.isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
+		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: CHECK: HACK: Is this necessary?
 		SceneManager.togglePause()
 		isHandled = true
 

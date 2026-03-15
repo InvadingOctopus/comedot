@@ -91,7 +91,7 @@ func scatterLogo() -> void:
 
 
 func displayNextScene() -> void:
-	await SceneManager.transitionToScene(nextScene, false) # Don't pauseSceneTree during the transition, so that the cool physics keep physicsing~
+	await SceneManager.transitionToScene(nextScene, false) # Don't pauseSceneTree during the transition, so that the cool physics keep physicing~
 
 
 func _exit_tree() -> void:
