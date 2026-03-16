@@ -1475,4 +1475,33 @@ static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
 		else: return list[index+1] if index < list.size()-1 else list[0] # Wrap around if at the end of the array.
 	else: return null
 
+
+## Resets a [Resource] to its saved default values by reloading its `.tres` file from the project bundle.
+## Copies all serialized properties back onto the live instance IN-PLACE,
+## preserving all signal connections, [Dictionary] caches, and external references.
+## Returns `true` if successful. Returns `false` if the [param resource] has no [member Resource.resource_path] (e.g. if it's an inline Resource inside a `.tscn` scene)
+## TIP: For a [Stat], this restores the [member Stat.value] to the designer's saved default, which may differ from [member Stat.min] and [member Stat.max]
+## ALERT: Property setters WILL fire during the reset, which may emit signals such as [signal Resource.changed]/[signal Stat.didMin]/[signal Stat.didMax]
+## @experimental
+static func resetResource(resource: Resource) -> bool:
+	# TBD: CHECK: Is there a better way?
+
+	if not resource or resource.resource_path.is_empty():
+		Debug.printWarning(str("resetResourceToDefaults() Resource: ", resource, " has no resource_path • May be inline/dynamic resource?"), resource)
+		return false
+
+	var savedResource: Resource = ResourceLoader.load(resource.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE) # TBD: Use `CACHE_MODE_REPLACE_DEEP`?
+
+	if not savedResource:
+		Debug.printWarning("resetResourceToDefaults() ResourceLoader.load failed: " + resource.resource_path, resource)
+		return false
+
+	# NOTE: Copy each property, to reset without destroying the existing Resource instance
+	# to preserve existing signals etc.
+	for property: Dictionary in savedResource.get_property_list():
+		if property.usage & PROPERTY_USAGE_STORAGE:
+			resource.set(property.name, savedResource.get(property.name))
+
+	return true
+
 #endregion

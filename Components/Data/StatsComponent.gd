@@ -55,10 +55,12 @@ func cacheStats() -> int:
 	return statsDictionary.size()
 
 
-## Resets all Stats to their default values.
+## Calls [method Tools.resetResource] to resets all [member stats] to their default values as saved in the project bundle (i.e. on disk).
+## @experimental
 func resetStats() -> void:
 	for stat in stats:
-		stat = stat.duplicate() # TBD: CHECK: Is there a better way?
+		Tools.resetResource(stat)
+	cacheStats() # Rebuild the cache in case some `Stat.name`s etc were modified.
 
 
 #region Interface
