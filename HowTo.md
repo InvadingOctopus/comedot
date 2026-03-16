@@ -125,7 +125,7 @@ When you need to add new functionality specific to your game, you have the follo
 
 📜 Components are the core of the Comedot flow. Whenever you need a new kind of *behavior* in your game — e.g. the player needs to climb a wall, or a monster needs a specific movement pattern, or a bullet needs to explode into multiple smaller bullets, or you simply want to attach graphics like a health bar on all characters — you can add that as a new Component:
 
-1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **"Root Type"** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **"Root Type"** should be `Node`.
+1. Create a new Scene in the appropriate category subfolder in `/Components/` or create a new subfolder. If your component needs to display visuals, the **"Root Type"** must be "2D Scene" which is a `Node2D`. If your component only has logic code, the **"Root Type"** should be `Node`. If the component depends on a specialized Godot builtin node type, such as `Timer`, use that as the root node.
 
 2. Select the root node of your component scene and add it to the `components` group. This makes it easier to manage multiple components. If the Scene is a `Node2D` then also enable **"Group Selected Nodes"** in the Scene Editor Toolbar. This makes it easier to move your component along with its children in the Entity's scene.
 
@@ -152,6 +152,8 @@ When you need to add new functionality specific to your game, you have the follo
 # 🔧 Fix Common Problems
 
 * ⚠️ The first time you load a copy of this project, there may be errors because Godot will re-import various files and set the internal IDs for assets, textures etc. To fix: Close and reopen the project.
+
+* 🛠️ See `Scripts/Tools.gd` for helper functions for common tasks that Godot's builtin nodes are missing, such as `validateArrayIndex()`, `connectSignal()`, `isPointInTileMap()` etc.
 
 * 🪲 The `debugMode` property on Components and many Scripts is your friend! It will print extra debug information in the logs and/or enable extra visual cues.
 

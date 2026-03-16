@@ -11,7 +11,7 @@
 
 ## Folder Structure & Module Organization
 - `Components/`, `Entities/`: The core foundational classes of the framework and common gameplay components.
-- `AutoLoad/`: Global singletons and startup scripts.
+- `AutoLoad/`: Global singletons, startup scripts and shared helper functions.
 - `Scripts/`: Shared scripts that can be used for any node type that isn't an entity or component.
 - `Resources/`: Classes for Godot `.tres` "Resources" (not media assets): Data containers for core gameplay elements such as `Stat.gd`
 - `Scenes/`, `UI/`: Reusable and customizable scenes/nodes and UI controls/layouts.
@@ -20,6 +20,7 @@
 - `Tests/`: Playable scenes and supporting scripts for manually testing subsystems and mechanics such as combat or tile-based/turn-based components. Name format: `*Test.tscn` + `*Test.gd`
 - `addons/`: Godot Editor plugins.
 - `Temporary/`, `Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If a file in these folders prevents compilation/parsing/export, consider removing that file.
+- `Scripts/Tools.gd`: A monolithic class script containing global static helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
 - `Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. Everything outside the `Game/` subtree is part of the framework that is shared between multiple games. When generating code for a game, only the files in the `Game/` subtree should be modified. `Game/AGENTS.override.md` takes precedence for any activity inside the `Game/` subtree.
 
 
@@ -81,7 +82,7 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
 - A `class_name` must be used for all components and entities, and also for other types that are expected to be referenced from code or instantiated at runtime. Exceptions are short specific scripts such as `Spin.gd`
 - The root node of component scenes must be the closest relevant Godot builtin node type that matches the component's core purpose: For example, if the component uses a `Timer` and no other nodes, then the root node must be a `Timer` instead of `Node` with a `Timer` child.
-	- Basic components that don't need a specific builtin node and don't have any visual features must use `Node` as the root node instead of `Node2D`
+	- Simple components that don't need a specialized node and don't have any visual features should use `Node` as the root node instead of `Node2D`
 	- If a single specialized node component needs to be changed to include more subnodes, consider refactoring the root to a `Node` or `Node2D` and make the former root a child of the new root, e.g. `/Timer` -> `/Node/Timer`
 	- If a component has visual child nodes that have position etc. the root node should be `Node2D` to allow offsetting all children from the entity etc.
 - Entities may be any node type with the `Entity.gd` script or one of its subclasses. Entities are just containers for components: Games should not create new entity scripts except in rare unavoidable cases; game-specific functionality should always be implemented as new components. Entity nodes must be added to the `entities` node group. Entities do not have to be just visual/interactive elements: "abstract" concepts such as the "WorldEnvironment" may also be an entity, with components for "Weather", "DayNightCycle", "GlobalBuffs" etc.
