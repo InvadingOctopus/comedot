@@ -26,11 +26,16 @@ extends Component
 #region State
 # TBD: Persist state flags with @export_storage to be restored by Save/Load?
 
-var isOnFloor:		bool ## Did the body collide with the floor after [method CharacterBody2D.move_and_slide]? (may be cached since the previous frame).
+var isOnFloor:		bool ## Did the body collide with the floor AFTER the last [method CharacterBody2D.move_and_slide]? ALERT: For components that update BEFORE this [CharacterBodyComponent] i.e. higher on the scene tree, this is the state of the PREVIOUS frame.
 
-var wasOnFloor:		bool ## Was the body on the floor before the last [method CharacterBody2D.move_and_slide]?
-var wasOnWall:		bool ## Was the body on a wall before the last [method CharacterBody2D.move_and_slide]?
-var wasOnCeiling:	bool ## Was the body on a ceiling before the last [method CharacterBody2D.move_and_slide]?
+var wasOnFloor:		bool ## Was the body on the floor BEFORE the last [method CharacterBody2D.move_and_slide]?
+var wasOnWall:		bool ## Was the body on a wall BEFORE the last [method CharacterBody2D.move_and_slide]?
+var wasOnCeiling:	bool ## Was the body on a ceiling BEFORE the last [method CharacterBody2D.move_and_slide]?
+
+## Returns `true` if the [member CharacterBody2D.velocity] is moving in the direction of gravity
+## i.e. opposite to [member CharacterBody2D.up_direction] to account for "inverted gravity" gameplay etc.
+var isFallingTowardsGravity: bool:
+	get: return body.velocity.y * body.up_direction.y < 0.0
 
 var previousVelocity:	Vector2:
 	set(newValue):

@@ -12,6 +12,12 @@ extends CharacterBodyDependentComponentBase
 # TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TBD:  A more fail-proof way of handling short jumps. Timers?
 
+# INFO: Velocity & Inverted Gravity
+# Falling down onscreen:					velocity.y = +positive
+# Jumping up onscreen:						velocity.y = -negative
+# Inverted gravity: Falling up onscreen:	velocity.y = -positive
+# Inverted gravity: Jumping down onscreen:	velocity.y = +positive
+
 
 #region Parameters
 @export var parameters: PlatformerJumpParameters = PlatformerJumpParameters.new()
@@ -214,6 +220,9 @@ func updateCoyoteJumpState() -> void:
 	if not isEnabled or not parameters.allowCoyoteJump: return
 
 	# Are we falling?
+	# Inverted gravity:			body.up_direction.y = +1
+	# Falling up onscreen:		velocity.y = -negative * +1 = -negative: < 0 = Falling
+	# Jumping down onscreen:	velocity.y = +positive * +1 = +positive: > 0 = Jumping
 	var fallVelocity: float = body.velocity.y * body.up_direction.y # Check for inverted gravity!
 
 	if  characterBodyComponent.wasOnFloor \

@@ -135,7 +135,8 @@ func _physics_process(delta: float) -> void:
 
 
 func updateStateBeforeMove() -> void:
-	# NOTE: `currentState` MUST be updated BEFORE `CharacterBody2D.move_and_slide(])` and AFTER `processInput()`
+	# NOTE: `currentState` MUST be updated BEFORE CharacterBody2D.move_and_slide() and AFTER processInput()
+	# NOTE: `CharacterBodyComponent.isOnFloor` is the state from the PREVIOUS frame AFTER the last move_and_slide() and is used to decide the state of THIS frame's move_and_slide()
 	# DESIGN: Using `match` here may seem too cluttered and ambiguous
 
 	if currentState == State.idle and not isInputZero:
