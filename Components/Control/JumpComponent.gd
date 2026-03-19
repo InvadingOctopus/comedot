@@ -9,6 +9,7 @@ class_name JumpComponent
 extends CharacterBodyDependentComponentBase
 
 # CREDIT: THANKS: https://github.com/uheartbeast — https://github.com/uheartbeast/Heart-Platformer-Godot-4 — https://youtu.be/M8-JVjtJlIQ
+# TODO: Add buffering: Jump if input pressed <N seconds before landing on floor
 # TBD:  Respect the `CharacterBody2D.up_direction.x` axis too?
 # TBD:  A more fail-proof way of handling short jumps. Timers?
 
@@ -68,7 +69,53 @@ var currentNumberOfJumps:	int:
 			if debugMode: Debug.printChange("currentNumberOfJumps", currentNumberOfJumps, newValue)
 			currentNumberOfJumps = newValue
 
-var didWallJump:			bool ## Did we just perform a "wall jump"?
+# CHECK: PERFORMANCE: Will all these computed properties and function calls slow things down compared to just keeping the checks inside the actual process/update methods?
+
+## `true` if the character can perform an initial jump from the floor/ground or via "coyote time" i.e. [member canCoyoteJump]
+## The jump "height" will be the [PlatformerJumpParameters.jumpVelocity1stJump] or [PlatformerJumpParameters.jumpVelocity1stJumpShort]
+## NOTE: PERFORMANCE: Does NOT check [member isEnabled] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
+var canFloorJump:	bool:
+	get: return currentNumberOfJumps == 0 \
+			and (characterBodyComponent.isOnFloor or canCoyoteJump)
+
+## `true` if the "coyote jump" grace period is active while just walking off a floor i.e. [member coyoteJumpTimer]
+## IMPORTANT: Do NOT use without also checking [member canFloorJump] first!
+## NOTE: PERFORMANCE: Does NOT check [member isEnabled] or [member canFloorJump]
+var canCoyoteJump:	bool:
+	get: return parameters.allowCoyoteJump \
+			and not is_zero_approx(coyoteJumpTimer.time_left)
+
+## `true` if the character can perform a mid-air jump as the 1st jump while falling WITHOUT jumping from the floor/ground first.
+## The jump "height" will be the [PlatformerJumpParameters.jumpVelocity1stJump] or [PlatformerJumpParameters.jumpVelocity1stJumpShort]
+## NOTE: PERFORMANCE: Does NOT check [member isEnabled] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
+# TODO: var canFallJump:		bool:
+#	get: return currentNumberOfJumps == 0 \
+#			and (not characterBodyComponent.isOnFloor and not canCoyoteJump)
+
+## `true` if the character can perform a "double jump" in mid-air AFTER performing a jump from the floor/ground (2nd jump, 3rd, etc.)
+## The jump "height" will be the [PlatformerJumpParameters.jumpVelocity2ndJump]
+## NOTE: PERFORMANCE: Does NOT check [member isEnabled]
+var canMultiJump:	bool:
+	get: return parameters.maxNumberOfJumps > 1 \
+			and currentNumberOfJumps > 0 \
+			and currentNumberOfJumps < parameters.maxNumberOfJumps
+
+## `true` if the character is in a valid position/state for a jumping off/away from a wall.
+## IMPORTANT: Remember to also check [method getWallJumpNormal] to ensure a usable direction exists.
+## NOTE: PERFORMANCE: Does NOT check [member isEnabled] or [method getWallJumpNormal] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
+var canWallJump:	bool:
+	# 1: Can we wall-jump?
+	# 2: Do we have any jumps left?
+	# 3: Is the component enabled?
+	# 4: Are we on a wall and not a floor?
+	# 5: Are we off the wall but still have a grace timer left?
+	# TBD: Use is_on_floor_only() and/or is_on_wall_only()?
+	get: return parameters.allowWallJump \
+			and currentNumberOfJumps < parameters.maxNumberOfJumps \
+			and not body.is_on_floor() \
+			and (body.is_on_wall() or not is_zero_approx(wallJumpTimer.time_left))
+
+var didWallJump:	bool ## Did we just perform a "wall jump"?
 
 #endregion
 
@@ -94,14 +141,15 @@ func _ready() -> void:
 
 	# Set the initial timers
 	coyoteJumpTimer.wait_time = parameters.coyoteJumpTimer
-	wallJumpTimer.wait_time = parameters.wallJumpTimer
+	wallJumpTimer.wait_time   = parameters.wallJumpTimer
 
 
 #region Update Cycle
 
 func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	if not isEnabled \
-	or not event.is_action(GlobalInput.Actions.jump): return
+	or not event.is_action(GlobalInput.Actions.jump) \
+	or parameters.maxNumberOfJumps < 1: return
 
 	# DESIGN: Cache input state as local properties, in case InputComponent's state changes while we're still processing an event/frame.
 	# TIP: AI components & demo scripts may generate synthetic [InputEvent]s for jump etc.
@@ -120,7 +168,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 		printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", body.velocity: ", body.velocity.y))
 
 	processWallJump()
-	processJump()
+	if not didWallJump: processJump()
 
 	characterBodyComponent.shouldMoveThisFrame = true
 
@@ -160,20 +208,18 @@ func clearInput() -> void:
 
 #region Normal & Mid-Air Jump
 
+## NOTE: Does NOT check [member isEnabled] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
 func processJump() -> void:
 	# TBD: NOTE: These guard conditions may prevent a "short" jump if this function gets disabled DURING a jump.
-	if not isEnabled or parameters.maxNumberOfJumps <= 0: return
+	# UNUSED: PERFORMANCE: Let the caller check this: if not isEnabled or parameters.maxNumberOfJumps <= 0: return
 
-	var shouldJump:    bool = false
-	var canCoyoteJump: bool = parameters.allowCoyoteJump and not is_zero_approx(coyoteJumpTimer.time_left)
+	var shouldJump: bool = false
 
 	# The initial or mid-air jump
 	# TBD: Allow double-jumping after a wall jump?
 
 	if self.jumpInputJustPressed:
-
-		if currentNumberOfJumps <= 0: shouldJump = characterBodyComponent.isOnFloor or canCoyoteJump
-		else: shouldJump = (currentNumberOfJumps < parameters.maxNumberOfJumps) #and not didWallJump # TODO: TBD: Option for dis/allowing multi-jumping after wall-jumping
+		shouldJump = canFloorJump or canMultiJump
 
 	# Shorten the initial jump if we release the input early while jumping
 	# TBD: Should mid-air jumps also be short-able?
@@ -214,10 +260,11 @@ func processJump() -> void:
 
 ## Adds a "grace period" to allow jumping for a short time just after the player walks off a platform floor.
 ## May improve the feel of control in some games.
+## NOTE: Does NOT check [member isEnabled] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
 func updateCoyoteJumpState() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 
-	if not isEnabled or not parameters.allowCoyoteJump: return
+	if not parameters.allowCoyoteJump: return
 
 	# Are we falling?
 	# Inverted gravity:			body.up_direction.y = +1
@@ -237,31 +284,18 @@ func updateCoyoteJumpState() -> void:
 #region Wall Jumping
 
 ## Implements jumping when hanging on to a wall.
+## Does NOT check [member isEnabled]
 func processWallJump() -> void:
 	# CREDIT: THANKS: uHeartbeast@GitHub/YouTube
 
 	# PERFORMANCE: `isEnabled` would be rarely `false` at this point because it should have been checked by the caller of this function,
-	# so check the more commonly-changing conditions first:
-	# 1: Can we wall-jump?
-	# 2: Do we have any jumps left?
-	# 3: Is the component enabled?
-	# 4: Are we on a wall and not a floor?
-	# 5: Are we off the wall but still have a grace timer left?
-	# TBD: Use is_on_floor_only() and/or is_on_wall_only()?
-	if  not parameters.allowWallJump \
-		or currentNumberOfJumps >= parameters.maxNumberOfJumps \
-		or not isEnabled \
-		or body.is_on_floor() \
-		or (not body.is_on_wall() \
-			and is_zero_approx(wallJumpTimer.time_left)): # TBD: Should we check for timer < 0?
-				return
+	# so just check the more commonly-changing conditions first:
+	didWallJump = false # Always reset so we can do the normal processJump() if we don't wall-jump
+	if not canWallJump: return
 
-	# Get the current OR most recent wall direction (in case we're in the grace timer)
-	var wallNormal: Vector2
-	if body.is_on_wall(): wallNormal = body.get_wall_normal()
-	elif characterBodyComponent.wasOnWall: wallNormal = characterBodyComponent.previousWallNormal
-
-	if wallNormal.is_zero_approx(): return
+	# Get direction away from the current OR most recent wall collision (in case we're in the grace timer)
+	var wallNormal: Vector2 = getWallJumpNormal()
+	if  wallNormal.is_zero_approx(): return
 
 	# le boing
 	if self.jumpInputJustPressed:
@@ -279,6 +313,17 @@ func processWallJump() -> void:
 			platformerPhysicsComponent.shouldSkipFriction = true
 
 		didWallJump = true
+
+
+## Returns the current wall collision normal vector; the direction pointing away from a wall currently in contact,
+## or the vector from the last wall in contact if the wall-jump grace period is still active i.e. [member wallJumpTimer]
+func getWallJumpNormal() -> Vector2:
+	if body.is_on_wall(): return body.get_wall_normal()
+
+	elif not is_zero_approx(wallJumpTimer.time_left): # NOTE: Do NOT check `characterBodyComponent.wasOnWall` because that flag persists for 1 frame only
+		return characterBodyComponent.previousWallNormal
+
+	else: return Vector2.ZERO
 
 
 func updateWallJumpState() -> void:
@@ -307,4 +352,9 @@ func showDebugInfo() -> void:
 		coyoteTimer	= coyoteJumpTimer.time_left,
 		jumpInput	= jumpInput,
 		jumps		= currentNumberOfJumps,
+		canFloor	= canFloorJump,
+		canCoyote	= canCoyoteJump,
+		# TODO: canFallJump	= canFallJump,
+		canMulti	= canMultiJump,
+		canWall		= canWallJump,
 		})
