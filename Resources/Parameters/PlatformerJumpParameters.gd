@@ -13,18 +13,27 @@ extends Resource
 
 @export_group("Jump")
 
+## If > 1 then jumping are allowed in mid-air AFTER jumping from the ground/floor.
+## If > 2 then multiple jumps are allowed in mid-air.
+## If 0, then jumping is disabled.
 @export_range(0, 10, 1) var maxNumberOfJumps: int = 2
 
-## NOTE: Multiplied by [member CharacterBody2D.up_direction].
+## If `true`, then the player can jump in mid-air while falling WITHOUT initiating a jump from the ground/floor first.
+## i.e. the "air" also counts as a "floor" state.
+## NOTE: NOT tied to [member allowCoyoteJump] or [member coyoteJumpTimer]
+@export var allowFallJump: bool = false
+
+## The "height" of the first jump initiated from the ground/floor (or air if [member allowFallJump])
+## NOTE: Multiplied by [member CharacterBody2D.up_direction]
 @export_range(-1000, 1000, 4, "or_greater", "or_less") var jumpVelocity1stJump: float = 360
 
 ## A shorter maximum velocity for the 1st jump if the player releases the Jump button quickly.
-## NOTE: Does NOT apply to mid-air or wall jumps.
-## NOTE: Multiplied by [member CharacterBody2D.up_direction].
+## NOTE: Does NOT apply to wall jumps or the 2nd or later mid-air jumps.
+## NOTE: Multiplied by [member CharacterBody2D.up_direction]
 @export_range(-1000, 1000, 4, "or_greater", "or_less") var jumpVelocity1stJumpShort: float = 160
 
-## The velocity of the 2nd and all subsequent jumps in a single chain (before touching the ground).
-## NOTE: Multiplied by [member CharacterBody2D.up_direction].
+## The velocity of the second and all subsequent jumps in a single "chain" (before landing again and touching the ground/floor).
+## NOTE: Multiplied by [member CharacterBody2D.up_direction]
 @export_range(-1000, 1000, 4, "or_greater", "or_less") var jumpVelocity2ndJump: float = 280
 
 ## Allows a "grace period" to let the player to jump just after walking off a platform floor.
@@ -38,6 +47,7 @@ extends Resource
 
 @export_group("Wall Jump")
 
+## Allow jumping off/away from a wall?
 @export var allowWallJump: bool = true
 
 ## NOTE: Multiplied by [member CharacterBody2D.up_direction].

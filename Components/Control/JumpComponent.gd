@@ -88,9 +88,12 @@ var canCoyoteJump:	bool:
 ## `true` if the character can perform a mid-air jump as the 1st jump while falling WITHOUT jumping from the floor/ground first.
 ## The jump "height" will be the [PlatformerJumpParameters.jumpVelocity1stJump] or [PlatformerJumpParameters.jumpVelocity1stJumpShort]
 ## NOTE: PERFORMANCE: Does NOT check [member isEnabled] or [PlatformerJumpParameters.maxNumberOfJumps] > 0
-# TODO: var canFallJump:		bool:
-#	get: return currentNumberOfJumps == 0 \
-#			and (not characterBodyComponent.isOnFloor and not canCoyoteJump)
+var canFallJump:		bool:
+	get: return parameters.allowFallJump \
+			and currentNumberOfJumps == 0 \
+			and not characterBodyComponent.isOnFloor \
+			and not canCoyoteJump \
+			and characterBodyComponent.isFallingTowardsGravity # CHECK: PERFORMANCE: Should we check directly instead of calling another computed property? *sweatdrop*
 
 ## `true` if the character can perform a "double jump" in mid-air AFTER performing a jump from the floor/ground (2nd jump, 3rd, etc.)
 ## The jump "height" will be the [PlatformerJumpParameters.jumpVelocity2ndJump]
@@ -106,9 +109,8 @@ var canMultiJump:	bool:
 var canWallJump:	bool:
 	# 1: Can we wall-jump?
 	# 2: Do we have any jumps left?
-	# 3: Is the component enabled?
-	# 4: Are we on a wall and not a floor?
-	# 5: Are we off the wall but still have a grace timer left?
+	# 3: Are we on a wall and not a floor?
+	# 4: Are we Off The Wall™ but still have a grace timer left?
 	# TBD: Use is_on_floor_only() and/or is_on_wall_only()?
 	get: return parameters.allowWallJump \
 			and currentNumberOfJumps < parameters.maxNumberOfJumps \
@@ -219,7 +221,7 @@ func processJump() -> void:
 	# TBD: Allow double-jumping after a wall jump?
 
 	if self.jumpInputJustPressed:
-		shouldJump = canFloorJump or canMultiJump
+		shouldJump = canFloorJump or canFallJump or canMultiJump
 
 	# Shorten the initial jump if we release the input early while jumping
 	# TBD: Should mid-air jumps also be short-able?
@@ -354,7 +356,7 @@ func showDebugInfo() -> void:
 		jumps		= currentNumberOfJumps,
 		canFloor	= canFloorJump,
 		canCoyote	= canCoyoteJump,
-		# TODO: canFallJump	= canFallJump,
+		canFallJump	= canFallJump,
 		canMulti	= canMultiJump,
 		canWall		= canWallJump,
 		})
