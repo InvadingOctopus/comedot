@@ -233,9 +233,11 @@ func deductPayment(offeredStat: Stat, levelToPurchase: int) -> bool:
 ## Level 0 is when the Upgrade is first acquired by an entity.
 ## Returns: The result of the [member payloadOnAcquire] or `false` if the payload is missing.
 func processPayload(entity: Entity) -> Variant:
-	printLog(str("processPayload() entity: ", entity, ", payload: ", self.payloadOnAcquire))
+	printLog(str("processPayload() entity: ", entity, ", payloadOnAcquire: ", self.payloadOnAcquire))
 	if self.payloadOnAcquire:
-		return self.payloadOnAcquire.execute(self, entity)
+		var payloadResult: Variant = self.payloadOnAcquire.execute(self, entity)
+		if debugMode: Debug.printDebug(str("processPayload() payloadOnAcquire result: ", payloadResult), self)
+		return payloadResult
 	else:
 		Debug.printWarning("Missing payloadOnAcquire", self.logName)
 		return false

@@ -132,7 +132,7 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
-		newUpgrade.processPayload(self.parentEntity)
+		newUpgrade.processPayload(self.parentEntity) # TBD: Handle Payload result?
 
 	return true
 
