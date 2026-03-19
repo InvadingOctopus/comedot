@@ -5,8 +5,12 @@
 [node name="JumpComponent" type="Node" unique_id=1255562983 groups=["components"]]
 script = ExtResource("1_58ydu")
 
-[node name="CoyoteJumpTimer" type="Timer" parent="." unique_id=1384757265]
+[node name="InputBufferTimer" type="Timer" parent="." unique_id=915155166]
 wait_time = 0.1
+one_shot = true
+
+[node name="CoyoteJumpTimer" type="Timer" parent="." unique_id=1384757265]
+wait_time = 0.15
 one_shot = true
 
 [node name="WallJumpTimer" type="Timer" parent="." unique_id=1702046140]
