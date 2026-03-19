@@ -28,7 +28,7 @@ extends Resource
 
 ## If `true`, then the player can jump in mid-air while falling WITHOUT initiating a jump from the ground/floor first.
 ## i.e. the "air" also counts as a "floor" state.
-## NOTE: NOT related to [member allowCoyoteJump] or [member coyoteJumpTimer]
+## NOTE: NOT related to [member allowCoyoteJump] or [member JumpComponent.coyoteJumpTimer]
 @export var allowFallJump:		bool = false
 
 ## Allows a "grace period" to let the player to jump just after walking off a platform floor.
