@@ -123,8 +123,9 @@ func performFrameworkChecks() -> void:
 
 
 func displayInitializationMessage() -> void:
-	# Get the actual input key
-	var debugWindowInput: String = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow)[0] # .front() not for PackedStringArray :(
+	# Get the actual input key if any for the Debug Window
+	var debugWindowInputs: PackedStringArray = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow)
+	var debugWindowInput:  String = debugWindowInputs[0] if not debugWindowInputs.is_empty() else "(unbound)"
 
 	var message: String = \
 		"_enter_tree()\n" + \
