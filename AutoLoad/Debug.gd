@@ -46,16 +46,17 @@ const customLogMaximumEntries: int = 100
 @onready var labels:		 Node   = %Labels
 @onready var label:			 Label  = %Label
 @onready var warningLabel:	 Label  = %WarningLabel
-@onready var watchListLabel: RichTextLabel  = %WatchListLabel # TBD: PERFORMANCE: Should we stick to a regular [Label]? or performance doesn't matter anyway while debugging?
-@onready var customLogList:	 Container = %CustomLogList
+@onready var watchListLabel: RichTextLabel	= %WatchListLabel # TBD: PERFORMANCE: Should we stick to a regular [Label]? or performance doesn't matter anyway while debugging?
+@onready var customLogList:	 Container		= %CustomLogList
 
-@onready var debugBackground: Node2D = %DebugBackground
+@onready var debugBackground: Node2D		= %DebugBackground
 
-var previousChartWindowInitialPosition: Vector2i
+const debugWindowSpacing:			int = 10
+var nextChartWindowPosition:		Vector2i ## For [Chart] & `ChartWindow.tscn` 
 
-static var lastFrameLogged:		 int  = -1 # Start at -1 so the first frame 0 can be printed.
-static var isTraceLogAlternateRow: bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
-static var customLogColorFlag:	 bool
+static var lastFrameLogged:			int  = -1 # Start at -1 so the first frame 0 can be printed.
+static var isTraceLogAlternateRow:	bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
+static var customLogColorFlag:		bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
 ## @experimental
@@ -80,25 +81,6 @@ func _ready() -> void:
 	setLabelVisibility()
 	performFrameworkChecks()
 	self.set_process(showDebugLabels) # Apply setter because Godot doesn't on initialization
-
-
-func initializeLogWindow() -> void:
-	# TBD: # logWindow.visible = OS.is_debug_build()
-	# Position the Log Window to the bottom of the main window
-	var mainWindow: Window = self.get_window()
-	logWindow.position	   = mainWindow.position
-	logWindow.position.y  += mainWindow.size.y + 75
-	logWindow.size.x	   = mainWindow.size.x
-
-
-func initializeDebugWindow() -> void:
-	debugWindow.visible = OS.is_debug_build()
-
-	# Position the Debug Window to the right of the main window
-	# TBD: Support for Right-To-Left locales? :')
-	var mainWindow: Window = self.get_window()
-	debugWindow.position = mainWindow.position
-	debugWindow.position.x += mainWindow.size.x + 50
 
 
 func resetLabels() -> void:
@@ -189,6 +171,26 @@ func addComponentWatchList(component: Component, variables: Dictionary) -> void:
 
 #region Windows
 
+func initializeLogWindow() -> void:
+	# TBD: # logWindow.visible = OS.is_debug_build()
+	# Position the Log Window to the bottom of the main window
+	var mainWindow: Window = self.get_window()
+	logWindow.position	   = mainWindow.position
+	logWindow.position.y  += mainWindow.size.y + 75
+	logWindow.size.x	   = mainWindow.size.x
+
+
+func initializeDebugWindow() -> void:
+	debugWindow.visible = OS.is_debug_build()
+
+	# Position the Debug Window to the right of the main window
+	# TBD: Support for Right-To-Left locales? :')
+	var mainWindow: Window	= self.get_window()
+	debugWindow.position	= mainWindow.position
+	debugWindow.position.x += mainWindow.size.x + debugWindowSpacing
+	nextChartWindowPosition = mainWindow.position + Vector2i(0, mainWindow.size.y + debugWindowSpacing)
+
+
 ## Returns: The resulting state of the debug window's visibility.
 func toggleDebugWindow() -> bool:
 	var isDebugWindowShown: bool
@@ -209,10 +211,10 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 	var newChartWindow: Window = preload("res://UI/ChartWindow.tscn").instantiate()
 	var newChart: Chart = Tools.findFirstChildOfType(newChartWindow, Chart)
 
-	newChart.nodeToMonitor = nodeToMonitor
-	newChart.propertyToMonitor = propertyToMonitor
-	newChart.verticalHeight = verticalHeight
-	newChart.valueScale = valueScale
+	newChart.nodeToMonitor		= nodeToMonitor
+	newChart.propertyToMonitor	= propertyToMonitor
+	newChart.verticalHeight		= verticalHeight
+	newChart.valueScale			= valueScale
 
 	newChartWindow.title = str(get_node(nodeToMonitor), propertyToMonitor)
 	newChartWindow.close_requested.connect(newChartWindow.queue_free) # TODO: Verify
@@ -224,9 +226,13 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 	newChart.position.y   = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
 
 	# Shift each window so they don't all overlap
+	newChartWindow.position		= nextChartWindowPosition
+	nextChartWindowPosition.x  += newChartWindow.size.x + debugWindowSpacing
 
-	newChartWindow.position = previousChartWindowInitialPosition + Vector2i(newChartWindow.size.x, 0)
-	previousChartWindowInitialPosition = newChartWindow.position
+	# Wrap around the screen if there's too many windows
+	var screenRect: Rect2i = DisplayServer.screen_get_usable_rect(self.get_window().current_screen)
+	if  nextChartWindowPosition.x >= screenRect.position.x + screenRect.size.x:
+		nextChartWindowPosition.x  = screenRect.position.x
 
 	self.add_child(newChartWindow)
 	return newChart
