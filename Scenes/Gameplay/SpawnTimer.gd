@@ -28,6 +28,9 @@ extends Spawner
 
 
 func _ready() -> void:
+	if not spawnInSceneRoot and not parentOverride:
+		Debug.printWarning("No parentOverride; spawned children will be added to the Timer node itself. Set parentOverride to \"..\" or another parent.", self)
+
 	if shouldSpawnOnReady:
 		selfAsTimer.stop() # Stop the Timer
 		spawn.call_deferred() # Defer to avoid the error: "Parent node is busy setting up children, `add_child()` failed."

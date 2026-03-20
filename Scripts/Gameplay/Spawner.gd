@@ -1,4 +1,4 @@
-## Node that creates copies of a specified Scene as new children of itself or another node as their parent.
+## A [Node] that creates copies of a specified Scene as new children of itself or another node as their parent.
 ## NOTE: To actually spawn anything, some other script or Signal must call [member spawn]
 ## TIP: Use subclasses such as [SpawnTimer] or [RandomSpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
 
@@ -13,7 +13,7 @@ extends Node
 ## The path of the Scene to spawn copies of.
 @export_file("*.tscn") var sceneToSpawn: String # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
 
-## The parent node to add the new spawns to. If `null`, the spawns will be added as children of this area.
+## The parent node to add the new spawns to. If `null`, the spawns will be added as children of this [Spawner] node itself.
 @export var parentOverride:	Node
 
 ## Suppresses [member parentOverride] and adds new spawned nodes as children of the current Scene's root node.
@@ -58,11 +58,11 @@ signal willSpawn(scenePathToSpawn: String)
 
 ## Emitted before the newly-instantiated scene copy is added to the parent node.
 ## TIP: This allows the position etc. to be modified before the child node is made visible.
-signal willAddSpawn(newSpawn: Node2D, parent: Node2D)
+signal willAddSpawn(newSpawn: Node2D, parent: Node)
 
 ## Emitted after [signal willAddSpawn]
 ## TIP: To modify positioning, use the earlier signal to prevent visually-jarring jumps etc.
-signal didSpawn(newSpawn: Node2D, parent: Node2D)
+signal didSpawn(newSpawn: Node2D, parent: Node)
 
 #endregion
 
@@ -95,11 +95,14 @@ func spawn() -> Node2D:
 
 	# Load
 
-	var sceneResource   := load(sceneToSpawn)
-	var newSpawn: Node2D = sceneResource.instantiate()
+	var sceneResource: PackedScene = load(sceneToSpawn)
+	if not sceneResource:
+		Debug.printError("spawn() cannot load sceneToSpawn: " + sceneToSpawn, self)
+		return null
 
+	var newSpawn: Node2D = sceneResource.instantiate()
 	if not newSpawn:
-		Debug.printWarning("Unable to instantiate scene: " + sceneToSpawn, self)
+		Debug.printError("spawn() unable to instantiate scene: " + sceneToSpawn, self)
 		return null
 
 	# Prep the newborn
@@ -119,9 +122,9 @@ func spawn() -> Node2D:
 
 	if   spawnInSceneRoot: parent = self.get_tree().current_scene
 	elif parentOverride:   parent = parentOverride
-	else:				   parent = self.get_parent() # The [Timer]'s parent because [Timer] is not a [Node2D]
+	else:				   parent = self
 
-	# Let the game-specific subclasses, if any, customize the new copies.
+	# Let the game-specific subclasses, if any, verify & customize the new copies.
 
 	if validateNewNode(newSpawn, parent):
 
@@ -140,7 +143,10 @@ func spawn() -> Node2D:
 		didSpawn.emit(newSpawn, parent)
 		return newSpawn
 
+	# If a subclass rejects a spawn for whatever reason, abort it :'(
 	else:
+		newSpawn.visible = false # Just in case
+		newSpawn.queue_free()
 		return null
 
 

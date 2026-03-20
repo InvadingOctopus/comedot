@@ -10,6 +10,12 @@ extends Marker2D
 #region
 
 
-func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node2D) -> void:
-	if parent == self: newSpawn.position = self.global_position
-	else: newSpawn.position = parent.to_local(self.global_position)
+func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
+	# If we're the parent, just spawn at wherever this SpawnPoint is
+	if parent == self: newSpawn.position = Vector2.ZERO
+
+	# If the parent is a different Node2D, convert our position to that node's space
+	elif is_instance_of(parent, Node2D): newSpawn.position = parent.to_local(self.global_position)
+
+	# If the parent is a plain Node (e.g. for grouping) or Control, just place the spawn at whatever this SpawnPoint's position is (and hope for the best?)
+	else: newSpawn.position = self.global_position
