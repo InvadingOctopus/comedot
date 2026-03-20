@@ -20,11 +20,20 @@ extends SpawnTimer
 #endregion
 
 
+## Calls [method spawn] on each [Timer] tick if the [member spawnChance] succeeds.
 func onTimeout() -> void:
 	if spawnChance >= 100 \
 	or randi_range(1, 100) <= spawnChance: # i.e. if the chance is 10%, then any number from 1-10 should succeed. If chance is 0 then never succeed.
-		if debugMode: Debug.printDebug(str("onTimeout() roll >= spawnChance: ", spawnChance), self)
-
-		# Choose a random scene
-		self.sceneToSpawn = self.randomScenesList.pick_random()
+		if debugMode: Debug.printDebug(str("onTimeout() roll <= spawnChance: ", spawnChance), self)
 		spawn()
+
+
+## Overrides [method SpawnTimer.spawn] to "inject" a different random scene from [member randomScenesList] before calling `super.spawn()`
+func spawn() -> Node2D:
+	if randomScenesList.is_empty():
+		if debugMode: Debug.printDebug("spawn() randomScenesList is empty", self)
+		return null
+
+	# Choose a random scene
+	self.sceneToSpawn = self.randomScenesList.pick_random()
+	return super.spawn()
