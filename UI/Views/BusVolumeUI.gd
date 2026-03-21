@@ -62,7 +62,7 @@ func getStepIndexFromBusVolume() -> int:
 	# Round DOWN to the last highest volume step.
 	# TODO: A more accurate way to get the closest volume step from the current volume :)
 
-	for index: int in volumeSteps.size() - 1:
+	for index: int in volumeSteps.size(): # NOT `size() - 1` because `for in` does not include the last number
 		if is_equal_approx(currentVolume, volumeSteps[index]) \
 		or currentVolume > volumeSteps[index]:
 			closestIndex = index
