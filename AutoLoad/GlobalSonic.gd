@@ -61,10 +61,18 @@ func createAudioPlayer(
 
 	# Check the limit on maximum number of sounds
 	# TODO: A better implementation, like [TemporaryLabelList]'s?
+	# TBD: PERFORMANCE: Reuse the oldest player instead of potentially-slow destroy/recreate "churn"?
+
+	if maximumNumberOfSounds < 1:
+		if debugMode: Debug.printDebug("createAudioPlayer(): maximumNumberOfSounds < 1", self)
+		return null
 
 	if sounds.get_child_count() >= maximumNumberOfSounds:
 		# Delete the oldest sound (the one at the top of the subtree)
-		sounds.remove_child(sounds.get_child(0))
+		var oldestAudioPlayer: AudioStreamPlayer2D = sounds.get_child(0)
+		oldestAudioPlayer.stop() # Also stop any playing sounds so the cap also limits concurrent playback
+		sounds.remove_child(oldestAudioPlayer)
+		oldestAudioPlayer.queue_free() # Free manually instead of depending on the `finished` signal
 
 	# Create the new sound
 	var audioPlayer: AudioStreamPlayer2D = AudioStreamPlayer2D.new()
