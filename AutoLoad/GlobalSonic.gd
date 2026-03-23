@@ -10,9 +10,14 @@ extends Node
 
 #region Parameters
 @export var musicFolder:			String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
-@export var shouldShuffleMusic:		bool = true ## Affects [method skipMusic] and the next track that plays after the current track finishes.
-@export var maximumNumberOfSounds:	int  = 10 # TBD:
+@export var shouldShuffleMusic:		bool = true ## Affects [method skipMusic] and the next track that plays after the current track finishes. Supersedes [member shouldAutoPlayNext]
+@export var shouldAutoPlayNext:		bool = true ## Plays the next music track, if any, after a track finishes [method skipMusic] and the next track that plays after the current track finishes and [signal AudioStreamPlayer.finished] is emitted. Superseded by [member shouldShuffleMusic]
+
+@export_range(0, 100, 1) var maximumNumberOfSounds:	int  = 10 # TBD:
+
 @export var debugMode:				bool = false
+
+const muteVolumeThreshold:			float = -60.0 ## The minimum volume in decibels at and below which an audio bus will be muted.
 #endregion
 
 
@@ -38,13 +43,36 @@ var currentMusicIndex: int = -1 ## The index in the [member musicFiles] array of
 signal musicPlayerDidPlay(fileName: String)
 
 ## Emitted when the [member musicPlayer] [AudioStreamPlayer] node emits its [signal AudioStreamPlayer.finished] signal.
-## WARNING: Calling [method AudioStreamPlayer.stop] directly on [member musicPlayer] does NOT emit these signals, or when the node is removed from the scene tree.
+## ALERT: Calling [method AudioStreamPlayer.stop] directly on [member musicPlayer] does NOT emit these signals, or when the node is removed from the scene tree.
 signal musicPlayerDidStop
 #endregion
 
 
+#region Initialization
+
 func _ready() -> void:
+	self.loadAudioSettings()
 	self.loadMusicFolder()
+
+
+func loadAudioSettings() -> void:
+	const settingSuffix: StringName = &"Volume" 
+	loadBusVolumeSetting(Global.AudioBuses.music, Global.AudioBuses.music.to_lower() + settingSuffix) # "musicVolume"
+	loadBusVolumeSetting(Global.AudioBuses.sfx,   Global.AudioBuses.sfx.to_lower() + settingSuffix)   # "sfxVolume"
+
+
+func loadBusVolumeSetting(busName: StringName, settingsKey: StringName) -> float:
+	var busIndex: int = AudioServer.get_bus_index(busName)
+	if  busIndex < 0:
+		Debug.printWarning("loadBusVolumeSetting() cannot find index for audio bus: " + busName, self)
+		return 0
+
+	var volume: float = Settings.getSetting(settingsKey, 0.0)
+	AudioServer.set_bus_volume_db(busIndex, volume)
+	AudioServer.set_bus_mute(busIndex, volume <= muteVolumeThreshold) # Just mute if too low
+	return volume
+
+#endregion
 
 
 #region SFX
@@ -54,6 +82,7 @@ func _ready() -> void:
 ## such as enemy destruction or collectible pickups etc.
 ## If [param stream] is `null`, then a [AudioStreamPlayer2D] node will be created only, but not played or automatically removed later.
 ## Returns: The newly created [AudioStreamPlayer2D] node.
+## @experimental
 func createAudioPlayer(
 	stream:   AudioStream,
 	position: Vector2 = Vector2.ZERO,
@@ -71,13 +100,15 @@ func createAudioPlayer(
 		# Delete the oldest sound (the one at the top of the subtree)
 		var oldestAudioPlayer: AudioStreamPlayer2D = sounds.get_child(0)
 		oldestAudioPlayer.stop() # Also stop any playing sounds so the cap also limits concurrent playback
+		audioPlayers.erase(oldestAudioPlayer) # Update the pool
+		if currentAudioPlayerIndex >= audioPlayers.size(): currentAudioPlayerIndex = 0 # TBD: What should be the fallback index?
 		sounds.remove_child(oldestAudioPlayer)
 		oldestAudioPlayer.queue_free() # Free manually instead of depending on the `finished` signal
 
 	# Create the new sound
 	var audioPlayer: AudioStreamPlayer2D = AudioStreamPlayer2D.new()
-	audioPlayer.bus = bus
-	audioPlayer.stream = stream
+	audioPlayer.bus		 = bus
+	audioPlayer.stream	 = stream
 	audioPlayer.position = position
 
 	sounds.add_child(audioPlayer, self.debugMode) # PERFORMANCE: force_readable_name is slow so use only if debugging
@@ -91,9 +122,9 @@ func createAudioPlayer(
 	return audioPlayer
 
 
-## Creates a "pool" of reusable [AudioStreamPlayer2D] nodes for [method playAudioPlayerPool].
-## May provide better performance compared to [method createAudioPlayer].
-## NOTE: Deletes all existing children already in the `Sounds` node.
+## Creates a "pool" of reusable [AudioStreamPlayer2D] nodes for [method playAudioPlayerPool]
+## May provide better performance compared to [method createAudioPlayer]
+## NOTE: Deletes all existing children already in the [member sounds] node.
 func createAudioPlayerPool() -> Array[AudioStreamPlayer2D]:
 	# Delete existing children
 	self.audioPlayers.clear()
@@ -113,13 +144,18 @@ func createAudioPlayerPool() -> Array[AudioStreamPlayer2D]:
 ## Used for playing sound effects for nodes and entities that may be deleted before the audio finishes playing,
 ## such as enemy destruction or collectible pickups etc.
 ## Returns: The [AudioStreamPlayer2D] node which was used.
+## @experimental
 func playAudioPlayerPool(
 	stream:   AudioStream,
 	position: Vector2 = Vector2.ZERO,
-	_bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
+	bus:	  StringName = Global.AudioBuses.sfx) -> AudioStreamPlayer2D:
 
 	# Cycle through the available AudioStreamPlayer2D nodes,
 	# so we can have a pool of simultaneous sounds up to a limit.
+
+	if maximumNumberOfSounds < 1:
+		if debugMode: Debug.printDebug("playAudioPlayerPool(): maximumNumberOfSounds < 1", self)
+		return null
 
 	var audioPlayer: AudioStreamPlayer2D
 
@@ -131,11 +167,12 @@ func playAudioPlayerPool(
 	audioPlayer = audioPlayers[currentAudioPlayerIndex]
 
 	currentAudioPlayerIndex += 1
-	if currentAudioPlayerIndex >= audioPlayers.size():
+	if  currentAudioPlayerIndex >= audioPlayers.size():
 		currentAudioPlayerIndex = 0
 
 	# Configure the new sound
-	audioPlayer.stream = stream
+	audioPlayer.bus		 = bus
+	audioPlayer.stream	 = stream
 	audioPlayer.position = position
 	audioPlayer.play() # TBD: Add playback position argument? TBD: Find a way to move along with node and continue playing after the node is destroyed?
 
@@ -150,6 +187,30 @@ func playAudioPlayerPool(
 func loadMusicFolder() -> PackedStringArray:
 	self.musicFiles = getMusicFilesFromFolder(self.musicFolder)
 	return self.musicFiles
+
+
+## Plays and returns the specified file on the "MusicPlayer" [AudioStreamPlayer] node.
+## The file does not have to be included in the [member musicFiles] array.
+func playMusicFile(path: String) -> AudioStream:
+	var newMusicStream: AudioStream = load(path)
+	if newMusicStream == null:
+		Debug.printWarning("playMusicFile() cannot load " + path, self)
+		return null
+
+	# Convert any UIDs to the actual text path
+	var fileName: String
+	if ResourceUID.has_id(ResourceUID.text_to_id(path)):
+		fileName = ResourceUID.get_id_path(ResourceUID.text_to_id(path))
+	else:
+		fileName = path
+
+	# Update the current index if the song is in our playlist
+	self.currentMusicIndex = self.musicFiles.find(fileName) # NOTE: Do NOT call findMusicFile() because it logs a warning if failed, but this playMusicFile() method allows ad-hoc files that are not in our `musicFiles` list.
+
+	musicPlayer.stream = newMusicStream
+	musicPlayer.play()
+	self.musicPlayerDidPlay.emit(fileName)
+	return newMusicStream
 
 
 ## Returns a list of all the ".mp3" files found at [param path], which defaults to [member musicFolder].
@@ -215,40 +276,37 @@ func playRandomMusicIndex(allowRepeats: bool = false) -> AudioStream:
 		return self.playMusicIndex(newMusicIndex)
 
 
-## Plays and returns the specified file on the "MusicPlayer" [AudioStreamPlayer] node.
-## The file does not have to be included in the [member musicFiles] array.
-func playMusicFile(path: String) -> AudioStream:
-	var newMusicStream: AudioStream = load(path)
-	if newMusicStream == null:
-		Debug.printWarning("playMusicFile() cannot load " + path, self)
-		return null
-
-	# Convert any UIDs to the actual text path
-	var fileName: String
-	if ResourceUID.has_id(ResourceUID.text_to_id(path)):
-		fileName = ResourceUID.get_id_path(ResourceUID.text_to_id(path))
-	else:
-		fileName = path
-
-	# Update the current index if the song is in our playlist
-	self.currentMusicIndex = self.findMusicFile(fileName)
-
-	self.musicPlayer.stream = newMusicStream
-	self.musicPlayer.play()
-	self.musicPlayerDidPlay.emit(fileName)
-	return newMusicStream
-
-
+## Plays the next sequential or random music from the [members musicFiles] list.
+## If the list is empty, the currently playing track is rewound & repeated.
 func skipMusic() -> AudioStream:
+	# Repeat the current track if there are no other tracks
+	if self.musicFiles.is_empty() and musicPlayer.playing:
+		musicPlayer.play(0.0)
+		return null
+	else:
+		self.stopMusic() # Emit the signals and stuff in case some script is tracking each track
+		if shouldShuffleMusic: return self.playRandomMusicIndex()
+		else: return self.playNextMusicIndex()
+
+
+## IMPORTANT: Call this method instead of [method AudioStreamPlayer.stop] to ensure cleanup and emit the [signal AudioStreamPlayer.finished] & [signal musicPlayerDidStop] signals.
+## NOTE: Does not reset [member currentMusicIndex]
+## Returns `false` if the [member musicPlayer] was not playing anything i.e. if the [member AudioStreamPlayer.playing] is `false`
+func stopMusic() -> bool:
+	# TBD: An option to fade out?
+	if not musicPlayer.playing: return false
+	musicPlayer.stop() # NOTE: Godot does NOT emit the `finished` signal if stop() is called.
 	self.musicPlayerDidStop.emit()
-	if shouldShuffleMusic: return self.playRandomMusicIndex()
-	else: return self.playNextMusicIndex()
+	# NOTE: Do NOT call `onMusicPlayer_finished()` because we don't want to perform its auto-next/repeat behavior.
+	return true
 
 
+## ALERT: This signal is NOT emitted when calling [method AudioStreamPlayer.stop], or when the [member musicPlayer] node exits the scene tree while sounds are playing.
+## NOTE: Does not reset [member currentMusicIndex]
 func onMusicPlayer_finished() -> void:
 	self.musicPlayerDidStop.emit()
 	if shouldShuffleMusic: self.playRandomMusicIndex()
-	else: self.playNextMusicIndex()
+	elif shouldAutoPlayNext: self.playNextMusicIndex()
 
 
 func _unhandled_input(event: InputEvent) -> void:

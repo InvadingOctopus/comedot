@@ -127,7 +127,6 @@ func _enter_tree() -> void:
 	Debug.printAutoLoadLog("_enter_tree(): Loading user preferences from configuration file…")
 	loadConfig()
 	loadProjectUserSettings()
-	loadAudioSettings()
 
 
 static func loadConfig() -> bool:
@@ -147,13 +146,6 @@ static func loadConfig() -> bool:
 ## Loads user settings which are counterpart to the Godot [ProjectSettings] such as window size.
 func loadProjectUserSettings() -> void:
 	pass # Done by GlobalUI.gd: # GlobalUI.setWindowSize(self.windowWidth, self.windowHeight, false) # !showLabel
-
-
-func loadAudioSettings() -> void:
-	var musicBus: int = AudioServer.get_bus_index(Global.AudioBuses.music)
-	var sfxBus:   int = AudioServer.get_bus_index(Global.AudioBuses.sfx)
-	AudioServer.set_bus_volume_db(musicBus,	getSetting(SettingNames.musicVolume, 0.0))
-	AudioServer.set_bus_volume_db(sfxBus,	getSetting(SettingNames.sfxVolume, 0.0))
 
 #endregion
 
