@@ -232,7 +232,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 	# Wrap around the screen if there's too many windows
 	var screenRect: Rect2i = DisplayServer.screen_get_usable_rect(self.get_window().current_screen)
 	if  nextChartWindowPosition.x >= screenRect.position.x + screenRect.size.x:
-		nextChartWindowPosition.x  = screenRect.position.x
+		nextChartWindowPosition.x  = screenRect.position.x # Wrap to `screenRect` instead of 0 to account for multi-monitors etc.
 
 	self.add_child(newChartWindow)
 	return newChart
