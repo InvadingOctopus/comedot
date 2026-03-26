@@ -90,16 +90,16 @@ static func printInitializationMessage() -> void:
 func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` because of `self.get_viewport()`
 	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
 	# TBD: Is the `await` necessary?
-	var date: String = Time.get_date_string_from_system().replace(".","-")
-	var time: String = Time.get_time_string_from_system().replace(":","-")
-
-	var screenshotPath: String = "user://" + "Comedot Screenshot " + date + " " + time
+	var date:	String = Time.get_date_string_from_system().replace(".","-")
+	var time:	String = Time.get_time_string_from_system().replace(":","-")
+	
+	# Addding a frame count also disambiguates multiple screenshots taken within the same second
+	var screenshotPath: String = str("user://", "Comedot Screenshot ", date, " ", time, " F", Engine.get_frames_drawn())
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"
 
 	var screenshotImage: Image = self.get_viewport().get_texture().get_image() # Capture what the player sees
-	screenshotImage.save_jpg(screenshotPath)
-
-	GlobalUI.createTemporaryLabel(str("Screenshot ", time + " " + titleSuffix))
+	if  screenshotImage.save_jpg(screenshotPath) == OK:
+		GlobalUI.createTemporaryLabel(str("Screenshot ", time + " " + titleSuffix))
 
 #endregion
