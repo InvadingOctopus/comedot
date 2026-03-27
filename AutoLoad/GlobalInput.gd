@@ -159,7 +159,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	# Save & Load
 
 	if event.is_action_released(GlobalInput.Actions.screenshot):
-		Global.screenshot()
+		Global.screenshot() # TBD: Should we `await`?
 		isHandled = true
 
 	if event.is_action_released(GlobalInput.Actions.quickLoad): # TBD: Should Loading take precedence over Saving?
