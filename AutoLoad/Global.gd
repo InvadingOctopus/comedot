@@ -89,11 +89,14 @@ static func printInitializationMessage() -> void:
 ## @experimental
 func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` because of `self.get_viewport()`
 	# THANKS: CREDIT: https://stackoverflow.com/users/4423341/bugfish — https://stackoverflow.com/questions/77586404/take-screenshots-in-godot-4-1-stable
-	# TBD: Is the `await` necessary?
+
+	await RenderingServer.frame_post_draw # CHECK: Does this fix or CAUSE a frame delay?
+
 	var date:	String = Time.get_date_string_from_system().replace(".","-")
 	var time:	String = Time.get_time_string_from_system().replace(":","-")
 	
-	# Addding a frame count also disambiguates multiple screenshots taken within the same second
+	# Adding a frame count also disambiguates multiple screenshots taken within the same second
+	# DESIGN: BONUS: Also, multiple screenshots of the same frame should overwrite and be saved to only 1 file
 	var screenshotPath: String = str("user://", "Comedot Screenshot ", date, " ", time, " F", Engine.get_frames_drawn())
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"

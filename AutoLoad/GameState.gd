@@ -203,6 +203,7 @@ func loadGame() -> void:  # NOTE: Cannot be `static` because of `self.process_mo
 
 	sceneTree.paused = false
 	sceneTree.change_scene_to_packed(packedSceneLoaded)
-	Global.screenshot("Load") # DEBUG: Take a screenshop for comparison, but BUG: The screenshot gets delayed
+	await sceneTree.scene_changed
+	if OS.is_debug_build(): Global.screenshot("Load") # DEBUG: Take a screenshop for comparison
 
 #endregion
