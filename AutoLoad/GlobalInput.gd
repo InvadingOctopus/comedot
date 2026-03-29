@@ -111,7 +111,7 @@ func _enter_tree() -> void:
 ## Global shortcuts including gamepad etc.
 func _unhandled_input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
-	if not event.is_action_type(): return
+	if not event.is_action_type() or event.is_echo(): return
 
 	# DESIGN: if there is UI such as a dialog, then Escape/Pause should be treated as "back" or "cancel";
 	# if the event is still unhandled, i.e. during normal gameplay, then treat it as "pause"
@@ -119,7 +119,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# Game
 
-	if  self.isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and Input.is_action_just_pressed(Actions.pause): # Prevent pausing during scene transitions
+	if  self.isPauseShortcutAllowed and not SceneManager.ongoingTransitionScene and event.is_action_pressed(Actions.pause): # Prevent pausing during scene transitions
 		self.process_mode = Node.PROCESS_MODE_ALWAYS # TBD: CHECK: HACK: Is this necessary?
 		SceneManager.togglePause()
 		isHandled = true
@@ -130,7 +130,7 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Global keyboard shortcuts
 func _unhandled_key_input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
-	if not event.is_action_type(): return
+	if not event.is_action_type() or event.is_echo(): return
 
 	var isHandled: bool = false # Keep other scripts from eating our leftovers, e.g. prevent the Escape key for "Pause" also triggering a "Back" event or vice-versa.
 
@@ -138,27 +138,27 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 	# Debugging, before any other actions are handled.
 
-	if Input.is_action_just_released(Actions.debugBreak):
+	if event.is_action_released(Actions.debugBreak):
 		Debug.printDebug("Debug Breakpoint Input Received")
 		breakpoint # TBD: Use `breakpoint` or `assert(false)`? `assert` also adds a message but only runs in debug builds.
 		# assert(false, "Debug Breakpoint Input Received")
 		isHandled = true
-	elif Input.is_action_just_released(Actions.debugWindow):
+	elif event.is_action_released(Actions.debugWindow):
 		Debug.toggleDebugWindow()
 		isHandled = true
 
 	# Window
 
-	if Input.is_action_just_released(Actions.windowToggleAlwaysOnTop):
+	if event.is_action_released(Actions.windowToggleAlwaysOnTop):
 		GlobalUI.toggleAlwaysOnTop()
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 		isHandled = true
 
-	if Input.is_action_just_released(Actions.windowResizeTo720):
+	if event.is_action_released(Actions.windowResizeTo720):
 		GlobalUI.setWindowSize(1280, 720)
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 		isHandled = true
-	elif Input.is_action_just_released(Actions.windowResizeTo1080):
+	elif event.is_action_released(Actions.windowResizeTo1080):
 		GlobalUI.setWindowSize(1920, 1080)
 		get_viewport().set_input_as_handled() # TBD: Should we let these shortcuts affect other things?
 		isHandled = true
