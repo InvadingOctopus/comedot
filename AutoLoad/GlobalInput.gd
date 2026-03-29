@@ -70,9 +70,14 @@ class Actions:
 		debugWindow, debugTest, debugBreak
 		]
 
-	static var allActions: Dictionary: ## Returns a list of all the input action `const` property names & values. NOTE: NOT updated during runtime!
+	static var allActions: Dictionary[StringName, StringName]: ## Returns a list of all the input action `const` property names & values. NOTE: NOT updated during runtime!
 		get:
-			if not allActions: allActions = Actions.new().get_script().get_script_constant_map()
+			if not allActions or allActions.is_empty():
+				var constants: Dictionary = Actions.new().get_script().get_script_constant_map()
+				for constant:  StringName in constants:
+					var value: Variant = constants[constant]
+					if value is StringName and InputMap.has_action(value):
+						allActions[constant] = value
 			return allActions
 
 ## Replacements for certain strings in the text representations of InputEvent control names, such as "Keyboard" instead of "Physical".
@@ -234,17 +239,18 @@ func isInputEventUIAction(event: InputEvent) -> bool:
 	return false
 
 
-## Returns all the player control input actions from [GlobalInput] that match a given [InputEvent].
-## A jank workaround for Godot's lack of built-in API for a common task.
+## Returns all the player control input actions from [GlobalInput] that match a given [InputEvent]
+## A jank workaround for dummy Godot's lack of built-in API for such a common task.
 ## WARNING: PERFORMANCE: May be too slow; avoid calling frequently!
 ## @experimental
-func findActionsFromInputEvent(event: InputEvent) -> Array[StringName]:
+func findActionsFromInputEvent(event: InputEvent, exactMatch: bool = false) -> Array[StringName]:
 	if not event.is_action_type(): return []
 	# PERFORMANCE: GRRR: Since dummy Godot does not provide any direct way to get the input actions from an [InputEvent],
 	# we have to manually check every possibility... >:(
-	var inputActions: Array[StringName]
-	for propertyName: String in Actions.allActions:
-		if event.is_action(propertyName): inputActions.append(propertyName)
-	return inputActions
+	var matchingActions: Array[StringName]
+	for actionName: StringName in Actions.allActions.values():
+		if event.is_action(actionName, exactMatch): # NOTE: No need to recheck `InputMap.has_action(actionName)` because the `allActions` getter/builder already checked that.
+			matchingActions.append(actionName)
+	return matchingActions
 
 #endregion
