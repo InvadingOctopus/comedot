@@ -90,10 +90,10 @@ var isPauseShortcutAllowed: bool = true
 
 #region Signals
 @warning_ignore("unused_signal")
-signal didAddInputEvent(inputAction: StringName, inputEvent: InputEvent) ## Emitted by [InputActionUI]
+signal didAddInputEvent(inputAction: StringName,	inputEvent: InputEvent) ## Emitted by [InputActionUI]
 
 @warning_ignore("unused_signal")
-signal didDeleteInputEvent(inputAction: StringName, inputEvent: InputEvent) ## Emitted by [InputActionEventUI]
+signal didDeleteInputEvent(inputAction: StringName,	inputEvent: InputEvent) ## Emitted by [InputActionEventUI]
 #endregion
 
 

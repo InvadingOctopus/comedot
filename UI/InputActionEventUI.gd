@@ -43,9 +43,9 @@ func deleteEvent() -> void:
 		Debug.printWarning("Missing inputAction", self)
 		return
 
-	InputMap.action_erase_event(self.inputAction, self.inputEvent)
-	self.didDeleteInputEvent.emit(self.inputAction, self)
-	GlobalInput.didDeleteInputEvent.emit(self.inputAction, self)
+	InputMap.action_erase_event(			self.inputAction, self.inputEvent)
+	self.didDeleteInputEvent.emit(			self.inputAction, self.inputEvent)
+	GlobalInput.didDeleteInputEvent.emit(	self.inputAction, self.inputEvent)
 	self.queue_free()
 
 
