@@ -138,6 +138,20 @@ func onBackButton_pressed() -> void:
 	goBack()
 
 
+func _shortcut_input(event: InputEvent) -> void:
+	if not event.is_pressed() \
+	or (event is InputEventKey and event.is_echo()):
+		return
+
+	# DESIGN: When there is any UI, the Escape key or Back/Pause button should act as a "Cancel" for the UI.
+	# During normal gameplay, when there is no UI, the Escape/Back/Pause key/button should act as "Pause"
+	# So the player could keep tapping Escape/Back and the flow would be: UI → previous UI → gameplay → pause screen → gameplay → pause screen & so on.
+	if event.is_action_pressed(GlobalInput.Actions.back) \
+	or event.is_action_pressed(GlobalInput.Actions.cancel):
+		if goBack():
+			self.get_viewport().set_input_as_handled()
+
+
 func updateBackButton() -> void:
 	if not is_instance_valid(backButton): return
 	# Show the button if there is more than 1 node in the history.

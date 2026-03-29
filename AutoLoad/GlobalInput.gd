@@ -108,7 +108,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	# TBD: Should we check `event` or [Input]?
 	if not event.is_action_type(): return
 
-	var isHandled: bool = false # Keep other scripts from eating our leftovers, e.g. prevent the Escape key for "Pause" also triggering a "Back" event or vice-versa.
+	# DESIGN: if there is UI such as a dialog, then Escape/Pause should be treated as "back" or "cancel";
+	# if the event is still unhandled, i.e. during normal gameplay, then treat it as "pause"
+	var isHandled: bool = false
 
 	# Game
 
