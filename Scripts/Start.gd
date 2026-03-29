@@ -142,8 +142,9 @@ func _enter_tree() -> void:
 ## @experimental
 func setupGameState() -> void:
 	if not mainGameScenePath.is_empty():
-		Settings.mainGameScenePath	= self.mainGameScenePath
+		Settings.mainGameScenePath = self.mainGameScenePath
 
+	# TODO: Handle excessive repeated merges & duplicates
 	GameState.globalData.merge(self.initialGlobalData, true) # overwrite
 
 	for path in gameStateNodes:
