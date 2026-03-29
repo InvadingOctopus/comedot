@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bdmibnkkrpfhv" path="res://Components/Movement/TileBasedPositionComponent.tscn" id="5_hle8a"]
 [ext_resource type="FontFile" uid="uid://g8n47s8qewq5" path="res://Assets/Fonts/PixelOperator8-Bold.ttf" id="9_tlr5a"]
 [ext_resource type="PackedScene" uid="uid://c5rfeug8xxxho" path="res://Components/TurnBased/TurnBasedAnimationComponent.tscn" id="12_178cw"]
+[ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="12_h3uip"]
 [ext_resource type="Material" uid="uid://b3pgi66bf5g2e" path="res://Assets/Materials/AddUnshaded.tres" id="12_s804s"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36c63"]
@@ -406,6 +407,7 @@ _data = {
 
 [node name="TurnBasedTest" type="Node2D" unique_id=1918247400]
 script = ExtResource("1_x8hsg")
+isTurnBasedGame = true
 
 [node name="BackgroundTileMap" type="TileMapLayer" parent="." unique_id=1134528970]
 modulate = Color(0.5, 1, 1, 0.5)
@@ -524,6 +526,8 @@ initialDestinationCoordinates = Vector2i(6, 6)
 speed = 50.0
 debugMode = true
 
+[node name="InputComponent" parent="TurnBasedEntity1" unique_id=1162744559 instance=ExtResource("12_h3uip")]
+
 [node name="TurnBasedEntity2" type="RigidBody2D" parent="." unique_id=1608874097 groups=["entities", "players", "turnBased"]]
 position = Vector2(88, 120)
 collision_layer = 2
@@ -564,5 +568,7 @@ tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(8, 8)
 speed = 50.0
 debugMode = true
+
+[node name="InputComponent" parent="TurnBasedEntity2" unique_id=826594372 instance=ExtResource("12_h3uip")]
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]
