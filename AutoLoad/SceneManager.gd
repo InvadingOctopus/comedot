@@ -46,8 +46,8 @@ signal didPushScene(scenePath:  String)
 signal willPopScene ## TIP: May be used to modify the stack before a scene is popped, for example, pushing a scene if there is none, to make sure a "Back" Button always works.
 signal didPopScene(scenePath: String)
 
-signal willSetPause(pause: bool)	## TIP: May be used to modify visuals etc. before the game is paused.
-signal didSetPause(isPaused: bool)	## TIP: May be used to modify UI such as [PauseButton.gd] after the game is paused.
+signal willSetPause(willPause: bool) ## TIP: May be used to modify visuals etc. before the game is paused.
+signal didSetPause(isPaused:   bool) ## TIP: May be used to modify UI such as [PauseButton.gd] after the game is paused.
 #endregion
 
 

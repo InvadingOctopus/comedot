@@ -21,7 +21,11 @@ extends Component
 		if newValue != isEnabled:
 			isEnabled = newValue
 			self.setAllProcess()
-			if not isEnabled: resetState()
+			if not isEnabled:
+				resetState()
+				# Emit signals to let dependent components release "held" inputs like Fire etc.
+				didUpdateInputActionsList.emit(null)
+				didProcessInput.emit(InputEventAction.new()) # "Dummy" event because `null` may crash some components
 
 ## If `false` then system input events are not processed,
 ## but this component may still be manually modified and used by other components, such as AI agents or demo scripts.
@@ -194,6 +198,10 @@ func _ready() -> void:
 	processMonitoredInputActions() # Sync with the input actions that were pressed/released BEFORE this component is ready.
 	didUpdateInputActionsList.emit.call_deferred(null) # Emit a "dummy" signal to let other components sync with the input state before the first update. Defer the call to help it be independent of node _ready() order
 
+	# UNUSED: Let _notification() handle syncing after pause/unpause
+	# Tools.connectSignal(SceneManager.willSetPause, self.onWillSetPause)
+	# Tools.connectSignal(SceneManager.didSetPause,  self.onDidSetPause)
+
 
 ## Enables or disables the per-frame and event processing according to the various flags.
 func setAllProcess() -> void:
@@ -346,11 +354,46 @@ func processMonitoredInputActions(event: InputEvent = null) -> bool:
 #endregion
 
 
+#region Pause/Unpause
+# FIXES: Handle cases where pressing e.g. the Right Arrow Key, then pressing Pause BEFORE releasing Right, then releasing Right WHILE paused, and then unpausing, causes the character to keep moving right.
+
+## Handle pause/unpause by other sources besides SceneManager
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_PAUSED:	self.onDidSetPause(true)
+		NOTIFICATION_UNPAUSED:	self.onDidSetPause(false)
+
+
+@warning_ignore("unused_parameter")
+func onWillSetPause(shouldPause: bool) -> void:
+	pass # UNUSED: Update our state AFTER pause/unpause in onDidSetPause()
+
+
+func onDidSetPause(isPaused: bool) -> void:
+	if not isPlayerControlled: return # TBD: Should we do this even for AI-controlled entities?
+	if debugMode: printDebug(str("onDidSetPause(): ", isPaused))
+
+	if isPaused:
+		# CHECK: TBD: Should we reset state here & emit signals?
+		self.resetState()
+		if isEnabled: didUpdateInputActionsList.emit(null)
+
+	else: # Unpaused?
+		if isEnabled: self.resyncInput() # Calls processMonitoredInputActions() & emits didUpdateInputActionsList
+		else: self.resetState()
+
+	# TBD: Should didProcessInput be emitted even after resetState()?
+	if isEnabled: didProcessInput.emit(InputEventAction.new()) # "Dummy" event because `null` may crash some components
+
+#endregion
+
+
 #region Modification
 
 ## Sets all properties to 0
 ## NOTE: EXCEPT the "should" flags: [shouldSkipNextEvent], [member shouldSuppressMouseMotion]
 func resetState() -> void:
+	if debugMode: printDebug("resetState()")
 	inputActionsPressed.clear()
 	previousMovementDirection	= Vector2.ZERO
 	movementDirection			= Vector2.ZERO
@@ -362,6 +405,25 @@ func resetState() -> void:
 	turnInput					= 0
 	thrustInput					= 0
 	lastInputEvent				= null
+
+
+## Repolls the [Input] state and updates all vector & axis properties like [member movementDirection], [member turnInput] etc.
+## NOTE: If not [member isEnabled], then only [member resetState] is called and the [Input] state is NOT polled.
+func resyncInput() -> void:
+	if debugMode: printDebug(str("resyncInput() isEnabled: ", isEnabled))
+	if not isEnabled:
+		resetState()
+		return
+	self.movementDirection	= Input.get_vector(GlobalInput.Actions.moveLeft,GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown) * movementDirectionScale
+	self.horizontalInput	= Input.get_axis(  GlobalInput.Actions.moveLeft,GlobalInput.Actions.moveRight) * movementDirectionScale.x
+	self.verticalInput		= Input.get_axis(  GlobalInput.Actions.moveUp,	GlobalInput.Actions.moveDown)  * movementDirectionScale.y
+	self.aimDirection		= Input.get_vector(GlobalInput.Actions.aimLeft,	GlobalInput.Actions.aimRight,  GlobalInput.Actions.aimUp,  GlobalInput.Actions.aimDown)  * aimDirectionScale
+	self.turnInput			= Input.get_axis(  GlobalInput.Actions.turnLeft,GlobalInput.Actions.turnRight)
+	self.thrustInput		= Input.get_axis(  GlobalInput.Actions.moveBackward, GlobalInput.Actions.moveForward)
+	processMonitoredInputActions(null) # Sync Jump, Fire etc.
+	didUpdateInputActionsList.emit(null) # Because processMonitoredInputActions() will not emit it for a `null` InputEvent.
+	# CHECK: TBD: "Replay" held inputs? e.g. a Fire button that was pressed throughout the pause and is still pressed after unpausing?
+	# DESIGN: Maybe it is more intuitive if the player has to press Fire etc. again after unpausing; held buttons should be ignored.
 
 
 ## Directly modifies the [member movementDirection], applies scaling, and updates [member horizontalInput] & [member verticalInput] accordingly.
