@@ -191,7 +191,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	if debugMode: printDebug(str("jumpInput: ", jumpInput, ", jumpInputJustPressed: ", jumpInputJustPressed, ", jumpInputJustReleased: ", jumpInputJustReleased, ", shouldBufferInput: ", shouldBufferInput, ", body.velocity: ", body.velocity.y))
 
 	processWallJump()
-	if not didWallJump: 
+	if not didWallJump:
 		processJump()
 		# If no jumps were made/possible, buffer the input if allowed
 		if jumpInputJustPressed and shouldBufferInput: inputBufferTimer.start() # To be handled in characterBodyComponent_didMove()
