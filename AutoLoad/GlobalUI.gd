@@ -83,7 +83,7 @@ func _ready() -> void:
 
 ## Maintains a minimum of [member minimumWindowSize].
 func setWindowSize(width: int, height: int, showLabel: bool = true) -> void:
-	
+
 	Debug.printAutoLoadLog(str("setWindowSize(): ", width, " × ", height, " (minimum: ", minimumWindowSize.x, " × ", minimumWindowSize.y, ")"))
 
 	# Ensure a minimum size of 320×180
@@ -137,12 +137,12 @@ func toggleAlwaysOnTop() -> void:
 const pauseAnimationDuration: float = 0.25
 
 func showPauseVisuals(isPaused: bool) -> void:
-	# Avoid reanimating an existing state
-	if (isPaused and pauseOverlayContainer.visible) \
-	or (not isPaused and not pauseOverlayContainer.visible):
-		return
+	# NOTE: TRIED: Do NOT depend on `pauseOverlayContainer.visible
+	# FIXED: If checking pauseOverlayContainer.visible, pressing Pause again immediately after unpausing prevents the Pause Overlay from appearing,
+	# because `pauseOverlayContainer.visible` is set AFTER the fade animation completes.
+	# The rest of the logic below is sufficient to handle animation interruptions.
 
-	# Let PauseButton.gd handle its update itself
+	# NOTE: PauseButton.gd will handle its update itself
 
 	if isPaused:
 
@@ -170,7 +170,8 @@ func showPauseVisuals(isPaused: bool) -> void:
 		pauseOverlayTween = self.create_tween()
 		pauseOverlayTween.tween_subtween(Animations.fadeOut(pauseOverlayContainer, pauseAnimationDuration))
 		pauseOverlayTween.parallel().tween_subtween(Animations.fadeOut(pauseRect, pauseAnimationDuration))
-		await pauseOverlayTween.finished
+		await pauseOverlayTween.finished # NOTE: Tween.kill() does not emit `finished` so an interrupted animation will not resume this `await`
+		# and the code below will not run if the animation is interrupted, so the `pauseOverlayContainer` will not be reset after an interruption.
 
 		Tools.removeAllChildren(pauseOverlayContainer)
 		pauseOverlayContainer.resetHistory()
