@@ -32,8 +32,9 @@ var damageReceivingComponent: DamageReceivingComponent: # TBD: PERFORMANCE: Shou
 
 func _ready() -> void:
 	# Start when added to Entity
-	self.damageTimer.start()
-	self.removalTimer.start()
+	if isEnabled:
+		damageTimer.start()
+		removalTimer.start()
 
 
 func onDamageTimer_timeout() -> void:
