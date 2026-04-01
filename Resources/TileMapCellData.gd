@@ -71,9 +71,16 @@ func hasCellData(coordinates: Vector2i, key: StringName = "") -> bool:
 		return true # If no `key` has been asked, but a cell with `coordinates` exists, then return `true`
 
 
-## Deletes the key for the corresponding [Vector2i] cell from the [member gridDictionary]
-## Returns `true` if the cell previously existed, or `false` if the [member gridDictionary] did not have a matching [Vector2i] key.
-func eraseCellData(coordinates: Vector2i) -> bool:
-	return gridDictionary.erase(coordinates)
+## Deletes the specified [Dictionary] [param key] from the corresponding [Vector2i] cell.
+## If [param key] is empty, the ENTIRE cell and ALL its data is deleted from the [member gridDictionary]
+## Returns `true` if the cell/key previously existed, or `false` if the [member gridDictionary] did not have a matching [Vector2i] key, if the cell's [Dictionary] did not have the specified [param key]
+func eraseCellData(coordinates: Vector2i, key: StringName) -> bool:
+	if not gridDictionary.has(coordinates): return false
+	if not key.is_empty():
+		var cellData: Variant = gridDictionary.get(coordinates) # Cannot type this as a `Dictionary` if the coordinate key is missing :(
+		if cellData is Dictionary: return cellData.erase(key)
+		else: return false
+	else: # If there is no `key` then delete the ENTIRE cell and ALL its data!
+		return gridDictionary.erase(coordinates)
 
 #endregion

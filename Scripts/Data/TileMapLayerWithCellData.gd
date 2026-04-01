@@ -46,13 +46,13 @@ func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 		return null
 
 
-## Calls [method TileMapCellData.hasCellData] & returns its return.
-func hasCellData(coordinates: Vector2i, key: StringName) -> bool:
+## Wrapper for [method TileMapCellData.hasCellData]
+func hasCellData(coordinates: Vector2i, key: StringName = "") -> bool:
 	return cellData.hasCellData(coordinates, key) if cellData else false
 
 
-## Calls [method TileMapCellData.eraseCellData] & returns its return.
-func eraseCellData(coordinates: Vector2i) -> bool:
-	return cellData.eraseCellData(coordinates) if cellData else false
+## Wrapper for [method TileMapCellData.eraseCellData]
+func eraseCellData(coordinates: Vector2i, key: StringName) -> bool:
+	return cellData.eraseCellData(coordinates, key) if cellData else false
 
 #endregion
