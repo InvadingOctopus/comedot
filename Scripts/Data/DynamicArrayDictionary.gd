@@ -9,7 +9,7 @@ extends Resource
 ## A [Dictionary] representing a grid: `{Coordinates : Value}`
 ## Each (x,y) [Vector2i] coordinate key contains an arbitrary value.
 ## TIP: A value may ITSELF also be a [Dictionary] that contains multiple "keys" with different values, such as whether a map cell is traversable or not, which Entity is occupying it and etc.
-@export var gridDictionary: Dictionary[Vector2i, Variant] = { Vector2i(0, 0): null }
+@export var gridDictionary: Dictionary[Vector2i, Variant] # Example: `= { Vector2i(0, 0): null }`
 
 @export var debugMode: bool = false
 #endregion
