@@ -837,8 +837,8 @@ static func getCellOccupant(data: TileMapCellData, coordinates: Vector2i) -> Ent
 
 ## Uses a custom data structure to mark individual [TileMap] cells (not tiles) as occupied or unoccupied by an [Entity].
 static func setCellOccupancy(data: TileMapCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
-	data.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied)
-	data.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null)
+	data.setCellData(coordinates, Global.TileMapCustomData.isOccupied, isOccupied) # NOTE: Do NOT delete this key, because a MISSING key is assumed to be a vacant cell!
+	data.setCellData(coordinates, Global.TileMapCustomData.occupant, occupant if isOccupied else null) # PERFORMANCE: Not using TileMapCellData.eraseCellData() so we can avoid allocation churn
 
 
 static func checkTileAndCellVacancy(map: TileMapLayer, data: TileMapCellData, coordinates: Vector2i, ignoreEntity: Entity) -> bool:
