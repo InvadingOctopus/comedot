@@ -881,6 +881,10 @@ static func checkCellVacancy(mapData: TileMapCellData, coordinates: Vector2i, ig
 
 	# First check the CELL data because it's quicker
 
+	# Make sure the `isOccupied` flag exists
+	if not mapData.hasCellData(coordinates, Global.TileMapCustomData.isOccupied):
+		return true # If there is no such flag at all, `true` OR `false`, just assume that this map doesn't support occupancy, and report it as a vacant space.
+
 	var cellDataOccupied: Variant = mapData.getCellData(coordinates, Global.TileMapCustomData.isOccupied) # NOTE: Should not be `bool` so it can be `null` if missing, NOT `false` if missing.
 	var cellDataOccupant: Entity  = mapData.getCellData(coordinates, Global.TileMapCustomData.occupant)
 
