@@ -21,11 +21,11 @@ extends TileMapLayer
 
 
 func _ready() -> void:
-	if not cellData and shouldCreateCellData:
+	if  not cellData and shouldCreateCellData:
 		if debugMode: Debug.printDebug("No TileMapCellData, creating new.", self)
 		self.cellData = TileMapCellData.new()
 	
-	if cellData: # A separate `if` in case a `cellData` was created by the previous `if`
+	if  cellData: # A separate `if` in case a `cellData` was created by the previous `if`
 		cellData.debugMode = self.debugMode
 
 
@@ -36,11 +36,23 @@ func setCellData(coordinates: Vector2i, key: StringName, value: Variant) -> void
 	else: Debug.printWarning("setCellData(): No TileMapCellData!", self)
 
 
+## Returns the value for the [param key] stored in the cell at [param coordinates]
+## ALERT: Make sure the cell data exists by callig [method hasCell] first! Otherwise a missing cell will also return `null`, which is indistinguishable from a cell that exists but has `null` as its data! 
 func getCellData(coordinates: Vector2i, key: StringName) -> Variant:
 	if cellData: 
 		return cellData.getCellData(coordinates, key)
 	else: 
 		Debug.printWarning("getCellData(): No TileMapCellData!", self)
 		return null
+
+
+## Calls [method TileMapCellData.hasCellData] & returns its return.
+func hasCellData(coordinates: Vector2i, key: StringName) -> bool:
+	return cellData.hasCellData(coordinates, key) if cellData else false
+
+
+## Calls [method TileMapCellData.eraseCellData] & returns its return.
+func eraseCellData(coordinates: Vector2i) -> bool:
+	return cellData.eraseCellData(coordinates) if cellData else false
 
 #endregion
