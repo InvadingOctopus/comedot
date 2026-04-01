@@ -17,15 +17,29 @@ extends Resource
 
 func setCellData(x: int, y: int, value: Variant) -> void:
 	var coordinates: Vector2i = Vector2i(x, y)
-	if debugMode:
-		var existingValue: Variant = gridDictionary.get(coordinates)
-		if existingValue: Debug.printTrace([str("@", coordinates, ": ", existingValue, " → ", value)], self)
+	if debugMode: # Log whether replacing an existing cell or writing for the first time
+		if gridDictionary.has(coordinates): Debug.printTrace([str("@", coordinates, ": ", gridDictionary[coordinates], " → ", value)], self)
 		else: Debug.printTrace([str("@", coordinates, " = ", value)], self)
 	gridDictionary[coordinates] = value
 
 
+## ALERT: Make sure the cell exists by callig [method hasCell] first! Otherwise a missing cell will also return `null`, which is indistinguishable from a cell that exists but has `null` as its data! 
 func getCellData(x: int, y: int) -> Variant:
 	var coordinates: Vector2i = Vector2i(x, y)
 	var value: Variant = gridDictionary.get(coordinates)
-	if debugMode: Debug.printDebug(str("getCellData() @", coordinates, ": ", value), self)
+	if debugMode:
+		if gridDictionary.has(coordinates): Debug.printDebug(str("getCellData() @", coordinates, ": ", value), self)
+		else: Debug.printDebug(str("getCellData() @", coordinates, ": gridDictionary has no such key!"), self)
 	return value
+
+
+## Returns whether a "cell" has been set with data, even if it's `null`
+## which is different from the cell never having been set i.e. the [member gridDictionary] never having such a [Vector2i] key.
+func hasCell(x: int, y: int) -> bool:
+	return gridDictionary.has(Vector2i(x, y))
+
+
+## Deletes the key for the corresponding [Vector2i] cell from the [member gridDictionary]
+## Returns `true` if the cell previously existed, or `false` if the [member gridDictionary] did not have a matching [Vector2i] key.
+func eraseCell(x: int, y: int) -> bool:
+	return gridDictionary.erase(Vector2i(x, y))
