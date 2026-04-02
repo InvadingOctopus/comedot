@@ -32,7 +32,7 @@ extends Button
 
 #region Dependencies
 
-var player: PlayerEntity:
+var player: Entity: # PlayerEntity or TurnBasedPlayerEntity
 	get: return GameState.players.front()
 
 var actionsComponent: ActionsComponent:

@@ -32,9 +32,9 @@ var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerE
 #region Signals
 # DESIGN: The names of the signals start with the names of the related types/objects, instead of "did/will" etc., because GameState is a global object.
 signal playersChanged
-signal playerAdded(player:   Entity)
+signal playerAdded(  player: Entity) ## May be a [PlayerEntity] or [TurnBasedPlayerEntity]
 @warning_ignore("unused_signal")
-signal playerReady(player:   Entity) ## Emitted by a [PlayerEntity] or [TurnBasedPlayerEntity] at the end of its [method Node._ready], indicating that it has entered a Scene.
+signal playerReady(  player: Entity) ## Emitted by a [PlayerEntity] or [TurnBasedPlayerEntity] at the end of its [method Node._ready], indicating that all of its components are also ready.
 signal playerRemoved(player: Entity)
 #endregion
 

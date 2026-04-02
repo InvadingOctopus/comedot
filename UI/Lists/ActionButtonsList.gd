@@ -42,7 +42,7 @@ var targetStatsComponent: StatsComponent:
 		elif not targetStatsComponent: targetStatsComponent = entity.getComponent(StatsComponent)
 		return targetStatsComponent
 
-var player: PlayerEntity:
+var player: Entity: # PlayerEntity or TurnBasedPlayerEntity
 	get: return GameState.players.front()
 
 #endregion

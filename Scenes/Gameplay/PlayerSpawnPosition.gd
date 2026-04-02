@@ -29,7 +29,7 @@ extends Marker2D
 
 #region State
 
-var player: PlayerEntity:
+var player: Entity: # PlayerEntity or TurnBasedPlayerEntity
 	get:
 		if playerOverride: return playerOverride
 		else: return GameState.getPlayer(playerIndex)
@@ -60,7 +60,7 @@ func setPlayerPosition() -> void:
 		player.global_position = playerSpawnPosition.global_position
 		
 		# Tile-based?
-		if player.getComponent(TileBasedPositionComponent):
+		if  player.getComponent(TileBasedPositionComponent):
 			player.components.TileBasedPositionComponent.updateCurrentCoordinates()
 
 		player.reset_physics_interpolation() # Skip interpolation, just snap!

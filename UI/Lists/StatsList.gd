@@ -39,8 +39,8 @@ static var statUIScene: PackedScene:
 
 func _ready() -> void:
 	if not statsComponent:
-		var player: PlayerEntity = GameState.players.front()
-		if player: self.statsComponent = player.statsComponent
+		var player: Entity = GameState.players.front() # PlayerEntity or TurnBasedPlayerEntity
+		if  player: self.statsComponent = player.statsComponent # TBD: Cast to exact type?
 
 	if statsComponent: buildLabels()
 	else: Debug.printWarning("Missing statsComponent", self)

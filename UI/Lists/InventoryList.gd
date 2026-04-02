@@ -28,8 +28,8 @@ static var inventoryItemUIScene: PackedScene:
 
 func _ready() -> void:
 	if not inventoryComponent:
-		var player: PlayerEntity = GameState.players.front()
-		if player: self.inventoryComponent = player.inventoryComponent
+		var player: Entity = GameState.players.front() # PlayerEntity or TurnBasedPlayerEntity
+		if  player: self.inventoryComponent = player.inventoryComponent # TBD: Cast to exact type?
 
 	if inventoryComponent:
 		connectSignals()

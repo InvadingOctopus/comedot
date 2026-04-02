@@ -51,7 +51,7 @@ var targetStatsComponent: StatsComponent:
 		if not targetStatsComponent and targetEntity: targetStatsComponent = targetEntity.getComponent(StatsComponent)
 		return targetStatsComponent
 
-var player: PlayerEntity:
+var player: Entity: # PlayerEntity or TurnBasedPlayerEntity
 	get: return GameState.getPlayer(0)
 
 #endregion
