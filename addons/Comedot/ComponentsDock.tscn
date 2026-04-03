@@ -237,7 +237,6 @@ layout_mode = 2
 placeholder_text = "NewComponent"
 
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/RefreshButton" to="." method="onRefreshButton_pressed"]
-[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/AddEntityMenuButton" to="." method="onAddEntityButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/EditComponentButton" to="." method="onEditComponentButton_pressed"]
 [connection signal="button_clicked" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]

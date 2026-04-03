@@ -166,6 +166,7 @@ func setupUI() -> void:
 	# Hook up with Inspector Gadget & the Selection
 	inspector = EditorInterface.get_inspector()
 	selection = EditorInterface.get_selection()
+	onSelection_selectionChanged() # Trigger a "fake" event to update the UI for first time, to reflect the initial state 
 	selection.selection_changed.connect(self.onSelection_selectionChanged)
 
 	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
@@ -366,9 +367,9 @@ func onComponentsTree_buttonClicked(item: TreeItem, _column: int, id: int, _mous
 
 func showNewComponentDialog(initialFolder: String, initialName: String = "NewComponent", parentTreeItem: TreeItem = null) -> void:
 	# Reset the choices
-	newComponentDialog_chosenFolderPath = initialFolder
-	newComponentDialog_chosenComponentName = ""
-	newComponentDialog_parentTreeItem = parentTreeItem
+	newComponentDialog_chosenFolderPath		= initialFolder
+	newComponentDialog_chosenComponentName	= ""
+	newComponentDialog_parentTreeItem		= parentTreeItem
 
 	newComponentFolderLabel.text = "Folder: " + initialFolder
 	newComponentNameTextBox.text = initialName
@@ -413,6 +414,9 @@ func onSelection_selectionChanged() -> void:
 	if selectedNodes.size() > 1:
 		%AddEntityMenuButton.disabled = true
 		%AddEntityMenuButton.tooltip_text = "Cannot add an Entity to more than 1 selected Node in the Scene Editor."
+	elif EditorInterface.get_edited_scene_root() == null:
+		%AddEntityMenuButton.disabled = true
+		%AddEntityMenuButton.tooltip_text = "Cannot add an Entity because no scene is open in the Scene Editor."
 	else:
 		%AddEntityMenuButton.disabled = false
 		%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
@@ -441,18 +445,17 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if debugMode: printLog("addNewEntity()")
 	
 	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
-
-	# TBD: Support adding multiple new Entities to more than 1 selected Node?
-
-	# Get the first selected node
-
-	if selectedNodes.is_empty():
-		selectedNodes = [EditorInterface.get_edited_scene_root()]
-	elif selectedNodes.size() > 1:
+	if  selectedNodes.size() > 1: # TBD: Support adding multiple new Entities to more than 1 selected Node?
 		printLog("Cannot add Entity to more than 1 selected Node")
 		return
 
-	var parentNode: Node = selectedNodes.front()
+	var parentNode: Node
+	if not selectedNodes.is_empty(): parentNode = selectedNodes.front() # Get the first selected node
+	else: parentNode = EditorInterface.get_edited_scene_root() # or just add to the scene root if no parent Node is selected
+	
+	if parentNode == null:
+		printError("addNewEntity(): Cannot create new Entity because no scene is open!")
+		return
 
 	# Create a new Entity
 
@@ -627,8 +630,10 @@ func createNewComponentOnDisk(destinationFolderPath: String, newComponentName: S
 		return ""
 
 	# Get the directory manager & set the paths
-	var newScenePath:		String = destinationFolderPath + newComponentName + ".tscn"
-	var newScriptPath:		String = destinationFolderPath + newComponentName + ".gd"
+	# NOTE: Ensure a `/` to avoid cases like saving `Components/CombatNewComponent.tscn` instead of `Components/Combat/NewComponent.tscn`
+	# UNUSED: String.path_join() takes care of this: if not destinationFolderPath.ends_with("/"): destinationFolderPath += "/"
+	var newScenePath:	String = destinationFolderPath.path_join(newComponentName + ".tscn")
+	var newScriptPath:	String = destinationFolderPath.path_join(newComponentName + ".gd")
 
 	# ALERT: MAKE SURE NOT TO OVERWRITE ANY EXISTING FILES! Or there may be doom!
 	if not ensureFileDoesNotExist(newScenePath) \

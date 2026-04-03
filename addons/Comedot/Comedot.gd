@@ -28,7 +28,8 @@ const componentIcon		:= preload("res://Assets/Icons/Component.svg")
 func _enter_tree() -> void:
 	printLog("Plugin _enter_tree()")
 	addCustomTypes()
-	# `call_deferred` because Godot seems to be loading this "too soon" and raising errors.
+	# WORKAROUND: call_deferred() because Godot seems to be loading this "too soon" and raising errors.
+	# CHECK: Should we `await`?
 	addDock.call_deferred()
 	addMenuItems.call_deferred()
 
@@ -89,6 +90,9 @@ func addDock() -> void:
 
 
 func removeDock() -> void:
+	if not is_instance_valid(componentsDock): # Make sure just in case the Dock was already destroyed somehow
+		componentsDock = null
+		return
 	remove_control_from_docks(componentsDock)
 	componentsDock.queue_free()
 
@@ -103,10 +107,19 @@ var newComponentInFolderShortcut: Shortcut
 
 
 func addMenuItems() -> void:
-	self.add_tool_menu_item(componentMenuItem, componentsDock.createNewComponentInSelectedFolder)
+	if not is_instance_valid(componentsDock):
+		printWarning("addMenuItems(): componentsDock not valid")
+		return
+
 	self.newComponentInFolderShortcut = load("res://addons/Comedot/NewComponentInFolderShortcut.tres")
+	if not newComponentInFolderShortcut:
+		printWarning("Missing Shortcut resource for \"" + componentMenuItem + "\"")
+		return
+	
+	self.add_tool_menu_item(componentMenuItem, componentsDock.createNewComponentInSelectedFolder)
 	# TBD: ProjectSettings.set_setting(newComponentInFolderShortcutPath, newComponentInFolderShortcut)
 	printLog(str("Added menu item: Project → Tools → ", componentMenuItem, " Shortcut: ", newComponentInFolderShortcut.get_as_text()))
+
 
 
 func removeMenuItems() -> void:
@@ -119,7 +132,8 @@ func removeMenuItems() -> void:
 ## Handles keyboard shortcuts for custom menu items
 func _shortcut_input(event: InputEvent) -> void:
 	# Handle shortcut only once, only when pressed
-	if not event.is_pressed() or event.is_echo():
+	if not event.is_pressed() or event.is_echo() \
+	or not componentsDock or not newComponentInFolderShortcut: # Make sure initialization is complete
 		return
 
 	if newComponentInFolderShortcut.matches_event(event):
@@ -151,11 +165,12 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 		for file in DirAccess.get_files_at(folder):
 			if file.ends_with(".tscn"):
 				count += 1
-				file = folder + "/" + file # Append the folder path because Godon't
+				file   = folder + "/" + file # Append the folder path because Godon't
 				doesFilenameEndInComponent = file.ends_with ("Component.tscn") # Check once to reuse in multiple tests
-				
-				scene = ResourceLoader.load(file) # Load the scene
-				if scene: instance = scene.instantiate() # Instantiate the scene
+
+				scene	 = null # Clear the previous iteration just in case
+				scene	 = ResourceLoader.load(file) # Load the scene
+				instance = scene.instantiate() if scene else null # Instantiate the scene # IMPORTANT: Don't carry a stale `instance` from the previous iteration!
 
 				if doesFilenameEndInComponent:
 					# TEST 1: Does the filename end in "Component" but cannot be instantiated?
