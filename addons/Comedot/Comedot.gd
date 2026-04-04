@@ -144,62 +144,85 @@ func _shortcut_input(event: InputEvent) -> void:
 
 #region Maintenance
 
+static func verifyComponent(file: String) -> bool:
+	# First, the initial "guard" checks without which other checks cannot be performed
+
+	# TEST 1: Can the file be loaded?
+	var scene: PackedScene = ResourceLoader.load(file)
+	if not scene:
+		printError("verifyComponent(): Cannot load Scene: " + file)
+		return false
+
+	# TEST 2: Can the scene be instantiated as a node?
+	var instance: Node = scene.instantiate() if scene else null # Ensure `null` if invalid
+	if not instance or not is_instance_valid(instance):
+		printError("verifyComponent(): Cannot instantiate Scene: " + file)
+		# TBD: Should we free() the `scene`?
+		return false
+
+	# TEST 3: Is the node not a Component object?
+	if not is_instance_of(instance, Component):
+		printError("verifyComponent(): Node object type is not Component: " + file)
+		instance.free() # Cleanup
+		return false
+
+	# After making sure we loaded a valid Component instance,
+	# Now we do the secondary tests that may produce multiple warnings
+
+	var isComponentFilename: bool = file.ends_with("Component.tscn") or file.ends_with("ComponentBase.tscn") # Check once to reuse in multiple tests
+	var isAbstract:			 bool = file.ends_with("Base.tscn")
+	var hasIssues:			 bool
+
+	# TEST 4: Is it a consistent/conventional filname??
+	if not isComponentFilename:
+		printWarning("verifyComponent(): Filename does not end in \"Component\" or \"ComponentBase\": " + file)
+		hasIssues = true
+
+	# TEST 5: Is it in the "Components" Group?
+	if not instance.is_in_group(Global.Groups.components):
+		printWarning("Component root node is not in \"" + Global.Groups.components + "\" group: " + file)
+		hasIssues = true
+
+	# TEST 6: Is it a turn-based component but not in the "Turn-Based" Group?
+	if  is_instance_of(instance, TurnBasedComponent) and not instance.is_in_group(Global.Groups.turnBased):
+		printWarning("Component is TurnBasedComponent but root node is not in \"" + Global.Groups.turnBased + "\" group: " + file)
+		hasIssues = true
+
+	# Cleanup
+	if  is_instance_valid(instance):
+		# Avoid memory leaks just in case
+		instance.free() # CHECK: Apparently free() is better than queue_free() here, because these nodes are temporary editor-only instances that were never added to a tree, so immediate cleanup is fine.
+
+	return not hasIssues
+
+
 ## Checks all component `".tscn"` Scene files for any descrepancies or configuration mistakes.
 ## Returns `true` if all components are OK.
 ## NOTE: May not include hidden or otherwise inaccessible files.
 ## @experimental
 static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
-	var areAllComponentsOK: bool = true # Assume all is OK even if there are no components
-	var subfoldersToScan: PackedStringArray
+	var subfoldersToScan:	PackedStringArray
+	var hasIssues:			bool
 
 	printLog("Scanning for all Component .tscn Scene files from \"res://\"…")
 	subfoldersToScan = Tools.findAllSubfolders(rootPath)
 
 	# Create variables here once, instead of in every loop iteration
-	var count:		int
-	var scene:	  	PackedScene
-	var instance: 	Node
-	var doesFilenameEndInComponent: bool
+	var count: int
 
 	for folder in subfoldersToScan:
 		for file in DirAccess.get_files_at(folder):
-			if file.ends_with(".tscn"):
-				count += 1
-				file   = folder + "/" + file # Append the folder path because Godon't
-				doesFilenameEndInComponent = file.ends_with ("Component.tscn") # Check once to reuse in multiple tests
 
-				scene	 = null # Clear the previous iteration just in case
-				scene	 = ResourceLoader.load(file) # Load the scene
-				instance = scene.instantiate() if scene else null # Instantiate the scene # IMPORTANT: Don't carry a stale `instance` from the previous iteration!
+			# If it's not a scene file there's nothing else to check
+			if not file.ends_with(".tscn"): continue
 
-				if doesFilenameEndInComponent:
-					# TEST 1: Does the filename end in "Component" but cannot be instantiated?
-					if not scene:
-						printError("Cannot load Component Scene: " + file)
-						areAllComponentsOK = false
-						continue
-					elif not instance or not is_instance_valid(instance):
-						printError("Cannot instantiate Component Scene: " + file)
-						areAllComponentsOK = false
-						continue
+			count += 1
+			file   = folder.path_join(file) # Append the folder path because Godon't; path_join() may be better than `+ "/" +` on Windows etc.
+			
+			if not verifyComponent(file): hasIssues = true
 
-					# TEST 2: Is the file named "…Component" but is not a Component object?
-					elif not is_instance_of(instance, Component):
-						printWarning("Filename ends in \"Component\" but Object Type is not Component: " + file)
-						areAllComponentsOK = false
-						continue
-
-				# Did we load a valid Component instance?
-				if is_instance_valid(instance) and is_instance_of(instance, Component):
-
-					# TEST 3: Is it in the "Components" Group?
-					if not instance.is_in_group(Global.Groups.components):
-						printWarning("Component root node is not in \"" + Global.Groups.components + "\" group: " + file)
-						areAllComponentsOK = false
-						continue
-
-	if areAllComponentsOK: printLog(str("verifyAllComponents(): ", count, " components checked. All OK."))
+	if not hasIssues: printLog(str("verifyAllComponents(): ", count, " components checked. All OK."))
 	else: printWarning(str("verifyAllComponents(): ", count, " components checked. SOME TESTS FAILED!"))
-	return areAllComponentsOK
+	return not hasIssues
 
 #endregion
