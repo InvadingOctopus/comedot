@@ -61,7 +61,7 @@ signal didEndTurn
 
 func _enter_tree() -> void:
 	super._enter_tree()
-	self.add_to_group(Global.Groups.turnBased, true)
+	if not self.is_in_group(Global.Groups.turnBased): self.add_to_group(Global.Groups.turnBased, true) # persistent
 
 
 func registerEntity(newParentEntity: Entity) -> void:

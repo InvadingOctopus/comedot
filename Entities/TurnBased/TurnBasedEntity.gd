@@ -91,7 +91,7 @@ signal didEndTurn
 func _enter_tree() -> void:
 	super._enter_tree()
 	self.resetSkipCounter()
-	self.add_to_group(Global.Groups.turnBased, true) # IMPORTANT: Add to turn-based group BEFORE calling `TurnBasedCoordinator.addEntity()` in case the coordinator operates on that group.
+	if not self.is_in_group(Global.Groups.turnBased): self.add_to_group(Global.Groups.turnBased, true) # persistent # IMPORTANT: Add to turn-based group BEFORE calling `TurnBasedCoordinator.addEntity()` in case the coordinator operates on that group.
 	TurnBasedCoordinator.addEntity(self)
 
 

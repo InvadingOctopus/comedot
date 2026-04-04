@@ -154,7 +154,7 @@ func validateParent() -> void:
 func _enter_tree() -> void:
 	# Initialization Order: 2: After Entity._enter_tree(), before Entity.childEnteredTree()
 
-	self.add_to_group(Global.Groups.components, true) # persistent
+	if not self.is_in_group(Global.Groups.components): self.add_to_group(Global.Groups.components, true) # persistent
 
 	# Find which Entity this Component belongs to, if not already set.
 	if not self.parentEntity:
