@@ -158,9 +158,9 @@ func setupUI() -> void:
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 
 	# NOTE: The first access to the `res://Components` sometimes seems to fail,
-	# so maybe we need to let the Godot Editor have some time to finish scanning the file system?
+	# so maybe we need to let the Godot Editor have some time to finish scanning the filesystem?
 	printLog("Waiting to scan the Components folder…")
-	await get_tree().create_timer(1).timeout
+	await get_tree().create_timer(1).timeout # WORKAROUND: Let Godot chill a bit before yoinking files
 	buildComponentsTree.call_deferred() # `call_deferred` to reduce lag?
 
 	# Hook up with Inspector Gadget & the Selection
@@ -266,10 +266,8 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 
 func createComponentTreeItem(componentPath: String, componentName: String, categoryTreeItem: TreeItem) -> TreeItem:
 	# Sanitize the component name
-	# TODO: Get only the last dot "."
-	var startOfExtension: int = componentName.findn(".")
-	if startOfExtension >= 1: componentName = componentName.substr(0, startOfExtension)
-	
+	componentName = componentName.get_basename()
+
 	# Create the Tree row item
 	var componentItem: TreeItem = componentsTree.create_item(categoryTreeItem) # CHECK: ? Does `create_item()` return existing items if they're already in the Tree?
 	componentItem.set_text(0, componentName)
@@ -313,7 +311,7 @@ func removeComponentRowButtons(componentRow: TreeItem) -> void:
 #region UI Events
 
 func onComponentsTree_itemSelected() -> void:
-	var selection: TreeItem = componentsTree.get_selected()
+	var selectedItem: TreeItem = componentsTree.get_selected()
 
 	# Clear the previous selection. These values must be reset in any case.
 
@@ -326,9 +324,9 @@ func onComponentsTree_itemSelected() -> void:
 
 	# Is a component row selected?
 
-	if selection.get_text(0).to_lower().ends_with("component"): # TODO: A less crude way of checking for component rows :')
-		selectedComponentRow = selection
-		selectedComponentCategory = selection.get_parent()
+	if selectedItem.get_text(0).to_lower().ends_with("component"): # NOTE: Omits `…ComponentBase` TODO: A less crude way of checking for component rows :')
+		selectedComponentRow = selectedItem
+		selectedComponentCategory = selectedItem.get_parent()
 		%EditComponentButton.disabled = false
 		%EditComponentButton.tooltip_text = editComponentTipPrefix + selectedComponentName
 		createComponentRowButtons(selectedComponentRow)
@@ -444,15 +442,17 @@ func reloadPlugin() -> void:
 func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if debugMode: printLog("addNewEntity()")
 	
-	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
-	if  selectedNodes.size() > 1: # TBD: Support adding multiple new Entities to more than 1 selected Node?
+	var selectedNodes:	Array[Node] = selection.get_top_selected_nodes()
+	var parentNode:		Node
+
+	if selectedNodes.is_empty():
+		parentNode = EditorInterface.get_edited_scene_root() # Just add to the Scene Root if no parent Node is selected
+	elif selectedNodes.size() > 1: # TBD: Support adding multiple new Entities to more than 1 selected Node?
 		printLog("Cannot add Entity to more than 1 selected Node")
 		return
+	else: # If there's just 1 selection,
+		parentNode = selectedNodes.front() # Get the first selected Node
 
-	var parentNode: Node
-	if not selectedNodes.is_empty(): parentNode = selectedNodes.front() # Get the first selected node
-	else: parentNode = EditorInterface.get_edited_scene_root() # or just add to the scene root if no parent Node is selected
-	
 	if parentNode == null:
 		printError("addNewEntity(): Cannot create new Entity because no scene is open!")
 		return
@@ -517,8 +517,7 @@ func getSelectedComponentAndAddToSelectedNode() -> void:
 
 	# Convert script paths to scenes, just in case
 	var componentScenePath: String = selectedComponentPath
-	if componentScenePath.to_lower().ends_with(".gd"):
-		componentScenePath = componentScenePath.replace(".gd", ".tscn")
+	componentScenePath = componentScenePath.get_basename() + ".tscn"
 
 	addComponentToSelectedNode(componentScenePath)
 
@@ -529,11 +528,9 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 
 	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
 
-	# TBD: Support adding components to more than 1 selected Entity?
-
-	if selectedNodes.is_empty() or selectedNodes.size() != 1:
+	if selectedNodes.is_empty() or selectedNodes.size() != 1: # TBD: Support adding components to more than 1 selected Entity?
 		#if debugMode:
-		printLog("Cannot add Components to more than 1 selected Node")
+		printLog("Cannot add Components: Select 1 (and only 1) parent Node")
 		return
 
 	var parentNode: Node = selectedNodes.front()
@@ -548,8 +545,9 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 			return
 
 	# Create a new instance of the Component
-	var newComponentNode: Node = load(componentPath).instantiate()
-	newComponentNode.name = (newComponentNode.get_script() as Script).get_global_name()
+	var newComponentNode:		Node		= load(componentPath).instantiate()
+	var newComponentClassName:	StringName	= (newComponentNode.get_script() as Script).get_global_name() # TBD: Guard against null Script?
+	newComponentNode.name = newComponentClassName if not newComponentClassName.is_empty() else componentPath.get_file().get_basename() # TBD: Should we also guard against invalid filenames here?
 
 	if debugMode: printLog(str(newComponentNode))
 
@@ -702,7 +700,6 @@ func editSelectedComponent() -> void:
 	if debugMode: printLog(str("editSelectedComponent() ", selectedComponentPath))
 
 	var scenePath:  String
-	@warning_ignore("unused_variable")
 	var scriptPath: String
 
 	# Convert the paths, just in case
@@ -761,21 +758,26 @@ func copyFile(sourceAbsolutePath: String, destinationAbsolutePath: String) -> bo
 	# Validate
 
 	if not sourceAbsolutePath.to_lower().begins_with("res://"):
-		printError("Source path must begin with `res://`")
+		printError("copyFile() Source path must begin with \"res://\"")
+		return false
 
 	if not destinationAbsolutePath.to_lower().begins_with("res://"):
-		printError("Destination path must begin with `res://`")
+		printError("copyFile() Destination path must begin with \"res://\"")
+		return false
 
 	# Copy
-	DirAccess.copy_absolute(sourceAbsolutePath, destinationAbsolutePath)
+	var result: Error = DirAccess.copy_absolute(sourceAbsolutePath, destinationAbsolutePath)
+	if  result != OK:
+		printError("copyFile() Error: " + error_string(result))
+		return false
 
 	# Verify
 
 	if FileAccess.file_exists(destinationAbsolutePath):
-		printLog("Copied: " + sourceAbsolutePath + " → " + destinationAbsolutePath)
+		printLog("copyFile(): " + sourceAbsolutePath + " → " + destinationAbsolutePath)
 		return true
 	else:
-		printError("Could not create file: " + destinationAbsolutePath)
+		printError("copyFile() Could not create file: " + destinationAbsolutePath)
 		return false
 
 #endregion
