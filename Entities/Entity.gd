@@ -147,7 +147,7 @@ func registerComponent(newComponent: Component) -> bool:
 	# Do we already have a component of the same type?
 	var existingComponent: Component = self.components.get(componentType)
 
-	if existingComponent:
+	if existingComponent: # TBD: Allow mechanism for duplicate component types?
 		printLog(str("registerComponent(): Replacing ", existingComponent.logFullName, " ← ", newComponent.logFullName))
 		existingComponent.removeFromEntity(true) # shouldFree
 
@@ -282,7 +282,7 @@ func findChildrenComponents() -> Array[Component]:
 		return is_instance_of(node, Component)
 
 	childrenComponents.assign(childrenNodes.filter(filter))
-	printLog("getComponents(): " + str(childrenComponents))
+	printLog("findChildrenComponents(): " + str(childrenComponents))
 	return childrenComponents
 
 
@@ -393,7 +393,7 @@ func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bo
 
 
 ## NOTE: Does NOT search children of children.
-func findChildrenOfType(type: Variant) -> Array: # TODO: Return type?
+func findChildrenOfType(type: Variant) -> Array[Node]:
 	var children: Array[Node] = self.get_children()
 	var childrenFiltered: Array[Node] = []
 
@@ -413,7 +413,7 @@ func addSceneCopy(path: String) -> Node:
 
 ## Removes all child nodes of the specified type and frees (deletes) them if [param free] is `true`.
 ## Returns: The number of children that were removed (0 means none were found).
-func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TODO: Return type?
+func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TBD: Should the return be a count or an array?
 	var childrenToRemove: Array[Node] = self.findChildrenOfType(type)
 	var childrenRemoved:  int = 0
 	for child: Node in childrenToRemove:
@@ -494,11 +494,11 @@ func getBody() -> CharacterBody2D:
 ## The [Callable] is added to the [member functionsAlreadyCalledOnceThisFrame] dictionary, and that list is then cleared during each [method _physics_process] frame/tick of this entity.
 func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 	# Has the function already been called this frame?
-	if not functionsAlreadyCalledOnceThisFrame.has(str(function)):
+	if not functionsAlreadyCalledOnceThisFrame.has(function.get_method()):
 		# NOTE: TBD: We're not checking if the key matches the function we got now, just that the key exists?
 		# DEBUG: printDebug("callOnceThisFrame(" + str(function) + ")")
 		# First add it to the list so it doesn't get called again; this should avoid any recursion.
-		self.functionsAlreadyCalledOnceThisFrame[str(function)] = function
+		self.functionsAlreadyCalledOnceThisFrame[function.get_method()] = function
 		function.callv(arguments)
 		self.set_physics_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
@@ -509,7 +509,7 @@ func spawnPath(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZI
 	var entityParent: Node = self.get_parent()
 	if not entityParent:
 		printWarning(str("spawnPath(): This Entity has no parent: ", self.logFullName))
-		return
+		return null
 	
 	var newNode: Node = SceneManager.loadSceneAndAddInstance(scenePath, entityParent, self.position + positionOffset)
 	if  copyZIndex and newNode is CanvasItem: newNode.z_index = self.z_index
@@ -522,7 +522,7 @@ func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: b
 	var entityParent: Node = self.get_parent()
 	if not entityParent:
 		printWarning(str("spawnNode(): This Entity has no parent: ", self.logFullName))
-		return
+		return null
 	
 	if debugMode: printDebug(str("spawnNode(): ", node, " @", self.position, "+", positionOffset, " in ", entityParent))
 
