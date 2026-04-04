@@ -3,7 +3,7 @@
 ## Only `Entity.gd` and the scripts in the `Components` folder (and the AutoLoads etc. that they depend on) are the core functionality of Comedot.
 
 @tool
-class_name ComedotPlugin # TBD: Is this needed? Are there any side effects?
+class_name ComedotPlugin # Could be useful for accessing verifyComponent() etc.
 extends EditorPlugin
 
 # TODO: Menu item shortcut customization: List it in the Editor's Command Palette
@@ -55,7 +55,7 @@ static func printWarning(message: String) -> void:
 
 
 static func printError(message: String) -> void:
-	var errorMessage: String = str("Comedot:  WARNING: ", message)
+	var errorMessage: String = str("Comedot:  ERROR: ", message)
 	print(errorMessage)
 	push_error(errorMessage)
 
@@ -85,7 +85,7 @@ var componentsDock: ComponentsDock
 func addDock() -> void:
 	componentsDock = preload("res://addons/Comedot/ComponentsDock.tscn").instantiate()
 	componentsDock.plugin = self as EditorPlugin
-	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock) #add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
+	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 	self.set_dock_tab_icon(componentsDock, componentIcon)
 
 
