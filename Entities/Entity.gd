@@ -395,7 +395,7 @@ func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bo
 ## NOTE: Does NOT search children of children.
 func findChildrenOfType(type: Variant) -> Array[Node]:
 	var children: Array[Node] = self.get_children()
-	var childrenFiltered: Array[Node] = []
+	var childrenFiltered: Array[Node]
 
 	var filter := func matchesType(node: Node) -> bool:
 		return is_instance_of(node, type)

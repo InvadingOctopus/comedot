@@ -260,7 +260,9 @@ func unregisterComponent(componentToRemove: Component) -> bool:
 ## Searches all children and returns an array of all nodes that extend [TurnBasedComponent].
 ## NOTE: May be slow. Use the [member turnBasedComponents] array instead.
 func findTurnBasedComponents() -> Array[TurnBasedComponent]:
-	return self.findChildrenOfType(TurnBasedComponent)
+	var filteredArray: Array[TurnBasedComponent]
+	filteredArray.assign(self.findChildrenOfType(TurnBasedComponent)) # CHECK: In a future Godot version, will Array.assign() be enough to filter types?
+	return filteredArray
 
 #endregion
 
