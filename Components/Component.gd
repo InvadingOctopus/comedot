@@ -132,7 +132,7 @@ func validateParent() -> void:
 	if not parentEntity: # Are we a new Component [or] not owned by an Entity?
 
 		if newParent is Entity: # If our parent is an Entity, all's well and good in the world.
-			self.registerEntity(newParent)
+			self.registerEntity(newParent) # TBD: Should we registerEntity() only from _enter_tree()?
 
 		# If our immediate parent node is not an Entity, should we search up the scene tree hierarchy for an Entity to adopt this Component?
 		elif shouldCheckGrandparentsForEntity and not allowNonEntityParent:
@@ -157,12 +157,12 @@ func _enter_tree() -> void:
 	if not self.is_in_group(Global.Groups.components): self.add_to_group(Global.Groups.components, true) # persistent
 
 	# Find which Entity this Component belongs to, if not already set.
-	if not self.parentEntity:
+	if not parentEntity:
 		var parentNode := self.get_parent()
 		
 		# First, what should be the most common case, see if the immediate parent node is an Entity
 		if parentNode is Entity:
-			registerEntity(parentNode)
+			registerEntity(parentNode) # TBD: Should we registerEntity() only from validateParent()?
 		
 		# Otherwise, see if it's ok to have a non-entity parent, which should be a rare exception
 		elif allowNonEntityParent:
@@ -186,7 +186,7 @@ func _enter_tree() -> void:
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 		self.checkRequiredComponents()
 	else:
-		self.coComponents = {} # Clear our previous memory of any siblings
+		self.coComponents.clear() # Clear our previous memory of any siblings # Dictionary.clear() is apparently better than `= {}`
 		if not allowNonEntityParent: printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
 
@@ -212,7 +212,13 @@ func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForE
 
 func registerEntity(newParentEntity: Entity) -> void:
 	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
-	if not newParentEntity: return
+	if not newParentEntity or newParentEntity == self.parentEntity: return
+
+	# If we already have a parent, disown it :')
+	if is_instance_valid(self.parentEntity):
+		printWarning(str("registerEntity() newParentEntity: ", newParentEntity, " • Replacing existing parentEntity: ", parentEntity))
+		self.removeFromEntity(false) # not shouldFree
+
 	if newParentEntity.registerComponent(self): # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
 		self.parentEntity = newParentEntity
 		self.coComponents = parentEntity.components # Meet our new siblings!
@@ -222,6 +228,7 @@ func registerEntity(newParentEntity: Entity) -> void:
 ## Components that are only removed but not freed may be re-added to any entity,
 func removeFromEntity(shouldFree: bool = true) -> void:
 	if parentEntity and parentEntity == self.get_parent():
+		# NOTE: Entity.unregisterComponent() will be called by NOTIFICATION_UNPARENTED → unregisterEntity()
 		parentEntity.remove_child(self)
 	else:
 		# TBD: Display a warning or would it be redundant if the component is already removed?
@@ -260,7 +267,7 @@ func unregisterEntity() -> void:
 	if debugMode: printDebug(str("unregisterEntity() ", get_parent()))
 	if parentEntity:
 		willRemoveFromEntity.emit()
-		self.coComponents = {} # CHECK: PERFORMANCE: Is `= {}` faster or .clear()?
+		self.coComponents.clear() # Dictionary.clear() is apparently better than `= {}`
 		parentEntity.unregisterComponent(self)
 		self.parentEntity = null # TBD: Use .set_deferred()?
 		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
@@ -286,7 +293,7 @@ func _exit_tree() -> void:
 ## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSubclass] is called to find the first [Component] which extends/inherits the specified type.
 ## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
-func findCoComponent(type: Script, includeSubclasses: bool = true) -> Component:
+func findCoComponent(type: GDScript, includeSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
 	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
@@ -424,7 +431,7 @@ var logFullNameWithEntity: String:
 var randomDebugColor: Color = Tools.getRandomQuantizedColor() ## Used by [method emitDebugBubble] etc. to distinguish different components from each other.
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
-	if not isLoggingEnabled: return
+	if not isLoggingEnabled: return # PERFORMANCE: Callers may also check this to avoid String constructions/conversions before calling this method
 	Debug.printLog(message, object, "lightBlue", "cyan")
 
 
