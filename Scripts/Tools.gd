@@ -61,6 +61,15 @@ class CompassVectors:
 	const north		:= Vector2i.UP
 	const northEast	:= Vector2i(+1, -1)
 
+
+enum Shape {
+	none,
+	circle,
+	rectangle, # Wanted to call #2 "square" to match with "²" :')
+	triangle
+	}
+
+
 ## For use with [method Array.pick_random] with an optional scaling factor.
 const plusMinusOneOrZero:		Array[int]	 = [-1, 0, +1] # TBD: Name :')
 
