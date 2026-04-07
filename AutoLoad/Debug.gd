@@ -182,6 +182,7 @@ func initializeLogWindow() -> void:
 
 func initializeDebugWindow() -> void:
 	debugWindow.visible = OS.is_debug_build()
+	debugWindow.content_scale_factor = DisplayServer.screen_get_scale() # For Mac/Retina/HiDPI displays
 
 	# Position the Debug Window to the right of the main window
 	# TBD: Support for Right-To-Left locales? :')
@@ -221,6 +222,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 
 	# Resize the window and center the chart
 
+	newChartWindow.content_scale_factor = DisplayServer.screen_get_scale() # For Mac/Retina/HiDPI displays
 	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor)
 	newChartWindow.size.y = int((newChart.verticalHeight * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height for both sides of the Y axis
 	newChart.position.y   = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
