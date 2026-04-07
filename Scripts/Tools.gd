@@ -1232,17 +1232,19 @@ static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary
 	for label: Label in labels:
 		if not label: continue
 
-		var namePrefix: String = label.name.trim_suffix("Label").to_lower()
+		var namePrefix:		 String  = label.name.trim_suffix("Label").to_lower()
 		var dictionaryValue: Variant = dictionary.get(namePrefix)
+		var valueText:		 String
 
-		label.text = namePrefix + ":" if shouldShowPrefix else "" # TBD: Space after colon?
-
-		if dictionaryValue:
-			label.text += str(dictionaryValue)
-			if shouldHideEmptyLabels: label.visible = true # Automatically show non-empty labels in case they were already hidden
+		if dictionary.has(namePrefix): # NOTE: Do NOT check `dictionaryValue` because then values like `0`, `false`, empty strings will be considered non-existent!
+			valueText = str(dictionaryValue) if dictionaryValue != null else ""
 		else:
-			label.text += ""
-			if shouldHideEmptyLabels: label.visible = false
+			valueText = ""
+
+		label.text  = namePrefix + ":" if shouldShowPrefix else "" # TBD: Space after colon?
+		label.text += valueText
+		if shouldHideEmptyLabels: label.visible = not valueText.is_empty() # Hides missing keys AND empty/false/zero values. Also automatically shows non-empty labels in case they were hidden before
+
 
 
 ## Displays the values of the specified [Object]'s properties in different [Label]s.
