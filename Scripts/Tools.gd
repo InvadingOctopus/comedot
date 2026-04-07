@@ -503,7 +503,7 @@ static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int
 			shapeBounds = Rect2(shapeNode.position - shapeSize / 2, shapeSize) # TBD: PERFORMANCE: Use * 0.5?
 
 			if shapesAdded < 1: combinedShapeBounds = shapeBounds # Is it the first shape?
-			else: combinedShapeBounds.merge(shapeBounds)
+			else: combinedShapeBounds = combinedShapeBounds.merge(shapeBounds)
 
 			# DEBUG: Debug.printDebug(str("shape: ", shapeNode.shape, ", rect: ", shapeNode.shape.get_rect(), ", bounds in node: ", shapeBounds, ", combinedShapeBounds: ", combinedShapeBounds), node)
 			shapesAdded += 1
