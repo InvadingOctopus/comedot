@@ -22,19 +22,19 @@ var isShowingExtraDetails: bool = false: # Doesn't need to be @exported (to disk
 
 
 #region State
-@onready var messageLabel:	Label = %MessageLabel
+@onready var messageLabel:		Label = %MessageLabel
 
 @onready var detailsControl:	Control   = %ShowDetailsControl
 @onready var detailsContainer:	Container = %DetailsContainer
 
-@onready var frameTImeLabel: Label = %FrameTimeLabel
-@onready var nameLabel:		Label = %NameLabel
-@onready var instanceLabel:	Label = %InstanceLabel
-@onready var typeLabel:		Label = %TypeLabel
-@onready var nodeClassLabel: Label = %NodeClassLabel
-@onready var baseScriptLabel: Label = %BaseScriptLabel
-@onready var classNameLabel: Label = %ClassNameLabel
-@onready var parentLabel:	Label = %ParentLabel
+@onready var frameTImeLabel:	Label = %FrameTimeLabel
+@onready var nameLabel:			Label = %NameLabel
+@onready var instanceLabel:		Label = %InstanceLabel
+@onready var typeLabel:			Label = %TypeLabel
+@onready var nodeClassLabel: 	Label = %NodeClassLabel
+@onready var baseScriptLabel: 	Label = %BaseScriptLabel
+@onready var classNameLabel: 	Label = %ClassNameLabel
+@onready var parentLabel:		Label = %ParentLabel
 # @onready var objectLabel:	Label = %ObjectLabel # Redundant information; always "Object"
 
 @onready var labels: Array[Label] = [messageLabel, frameTImeLabel, nameLabel, instanceLabel, typeLabel, nodeClassLabel, baseScriptLabel, classNameLabel, parentLabel]
@@ -46,7 +46,7 @@ func _ready() -> void:
 
 
 func updateUI() -> void:
-	Tools.setLabelsWithDictionary(self.labels, self.logEntry, false, false) # Don't show labels, don't hide labels, because some are already permanently hidden.
+	Tools.setLabelsWithDictionary(self.labels, self.logEntry, false, false) # not shouldShowPrefix (don't show labels), not shouldHideEmptyLabels, because some are already permanently hidden.
 
 
 func onToggleDetailsControl_guiInput(event: InputEvent) -> void:
