@@ -383,13 +383,14 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 	var checkingDistance:	float
 
 	for nodeToCheck in nodesInGroup:
-		if nodeToCheck is Node2D:
-			checkingDistance = referencePosition.distance_squared_to(nodeToCheck.global_position) # PERFORMANCE: distance_squared_to() is faster than distance_to()
-			if is_zero_approx(checkingDistance):
-				return nearestNode # Can't get any closer than 0!
-			elif checkingDistance < minimumDistance:
-				minimumDistance = checkingDistance
-				nearestNode = nodeToCheck
+		if nodeToCheck is not Node2D: continue
+		
+		checkingDistance = referencePosition.distance_squared_to(nodeToCheck.global_position) # PERFORMANCE: distance_squared_to() is faster than distance_to()
+		if is_zero_approx(checkingDistance):
+			return nodeToCheck # Can't get any closer than 0! Just return the node being checked; no need to update `nearestNode`
+		elif checkingDistance < minimumDistance:
+			minimumDistance   = checkingDistance
+			nearestNode		  = nodeToCheck
 
 	return nearestNode
 
