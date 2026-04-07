@@ -5,8 +5,7 @@
 
 extends CanvasItem
 
-
-# TODO: Option for cycle/wrap-around
+# TODO: Option for "bounce"
 
 
 #region Parameters
@@ -44,41 +43,58 @@ extends CanvasItem
 	set(newValue):
 		isEnabled = newValue
 		self.set_process(isEnabled) # PERFORMANCE: Set once instead of every frame
-		if not isEnabled: modulate = Color.WHITE
+		if not isEnabled: setColor(initialColor)
+
+@export var debugMode: bool
 
 #endregion
 
 
 #region State
+
+var initialColor: Color
+
 var hue:		float
 var saturation:	float
 var value:		float
 var alpha:		float
+
+@onready var selfAsLight2D: Light2D = self.get_node(^".") as Light2D
+
 #endregion
 
 
 func _ready() -> void:
-	## WARNING: The [member CanvasItem.Modulate] property of the node MUST be set in the Godot Editor, otherwise this script will not be able to get the initial HSV components!
+	## WARNING: The [member CanvasItem.modulate] property of the node MUST be set in the Godot Editor, otherwise this script will not be able to get the initial HSV components!
 	## NOTE: DESIGN: Why not provide initial values within this script? Because then it may not match what we see in the Godot Editor.
-
-	# If the initial saturation is 0 then set it to 1.0
-	# because hue will not have any effect otherwise.
-
-	if fixSaturationIfZero and is_zero_approx(modulate.s):
-		modulate.s = 1.0
 
 	# Set the initial color
 
-	hue			= modulate.h
-	saturation	= modulate.s
-	value		= modulate.v
-	alpha		= modulate.a
+	if selfAsLight2D: initialColor = selfAsLight2D.color
+	else: initialColor = self.modulate
+
+	hue		= initialColor.h
+	value	= initialColor.v
+	alpha	= initialColor.a
+
+	# If the initial saturation is 0 then set it to 1.0
+	# because hue will not have any effect otherwise.
+	if fixSaturationIfZero and is_zero_approx(initialColor.s): saturation = 1.0
+	else: saturation = initialColor.s
 
 	# Reset if not enabled
-	if not isEnabled: modulate = Color.WHITE
+	if not isEnabled: setColor(initialColor)
 	self.set_process(isEnabled) # Apply setter because Godot doesn't on initialization
-	
-	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
+
+	# Debugging
+	if debugMode:
+		var chartHeight: int = 100
+		var chartScale:  int = 100
+		Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
+		Debug.createChartWindow.call_deferred(self.get_path(), ^":hue",			chartHeight, chartScale)
+		Debug.createChartWindow.call_deferred(self.get_path(), ^":saturation",	chartHeight, chartScale)
+		Debug.createChartWindow.call_deferred(self.get_path(), ^":value",		chartHeight, chartScale)
+		Debug.createChartWindow.call_deferred(self.get_path(), ^":alpha",		chartHeight, chartScale)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -92,42 +108,31 @@ func _process(delta: float) -> void:
 	# TBD: Should we use `fmod()` or would `< 0` be more efficient and immune to floating errors?
 
 	# H
-
 	hue += hueModifier * delta
-	if signf(hue) < 0: hue = 1.0 - hue
+	hue  = Tools.wrapUnitFloat(hue)
 
 	# S
-
 	saturation += saturationModifier * delta
-	if signf(saturation) < 0: saturation = 1.0 - saturation
+	saturation  = Tools.wrapUnitFloat(saturation)
 
 	# V
-
 	value += valueModifier * delta
-	if signf(value) < 0: value = 1.0 - value
+	value  = Tools.wrapUnitFloat(value)
 
 	# Alpha
-
 	alpha += alphaModifier * delta
-	if signf(alpha) < 0: alpha = 1.0 - alpha
+	alpha  = Tools.wrapUnitFloat(alpha)
 
 	# Apply
 
 	var colorToApply: Color = Color.from_hsv(hue, saturation, value, alpha)
 	#Debug.printDebug(str("modulate: ", modulate, " h: ", modulate.h, ", s: ", modulate.s, ", v: ", modulate.v, ", a: ", modulate.a), self)
 
-	if is_instance_of(self, Light2D): self.color = colorToApply
+	# PERFORMANCE: Set directly instead of calling setColor() every frame
+	if selfAsLight2D: selfAsLight2D.color = colorToApply
 	else: self.modulate = colorToApply
 
-	# DEBUG
 
-	#Debug.watchList.cycleColor = str(self)
-	#Debug.watchList.h = hue
-	#Debug.watchList.hModifier = (hueModifier * delta)
-	#Debug.watchList.s = saturation
-	#Debug.watchList.v = value
-	#Debug.watchList.a = alpha
-	#Debug.watchList.modulate  = self.modulate
-	#Debug.watchList.modulateH = self.modulate.h
-	#Debug.watchList.modulateS = self.modulate.s
-	#Debug.watchList.modulateV = self.modulate.v
+func setColor(newColor: Color) -> void:
+	if selfAsLight2D: selfAsLight2D.color = newColor
+	else: self.modulate = newColor

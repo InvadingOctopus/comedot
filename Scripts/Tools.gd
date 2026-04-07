@@ -1329,6 +1329,12 @@ static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
 	# THANKS: rubenverg@Discord, lololol__@Discord
 	return posmod(current - minimum, maximum - minimum + 1) + minimum # +1 to make limits inclusive
 
+
+## Wraps a [float] value around if it is below 0.0 or higher than 1.0
+static func wrapUnitFloat(value: float) -> float:
+	if value < 0.0 or value > 1.0: return fposmod(value, 1.0)
+	else: return value
+
 #endregion
 
 
