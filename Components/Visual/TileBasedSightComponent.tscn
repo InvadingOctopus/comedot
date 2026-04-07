@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dsi1i37lcplvq"]
+
+[ext_resource type="Script" uid="uid://bc1l22u4t4lby" path="res://Components/Visual/TileBasedSightComponent.gd" id="1_q48yi"]
+
+[node name="TileBasedSightComponent" type="Node2D" unique_id=674119893 groups=["components"]]
+script = ExtResource("1_q48yi")
+metadata/_edit_group_ = true
