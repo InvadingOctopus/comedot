@@ -1077,8 +1077,9 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 ## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 ## TIP: To spawn scenes at specific cell coordinates, call [method Tools.populateTileMapCells]
-static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node2D = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
 	# TODO: FIXME: Handle negative cell coordinates
+	# TBD: Allow non-Node2D `parentOverride`?
 	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
 
 	# Validation
@@ -1103,6 +1104,9 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 
 	var parent:  Node2D = parentOverride if parentOverride else map
 	var newNode: Node2D
+
+	var minCoordinates: Vector2i = mapRect.position
+	var maxCoordinates: Vector2i = mapRect.end - Vector2i.ONE
 	var coordinates:  Vector2i
 	var nodesSpawned: Dictionary[Vector2i, Node2D]
 
@@ -1114,14 +1118,14 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 		# TBD: A more efficient way?
 
 		coordinates = Vector2i(
-			randi_range(0, mapRect.size.x - 1),
-			randi_range(0, mapRect.size.y - 1))
+			randi_range(minCoordinates.x, maxCoordinates.x),
+			randi_range(minCoordinates.y, maxCoordinates.y))
 
 		# NOTE: No chance of an infinite loop because we checked numberOfCopies <= totalCells
 		while(nodesSpawned.get(coordinates)):
 			coordinates = Vector2i(
-				randi_range(0, mapRect.size.x - 1),
-				randi_range(0, mapRect.size.y - 1))
+				randi_range(minCoordinates.x, maxCoordinates.x),
+				randi_range(minCoordinates.y, maxCoordinates.y))
 
 		# Position
 
