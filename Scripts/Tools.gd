@@ -879,7 +879,7 @@ static func checkTileVacancy(map: TileMapLayer, coordinates: Vector2i) -> bool:
 	if map is TileMapLayerWithCellData and map.debugMode: Debug.printDebug(str("tileData[isWalkable]: ", isWalkable, ", [isBlocked]: ", isBlocked))
 
 	# If there is no data, assume the tile is always vacant.
-	isTileVacant = (isWalkable or isWalkable == null) and (not isBlocked or isWalkable == null)
+	isTileVacant = (isWalkable or isWalkable == null) and (not isBlocked or isBlocked == null)
 
 	return isTileVacant
 
