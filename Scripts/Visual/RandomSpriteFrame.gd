@@ -45,4 +45,4 @@ func checkSelfType() -> bool:
 
 
 func setRandomFrame() -> void:
-	self.frame = randi_range(0, self.totalFrames)
+	self.frame = randi_range(0, self.totalFrames - 1) # Size - 1 = Last valid index
