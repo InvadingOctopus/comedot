@@ -51,8 +51,9 @@ class AudioBuses:
 ## A list of names for the custom data layer types that [TileMapLayer] Tile Sets may set on Tiles.
 ## For dynamic runtime data on CELLS, use [TileMapLayerWithCellData] or [TileMapCellData].
 class TileMapCustomData:
-	const isWalkable	:= &"isWalkable"	## Tile is vacant. # TBD: Rename to isOccupiable?
+	const isWalkable	:= &"isWalkable"	## Tile is vacant; may be occupied by a character # TBD: Rename to isOccupiable?
 	const isBlocked		:= &"isBlocked"		## Impassable terrain or object
+	const isOpaque		:= &"isOpaque"		## Tile blocks character vision & line of sight. May be used by [TileBasedSightComponent] etc. ## @experimental
 
 	const isOccupied	:= &"isOccupied"	## Is occupied by a character
 	const occupant		:= &"occupant"		## The entity occupying the tile
@@ -63,6 +64,7 @@ class TileMapCustomData:
 
 class Colors:
 	const logResource	:= "pink"
+
 #endregion
 
 
