@@ -292,7 +292,7 @@ static func replaceChild(parentNode: Node, childToReplace: Node, newChild: Node,
 ## NOTE: The new child is added regardless of whether the parent already had a child or not.
 ## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free].
 static func replaceFirstChild(parentNode: Node, newChild: Node, copyPosition: bool = false, copyRotation: bool = false, copyScale: bool = false, freeReplacedChild: bool = false) -> void:
-	var childToReplace: Control = parentNode.get_child(0) if parentNode.get_child_count() > 0 else null
+	var childToReplace: Node = parentNode.get_child(0) if parentNode.get_child_count() > 0 else null
 	# Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
 
 	if childToReplace:
