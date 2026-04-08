@@ -137,11 +137,12 @@ static func toggleSignal(sourceSignal: Signal, targetCallable: Callable, reconne
 ## A safe wrapper around [method Object.call] or [method Object.callv] that does not crash if the function/method name is missing.
 ## Returns the result of the call.
 ## TIP: Useful for passing customizable functions such as dynamically choosing different animations on `Animations.gd`
-static func callCustom(object: Variant, functionName: StringName, ...arguments: Array) -> Variant:
+## ALERT: Does NOT check if [param object] is a valid non-null [Object]
+static func callCustom(object: Object, functionName: StringName, ...arguments: Array) -> Variant:
 	if object.has_method(functionName):
 		return object.callv(functionName, arguments)
 	else:
-		Debug.printWarning(str("callCustom(): ", object, " has no such function: " + functionName), "Tools.gd")
+		Debug.printWarning(str("callCustom(): ", object, " invalid or has no such function: " + functionName), "Tools.gd")
 		return null
 
 
