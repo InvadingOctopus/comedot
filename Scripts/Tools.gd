@@ -425,12 +425,9 @@ static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, rel
 
 ## Splits a [NodePath] into an Array of 2 paths where index [0] is the node's path and [1] is the property chain, e.g. `/root:size:x` → [`/root`, `:size:x`]
 static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
-	var nodePath: NodePath
-	var propertyPath: NodePath
-
-	nodePath = NodePath(str("/" if path.is_absolute() else "", path.get_concatenated_names()))
-	propertyPath = NodePath(str(":", path.get_concatenated_subnames()))
-
+	var nodePath:	  NodePath	= NodePath(str("/" if path.is_absolute() else "", path.get_concatenated_names()))
+	var subnames:	  String	= path.get_concatenated_subnames()
+	var propertyPath: NodePath	= NodePath(str(":", subnames)) if not subnames.is_empty() else NodePath() # Avoid an invalid trailing `:` if there is no property
 	return [nodePath, propertyPath]
 
 #endregion
