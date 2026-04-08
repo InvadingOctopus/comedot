@@ -1501,14 +1501,13 @@ static func skipTimer(timer: Timer) -> float:
 ## TIP: May be used to cycle through a list of possible options, such as [42, 69, 420, 666]
 ## WARNING: The cycle may get "stuck" if there are 2 or more identical values in the list: [a, b, b, c] will always only return the 2nd `b`
 static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
-	if not value or list.is_empty(): return null
+	if list.is_empty(): return null # NOTE: Do NOT check `if value` because that will exclude 0, `false` and empty strings etc.!
 
-	var index: int = list.find(value)
-
-	if index >= 0: # -1 means value not found.
-		if list.size() == 1: return value
-		else: return list[index+1] if index < list.size()-1 else list[0] # Wrap around if at the end of the array.
-	else: return null
+	var  index: int = list.find(value)
+	if   index < 0:					return null		# -1 means `value` not found
+	elif list.size() == 1:			return value	# If there's only 1 item, there's nothing else to return
+	elif index < list.size() - 1:	return list[index + 1] # Return the next item from the array
+	else:							return list[0]	# Wrap around if `value` is at the end of the array
 
 
 ## Resets a [Resource] to its saved default values by reloading its `.tres` file from the project bundle.
