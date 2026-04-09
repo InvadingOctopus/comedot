@@ -1241,15 +1241,18 @@ static func populateTileMapCells(
 static func setNewStyleBoxColor(control: Control, color: Color, styleBoxName: StringName = &"fill", propertyName: StringName = &"bg_color") -> StyleBox:
 	var styleBox: StyleBox = control.get_theme_stylebox(styleBoxName)
 	if not styleBox:
-		Debug.printWarning(str("GlobalUI.setStyleBoxColor(): Cannot get StyleBox: ", styleBoxName), control)
+		Debug.printWarning(str("GlobalUI.setNewStyleBoxColor(): Cannot get StyleBox: ", styleBoxName), control)
 		return null
 
 	if styleBox is StyleBoxFlat:
 		var newStyleBox: StyleBox = styleBox.duplicate() # NOTE: Don't want to change the color of ALL controls sharing the same StyleBox!
 		newStyleBox.set(propertyName, color)
 		control.add_theme_stylebox_override(styleBoxName, newStyleBox)
-
-	return styleBox
+		return newStyleBox
+	else:
+		# TBD: Handle other StyleBox variants?
+		Debug.printWarning(str("GlobalUI.setNewStyleBoxColor(): Unsupported StyleBox type: ", styleBox), control)
+		return null
 
 
 ## Sets the text of [Label]s from a [Dictionary].
