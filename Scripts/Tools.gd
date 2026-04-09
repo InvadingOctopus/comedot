@@ -1172,6 +1172,8 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 ## TIP: Call [method Tools.findRandomTileMapCells] to get an array of random cells.
 ## TIP: To spawn scenes at random coordinates all over the map with a fixed number of copies, call [method Tools.populateTileMap]
+## NOTE: If [param cellCoordinates] contains duplicate coordinates, only 1 copy is created per coordinate,
+## but the effective [param spawnChance] will be higher for duplicate coordinates!
 static func populateTileMapCells(
 	map:			TileMapLayer, 
 	cellCoordinates:Array[Vector2i],
@@ -1205,6 +1207,20 @@ static func populateTileMapCells(
 
 	for coordinates in cellCoordinates:
 		# maximumNumberOfCopies == 0 is guarded at the top of the function, so we'll recheck it at the end of this loop
+
+		# Did we already spawn a node at the same coordinates?
+		if nodesSpawned.has(coordinates):
+			var existingNode := nodesSpawned[coordinates]
+			# Is the node still valid?
+			if is_instance_valid(existingNode): 
+				# Warn if the `cellCoordinates` array has duplicate items
+				Debug.printWarning(str("Tools.populateTileMapCells(): Node already spawned @", coordinates, ": ", nodesSpawned[coordinates]), str(map))
+				# TBD: Allow multiple copies at the same coordinates? But that would make the return Dictionary omit duplicates..
+				# NOTE: BUGRISK: The effective `spawnChance` will be higher for duplicate coordinates!
+				continue
+			else: # If the node is no longer valid, just remove the coordinates from the "already spawned" list and spawn again
+				nodesSpawned.erase(coordinates)
+
 		# PERFORMANCE: Roll the chance before doing all the other checks and calculations
 		if spawnChance < 1.0 and not randf() < spawnChance: continue # TBD: Should this be an integer?
 
