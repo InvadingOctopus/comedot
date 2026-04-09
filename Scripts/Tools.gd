@@ -1171,8 +1171,18 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 ## TIP: Call [method Tools.findRandomTileMapCells] to get an array of random cells.
 ## TIP: To spawn scenes at random coordinates all over the map with a fixed number of copies, call [method Tools.populateTileMap]
-static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vector2i], sceneToCopy: PackedScene, maximumNumberOfCopies: int, spawnChance: float = 1.0, parentOverride: Node = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+static func populateTileMapCells(
+	map:			TileMapLayer, 
+	cellCoordinates:Array[Vector2i],
+	sceneToCopy:	PackedScene,
+	maximumNumberOfCopies: int,
+	spawnChance:	float 		= 1.0,
+	parentOverride:	Node2D		= null,
+	groupToAddTo:	StringName	= &"") -> Dictionary[Vector2i, Node2D]:
+	
 	# Validation
+
+	if maximumNumberOfCopies < 1: return {}
 
 	if not sceneToCopy:
 		Debug.printWarning("Tools.populateTileMapCells(): No sceneToCopy", str(map))
@@ -1193,6 +1203,7 @@ static func populateTileMapCells(map: TileMapLayer, cellCoordinates: Array[Vecto
 	var nodesSpawned: Dictionary[Vector2i, Node2D]
 
 	for coordinates in cellCoordinates:
+		# maximumNumberOfCopies == 0 is guarded at the top of the function, so we'll recheck it at the end of this loop
 		# PERFORMANCE: Roll the chance before doing all the other checks and calculations
 		if spawnChance < 1.0 and not randf() < spawnChance: continue # TBD: Should this be an integer?
 
