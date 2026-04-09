@@ -1474,18 +1474,21 @@ static func getResourcesInFolder(folderPath: String, filter: String = "") -> Pac
 	return filteredResources
 
 
-## Returns the path of the specified object, after replacing its extension with the specified string.
-## May be used for quickly getting the accompanying `.gd` Script for a `.tscn` Scene or `.tres` Resource, if they share the same file name.
-## If the resulting file with the replaced extension does not exist, an empty string is returned.
+## Returns a file path after replacing the extension with the specified string.
+## If the resulting path with the alternative extension does not exist, an empty string is returned.
+## TIP: EXAMPLE: Getting the accompanying `.gd` [Script] for a `.tscn` [Scene] or `.tres` [Resource], IF they share the same file name.
+## NOTE: Does NOT rename the actual file.
 static func getPathWithDifferentExtension(sourcePath: String, replacementExtension: String) -> String:
 	# var sourcePath: String = object.get_script().resource_path
 	if sourcePath.is_empty(): return ""
 
-	var sourceExtension: String = "." + sourcePath.get_extension() # Returns the file extension without the leading period
-	var replacementPath: String = sourcePath.replacen(sourceExtension, replacementExtension) # The `N` in `replacen` means case-insensitive
+	# First, sanitize the `replacementExtension`
+	if not replacementExtension.is_empty() and not replacementExtension.begins_with("."):
+		replacementExtension = "." + replacementExtension
 
+	var replacementPath: String = sourcePath.get_basename() + replacementExtension
 	Debug.printDebug(str("getPathWithDifferentExtension() sourcePath: ", sourcePath, ", replacementPath: ", replacementPath))
-
+	
 	if FileAccess.file_exists(replacementPath): return replacementPath
 	else:
 		Debug.printDebug(str("replacementPath does not exist: ", replacementPath))
