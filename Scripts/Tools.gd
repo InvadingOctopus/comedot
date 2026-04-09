@@ -1030,14 +1030,17 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 
 ## Returns an array of random coordinates on a [TileMapLayer] from the specified grid range.
 ## WARNING: Do NOT use [method TileMapLayer.get_used_rect()] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
-static func findRandomTileMapCells(map: TileMapLayer,
-selectionChance:  float = 1.0,
-includeUsedCells:  bool = true,
-includeEmptyCells: bool = true,
-cellRegionStart: Vector2i = map.get_used_rect().position,
-cellRegionEnd:   Vector2i = map.get_used_rect().grow(-1).end # Make `end` 0-based
+static func findRandomTileMapCells(
+	map:				TileMapLayer,
+	selectionChance:	float = 1.0,
+	includeUsedCells:	bool  = true,
+	includeEmptyCells:	bool  = true,
+	cellRegionStart:	Vector2i = map.get_used_rect().position,
+	cellRegionEnd:		Vector2i = map.get_used_rect().grow(-1).end # Make `end` 0-based
 ) -> Array[Vector2i]:
+
 	# TODO: Validate parameters and sizes
+	# TODO: PERFORMANCE: Using `map.get_used_rect()` twice for default arguments is a bit jank
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 
 	if (not includeUsedCells and not includeEmptyCells) \
@@ -1368,11 +1371,12 @@ static func rollChance(chancePercent: int) -> bool:
 
 ## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
 ## May be used to cycle through a range by adding/subtracting an offset to [param current] such as +1 or -1. The number may be an array index or `enum` state, or a sprite position to wrap it around the screen Pac-Man-style.
+## If [param minimum] > [param maximum] then [param current] is returned unmodified.
 static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
 	# NOTE: Cannot use Godot's pingpong() because it "bounces" not "wraps"
 	if minimum > maximum:
 		Debug.printWarning(str("wrapInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
-		return current
+		return current # TBD: Return `current` or `minimum` or `maximum` in case of invalid arguments??
 	elif minimum == maximum: # If there is no difference between the range, just return either.
 		return minimum
 
