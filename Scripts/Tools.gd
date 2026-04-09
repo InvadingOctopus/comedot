@@ -125,7 +125,6 @@ static func disconnectSignal(sourceSignal: Signal, targetCallable: Callable) -> 
 ## Connects/reconnects OR disconnects a [Signal] from a [Callable] safely, based on the [param reconnect] flag.
 ## TIP: This saves having to type `if someFlag: connectSignal(…) else: disconnectSignal(…)`
 static func toggleSignal(sourceSignal: Signal, targetCallable: Callable, reconnect: bool, flags: int = 0) -> int:
-	# TBD: Should `reconnect` be a nullable Variant?
 	if reconnect and not sourceSignal.is_connected(targetCallable):
 		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for.
 	elif not reconnect and sourceSignal.is_connected(targetCallable):
@@ -142,13 +141,13 @@ static func callCustom(object: Object, functionName: StringName, ...arguments: A
 	if object.has_method(functionName):
 		return object.callv(functionName, arguments)
 	else:
-		Debug.printWarning(str("callCustom(): ", object, " invalid or has no such function: " + functionName), "Tools.gd")
+		Debug.printWarning(str("callCustom(): ", object, " invalid or has no such function: " + functionName), object)
 		return null
 
 
 ## Returns a [StringName] with the `class_name` from a [Script] type.
 ## NOTE: This method is needed because we cannot directly write `SomeTypeName.get_global_name()` :(
-func getStringNameFromClass(type: Script) -> StringName:
+static func getStringNameFromClass(type: Script) -> StringName:
 	return type.get_global_name()
 
 
@@ -247,6 +246,7 @@ static func flatMapNodeTree(nodeToIterate: Node, existingList: Array[Node]) -> v
 
 
 ## Calls [method Tools.flatMapNodeTree] to return a linear/"flattened" list of ALL the child nodes AND their subchildren, recursively, from the specified [param firstNode].
+## NOTE: INCLUDES [param firstNode] (the parent)
 ## @experimental
 static func getAllChildrenRecursively(firstNode: Node) -> Array[Node]:
 	# TBD: Merge with flatMapNodeTree()?
@@ -292,8 +292,7 @@ static func replaceChild(
 
 	# If `newChild` is already in the target `parentNode`, just move it to the `childToReplace`'s place in the order and position etc.
 	if newChild.get_parent() != parentNode:
-		Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
-		newChild.owner = parentNode # INFO: Necessary for persistence to a [PackedScene] for save/load.
+		Tools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence e.g. to a [PackedScene] for save/load
 
 	parentNode.move_child(newChild, previousChildIndex)
 
@@ -322,7 +321,7 @@ static func removeAllChildren(parent: Node) -> int:
 	var removalCount: int = 0
 
 	for child in parent.get_children():
-		parent.remove_child(child) # TBD: Is this needed? Does NOT delete nodes, unlike queue_free()
+		parent.remove_child(child) # TBD: Is this needed? Does NOT delete nodes, unlike queue_free() but maybe we want to see immediate removal instead of waiting on "queue"
 		child.queue_free()
 		removalCount += 1
 
@@ -346,9 +345,10 @@ static func removeSiblingsOfSameType(node: Node, shouldFree: bool = false) -> in
 		Debug.printWarning(str("removeSiblingsOfSameType(): ", node, " has no valid parent!"))
 		return 0
 
+	var children: Array[Node] = parent.get_children(false) # not include_internal # Take a snapshot just in case, to avoid modifying an array while iterating over it
 	var removalCount: int = 0
 
-	for sibling: Node in parent.get_children(false): # Don't include sub-children
+	for sibling: Node in children:
 		if sibling == node: continue # Is it us?
 
 		var isSameType: bool = false
@@ -375,10 +375,10 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 			if node.get_parent() == newParent: # TBD: Is this verification necessary?
 				transferredNodes.append(node)
 			else:
-				Debug.printWarning(str("transferNodes(): ", node, " could not be moved from ", currentParent, " to newParent: ", newParent), node)
+				Debug.printWarning(str("reparentNodes(): ", node, " could not be moved from ", currentParent, " to newParent: ", newParent), node)
 				continue
 		else:
-			Debug.printWarning(str("transferNodes(): ", node, " does not belong to currentParent: ", currentParent), node)
+			Debug.printWarning(str("reparentNodes(): ", node, " does not belong to currentParent: ", currentParent), node)
 			continue
 	return transferredNodes
 
@@ -389,8 +389,8 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: StringName) -> Node2D:
 	# NOTE: Use Engine.get_main_loop() instead of Node.get_tree()
 	# because when called by ChaseComponent etc. the parent entity may not be in a SceneTree yet
-	var nodesInGroup: Array[Node] = Engine.get_main_loop().get_nodes_in_group(targetGroup)
-	if nodesInGroup.is_empty(): return null
+	var nodesInGroup: Array[Node] = Engine.get_main_loop().get_nodes_in_group(targetGroup) # TBD: Verify that the `MainLoop` is a `SceneTree`?
+	if  nodesInGroup.is_empty(): return null
 
 	var nearestNode:		Node2D  = null
 	var minimumDistance:	float   = INF # Start with infinity
@@ -420,7 +420,7 @@ static func convertNodeRectToGlobalCoordinates(node: CanvasItem, rect: Rect2) ->
 #endregion
 
 
-#region NodePath Functionss
+#region NodePath Functions
 
 ## Convert a [NodePath] from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
 static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
@@ -488,7 +488,7 @@ static func getShapeBounds(node: CollisionObject2D) -> Rect2:
 ## To get the bounds of the first shape only, set [param maximumShapeCount] to 1.
 ## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, add + the area's [member Node2D.global_position].
 ## Works most accurately & reliably for areas/bodies with a single [RectangleShape2D].
-## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 and the position set to the [CollisionObject2D]'s local position.
+## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 and origin (0,0)
 static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int = 100) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	# HACK: Sigh @ Godot for making this so hard...
@@ -499,7 +499,7 @@ static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int
 	# SO, we have to figure out the Shape2D's rectangle in the coordinate space of the CollisionObject2D.
 	# THEN convert it to global coordinates.
 
-	if node.get_child_count() < 1: return Rect2(node.position.x, node.position.y, -1, -1) # In case of failure, return an invalid negative-sized rectangle matching the node's origin.
+	if node.get_child_count() < 1: return Rect2(0, 0, -1, -1) # On failure, return an invalid negative-sized rectangle
 
 	# Get all CollisionShape2D children
 
@@ -523,7 +523,7 @@ static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int
 
 	if shapesAdded < 1:
 		Debug.printWarning("getShapeBoundsInNode(): Cannot find a CollisionShape2D child", node)
-		return Rect2(node.position.x, node.position.y, -1, -1)
+		return Rect2(0, 0, -1, -1) # On failure, return an invalid negative-sized rectangle
 	else:
 		# DEBUG: Debug.printTrace([combinedShapeBounds, node.get_child_count(), shapesAdded], node)
 		return combinedShapeBounds
@@ -1258,7 +1258,7 @@ static func populateTileMapCells(
 static func setNewStyleBoxColor(control: Control, color: Color, styleBoxName: StringName = &"fill", propertyName: StringName = &"bg_color") -> StyleBox:
 	var styleBox: StyleBox = control.get_theme_stylebox(styleBoxName)
 	if not styleBox:
-		Debug.printWarning(str("GlobalUI.setNewStyleBoxColor(): Cannot get StyleBox: ", styleBoxName), control)
+		Debug.printWarning(str("Tools.setNewStyleBoxColor(): Cannot get StyleBox: ", styleBoxName), control)
 		return null
 
 	if styleBox is StyleBoxFlat:
@@ -1268,7 +1268,7 @@ static func setNewStyleBoxColor(control: Control, color: Color, styleBoxName: St
 		return newStyleBox
 	else:
 		# TBD: Handle other StyleBox variants?
-		Debug.printWarning(str("GlobalUI.setNewStyleBoxColor(): Unsupported StyleBox type: ", styleBox), control)
+		Debug.printWarning(str("Tools.setNewStyleBoxColor(): Unsupported StyleBox type: ", styleBox), control)
 		return null
 
 
@@ -1362,7 +1362,7 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 
 ## "Rolls" a random integer number from 1…100 (inclusive) and returns `true` if the result is less than or equal to the specified [param chancePercent].
 ## i.e. If the chance is 10% then a roll of 1…10 will succeed but 11…100 (90 possibilities) will fail.
-func rollChance(chancePercent: int) -> bool:
+static func rollChance(chancePercent: int) -> bool:
 	return randi_range(1, 100) <= chancePercent
 
 
