@@ -235,6 +235,7 @@ static func findFirstParentOfType(childNode: Node, parentType: Variant) -> Node:
 ## Appends a linear/"flattened" list of ALL the child nodes AND their subchildren and so on, recursively, from the specified [param firstNode].
 ## e.g. `[FirstNode, Child1ofFirstNode, Child1ofChild1ofFirstNode, Child2ofChild1ofFirstNode, Child2ofFirstNode, …]`
 ## TIP: EXAMPLE USAGE: This may be useful for setting UI focus chains in trees/lists etc.
+## WARNING: May cause stack overflow if [param nodeToIterate] has a deeply-nested node trees.
 ## @experimental
 static func flatMapNodeTree(nodeToIterate: Node, existingList: Array[Node]) -> void:
 	# TODO: Better name?
