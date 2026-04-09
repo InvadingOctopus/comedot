@@ -50,7 +50,7 @@ const compassDirectionOpposites: Dictionary[CompassDirection, CompassDirection] 
 
 ## A list of unit vectors representing 8 compass directions.
 class CompassVectors:
-	# TBD: Replace with `compassDirectionVectors[CompassDirection]`?
+	# TBD: PERFORMANCE: Replace with `compassDirectionVectors[CompassDirection]` or are these simple `const`ants faster?
 	const none		:= Vector2i.ZERO
 	const east		:= Vector2i.RIGHT
 	const southEast	:= Vector2i(+1, +1)
@@ -531,6 +531,7 @@ static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int
 
 ## Calls [method Tools.getShapeBoundsInNode] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]), converted to GLOBAL coordinates.
 ## Useful for comparing the [Area2D]s etc. of 2 separate nodes/entities.
+## WARNING: May not work correctly with rotation, scaling or negative dimensions.
 static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	var shapeGlobalBounds: Rect2 = getShapeBoundsInNode(node)
