@@ -413,9 +413,9 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 ## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
 ## TIP: Combine with the output from [member getShapeBoundsInNode] to get an [Area2D]'s global region.
 ## WARNING: May not work correctly with rotation, scaling or negative dimensions.
-static func convertNodeRectToGlobalCoordinates(node: CanvasItem, rect: Rect2) -> Rect2:
-	# TODO: Account for rotation & scaling
-	return Rect2(node.to_global(rect.position), rect.size)
+static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
+	# TODO: Account for rotation
+	return Rect2(node.to_global(rect.position), rect.size * node.global_scale)
 
 #endregion
 
