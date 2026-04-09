@@ -415,7 +415,7 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 ## WARNING: May not work correctly with rotation, scaling or negative dimensions.
 static func convertNodeRectToGlobalCoordinates(node: CanvasItem, rect: Rect2) -> Rect2:
 	# TODO: Account for rotation & scaling
-	return Rect2(rect.position + node.global_position, rect.size)
+	return Rect2(node.to_global(rect.position), rect.size)
 
 #endregion
 
