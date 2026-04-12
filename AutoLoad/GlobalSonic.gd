@@ -335,7 +335,7 @@ func beep(pulseHz: float = 440.0, duration: float = 1.0, volume: float = 0.5) ->
 	# If you still want to use this class from GDScript, consider using a lower `mix_rate` such as 11,025 Hz or 22,050 Hz.
 
 	# Clamp & Validate
-	pulseHz  = clamp(pulseHz,  20,   20000) # Human hearing range
+	pulseHz  = clamp(pulseHz,  20,   22050) # Human hearing range, apprently
 	duration = clamp(duration, 0.01, 10)  # 10 milliseconds to 10 seconds
 	volume   = clamp(volume,   0,    1)   # 0% to 100%
 
