@@ -41,8 +41,8 @@ extends Component
 ## Example: `../CharacterBodyComponent:body:velocity:x` (use `/` for nodes and `:` for properties)
 @export_node_path var propertiesToChart: Array[NodePath]
 
-@export_range(100, 200, 5) var chartVerticalHeight: float = 100
-@export_range(0.1, 2.0, 0.05) var chartValueScale:  float = 0.5
+@export_range(100, 200, 5)		var chartHeight: float = 100
+@export_range(0.1, 2.0, 0.05)	var chartYScale: float = 0.5
 
 #endregion
 
@@ -63,7 +63,7 @@ func _ready() -> void:
 
 	if not isEnabled: return
 
-	entityLabel.text = parentEntity.name
+	entityLabel.text		 = parentEntity.name
 	entityLabel.tooltip_text = parentEntity.logFullName
 
 	propertiesToChartAbsolutePaths = convertPathsToAbsolute(propertiesToChart)
@@ -93,8 +93,7 @@ func createCharts() -> void:
 	for path: NodePath in propertiesToChartAbsolutePaths:
 		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
-		var newChart: Chart = Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartVerticalHeight, self.chartValueScale)
-		newChart.lineColor  = Color(0.2 * randi_range(1, 4), 0.2 * randi_range(1, 5), 0.2 * randi_range(1, 5), 0.5) # Give a distinct random color to each chart
+		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartHeight, self.chartYScale)
 
 
 #region Labels

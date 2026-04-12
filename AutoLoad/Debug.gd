@@ -51,18 +51,18 @@ const customLogMaximumEntries: int = 100
 
 @onready var debugBackground: Node2D		= %DebugBackground
 
-const debugWindowSpacing:			int = 10
-var nextChartWindowPosition:		Vector2i ## For [Chart] & `ChartWindow.tscn` 
-
 static var lastFrameLogged:			int  = -1 # Start at -1 so the first frame 0 can be printed.
 static var isTraceLogAlternateRow:	bool = false ## Used by [method printTrace] to alternate the row background etc. for clarity.
-static var customLogColorFlag:		bool
 
 ## A custom log that holds extra on-demand information for each component and its parent entity etc.
 ## @experimental
-static var customLog:			Array[Dictionary]
+static var customLog:				Array[Dictionary]
+static var customLogColorFlag:		bool
 
-static var testMode:			bool ## Set by [TestMode].gd for use by other scripts, for temporary gameplay testing.
+const debugWindowSpacing:			int = 10
+static var nextChartWindowPosition:	Vector2i ## For [Chart] & `ChartWindow.tscn` 
+
+static var testMode:				bool ## Set by [TestMode].gd for use by other scripts, for temporary gameplay testing.
 
 #endregion
 
@@ -207,25 +207,58 @@ func toggleDebugWindow() -> bool:
 
 
 ## Creates a new window with a [Chart] to graph the specified node's property.
-## Returns: The new chart
-func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, verticalHeight: float = 100, valueScale: float = 0.5) -> Chart:
-	var newChartWindow: Window = preload("res://UI/ChartWindow.tscn").instantiate()
-	var newChart: Chart = Tools.findFirstChildOfType(newChartWindow, Chart)
+## Returns: The new chart, or an existing chart if one already exists for the same node & property combination.
+func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, height: float = 100, yScale: float = 0.5) -> Chart:
+	if not nodeToMonitor.is_absolute():
+		printWarning("createChartWindow(): nodeToMonitor should be an absolute path", nodeToMonitor)
+
+	# IMPORTANT: Avoid creating duplicate charts for the same node/property
+	# which may happen if a node/script that creates charts for itself on _ready() is instantiated multiple times
+	for child: Node in self.get_children(): # Get the actual runtime state instead of relying on an Array or Dictionary to manually track windows
+		if child is not Window or child.is_queued_for_deletion(): continue # Get an active Window
+		var existingChart: Chart = Tools.findFirstChildOfType(child, Chart) # Get the [Chart] in that Window
+		if not existingChart: continue
+
+		# Close stale chart windows that monitor nodes from a previous scene
+		if not is_instance_valid(self.get_tree().root.get_node_or_null(existingChart.nodeToMonitor)):
+			child.queue_free() # TBD: Find a more specific method for closing a `Window`?
+			continue
+
+		# Return an existing chart if there is one monitoring the same parameters
+		if  existingChart.nodeToMonitor		== nodeToMonitor \
+		and existingChart.propertyToMonitor	== propertyToMonitor:
+			existingChart.height = height # TBD: Should we update `height` & `yScale` or should these values remain fixed from window initialization?
+			existingChart.yScale = yScale
+			child.visible		 = true
+			return existingChart
+
+	# If this will be a unique chart, prepare the new window
+
+	var node := self.get_tree().root.get_node_or_null(nodeToMonitor) # get_node() may raise an error, so we use get_node_or_null()
+	if not is_instance_valid(node):
+		printWarning(str("Invalid node or nodeToMonitor path: ", nodeToMonitor, " = ", node), self)
+		return null
+
+	var newChartWindow:	Window = preload("res://UI/ChartWindow.tscn").instantiate()
+	var newChart:		Chart  = Tools.findFirstChildOfType(newChartWindow, Chart)
+	if not is_instance_valid(newChart):
+		printError("ChartWindow.tscn instance has no Chart node!", newChartWindow)
+		return null
 
 	newChart.nodeToMonitor		= nodeToMonitor
 	newChart.propertyToMonitor	= propertyToMonitor
-	newChart.verticalHeight		= verticalHeight
-	newChart.valueScale			= valueScale
+	newChart.height				= height
+	newChart.yScale 			= yScale
 
-	newChartWindow.title = str(get_node(nodeToMonitor), propertyToMonitor)
+	newChartWindow.title		= str(node.name, propertyToMonitor)
 	newChartWindow.close_requested.connect(newChartWindow.queue_free) # TODO: Verify
 
 	# Resize the window and center the chart
 
 	newChartWindow.content_scale_factor = DisplayServer.screen_get_scale() # For Mac/Retina/HiDPI displays
-	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor)
-	newChartWindow.size.y = int((newChart.verticalHeight * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height for both sides of the Y axis
-	newChart.position.y   = newChart.verticalHeight # NOTE: No scaling here, because it's the "raw" position before scaling.
+	newChartWindow.size.x = int(newChart.maxHistorySize * newChartWindow.content_scale_factor) # TBD: Should we apply `content_scale_factor` again? Otherwise the windows are too small on Retina displays.
+	newChartWindow.size.y = int((newChart.height * 2) * newChartWindow.content_scale_factor) # NOTE: Twice the height to include both the positive and negative Y axis
+	newChart.position.y   = newChart.height # NOTE: No scaling here, because it's the "raw" position before scaling.
 
 	# Shift each window so they don't all overlap
 	newChartWindow.position		= nextChartWindowPosition
@@ -235,8 +268,15 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, ver
 	var screenRect: Rect2i = DisplayServer.screen_get_usable_rect(self.get_window().current_screen)
 	if  nextChartWindowPosition.x >= screenRect.position.x + screenRect.size.x:
 		nextChartWindowPosition.x  = screenRect.position.x # Wrap to `screenRect` instead of 0 to account for multi-monitors etc.
+		nextChartWindowPosition.y += debugWindowSpacing
+		# TODO: Cap vertical offsets!
 
-	self.add_child(newChartWindow)
+	# Make sure to close window when the node is removed
+	# CHECK: Although this doesn't seem to be needed
+	Tools.connectSignal(node.tree_exited, newChartWindow.queue_free)
+
+	# Display the window
+	self.add_child(newChartWindow, true) # force_readable_name
 	return newChart
 
 #endregion

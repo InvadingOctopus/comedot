@@ -5,19 +5,28 @@
 [sub_resource type="LabelSettings" id="LabelSettings_7qj2e"]
 font_size = 8
 font_color = Color(0.4, 1, 0.8, 0.75)
+outline_size = 4
+outline_color = Color(0, 0, 0, 0.5)
 
 [node name="Chart" type="Node2D" unique_id=1998156526]
 script = ExtResource("1_ktel2")
 
-[node name="NameLabel" type="Label" parent="." unique_id=113626588]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1833947488]
+
+[node name="NameLabel" type="Label" parent="CanvasLayer" unique_id=113626588]
 unique_name_in_owner = true
-offset_right = 34.0
-offset_bottom = 8.0
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -4.0
+offset_right = 8.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "Chart"
 label_settings = SubResource("LabelSettings_7qj2e")
-vertical_alignment = 1
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1833947488]
 
 [node name="MaxLabel" type="Label" parent="CanvasLayer" unique_id=1966098349]
 unique_name_in_owner = true
