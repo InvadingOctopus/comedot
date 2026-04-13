@@ -59,7 +59,7 @@ func _ready() -> void:
 
 ## Removes all children and adds all choices again.
 func readdAllActions() -> void:
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 	for action in actionsComponent.actions:
 		createActionButton(action)
 
@@ -71,7 +71,7 @@ func createActionButton(action: Action) -> Button:
 	newActionButton.entity = self.entity
 	newActionButton.action = action
 
-	Tools.addChildAndSetOwner(newActionButton, self)
+	NodeTools.addChildAndSetOwner(newActionButton, self)
 
 	newActionButton.updateUI() # TBD: Update before adding or after?
 	newActionButton.pressed.connect(self.onActionButton_pressed.bind(action))

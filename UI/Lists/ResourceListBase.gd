@@ -13,7 +13,7 @@ func _ready() -> void:
 ## Creates a UI [Control] for each of the [GameplayResourceBase] data items returned by [method getResources].
 ## WARNING: Removes all existing child nodes first.
 func buildListItems() -> void:
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 	for listItem: GameplayResourceBase in self.getResources():
 		createListItemUI(listItem)
 

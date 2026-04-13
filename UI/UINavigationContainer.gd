@@ -77,7 +77,7 @@ func goBack() -> bool:
 #region Child Management
 
 func findFirstChildControl() -> Control:
-	return Tools.findFirstChildOfType(self, Control, false) # not includeParent
+	return NodeTools.findFirstChildOfType(self, Control, false) # not includeParent
 
 
 ## Removes the first child, if any, and adds the specified [Control].
@@ -87,11 +87,11 @@ func replaceFirstChildControl(newControl: Control) -> bool:
 	if debugMode: Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newControl), self)
 
 	if childToReplace:
-		if Tools.replaceChild(self, childToReplace, newControl):
+		if NodeTools.replaceChild(self, childToReplace, newControl):
 			childToReplace.queue_free() # NOTE: Important, as [remove_child()] does not delete the child.
 			return true
 	else: # If there are no children, just add the new one.
-		Tools.addChildAndSetOwner(newControl, self)
+		NodeTools.addChildAndSetOwner(newControl, self)
 		return true
 
 	showDebugInfo()

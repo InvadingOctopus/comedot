@@ -319,7 +319,7 @@ func findCoComponent(type: GDScript, includeSubclasses: bool = true) -> Componen
 ## Useful for replacing components when there should be only one component of a specific class, such as a [FactionComponent].
 ## Returns: The number of components removed.
 func removeSiblingComponentsOfSameType(shouldFree: bool = true) -> int:
-	return Tools.removeSiblingsOfSameType(self, shouldFree)
+	return NodeTools.removeSiblingsOfSameType(self, shouldFree)
 
 #endregion
 
@@ -374,7 +374,7 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInParen
 	if is_instance_of(component, componentType): # CHECK: How does this handle subclasses?
 		return component
 	elif findInParentEntity: # Try to see if the node's grand/parent is an Entity
-		var nodeParent: Entity = Tools.findFirstParentOfType(node, Entity)
+		var nodeParent: Entity = NodeTools.findFirstParentOfType(node, Entity)
 		if nodeParent:
 			component = nodeParent.components.get(componentType.get_global_name())
 			# Does the entity have any matching component?

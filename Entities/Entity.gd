@@ -375,7 +375,7 @@ func toggleComponents(componentTypes: Array[Script], overrideIsEnabled: Variant 
 ## NOTE: Also returns any SUBCLASSES which inherit from the specified [param type].
 ## WARNING: TIP: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
-	var result: Node = Tools.findFirstChildOfType(self, type, includeEntity)
+	var result: Node = NodeTools.findFirstChildOfType(self, type, includeEntity)
 	if debugMode: printDebug(str("findFirstChildOfType(", type, "): ", result))
 	return result
 
@@ -387,7 +387,7 @@ func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 ## PERFORMANCE: Should be the same as multiple calls to [method findFirstChildOfType] in order of the desired types.
 func findFirstChildOfAnyTypes(types: Array[Variant], returnEntityIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
-	var result: Node = Tools.findFirstChildOfAnyTypes(self, types, returnEntityIfNoMatches)
+	var result: Node = NodeTools.findFirstChildOfAnyTypes(self, types, returnEntityIfNoMatches)
 	if debugMode: printDebug(str("findFirstChildOfAnyTypes(", types, "): ", result))
 	return result
 

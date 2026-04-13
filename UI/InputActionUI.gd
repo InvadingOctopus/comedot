@@ -61,7 +61,7 @@ func updateLabel() -> void:
 func buildEventsList() -> void:
 	var inputEvents: Array[InputEvent] = InputMap.action_get_events(inputAction)
 
-	Tools.removeAllChildren(eventsList)
+	NodeTools.removeAllChildren(eventsList)
 
 	for event in inputEvents:
 		createEventUI(event)
@@ -71,7 +71,7 @@ func createEventUI(event: InputEvent) -> InputActionEventUI:
 	var newEventUI: InputActionEventUI = inputActionEventUIScene.instantiate()
 	newEventUI.inputAction = self.inputAction
 	newEventUI.inputEvent  = event
-	Tools.addChildAndSetOwner(newEventUI, eventsList)
+	NodeTools.addChildAndSetOwner(newEventUI, eventsList)
 	return newEventUI
 
 

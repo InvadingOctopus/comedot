@@ -201,7 +201,7 @@ func fire(emitter: Node2D = self.bulletEmitter, ignoreCooldown: bool = false) ->
 	# Otherwise, get the parent of whatever the "custom" emitter node is
 	else: bulletParent = bulletEmitter.get_parent()
 
-	# PERFORMANCE: Not using Tools.addChildAndSetOwner() to avoid a large amount of function calls if many bullets are fired each frame.
+	# PERFORMANCE: Not using NodeTools.addChildAndSetOwner() to avoid a large amount of function calls if many bullets are fired each frame.
 	bulletParent.add_child(newBullet, false) # PERFORMANCE: not force_readable_name (which is "very slow" according to Godot documentation)
 
 	# CHECK: Should we [re]apply the position/rotation/etc AFTER the bullet is added to a parent node?

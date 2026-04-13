@@ -128,7 +128,7 @@ func createAudioPlayer(
 func createAudioPlayerPool() -> Array[AudioStreamPlayer2D]:
 	# Delete existing children
 	self.audioPlayers.clear()
-	Tools.removeAllChildren(sounds)
+	NodeTools.removeAllChildren(sounds)
 
 	# Fill the pool
 	for count in maximumNumberOfSounds:

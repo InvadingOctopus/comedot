@@ -56,7 +56,7 @@ func inventoryComponent_didRemovetem(_item: InventoryItem) -> void:
 ## Creates an [InventoryItemUI] for each of the [InventoryItem] data items returned by [method getResources].
 ## WARNING: Removes all existing child nodes first.
 func buildListItems() -> void:
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 	for listItem: InventoryItem in inventoryComponent.items:
 		createListItemUI(listItem)
 
@@ -69,7 +69,7 @@ func createListItemUI(listItem: InventoryItem) -> InventoryItemUI:
 	newItemUI.shouldShowIcon	= self.shouldShowIcon
 	newItemUI.shouldUppercase	= self.shouldUppercase
 
-	Tools.addChildAndSetOwner(newItemUI, self)
+	NodeTools.addChildAndSetOwner(newItemUI, self)
 
 	# newItemUI.updateText() # Is this necessary? Won't it be called on the label's _ready()?
 	return newItemUI

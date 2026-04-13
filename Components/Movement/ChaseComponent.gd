@@ -101,7 +101,7 @@ func updateTarget() -> Node2D:
 
 	# If not, get the nearest target from a list.
 	elif not groupToChase.is_empty():
-		activeTarget = Tools.findNearestNodeInGroup(parentEntity.global_position, groupToChase)
+		activeTarget = NodeTools.findNearestNodeInGroup(parentEntity.global_position, groupToChase)
 
 	# If no other targets, settle for a player.
 	elif playerIndexToChase >= 0 and playerIndexToChase < GameState.players.size():

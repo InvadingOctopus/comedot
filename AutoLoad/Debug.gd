@@ -27,7 +27,7 @@ extends Node
 ## `watchList[value].replace("[", "[lb]")`
 @export var watchList: Dictionary[StringName, Variant] = {}
 
-## Affects the `force_readable_name` parameter of [method Node.add_child] at some call sites such as [method Tools.addChildAndSetOwner].
+## Affects the `force_readable_name` parameter of [method Node.add_child] at some call sites such as [method NodeTools.addChildAndSetOwner].
 ## If `true`, each child node added dynamically at runtime will have a unique and "readable" name to aid debugging etc.
 ## WARNING: PERFORMANCE: `force_readable_name` may be "very slow" according to Godot documentation.
 @export var shouldForceReadableName: bool = OS.is_debug_build()
@@ -216,7 +216,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, hei
 	# which may happen if a node/script that creates charts for itself on _ready() is instantiated multiple times
 	for child: Node in self.get_children(): # Get the actual runtime state instead of relying on an Array or Dictionary to manually track windows
 		if child is not Window or child.is_queued_for_deletion(): continue # Get an active Window
-		var existingChart: Chart = Tools.findFirstChildOfType(child, Chart) # Get the [Chart] in that Window
+		var existingChart: Chart = NodeTools.findFirstChildOfType(child, Chart) # Get the [Chart] in that Window
 		if not existingChart: continue
 
 		# Close stale chart windows that monitor nodes from a previous scene
@@ -240,7 +240,7 @@ func createChartWindow(nodeToMonitor: NodePath, propertyToMonitor: NodePath, hei
 		return null
 
 	var newChartWindow:	Window = preload("res://UI/ChartWindow.tscn").instantiate()
-	var newChart:		Chart  = Tools.findFirstChildOfType(newChartWindow, Chart)
+	var newChart:		Chart  = NodeTools.findFirstChildOfType(newChartWindow, Chart)
 	if not is_instance_valid(newChart):
 		printError("ChartWindow.tscn instance has no Chart node!", newChartWindow)
 		return null

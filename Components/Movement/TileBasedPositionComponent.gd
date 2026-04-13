@@ -195,7 +195,7 @@ func validateTileMap(searchForTileMap: bool = self.shouldSearchForTileMap) -> bo
 	if not tileMap:
 		if searchForTileMap:
 			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCellData or TileMapLayer in current scene…")
-			tileMap = Tools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+			tileMap = NodeTools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
 
 		# Warn only in debugMode, in case the tileMapData will be supplied by a different script.
 		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCellData or TileMapLayer")

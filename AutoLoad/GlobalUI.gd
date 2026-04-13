@@ -173,7 +173,7 @@ func showPauseVisuals(isPaused: bool) -> void:
 		await pauseOverlayTween.finished # NOTE: Tween.kill() does not emit `finished` so an interrupted animation will not resume this `await`
 		# and the code below will not run if the animation is interrupted, so the `pauseOverlayContainer` will not be reset after an interruption.
 
-		Tools.removeAllChildren(pauseOverlayContainer)
+		NodeTools.removeAllChildren(pauseOverlayContainer)
 		pauseOverlayContainer.resetHistory()
 		if pauseOverlay:
 			pauseOverlay.queue_free() # TBD: queue_free() or save for reuse?

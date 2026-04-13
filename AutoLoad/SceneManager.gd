@@ -302,7 +302,7 @@ func addSceneInstance(scene: PackedScene, parent: Node, position: Vector2 = Vect
 		return null
 
 	if newChild is Node2D or newChild is Control: newChild.position = position
-	Tools.addChildAndSetOwner(newChild, parent) # Ensure persistence
+	NodeTools.addChildAndSetOwner(newChild, parent) # Ensure persistence
 	return newChild
 
 #endregion

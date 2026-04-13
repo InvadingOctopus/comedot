@@ -42,7 +42,7 @@ func haveMaximumLabelCount() -> bool:
 ## Removes and returns the first [Label] found. May be `null` if no [Label] found.
 func deleteOldestLabel() -> Label:
 	# TODO: Handle deleting more than 1
-	var labelToRemove: Label = Tools.findFirstChildOfType(self, Label)
+	var labelToRemove: Label = NodeTools.findFirstChildOfType(self, Label)
 
 	if labelToRemove:
 		self.remove_child(labelToRemove)

@@ -96,6 +96,6 @@ func onAreaOrBodyEntered(areaOrBody: Node2D) -> void:
 	elif areaOrBody.get_parent() is Entity:
 		targetEntity = areaOrBody.get_parent()
 	else: # Search further up the tree
-		targetEntity = Tools.findFirstParentOfType(areaOrBody, Entity)
+		targetEntity = NodeTools.findFirstParentOfType(areaOrBody, Entity)
 
 	if targetEntity: inject(targetEntity)

@@ -49,7 +49,7 @@ func _ready() -> void:
 ## Creates a [StatUI] for each of the [Stat] in the [member statsComponent].
 ## Removes all existing child nodes.
 func buildLabels() -> void:
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 	for stat in statsComponent.stats:
 		createStatUI(stat)
 
@@ -62,7 +62,7 @@ func createStatUI(stat: Stat) -> StatUI:
 	newStatUI.shouldShowIcon	= self.shouldShowIcon
 	newStatUI.shouldUppercase	= self.shouldUppercase
 
-	Tools.addChildAndSetOwner(newStatUI, self)
+	NodeTools.addChildAndSetOwner(newStatUI, self)
 	newStatUI.label.horizontal_alignment = self.horizontalAlignment
 	newStatUI.label.vertical_alignment   = self.verticalAlignment
 

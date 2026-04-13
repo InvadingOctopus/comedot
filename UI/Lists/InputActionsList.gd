@@ -31,13 +31,13 @@ func buildList() -> void:
 	if inputActions.is_empty(): return
 
 	# Start with a clean slate so we don't have any duplicates.
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 
 	# Add a Label for each Input Action
 	for inputActionName in inputActions:
 		var newActioUI: InputActionUI = inputActionUIScene.instantiate()
 		newActioUI.inputAction = inputActionName
-		Tools.addChildAndSetOwner(newActioUI, self)
+		NodeTools.addChildAndSetOwner(newActioUI, self)
 
 
 ## Used for filtering the list e.g. by excluding built-in Godot UI input actions.

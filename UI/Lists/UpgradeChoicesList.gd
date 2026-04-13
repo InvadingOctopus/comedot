@@ -69,7 +69,7 @@ func _ready() -> void:
 
 ## Removes all children and adds all choices again.
 func readdAllChoices() -> void:
-	Tools.removeAllChildren(self)
+	NodeTools.removeAllChildren(self)
 	for upgrade in upgrades:
 		createChoiceUI(upgrade)
 
@@ -83,7 +83,7 @@ func createChoiceUI(upgrade: Upgrade) -> Control:
 	newChoiceUI.shouldInstallUpgrades = not self.shouldInstallUpgrades # Who should install the Upgrades?
 	newChoiceUI.shouldHideStatIfFree  = self.shouldHideStatIfFree
 	
-	Tools.addChildAndSetOwner(newChoiceUI, self)
+	NodeTools.addChildAndSetOwner(newChoiceUI, self)
 
 	newChoiceUI.updateUI() # TBD: Update before adding or after?
 	newChoiceUI.didChooseUpgrade.connect(self.onChoiceUI_didChooseUpgrade)
