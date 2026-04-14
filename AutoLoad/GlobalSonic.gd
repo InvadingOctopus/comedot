@@ -215,7 +215,7 @@ func playMusicFile(path: String) -> AudioStream:
 
 ## Returns a list of all the ".mp3" files found at [param path], which defaults to [member musicFolder].
 func getMusicFilesFromFolder(path: String = self.musicFolder) -> PackedStringArray:
-	var files: PackedStringArray = Tools.getResourcesInFolder(path, ".mp3") # TBD: Allow other extensions?
+	var files: PackedStringArray = FileSystemTools.getResourcesInFolder(path, ".mp3") # TBD: Allow other extensions?
 	if debugMode: Debug.printAutoLoadLog(str("getMusicFilesFromFolder(", path, "): ", files.size(), " ", files))
 	return files
 

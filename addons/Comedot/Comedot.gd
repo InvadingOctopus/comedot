@@ -205,7 +205,7 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 	var hasIssues:			bool
 
 	printLog("Scanning for all Component .tscn Scene files from \"res://\"…")
-	subfoldersToScan = Tools.findAllSubfolders(rootPath)
+	subfoldersToScan = FileSystemTools.findAllSubfolders(rootPath)
 
 	# Create variables here once, instead of in every loop iteration
 	var count: int

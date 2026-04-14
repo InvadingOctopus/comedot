@@ -22,7 +22,7 @@ extends Payload
 	get:
 		if not payloadScript:
 			printLog("payloadScript not assigned. Searching for a .gd with the same filename as: " + self.resource_path.get_file())
-			payloadScript = load(Tools.getPathWithDifferentExtension(self.resource_path, ".gd"))
+			payloadScript = load(FileSystemTools.getPathWithDifferentExtension(self.resource_path, ".gd"))
 		return payloadScript
 
 ## The method/function which will be executed from the [member payloadScript].
