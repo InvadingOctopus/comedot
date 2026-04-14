@@ -253,3 +253,45 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
 	# TODO: Account for rotation
 	return Rect2(node.to_global(rect.position), rect.size * node.global_scale)
+
+
+#region Position
+
+## Returns the specified "design size" centered on a Node's Viewport.
+## NOTE: The viewport size may different from the scaled screen/window size.
+static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2:
+	# TBD: Better name?
+	# The "design size" has to be specified because it's hard to get the actual size, accounting for scaling etc.
+	var viewport: Rect2		= node.get_viewport_rect() # First see what the viewport size is
+	var center: Vector2		= Vector2(viewport.size.x / 2.0, viewport.size.y / 2.0) # Get the viewport center
+	var designSize: Vector2	= Vector2(designWidth, designHeight) # Get the node design size
+	return center - (designSize / 2.0) # Center the size on the viewport
+
+
+## Returns an offset by which to modify the GLOBAL position of a node to keep it clamped within a maximum distance/radius (in any direction) from another node.
+## If the [param nodeToClamp] is within the [param maxDistance] of the [param anchor] then (0,0) is returned i.e. no movement required.
+## May be used to tether a visual effect (such as a targeting cursor) to an anchor such as a character sprite, as in [AimingCursorComponent] & [TetherComponent].
+## NOTE: Does NOT return a direct position, so the [param nodeToClamp]'s `global_position` must be updated via `+=` NOT `=`!
+static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistance: float) -> Vector2:
+	var difference:	Vector2 = nodeToClamp.global_position - anchor.global_position # Use global position in case it's a parent/child relationship e.g. a visual component staying near its entity.
+	var distance:	float   = difference.length()
+
+	if distance > maxDistance:
+		var offset: Vector2 = difference.normalized() * maxDistance
+		return (anchor.global_position + offset) - nodeToClamp.global_position
+	else:
+		return Vector2.ZERO
+
+#endregion
+
+
+#region Copies
+
+## NOTE: Does NOT add the new copy to the original node's parent. Follow up with [method NodeTools.addChildAndSetOwner].
+## Default flags: DUPLICATE_SIGNALS + DUPLICATE_GROUPS + DUPLICATE_SCRIPTS + DUPLICATE_USE_INSTANTIATION
+static func createScaledCopy(nodeToDuplicate: Node2D, copyScale: Vector2, flags: int = 15) -> Node2D:
+	var scaledCopy: Node2D = nodeToDuplicate.duplicate(flags)
+	scaledCopy.scale = copyScale
+	return scaledCopy
+
+#endregion

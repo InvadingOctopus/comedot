@@ -39,7 +39,7 @@ func _ready() -> void:
 func createHorizontalCopy() -> Node2D:
 	if is_instance_valid(horizontallyFlippedCopy): return horizontallyFlippedCopy
 	# NOTE: Avoid infinite recursion by not duplicating this script!
-	self.horizontallyFlippedCopy = Tools.createScaledCopy(self, Vector2(-self.scale.x, self.scale.y), DuplicateFlags.DUPLICATE_GROUPS + DuplicateFlags.DUPLICATE_SIGNALS + DuplicateFlags.DUPLICATE_USE_INSTANTIATION)
+	self.horizontallyFlippedCopy = NodeTools.createScaledCopy(self, Vector2(-self.scale.x, self.scale.y), DuplicateFlags.DUPLICATE_GROUPS + DuplicateFlags.DUPLICATE_SIGNALS + DuplicateFlags.DUPLICATE_USE_INSTANTIATION)
 	NodeTools.addChildAndSetOwner(horizontallyFlippedCopy, self.get_parent())
 	return horizontallyFlippedCopy
 
@@ -48,6 +48,6 @@ func createHorizontalCopy() -> Node2D:
 func createVerticalCopy() -> Node2D:
 	if is_instance_valid(verticallyFlippedCopy): return verticallyFlippedCopy
 	# NOTE: Avoid infinite recursion by not duplicating this script!
-	self.verticallyFlippedCopy = Tools.createScaledCopy(self, Vector2(self.scale.x, -self.scale.y), DuplicateFlags.DUPLICATE_GROUPS + DuplicateFlags.DUPLICATE_SIGNALS + DuplicateFlags.DUPLICATE_USE_INSTANTIATION)
+	self.verticallyFlippedCopy = NodeTools.createScaledCopy(self, Vector2(self.scale.x, -self.scale.y), DuplicateFlags.DUPLICATE_GROUPS + DuplicateFlags.DUPLICATE_SIGNALS + DuplicateFlags.DUPLICATE_USE_INSTANTIATION)
 	NodeTools.addChildAndSetOwner(verticallyFlippedCopy, self.get_parent())
 	return verticallyFlippedCopy

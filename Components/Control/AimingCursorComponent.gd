@@ -99,7 +99,7 @@ func _process(delta: float) -> void:
 
 			else:
 				cursor.position += inputComponent.aimDirection * self.speed * delta
-				cursor.global_position += Tools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
+				cursor.global_position += NodeTools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
 
 	# Following the mouse?
 	else:
@@ -110,7 +110,7 @@ func _process(delta: float) -> void:
 		else:
 			cursor.global_position = cursor.global_position.move_toward(cursor.get_global_mouse_position(), speed * delta)
 
-		cursor.global_position += Tools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
+		cursor.global_position += NodeTools.clampPositionToAnchor(cursor, parentEntity, self.maximumDistanceFromEntity)
 
 	self.reset_physics_interpolation() # NOTE: CHECKED: This is necessary otherwise the node will be at an intermediate position for at least 1 frame.
 

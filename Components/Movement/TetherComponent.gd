@@ -38,7 +38,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var offset: Vector2 = Tools.clampPositionToAnchor(parentEntity, anchorNode, maximumDistance)
+	var offset: Vector2 = NodeTools.clampPositionToAnchor(parentEntity, anchorNode, maximumDistance)
 	if shouldRepositionImmediately:
 		parentEntity.global_position += offset
 	else:

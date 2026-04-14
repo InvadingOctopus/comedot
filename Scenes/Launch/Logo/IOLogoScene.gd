@@ -40,7 +40,7 @@ func _ready() -> void:
 	# Center the logo depending on the screen resolution
 	var selfAsNode: Node2D	= self.get_node(^".") as Node2D
 	var viewPortRect: Rect2 = self.get_viewport_rect() # Get the unscaled Viewport dimensions
-	$InvadingOctopuses.global_position += Tools.getCenteredPositionOnViewport(selfAsNode, 320, 180) # Center the logo
+	$InvadingOctopuses.global_position += NodeTools.getCenteredPositionOnViewport(selfAsNode, 320, 180) # Center the logo
 	$Floor.position.y		= viewPortRect.end.y # Put the floor on the floor
 	$WallRight.position.x	= viewPortRect.end.x # Put the wall at the wall
 

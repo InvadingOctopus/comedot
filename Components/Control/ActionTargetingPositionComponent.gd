@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 	# Fallback to mouse if there is no InputComopnent
 	if inputComponent and inputComponent.shouldSuppressMouseMotion:
 		cursor.global_position += inputComponent.aimDirection * joystickSpeed * delta
-		cursor.global_position += Tools.clampPositionToAnchor(cursor, parentEntity, maximumDistanceFromEntity)
+		cursor.global_position += NodeTools.clampPositionToAnchor(cursor, parentEntity, maximumDistanceFromEntity)
 	else:
 		cursor.global_position = parentEntity.get_global_mouse_position()
 
