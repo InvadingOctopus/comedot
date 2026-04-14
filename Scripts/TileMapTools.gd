@@ -1,14 +1,85 @@
-## Helper functions to assist with common tasks involving [TileMap] or [TileMapLayer]
+## Helper functions to assist with common tasks involving [TileMap], [TileMapLayer] or [TileMapCellData]
 
 class_name TileMapTools
 extends GDScript # NOTE: DESIGN: We cannot `extends TileMapLayer` because we want these functions to be globally available, not just for instances of a special subclass.
 
+
+#region Coordinates & Position 
 
 static func getCellGlobalPosition(map: TileMapLayer, coordinates: Vector2i) -> Vector2:
 	var cellPosition:		Vector2 = map.map_to_local(coordinates)
 	var cellGlobalPosition:	Vector2 = map.to_global(cellPosition)
 	return cellGlobalPosition
 
+
+## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
+static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) -> bool:
+	var gridRect: Rect2i = map.get_used_rect()
+	return gridRect.has_point(coordinates)
+
+
+## Returns the rectangular bounds of a [TileMapLayer] containing all of its "used" or "painted" cells, in the coordinate space of the TileMap's parent.
+## ALERT: This may not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
+static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
+	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
+	if not cellGrid.has_area(): return Rect2() # Null area if there are no cells
+
+	var screenRect:	Rect2
+	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
+
+	# The points will initially be in the TileMap's own space
+	screenRect.position  = cellGrid.position * tileSize
+	screenRect.size		 = cellGrid.size * tileSize
+
+	# Offset the bounds by the map's own position in the map's parent's space
+	screenRect.position += map.position
+
+	return screenRect
+
+
+## Checks if a [Vector2] is inside a [TileMapLayer].
+## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
+static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
+	# NOTE: Apparently there is no need to grow_individual() the Rect2's right & bottom edges by 1 pixel even though Rect2.has_point() does NOT include points on those edges, according to the Godot documentation.
+	return TileMapTools.getTileMapScreenBounds(map).has_point(point)
+
+
+## Checks if a [Rect2]'s [member Rect2.position] origin and/or [member Rect2.end] points are inside a [TileMapLayer].
+## If [param checkOriginAndEnd] is `true` (default) then this method returns `true` only if the rectangle's origin AND end are BOTH fully inside the TileMap.
+## If [param checkOriginAndEnd] is `false` then even a partial intersection returns `true`.
+## IMPORTANT: The [param rectangle] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+## NOTE: Rotation and other transforms are NOT supported.
+## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
+static func isRectInTileMap(rectangle: Rect2, map: TileMapLayer, checkOriginAndEnd: bool = true) -> bool:
+	var tileMapBounds: Rect2 = TileMapTools.getTileMapScreenBounds(map)
+	return tileMapBounds.encloses(rectangle) if checkOriginAndEnd else rectangle.intersects(tileMapBounds)
+
+
+## Converts [TileMap] cell coordinates from [param sourceMap] to [param destinationMap].
+## The conversion is performed by converting cell coordinates to pixel/screen coordinates first.
+static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoordinatesInSourceMap: Vector2i, destinationMap: TileMapLayer) -> Vector2i:
+
+	# 1: Convert the source TileMap's cell coordinates to pixel (screen) coordinates, in the source map's space.
+	# NOTE: This may not correspond to the visual position of the tile; it ignores `TileData.texture_origin` of the individual tiles.
+	var pixelPositionInSourceMap: Vector2 = sourceMap.map_to_local(cellCoordinatesInSourceMap)
+
+	# 2: Convert the pixel position to the global space
+	var globalPosition: Vector2 = sourceMap.to_global(pixelPositionInSourceMap)
+
+	# 3: Convert the global position to the destination TileMap's space
+	var pixelPositionInDestinationMap: Vector2 = destinationMap.to_local(globalPosition)
+
+	# 4: Convert the pixel position to the destination map's cell coordinates
+	var cellCoordinatesInDestinationMap: Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
+
+	Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
+	return cellCoordinatesInDestinationMap
+
+#endregion
+
+
+#region Data
 
 ## For a list of custom data layer names, see [Global.TileMapCustomData].
 static func getTileData(map: TileMapLayer, coordinates: Vector2i, dataName: StringName) -> Variant:
@@ -35,6 +106,10 @@ static func setCellData(map: TileMapLayerWithCellData, coordinates: Vector2i, ke
 static func getCellOccupant(data: TileMapCellData, coordinates: Vector2i) -> Entity:
 	return data.getCellData(coordinates, Global.TileMapCustomData.occupant)
 
+#endregion
+
+
+#region Occupancy
 
 ## Uses a custom data structure to mark individual [TileMap] cells (not tiles) as occupied or unoccupied by an [Entity].
 static func setCellOccupancy(data: TileMapCellData, coordinates: Vector2i, isOccupied: bool, occupant: Entity) -> void:
@@ -102,50 +177,10 @@ static func checkCellVacancy(mapData: TileMapCellData, coordinates: Vector2i, ig
 
 	return isCellVacant
 
-
-## Verifies that the given coordinates are within the specified [TileMapLayer]'s grid.
-static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) -> bool:
-	var gridRect: Rect2i = map.get_used_rect()
-	return gridRect.has_point(coordinates)
+#endregion
 
 
-## Returns the rectangular bounds of a [TileMapLayer] containing all of its "used" or "painted" cells, in the coordinate space of the TileMap's parent.
-## ALERT: This may not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
-static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
-	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
-	if not cellGrid.has_area(): return Rect2() # Null area if there are no cells
-
-	var screenRect:	Rect2
-	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
-
-	# The points will initially be in the TileMap's own space
-	screenRect.position  = cellGrid.position * tileSize
-	screenRect.size		 = cellGrid.size * tileSize
-
-	# Offset the bounds by the map's own position in the map's parent's space
-	screenRect.position += map.position
-
-	return screenRect
-
-
-## Checks if a [Vector2] is inside a [TileMapLayer].
-## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
-## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
-static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
-	# NOTE: Apparently there is no need to grow_individual() the Rect2's right & bottom edges by 1 pixel even though Rect2.has_point() does NOT include points on those edges, according to the Godot documentation.
-	return TileMapTools.getTileMapScreenBounds(map).has_point(point)
-
-
-## Checks if a [Rect2]'s [member Rect2.position] origin and/or [member Rect2.end] points are inside a [TileMapLayer].
-## If [param checkOriginAndEnd] is `true` (default) then this method returns `true` only if the rectangle's origin AND end are BOTH fully inside the TileMap.
-## If [param checkOriginAndEnd] is `false` then even a partial intersection returns `true`.
-## IMPORTANT: The [param rectangle] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
-## NOTE: Rotation and other transforms are NOT supported.
-## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
-static func isRectInTileMap(rectangle: Rect2, map: TileMapLayer, checkOriginAndEnd: bool = true) -> bool:
-	var tileMapBounds: Rect2 = TileMapTools.getTileMapScreenBounds(map)
-	return tileMapBounds.encloses(rectangle) if checkOriginAndEnd else rectangle.intersects(tileMapBounds)
-
+#region Physics
 
 ## Checks for a collision between a [TileMapLayer] and physics body at the specified tile coordinates.
 ## ALERT: UNIMPLEMENTED: Will ALWAYS return `true`. Currently there seems to be no way to easily check this in Godot yet.
@@ -155,57 +190,10 @@ static func checkTileCollision(map: TileMapLayer, _body: PhysicsBody2D, _coordin
 	if not map.enabled or not map.collision_enabled: return true
 	return true # HACK: TODO: Implement
 
-
-## Converts [TileMap] cell coordinates from [param sourceMap] to [param destinationMap].
-## The conversion is performed by converting cell coordinates to pixel/screen coordinates first.
-static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoordinatesInSourceMap: Vector2i, destinationMap: TileMapLayer) -> Vector2i:
-
-	# 1: Convert the source TileMap's cell coordinates to pixel (screen) coordinates, in the source map's space.
-	# NOTE: This may not correspond to the visual position of the tile; it ignores `TileData.texture_origin` of the individual tiles.
-	var pixelPositionInSourceMap: Vector2 = sourceMap.map_to_local(cellCoordinatesInSourceMap)
-
-	# 2: Convert the pixel position to the global space
-	var globalPosition: Vector2 = sourceMap.to_global(pixelPositionInSourceMap)
-
-	# 3: Convert the global position to the destination TileMap's space
-	var pixelPositionInDestinationMap: Vector2 = destinationMap.to_local(globalPosition)
-
-	# 4: Convert the pixel position to the destination map's cell coordinates
-	var cellCoordinatesInDestinationMap: Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
-
-	Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
-	return cellCoordinatesInDestinationMap
+#endregion
 
 
-## Damages a [TileMapLayer] Cell if it is [member Global.TileMapCustomData.isDestructible].
-## Changes the cell's tile to the [member Global.TileMapCustomData.nextTileOnDamage] if there is any,
-## or erases the cell if there is no "next tile" specified or either of the X or Y coordinates are below 0 i.e. (-1,-1)
-## Returns `true` if the cell was damaged.
-## @experimental
-static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
-	# TODO: Variable health & damage
-	# PERFORMANCE: Do not call TileMapTools.getTileData() to reduce calls
-	var tileData: TileData = map.get_cell_tile_data(coordinates)
-	if  tileData:
-		var isDestructible: bool = tileData.get_custom_data(Global.TileMapCustomData.isDestructible)
-		if  isDestructible:
-			var shouldEraseCell: bool = false
-
-			if tileData.has_custom_data(Global.TileMapCustomData.nextTileOnDamage):
-				var nextTileOnDamage: Vector2i = tileData.get_custom_data(Global.TileMapCustomData.nextTileOnDamage)
-				if  nextTileOnDamage.x >= 0 and nextTileOnDamage.y >= 0: # If either atlas coordinates are negative it means "destroy on damage"
-					map.set_cell(coordinates, 0, nextTileOnDamage)
-				else: shouldEraseCell = true # Destroy if any of the coordinates is invalid
-
-			else: shouldEraseCell = true # Destroy if there is no `nextTileOnDamage`
-
-			if shouldEraseCell:
-				map.erase_cell(coordinates)
-
-			return true
-	# else
-	return false
-
+#region Randomization
 
 ## Returns an array of random coordinates on a [TileMapLayer] from the specified grid range.
 ## WARNING: Do NOT use [method TileMapLayer.get_used_rect()] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
@@ -276,6 +264,10 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 			randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
 		map.set_cell(cellCoordinates, 0, randomTile)
 
+#endregion
+
+
+#region Spawn
 
 ## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
@@ -428,3 +420,39 @@ static func populateTileMapCells(
 		if nodesSpawned.size() >= maximumNumberOfCopies: break
 
 	return nodesSpawned
+
+#endregion
+
+
+#region Descructibility
+
+## Damages a [TileMapLayer] Cell if it is [member Global.TileMapCustomData.isDestructible].
+## Changes the cell's tile to the [member Global.TileMapCustomData.nextTileOnDamage] if there is any,
+## or erases the cell if there is no "next tile" specified or either of the X or Y coordinates are below 0 i.e. (-1,-1)
+## Returns `true` if the cell was damaged.
+## @experimental
+static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
+	# TODO: Variable health & damage
+	# PERFORMANCE: Do not call TileMapTools.getTileData() to reduce calls
+	var tileData: TileData = map.get_cell_tile_data(coordinates)
+	if  tileData:
+		var isDestructible: bool = tileData.get_custom_data(Global.TileMapCustomData.isDestructible)
+		if  isDestructible:
+			var shouldEraseCell: bool = false
+
+			if tileData.has_custom_data(Global.TileMapCustomData.nextTileOnDamage):
+				var nextTileOnDamage: Vector2i = tileData.get_custom_data(Global.TileMapCustomData.nextTileOnDamage)
+				if  nextTileOnDamage.x >= 0 and nextTileOnDamage.y >= 0: # If either atlas coordinates are negative it means "destroy on damage"
+					map.set_cell(coordinates, 0, nextTileOnDamage)
+				else: shouldEraseCell = true # Destroy if any of the coordinates is invalid
+
+			else: shouldEraseCell = true # Destroy if there is no `nextTileOnDamage`
+
+			if shouldEraseCell:
+				map.erase_cell(coordinates)
+
+			return true
+	# else
+	return false
+
+#endregion
