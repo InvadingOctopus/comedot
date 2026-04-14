@@ -516,12 +516,6 @@ static func getCollisionShape(node: CollisionObject2D, shapeIndex: int = 0) -> S
 
 #region Visual Functions
 
-## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
-static func getRandomQuantizedColor() -> Color:
-	const steps: Array[float] = [0.25, 0.5, 0.75, 1.0]
-	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random())
-
-
 static func addRandomDistance(position: Vector2,    \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
@@ -530,6 +524,12 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 	randomizedPosition.x += randf_range(minimumDistance.x, maximumDistance.x) * xScale
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
 	return randomizedPosition
+
+
+## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
+static func getRandomQuantizedColor() -> Color:
+	const steps: Array[float] = [0.25, 0.5, 0.75, 1.0]
+	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random())
 
 
 ## Returns the global position of the top-left corner of the screen in the camera's view.

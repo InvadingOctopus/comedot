@@ -4,6 +4,8 @@ class_name NodeTools
 extends GDScript # NOTE: DESIGN: We cannot `extends Node` because we want these functions to be globally available, not just for instances of a special subclass.
 
 
+#region Parent/Child Tree Heirarchy 
+
 ## Calls [param parent].[method Node.add_child] and sets the [param child].[member Node.owner].
 ## This is necessary for persistence to a [PackedScene] for save/load.
 ## NOTE: Also sets the `force_readable_name` parameter, which may slow performance if used frequently.
@@ -219,11 +221,36 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 			continue
 	return transferredNodes
 
+#endregion
+
+
+#region Position
+
+## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
+## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
+## TIP: Combine with the output from [member getShapeBoundsInNode] to get an [Area2D]'s global region.
+## WARNING: May not work correctly with rotation, scaling or negative dimensions.
+static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
+	# TODO: Account for rotation
+	return Rect2(node.to_global(rect.position), rect.size * node.global_scale)
+
+
+## Returns the specified "design size" centered on a Node's Viewport.
+## NOTE: The viewport size may different from the scaled screen/window size.
+static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2:
+	# TBD: Better name?
+	# The "design size" has to be specified because it's hard to get the actual size, accounting for scaling etc.
+	var viewport: Rect2		= node.get_viewport_rect() # First see what the viewport size is
+	var center: Vector2		= Vector2(viewport.size.x / 2.0, viewport.size.y / 2.0) # Get the viewport center
+	var designSize: Vector2	= Vector2(designWidth, designHeight) # Get the node design size
+	return center - (designSize / 2.0) # Center the size on the viewport
+
 
 ## Searches a group of nodes and returns the node nearest to the specified reference position.
 ## Compares the [member Node2D.global_position]s.
 ## TIP: May be used to find the closest player for monsters to chase, or the nearest mosnter for a homing missile weapon to attack, etc.
 static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: StringName) -> Node2D:
+	# TBD: Should we have a [Node2D] parameter?
 	# NOTE: Use Engine.get_main_loop() instead of Node.get_tree()
 	# because when called by ChaseComponent etc. the parent entity may not be in a SceneTree yet
 	var nodesInGroup: Array[Node] = Engine.get_main_loop().get_nodes_in_group(targetGroup) # TBD: Verify that the `MainLoop` is a `SceneTree`?
@@ -246,28 +273,6 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 	return nearestNode
 
 
-## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
-## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
-## TIP: Combine with the output from [member getShapeBoundsInNode] to get an [Area2D]'s global region.
-## WARNING: May not work correctly with rotation, scaling or negative dimensions.
-static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
-	# TODO: Account for rotation
-	return Rect2(node.to_global(rect.position), rect.size * node.global_scale)
-
-
-#region Position
-
-## Returns the specified "design size" centered on a Node's Viewport.
-## NOTE: The viewport size may different from the scaled screen/window size.
-static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2:
-	# TBD: Better name?
-	# The "design size" has to be specified because it's hard to get the actual size, accounting for scaling etc.
-	var viewport: Rect2		= node.get_viewport_rect() # First see what the viewport size is
-	var center: Vector2		= Vector2(viewport.size.x / 2.0, viewport.size.y / 2.0) # Get the viewport center
-	var designSize: Vector2	= Vector2(designWidth, designHeight) # Get the node design size
-	return center - (designSize / 2.0) # Center the size on the viewport
-
-
 ## Returns an offset by which to modify the GLOBAL position of a node to keep it clamped within a maximum distance/radius (in any direction) from another node.
 ## If the [param nodeToClamp] is within the [param maxDistance] of the [param anchor] then (0,0) is returned i.e. no movement required.
 ## May be used to tether a visual effect (such as a targeting cursor) to an anchor such as a character sprite, as in [AimingCursorComponent] & [TetherComponent].
@@ -285,7 +290,7 @@ static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistan
 #endregion
 
 
-#region Copies
+#region Copy
 
 ## NOTE: Does NOT add the new copy to the original node's parent. Follow up with [method NodeTools.addChildAndSetOwner].
 ## Default flags: DUPLICATE_SIGNALS + DUPLICATE_GROUPS + DUPLICATE_SCRIPTS + DUPLICATE_USE_INSTANTIATION
