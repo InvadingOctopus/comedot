@@ -1,4 +1,4 @@
-## Calls [method Tools.findRandomTileMapCells] & [method Tools.randomizeTileMapCells] to randomize the cells in the specified region of a [TileMapLayer], with tiles from the specified range in the [TileSet] atlas.
+## Calls [method TileMapTools.findRandomTileMapCells] & [method TileMapTools.randomizeTileMapCells] to randomize the cells in the specified region of a [TileMapLayer], with tiles from the specified range in the [TileSet] atlas.
 
 #class_name RandomizeTileMapCells
 extends TileMapLayer
@@ -60,6 +60,6 @@ func repaintCells() -> Array[Vector2i]:
 		else:
 			Debug.printWarning(str("RandomizeTileMapCells.gd: shouldUseEntireMap: Map has cells = no area!"), self)
 
-	recentlyModifiedCells = Tools.findRandomTileMapCells(self, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells, cellRegionStart, cellRegionEnd)
-	Tools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax)
+	recentlyModifiedCells = TileMapTools.findRandomTileMapCells(self, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells, cellRegionStart, cellRegionEnd)
+	TileMapTools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax)
 	return recentlyModifiedCells

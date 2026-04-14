@@ -28,19 +28,19 @@ func populateMap() -> void:
 	var spawnedNodes: Dictionary[Vector2i, Node2D]
 	var randomCells: Array[Vector2i]
 
-	spawnedNodes = Tools.populateTileMap(%TileMap1, sceneToSpawn,
+	spawnedNodes = TileMapTools.populateTileMap(%TileMap1, sceneToSpawn,
 		self.numberOfCopies,
 		null,	 # parentOverride
 		nodeGroup) # groupToAddTo
 	print(str("Spawned by populateTileMap(): ", spawnedNodes))
 
-	randomCells = Tools.findRandomTileMapCells(
+	randomCells = TileMapTools.findRandomTileMapCells(
 		%TileMap2,
 		self.selectionChance,
 		self.includeUsedCells,
 		self.includeEmptyCells)
 
-	spawnedNodes = Tools.populateTileMapCells(
+	spawnedNodes = TileMapTools.populateTileMapCells(
 		%TileMap2, randomCells, sceneToSpawn,
 		self.maximumNumberOfCopies,
 		self.spawnChance,

@@ -45,8 +45,8 @@ func _draw() -> void:
 	var isTestAreaInMap: bool
 
 	for map in mapsAndColors:
-		mapRect = Tools.getTileMapScreenBounds(map)
-		isTestAreaInMap = Tools.isRectInTileMap(spriteAreaRect, map, false) # not checkOriginAndEnd
+		mapRect = TileMapTools.getTileMapScreenBounds(map)
+		isTestAreaInMap = TileMapTools.isRectInTileMap(spriteAreaRect, map, false) # not checkOriginAndEnd
 		draw_rect(mapRect, mapsAndColors[map] if not isTestAreaInMap else Color.RED, true)
 
 

@@ -48,7 +48,7 @@ extends Component
 			activeClimbingMap = newValue
 			# Update the bounds
 			if activeClimbingMap:
-				activeClimbingMapBoundsGlobal = Tools.getTileMapScreenBounds(activeClimbingMap)
+				activeClimbingMapBoundsGlobal = TileMapTools.getTileMapScreenBounds(activeClimbingMap)
 			else:
 				activeClimbingMapBoundsGlobal = Rect2()
 
@@ -152,7 +152,7 @@ func findTileMap() -> TileMapLayer:
 	for child in self.get_tree().get_nodes_in_group(Global.Groups.climbable):
 		if child is TileMapLayer:
 			# Conver the entity's global position to the TileMapLayer's space.
-			if Tools.isPointInTileMap(child.get_parent().to_local(parentEntity.global_position), child):
+			if TileMapTools.isPointInTileMap(child.get_parent().to_local(parentEntity.global_position), child):
 				return child
 	# else
 	return null

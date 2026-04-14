@@ -219,7 +219,7 @@ func validateTileMap(searchForTileMap: bool = self.shouldSearchForTileMap) -> bo
 func validateCoordinates(coordinates: Vector2i) -> bool:
 	if not is_instance_valid(tileMap): return false # If there is no TileMap then nothing is valid :')
 	
-	var isValidBounds: bool = Tools.checkTileMapCoordinates(tileMap, coordinates) if shouldClampToBounds else true # All coordinates are valid if `shouldClampToBounds` is `false`
+	var isValidBounds: bool = TileMapTools.checkTileMapCoordinates(tileMap, coordinates) if shouldClampToBounds else true # All coordinates are valid if `shouldClampToBounds` is `false`
 	var isTileVacant:  bool = shouldIgnoreVacancy or self.checkCellVacancy(coordinates) # Check the skip flag first to avoid a function call
 
 	if debugMode: printDebug(str("@", coordinates, ": checkTileMapCoordinates(): ", isValidBounds, ", checkCellVacancy(): ", isTileVacant))
@@ -235,12 +235,12 @@ func validateCoordinates(coordinates: Vector2i) -> bool:
 ## and custom data on a cell, e.g. [constant Global.TileMapCustomData.isOccupied],
 ## or performing a more rigorous physics collision detection.
 func checkCellVacancy(coordinates: Vector2i) -> bool:
-	# UNUSED: Tools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`.
+	# UNUSED: TileMapTools.checkTileCollision(tileMap, parentEntity.body, coordinates) # The current implementation of the Global method always returns `true`.
 	if shouldIgnoreVacancy: return true
 	if tileMapData:
-		return Tools.checkTileAndCellVacancy(tileMap, tileMapData, coordinates, parentEntity) # Ignore our own entity, just in case :')
+		return TileMapTools.checkTileAndCellVacancy(tileMap, tileMapData, coordinates, parentEntity) # Ignore our own entity, just in case :')
 	else:
-		return Tools.checkTileVacancy(tileMap, coordinates)
+		return TileMapTools.checkTileVacancy(tileMap, coordinates)
 
 #endregion
 
@@ -294,7 +294,7 @@ func updateCurrentCoordinates() -> Vector2i:
 func snapPositionToCell(tileCoordinates: Vector2i = self.currentCoordinates) -> void:
 	if not isEnabled: return
 
-	var tileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, tileCoordinates)
+	var tileGlobalPosition: Vector2 = TileMapTools.getCellGlobalPosition(tileMap, tileCoordinates)
 
 	if  parentEntity.global_position != tileGlobalPosition:
 		parentEntity.global_position  = tileGlobalPosition
@@ -318,14 +318,14 @@ func occupyCell(coordinates: Vector2i = self.currentCoordinates, replaceOtherOcc
 	if not is_instance_valid(tileMapData): return false # TBD: Log warning?
 
 	# See if someone else has already set up shop
-	var previousOccupant: Entity = Tools.getCellOccupant(tileMapData, coordinates)
+	var previousOccupant: Entity = TileMapTools.getCellOccupant(tileMapData, coordinates)
 	if  previousOccupant and previousOccupant != parentEntity: # Ignore `null`
 		printDebug(str("occupyCell() @",coordinates, " has existing occupant: ", previousOccupant, ", replaceOtherOccupants: ", replaceOtherOccupants)) # TBD: Should this be a warning?
 		if not replaceOtherOccupants: return false
 
 	# Take over! 
 
-	Tools.setCellOccupancy(tileMapData, coordinates, true, parentEntity) # isOccupied
+	TileMapTools.setCellOccupancy(tileMapData, coordinates, true, parentEntity) # isOccupied
 	return true
 
 
@@ -340,12 +340,12 @@ func vacateCell(coordinates: Vector2i = self.currentCoordinates) -> bool:
 
 	if not is_instance_valid(tileMapData): return false # TBD: Return `true` if `shouldOccupyCell` is not set? # TBD: Log warning?
 
-	var occupant: Entity = Tools.getCellOccupant(tileMapData, coordinates)
+	var occupant: Entity = TileMapTools.getCellOccupant(tileMapData, coordinates)
 
 	# NOTE: Do not check `shouldOccupyCell` because cleanup should always be done, and the flag may have changed during runtime.	
 	# NOTE: Make sure our entity still "owns" the cell so we don't accidentally wipe out someone else's space!
 	if occupant == parentEntity:
-		Tools.setCellOccupancy(tileMapData, coordinates, false, null) # isOccupied, occupant
+		TileMapTools.setCellOccupancy(tileMapData, coordinates, false, null) # isOccupied, occupant
 		return true
 
 	elif occupant == null:
@@ -477,14 +477,14 @@ func setMapAndKeepPosition(newMap: TileMapLayer, useNewData: bool = true) -> Vec
 
 	var previousCoordinates: Vector2i = self.currentCoordinates
 	var previousDestination: Vector2i = self.destinationCoordinates
-	var newCoordinates:		 Vector2i = Tools.convertCoordinatesBetweenTileMaps(self.tileMap, self.currentCoordinates, newMap)
+	var newCoordinates:		 Vector2i = TileMapTools.convertCoordinatesBetweenTileMaps(self.tileMap, self.currentCoordinates, newMap)
 	var isNewCellVacant:	 bool
 
 	# NOTE: Only check vacancy, NOT bounds, so that overlapping maps of different sizes may be transitioned
-	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = shouldIgnoreVacancy or Tools.checkTileAndCellVacancy(newMap, newMap.cellData, newCoordinates, self.parentEntity) # Ignore our own entity
-	else: isNewCellVacant = Tools.checkTileVacancy(newMap, newCoordinates)
+	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = shouldIgnoreVacancy or TileMapTools.checkTileAndCellVacancy(newMap, newMap.cellData, newCoordinates, self.parentEntity) # Ignore our own entity
+	else: isNewCellVacant = TileMapTools.checkTileVacancy(newMap, newCoordinates)
 
-	if debugMode: printDebug(str("setMapAndKeepPosition(): ", self.tileMap, " @", previousCoordinates, ", pixel global position: ", parentEntity.global_position, " → ", newMap, " @", newCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapCoordinates(newMap, newCoordinates)))
+	if debugMode: printDebug(str("setMapAndKeepPosition(): ", self.tileMap, " @", previousCoordinates, ", pixel global position: ", parentEntity.global_position, " → ", newMap, " @", newCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", TileMapTools.checkTileMapCoordinates(newMap, newCoordinates)))
 
 	if isNewCellVacant: # Don't move if shouldn't move
 		willSetNewMap.emit(self.tileMap, previousCoordinates, newMap, newCoordinates)
@@ -515,7 +515,7 @@ func setMapAndKeepPosition(newMap: TileMapLayer, useNewData: bool = true) -> Vec
 		occupyCell()
 
 		# TBD: If we were on the way to a different cell during the previous map, keep moving to ensure smooth animations etc.
-		var newDestination: Vector2i = Tools.convertCoordinatesBetweenTileMaps(previousMap, previousDestination, self.tileMap)
+		var newDestination: Vector2i = TileMapTools.convertCoordinatesBetweenTileMaps(previousMap, previousDestination, self.tileMap)
 		if newDestination != self.currentCoordinates: self.setDestinationCoordinates(newDestination)
 
 		if debugMode: printDebug(str("setMapAndKeepPosition() coordinates: ", previousCoordinates, " → ", self.currentCoordinates))
@@ -543,10 +543,10 @@ func setMapAndKeepCoordinates(newMap: TileMapLayer, useNewData: bool = true) -> 
 	var isNewCellVacant: bool
 
 	# NOTE: Only check vacancy, NOT bounds, so that overlapping maps of different sizes may be transitioned
-	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = shouldIgnoreVacancy or Tools.checkTileAndCellVacancy(newMap, newMap.cellData, self.currentCoordinates, self.parentEntity) # Ignore our own entity
-	else: isNewCellVacant = Tools.checkTileVacancy(newMap, self.currentCoordinates)
+	if newMap is TileMapLayerWithCellData and newMap.cellData: isNewCellVacant = shouldIgnoreVacancy or TileMapTools.checkTileAndCellVacancy(newMap, newMap.cellData, self.currentCoordinates, self.parentEntity) # Ignore our own entity
+	else: isNewCellVacant = TileMapTools.checkTileVacancy(newMap, self.currentCoordinates)
 
-	if debugMode: printDebug(str("setMapAndKeepCoordinates(): ", self.tileMap, " → ", newMap, " @", self.currentCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", Tools.checkTileMapCoordinates(newMap, self.currentCoordinates)))
+	if debugMode: printDebug(str("setMapAndKeepCoordinates(): ", self.tileMap, " → ", newMap, " @", self.currentCoordinates, ", isNewCellVacant: ", isNewCellVacant, ", within bounds: ", TileMapTools.checkTileMapCoordinates(newMap, self.currentCoordinates)))
 
 	if isNewCellVacant: # Don't move if shouldn't move
 		var previousPosition: Vector2 = parentEntity.global_position
@@ -612,7 +612,7 @@ func _physics_process(delta: float) -> void:
 func moveTowardsDestinationCell(delta: float) -> void:
 	# TODO: Handle physics collisions
 	# TODO: TBD: Occupy each cell along the way too?
-	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
+	var destinationTileGlobalPosition: Vector2 = TileMapTools.getCellGlobalPosition(tileMap, self.destinationCoordinates) # NOTE: Not cached because the TIleMap may move between frames.
 	parentEntity.global_position = parentEntity.global_position.move_toward(destinationTileGlobalPosition, self.speed * delta)
 	parentEntity.reset_physics_interpolation() # CHECK: Necessary?
 
@@ -620,7 +620,7 @@ func moveTowardsDestinationCell(delta: float) -> void:
 ## Are we there yet?
 ## WARNING: If the [TileMapLayer] moves or transforms, or the destination position keeps changing, then this method will AWLAYS return `false`!
 func checkForArrival() -> bool:
-	var destinationTileGlobalPosition: Vector2 = Tools.getCellGlobalPosition(tileMap, self.destinationCoordinates)
+	var destinationTileGlobalPosition: Vector2 = TileMapTools.getCellGlobalPosition(tileMap, self.destinationCoordinates)
 	if parentEntity.global_position.is_equal_approx(destinationTileGlobalPosition):
 		self.currentCoordinates = self.destinationCoordinates
 		self.isMovingToNewCell = false
@@ -640,7 +640,7 @@ func updateIndicator() -> void:
 		return
 
 	if tileMap:
-		visualIndicator.global_position = Tools.getCellGlobalPosition(tileMap, self.destinationCoordinates)
+		visualIndicator.global_position = TileMapTools.getCellGlobalPosition(tileMap, self.destinationCoordinates)
 		visualIndicator.visible = isMovingToNewCell
 	else:
 		visualIndicator.position = Vector2.ZERO # TBD: Necessary?
@@ -661,7 +661,7 @@ func showDebugInfo() -> void:
 		previousInput		= previousInputVector,
 		isMovingToNewCell	= isMovingToNewCell,
 		destinationCell		= destinationCoordinates,
-		destinationPosition	= Tools.getCellGlobalPosition(tileMap, destinationCoordinates) if tileMap else Vector2.ZERO,
+		destinationPosition	= TileMapTools.getCellGlobalPosition(tileMap, destinationCoordinates) if tileMap else Vector2.ZERO,
 		})
 
 

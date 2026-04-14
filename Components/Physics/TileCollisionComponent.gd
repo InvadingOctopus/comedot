@@ -56,7 +56,7 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 		didEnterTileCell.emit(bodyEntered, cellCoordinates)
 
 
-## NOTE: If the cell was destroyed, for example by [method Tools.damageTileMapCell], then the coordinates are reported as (-1,-1)
+## NOTE: If the cell was destroyed, for example by [method TileMapTools.damageTileMapCell], then the coordinates are reported as (-1,-1)
 @warning_ignore("unused_parameter")
 func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	if bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
@@ -90,7 +90,7 @@ func onCollideCell(map: TileMapLayer, cellCoordinates: Vector2i) -> void:
 
 
 ## Called when a [TileMapLayer] leaves contact.
-## NOTE: If the cell was destroyed, for example by [method Tools.damageTileMapCell], then the [param cellCoordinates] are reported as (-1,-1)
+## NOTE: If the cell was destroyed, for example by [method TileMapTools.damageTileMapCell], then the [param cellCoordinates] are reported as (-1,-1)
 ## NOTE: Called BEFORE [signal didExitTileCell]
 ## Abstract; To be implemented by subclasses.
 @warning_ignore("unused_parameter")

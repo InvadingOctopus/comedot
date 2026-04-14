@@ -1,5 +1,5 @@
 ## A subclass of [DamageComponent] which causes damage to destructible [TileMapLayer] cells.
-## Calls [method Tools.damageTileMapCell] which changes a TileMap cell's tile to a different tile,
+## Calls [method TileMapTools.damageTileMapCell] which changes a TileMap cell's tile to a different tile,
 ## depending on the tile's [member Global.TileMapCustomData.isDestructible] & [member Global.TileMapCustomData.nextTileOnDamage] custom data layers, which must be set in the TileSet itself.
 ## If there is no "next tile" specified or both X & Y coordinates are below 0 i.e. (-1,-1) then the cell is erased/destroyed.
 ## WORKAROUND: Godot 4.5.dev1: [member TileMapLayer.physics_quadrant_size] must be set to 1
@@ -34,7 +34,7 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 			printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
 			TextBubble.create.call(str(cellCoordinates), bodyEntered).label.label_settings.font_color = Color.YELLOW
 
-		Tools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
+		TileMapTools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
 		self.onCollideCell(bodyEntered, cellCoordinates)
 		didEnterTileCell.emit(bodyEntered, cellCoordinates)
 
