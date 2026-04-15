@@ -16,8 +16,10 @@ static func addPathPrefixIfMissing(path: String, prefix: String = "res://") -> S
 		return path
 
 
-## Returns a list of all the subfolders and recursively searches for any deeper subfolders inside the folder at [param initialPath].
+## Returns a list of all the subfolders and recursively searches for any deeper subfolders inside the folder at [param initialPath]
 ## IMPORTANT: The [param initialPath] must begin with `"res://"` or `"user://"`
+## Callers should first verify that the [param initialPath] is valid and can be accessed, as this method returns an empty array on failure, which may be indistinguishable from a valid but empty folder.
+## NOTE: Includes [param initialPath] in the returned [PackedStringArray]
 static func findAllSubfolders(initialPath: String = "res://") -> PackedStringArray:
 	var subfolders: PackedStringArray
 	var dirAccess:  DirAccess = DirAccess.open(initialPath)
