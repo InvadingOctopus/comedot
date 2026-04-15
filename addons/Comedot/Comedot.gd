@@ -201,11 +201,21 @@ static func verifyComponent(file: String) -> bool:
 ## NOTE: May not include hidden or otherwise inaccessible files.
 ## @experimental
 static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
+	# Verify that the root folder is valid, becasue FileSystemTools.findAllSubfolders() returns [] on failure which is indistinguishable from a valid but empty folder.
+	if rootPath.is_empty():
+		printWarning("verifyAllComponents(): Missing rootPath")
+		return false
+
+	var rootDirectory: DirAccess = DirAccess.open(rootPath)
+	if not rootDirectory:
+		printError("verifyAllComponents(): Cannot open root path: " + rootPath)
+		return false
+
 	var subfoldersToScan:	PackedStringArray
 	var hasIssues:			bool
 
 	printLog("Scanning for all Component .tscn Scene files from \"res://\"…")
-	subfoldersToScan = FileSystemTools.findAllSubfolders(rootPath)
+	subfoldersToScan = FileSystemTools.findAllSubfolders(rootPath) # NOTE: Returns [] or [rootPath] on failure
 
 	# Create variables here once, instead of in every loop iteration
 	var count: int
