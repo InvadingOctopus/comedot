@@ -33,19 +33,19 @@ extends Payload
 
 ## Returns the result of the called method.
 func executeImplementation(source: Variant, target: Variant) -> Variant:
-	printLog(str("executeImplementation() script: ", payloadScript, " ", payloadScript.get_global_name(), ", source: ", source, ", target: ", target))
-
-	if self.payloadScript:
-		if not Tools.findMethodInScript(payloadScript, payloadScriptMethodName):
-			Debug.printWarning(str("Missing method: ", payloadScriptMethodName), self.logName)
-			return false
-
-		self.willExecute.emit(source, target)
-
-		# A script that matches this interface:
-		# static func [payloadScriptMethodName](payload: Payload, source: Variant, target: Variant) -> Variant
-		if debugMode: Debug.printLog(str(payloadScriptMethodName, "() source: ", source, ", target: ", target), str(self.logName, " payloadScript: ", self.payloadScript, " ", self.payloadScript.resource_path.get_file()), "", Global.Colors.logResource) # A custom log to show the script as part of the logging object
-		return self.payloadScript.call(self.payloadScriptMethodName, self, source, target)
-	else:
-		Debug.printWarning("Missing payloadScript", self.logName)
+	var script: GDScript = self.payloadScript # PERFORMANCE: Cache to avoid repeated property getter calls
+	printLog(str("executeImplementation() script: ", script, " ", (script.get_global_name() if script else &""), ", source: ", source, ", target: ", target))
+	if not script:
+		Debug.printWarning("executeImplementation(): Missing payloadScript", self.logName)
 		return false
+	
+	if not Tools.findMethodInScript(script, payloadScriptMethodName):
+		Debug.printWarning(str("Missing method: ", payloadScriptMethodName), self.logName)
+		return false
+
+	self.willExecute.emit(source, target)
+
+	# A script that matches this interface:
+	# static func [payloadScriptMethodName](payload: Payload, source: Variant, target: Variant) -> Variant
+	if debugMode: Debug.printLog(str(payloadScriptMethodName, "() source: ", source, ", target: ", target), str(self.logName, " payloadScript: ", script, " ", script.resource_path.get_file()), "", Global.Colors.logResource) # A custom log to show the script as part of the logging object
+	return script.call(self.payloadScriptMethodName, self, source, target)

@@ -23,7 +23,7 @@ extends Payload
 ## Returns the result of the [member payloadCallable].
 func executeImplementation(source: Variant, target: Variant) -> Variant:
 	printLog(str("executeImplementation() callable: ", payloadCallable, ", source: ", source, ", target: ", target))
-	if self.payloadCallable:
+	if  self.payloadCallable:
 		self.willExecute.emit(source, target)
 		# A function with the following arguments:
 		# func anyName(source: Variant, target: Variant) -> Variant
