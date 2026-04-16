@@ -12,6 +12,13 @@ extends TileCollisionComponent
 # TBD: Add contacts to an array similar to`damageReceivingComponentsInContact`?
 
 
+#region Parameters
+## A [TileSetSource] identifier. See [method TileSet.set_source_id].
+## NOTE: If set to -1, cells will ALWAYS be ERASED.
+@export var atlasSourceID: int = 0
+#endregion
+
+
 func _ready() -> void:
 	Tools.connectSignal(area.body_shape_entered, self.onBodyShapeEntered)
 	# Ignore exits # UNUSED: Tools.connectSignal(area.body_shape_exited,  self.onBodyShapeExited)
@@ -34,7 +41,7 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 			printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
 			TextBubble.create.call(str(cellCoordinates), bodyEntered).label.label_settings.font_color = Color.YELLOW
 
-		TileMapTools.damageTileMapCell(bodyEntered, cellCoordinates) # TBD: Should this happen before signals?
+		TileMapTools.damageTileMapCell(bodyEntered, cellCoordinates, atlasSourceID) # TBD: Should this happen before signals?
 		self.onCollideCell(bodyEntered, cellCoordinates)
 		didEnterTileCell.emit(bodyEntered, cellCoordinates)
 
