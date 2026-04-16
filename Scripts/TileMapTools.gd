@@ -437,8 +437,9 @@ static func populateTileMapCells(
 ## Changes the cell's tile to the [member Global.TileMapCustomData.nextTileOnDamage] if there is any,
 ## or erases the cell if there is no "next tile" specified or either of the X or Y coordinates are below 0 i.e. (-1,-1)
 ## Returns `true` if the cell was damaged.
+## NOTE: If [member atlasSourceID] is set to -1, cells will ALWAYS be ERASED.
 ## @experimental
-static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
+static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i, atlasSourceID: int = 0) -> bool:
 	# TODO: Variable health & damage
 	# PERFORMANCE: Do not call TileMapTools.getTileData() to reduce calls
 	var tileData: TileData = map.get_cell_tile_data(coordinates)
@@ -450,7 +451,7 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i) -> bool:
 			if tileData.has_custom_data(Global.TileMapCustomData.nextTileOnDamage):
 				var nextTileOnDamage: Vector2i = tileData.get_custom_data(Global.TileMapCustomData.nextTileOnDamage)
 				if  nextTileOnDamage.x >= 0 and nextTileOnDamage.y >= 0: # If either atlas coordinates are negative it means "destroy on damage"
-					map.set_cell(coordinates, 0, nextTileOnDamage)
+					map.set_cell(coordinates, atlasSourceID, nextTileOnDamage)
 				else: shouldEraseCell = true # Destroy if any of the coordinates is invalid
 
 			else: shouldEraseCell = true # Destroy if there is no `nextTileOnDamage`
