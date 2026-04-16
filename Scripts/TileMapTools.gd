@@ -246,7 +246,14 @@ static func findRandomTileMapCells(
 
 ## "Repaints" all the specified cell coordinates in a [TileMapLayer] with random tiles from the specified range in the Map's [TileSet] atlas.
 ## TIP: Call [method findRandomTileMapCells] to build an array of random cells.
-static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vector2i], atlasCoordinatesMin: Vector2i, atlasCoordinatesMax: Vector2i) -> void:
+## NOTE: If [member atlasSourceID] is set to -1, or [member atlasCoordinatesMin] & [member atlasCoordinatesMax] are BOTH set to -1 & -1, the cells will be ERASED.
+static func randomizeTileMapCells(
+	map:				 TileMapLayer,
+	cellsToRepaint:		 Array[Vector2i], # TBD: PERFORMANCE: Use `PackedVector2Array`?
+	atlasCoordinatesMin: Vector2i,
+	atlasCoordinatesMax: Vector2i,
+	atlasSourceID:		 int = 0) -> void:
+	
 	# TODO: Validate atlas sizes
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 	# TBD:  PERFORMANCE: Add a separate modificationChance for extra control or is findRandomTileMapCells()'s selectionChance enough?
@@ -262,7 +269,7 @@ static func randomizeTileMapCells(map: TileMapLayer, cellsToRepaint: Array[Vecto
 		randomTile = Vector2i(
 			randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
 			randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
-		map.set_cell(cellCoordinates, 0, randomTile)
+		map.set_cell(cellCoordinates, atlasSourceID, randomTile)
 
 #endregion
 

@@ -1,4 +1,5 @@
 ## Calls [method TileMapTools.findRandomTileMapCells] & [method TileMapTools.randomizeTileMapCells] to randomize the cells in the specified region of a [TileMapLayer], with tiles from the specified range in the [TileSet] atlas.
+## NOTE: If [member atlasSourceID] is set to -1, or [member atlasCoordinatesMin] & [member atlasCoordinatesMax] are BOTH set to -1 & -1, the cells will be ERASED.
 
 #class_name RandomizeTileMapCells
 extends TileMapLayer
@@ -19,6 +20,9 @@ extends TileMapLayer
 
 @export var atlasCoordinatesMin:	Vector2i ## The upper-left corner of the rectangle region in the [TileSet] atlas to choose the TILES from.
 @export var atlasCoordinatesMax:	Vector2i ## The bottom-right corner of the rectangle region in the [TileSet] atlas to choose the TILES from.
+
+@export var atlasSourceID:			int = 0  ## A [TileSetSource] identifier. See [method TileSet.set_source_id]
+
 
 @export_range(0, 1.0, 0.01) var modificationChance:	float = 1.0 ## THe chance to modify rolled separately for each cell in the [member cellRegionStart] to [member cellRegionEnd] rectangle.
 
@@ -61,5 +65,5 @@ func repaintCells() -> Array[Vector2i]:
 			Debug.printWarning(str("RandomizeTileMapCells.gd: shouldUseEntireMap: Map has cells = no area!"), self)
 
 	recentlyModifiedCells = TileMapTools.findRandomTileMapCells(self, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells, cellRegionStart, cellRegionEnd)
-	TileMapTools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax)
+	TileMapTools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax, atlasSourceID)
 	return recentlyModifiedCells
