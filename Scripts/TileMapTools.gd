@@ -76,6 +76,102 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 	Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
 	return cellCoordinatesInDestinationMap
 
+
+## Returns an array of [Vector2i] cell coordinates on a [TileMapLayer] grid within the specified region.
+## NOTE: If [param specifyRegion] is `false` then [param cellRegionStart] & [param cellRegionEnd] are ignored, and the entire grid containing all the "painted" cells of the TileMap is searched. NOTE: The painted region may NOT be the entire TileMap; e.g. if only (6,9) is the painted cell, only that 1 cell will be searched.
+## NOTE: [param cellRegionEnd] is INCLUSIVE.
+## NOTE: PERFORMANCE: If [param includeUsedCells] is `true` but [param includeEmptyCells] and [param specifyRegion] are both `false` then this method simply returns [method TileMapLayer.get_used_cells]
+## ALERT: In some cases, the cells may not be ordered from top-left to bottom-right, depending on the implementation of Godot's API.
+static func findTileMapCells(
+	map:				TileMapLayer,
+	includeUsedCells:	bool,
+	includeEmptyCells:	bool,
+	specifyRegion:		bool	 = false, # TODO: Find a better way to specify an optional region
+	cellRegionStart:	Vector2i = Vector2i.ZERO,
+	cellRegionEnd:		Vector2i = Vector2i.ZERO
+) -> Array[Vector2i]:
+	# NOTE: DESIGN: [Rect2i] parameters would be less intuitive because it uses width/height parameters for initialization, not explicit end coordinates.
+
+	if (not includeUsedCells and not includeEmptyCells): return [] # If no cells are wanted, there's nothing to return!
+
+	# If we just want all the "painted" cells, there's no need for any further processing; just use the builtin method
+	if includeUsedCells and not includeEmptyCells and not specifyRegion:
+		return map.get_used_cells()
+
+	# Otherwise, decide the area we'll cover
+
+	var area: Rect2i
+	if  specifyRegion:
+		area = Rect2i(cellRegionStart, cellRegionEnd - cellRegionStart + Vector2i.ONE) # +1 because Rect2i is EXCLUSIVE: It omits the last column/row
+	else:
+		area = map.get_used_rect()
+	
+	if not area.has_area(): return []
+
+	# Collate the cells according to the flags
+
+	var cells:			Array[Vector2i]
+	var areaCellCount:	int = area.size.x * area.size.y
+	var index:			int = 0 # IMPORTANT: Make sure index doesn't change from 0 before any of the loops below!
+	
+	# All cells in the region?
+	if includeUsedCells and includeEmptyCells:
+		cells.resize(areaCellCount) # PERFORMANCE: Resizing is faster than Array.append()
+		# DESIGN: PERFORMANCE: It would be faster to call TileMapLayer.get_used_cells() first and then add the empty cells,
+		# but we want the array to be in order, from top-left to bottom-right
+		# Add all the cells within the range, in order
+		for y in	 range(area.position.y, area.end.y):
+			for x in range(area.position.x, area.end.x):
+				cells[index] = Vector2i(x, y)
+				index += 1
+
+	# Only "painted" cells in the region?
+	elif includeUsedCells and not includeEmptyCells:
+		# PERFORMANCE: Array.append() in a loop is slower than Array.resize() then assigning by index
+		# CHECK: Benchmark; is this implementation slower than just a single loop → append()?
+
+		# So first we set the size to the maximum possible
+		var usedCells: Array[Vector2i] = map.get_used_cells() # TBD: PERFORMANCE: If the get_used_cells() array is rebuilt whenever called (not cached), then calling this may defeat the optimization subbranch below
+		var maxCount:  int = mini(usedCells.size(), areaCellCount) # Is the number of painted cells less than the total number of all cells within the area?
+		cells.resize(maxCount)
+
+		# Now filter and only include the painted cells that are within the area
+
+		# PERFORMANCE: Handle cases where the `area` is tiny but the number of TileMapLayer.get_used_cells() is large,
+		# because iterating the `area` directly might be faster than iterating over get_used_cells()
+		# TBD: CHECK: Is the order always the same for get_used_cells()? Top-left to bottom-right?
+		if areaCellCount < usedCells.size():
+			var coordinates: Vector2i
+			for y in	 range(area.position.y, area.end.y):
+				for x in range(area.position.x, area.end.x):
+					coordinates = Vector2i(x, y)
+					if map.get_cell_source_id(coordinates) == -1: continue # Skip unpainted cells
+					cells[index] = coordinates
+					index += 1
+
+		else: # areaCellCount >= usedCells.size()
+			for coordinates in usedCells:
+				if not area.has_point(coordinates): continue
+				cells[index] = coordinates
+				index += 1
+
+		# Then shrink the array down to the actual number of painted cells that were within the area
+		cells.resize(index)
+
+	# Only the empty "unpainted" cells in the region?
+	elif not includeUsedCells and includeEmptyCells:
+		cells.resize(areaCellCount) # PERFORMANCE: Empty cells cannot exceed the total area anyway, so use the area as the array size first
+		var coordinates: Vector2i
+		for y in	 range(area.position.y, area.end.y):
+			for x in range(area.position.x, area.end.x):
+				coordinates = Vector2i(x, y)
+				if map.get_cell_source_id(coordinates) != -1: continue # Skip painted cells
+				cells[index] = coordinates
+				index += 1
+		cells.resize(index) # Shrink the array down to the actual number of unpainted cells that were within the area
+
+	return cells
+
 #endregion
 
 
