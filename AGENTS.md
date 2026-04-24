@@ -89,10 +89,11 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 - Entities, components and other nodes must be added to the relevant preset node groups such as `turnBased`, `players`, `enemies`, `collectibles` etc. as applicable.
 - Scripts that extend specific Godot builtin nodes types for a specific purpose or a simple effect do not have to be entities or components, such as `SpawnArea.gd` for `Area2D`,  or `Spin.gd` for any `Node2D`, or UI scripts such as `StatUI.gd` and `StatBar.gd` that are meant for `Control` nodes.
 - Filenames should be clear and precise. Add suffixes like `Entity` and `Component` to assist referencing and searching etc. Entities should be named like `MonsterEntity.gd` and components should be named like `MonsterAttackComponent.gd`. There may be exceptions for brevity for certain resources such as `Health.gd` instead of `HealthStat.gd` unless there is ambiguity. Standalone scripts that are not for an entity or component, such be named as a verb describing the action if applicable, like `Spin.gd` and `SnapToMouse.gd`. Filenames don't have to be short, for example `TurnBasedTileBasedPlatformerControlComponent`
-- Avoid "shadowing" properties; do not give a function or loop/block variable the same name as property of the class or inherited from the superclass, e.g. `body` in `PlatformerPhysicsComponent.gd`
+- When asked to make changes to code, also add comments to explain the logic if the code isn't simple and self-explanatory.
 
 
 ## Common Godot Errors & Gotchas to Avoid
+- Avoid "shadowing" properties; do not give a function or loop/block variable the same name as property of the class or inherited from the superclass, e.g. `body` in `PlatformerPhysicsComponent.gd`
 - When comparing `float` use `is_equal_approx()` and `is_zero_approx()` instead of a direct `==` or `!=` or `>=` or `<=` but `>` and `<` are OK.
 - Do not cast types using a direct `as` or `is`: Avoid `var otherNodeAsCastedType: CastedType = otherNode as CastedType` or `if otherNode is CastedType:` because the Godot parser considers it as an error; instead use this workaround: `var otherNodeAsCastedType: CastedType = nodeToCast.get_node(^".") as CastedType` (the `as` in this case is superfluous and may be omitted) or `if is_instance_of(someNode, CastedType)`
 
