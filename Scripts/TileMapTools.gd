@@ -370,9 +370,17 @@ static func randomizeTileMapCells(
 #region Spawn
 
 ## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
-## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
+## Includes empty "unpainted" cells: e.g. if a TileMap has 1 painted cell at (0,0) and 1 at (99,99), the total area used for spawning is 100x100 cells.
+## RETURNS: A [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 ## TIP: To spawn scenes at specific cell coordinates, call [method TileMapTools.populateTileMapCells]
-static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberOfCopies: int, parentOverride: Node2D = null, groupToAddTo: StringName = &"") -> Dictionary[Vector2i, Node2D]:
+static func populateTileMap(
+	map:			TileMapLayer,
+	sceneToCopy:	PackedScene,
+	numberOfCopies:	int,
+	parentOverride:	Node2D		= null,
+	groupToAddTo:	StringName	= &""
+) -> Dictionary[Vector2i, Node2D]:
+	
 	# TODO: FIXME: Handle negative cell coordinates
 	# TBD: Allow non-Node2D `parentOverride`?
 	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
@@ -402,8 +410,8 @@ static func populateTileMap(map: TileMapLayer, sceneToCopy: PackedScene, numberO
 
 	var minCoordinates: Vector2i = mapRect.position
 	var maxCoordinates: Vector2i = mapRect.end - Vector2i.ONE
-	var coordinates:  Vector2i
-	var nodesSpawned: Dictionary[Vector2i, Node2D]
+	var coordinates:	Vector2i
+	var nodesSpawned:	Dictionary[Vector2i, Node2D]
 
 	for count in numberOfCopies:
 		newNode = sceneToCopy.instantiate()
