@@ -64,6 +64,8 @@ func repaintCells() -> Array[Vector2i]:
 		else:
 			Debug.printWarning(str("RandomizeTileMapCells.gd: shouldUseEntireMap: Map has cells = no area!"), self)
 
-	recentlyModifiedCells = TileMapTools.findRandomTileMapCells(self, modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells, cellRegionStart, cellRegionEnd)
+	recentlyModifiedCells = TileMapTools.findRandomTileMapCells(self,
+		modificationChance, shouldIncludeUsedCells, shouldIncludeEmptyCells,
+		shouldUseRegion, cellRegionStart, cellRegionEnd)
 	TileMapTools.randomizeTileMapCells(self, recentlyModifiedCells, atlasCoordinatesMin, atlasCoordinatesMax, atlasSourceID)
 	return recentlyModifiedCells

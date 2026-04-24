@@ -80,8 +80,9 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 ## Returns an array of [Vector2i] cell coordinates on a [TileMapLayer] grid within the specified region.
 ## NOTE: If [param specifyRegion] is `false` then [param cellRegionStart] & [param cellRegionEnd] are ignored, and the entire grid containing all the "painted" cells of the TileMap is searched. NOTE: The painted region may NOT be the entire TileMap; e.g. if only (6,9) is the painted cell, only that 1 cell will be searched.
 ## NOTE: [param cellRegionEnd] is INCLUSIVE.
-## NOTE: PERFORMANCE: If [param includeUsedCells] is `true` but [param includeEmptyCells] and [param specifyRegion] are both `false` then this method simply returns [method TileMapLayer.get_used_cells]
+## WARNING: When filling out the [param cellRegionStart] or [param cellRegionEnd], Do NOT use [method TileMapLayer.get_used_rect] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
 ## ALERT: In some cases, the cells may not be ordered from top-left to bottom-right, depending on the implementation of Godot's API.
+## PERFORMANCE: If [param includeUsedCells] is `true` but [param includeEmptyCells] and [param specifyRegion] are both `false` then this method simply returns [method TileMapLayer.get_used_cells]
 static func findTileMapCells(
 	map:				TileMapLayer,
 	includeUsedCells:	bool,
@@ -291,52 +292,48 @@ static func checkTileCollision(map: TileMapLayer, _body: PhysicsBody2D, _coordin
 
 #region Randomization
 
-## Returns an array of random coordinates on a [TileMapLayer] from the specified grid range.
-## WARNING: Do NOT use [method TileMapLayer.get_used_rect()] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
+## Calls [method findTileMapCells] and returns shuffled [Vector2i] cell coordinates from a [TileMapLayer] grid, optionally filtered by [param selectionChance].
+## NOTE: If [param specifyRegion] is `false` then [param cellRegionStart] & [param cellRegionEnd] are ignored, and the entire grid containing all the "painted" cells of the TileMap is searched. NOTE: The painted region may NOT be the entire TileMap; e.g. if only (6,9) is the painted cell, only that 1 cell will be searched.
+## NOTE: [param cellRegionEnd] is INCLUSIVE.
+## NOTE: If [param selectionChance] is `1.0` or higher, all matching cells are returned in random order.
+## WARNING: When filling out the [param cellRegionStart] or [param cellRegionEnd], Do NOT use [method TileMapLayer.get_used_rect] [member Rect2i.size] or [member Rect2i.end] as it is NOT 0-based: It will be +1 outside the map's actual grid! TIP: Use [method Rect2i.grow](-1)
+## TIP: Useful for randomizing terrain etc.
 static func findRandomTileMapCells(
 	map:				TileMapLayer,
 	selectionChance:	float = 1.0,
 	includeUsedCells:	bool  = true,
 	includeEmptyCells:	bool  = true,
-	cellRegionStart:	Vector2i = map.get_used_rect().position,
-	cellRegionEnd:		Vector2i = map.get_used_rect().grow(-1).end # Make `end` 0-based
+	specifyRegion:		bool  = false, # TODO: Find a better way to specify an optional region
+	cellRegionStart:	Vector2i = Vector2i.ZERO,
+	cellRegionEnd:		Vector2i = Vector2i.ZERO
 ) -> Array[Vector2i]:
 
-	# TODO: Validate parameters and sizes
-	# TODO: PERFORMANCE: Using `map.get_used_rect()` twice for default arguments is a bit jank
-	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
+	# If the chance is 0% we can't return anything!
+	if selectionChance < 0 or is_zero_approx(selectionChance): return []
 
-	if (not includeUsedCells and not includeEmptyCells) \
-	or is_zero_approx(selectionChance) or selectionChance < 0 \
-	or cellRegionEnd < cellRegionStart:
-		return []
+	var cells: Array[Vector2i] = TileMapTools.findTileMapCells(
+		map, includeUsedCells, includeEmptyCells,
+		specifyRegion, cellRegionStart, cellRegionEnd)
 
-	var coordinates: Vector2i
-	var isCellEmpty: bool
-	var randomCells: Array[Vector2i]
+	# The shuffle() is important if downstream code caps results, such as populateTileMapCells(... maximumNumberOfCopies ...); otherwise selectionChance == 1.0 still returns a deterministic top-left-first list.
+	cells.shuffle()
 
-	# CHECK: PERFORMANCE: What's faster? TileMapLayer.get_used_cells() & then filtering,
-	# or building the list manually by iterating every cell?
+	# If the chance is 100% then just return all the cells
+	if selectionChance > 1.0 or is_equal_approx(selectionChance, 1.0):
+		return cells
 
-	# NOTE: +1 to range() end to make the bounds inclusive
-	for y in range(cellRegionStart.y, cellRegionEnd.y + 1):
-		for x in range(cellRegionStart.x, cellRegionEnd.x + 1):
+	var randomCells:	 Array[Vector2i]
+	var randomCellCount: int = 0
 
-			# PERFORMANCE: Roll the chance before doing all the other checks and calculations
-			if selectionChance < 1.0 and not randf() < selectionChance: continue # TBD: Should this be an integer?
+	# PERFORMANCE: Array.append() in a loop is slower than Array.resize() then assigning by index
+	randomCells.resize(cells.size()) # Set to the maximum possible size, before filtering by chance
 
-			coordinates = Vector2i(x, y)
+	for coordinates in cells:
+		if randf() < selectionChance:
+			randomCells[randomCellCount] = coordinates
+			randomCellCount += 1
 
-			# A cell is considered "empty" if its source & alternative identifiers are -1, and its atlas coordinates are (-1,-1).
-			# TBD: PERFORMANCE: Do we need to check ALL 3?
-			isCellEmpty = map.get_cell_source_id(coordinates)  == -1 \
-				and map.get_cell_alternative_tile(coordinates) == -1 \
-				and map.get_cell_atlas_coords(coordinates) == Vector2i(-1, -1)
-
-			if (includeUsedCells  and not isCellEmpty) \
-			or (includeEmptyCells and isCellEmpty):
-				randomCells.append(Vector2i(x, y))
-
+	randomCells.resize(randomCellCount) # Shrink the array down to the actual number of cells that were randomly selected
 	return randomCells
 
 
