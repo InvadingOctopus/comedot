@@ -476,7 +476,7 @@ static func populateTileMap(
 
 ## Creates instance copies of a specified Scene over a list of cells on a [TileMapLayer]'s grid.
 ## Returns a [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
-## TIP: Call [method TileMapTools.findRandomTileMapCells] to get an array of random cells.
+## TIP: Call [method TileMapTools.findTileMapCells] or [method TileMapTools.findRandomTileMapCells] to build an array of cells.
 ## TIP: To spawn scenes at random coordinates all over the map with a fixed number of copies, call [method TileMapTools.populateTileMap]
 ## NOTE: If [param cellCoordinates] contains duplicate coordinates, only 1 copy is created per coordinate,
 ## but the effective [param spawnChance] will be higher for duplicate coordinates!
@@ -494,15 +494,15 @@ static func populateTileMapCells(
 	if maximumNumberOfCopies < 1: return {}
 
 	if not sceneToCopy:
-		Debug.printWarning("TileMapTools.populateTileMapCells(): No sceneToCopy", str(map))
+		Debug.printWarning("TileMapTools.populateTileMapCells(): No sceneToCopy", map)
 		return {}
 
 	if cellCoordinates.is_empty():
-		Debug.printWarning("TileMapTools.populateTileMapCells(): No cellCoordinates!", str(map))
+		Debug.printWarning("TileMapTools.populateTileMapCells(): No cellCoordinates!", map)
 		return {}
 
 	if is_zero_approx(spawnChance) or spawnChance < 0:
-		Debug.printWarning(str("TileMapTools.populateTileMapCells(): spawnChance <= 0: ", spawnChance), str(map))
+		Debug.printWarning(str("TileMapTools.populateTileMapCells(): spawnChance <= 0: ", spawnChance), map)
 		return {}
 
 	# Spawn
@@ -520,7 +520,7 @@ static func populateTileMapCells(
 			# Is the node still valid?
 			if is_instance_valid(existingNode):
 				# Warn if the `cellCoordinates` array has duplicate items
-				Debug.printWarning(str("TileMapTools.populateTileMapCells(): Node already spawned @", coordinates, ": ", nodesSpawned[coordinates]), str(map))
+				Debug.printWarning(str("TileMapTools.populateTileMapCells(): Node already spawned @", coordinates, ": ", nodesSpawned[coordinates]), map)
 				# TBD: Allow multiple copies at the same coordinates? But that would make the return Dictionary omit duplicates..
 				# NOTE: BUGRISK: The effective `spawnChance` will be higher for duplicate coordinates!
 				continue
