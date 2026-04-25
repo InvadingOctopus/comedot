@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 ## How To Use
 
 > [!IMPORTANT]  
-> _Requires Godot 4.6_
+> _Requires Godot 4.7_
 
 🚀 **Quickstart:** To try right away, open `project.godot` and run `PlatformerSceneTemplate.tscn` in `/Templates/Scenes/`
 
