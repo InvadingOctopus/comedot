@@ -4,7 +4,7 @@ class_name TileMapTools
 extends GDScript # NOTE: DESIGN: We cannot `extends TileMapLayer` because we want these functions to be globally available, not just for instances of a special subclass.
 
 
-#region Coordinates & Position 
+#region Coordinates & Position
 
 static func getCellGlobalPosition(map: TileMapLayer, coordinates: Vector2i) -> Vector2:
 	var cellPosition:		Vector2 = map.map_to_local(coordinates)
@@ -62,16 +62,16 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 
 	# 1: Convert the source TileMap's cell coordinates to pixel (screen) coordinates, in the source map's space.
 	# NOTE: This may not correspond to the visual position of the tile; it ignores `TileData.texture_origin` of the individual tiles.
-	var pixelPositionInSourceMap: Vector2 = sourceMap.map_to_local(cellCoordinatesInSourceMap)
+	var pixelPositionInSourceMap:			Vector2  = sourceMap.map_to_local(cellCoordinatesInSourceMap)
 
 	# 2: Convert the pixel position to the global space
-	var globalPosition: Vector2 = sourceMap.to_global(pixelPositionInSourceMap)
+	var globalPosition:						Vector2  = sourceMap.to_global(pixelPositionInSourceMap)
 
 	# 3: Convert the global position to the destination TileMap's space
-	var pixelPositionInDestinationMap: Vector2 = destinationMap.to_local(globalPosition)
+	var pixelPositionInDestinationMap:		Vector2  = destinationMap.to_local(globalPosition)
 
 	# 4: Convert the pixel position to the destination map's cell coordinates
-	var cellCoordinatesInDestinationMap: Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
+	var cellCoordinatesInDestinationMap:	Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
 
 	Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
 	return cellCoordinatesInDestinationMap
@@ -106,7 +106,7 @@ static func findTileMapCells(
 		area = Rect2i(cellRegionStart, cellRegionEnd - cellRegionStart + Vector2i.ONE) # +1 because Rect2i is EXCLUSIVE: It omits the last column/row
 	else:
 		area = map.get_used_rect()
-	
+
 	if not area.has_area(): return []
 
 	# Collate the cells according to the flags
@@ -114,7 +114,7 @@ static func findTileMapCells(
 	var cells:			Array[Vector2i]
 	var areaCellCount:	int = area.size.x * area.size.y
 	var index:			int = 0 # IMPORTANT: Make sure index doesn't change from 0 before any of the loops below!
-	
+
 	# All cells in the region?
 	if includeUsedCells and includeEmptyCells:
 		cells.resize(areaCellCount) # PERFORMANCE: Resizing is faster than Array.append()
@@ -346,7 +346,7 @@ static func randomizeTileMapCells(
 	atlasCoordinatesMin: Vector2i,
 	atlasCoordinatesMax: Vector2i,
 	atlasSourceID:		 int = 0) -> void:
-	
+
 	# TODO: Validate atlas sizes
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 	# TBD:  PERFORMANCE: Add a separate modificationChance for extra control or is findRandomTileMapCells()'s selectionChance enough?
