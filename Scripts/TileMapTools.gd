@@ -369,10 +369,11 @@ static func randomizeTileMapCells(
 
 #region Spawn
 
-## Creates instance copies of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique position in the grid.
+## Creates instances of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique coordinate on the grid.
 ## Includes empty "unpainted" cells: e.g. if a TileMap has 1 painted cell at (0,0) and 1 at (99,99), the total area used for spawning is 100x100 cells.
+## NOTE: If [param numberOfCopies] will be clamped if it's greater than the total number of cells in the [param map]
 ## RETURNS: A [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
-## TIP: To spawn scenes at specific cell coordinates, call [method TileMapTools.populateTileMapCells]
+## TIP: To spawn scenes at a predetermined array of cell coordinates, call [method TileMapTools.populateTileMapCells]
 static func populateTileMap(
 	map:			TileMapLayer,
 	sceneToCopy:	PackedScene,
@@ -380,58 +381,81 @@ static func populateTileMap(
 	parentOverride:	Node2D		= null,
 	groupToAddTo:	StringName	= &""
 ) -> Dictionary[Vector2i, Node2D]:
-	
-	# TODO: FIXME: Handle negative cell coordinates
+
 	# TBD: Allow non-Node2D `parentOverride`?
-	# TBD: Add option for range of allowed cell coordinates instead of using the entire TileMap?
+	# TBD: PERFORMANCE: Is it necessary to return all the spawned nodes?
+	# May be a waste of memory and processing if callers rarely use the nodes right after populating, e.g. just for random terrain/Entity generation.
+	# TIP: If a caller needs to access the spawned nodes, it could just iterate on the `groupToAddTo`
 
 	# Validation
 
 	if not sceneToCopy:
-		Debug.printWarning("TileMapTools.populateTileMap(): No sceneToCopy", str(map))
+		Debug.printWarning("TileMapTools.populateTileMap(): No sceneToCopy", map)
 		return {}
 
 	var mapRect: Rect2i = map.get_used_rect()
 
 	if not mapRect.has_area():
-		Debug.printWarning(str("TileMapTools.populateTileMap(): map has no area: ", mapRect.size), str(map))
+		Debug.printWarning(str("TileMapTools.populateTileMap(): map has no area: ", mapRect.size), map)
 		return {}
 
 	var totalCells: int = mapRect.size.x * mapRect.size.y
 
-	if numberOfCopies > totalCells:
-		Debug.printWarning(str("TileMapTools.populateTileMap(): numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells), str(map))
-		return {}
+	if  numberOfCopies > totalCells: # Clamp; we can't spawn more copies than there are cells!
+		Debug.printDebug(str("TileMapTools.populateTileMap(): numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells, " • Clamping"), map)
+		numberOfCopies = totalCells
 
 	# Spawn
 
-	var parent:  Node2D = parentOverride if parentOverride else map
-	var newNode: Node2D
+	var parent:				Node2D = parentOverride if parentOverride else map
+	var newNode:			Node2D
+	var nodesSpawned:		Dictionary[Vector2i, Node2D]
 
-	var minCoordinates: Vector2i = mapRect.position
-	var maxCoordinates: Vector2i = mapRect.end - Vector2i.ONE
-	var coordinates:	Vector2i
-	var nodesSpawned:	Dictionary[Vector2i, Node2D]
+	# Store indexes or "slots" for the Fisher-Yates algorithm (each step explained in the loop below)
+	# Key:   Logical slot still available to roll
+	# Value: Actual cell index represented by that slot
+	var swappedCellIndices:	Dictionary[int, int]
+	var selectedCellIndex:	int
+	var cellIndex:			int
+	var coordinates:		Vector2i
+	var remainingCellCount:	int = totalCells
 
 	for count in numberOfCopies:
 		newNode = sceneToCopy.instantiate()
 
-		# Find a unoccupied cell
-		# Rect size = 1 if 1 cell, so subtract - 1
-		# TBD: A more efficient way?
+		# Find an unused cell
+		# PERFORMANCE: Use a "sparse" Fisher-Yates algorithm to pick unique random cells without retrying already selected cells,
+		# and without allocating an Array containing every cell; which would reduce performance when used on large TileMaps.
 
-		coordinates = Vector2i(
-			randi_range(minCoordinates.x, maxCoordinates.x),
-			randi_range(minCoordinates.y, maxCoordinates.y))
+		# 1.1: Roll one slot from the still available range
+		# Example: [A,B,C,D]: select B
+		selectedCellIndex = randi_range(0, remainingCellCount - 1)
 
-		# NOTE: No chance of an infinite loop because we checked numberOfCopies <= totalCells
-		while(nodesSpawned.get(coordinates)):
-			coordinates = Vector2i(
-				randi_range(minCoordinates.x, maxCoordinates.x),
-				randi_range(minCoordinates.y, maxCoordinates.y))
+		# 1.2: Resolve that slot to the actual cell index
+		# Instead of using an Array of all coordinates or indices, assume that every slot points to itself unless swappedCellIndices says otherwise:
+		# If the slot was never swapped (i.e. the key doesn't exist) then it represents itself.
+		cellIndex = swappedCellIndices.get(selectedCellIndex, selectedCellIndex)
 
-		# Position
+		# 1.3: Remove the selected slot by replacing it with the last available slot
+		# This is the same idea as swapping selectedIndex with the end of an array, then shrinking the array by one.
+		# Example: [A,D,C | B]: B selected & "removed" from the "pool" because the `remainingCellCount` is decreased
+		# The Dictionary becomes: swappedCellIndices[1] = D
+		remainingCellCount -= 1
+		swappedCellIndices[selectedCellIndex] = swappedCellIndices.get(remainingCellCount, remainingCellCount)
 
+		# 1.4: The old last slot is now outside the available range, so it can be forgotten
+		# Example: [A,D,C]
+		swappedCellIndices.erase(remainingCellCount)
+
+		# 1.5: Convert the flat cell index back into x/y offset inside the TileMap Rect
+		# Then convert the offset inside the used rectangle to actual TileMap coordinates
+		coordinates = mapRect.position + Vector2i(
+			cellIndex % mapRect.size.x,
+			floori(float(cellIndex) / float(mapRect.size.x))) # CHECK: Do 2 `float` casts or just 1?
+
+		# 1.6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on
+
+		# 2: Position the new node
 		if parent == map:
 			newNode.position = map.map_to_local(coordinates)
 		else:
@@ -442,7 +466,7 @@ static func populateTileMap(
 		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
 			newNode.components.TileBasedPositionComponent.currentCoordinates = coordinates
 
-		# Add
+		# 3: Add
 		NodeTools.addChildAndSetOwner(newNode, parent)
 		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
 		nodesSpawned[coordinates] = newNode
