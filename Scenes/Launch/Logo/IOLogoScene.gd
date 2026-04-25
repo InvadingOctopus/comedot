@@ -11,7 +11,7 @@ const nextScene: PackedScene = preload("res://Scenes/Launch/GameFrame.tscn") # p
 var textLines: PackedStringArray = [
 	"69K RAM SYSTEM, 69420 BYTES FREE",
 	str("LOAD\"", ProjectSettings.get_setting("application/config/name", "Comedot"), "\"").to_upper(),
-	"© MMXXV",
+	"© MMXXVI",
 	"RUN",
 	"0 OK, 10:1",
 	]
