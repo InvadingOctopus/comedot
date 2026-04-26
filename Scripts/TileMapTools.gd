@@ -588,6 +588,11 @@ static func damageTileMapCell(map: TileMapLayer, coordinates: Vector2i, atlasSou
 	if  tileData:
 		var isDestructible: bool = tileData.get_custom_data(Global.TileMapCustomData.isDestructible)
 		if  isDestructible:
+
+			if atlasSourceID == -1: # If the caller REALLY wants to just erase the cell no matter what, there's nothing else to check
+				map.erase_cell(coordinates)
+				return true
+
 			var shouldEraseCell: bool = false
 
 			if tileData.has_custom_data(Global.TileMapCustomData.nextTileOnDamage):
