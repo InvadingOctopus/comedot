@@ -496,24 +496,29 @@ static func populateTileMapCells(
 	cellCoordinates:Array[Vector2i],
 	sceneToCopy:	PackedScene,
 	maximumNumberOfCopies: int,
-	spawnChance:	float 		= 1.0,
+	spawnChance:	float 		 = 1.0,
 	parentOverride:	Node2D		= null,
-	groupToAddTo:	StringName	= &"") -> Dictionary[Vector2i, Node2D]:
+	groupToAddTo:	StringName	= &""
+) -> Dictionary[Vector2i, Node2D]:
+
+	# TBD: PERFORMANCE: Is it necessary to return all the spawned nodes?
+	# May be a waste of memory and processing if callers rarely use the nodes right after populating, e.g. just for random terrain/Entity generation.
+	# TIP: If a caller needs to access the spawned nodes, it could just iterate on the `groupToAddTo`
 
 	# Validation
 
 	if maximumNumberOfCopies < 1: return {}
 
-	if not sceneToCopy:
-		Debug.printWarning("TileMapTools.populateTileMapCells(): No sceneToCopy", map)
+	if spawnChance < 0 or is_zero_approx(spawnChance):
+		Debug.printDebug(str("TileMapTools.populateTileMapCells(): spawnChance <= 0: ", spawnChance), map)
 		return {}
 
 	if cellCoordinates.is_empty():
 		Debug.printWarning("TileMapTools.populateTileMapCells(): No cellCoordinates!", map)
 		return {}
 
-	if is_zero_approx(spawnChance) or spawnChance < 0:
-		Debug.printWarning(str("TileMapTools.populateTileMapCells(): spawnChance <= 0: ", spawnChance), map)
+	if not sceneToCopy:
+		Debug.printWarning("TileMapTools.populateTileMapCells(): No sceneToCopy", map)
 		return {}
 
 	# Spawn
@@ -523,7 +528,8 @@ static func populateTileMapCells(
 	var nodesSpawned: Dictionary[Vector2i, Node2D]
 
 	for coordinates in cellCoordinates:
-		# maximumNumberOfCopies == 0 is guarded at the top of the function, so we'll recheck it at the end of this loop
+		# maximumNumberOfCopies == 0 is guarded at the top of the function, 
+		# so at least 1 `spawnChance` roll has to be made anyway, and we'll recheck the number of spawns at the end of this loop
 
 		# Did we already spawn a node at the same coordinates?
 		if nodesSpawned.has(coordinates):
