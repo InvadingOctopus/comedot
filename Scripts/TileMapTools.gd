@@ -353,7 +353,8 @@ static func randomizeTileMapCells(
 
 	if not map \
 	or cellsToRepaint.is_empty() \
-	or atlasCoordinatesMax < atlasCoordinatesMin:
+	or atlasCoordinatesMax.x < atlasCoordinatesMin.x \
+	or atlasCoordinatesMax.y < atlasCoordinatesMin.y: # FIXED: Compare x,y separately otherwise min:(0,10) < max:(1,2) will pass validation then potentially call randi_range(10, 2) for y, if just comparing the whole vectors
 		return
 
 	var randomTile:  Vector2i
