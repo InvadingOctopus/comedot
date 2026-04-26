@@ -37,12 +37,14 @@ static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to
 	return screenRect
 
 
-## Checks if a [Vector2] is inside a [TileMapLayer].
-## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local].
+## Checks if a [Vector2] is inside the rectangular bounds of a [TileMapLayer]'s "used" or "painted" cells.
+## Handles scaling/rotation/etc., EXCEPT a 0 scale and other "non-invertible" transforms.
+## IMPORTANT: The [param point] must be in the coordinate space of the [param map]'s parent node. See [method Node2D.to_local]
+## ALERT: Empty cells between painted cells are considered inside the [TileMapLayer] bounds, e.g. if only 2 cells are painted at (0,0) & (99,99) then all the 100x100 empty cells in between are considered within the TileMap.
 ## WARNING: Internal float-based positions may have fractional values like 0.5 etc. which may cause calculations to return a result that does not match the visuals onscreen, e.g. intersections may return false.
 static func isPointInTileMap(point: Vector2, map: TileMapLayer) -> bool:
-	# NOTE: Apparently there is no need to grow_individual() the Rect2's right & bottom edges by 1 pixel even though Rect2.has_point() does NOT include points on those edges, according to the Godot documentation.
-	return TileMapTools.getTileMapScreenBounds(map).has_point(point)
+	var pointInMap: Vector2 = map.transform.affine_inverse() * point   # Convert from the parent's space into the TileMapLayer's local space
+	return map.get_used_rect().has_point(map.local_to_map(pointInMap)) # Convert local position to cell coordinates
 
 
 ## Checks if a [Rect2]'s [member Rect2.position] origin and/or [member Rect2.end] points are inside a [TileMapLayer].

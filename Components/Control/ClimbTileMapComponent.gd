@@ -151,7 +151,7 @@ func findTileMap() -> TileMapLayer:
 	# TODO: A better way to get all the nodes at a given position?
 	for child in self.get_tree().get_nodes_in_group(Global.Groups.climbable):
 		if child is TileMapLayer:
-			# Conver the entity's global position to the TileMapLayer's space.
+			# Conver the entity's global position to the TileMapLayer parent's space
 			if TileMapTools.isPointInTileMap(child.get_parent().to_local(parentEntity.global_position), child):
 				return child
 	# else
