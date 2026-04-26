@@ -389,6 +389,8 @@ static func populateTileMap(
 
 	# Validation
 
+	if numberOfCopies < 1: return {}
+
 	if not sceneToCopy:
 		Debug.printWarning("TileMapTools.populateTileMap(): No sceneToCopy", map)
 		return {}
@@ -423,37 +425,45 @@ static func populateTileMap(
 	for count in numberOfCopies:
 		newNode = sceneToCopy.instantiate()
 
-		# Find an unused cell
-		# PERFORMANCE: Use a "sparse" Fisher-Yates algorithm to pick unique random cells without retrying already selected cells,
-		# and without allocating an Array containing every cell; which would reduce performance when used on large TileMaps.
+		# If the number of copies to spawn is less than the total number of cells, we need to choose random cells
+		if numberOfCopies < totalCells:
+			# 1: Find an unused cell
+			# PERFORMANCE: Use a "sparse" Fisher-Yates algorithm to pick unique random cells without retrying already selected cells,
+			# and without allocating an Array containing every cell; which would reduce performance when used on large TileMaps.
 
-		# 1.1: Roll one slot from the still available range
-		# Example: [A,B,C,D]: select B
-		selectedCellIndex = randi_range(0, remainingCellCount - 1)
+			# 1.1: Roll one slot from the still available range
+			# Example: [A,B,C,D]: select B
+			selectedCellIndex = randi_range(0, remainingCellCount - 1)
 
-		# 1.2: Resolve that slot to the actual cell index
-		# Instead of using an Array of all coordinates or indices, assume that every slot points to itself unless swappedCellIndices says otherwise:
-		# If the slot was never swapped (i.e. the key doesn't exist) then it represents itself.
-		cellIndex = swappedCellIndices.get(selectedCellIndex, selectedCellIndex)
+			# 1.2: Resolve that slot to the actual cell index
+			# Instead of using an Array of all coordinates or indices, assume that every slot points to itself unless swappedCellIndices says otherwise:
+			# If the slot was never swapped (i.e. the key doesn't exist) then it represents itself.
+			cellIndex = swappedCellIndices.get(selectedCellIndex, selectedCellIndex)
 
-		# 1.3: Remove the selected slot by replacing it with the last available slot
-		# This is the same idea as swapping selectedIndex with the end of an array, then shrinking the array by one.
-		# Example: [A,D,C | B]: B selected & "removed" from the "pool" because the `remainingCellCount` is decreased
-		# The Dictionary becomes: swappedCellIndices[1] = D
-		remainingCellCount -= 1
-		swappedCellIndices[selectedCellIndex] = swappedCellIndices.get(remainingCellCount, remainingCellCount)
+			# 1.3: Remove the selected slot by replacing it with the last available slot
+			# This is the same idea as swapping selectedIndex with the end of an array, then shrinking the array by one.
+			# Example: [A,D,C | B]: B selected & "removed" from the "pool" because the `remainingCellCount` is decreased
+			# The Dictionary becomes: swappedCellIndices[1] = D
+			remainingCellCount -= 1
+			swappedCellIndices[selectedCellIndex] = swappedCellIndices.get(remainingCellCount, remainingCellCount)
 
-		# 1.4: The old last slot is now outside the available range, so it can be forgotten
-		# Example: [A,D,C]
-		swappedCellIndices.erase(remainingCellCount)
+			# 1.4: The old last slot is now outside the available range, so it can be forgotten
+			# Example: [A,D,C]
+			swappedCellIndices.erase(remainingCellCount)
 
-		# 1.5: Convert the flat cell index back into x/y offset inside the TileMap Rect
-		# Then convert the offset inside the used rectangle to actual TileMap coordinates
-		coordinates = mapRect.position + Vector2i(
-			cellIndex % mapRect.size.x,
-			floori(float(cellIndex) / float(mapRect.size.x))) # CHECK: Do 2 `float` casts or just 1?
+			# 1.5: Convert the flat cell index back into x/y offset inside the TileMap Rect
+			# Then convert the offset inside the used rectangle to actual TileMap coordinates
+			coordinates = mapRect.position + Vector2i(
+				cellIndex % mapRect.size.x,
+				cellIndex / mapRect.size.x) # CHECK: Should we use `floori(float(cellIndex) / mapRect.size.x)`? Is floori() the same as integer trunctation anyway? e.g. 5 / 2 == 2 instead of 2.5
+			
+			# 1.6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on
 
-		# 1.6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on
+		# If the number of copies is the same as the total number of cells, just choose all cells sequentially
+		else:
+			coordinates = mapRect.position + Vector2i(
+				count % mapRect.size.x,
+				count / mapRect.size.x) # TBD: Use floori() with `float` cast?
 
 		# 2: Position the new node
 		if parent == map:
