@@ -219,9 +219,9 @@ static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vecto
 
 
 ## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
-## NOTE: The rectangle is in the coordinates of the shape's [CollisionShape2D] container, with its anchor at the CENTER.
-## Works most accurately & reliably for areas with a single [RectangleShape2D].
-## Returns: A [Rect2] of the bounds. On failure: a rectangle with size -1 and the position set to the [CollisionObject2D]'s local position.
+## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]
+## Best suited for areas with a single [RectangleShape2D], in which case the [Shape2D]'s anchor/origin will be at the center of the returned rectangle.
+## Returns: A [Rect2] of the bounds. On failure: a [Rect2] with size -1 and invalid area.
 static func getShapeBounds(node: CollisionObject2D) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
@@ -230,9 +230,11 @@ static func getShapeBounds(node: CollisionObject2D) -> Rect2:
 
 	if not shapeNode:
 		Debug.printWarning("getShapeBounds(): Cannot find a CollisionShape2D child", node)
-		return Rect2(node.position.x, node.position.y, -1, -1) # Return an invalid negative-sized rectangle matching the node's origin.
+		return Rect2(0, 0, -1, -1) # Return an invalid negative-sized rectangle matching the node's origin.
 
-	return shapeNode.shape.get_rect()
+	var shapeBounds: Rect2 = shapeNode.shape.get_rect()
+	shapeBounds.position  += shapeNode.position # Offset the rectangle to match the [Shape2D]'s position in the container
+	return shapeBounds
 
 
 ## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of an a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
