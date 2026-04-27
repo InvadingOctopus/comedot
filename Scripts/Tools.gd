@@ -175,17 +175,17 @@ static func findMethodInScript(script: Script, methodName: StringName) -> bool: 
 
 ## Convert a [NodePath] from the `./` form to the absolute representation: `/root/` INCLUDING the property path if any.
 static func convertRelativeNodePathToAbsolute(parentNodeToConvertFrom: Node, relativePath: NodePath) -> NodePath:
-	var absoluteNodePath: String = parentNodeToConvertFrom.get_node(relativePath).get_path()
-	var propertyPath: String = str(":", relativePath.get_concatenated_subnames())
-	var absolutePathIncludingProperty: NodePath = NodePath(str(absoluteNodePath, propertyPath))
+	var absoluteNodePath: NodePath = parentNodeToConvertFrom.get_node(relativePath).get_path()
+	var subnames:		  String   = relativePath.get_concatenated_subnames()
 
 	# DEBUG:
-	#Debug.printLog(str("Tools.convertRelativeNodePathToAbsolute() parentNodeToConvertFrom: ", parentNodeToConvertFrom, \
+	# Debug.printLog(str("Tools.convertRelativeNodePathToAbsolute() parentNodeToConvertFrom: ", parentNodeToConvertFrom, \
 		#", relativePath: ", relativePath, \
 		#", absoluteNodePath: ", absoluteNodePath, \
 		#", propertyPath: ", propertyPath))
 
-	return absolutePathIncludingProperty
+	if subnames.is_empty(): return absoluteNodePath
+	else: return NodePath(str(absoluteNodePath, ":", subnames))
 
 
 ## Splits a [NodePath] into an Array of 2 paths where index [0] is the node's path and [1] is the property chain, e.g. `/root:size:x` → [`/root`, `:size:x`]
