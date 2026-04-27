@@ -716,6 +716,55 @@ static func wrapArrayIndex(array: Variant, index: int, increment: int) -> int: #
 	if not array.is_empty(): return Tools.wrapInteger(0, index + increment, array.size() - 1)
 	else: return 0
 
+
+## Returns a specific number of random unique array indices.
+## If [param numberOfIndices] is greater than [param arraySize], the returned count is clamped to [param arraySize]
+## PERFORMANCE: Uses a "sparse partial Fisher-Yates shuffle" to only track selected/swapped slots instead of allocating an Array for every possible index.
+## TIP: To shuffle an entire Array, use Godot's builtin [method Array.shuffle]
+static func pickRandomArrayIndices(arraySize: int, numberOfIndices: int) -> Array[int]:
+	# TBD: Add parameter for a custom RandomNumberGenerator?
+	if arraySize <= 0 or numberOfIndices <= 0: return []
+
+	var selectedIndexCount:	int = mini(numberOfIndices, arraySize)
+	var shuffledIndices:	 Array[int] = []
+	shuffledIndices.resize(selectedIndexCount)
+
+	# Store indexes or "slots" for the Fisher-Yates algorithm (each step explained in the loop below)
+	# Key:   Logical slot still available to roll
+	# Value: Actual index represented by that slot
+	var swappedIndices:		 Dictionary[int, int]
+	var remainingIndexCount: int = arraySize
+	var selectedSlot:		 int
+	var selectedIndex:		 int
+
+	for count in selectedIndexCount:
+		# 1: Roll one slot from the still available range.
+		# Example: [A,B,C,D]: select B
+		selectedSlot  = randi_range(0, remainingIndexCount - 1)
+
+		# 2: Resolve that slot to the actual index.
+		# Instead of using a list of every possible index, assume that every slot points to itself unless `swappedIndices` says otherwise:
+		# If the slot was never swapped (i.e. the key doesn't exist) then it represents itself.
+		selectedIndex = swappedIndices.get(selectedSlot, selectedSlot)
+
+		# 3: Remove the selected slot by replacing it with the last available slot.
+		# This is the same idea as swapping `selectedSlot` with the end of an array, then shrinking the array by 1.
+		# Example: [A,D,C | B]: B selected & "removed" from the "pool" because the `remainingIndexCount` is decreased
+		# The Dictionary becomes: swappedIndices[1] = D
+		remainingIndexCount -= 1
+		swappedIndices[selectedSlot] = swappedIndices.get(remainingIndexCount, remainingIndexCount)
+
+		# 4: The old last slot is now outside the available range, so it can be forgotten.
+		# Example: [A,D,C]
+		swappedIndices.erase(remainingIndexCount)
+
+		# 5: Build the list of random indices.
+		shuffledIndices[count] = selectedIndex
+
+		# 6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on...
+
+	return shuffledIndices
+
 #endregion
 
 
