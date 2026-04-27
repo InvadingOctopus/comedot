@@ -533,9 +533,24 @@ static func getRandomQuantizedColor() -> Color:
 
 
 ## Returns the global position of the top-left corner of the screen in the camera's view.
+## Handles zoom, rotation, limits etc.
+## IMPORTANT: Assumes the [param camera] is the active [Camera2D] for its [Viewport]
 static func getScreenTopLeftInCamera(camera: Camera2D) -> Vector2:
-	var cameraCenter: Vector2 = camera.get_screen_center_position()
-	return cameraCenter - camera.get_viewport_rect().size / 2
+	# Convert the viewport-space point into the camera canvas's world coordinates.
+	# This uses the actual current canvas transform, so it respects rotation, zoom,
+	# smoothing, drag margins, limits, and other camera-driven view changes.
+	return camera.get_canvas_transform().affine_inverse() \
+		 * camera.get_viewport_rect().position # The viewport's top-left corner in viewport coordinates
+
+
+## Returns the global position of a specific corner of the screen in the camera's view.
+## Handles zoom, rotation, limits etc.
+## [param corner] uses normalized viewport coordinates: (0,0) = top-left, (1,1) = bottom-right.
+## IMPORTANT: Assumes the [param camera] is the active [Camera2D] for its [Viewport]
+static func getScreenCornerInCamera(camera: Camera2D, corner: Vector2) -> Vector2:
+	var viewportRect: Rect2 = camera.get_viewport_rect()
+	return camera.get_canvas_transform().affine_inverse() \
+		* (viewportRect.position + (viewportRect.size * corner))
 
 #endregion
 
