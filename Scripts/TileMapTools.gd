@@ -74,10 +74,10 @@ static func convertCoordinatesBetweenTileMaps(sourceMap: TileMapLayer, cellCoord
 	var pixelPositionInDestinationMap:		Vector2  = destinationMap.to_local(globalPosition)
 
 	# 4: Convert the pixel position to the destination map's cell coordinates
-	var cellCoordinatesInDestinationMap:	Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
+	# UNUSED: Return directly without creating another variable: var cellCoordinatesInDestinationMap:	Vector2i = destinationMap.local_to_map(pixelPositionInDestinationMap)
 
-	Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
-	return cellCoordinatesInDestinationMap
+	# DEBUG: Disable for PERFORMANCE: Debug.printDebug(str("TileMapTools.convertCoordinatesBetweenTileMaps() ", sourceMap, " @", cellCoordinatesInSourceMap, " → sourcePixel: ", pixelPositionInSourceMap, " → globalPixel: ", globalPosition, " → destinationPixel: ", pixelPositionInDestinationMap, " → @", cellCoordinatesInDestinationMap, " ", destinationMap))
+	return destinationMap.local_to_map(pixelPositionInDestinationMap) # cellCoordinatesInDestinationMap
 
 
 ## Returns an array of [Vector2i] cell coordinates on a [TileMapLayer] grid within the specified region.
