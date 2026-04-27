@@ -342,7 +342,7 @@ static func findRandomTileMapCells(
 
 ## "Repaints" all the specified cell coordinates in a [TileMapLayer] with random tiles from the specified range in the Map's [TileSet] atlas.
 ## TIP: Call [method findRandomTileMapCells] to build an array of random cells.
-## NOTE: If [member atlasSourceID] is set to -1, or [member atlasCoordinatesMin] & [member atlasCoordinatesMax] are BOTH set to -1 & -1, the cells will be ERASED.
+## NOTE: If [member atlasSourceID] is set to -1, or [member atlasCoordinatesMin] & [member atlasCoordinatesMax] are BOTH set to (-1,-1), the cells will be ERASED.
 static func randomizeTileMapCells(
 	map:				 TileMapLayer,
 	cellsToRepaint:		 Array[Vector2i], # TBD: PERFORMANCE: Use `PackedVector2Array`?
@@ -354,15 +354,25 @@ static func randomizeTileMapCells(
 	# NOTE: Rect2i parameters are less intuitive because it uses width/height parameters for initialization, not direct end coordinates.
 	# TBD:  PERFORMANCE: Add a separate modificationChance for extra control or is findRandomTileMapCells()'s selectionChance enough?
 
-	if not map \
-	or cellsToRepaint.is_empty() \
-	or atlasCoordinatesMax.x < atlasCoordinatesMin.x \
-	or atlasCoordinatesMax.y < atlasCoordinatesMin.y: # FIXED: Compare x,y separately otherwise min:(0,10) < max:(1,2) will pass validation then potentially call randi_range(10, 2) for y, if just comparing the whole vectors
+	if not map or cellsToRepaint.is_empty(): return
+
+	# If certain arguments are -1, erase all cells in the list
+	var shouldEraseCells: bool = atlasSourceID == -1 \
+		or (atlasCoordinatesMin == Vector2i(-1, -1)  \
+		and atlasCoordinatesMax == Vector2i(-1, -1))
+
+	if not shouldEraseCells \
+	and (atlasCoordinatesMax.x < atlasCoordinatesMin.x \
+	or   atlasCoordinatesMax.y < atlasCoordinatesMin.y): # FIXED: Compare x,y separately otherwise min:(0,10) < max:(1,2) will pass validation then potentially call randi_range(10, 2) for y, if just comparing the whole vectors
 		return
 
 	var randomTile:  Vector2i
 
 	for cellCoordinates in cellsToRepaint:
+		if shouldEraseCells:
+			map.erase_cell(cellCoordinates)
+			continue
+
 		randomTile = Vector2i(
 			randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
 			randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))
