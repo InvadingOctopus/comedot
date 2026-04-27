@@ -610,10 +610,10 @@ static func setLabelsWithDictionary(labels: Array[Label], dictionary: Dictionary
 
 
 
-## Displays the values of the specified [Object]'s properties in different [Label]s.
+## Displays non-null values of the specified [Object]'s properties in different [Label]s.
 ## Each [Label] must have EXACTLY the same case-sensitie name as a matching property in [param object]: `isEnabled` but NOT `IsEnabled` or `EnabledLabel` etc.
 ## TIP: Example: May be used to quickly display a [Resource] or [Component]'s data in a UI [Container].
-## RETURNS: The number of [Label]s with names matching [param object] properties.
+## RETURNS: The number of [Label]s with names matching non-null properties of the [param object]
 ## For a script to attach to a UI [Container], use "PrintPropertiesToLabels.gd"
 static func printPropertiesToLabels(object: Object, labels: Array[Label], shouldShowPropertyNames: bool = true, shouldHideNullProperties: bool = true, shouldUnhideAvailableLabels: bool = true) -> int:
 	var value: Variant # NOTE: Should not be String so we can explicitly check for `null`
@@ -627,7 +627,8 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 		if shouldShowPropertyNames: label.text = label.name + ": "
 		else: label.text = ""
 
-		# NOTE: Explicitly check for `null` to avoid cases like "0.0" being treated as a non-existent property.
+		# NOTE: Explicitly check for `null` so values like 0, `false`, and empty strings still count as valid values
+		# BUGRISK: Properties that exist but are `null` may be considered as non-existent!
 		if value != null:
 			label.text += str(value)
 			if shouldUnhideAvailableLabels: label.visible = true
