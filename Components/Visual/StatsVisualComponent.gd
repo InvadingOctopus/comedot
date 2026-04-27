@@ -58,7 +58,7 @@ func connectSignals() -> void:
 func onStatChanged(stat: Stat) -> void:
 	# Double-check if the Stat is in the array, to support removals during runtime.
 	if not statsToMonitor.has(stat):
-		Tools.disconnectSignal(stat.changed, self.onStatChanged)
+		Tools.disconnectSignal(stat.changed, self.onStatChanged.bind(stat)) # NOTE: Apparently matching the .bind() matters when disconnecting Signals
 		return
 	if not isEnabled and not statsToExclude.has(stat): return
 
