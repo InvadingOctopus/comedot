@@ -95,7 +95,7 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 ## Common Godot Errors & Gotchas to Avoid
 - Avoid "shadowing" properties; do not give a function or loop/block variable the same name as property of the class or inherited from the superclass, e.g. `body` in `PlatformerPhysicsComponent.gd`
 - When comparing `float` use `is_equal_approx()` and `is_zero_approx()` instead of a direct `==` or `!=` or `>=` or `<=` but `>` and `<` are OK.
-- Do not cast types using a direct `as` or `is`: Avoid `var otherNodeAsCastedType: CastedType = otherNode as CastedType` or `if otherNode is CastedType:` because the Godot parser considers it as an error; instead use this workaround: `var otherNodeAsCastedType: CastedType = nodeToCast.get_node(^".") as CastedType` (the `as` in this case is superfluous and may be omitted) or `if is_instance_of(someNode, CastedType)`
+- Do not cast types using a direct `as` or `is` if it causes a parse error: Avoid `var otherNodeAsCastedType: CastedType = otherNode as CastedType` or `if otherNode is CastedType:` because the Godot parser considers it as an error if the static types mismatch; instead use this workaround: `var otherNodeAsCastedType: CastedType = nodeToCast.get_node(^".") as CastedType` (the `as` in this case is superfluous and may be omitted) or `if is_instance_of(someNode, CastedType)`
 
 
 ## Commit & Pull Request Guidelines
