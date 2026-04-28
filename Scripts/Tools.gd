@@ -544,12 +544,25 @@ static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 
 
 ## Returns the [Shape2D] from a [CollisionObject2D]-based node (such as [Area2D] or [CharacterBody2D]) and a given "shape index"
+## The [param shapeIndex] is a collision shape child index, such as the `shape_idx` from input/collision callbacks.
 ## @experimental
 static func getCollisionShape(node: CollisionObject2D, shapeIndex: int = 0) -> Shape2D:
-	# What is this hell...
-	var areaShapeOwnerID: int = node.shape_find_owner(shapeIndex)
-	# UNUSED: var areaShapeOwner: CollisionShape2D = node.shape_owner_get_owner(areaShapeOwnerID)
-	return node.shape_owner_get_shape(areaShapeOwnerID, shapeIndex) # CHECK: Should it be `shapeIndex` or 0?
+	# What is this hell... Dumbdot should have a builtin API for this not uncommon task
+
+	var shapeOwnerID: int = node.shape_find_owner(shapeIndex)
+	if  shapeOwnerID < 0: return null
+
+	# UNUSED: PERFORMANCE: No need to check: If a [CollisionObject2D] doesn't have any Shapes, it's a configuration error and should crash.
+	# var shapeOwnerShapeCount: int = node.shape_owner_get_shape_count(shapeOwnerID)
+	# if  shapeOwnerShapeCount < 1: return null
+
+	# INFO: A "shape index" is "global" i.e. not unique to a "shape owner", and a "shape ID" is LOCAL to a "shape owner"
+	# NOTE: In case the [CollisionObject2D] has multiple Shapes, find the Shape that matches `shapeIndex`
+	for shapeID: int in node.shape_owner_get_shape_count(shapeOwnerID):
+		if node.shape_owner_get_shape_index(shapeOwnerID, shapeID) == shapeIndex:
+			return node.shape_owner_get_shape(shapeOwnerID, shapeID)
+	# else
+	return null
 
 #endregion
 
