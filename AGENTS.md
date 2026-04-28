@@ -55,7 +55,7 @@
 ## Review Guidelines
 - Ignore the contents of `Temporary/` and `Lab/`
 - Functions and types marked with an `@experimental` comment are expected to have bugs and incomplete implementations. Findings involving experimental code should be a lower priority and not expected to be fixed, unless important non-experimental code depends on that experimental code.
-- Not all `null` references need to be guarded: In some cases, a crash may be better than a warning or a silent failure/skip, specially if it's a core object which should never be missing at runtime under normal circumstances.
+- Not all `null`-able references need to be guarded: In some cases, a crash is better than a warning or a silent failure/skip, specially if it's a core object which should never be missing at runtime under normal circumstances.
 - Ignore the contents of `Game/` unless the prompt and context involves a specific game being made with the main framework project.
 - The contents of `Game/` are subject to the instructions in `Game/AGENTS.override.md`
 
@@ -77,6 +77,7 @@ Follow the guidelines in `Conventions.md`, which includes these key rules:
 ## Generating New Code & Scenes
 - DO NOT EDIT ANY FILES UNLESS EXPLICITLY TOLD TO.
 - See `HowTo.md` and `Conventions.md` (specially the "Avoid" section)
+- This framework is primarily for 2D games; Godot's 3D features & APIs such as `Node3D` are almost never used or needed.
 - New gameplay behaviors should generally be implemented as components that can be reused in multiple games. 
 - "Components" are any node with a script that is a subclass of `Components/Component.gd`, and "entities" are any node with the `Entities/Entity.gd` script or its subclasses. Entities are just a container for components and multiple components can be added to an entity. Components are generally standalone and provide a single specific behavior or set of closely-related behaviors, but components may depend on each other and modify each other at runtime, such as `DamageComponent` + `DamageReceivingComponent` + `KnockbackOnHitComponent`
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
