@@ -274,14 +274,15 @@ static func findNearestNodeInGroup(referencePosition: Vector2, targetGroup: Stri
 
 
 ## Returns an offset by which to modify the GLOBAL position of a node to keep it clamped within a maximum distance/radius (in any direction) from another node.
-## If the [param nodeToClamp] is within the [param maxDistance] of the [param anchor] then (0,0) is returned i.e. no movement required.
+## If the [param nodeToClamp] is within the absolute [param maxDistance] of the [param anchor] then (0,0) is returned i.e. no movement required.
 ## May be used to tether a visual effect (such as a targeting cursor) to an anchor such as a character sprite, as in [AimingCursorComponent] & [TetherComponent].
 ## NOTE: Does NOT return a direct position, so the [param nodeToClamp]'s `global_position` must be updated via `+=` NOT `=`!
+## NOTE: A negative [param maxDistance] will clamp to the opposite side of the [param anchor]
 static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistance: float) -> Vector2:
 	var difference:	Vector2 = nodeToClamp.global_position - anchor.global_position # Use global position in case it's a parent/child relationship e.g. a visual component staying near its entity.
 	var distance:	float   = difference.length()
 
-	if distance > maxDistance:
+	if distance > abs(maxDistance):
 		var offset: Vector2 = difference.normalized() * maxDistance
 		return (anchor.global_position + offset) - nodeToClamp.global_position
 	else:
