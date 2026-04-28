@@ -96,7 +96,7 @@ static func getAllChildrenRecursively(firstNode: Node) -> Array[Node]:
 
 ## Replaces a child node with another node at the same index (order), optionally copying the position, rotation and/or scale.
 ## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free]
-## Returns: `true` if [param childToReplace] was found and replaced.
+## Returns: `true` if [param childToReplace] was found and replaced, or if both nodes are the same.
 static func replaceChild(
 	parentNode:		Node,
 	childToReplace:	Node,
@@ -106,11 +106,12 @@ static func replaceChild(
 	copyScale:		bool = false,
 	freeReplacedChild: bool = false) -> bool:
 	
-	if  childToReplace == newChild: return true # Are we trying to make the same node replace itself lol
-
 	if  childToReplace.get_parent() != parentNode:
 		Debug.printWarning(str("replaceChild() childToReplace.get_parent(): ", childToReplace.get_parent(), " != parentNode: ", parentNode))
 		return false
+
+	if  childToReplace == newChild: # Are we trying to make the same node replace itself lol
+		return true
 
 	# Is the new child already in another parent?
 	# TODO: Option to remove new child from existing parent
@@ -120,20 +121,23 @@ static func replaceChild(
 		return false
 	
 	# Copy properties
-	if  newChild is Node2D and childToReplace is Node2D:
+	if  (newChild		is Node2D or newChild		is Control) \
+	and (childToReplace is Node2D or childToReplace is Control):
 		if copyPosition: newChild.position	= childToReplace.position
 		if copyRotation: newChild.rotation	= childToReplace.rotation
 		if copyScale:	 newChild.scale		= childToReplace.scale
 
 	# Swap the kids
 	var previousChildIndex: int = childToReplace.get_index() # The original index
-	parentNode.remove_child(childToReplace) # NOTE: Do not use `replace_by()` which transfers all sub-children as well.
 
 	# If `newChild` is already in the target `parentNode`, just move it to the `childToReplace`'s place in the order and position etc.
 	if newChild.get_parent() != parentNode:
 		NodeTools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence e.g. to a [PackedScene] for save/load
 
 	parentNode.move_child(newChild, previousChildIndex)
+
+	# NOTE: Remove AFTER swapping, because removal will shift all nodes and may make `previousChildIndex` incorrect
+	parentNode.remove_child(childToReplace) # NOTE: Do not use `replace_by()` which transfers all sub-children as well.
 
 	# Yeet the disowned child?
 	if freeReplacedChild: childToReplace.queue_free()
