@@ -89,7 +89,7 @@ extends AreaContactComponent
 			activeClimbingArea = newValue
 			# Update the bounds
 			if activeClimbingArea:
-				activeClimbingAreaBounds = Tools.getShapeBoundsInNode(activeClimbingArea)
+				activeClimbingAreaBounds = Tools.getAllShapeBounds(activeClimbingArea)
 				activeClimbingAreaBoundsGlobal = Rect2(activeClimbingAreaBounds.position + activeClimbingArea.global_position, activeClimbingAreaBounds.size)
 			else:
 				activeClimbingAreaBounds = Rect2()

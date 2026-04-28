@@ -228,7 +228,7 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 
 ## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
 ## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
-## TIP: Combine with the output from [member getShapeBoundsInNode] to get an [Area2D]'s global region.
+## TIP: Combine with the output from [member getAllShapeBounds] to get an [Area2D]'s global region.
 ## WARNING: May not work correctly with rotation, scaling or negative dimensions.
 static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
 	# TODO: Account for rotation

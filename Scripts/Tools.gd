@@ -223,78 +223,108 @@ static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vecto
 		_: return Vector2.ZERO
 
 
-## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
-## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]
-## Best suited for areas with a single [RectangleShape2D], in which case the [Shape2D]'s anchor/origin will be at the center of the returned rectangle.
-## Returns: A [Rect2] of the bounds. On failure: a [Rect2] with size -1 and invalid area.
-static func getShapeBounds(node: CollisionObject2D) -> Rect2:
+## Returns a [Rect2] representing the boundary/extents of a [CollisionShape2D]'s [Shape2D] in the local coordinates of the [CollisionShape2D]'s parent.
+## On failure: Returns a 0-sized [Rect2]
+## Non-rectangular shapes may not have exact collision geometry.
+static func getShapeBounds(shapeNode: CollisionShape2D) -> Rect2:
 	# HACK: Sigh @ Godot for making this so hard...
 
-	# Find a CollisionShape2D child.
-	var shapeNode: CollisionShape2D = NodeTools.findFirstChildOfType(node, CollisionShape2D)
+	if not shapeNode or not shapeNode.shape:
+		Debug.printWarning("Tools.getShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
+		return rect2Zero
+
+	var shapeRect: Rect2 = shapeNode.shape.get_rect()
+
+	# If there is no rotation or other transforms, just apply the position translation.
+	if  is_zero_approx(shapeNode.rotation) \
+	and is_zero_approx(shapeNode.skew) \
+	and shapeNode.scale.is_equal_approx(Vector2.ONE):
+		shapeRect.position += shapeNode.position
+		return shapeRect
+
+	# Otherwise, apply the transforms to all 4 corners into the CollisionShape2D's parent coordinate space.
+	var bounds: Rect2	= 		  Rect2(shapeNode.transform * shapeRect.position, Vector2.ZERO)
+	bounds				= bounds.expand(shapeNode.transform * Vector2(shapeRect.end.x, shapeRect.position.y))
+	bounds				= bounds.expand(shapeNode.transform * shapeRect.end)
+	bounds				= bounds.expand(shapeNode.transform * Vector2(shapeRect.position.x, shapeRect.end.y))
+	return bounds
+
+
+## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D])
+## On failure: Returns a 0-sized [Rect2]
+## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]
+## Non-rectangular shapes may not have exact collision geometry; Best suited for areas with a single [RectangleShape2D], in which case the [Shape2D]'s anchor/origin will be at the center of the returned rectangle.
+static func getFirstShapeBounds(node: CollisionObject2D) -> Rect2:
+	# Find a CollisionShape2D child
+	var shapeNode: CollisionShape2D
+	if  node.get_child_count() > 0:
+		shapeNode = node.get_child(0) as CollisionShape2D # Try the fast way first: Most [Area2D]s will just have 1 child, the [CollisionShape2D]
+		if not shapeNode: shapeNode = NodeTools.findFirstChildOfType(node, CollisionShape2D)
 
 	if not shapeNode:
-		Debug.printWarning("getShapeBounds(): Cannot find a CollisionShape2D child", node)
-		return Rect2(0, 0, -1, -1) # Return an invalid negative-sized rectangle matching the node's origin.
+		Debug.printWarning("Tools.getFirstShapeBounds(): Cannot find a CollisionShape2D child", node)
+		return rect2Zero # On failure, return a rectangle with 0 size/area
 
-	var shapeBounds: Rect2 = shapeNode.shape.get_rect()
-	shapeBounds.position  += shapeNode.position # Offset the rectangle to match the [Shape2D]'s position in the container
-	return shapeBounds
+	return getShapeBounds(shapeNode)
 
 
-## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of an a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
+## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
 ## To get the bounds of the first shape only, set [param maximumShapeCount] to 1.
-## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, add + the area's [member Node2D.global_position].
-## Works most accurately & reliably for areas/bodies with a single [RectangleShape2D].
-## Returns: A [Rect2] of all the merged bounds. On failure: a rectangle with size -1 and origin (0,0)
-static func getShapeBoundsInNode(node: CollisionObject2D, maximumShapeCount: int = 100) -> Rect2:
+## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, use [method Tools.getShapeGlobalBounds].
+## Uses each [Shape2D]'s enclosing [Rect2], so non-rectangular shapes are represented by their rectangular bounds.
+## Returns: A [Rect2] of all the merged bounds. On failure: a [Rect2] size 0
+static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 100) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	# HACK: Sigh @ Godot for making this so hard...
 
-	# INFO: PLAN: Overview: An [CollisionObject2D] has a [CollisionShape2D] child [Node], which in turn has a [Shape2D] [Resource].
-	# In the parent CollisionObject2D, the CollisionShape2D's "anchor point" is at the top-left corner, so its `position` may be 0,0.
-	# But inside the CollisionShape2D, the Shape2D's anchor point is at the CENTER of the shape, so its `position` would be for example 16,16 for a rectangle of 32x32.
-	# SO, we have to figure out the Shape2D's rectangle in the coordinate space of the CollisionObject2D.
-	# THEN convert it to global coordinates.
+	# INFO: PLAN: Overview: A [CollisionObject2D] has [CollisionShape2D] child [Node]s, which in turn have [Shape2D] [Resource]s.
+	# The [Shape2D]'s rectangle is local to that resource, so each rectangle is converted into the [CollisionObject2D]'s coordinates before merging.
 
-	if node.get_child_count() < 1: return Rect2(0, 0, -1, -1) # On failure, return an invalid negative-sized rectangle
+	if node.get_child_count() < 1: return rect2Zero # On failure, return a rectangle with 0 size/area
 
 	# Get all CollisionShape2D children
 
 	var combinedShapeBounds: Rect2
-	var shapesAdded: int = 0
-	var shapeSize:	 Vector2
-	var shapeBounds: Rect2
+	var shapesAdded:		 int = 0
+	var shapeBounds:		 Rect2
 
 	for shapeNode in node.get_children(): # TBD: PERFORMANCE: Use Node.find_children()?
 		if shapeNode is CollisionShape2D:
-			shapeSize = shapeNode.shape.get_rect().size # TBD: Should we use `extents`? It seems to be half of the size, but it seems to be a hidden property [as of 4.3 Dev 3].
-			# Because a [CollisionShape2D]'s anchor is at the center of, we have to get it's top-left corner, by subtracting HALF the size of the actual SHAPE:
-			shapeBounds = Rect2(shapeNode.position - shapeSize / 2, shapeSize) # TBD: PERFORMANCE: Use * 0.5?
+			if not shapeNode.shape:
+				Debug.printWarning("Tools.getAllShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
+				continue
+
+			shapeBounds = getShapeBounds(shapeNode)
 
 			if shapesAdded < 1: combinedShapeBounds = shapeBounds # Is it the first shape?
 			else: combinedShapeBounds = combinedShapeBounds.merge(shapeBounds)
 
 			# DEBUG: Debug.printDebug(str("shape: ", shapeNode.shape, ", rect: ", shapeNode.shape.get_rect(), ", bounds in node: ", shapeBounds, ", combinedShapeBounds: ", combinedShapeBounds), node)
 			shapesAdded += 1
-			if shapesAdded >= maximumShapeCount: break
+			if shapesAdded >= maximumShapeCount: break # TBD: Log if too many shapes?
 
 	if shapesAdded < 1:
-		Debug.printWarning("getShapeBoundsInNode(): Cannot find a CollisionShape2D child", node)
-		return Rect2(0, 0, -1, -1) # On failure, return an invalid negative-sized rectangle
+		Debug.printWarning("Tools.getAllShapeBounds(): Cannot find a CollisionShape2D child", node)
+		return Rect2(Vector2.ZERO, Vector2.ZERO) # On failure, return an invalid zero-sized rectangle
 	else:
 		# DEBUG: Debug.printTrace([combinedShapeBounds, node.get_child_count(), shapesAdded], node)
 		return combinedShapeBounds
 
 
-## Calls [method Tools.getShapeBoundsInNode] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]), converted to GLOBAL coordinates.
+## Calls [method Tools.getAllShapeBounds] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]), converted to GLOBAL coordinates.
 ## Useful for comparing the [Area2D]s etc. of 2 separate nodes/entities.
-## WARNING: May not work correctly with rotation, scaling or negative dimensions.
+## On failure: Returns a 0-sized [Rect2] if no valid shape bounds are found.
 static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
-	var shapeGlobalBounds: Rect2 = getShapeBoundsInNode(node)
-	shapeGlobalBounds.position   = node.to_global(shapeGlobalBounds.position)
-	return shapeGlobalBounds
+	var localBounds: Rect2 = getAllShapeBounds(node)
+	if not localBounds.has_area(): return rect2Zero
+
+	# CHECK: PERFORMANCE: Do all these calculations hurt performance in the most case where there are no transforms?
+	var globalBounds: Rect2 = 				Rect2(node.global_transform * localBounds.position, Vector2.ZERO)
+	globalBounds			= globalBounds.expand(node.global_transform * Vector2(localBounds.end.x, localBounds.position.y))
+	globalBounds			= globalBounds.expand(node.global_transform * localBounds.end)
+	globalBounds			= globalBounds.expand(node.global_transform * Vector2(localBounds.position.x, localBounds.end.y))
+	return globalBounds
 
 
 ## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [ClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.
@@ -468,10 +498,13 @@ static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D])
 
 
 ## Returns a random point inside the combined rectangular boundary of ALL an [Area2D]'s [Shape2D]s.
-## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D].
-## Works most accurately & reliably for areas with a single [RectangleShape2D].
+## On failure, i.e. if the area has an invalid size, returns (0,0)
+## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D]
+## Best suited for areas with a single [RectangleShape2D]
 static func getRandomPositionInArea(area: Area2D) -> Vector2:
-	var areaBounds: Rect2 = getShapeBoundsInNode(area)
+	var areaBounds: Rect2 = getAllShapeBounds(area)
+
+	if not areaBounds.has_area(): return Vector2.ZERO
 
 	# Generate a random position within the area.
 

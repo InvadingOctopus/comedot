@@ -74,5 +74,5 @@ func _enter_tree() -> void:
 
 ## Updates [member areaBounds] and returns the rectangular bounds of the [Area2D]'s [CollisionShape2D].
 func updateAreaBounds() -> Rect2:
-	self.areaBounds = Tools.getShapeBoundsInNode(area)
+	self.areaBounds = Tools.getAllShapeBounds(area)
 	return areaBounds

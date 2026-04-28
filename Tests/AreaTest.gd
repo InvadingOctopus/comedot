@@ -19,10 +19,10 @@ func _process(_delta: float) -> void:
 	Debug.watchList.shapeNodePosition = testShapeNode.position
 	Debug.watchList.shapeNodeGlobalPosition = testShapeNode.global_position
 
-	var shapeBounds: Rect2 = Tools.getShapeBounds(testArea)
+	var shapeBounds: Rect2 = Tools.getFirstShapeBounds(testArea)
 	Debug.watchList.shapeBounds = shapeBounds
 
-	var shapeBoundsInArea: Rect2 = Tools.getShapeBoundsInNode(testArea)
+	var shapeBoundsInArea: Rect2 = Tools.getAllShapeBounds(testArea)
 	Debug.watchList.shapeBoundsInArea = shapeBoundsInArea
 
 	var shapeGlobalBounds: Rect2 = Tools.getShapeGlobalBounds(testArea)
