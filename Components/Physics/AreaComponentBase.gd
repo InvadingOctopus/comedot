@@ -41,7 +41,7 @@ var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
 		return areaBounds
 
 var areaBoundsGlobal: Rect2:
-	get: return Rect2(areaBounds.position + area.global_position, areaBounds.size)
+	get: return Rect2(areaBounds.position + area.global_position, areaBounds.size) # TBD: PERFORMANCE: Use Tools.Tools.getShapeGlobalBounds()?
 #endregion
 
 
