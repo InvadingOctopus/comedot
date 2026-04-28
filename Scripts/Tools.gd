@@ -70,6 +70,11 @@ enum Shape {
 	}
 
 
+# Because Dumbdot doesn't have Rect2.ZERO etc.
+const rect2Zero:	Rect2  = Rect2 ( Vector2.ZERO,  Vector2.ZERO)
+const rect2iZero: 	Rect2i = Rect2i(Vector2i.ZERO, Vector2i.ZERO)
+
+
 ## For use with [method Array.pick_random] with an optional scaling factor.
 const plusMinusOneOrZero:		Array[int]	 = [-1, 0, +1] # TBD: Name :')
 
