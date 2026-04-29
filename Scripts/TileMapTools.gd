@@ -23,7 +23,7 @@ static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) ->
 static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
 	# TODO: Handle scaling/rotation/etc.
 	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
-	if not cellGrid.has_area(): return Rect2() # Null area if there are no cells
+	if not cellGrid.has_area(): return Tools.rect2Zero # Null area if there are no cells
 
 	var screenRect:	Rect2
 	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
