@@ -695,16 +695,13 @@ static func printPropertiesToLabels(object: Object, labels: Array[Label], should
 
 #region Text Functions
 
-## Returns an Enum's value along with its key as a text string.
-## TIP: To just get the Enum key corresponding to the specified value, use [method Dictionary.find_key].
+## Returns an [Enum]'s value along with its key as a text string.
+## TIP: To just get the [Enum] key corresponding to the specified value, use [method Dictionary.find_key]
 ## WARNING: May NOT work as expected for enums with non-sequential values or starting below 0, or if there are multiple identical values, or if there is a 'null' key.
 static func getEnumText(enumType: Dictionary, value: int) -> String:
 	# TBD: Less ambiguous name?
-	var key: String
-
-	key = str(enumType.find_key(value)) # TBD: Check for `null`?
-	if key.is_empty(): key = "[invalid key/value]"
-
+	var key: Variant = enumType.find_key(value) # Variant to allow for `null` because str(Dictionary.find_key()) returns "null" (as text) which doesn't work for checking with String.is_empty()
+	if  key == null: key = "[invalid key/value]"
 	return str(value, " (", key, ")")
 
 
