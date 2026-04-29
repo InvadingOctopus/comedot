@@ -215,7 +215,7 @@ func _ready() -> void:
 
 ## Returns a readable name for the [param state].
 func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
-	return Tools.getEnumText(TurnBasedState, state)
+	return Tools.getEnumKey(TurnBasedState, state)
 
 
 #region Coordinator External Interface

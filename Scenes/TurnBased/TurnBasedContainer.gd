@@ -578,7 +578,7 @@ var logName: String: ## Customizes logs for the turn-based system to include the
 
 ## Returns a readable name for the [param state].
 func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
-	return Tools.getEnumText(TurnBasedState, state)
+	return Tools.getEnumKey(TurnBasedState, state)
 
 
 func _process(_delta: float) -> void:
