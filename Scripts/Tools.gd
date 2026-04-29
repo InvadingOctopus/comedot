@@ -828,15 +828,23 @@ static func pickRandomArrayIndices(arraySize: int, numberOfIndices: int) -> Arra
 
 ## Checks whether a [Variant] value may be considered a "success", for example the return of a function.
 ## If [param value] is a [bool], then it is returned as is.
-## If the value is an [Array] or [DIctionary], `true` is returned if it's not empty.
-## For all other types, `true` is returned if the value is not `null`.
+## If the value is a number, `true` is returned even if it's 0, unless it's a `float` NAN (Not A Number).
+## If the value is an [Array] or [Dictionary] or a "packed array" type, `true` is returned if it's not empty.
+## For all other types, `true` is returned if the value is not `null`
 ## TIP: Use for verifying whether a [Payload]'s [method executeImplementation] executed successfully.
 static func checkResult(value: Variant) -> bool:
 	# Because GDScript doesn't have Tuples :')
-	if    value is bool: return value
+	if    value is bool:	return value
+	elif  value == null:	return false # Check a common case first, even though we fall through to accepting all non-null values in the end
+	elif  value is int:		return true  # TBD: Return `true` even if a number is 0?
+	elif  value is float:	return not is_nan(value)
 	elif  value is Array or value is Dictionary: return not value.is_empty()
-	elif  value != null: return true
-	else: return false
+	else: 
+		# Check for Packed Arrays
+		var valueTypeName: String = type_string(typeof(value))
+		if    valueTypeName.begins_with("Packed") and valueTypeName.ends_with("Array"): return not value.is_empty()
+		elif  value != null: return true # Just in case, even though `null` was checked above
+		else: return false
 
 
 ## Stops a [Timer] and emits its [signal Timer.timeout] signal.
