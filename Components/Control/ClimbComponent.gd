@@ -17,14 +17,25 @@ extends AreaContactComponent
 
 #region Parameters
 
-## If `true`, then the Entity is horizontally confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing].
-## NOTE: This prevents ANY movement outside the Climbable caused by ANY physics source.
-## TIP: Horizontal input can be disabled via [member shouldAllowHorizontalInput]
-@export var shouldConfineHorizontally:	bool = true
+@export_group("Control")
 
-## If `true`, then the Entity is vertically confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing].
-## NOTE: This prevents ANY movement outside the Climbable caused by ANY physics source.
-@export var shouldConfineVertically:	bool = true
+## If `true`, suppresses the horizontal [member InputComponent.horizontalInput].
+## NOTE: Walking is always allowed when in contact with the ground or a floor platform.
+## IMPORTANT: This [ClimbComponent] must come BEFORE the [PlatformerPhysicsComponent] in the Scene Tree to suppress input events.
+@export var shouldAllowHorizontalInput: bool = true
+
+@export var isPlayerControlled:			bool = true:
+	set(newValue):
+		if newValue != isPlayerControlled:
+			isPlayerControlled = newValue
+			self.set_process_unhandled_input(isPlayerControlled and isEnabled)
+
+## The name of the InputEvent Action the player can press to cancel climbing, e.g. by jumping.
+## NOTE: Cancellation occurs as soon as the input is pressed (not on release).
+@export var cancelClimbInputActionName:	StringName = GlobalInput.Actions.jump
+
+
+@export_group("Movement")
 
 ## If `true`, then the Entity will be INSTANTLY repositioned fully inside the rectangular bounds of the chosen Climbable [Area2D].
 ## NOTE: Superseded by [member shouldWalkIntoClimbableArea] while [CharacterBodyComponent] [member CharacterBody2D.is_on_floor].
@@ -36,20 +47,21 @@ extends AreaContactComponent
 ## NOTE: Supercededs [member shouldSnapToClimbableArea].
 @export var shouldWalkIntoClimbableArea:bool = true
 
-## If `true`, suppresses the horizontal [member InputComponent.horizontalInput].
-## NOTE: Walking is always allowed when in contact with the ground or a floor platform.
-## IMPORTANT: This [ClimbComponent] must come BEFORE the [PlatformerPhysicsComponent] in the Scene Tree to suppress input events.
-@export var shouldAllowHorizontalInput: bool = true
+## Update [member activeClimbingAreaBoundsGlobal] each time before checking.
+## WARNING: PERFORMANCE: This may decrease performance; use ONLY if ladders/etc. will move during gameplay!
+@export var shouldAlwaysUpdateBounds:	bool = false
 
-@export var isPlayerControlled:			bool = true:
-	set(newValue):
-		if newValue != isPlayerControlled:
-			isPlayerControlled = newValue
-			self.set_process_unhandled_input(isInClimbableArea and isPlayerControlled and isEnabled)
 
-## The name of the InputEvent Action the player can press to cancel climbing, e.g. by jumping.
-## NOTE: Cancellation occurs as soon as the input is pressed (not on release).
-@export var cancelClimbInputActionName:	StringName = GlobalInput.Actions.jump
+@export_group("Confinement")
+
+## If `true`, then the Entity is horizontally confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing].
+## NOTE: This prevents ANY movement outside the Climbable caused by ANY physics source.
+## TIP: Horizontal input can be disabled via [member shouldAllowHorizontalInput]
+@export var shouldConfineHorizontally:	bool = true
+
+## If `true`, then the Entity is vertically confined within the rectangular bounds of the [member activeClimbingArea] [Area2D] while [member isClimbing].
+## NOTE: This prevents ANY movement outside the Climbable caused by ANY physics source.
+@export var shouldConfineVertically:	bool = true
 
 #endregion
 
@@ -66,7 +78,7 @@ extends AreaContactComponent
 			isInClimbableArea = newValue
 			if not isInClimbableArea: isClimbing = false
 			self.set_physics_process(isInClimbableArea and isEnabled)
-			# self.set_process_unhandled_input(isInClimbableArea and isPlayerControlled and isEnabled) # REMOVED: Always check input even outside climbables, to allow pressing & holding UP/DOWN while outside climbables and then "grabbing" the climbable when entering it.
+			# self.set_process_unhandled_input(isPlayerControlled and isEnabled) # REMOVED: Always check input even outside climbables, to allow pressing & holding UP/DOWN while outside climbables and then "grabbing" the climbable when entering it.
 
 ## `true` if the Entity is actively climbing a ladder/rope/cliff etc.
 @export_storage var isClimbing: bool = false:
@@ -87,13 +99,7 @@ extends AreaContactComponent
 				Debug.printChange("activeClimbingArea", activeClimbingArea, newValue)
 				emitDebugBubble(str("activeClimbingArea->", newValue))
 			activeClimbingArea = newValue
-			# Update the bounds
-			if activeClimbingArea:
-				activeClimbingAreaBounds = Tools.getAllShapeBounds(activeClimbingArea)
-				activeClimbingAreaBoundsGlobal = Rect2(activeClimbingAreaBounds.position + activeClimbingArea.global_position, activeClimbingAreaBounds.size)
-			else:
-				activeClimbingAreaBounds = Rect2()
-				activeClimbingAreaBoundsGlobal = Rect2()
+			updateActiveClimbingAreaBounds()
 
 var activeClimbingAreaBounds:		Rect2
 var activeClimbingAreaBoundsGlobal:	Rect2
@@ -117,10 +123,10 @@ var isLastVerticalInputZero:	bool = true: # Start by assuming 0
 
 
 #region Signals
-signal didEnterClimbableArea(area: Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didEnterArea] & [method onCollide]
-signal didExitClimbableArea(area:  Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didExitArea] & [method onExit]
-signal didStartClimb(area:	Area2D)
-signal didEndClimb(area:	Area2D) # TBD: Should this be emitted by the `isClimbing` setter?
+signal didEnterClimbableArea(area:Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didEnterArea] & [method onCollide]
+signal didExitClimbableArea(area: Area2D) ## Emitted AFTER [signal AreaCollisionComponent.didExitArea] & [method onExit]
+signal didStartClimb(area: Area2D)
+signal didEndClimb(area:   Area2D) # TBD: Should this be emitted by the `isClimbing` setter?
 #endregion
 
 
@@ -147,9 +153,7 @@ func _ready() -> void:
 	self.lastVerticalInputDirection = int(signf(self.lastVerticalInput))
 	self.isLastVerticalInputZero = lastVerticalInputDirection == 0
 
-	self.set_process(debugMode)
-	self.set_process_unhandled_input(isPlayerControlled and isEnabled)
-	self.set_physics_process(isInClimbableArea and isEnabled)
+	self.updateSetAllProcess()
 
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	Tools.connectSignal(characterBodyComponent.didMove, self.oncharacterBodyComponent_didMove) # For confinement # TODO: Toggle signal based on flags
@@ -157,19 +161,61 @@ func _ready() -> void:
 #endregion
 
 
+#region Events
+
+func setIsEnabled(newValue: bool) -> void:
+	var wasEnabled: bool = isEnabled
+	super.setIsEnabled(newValue) # Updates `isEnabled`
+	if  wasEnabled and not isEnabled:
+		stopClimbing()
+		if isClimbing: self.isClimbing = false # Restore `platformerPhysicsComponent.isGravityEnabled`
+		self.isInClimbableArea = false
+	self.updateSetAllProcess()
+
+
+func updateSetAllProcess() -> void:
+	self.set_process_unhandled_input(isPlayerControlled and isEnabled)
+	self.set_physics_process(isInClimbableArea and isEnabled) # NOTE: Do NOT check `isLastVerticalInputZero` because `PlatformerPhysicsComponent.shouldSkipFriction` should be set every frame while climbing, even if there is no input.
+	self.set_process(debugMode)
+	
+#endregion
+
+
 #region Area Collisions
 
 func onAreaEntered(areaEntered: Area2D) -> void:
 	super.onAreaEntered(areaEntered) # DESIGN: Leave AreaContactComponent implementation untouched incase someone wants to change the `groupToInclude` at runtime,
-	self.isInClimbableArea = true
-	didEnterClimbableArea.emit(areaEntered)
+	# Check in case super.onAreaEntered() rejected the area for whatever reason
+	# BUGRISK: `areasInContact` could contain stale entries even after super rejects, if not `isEnabled` or not `shouldMonitorAreas` etc.
+	if  areasInContact.has(areaEntered):
+		self.isInClimbableArea = true
+		didEnterClimbableArea.emit(areaEntered)
 
 
 func onAreaExited(areaExited: Area2D) -> void:
+	# Let super.onAreaExited() run then we perform our cleanup only if the area was in contact
+	# BUGRISK: `areasInContact` could contain stale entries even after super rejects, if not `isEnabled` or not `shouldMonitorAreas` etc.
+	var wasInContact: bool = areasInContact.has(areaExited)
 	super.onAreaExited(areaExited)
-	if self.areasInContact.is_empty(): # NOTE: Only clear `isInClimbableArea` if there are no areas, to account for overlapping areas!
-		self.isInClimbableArea = false
+	if  not wasInContact: return
+
+	if  self.activeClimbingArea == areaExited:
+		stopClimbing() # Also clears `activeClimbingArea`
+	if  self.areasInContact.is_empty(): 
+		self.isInClimbableArea = false # NOTE: Only clear `isInClimbableArea` if there are no areas, to account for overlapping areas! # Also clears `isClimbing`
+		stopClimbing()
 	didExitClimbableArea.emit(areaExited)
+
+
+func updateActiveClimbingAreaBounds() -> Rect2:
+	if 	activeClimbingArea:
+		activeClimbingAreaBounds		= Tools.getAllShapeBounds(activeClimbingArea)
+		activeClimbingAreaBoundsGlobal	= Tools.getShapeGlobalBounds(activeClimbingArea)
+	else:
+		activeClimbingAreaBounds		= Tools.rect2Zero
+		activeClimbingAreaBoundsGlobal	= Tools.rect2Zero
+
+	return activeClimbingAreaBoundsGlobal
 
 #endregion
 
@@ -276,18 +322,17 @@ func findNearestClimbableArea() -> Area2D:
 	return nearestArea
 
 
-## Returns the offset of this component's [Area2D] in relation to the bounds of the [param targetRect].
-## If the [param targetRect] object is thinner than the character's body, e.g. a rope or vine, then displacement is ignored, and the offset attempts to align the area centers.
+## Returns the offset of this component's [Area2D] in relation to the bounds of the [param targetRect]
+## If the [param targetRect] object is thinner than the character's body, e.g. a rope or vine,
+## then horizontal displacement is ignored, and the offset attempts to align the area centers.
 func getOffsetOutsideClimbable(targetRect: Rect2) -> Vector2:
-	var displacement: Vector2
+	# Make sure to also clamp vertically in case of `shouldConfineVertically`
+	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetRect)
 
-	if targetRect.size.x >= self.areaBoundsGlobal.size.x:
-		displacement = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetRect)
-
-	# NOTE: If the Climbable object is thinner than the character's body, e.g. a rope or vine, then ignore the displacement,
+	# NOTE: If the Climbable object is thinner than the character's body, e.g. a rope or vine,
+	# center horizontally instead of trying to fit the whole climber width inside it,
 	# because then otherwise we would always stick out on either side and never "snap" in!
-	# Just try to align the centers.
-	else:
+	if targetRect.size.x < self.areaBoundsGlobal.size.x:
 		displacement.x = self.areaBoundsGlobal.get_center().x - targetRect.get_center().x # Make sure the displacement is negative if we're to the left
 
 	return displacement
@@ -320,7 +365,9 @@ func walkIntoArea(targetArea: Area2D) -> Vector2:
 ## Returns: The distance moved. (0,0) if no movement required or if there is no [member activeClimbingArea].
 func snapToActiveClimbingArea() -> Vector2:
 	if not activeClimbingArea: return Vector2.ZERO
+	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = Tools.getShapeGlobalBounds(activeClimbingArea)
 	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
+
 	if not displacement.is_zero_approx():
 		characterBodyComponent.body.velocity = Vector2.ZERO # Stop all other inertia
 		parentEntity.position += -displacement # NOTE: Recorrect the position by applying the NEGATIVE of the displacement,
@@ -348,7 +395,9 @@ func _physics_process(delta: float) -> void:
 	# NOTE: Recheck input every frame, so we can reactivate climbing if input is still pressed while exiting and then re-entering a Climbable area
 	# such as when jumping out of a ladder and then touching it again in mid-air while still holding the UP input.
 
-	if not isLastVerticalInputZero and not isClimbing \
+	if not isEnabled: return
+
+	if   not isLastVerticalInputZero and not isClimbing \
 	and (not lastVerticalInputDirection > 0 or not characterBodyComponent.isOnFloor): # Ignore DOWN input while on the ground
 		climbNearestArea()
 
@@ -386,6 +435,7 @@ func oncharacterBodyComponent_didMove(_delta: float) -> void:
 	if  not isClimbing or not activeClimbingArea \
 	or (not shouldConfineHorizontally and not shouldConfineVertically): return
 
+	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = Tools.getShapeGlobalBounds(activeClimbingArea)
 	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
 	if debugMode: Debug.watchList.displacement = displacement
 
