@@ -757,13 +757,15 @@ static func wrapUnitFloat(value: float) -> float:
 
 #region Array Functions
 
+## NOTE: Packed arrays such as [PackedStringArray] etc. are accepted even though [param array] is typed as [Array]
 static func validateArrayIndex(array: Array, index: int) -> bool:
 	return index >= 0 and index < array.size()
 
 
 ## Takes a [param index] and increments it by the specified amount, wrapping it around to 0 + remainder if it exceeds an [param array]'s size.
 ## Returns 0 if the array is empty, which will be an invalid index.
-static func wrapArrayIndex(array: Variant, index: int, increment: int) -> int: # NOTE: Typed as [Variant] instead of [Array] in order to also accept [PackedStringArray] etc.
+## NOTE: Packed arrays such as [PackedStringArray] etc. are accepted even though [param array] is typed as [Array]
+static func wrapArrayIndex(array: Array, index: int, increment: int) -> int:
 	if not array.is_empty(): return Tools.wrapInteger(0, index + increment, array.size() - 1)
 	else: return 0
 
