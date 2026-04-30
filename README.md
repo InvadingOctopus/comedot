@@ -105,7 +105,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [agents]:		AGENTS.md
 [thanks]:		Thanks.md
 [todo]:			ToDo.md
-[tools]:		Scripts/Tools.gd
+[tools]:		Scripts/Tools/Tools.gd
 
 [godot]: https://github.com/godotengine/godot "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance

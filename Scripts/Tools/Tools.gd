@@ -7,7 +7,6 @@ class_name Tools
 extends GDScript
 
 
-
 #region Constants
 
 ## The cardinal & ordinal directions, each assigned a number representing the associated rotation angle in degrees, with East = 0 and incrementing by 45

@@ -20,7 +20,7 @@
 - `Tests/`: Playable scenes and supporting scripts for manually testing subsystems and mechanics such as combat or tile-based/turn-based components. Name format: `*Test.tscn` + `*Test.gd`
 - `addons/`: Godot Editor plugins.
 - `Temporary/`, `Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If a file in these folders prevents compilation/parsing/export, consider removing that file.
-- `Scripts/Tools.gd`, `*Tools.gd`: Files containing global static standalone helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
+- `Scripts/Tools/Tools.gd`, `*Tools.gd`: Files containing global static standalone helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
 - `Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. Everything outside the `Game/` subtree is part of the framework that is shared between multiple games. When generating code for a game, only the files in the `Game/` subtree should be modified. `Game/AGENTS.override.md` takes precedence for any activity inside the `Game/` subtree.
 
 

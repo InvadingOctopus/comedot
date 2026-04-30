@@ -153,7 +153,7 @@ When you need to add new functionality specific to your game, you have the follo
 
 * ⚠️ The first time you load a copy of this project, there may be errors because Godot will re-import various files and set the internal IDs for assets, textures etc. To fix: Close and reopen the project.
 
-* 🛠️ See `Scripts/Tools.gd` & other `*Tools.gd` scripts for standalone helper functions for common tasks that Godot's builtin types are missing, such as `validateArrayIndex()`, `connectSignal()`, `isPointInTileMap()` etc.
+* 🛠️ See `Scripts/Tools/Tools.gd` & other `*Tools.gd` scripts for standalone helper functions for common tasks that Godot's builtin types are missing, such as `validateArrayIndex()`, `connectSignal()`, `isPointInTileMap()` etc.
 
 * 🪲 The `debugMode` property on Components and many Scripts is your friend! It will print extra debug information in the logs and/or enable extra visual cues.
 
