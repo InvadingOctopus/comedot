@@ -316,7 +316,7 @@ func findNearestClimbableArea() -> Area2D:
 
 	var nearestArea: Area2D
 	if areasInContact.size() == 1: nearestArea = areasInContact[0]
-	else: nearestArea = Tools.findNearestArea(self.area, areasInContact)
+	else: nearestArea = AreaTools.findNearestArea(self.area, areasInContact)
 
 	#if debugMode: printTrace(nearestArea)
 	return nearestArea

@@ -22,10 +22,10 @@ extends Area2D
 
 func onSpawnTimer_willAddSpawn(newSpawn: Node, parent: Node) -> void:
 	# If spawning directly inside this Area2D just get a random position in local coordinates
-	if parent == self: newSpawn.position =Tools.getRandomPositionInArea(self)
+	if parent == self: newSpawn.position = AreaTools.getRandomPositionInArea(self)
 
 	# If the parent is a different Node2D, convert a random position inside this Area2D to that other node's local space
-	elif is_instance_of(parent, Node2D): newSpawn.position = parent.to_local(self.to_global(Tools.getRandomPositionInArea(self)))
+	elif is_instance_of(parent, Node2D): newSpawn.position = parent.to_local(self.to_global(AreaTools.getRandomPositionInArea(self)))
 
 	# If the parent is a plain Node (e.g. for grouping) or Control, just place the spawn at a random position in this Area2D's coordinate space (and hope for the best?)
-	else: newSpawn.position = self.to_global(Tools.getRandomPositionInArea(self))
+	else: newSpawn.position = self.to_global(AreaTools.getRandomPositionInArea(self))
