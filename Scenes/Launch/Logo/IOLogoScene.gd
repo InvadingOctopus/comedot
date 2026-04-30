@@ -16,7 +16,7 @@ var textLines: PackedStringArray = [
 	"0 OK, 10:1",
 	]
 
-const textColors: Array[Color] = [
+const textColors: PackedColorArray = [
 	Color.DODGER_BLUE, # C64 Prompt
 	Color.WHITE, # Title
 	Color.WHITE, # Copyright
