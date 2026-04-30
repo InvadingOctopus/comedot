@@ -18,6 +18,7 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 ## Also sets the child's owner to the new parent for persistence.
 ## [param copyTransform] overrides [param copyRotation] & [param copyScale] and copies the full global transform.
 ## Example: Using [Marker2D]s as placeholders for objects like doors etc. during procedural map generation from a template.
+## ALERT: [param child]'s [method Node._enter_tree] & [method Node._ready] may run BEFORE the new transform is applied.
 ## NOTE: Also sets the `force_readable_name` parameter if [member Debug.shouldForceReadableName], which may slow performance if used frequently.
 static func addChildAtNode(
 	child:			Node2D,
