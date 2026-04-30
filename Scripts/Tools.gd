@@ -269,7 +269,8 @@ static func getFirstShapeBounds(node: CollisionObject2D) -> Rect2:
 
 
 ## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
-## To get the bounds of the first shape only, set [param maximumShapeCount] to 1.
+## Shapes that are [member CollisionShape2D.disabled] or nested or over the [param maximumShapeCount] are skipped.
+## To get the bounds of the first valid shape only, set [param maximumShapeCount] to 1.
 ## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, use [method Tools.getShapeGlobalBounds].
 ## Uses each [Shape2D]'s enclosing [Rect2], so non-rectangular shapes are represented by their rectangular bounds.
 ## Returns: A [Rect2] of all the merged bounds. On failure: a [Rect2] size 0
@@ -289,7 +290,7 @@ static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 
 	var shapeBounds:		 Rect2
 
 	for shapeNode in node.get_children(): # TBD: PERFORMANCE: Use Node.find_children()?
-		if shapeNode is CollisionShape2D:
+		if shapeNode is CollisionShape2D and not shapeNode.disabled:
 			if not shapeNode.shape:
 				Debug.printWarning("Tools.getAllShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
 				continue
@@ -304,7 +305,7 @@ static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 
 			if shapesAdded >= maximumShapeCount: break # TBD: Log if too many shapes?
 
 	if shapesAdded < 1:
-		Debug.printWarning("Tools.getAllShapeBounds(): Cannot find a CollisionShape2D child", node)
+		Debug.printWarning("Tools.getAllShapeBounds(): Cannot find a valid CollisionShape2D child", node)
 		return Rect2(Vector2.ZERO, Vector2.ZERO) # On failure, return an invalid zero-sized rectangle
 	else:
 		# DEBUG: Debug.printTrace([combinedShapeBounds, node.get_child_count(), shapesAdded], node)
