@@ -57,7 +57,7 @@ static func findFirstChildOfType(parentNode: Node, childType: Variant, includePa
 ## If [param returnParentIfNoMatches] is `true` then the [param parentNode] ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes of an entity to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
 ## WARNING: [param returnParentIfNoMatches] returns the [param parentNode] even if it is NOT one of the [param childTypes]!
-## PERFORMANCE: Should be the same as multiple calls to [method NodeTools.findFirstChildOfType] in order of the desired types.
+## PERFORMANCE: Should be the same as multiple calls to [method NodeTools.findFirstChildOfType] without `includeParent`, in order of the desired types.
 static func findFirstChildOfAnyTypes(parentNode: Node, childTypes: Array[Variant], returnParentIfNoMatches: bool = true) -> Node:
 	# TBD: Better name
 	# Nodes may be an instance of multiple inherited types, so check each of the requested types.

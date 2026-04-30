@@ -65,6 +65,7 @@ extends Component
 			# NOTE: AVOID: Do not applyInitialCoordinates() here; it would mess up when switching between different TileMaps.
 
 ## If `true` and [member tileMap] is `null` then the current Scene will be searched and the first [TileMapLayerWithCellData] will be used, if any.
+## NOTE: Does NOT search subchildren; TileMaps grouped under "container" Nodes will not be detected.
 ## WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
 ## @experimental
 @export var shouldSearchForTileMap: bool = false
@@ -188,14 +189,15 @@ func onWillRemoveFromEntity() -> void:
 
 #region Validation
 
-## Verifies [member tileMap] & [member tileMapData].
+## Verifies [member tileMap] & [member tileMapData]
 func validateTileMap(searchForTileMap: bool = self.shouldSearchForTileMap) -> bool:
 	# TODO: If missing, try to use the first [TileMapLayerWithCellData] found in the current scene, if any?
 
 	if not tileMap:
 		if searchForTileMap:
 			if debugMode: printDebug("tileMap not specified! Searching for first TileMapLayerWithCellData or TileMapLayer in current scene…")
-			tileMap = NodeTools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches # WARNING: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+			# WARNING: BUGRISK: Caues bugs when dynamically moving between TileMaps or setting up new Entities.
+			tileMap = NodeTools.findFirstChildOfAnyTypes(get_tree().current_scene, [TileMapLayerWithCellData, TileMapLayer], false) # not returnParentIfNoMatches
 
 		# Warn only in debugMode, in case the tileMapData will be supplied by a different script.
 		if debugMode and not tileMap: printWarning("Missing TileMapLayerWithCellData or TileMapLayer")
