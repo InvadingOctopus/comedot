@@ -22,7 +22,7 @@ static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) ->
 ## ALERT:  May not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
 static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
 	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
-	if not cellGrid.has_area(): return Tools.rect2Zero # Null area if there are no cells
+	if not cellGrid.has_area(): return RectTools.rect2Zero # Null area if there are no cells
 	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
 	return map.transform * Rect2(cellGrid.position * tileSize, cellGrid.size * tileSize).abs() # Apply all transforms including rotation etc.
 

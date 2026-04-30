@@ -212,8 +212,8 @@ func updateActiveClimbingAreaBounds() -> Rect2:
 		activeClimbingAreaBounds		= Tools.getAllShapeBounds(activeClimbingArea)
 		activeClimbingAreaBoundsGlobal	= Tools.getShapeGlobalBounds(activeClimbingArea)
 	else:
-		activeClimbingAreaBounds		= Tools.rect2Zero
-		activeClimbingAreaBoundsGlobal	= Tools.rect2Zero
+		activeClimbingAreaBounds		= RectTools.rect2Zero
+		activeClimbingAreaBoundsGlobal	= RectTools.rect2Zero
 
 	return activeClimbingAreaBoundsGlobal
 
@@ -327,7 +327,7 @@ func findNearestClimbableArea() -> Area2D:
 ## then horizontal displacement is ignored, and the offset attempts to align the area centers.
 func getOffsetOutsideClimbable(targetRect: Rect2) -> Vector2:
 	# Make sure to also clamp vertically in case of `shouldConfineVertically`
-	var displacement: Vector2 = Tools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetRect)
+	var displacement: Vector2 = RectTools.getRectOffsetOutsideContainer(self.areaBoundsGlobal, targetRect)
 
 	# NOTE: If the Climbable object is thinner than the character's body, e.g. a rope or vine,
 	# center horizontally instead of trying to fit the whole climber width inside it,
@@ -464,7 +464,7 @@ func showDebugInfo() -> void:
 		activeClimbingArea	= activeClimbingArea,
 		climbingAreaRectGlobal	= activeClimbingAreaBoundsGlobal,
 		climberRect			= areaBoundsGlobal,
-		#displacement		= Tools.getRectOffsetOutsideContainer(areaBoundsGlobal, activeClimbingAreaBoundsGlobal),
+		#displacement		= RectTools.getRectOffsetOutsideContainer(areaBoundsGlobal, activeClimbingAreaBoundsGlobal),
 		input				= lastVerticalInput,
 		inputSign			= lastVerticalInputDirection,
 		inputZero			= isLastVerticalInputZero,

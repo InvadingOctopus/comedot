@@ -50,7 +50,7 @@ extends Component
 			if activeClimbingMap:
 				activeClimbingMapBoundsGlobal = TileMapTools.getTileMapScreenBounds(activeClimbingMap)
 			else:
-				activeClimbingMapBoundsGlobal = Tools.rect2Zero
+				activeClimbingMapBoundsGlobal = RectTools.rect2Zero
 
 var activeClimbingMapBoundsGlobal:	Rect2
 var previousClimbedMap:				TileMapLayer

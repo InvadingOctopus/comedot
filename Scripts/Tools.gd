@@ -70,11 +70,6 @@ enum Shape {
 	}
 
 
-# Because Dumbdot doesn't have Rect2.ZERO etc.
-const rect2Zero:	Rect2  = Rect2 ( Vector2.ZERO,  Vector2.ZERO)
-const rect2iZero: 	Rect2i = Rect2i(Vector2i.ZERO, Vector2i.ZERO)
-
-
 ## For use with [method Array.pick_random] with an optional scaling factor.
 const plusMinusOneOrZero:		Array[int]	 = [-1, 0, +1] # TBD: Name :')
 
@@ -205,24 +200,6 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 
 #region Area & Shape Geometry
 
-static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vector2:
-	var position:	Vector2 = rectangle.position
-	var center:		Vector2 = rectangle.get_center()
-	var end:		Vector2 = rectangle.end
-
-	match compassDirection:
-		CompassVectors.northWest:	return Vector2(position.x, position.y)
-		CompassVectors.north:		return Vector2(center.x, position.y)
-		CompassVectors.northEast:	return Vector2(end.x, position.y)
-		CompassVectors.east:		return Vector2(end.x, center.y)
-		CompassVectors.southEast:	return Vector2(end.x, end.y)
-		CompassVectors.south:		return Vector2(center.x, end.y)
-		CompassVectors.southWest:	return Vector2(position.x, end.y)
-		CompassVectors.west:		return Vector2(position.x, center.y)
-
-		_: return Vector2.ZERO
-
-
 ## Returns a [Rect2] representing the boundary/extents of a [CollisionShape2D]'s [Shape2D] in the local coordinates of the [CollisionShape2D]'s parent.
 ## On failure: Returns a 0-sized [Rect2]
 ## ALERT: Non-rectangular shapes may not have exact collision geometry.
@@ -231,7 +208,7 @@ static func getShapeBounds(shapeNode: CollisionShape2D) -> Rect2:
 		return shapeNode.transform * shapeNode.shape.get_rect().abs() # Apply all transforms including rotation/skew/etc.
 	else:
 		Debug.printWarning("Tools.getShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
-		return rect2Zero
+		return RectTools.rect2Zero
 
 
 ## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D])
@@ -247,7 +224,7 @@ static func getFirstShapeBounds(node: CollisionObject2D) -> Rect2:
 
 	if not shapeNode:
 		Debug.printWarning("Tools.getFirstShapeBounds(): Cannot find a CollisionShape2D child", node)
-		return rect2Zero # On failure, return a rectangle with 0 size/area
+		return RectTools.rect2Zero # On failure, return a rectangle with 0 size/area
 
 	return getShapeBounds(shapeNode)
 
@@ -265,7 +242,7 @@ static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 
 	# INFO: PLAN: Overview: A [CollisionObject2D] has [CollisionShape2D] child [Node]s, which in turn have [Shape2D] [Resource]s.
 	# The [Shape2D]'s rectangle is local to that resource, so each rectangle is converted into the [CollisionObject2D]'s coordinates before merging.
 
-	if node.get_child_count() < 1: return rect2Zero # On failure, return a rectangle with 0 size/area
+	if node.get_child_count() < 1: return RectTools.rect2Zero # On failure, return a rectangle with 0 size/area
 
 	# Get all CollisionShape2D children
 
@@ -302,97 +279,8 @@ static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 
 static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	var localBounds: Rect2 = getAllShapeBounds(node)
-	if not localBounds.has_area(): return rect2Zero
+	if not localBounds.has_area(): return RectTools.rect2Zero
 	return node.global_transform * localBounds.abs() # Apply all transforms including rotation/skew/etc.
-
-
-## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [ClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.
-## TIP: To put the inner rectangle back inside the container rectangle, SUBTRACT (or add the negative of) the returned offset from the [param containedRect]'s [member Rect2.position] (or from the position of the Entity it represents).
-## WARNING: Does NOT include rotation or scaling etc.
-## Returns: The offset/displacement by which the [param containedRect] is outside the bounds of the [param containerRect].
-## Negative -X values mean to the left, +X means to the right. -Y means jutting upwards, +Y means downwards.
-## (0,0) if the [param containedRect] is completely inside the [param containerRect].
-static func getRectOffsetOutsideContainer(containedRect: Rect2, containerRect: Rect2) -> Vector2:
-	# If the container completely encloses the containee, no need to do anything.
-	if containerRect.encloses(containedRect): return Vector2.ZERO
-
-	var displacement: Vector2
-
-	# Out to the left?
-	if containedRect.position.x < containerRect.position.x:
-		displacement.x = containedRect.position.x - containerRect.position.x # Negative if the containee's left edge is further left
-	# Out to the right?
-	elif containedRect.end.x > containerRect.end.x:
-		displacement.x = containedRect.end.x - containerRect.end.x # Positive if the containee's right edge is further right
-
-	# Out over the top?
-	if containedRect.position.y < containerRect.position.y:
-		displacement.y = containedRect.position.y - containerRect.position.y # Negative if the containee's top is higher
-	# Out under the bottom?
-	elif containedRect.end.y > containerRect.end.y:
-		displacement.y = containedRect.end.y - containerRect.end.y # Positive if the containee's bottom is lower
-
-	return displacement
-
-
-## Checks a list of [Rect2]s and returns the rectangle nearest to a specified reference rectangle.
-## The [param comparedRects] would usually represent static "zones" and the [param referenceRect] may be the bounds of a player Entity or another character etc.
-static func findNearestRect(referenceRect: Rect2, comparedRects: Array[Rect2]) -> Rect2:
-	# TBD: PERFORMANCE: Option to cache results?
-
-	var nearestRect:	 Rect2
-	var minimumDistance: float = INF # Start with infinity
-
-	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
-
-	var referenceLeft:	float = referenceRect.position.x
-	var referenceRight:	float = referenceRect.end.x
-	var referenceTop:	float = referenceRect.position.y
-	var referenceBottom:float = referenceRect.end.y
-
-	var comparedLeft:	float
-	var comparedRight:	float
-	var comparedTop:	float
-	var comparedBottom:	float
-
-	var gap:			Vector2 # The pixels between the area edges
-	var distance:		float	# The Euclidean distance between edges
-
-	for comparedRect: Rect2 in comparedRects:
-		if not comparedRect.abs().has_area(): continue # Skip rect if it doesn't have an area
-
-		# If both regions are exactly the same position & size,
-		# or either of them completely contain the other, then you can't get any nearer than that!
-		if comparedRect.is_equal_approx(referenceRect) \
-		or comparedRect.encloses(referenceRect) or referenceRect.encloses(comparedRect):
-			minimumDistance = 0
-			nearestRect = comparedRect
-			break
-
-		# Simplify names
-		comparedLeft	= comparedRect.position.x
-		comparedRight	= comparedRect.end.x
-		comparedTop		= comparedRect.position.y
-		comparedBottom	= comparedRect.end.y
-		gap				= Vector2.ZERO # Gaps will default to 0 if the edges are touching
-
-		# Compute horizontal gap
-		if   referenceRight < comparedLeft:  gap.x = comparedLeft  - referenceRight	# Primary to the left of Compared?
-		elif comparedRight  < referenceLeft: gap.x = referenceLeft - comparedRight	# or to the right?
-
-		# Compute vertical gap
-		if   referenceBottom < comparedTop:	 gap.y = comparedTop  - referenceBottom	# Primary above Compared?
-		elif comparedBottom  < referenceTop: gap.y = referenceTop - comparedBottom	# or below?
-
-		# Get the Euclidean distance between edges
-		distance = sqrt(gap.x * gap.x + gap.y * gap.y)
-
-		# We have a nearer `nearestRect` if this is a new minimum
-		if  distance < minimumDistance:
-			minimumDistance = distance
-			nearestRect = comparedRect
-
-	return nearestRect
 
 
 ## Checks a list of [Area2D]s and returns the area nearest to a specified reference area.
@@ -401,7 +289,7 @@ static func findNearestRect(referenceRect: Rect2, comparedRects: Array[Rect2]) -
 static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
 	# TBD: PERFORMANCE: Option to cache results?
 
-	# DESIGN: PERFORMANCE: Cannot use findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
+	# DESIGN: PERFORMANCE: Cannot use RectTools.findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
 	# and there is a separate tie-break based on the Z index, so there has to be some code dpulication :')
 
 	var nearestArea:	Area2D = null # Initialize with `null` to avoid the "used before assigning a value" warning
