@@ -147,7 +147,7 @@ var didWallJump:	bool ## Did we just perform a "wall jump"?
 
 
 #region Dependencies
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 @onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.get(&"PlatformerPhysicsComponent") # Optional
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, InputComponent]

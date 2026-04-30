@@ -9,7 +9,7 @@ extends Component
 
 
 #region Dependencies
-@onready var characterBodyComponent: CharacterBodyComponent = parentEntity.findFirstComponentSubclass(CharacterBodyComponent)
+@onready var characterBodyComponent: CharacterBodyComponent = getCoComponent(CharacterBodyComponent, true) # findSubclasses
 @onready var body: CharacterBody2D = characterBodyComponent.body
 
 func getRequiredComponents() -> Array[Script]:

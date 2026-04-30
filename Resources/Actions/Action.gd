@@ -171,7 +171,7 @@ startCooldown:	bool = true) -> Variant:
 
 		# Let the target know, if any
 		if target:
-			var actionTargetableComponent: ActionTargetableComponent = target.findFirstComponentSubclass(ActionTargetableComponent) # TBD: Allow sublasses such as ActionReactionComponent
+			var actionTargetableComponent: ActionTargetableComponent = target.getComponent(ActionTargetableComponent, true) # findSubclasses to allow sublasses such as [ActionReactionComponent]
 			if  actionTargetableComponent:
 				actionTargetableComponent.didTarget(self, source, payloadResult)
 

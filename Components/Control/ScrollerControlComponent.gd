@@ -29,7 +29,7 @@ var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
 
 
 #region Dependencies
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 #endregion
 
 

@@ -64,7 +64,7 @@ signal ammoInsufficient ## Emitted when attempt to fire the gun while [member am
 
 #region Dependencies
 @onready var damageComponent: DamageComponent = coComponents.DamageComponent # TBD: Include subclasses?
-@onready var inputComponent:  InputComponent  = parentEntity.findFirstComponentSubclass(InputComponent)
+@onready var inputComponent:  InputComponent  = getCoComponent(InputComponent, true) # findSubclasses
 
 func getRequiredComponents() -> Array[Script]:
 	return [DamageComponent, InputComponent]

@@ -48,7 +48,7 @@ extends Component
 #region Dependencies
 var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponent].
 	get:
-		if not healthComponent: healthComponent = parentEntity.findFirstComponentSubclass(HealthComponent)
+		if not healthComponent: healthComponent = getCoComponent(HealthComponent, true) # findSubclasses
 		return healthComponent
 #endregion
 

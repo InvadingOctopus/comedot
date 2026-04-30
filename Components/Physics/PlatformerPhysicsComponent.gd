@@ -40,7 +40,8 @@ var currentState: State #:
 	# 	Debug.printChange("currentState", currentState, newValue)
 	# 	currentState = newValue
 
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; this component may still process gravity & friction even if no input source is present.
+## Optional dependency; this component may still process gravity & friction even if no input source is present.
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true, false) # findSubclasses, not warnIfMissing # Include subclasses to allow AI etc.
 
 # TBD: Remove input state duplication? DESIGN: It's better to cache some state like `isInputZero` anyway…
 

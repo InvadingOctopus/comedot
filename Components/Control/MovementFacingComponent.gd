@@ -14,7 +14,7 @@ extends Component
 
 
 #region Dependencies
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 
 func getRequiredComponents() -> Array[Script]:
 	return [InputComponent]

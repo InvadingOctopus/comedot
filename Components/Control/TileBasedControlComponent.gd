@@ -39,7 +39,7 @@ var recentInputVector: Vector2i:
 
 #region Dependencies
 @onready var tileBasedPositionComponent: TileBasedPositionComponent = coComponents.TileBasedPositionComponent
-@onready var inputComponent:			 InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+@onready var inputComponent:			 InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 
 func getRequiredComponents() -> Array[Script]:
 	return [TileBasedPositionComponent, InputComponent]

@@ -29,7 +29,7 @@ extends Component
 
 
 #region Dependencies
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Optional
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true, false) # findSubclasses, not warnIfMissing # Optional; include subclasses to allow AI etc.
 #endregion
 
 

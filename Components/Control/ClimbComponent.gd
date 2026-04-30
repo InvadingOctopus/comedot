@@ -131,7 +131,7 @@ signal didEndClimb(area:   Area2D) # TBD: Should this be emitted by the `isClimb
 
 
 #region Dependencies
-@onready var inputComponent:			 InputComponent				= parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc.
+@onready var inputComponent:			 InputComponent				= getCoComponent(InputComponent, true) # findSubclasses to allow AI etc.
 @onready var platformerPhysicsComponent: PlatformerPhysicsComponent = coComponents.PlatformerPhysicsComponent # TBD: Static or dynamic?
 @onready var characterBodyComponent:	 CharacterBodyComponent		= coComponents.CharacterBodyComponent # TBD: Static or dynamic?
 func getRequiredComponents() -> Array[Script]:

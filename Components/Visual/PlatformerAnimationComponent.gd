@@ -35,7 +35,7 @@ extends Component
 
 
 #region Dependencies
-@onready var characterBodyComponent:CharacterBodyComponent 	= parentEntity.findFirstComponentSubclass(CharacterBodyComponent) # TBD: Include entity?
+@onready var characterBodyComponent:CharacterBodyComponent 	= getCoComponent(CharacterBodyComponent, true) # findSubclasses # TBD: Include entity?
 @onready var body:					CharacterBody2D			= characterBodyComponent.body
 @onready var inputComponent:		InputComponent			= coComponents.get(&"InputComponent") # Optional
 @onready var climbComponent:		ClimbComponent			= coComponents.get(&"ClimbComponent") # Optional

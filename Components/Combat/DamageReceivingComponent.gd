@@ -55,7 +55,7 @@ var damageComponentsInContact: Array[DamageComponent] ## A list of [DamageCompon
 
 
 #region Dependencies
-@onready var healthComponent:  HealthComponent  = parentEntity.findFirstComponentSubclass(HealthComponent) ## May be a subclass such as [ShieldedHealthComponent].
+@onready var healthComponent:  HealthComponent  = getCoComponent(HealthComponent, true) # findSubclasses such as [ShieldedHealthComponent]
 @onready var factionComponent: FactionComponent = coComponents.get(&"FactionComponent") # Avoid crash if missing
 #endregion
 

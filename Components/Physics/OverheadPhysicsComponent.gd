@@ -19,7 +19,8 @@ extends CharacterBodyDependentComponentBase
 
 
 #region State
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; this component may still process friction even if no input source is present.
+## Optional dependency; this component may still process friction even if no input source is present.
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true, false) # findSubclasses, not warnIfMissing # Include subclasses to allow AI etc.
 var movementDirection: Vector2
 #endregion
 

@@ -75,7 +75,7 @@ var recentChaseDirection: Vector2
 
 #region Dependencies
 @onready var characterBodyComponent: CharacterBodyComponent = coComponents.CharacterBodyComponent
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, InputComponent]

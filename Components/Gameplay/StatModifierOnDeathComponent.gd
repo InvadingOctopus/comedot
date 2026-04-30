@@ -15,7 +15,7 @@ extends Component
 
 
 #region Dependencies
-@onready var healthComponent: HealthComponent = parentEntity.findFirstComponentSubclass(HealthComponent) ## May be a subclass such as [ShieldedHealthComponent].
+@onready var healthComponent: HealthComponent = getCoComponent(HealthComponent, true) # findSubclasses such as [ShieldedHealthComponent]
 func getRequiredComponents() -> Array[Script]:
 	return [HealthComponent]
 #endregion

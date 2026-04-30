@@ -30,7 +30,7 @@ extends Component # DESIGN: Not [InputDependentComponentBase] because [InputComp
 
 #region State
 
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses to allow AI etc. Optional dependency; only for resolving conflicts with [TurningControlComponent]
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true, false) # findSubclasses, not warnIfMissing # Include subclasses to allow AI etc. Optional; only for resolving conflicts with [TurningControlComponent]
 
 ## The [member Node.global_rotation] in the previous frame.
 var previousRotation:  float

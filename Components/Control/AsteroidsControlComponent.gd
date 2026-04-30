@@ -37,7 +37,7 @@ var lastMotionCached:	Vector2 ## NOTE: Used for and updated ONLY IF [member shou
 
 
 #region Dependencies
-@onready var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent) # Include subclasses
+@onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 
 func getRequiredComponents() -> Array[Script]:
 	return [CharacterBodyComponent, InputComponent]

@@ -35,7 +35,7 @@ extends Component
 var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponent].
 	get:
 		# Check for `parentEntity` in case this getter was called by the `shouldTint` setter
-		if parentEntity and not healthComponent: healthComponent = parentEntity.findFirstComponentSubclass(HealthComponent)
+		if parentEntity and not healthComponent: healthComponent = getCoComponent(HealthComponent, true) # findSubclasses
 		return healthComponent
 #endregion
 

@@ -21,7 +21,7 @@ extends Component
 func _ready() -> void:
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
-	var inputComponent: InputComponent = parentEntity.findFirstComponentSubclass(InputComponent)
+	var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 	if  inputComponent:
 		Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 
