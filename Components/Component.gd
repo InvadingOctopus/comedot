@@ -293,11 +293,11 @@ func _exit_tree() -> void:
 ## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact match isn't found.
 ## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
-func findCoComponent(type: GDScript, findSubclasses: bool = true) -> Component:
+func getCoComponent(type: GDScript, findSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
 	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
-		printWarning("findCoComponent(): No parent entity!")
+		printWarning("getCoComponent(): No parent entity!")
 		return null
 
 	if coComponents.is_empty(): return null
