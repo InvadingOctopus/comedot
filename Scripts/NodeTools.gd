@@ -14,16 +14,26 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 	child.owner = parent
 
 
-## Adds & returns a child node at the position of another node, and optionally copies the rotation and scale of the [member placementNode].
-## Also sets the child's owner to the new parent.
+## Adds & returns a child node at the position of another node, and optionally copies the rotation and scale of the [param placementNode]
+## Also sets the child's owner to the new parent for persistence.
+## [param copyTransform] overrides [param copyRotation] & [param copyScale] and copies the full global transform.
 ## Example: Using [Marker2D]s as placeholders for objects like doors etc. during procedural map generation from a template.
-## NOTE: Also sets the `force_readable_name` parameter, which may slow performance if used frequently.
-static func addChildAtNode(child: Node2D, placementNode: Node2D, parent: Node, copyRotation: bool = true, copyScale: bool = true) -> Node2D:
-	child.position = placementNode.position
-	if copyRotation: child.rotation	= placementNode.rotation
-	if copyScale:	 child.scale	= placementNode.scale
+## NOTE: Also sets the `force_readable_name` parameter if [member Debug.shouldForceReadableName], which may slow performance if used frequently.
+static func addChildAtNode(
+	child:			Node2D,
+	placementNode:	Node2D,
+	parent:			Node,
+	copyRotation:	bool = true,
+	copyScale:		bool = true,
+	copyTransform:	bool = false) -> Node2D:
+	# Add first, then translate transforms across the coordinate space of the different parents
 	parent.add_child(child, Debug.shouldForceReadableName) # PERFORMANCE: force_readable_name only if debugging
-	child.owner = parent
+	child.owner = parent # For persistence
+	if copyTransform: child.global_transform = placementNode.global_transform
+	else:
+		child.global_position = placementNode.global_position
+		if copyRotation: child.global_rotation = placementNode.global_rotation
+		if copyScale:	 child.global_scale = placementNode.global_scale
 	return child
 
 
