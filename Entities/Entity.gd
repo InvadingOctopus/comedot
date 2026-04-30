@@ -39,7 +39,9 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 
 ## A dictionary of {StringName:Component} where the key is the `class_name` of each Component, which may be discovered via [method Script.get_global_name].
 ## Updated by [method registerComponent] which is called by each COMPONENT itself during the component's [constant NOTIFICATION_PARENTED].
-## Used by components to quickly find other sibling components, without a dynamic search at runtime.
+## PERFORMANCE: Used by components to quickly find other sibling components, without a dynamic search at runtime.
+## NOTE: Does NOT resolve subclasses! i.e. a [ShieldedHealthComponent] will not be accessed by searching for [HealthComponent]
+## TIP: Call [method getComponent] or [method findFirstComponentSubclass] to find subclasses.
 var components: Dictionary[StringName, Component]
 
 ## A dictionary of functions that should be called only once per frame, for example [member CharacterBody2D.move_and_slide] on a [CharacterBody2D].
@@ -208,8 +210,9 @@ func hasComponent(type: Script) -> bool:
 	return self.components.keys().has(type.get_global_name())
 
 
-## Checks the [member Entity.components] [Dictionary] after converting the [param type] to a [StringName] key.
-## NOTE: Set [param findSubclasses] to `true` to find subclasses which inherit the specified type, by calling [method Entity.findFirstComponentSubclass]
+## Returns a [Component] from the [member Entity.components] [Dictionary] after converting the [param type] to a [StringName] key.
+## Returns `null` if there is no matching key.
+## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact mtch isn't found.
 func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
 	var typeName: StringName = type.get_global_name()
@@ -217,6 +220,7 @@ func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 	if not foundComponent and findSubclasses:
 		if debugMode: printDebug(str("getComponent(): ", typeName, " not found, trying findFirstComponentSubclass()"))
 		foundComponent = self.findFirstComponentSubclass(type)
+	# If no match, return `null` & let the caller handle crashing or logging a warning etc.
 	return foundComponent
 
 

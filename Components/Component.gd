@@ -221,7 +221,7 @@ func registerEntity(newParentEntity: Entity) -> void:
 
 	if newParentEntity.registerComponent(self): # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
 		self.parentEntity = newParentEntity
-		self.coComponents = parentEntity.components # Meet our new siblings!
+		self.coComponents = parentEntity.components # Meet our new siblings! # NOTE: This makes both properties point to the same Dictionary; editing one edits the other etc.
 
 
 ## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
@@ -289,11 +289,11 @@ func _exit_tree() -> void:
 # Join the serpent king!
 
 ## Returns a sibling [Component] from the [member coComponents] [Dictionary],
-## after converting the [param type] [method Script.get_global_name] to a [StringName].
-## If [param includeSubclasses] is `true` then [method Entity.findFirstComponentSubclass] is called to find the first [Component] which extends/inherits the specified type.
+## after converting the [param type] [method Script.get_global_name] to a [StringName] key.
+## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact match isn't found.
 ## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
-func findCoComponent(type: GDScript, includeSubclasses: bool = true) -> Component:
+func findCoComponent(type: GDScript, findSubclasses: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
 	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
@@ -305,12 +305,12 @@ func findCoComponent(type: GDScript, includeSubclasses: bool = true) -> Componen
 	var coComponent: Component = coComponents.get(type.get_global_name())
 	if not coComponent: # TBD: Use is_instance_valid()?
 
-		if includeSubclasses: # Try subclasses
+		if findSubclasses: # Try subclasses
 			coComponent = parentEntity.findFirstComponentSubclass(type)
 			if debugMode: printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
 
 		if not coComponent: # Did we still not find any match? :(
-			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName))
+			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName, " • findSubclasses: ", findSubclasses))
 
 	return coComponent
 
