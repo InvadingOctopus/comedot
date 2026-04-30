@@ -143,7 +143,7 @@ func attachToGrandparent() -> void:
 func clampToBoundary() -> void:
 	if not boundary: return
 
-	var areaRectangle: Rect2 = Tools.getShapeGlobalBounds(boundary)
+	var areaRectangle: Rect2 = CollisionTools.getShapeGlobalBounds(boundary)
 
 	if not areaRectangle:
 		Debug.printWarning(str("Cannot get a Rect2 from Area2D: ", boundary), self)

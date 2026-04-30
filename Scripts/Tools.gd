@@ -201,88 +201,6 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 
 #region Area & Shape Geometry
 
-## Returns a [Rect2] representing the boundary/extents of a [CollisionShape2D]'s [Shape2D] in the local coordinates of the [CollisionShape2D]'s parent.
-## On failure: Returns a 0-sized [Rect2]
-## ALERT: Non-rectangular shapes may not have exact collision geometry.
-static func getShapeBounds(shapeNode: CollisionShape2D) -> Rect2:
-	if shapeNode and shapeNode.shape:
-		return shapeNode.transform * shapeNode.shape.get_rect().abs() # Apply all transforms including rotation/skew/etc.
-	else:
-		Debug.printWarning("Tools.getShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
-		return RectTools.rect2Zero
-
-
-## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D])
-## On failure: Returns a 0-sized [Rect2]
-## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]
-## Non-rectangular shapes may not have exact collision geometry; Best suited for areas with a single [RectangleShape2D], in which case the [Shape2D]'s anchor/origin will be at the center of the returned rectangle.
-static func getFirstShapeBounds(node: CollisionObject2D) -> Rect2:
-	# Find a CollisionShape2D child
-	var shapeNode: CollisionShape2D
-	if  node.get_child_count() > 0:
-		shapeNode = node.get_child(0) as CollisionShape2D # Try the fast way first: Most [Area2D]s will just have 1 child, the [CollisionShape2D]
-		if not shapeNode: shapeNode = NodeTools.findFirstChildOfType(node, CollisionShape2D)
-
-	if not shapeNode:
-		Debug.printWarning("Tools.getFirstShapeBounds(): Cannot find a CollisionShape2D child", node)
-		return RectTools.rect2Zero # On failure, return a rectangle with 0 size/area
-
-	return getShapeBounds(shapeNode)
-
-
-## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
-## Shapes that are [member CollisionShape2D.disabled] or nested or over the [param maximumShapeCount] are skipped.
-## To get the bounds of the first valid shape only, set [param maximumShapeCount] to 1.
-## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, use [method Tools.getShapeGlobalBounds].
-## Uses each [Shape2D]'s enclosing [Rect2], so non-rectangular shapes are represented by their rectangular bounds.
-## Returns: A [Rect2] of all the merged bounds. On failure: a [Rect2] size 0
-static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 100) -> Rect2:
-	# TBD: PERFORMANCE: Option to cache results?
-	# HACK: Sigh @ Godot for making this so hard...
-
-	# INFO: PLAN: Overview: A [CollisionObject2D] has [CollisionShape2D] child [Node]s, which in turn have [Shape2D] [Resource]s.
-	# The [Shape2D]'s rectangle is local to that resource, so each rectangle is converted into the [CollisionObject2D]'s coordinates before merging.
-
-	if node.get_child_count() < 1: return RectTools.rect2Zero # On failure, return a rectangle with 0 size/area
-
-	# Get all CollisionShape2D children
-
-	var combinedShapeBounds: Rect2
-	var shapesAdded:		 int = 0
-	var shapeBounds:		 Rect2
-
-	for shapeNode in node.get_children(): # TBD: PERFORMANCE: Use Node.find_children()?
-		if shapeNode is CollisionShape2D and not shapeNode.disabled:
-			if not shapeNode.shape:
-				Debug.printWarning("Tools.getAllShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
-				continue
-
-			shapeBounds = getShapeBounds(shapeNode)
-
-			if shapesAdded < 1: combinedShapeBounds = shapeBounds # Is it the first shape?
-			else: combinedShapeBounds = combinedShapeBounds.merge(shapeBounds)
-
-			# DEBUG: Debug.printDebug(str("shape: ", shapeNode.shape, ", rect: ", shapeNode.shape.get_rect(), ", bounds in node: ", shapeBounds, ", combinedShapeBounds: ", combinedShapeBounds), node)
-			shapesAdded += 1
-			if shapesAdded >= maximumShapeCount: break # TBD: Log if too many shapes?
-
-	if shapesAdded < 1:
-		Debug.printWarning("Tools.getAllShapeBounds(): Cannot find a valid CollisionShape2D child", node)
-		return Rect2(Vector2.ZERO, Vector2.ZERO) # On failure, return an invalid zero-sized rectangle
-	else:
-		# DEBUG: Debug.printTrace([combinedShapeBounds, node.get_child_count(), shapesAdded], node)
-		return combinedShapeBounds
-
-
-## Calls [method Tools.getAllShapeBounds] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]), converted to GLOBAL coordinates.
-## Useful for comparing the [Area2D]s etc. of 2 separate nodes/entities.
-## On failure: Returns a 0-sized [Rect2] if no valid shape bounds are found.
-static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
-	# TBD: PERFORMANCE: Option to cache results?
-	var localBounds: Rect2 = getAllShapeBounds(node)
-	if not localBounds.has_area(): return RectTools.rect2Zero
-	return node.global_transform * localBounds.abs() # Apply all transforms including rotation/skew/etc.
-
 
 ## Checks a list of [Area2D]s and returns the area nearest to a specified reference area.
 ## The [param comparedAreas] would usually be static "zones" and the [param referenceArea] may be the bounds of a player Entity or another character etc.
@@ -290,13 +208,13 @@ static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
 	# TBD: PERFORMANCE: Option to cache results?
 
-	# DESIGN: PERFORMANCE: Cannot use RectTools.findNearestRect() because that would require calling getShapeGlobalBounds() on all areas beforehand,
+	# DESIGN: PERFORMANCE: Cannot use RectTools.findNearestRect() because that would require calling CollisionTools.getShapeGlobalBounds() on all areas beforehand,
 	# and there is a separate tie-break based on the Z index, so there has to be some code dpulication :')
 
 	var nearestArea:	Area2D = null # Initialize with `null` to avoid the "used before assigning a value" warning
 	var minimumDistance: float = INF  # Start with infinity
 
-	var referenceAreaBounds: Rect2 = Tools.getShapeGlobalBounds(referenceArea)
+	var referenceAreaBounds: Rect2 = CollisionTools.getShapeGlobalBounds(referenceArea)
 	var comparedAreaBounds:  Rect2
 
 	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
@@ -317,7 +235,7 @@ static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D])
 	for comparedArea: Area2D in comparedAreas:
 		if comparedArea == referenceArea: continue
 
-		comparedAreaBounds = Tools.getShapeGlobalBounds(comparedArea)
+		comparedAreaBounds = CollisionTools.getShapeGlobalBounds(comparedArea)
 		if not comparedAreaBounds.abs().has_area(): continue # Skip area if it doesn't have an area!
 
 		# If both regions are exactly the same position & size,
@@ -370,7 +288,7 @@ static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D])
 ## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D]
 ## Best suited for areas with a single [RectangleShape2D]
 static func getRandomPositionInArea(area: Area2D) -> Vector2:
-	var areaBounds: Rect2 = getAllShapeBounds(area)
+	var areaBounds: Rect2 = CollisionTools.getAllShapeBounds(area)
 
 	if not areaBounds.has_area(): return Vector2.ZERO
 
@@ -409,28 +327,6 @@ static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 	if is_zero_approx(lastMotion.x): body.velocity.x = 0
 	if is_zero_approx(lastMotion.y): body.velocity.y = 0
 	return lastMotion
-
-
-## Returns the [Shape2D] from a [CollisionObject2D]-based node (such as [Area2D] or [CharacterBody2D]) and a given "shape index"
-## The [param shapeIndex] is a collision shape child index, such as the `shape_idx` from input/collision callbacks.
-## @experimental
-static func getCollisionShape(node: CollisionObject2D, shapeIndex: int = 0) -> Shape2D:
-	# What is this hell... Dumbdot should have a builtin API for this not uncommon task
-
-	var shapeOwnerID: int = node.shape_find_owner(shapeIndex)
-	if  shapeOwnerID < 0: return null
-
-	# UNUSED: PERFORMANCE: No need to check: If a [CollisionObject2D] doesn't have any Shapes, it's a configuration error and should crash.
-	# var shapeOwnerShapeCount: int = node.shape_owner_get_shape_count(shapeOwnerID)
-	# if  shapeOwnerShapeCount < 1: return null
-
-	# INFO: A "shape index" is "global" i.e. not unique to a "shape owner", and a "shape ID" is LOCAL to a "shape owner"
-	# NOTE: In case the [CollisionObject2D] has multiple Shapes, find the Shape that matches `shapeIndex`
-	for shapeID: int in node.shape_owner_get_shape_count(shapeOwnerID):
-		if node.shape_owner_get_shape_index(shapeOwnerID, shapeID) == shapeIndex:
-			return node.shape_owner_get_shape(shapeOwnerID, shapeID)
-	# else
-	return null
 
 #endregion
 

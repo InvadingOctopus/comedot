@@ -43,7 +43,7 @@ var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
 		return areaBounds
 
 var areaBoundsGlobal: Rect2:
-	get: return area.global_transform * areaBounds.abs() # Apply all transforms # TBD: PERFORMANCE: Use NodeTools.convertNodeRectToGlobalCoordinates() or Tools.getShapeGlobalBounds()?
+	get: return area.global_transform * areaBounds.abs() # Apply all transforms # TBD: PERFORMANCE: Use NodeTools.convertNodeRectToGlobalCoordinates() or CollisionTools.getShapeGlobalBounds()?
 
 var didCacheAreaBounds:	bool
 
@@ -79,6 +79,6 @@ func _enter_tree() -> void:
 
 ## Updates [member areaBounds] and returns the rectangular bounds of ALL of the [Area2D]'s [CollisionShape2D]s.
 func updateAreaBounds() -> Rect2:
-	areaBounds = Tools.getAllShapeBounds(area)
+	areaBounds = CollisionTools.getAllShapeBounds(area)
 	didCacheAreaBounds = true # Avoid recursion if area is 0
 	return areaBounds

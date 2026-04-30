@@ -60,7 +60,7 @@ var realVelocity:		Vector2:
 
 var collisionShape:		Shape2D: ## @experimental
 	get:
-		if not collisionShape: collisionShape = Tools.getCollisionShape(self.body)
+		if not collisionShape: collisionShape = CollisionTools.getCollisionShape(self.body)
 		return collisionShape
 
 #endregion

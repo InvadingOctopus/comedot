@@ -263,7 +263,7 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 
 ## Returns the axis-aligned global bounds of a local [Rect2] transformed from a node's local coordinates to the global coordinates.
 ## TIP: PERFORMANCE: This function may be replaced with `node.global_transform * rect.abs()` to avoid an extra call, or if rotation/skew/etc. aren't needed: `Rect2(rect.position + node.global_position, rect.size)`
-## TIP: Combine with the output from [member getAllShapeBounds] to get an [Area2D]'s global region.
+## TIP: Combine with the output from [method CollisionTools.getAllShapeBounds] to get an [Area2D]'s global region.
 static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
 	return node.global_transform * rect.abs()
 

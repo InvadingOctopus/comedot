@@ -19,7 +19,7 @@ func _ready() -> void:
 func clampToBoundary() -> void:
 	if not boundary: return
 
-	var rect: Rect2 = Tools.getShapeGlobalBounds(boundary)
+	var rect: Rect2 = CollisionTools.getShapeGlobalBounds(boundary)
 
 	if not rect:
 		Debug.printWarning("Cannot get a Rect2 from Area2D: " + str(boundary), self)

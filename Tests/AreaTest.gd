@@ -19,17 +19,17 @@ func _process(_delta: float) -> void:
 	Debug.watchList.shapeNodePosition = testShapeNode.position
 	Debug.watchList.shapeNodeGlobalPosition = testShapeNode.global_position
 
-	var shapeBounds: Rect2 = Tools.getFirstShapeBounds(testArea)
+	var shapeBounds: Rect2 = CollisionTools.getFirstShapeBounds(testArea)
 	Debug.watchList.shapeBounds = shapeBounds
 
-	var shapeBoundsInArea: Rect2 = Tools.getAllShapeBounds(testArea)
+	var shapeBoundsInArea: Rect2 = CollisionTools.getAllShapeBounds(testArea)
 	Debug.watchList.shapeBoundsInArea = shapeBoundsInArea
 
-	var shapeGlobalBounds: Rect2 = Tools.getShapeGlobalBounds(testArea)
+	var shapeGlobalBounds: Rect2 = CollisionTools.getShapeGlobalBounds(testArea)
 	Debug.watchList.shapeGlobalBounds = shapeGlobalBounds
 
-	Debug.watchList.displacementOutsideZone2 = RectTools.getRectOffsetOutsideContainer(areaContactComponent.areaBoundsGlobal, Tools.getShapeGlobalBounds(%Zone2))
-	Debug.watchList.spriteAreaGlobalBounds	 = Tools.getShapeGlobalBounds(spriteArea)
+	Debug.watchList.displacementOutsideZone2 = RectTools.getRectOffsetOutsideContainer(areaContactComponent.areaBoundsGlobal, CollisionTools.getShapeGlobalBounds(%Zone2))
+	Debug.watchList.spriteAreaGlobalBounds	 = CollisionTools.getShapeGlobalBounds(spriteArea)
 	Debug.watchList.nearestAreaToSprite		 = Tools.findNearestArea(spriteArea, [testArea, %Zone1, %Zone2, %Zone3])
 
 
@@ -40,7 +40,7 @@ func _draw() -> void:
 		$TileMapLayer3: Color(Color.YELLOW, 0.5),
 		$TileMapLayer4: Color(Color.VIOLET, 0.5)}
 
-	var spriteAreaRect:	 Rect2 = Tools.getShapeGlobalBounds(spriteArea)
+	var spriteAreaRect:	 Rect2 = CollisionTools.getShapeGlobalBounds(spriteArea)
 	var mapRect:		 Rect2
 	var isTestAreaInMap: bool
 
