@@ -43,7 +43,7 @@ var parentEntity: Entity:
 
 ## A [Dictionary] of other [Component]s in the [member parentEntity]'s [member Entity.components], including this component itself.
 ## TIP: Access via the shortcut of `coComponents.ComponentClassName`
-## or use [method Entity.getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
+## or use [method getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
@@ -294,11 +294,11 @@ func _exit_tree() -> void:
 ## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact match isn't found.
 ## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
-func getCoComponent(type: GDScript, findSubclasses: bool = false) -> Component:
+func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
 	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
-		printWarning("getCoComponent(): No parent entity!")
+		if warnIfMissing: printWarning("getCoComponent(): No parent entity!")
 		return null
 
 	if coComponents.is_empty(): return null
@@ -310,7 +310,7 @@ func getCoComponent(type: GDScript, findSubclasses: bool = false) -> Component:
 			coComponent = parentEntity.findFirstComponentSubclass(type)
 			if debugMode: printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
 
-		if not coComponent: # Did we still not find any match? :(
+		if warnIfMissing and not coComponent: # Did we still not find any match? :(
 			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName, " • findSubclasses: ", findSubclasses))
 
 	return coComponent
