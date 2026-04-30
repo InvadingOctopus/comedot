@@ -225,29 +225,13 @@ static func getRectCorner(rectangle: Rect2, compassDirection: Vector2i) -> Vecto
 
 ## Returns a [Rect2] representing the boundary/extents of a [CollisionShape2D]'s [Shape2D] in the local coordinates of the [CollisionShape2D]'s parent.
 ## On failure: Returns a 0-sized [Rect2]
-## Non-rectangular shapes may not have exact collision geometry.
+## ALERT: Non-rectangular shapes may not have exact collision geometry.
 static func getShapeBounds(shapeNode: CollisionShape2D) -> Rect2:
-	# HACK: Sigh @ Godot for making this so hard...
-
-	if not shapeNode or not shapeNode.shape:
+	if shapeNode and shapeNode.shape:
+		return shapeNode.transform * shapeNode.shape.get_rect().abs() # Apply all transforms including rotation/skew/etc.
+	else:
 		Debug.printWarning("Tools.getShapeBounds(): CollisionShape2D missing a valid Shape2D", shapeNode)
 		return rect2Zero
-
-	var shapeRect: Rect2 = shapeNode.shape.get_rect()
-
-	# If there is no rotation or other transforms, just apply the position translation.
-	if  is_zero_approx(shapeNode.rotation) \
-	and is_zero_approx(shapeNode.skew) \
-	and shapeNode.scale.is_equal_approx(Vector2.ONE):
-		shapeRect.position += shapeNode.position
-		return shapeRect
-
-	# Otherwise, apply the transforms to all 4 corners into the CollisionShape2D's parent coordinate space.
-	var bounds: Rect2	= 		  Rect2(shapeNode.transform * shapeRect.position, Vector2.ZERO)
-	bounds				= bounds.expand(shapeNode.transform * Vector2(shapeRect.end.x, shapeRect.position.y))
-	bounds				= bounds.expand(shapeNode.transform * shapeRect.end)
-	bounds				= bounds.expand(shapeNode.transform * Vector2(shapeRect.position.x, shapeRect.end.y))
-	return bounds
 
 
 ## Returns a [Rect2] representing the boundary/extents of the FIRST [CollisionShape2D] child of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D])
@@ -319,13 +303,7 @@ static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	var localBounds: Rect2 = getAllShapeBounds(node)
 	if not localBounds.has_area(): return rect2Zero
-
-	# CHECK: PERFORMANCE: Do all these calculations hurt performance in the most case where there are no transforms?
-	var globalBounds: Rect2 = 				Rect2(node.global_transform * localBounds.position, Vector2.ZERO)
-	globalBounds			= globalBounds.expand(node.global_transform * Vector2(localBounds.end.x, localBounds.position.y))
-	globalBounds			= globalBounds.expand(node.global_transform * localBounds.end)
-	globalBounds			= globalBounds.expand(node.global_transform * Vector2(localBounds.position.x, localBounds.end.y))
-	return globalBounds
+	return node.global_transform * localBounds.abs() # Apply all transforms including rotation/skew/etc.
 
 
 ## Returns a [Vector2] representing the distance by which an [intended] inner/"contained" [Rect2] is outside of an outer/"container" [Rect2], e.g. a player's [ClimbComponent] in relation to a Climbable [Area2D] "ladder" etc.

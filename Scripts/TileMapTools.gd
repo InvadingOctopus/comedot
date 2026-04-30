@@ -19,23 +19,12 @@ static func checkTileMapCoordinates(map: TileMapLayer, coordinates: Vector2i) ->
 
 
 ## Returns the rectangular bounds of a [TileMapLayer] containing all of its "used" or "painted" cells, in the coordinate space of the TileMap's parent.
-## ALERT: This does not include scaling/rotation/transforms may not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
+## ALERT:  May not correspond to the visual position of a cell/tile, i.e. it ignores the [member TileData.texture_origin] property of individual tiles.
 static func getTileMapScreenBounds(map: TileMapLayer) -> Rect2: # TBD: Rename to getTileMapBounds()?
-	# TODO: Handle scaling/rotation/etc.
 	var cellGrid:	Rect2 = Rect2(map.get_used_rect()) # Convert integer `Rect2i` to float to simplify calculations
 	if not cellGrid.has_area(): return Tools.rect2Zero # Null area if there are no cells
-
-	var screenRect:	Rect2
 	var tileSize:	Vector2 = Vector2(map.tile_set.tile_size) # Convert integer `Vector2i` to float to simplify calculations
-
-	# The points will initially be in the TileMap's own space
-	screenRect.position  = cellGrid.position * tileSize
-	screenRect.size		 = cellGrid.size	 * tileSize
-
-	# Offset the bounds by the map's own position in the map's parent's space
-	screenRect.position += map.position
-
-	return screenRect
+	return map.transform * Rect2(cellGrid.position * tileSize, cellGrid.size * tileSize).abs() # Apply all transforms including rotation etc.
 
 
 ## Checks if a [Vector2] is inside the rectangular bounds of a [TileMapLayer]'s "used" or "painted" cells.

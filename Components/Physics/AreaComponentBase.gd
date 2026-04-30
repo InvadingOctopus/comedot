@@ -32,16 +32,21 @@ var selfAscollisionObject: CollisionObject2D: # TBD: PERFORMANCE: Should this be
 
 
 #region Derived Properties
-## The rectangular bounds of the [Area2D]'s FIRST [CollisionShape2D].
-## NOTE: The vertices are in LOCAL coordinates. Add + [member area]'s [method Node2D.global_position] to convert to GLOBAL coordinates.
+
+## The combined rectangular bounds of ALL of the [Area2D]'s [CollisionShape2D]s.
+## NOTE: The vertices are in LOCAL coordinates. Use [member areaBoundsGlobal] for the GLOBAL coordinates.
 ## IMPORTANT: Call [member updateAreaBounds] to update this property if the area's shape changes during runtime.
 var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
 	get:
-		if not areaBounds: areaBounds = self.updateAreaBounds() # A `not` check works even though it can't be `null`. TBD: Use has_area()?
+		# NOTE: FIXED: Use a separate flag to avoid an `if not` check, which would cause recursive calls to updateAreaBounds() if the area is 0
+		if not didCacheAreaBounds: areaBounds = self.updateAreaBounds()
 		return areaBounds
 
 var areaBoundsGlobal: Rect2:
-	get: return Rect2(areaBounds.position + area.global_position, areaBounds.size) # TBD: PERFORMANCE: Use Tools.Tools.getShapeGlobalBounds()?
+	get: return area.global_transform * areaBounds.abs() # Apply all transforms # TBD: PERFORMANCE: Use NodeTools.convertNodeRectToGlobalCoordinates() or Tools.getShapeGlobalBounds()?
+
+var didCacheAreaBounds:	bool
+
 #endregion
 
 
@@ -72,7 +77,8 @@ func _enter_tree() -> void:
 	elif debugMode:   printDebug(str("area parent: ", area.get_parent()))
 
 
-## Updates [member areaBounds] and returns the rectangular bounds of the [Area2D]'s [CollisionShape2D].
+## Updates [member areaBounds] and returns the rectangular bounds of ALL of the [Area2D]'s [CollisionShape2D]s.
 func updateAreaBounds() -> Rect2:
-	self.areaBounds = Tools.getAllShapeBounds(area)
+	areaBounds = Tools.getAllShapeBounds(area)
+	didCacheAreaBounds = true # Avoid recursion if area is 0
 	return areaBounds
