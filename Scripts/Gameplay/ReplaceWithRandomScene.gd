@@ -66,7 +66,7 @@ func replaceWithRandomScene(pathOverride: String = "") -> CanvasItem:
 		Debug.printWarning("replaceWithRandomScene() cannot instantiate: " + path, self)
 		return null
 	
-	NodeTools.replaceChild.call_deferred(self.get_parent(), self, sceneInstance, true, true, true, true) # copyPosition, copyRotation, copyScale, freeReplacedChild
+	NodeTools.replaceChild.call_deferred(self.get_parent(), self, sceneInstance, true, true, true, true, true) # copyPosition, copyRotation, copyScale, copyTransform, freeReplacedChild
 	# DEBUG: else: Debug.printWarning(str("replaceWithRandomScene() could not replace: " , self, " with ", sceneInstance))
 
 	self.didReplaceWithScene.emit(path, sceneInstance)

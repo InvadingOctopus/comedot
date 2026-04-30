@@ -16,7 +16,7 @@ static func addChildAndSetOwner(child: Node, parent: Node) -> void: # DESIGN: TB
 
 ## Adds & returns a child node at the position of another node, and optionally copies the rotation and scale of the [param placementNode]
 ## Also sets the child's owner to the new parent for persistence.
-## [param copyTransform] overrides [param copyRotation] & [param copyScale] and copies the full global transform.
+## [param copyTransform] overrides [param copyRotation] & [param copyScale] and copies the full global transform, including skew etc.
 ## Example: Using [Marker2D]s as placeholders for objects like doors etc. during procedural map generation from a template.
 ## ALERT: [param child]'s [method Node._enter_tree] & [method Node._ready] may run BEFORE the new transform is applied.
 ## NOTE: Also sets the `force_readable_name` parameter if [member Debug.shouldForceReadableName], which may slow performance if used frequently.
@@ -108,7 +108,8 @@ static func getAllChildrenRecursively(firstNode: Node) -> Array[Node]:
 	return flatList
 
 
-## Replaces a child node with another node at the same index (order), optionally copying the position, rotation and/or scale.
+## Replaces a child node with another node at the same index (order), optionally copying position, rotation etc.
+## [param copyTransform] overrides [param copyPosition] & [param copyRotation] & [param copyScale] and copies the full transform including skew etc.
 ## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free]
 ## Returns: `true` if [param childToReplace] was found and replaced, or if both nodes are the same.
 static func replaceChild(
@@ -118,6 +119,7 @@ static func replaceChild(
 	copyPosition:	bool = false,
 	copyRotation:	bool = false,
 	copyScale:		bool = false,
+	copyTransform:	bool = false,
 	freeReplacedChild: bool = false) -> bool:
 	
 	if  childToReplace.get_parent() != parentNode:
@@ -137,9 +139,12 @@ static func replaceChild(
 	# Copy properties
 	if  (newChild		is Node2D or newChild		is Control) \
 	and (childToReplace is Node2D or childToReplace is Control):
-		if copyPosition: newChild.position	= childToReplace.position
-		if copyRotation: newChild.rotation	= childToReplace.rotation
-		if copyScale:	 newChild.scale		= childToReplace.scale
+		if copyTransform:
+			newChild.transform = childToReplace.transform
+		else:
+			if copyPosition: newChild.position	= childToReplace.position
+			if copyRotation: newChild.rotation	= childToReplace.rotation
+			if copyScale:	 newChild.scale		= childToReplace.scale
 
 	# Swap the kids
 	var previousChildIndex: int = childToReplace.get_index() # The original index
@@ -159,17 +164,28 @@ static func replaceChild(
 	return true
 
 
-## Removes the first child of the [param parentNode], if any, and adds the specified [param newChild]. Optionally copies the position, rotation and/or scale.
-## NOTE: The new child is added regardless of whether the parent already had a child or not.
-## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free].
-static func replaceFirstChild(parentNode: Node, newChild: Node, copyPosition: bool = false, copyRotation: bool = false, copyScale: bool = false, freeReplacedChild: bool = false) -> void:
+## Calls [method replaceChild] to remove the first child of the [param parentNode], if any, and adds the specified [param newChild]. Optionally copies position, rotation etc.
+## [param copyTransform] overrides [param copyPosition] & [param copyRotation] & [param copyScale] and copies the full transform including skew etc.
+## NOTE: If the parent does not already have a child, the new child is added.
+## Returns `true` if [param newChild] was added/replaced successfully.
+## NOTE: The previous child and its sub-children are NOT deleted by default. To delete a child, set [param freeReplacedChild] or use [method Node.queue_free]
+static func replaceFirstChild(
+	parentNode:		Node,
+	newChild:		Node,
+	copyPosition:	bool = false,
+	copyRotation:	bool = false,
+	copyScale:		bool = false,
+	copyTransform:	bool = false,
+	freeReplacedChild: bool = false) -> bool:
+
 	var childToReplace: Node = parentNode.get_child(0) if parentNode.get_child_count() > 0 else null
 	# Debug.printDebug(str("replaceFirstChildControl(): ", childToReplace, " → ", newChild), parentNode)
 
 	if childToReplace:
-		NodeTools.replaceChild(parentNode, childToReplace, newChild, copyPosition, copyRotation, copyScale, freeReplacedChild)
+		return NodeTools.replaceChild(parentNode, childToReplace, newChild, copyPosition, copyRotation, copyScale, copyTransform, freeReplacedChild)
 	else: # If there are no children, just add the new one.
 		NodeTools.addChildAndSetOwner(newChild, parentNode) # Ensure persistence
+		return true
 
 
 ## Removes each child from the [parameter parent] then calls [method Node.queue_free] on the child.
@@ -245,7 +261,7 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 #region Position
 
 ## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
-## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call.
+## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call, if rotation/skew/etc. aren't needed.
 ## TIP: Combine with the output from [member getAllShapeBounds] to get an [Area2D]'s global region.
 ## WARNING: May not work correctly with rotation, scaling or negative dimensions.
 static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
