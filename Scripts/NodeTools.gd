@@ -51,8 +51,10 @@ static func findFirstChildOfType(parentNode: Node, childType: Variant, includePa
 	return null
 
 
-## Calls [method NodeTools.findFirstChildOfType] to return the first child of [param parentNode] which matches ANY of the specified [param types]  (searched in the array order).
-## If [param includeParent] is `true` (default) then the [param parentNode] ITSELF is returned AFTER none of the requested types are found.
+## Returns the first direct child of [param parentNode] which matches ANY of the specified [param types]
+## NOTE: Types are searched in array order, so preferred types should be listed first.
+## NOTE: Does NOT recursively search subchildren.
+## If [param returnParentIfNoMatches] is `true` then the [param parentNode] ITSELF is returned AFTER none of the requested types are found.
 ## This may be useful for choosing certain child nodes of an entity to operate on, like an [AnimatedSprite2D] or [Sprite2D] to animate, otherwise operate on the entity itself.
 ## WARNING: [param returnParentIfNoMatches] returns the [param parentNode] even if it is NOT one of the [param childTypes]!
 ## PERFORMANCE: Should be the same as multiple calls to [method NodeTools.findFirstChildOfType] in order of the desired types.
@@ -61,8 +63,9 @@ static func findFirstChildOfAnyTypes(parentNode: Node, childTypes: Array[Variant
 	# Nodes may be an instance of multiple inherited types, so check each of the requested types.
 	# NOTE: Types must be the outer loop, so that when searching for [AnimatedSprite2D, Sprite2D], the first [AnimatedSprite2D] is returned.
 	# If child nodes are the outer loop, then a [Sprite2D] might be returned if it is higher in the child tree than the [AnimatedSprite2D].
+	var children: Array[Node] = parentNode.get_children() # PERFORMANCE: Cache outside the loop
 	for type: Variant in childTypes:
-		for child in parentNode.get_children():
+		for child in children:
 			if is_instance_of(child, type): return child # break
 
 	# Return the parent itself AFTER none of the requested types are found.
