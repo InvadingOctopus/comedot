@@ -41,7 +41,7 @@ extends Node2D # An "entity" would always have a visual presence, so it cannot b
 ## Updated by [method registerComponent] which is called by each COMPONENT itself during the component's [constant NOTIFICATION_PARENTED].
 ## PERFORMANCE: Used by components to quickly find other sibling components, without a dynamic search at runtime.
 ## NOTE: Does NOT resolve subclasses! i.e. a [ShieldedHealthComponent] will not be accessed by searching for [HealthComponent]
-## TIP: Call [method getComponent] or [method findFirstComponentSubclass] to find subclasses.
+## TIP: Call [method getComponent] with `findSubclasses` or [method findFirstComponentSubclass] to find subclasses.
 var components: Dictionary[StringName, Component]
 
 ## A dictionary of functions that should be called only once per frame, for example [member CharacterBody2D.move_and_slide] on a [CharacterBody2D].
