@@ -11,7 +11,7 @@ extends TurnBasedEntity
 # Quick access to common components
 # DESIGN: Not cached, because components may change during runtime.
 # NOTE: Use `.get(StringName)` instead of direct access to avoid crash if missing.
-# TIP: findFirstComponentSubclass() to include subclasses such as ShieldedHealthComponent
+# TIP: Call getComponent() with `findSubclasses` or findFirstComponentSubclass() to include subclasses such as ShieldedHealthComponent
 # PERFORMANCE: Use direct access on Dictionary for better performance instead of getComponent()
 
 var actionsComponent: ActionsComponent:

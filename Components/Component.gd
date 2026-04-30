@@ -42,9 +42,9 @@ var parentEntity: Entity:
 			# to be in proper order with other operations such as signals etc.
 
 ## A [Dictionary] of other [Component]s in the [member parentEntity]'s [member Entity.components], including this component itself.
-## TIP: Access via the shortcut of `coComponents.ComponentClassName` or,
-## use `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.findFirstComponentSubclass] instead.
+## TIP: Access via the shortcut of `coComponents.ComponentClassName`
+## or use [method Entity.getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
+## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
 #endregion

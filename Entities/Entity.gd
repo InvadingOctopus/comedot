@@ -211,7 +211,7 @@ func hasComponent(type: Script) -> bool:
 
 
 ## Returns a [Component] from the [member Entity.components] [Dictionary] after converting the [param type] to a [StringName] key.
-## Returns `null` if there is no matching key.
+## Returns `null` if there is no matching key. NOTE: Unlike a direct [Dictionary] lookup, this method does not crash if a component/key does not exist.
 ## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact mtch isn't found.
 func getComponent(type: Script, findSubclasses: bool = false) -> Component:
 	# NOTE: The function is named "get" instead of "find" because "find" may imply a slower search of all children.
@@ -377,7 +377,7 @@ func toggleComponents(componentTypes: Array[Script], overrideIsEnabled: Variant 
 ## Returns the first child node which matches the specified [param type].
 ## If [param includeEntity] is `true` (default) then this ENTITY ITSELF may be returned if it is node of a matching type. Useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
 ## NOTE: Also returns any SUBCLASSES which inherit from the specified [param type].
-## WARNING: TIP: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
+## ALERT: TIP: PERFORMANCE: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
 	var result: Node = NodeTools.findFirstChildOfType(self, type, includeEntity)
 	if debugMode: printDebug(str("findFirstChildOfType(", type, "): ", result))
