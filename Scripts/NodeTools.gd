@@ -260,13 +260,11 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 
 #region Position
 
-## Returns a copy of a [Rect2] transformed from a node's local coordinates to the global position.
-## TIP: PERFORMANCE: This function may be replaced with `Rect2(rect.position + node.global_position, rect.size)` to avoid an extra call, if rotation/skew/etc. aren't needed.
+## Returns the axis-aligned global bounds of a local [Rect2] transformed from a node's local coordinates to the global coordinates.
+## TIP: PERFORMANCE: This function may be replaced with `node.global_transform * rect.abs()` to avoid an extra call, or if rotation/skew/etc. aren't needed: `Rect2(rect.position + node.global_position, rect.size)`
 ## TIP: Combine with the output from [member getAllShapeBounds] to get an [Area2D]'s global region.
-## WARNING: May not work correctly with rotation, scaling or negative dimensions.
 static func convertNodeRectToGlobalCoordinates(node: Node2D, rect: Rect2) -> Rect2:
-	# TODO: Account for rotation
-	return Rect2(node.to_global(rect.position), rect.size * node.global_scale)
+	return node.global_transform * rect.abs()
 
 
 ## Returns the specified "design size" centered on a Node's Viewport.
