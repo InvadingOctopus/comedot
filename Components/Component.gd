@@ -290,10 +290,11 @@ func _exit_tree() -> void:
 
 ## Returns a sibling [Component] from the [member coComponents] [Dictionary],
 ## after converting the [param type] [method Script.get_global_name] to a [StringName] key.
+## NOTE: Unlike a direct [Dictionary] lookup, this method does not crash if a component/key does not exist.
 ## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact match isn't found.
 ## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
-func getCoComponent(type: GDScript, findSubclasses: bool = true) -> Component:
+func getCoComponent(type: GDScript, findSubclasses: bool = false) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
 	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
