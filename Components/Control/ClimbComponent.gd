@@ -210,7 +210,7 @@ func onAreaExited(areaExited: Area2D) -> void:
 func updateActiveClimbingAreaBounds() -> Rect2:
 	if 	activeClimbingArea:
 		activeClimbingAreaBounds		= CollisionTools.getAllShapeBounds(activeClimbingArea)
-		activeClimbingAreaBoundsGlobal	= CollisionTools.getShapeGlobalBounds(activeClimbingArea)
+		activeClimbingAreaBoundsGlobal	= CollisionTools.getAllShapeGlobalBounds(activeClimbingArea)
 	else:
 		activeClimbingAreaBounds		= RectTools.rect2Zero
 		activeClimbingAreaBoundsGlobal	= RectTools.rect2Zero
@@ -344,7 +344,7 @@ func getOffsetOutsideClimbable(targetRect: Rect2) -> Vector2:
 func walkIntoArea(targetArea: Area2D) -> Vector2:
 	# DESIGN: Cannot use PlatformerPhysicsComponent.walkIntoRect() because ClimbComponent uses its own Area2D, not the CharacterBody2D's CollisionShape2D.
 
-	var displacement: Vector2 = getOffsetOutsideClimbable(CollisionTools.getShapeGlobalBounds(targetArea))
+	var displacement: Vector2 = getOffsetOutsideClimbable(CollisionTools.getAllShapeGlobalBounds(targetArea))
 
 	# Walk into the interior
 	if not displacement.is_zero_approx():
@@ -365,7 +365,7 @@ func walkIntoArea(targetArea: Area2D) -> Vector2:
 ## Returns: The distance moved. (0,0) if no movement required or if there is no [member activeClimbingArea].
 func snapToActiveClimbingArea() -> Vector2:
 	if not activeClimbingArea: return Vector2.ZERO
-	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = CollisionTools.getShapeGlobalBounds(activeClimbingArea)
+	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = CollisionTools.getAllShapeGlobalBounds(activeClimbingArea)
 	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
 
 	if not displacement.is_zero_approx():
@@ -435,7 +435,7 @@ func oncharacterBodyComponent_didMove(_delta: float) -> void:
 	if  not isClimbing or not activeClimbingArea \
 	or (not shouldConfineHorizontally and not shouldConfineVertically): return
 
-	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = CollisionTools.getShapeGlobalBounds(activeClimbingArea)
+	if shouldAlwaysUpdateBounds: activeClimbingAreaBoundsGlobal = CollisionTools.getAllShapeGlobalBounds(activeClimbingArea)
 	var displacement: Vector2 = self.getOffsetOutsideClimbable(activeClimbingAreaBoundsGlobal)
 	if debugMode: Debug.watchList.displacement = displacement
 

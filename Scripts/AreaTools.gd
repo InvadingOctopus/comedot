@@ -40,13 +40,13 @@ static func getRandomPositionInArea(area: Area2D) -> Vector2:
 static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D]) -> Area2D:
 	# TBD: PERFORMANCE: Option to cache results?
 
-	# DESIGN: PERFORMANCE: Cannot use RectTools.findNearestRect() because that would require calling CollisionTools.getShapeGlobalBounds() on all areas beforehand,
+	# DESIGN: PERFORMANCE: Cannot use RectTools.findNearestRect() because that would require calling CollisionTools.getAllShapeGlobalBounds() on all areas beforehand,
 	# and there is a separate tie-break based on the Z index, so there has to be some code dpulication :')
 
 	var nearestArea:	Area2D = null # Initialize with `null` to avoid the "used before assigning a value" warning
 	var minimumDistance: float = INF  # Start with infinity
 
-	var referenceAreaBounds: Rect2 = CollisionTools.getShapeGlobalBounds(referenceArea)
+	var referenceAreaBounds: Rect2 = CollisionTools.getAllShapeGlobalBounds(referenceArea)
 	var comparedAreaBounds:  Rect2
 
 	# TBD: PERFORMANCE: All these variables could be replaced by directly accessing Rect2.position & Rect2.end etc. but these names may make the code easier to read and understand.
@@ -67,7 +67,7 @@ static func findNearestArea(referenceArea: Area2D, comparedAreas: Array[Area2D])
 	for comparedArea: Area2D in comparedAreas:
 		if comparedArea == referenceArea: continue
 
-		comparedAreaBounds = CollisionTools.getShapeGlobalBounds(comparedArea)
+		comparedAreaBounds = CollisionTools.getAllShapeGlobalBounds(comparedArea)
 		if not comparedAreaBounds.abs().has_area(): continue # Skip area if it doesn't have an area!
 
 		# If both regions are exactly the same position & size,

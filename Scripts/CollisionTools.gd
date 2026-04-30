@@ -50,7 +50,7 @@ static func getFirstShapeBounds(node: CollisionObject2D) -> Rect2:
 ## Returns a [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]).
 ## Shapes that are [member CollisionShape2D.disabled] or nested or over the [param maximumShapeCount] are skipped.
 ## To get the bounds of the first valid shape only, set [param maximumShapeCount] to 1.
-## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, use [method CollisionTools.getShapeGlobalBounds].
+## NOTE: The rectangle is in the LOCAL coordinates of the [CollisionObject2D]. To convert to GLOBAL coordinates, use [method CollisionTools.getAllShapeGlobalBounds].
 ## Uses each [Shape2D]'s enclosing [Rect2], so non-rectangular shapes are represented by their rectangular bounds.
 ## Returns: A [Rect2] of all the merged bounds. On failure: a [Rect2] size 0
 static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 100) -> Rect2:
@@ -94,7 +94,7 @@ static func getAllShapeBounds(node: CollisionObject2D, maximumShapeCount: int = 
 ## Calls [method CollisionTools.getAllShapeBounds] and returns the [Rect2] representing the combined rectangular boundaries/extents of ALL the [CollisionShape2D] children of a [CollisionObject2D] (e.g. [Area2D] or [CharacterBody2D]), converted to GLOBAL coordinates.
 ## Useful for comparing the [Area2D]s etc. of 2 separate nodes/entities.
 ## On failure: Returns a 0-sized [Rect2] if no valid shape bounds are found.
-static func getShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
+static func getAllShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	# TBD: PERFORMANCE: Option to cache results?
 	var localBounds: Rect2 = getAllShapeBounds(node)
 	if not localBounds.has_area(): return RectTools.rect2Zero

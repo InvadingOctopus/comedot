@@ -43,7 +43,7 @@ var areaBounds: Rect2: # TBD: A more descriptive name like "areaShapeBounds"?
 		return areaBounds
 
 var areaBoundsGlobal: Rect2:
-	get: return area.global_transform * areaBounds.abs() # Apply all transforms # TBD: PERFORMANCE: Use NodeTools.convertNodeRectToGlobalCoordinates() or CollisionTools.getShapeGlobalBounds()?
+	get: return area.global_transform * areaBounds.abs() # Apply all transforms # TBD: PERFORMANCE: Use NodeTools.convertNodeRectToGlobalCoordinates() or CollisionTools.getAllShapeGlobalBounds()?
 
 var didCacheAreaBounds:	bool
 

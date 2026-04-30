@@ -258,7 +258,7 @@ func applyFrictionInAir(delta: float) -> void:
 func walkIntoRect(targetRect: Rect2) -> Vector2:
 	# CHECK: Fix seemingly unnecessary inertia?
 
-	var displacement: Vector2 = RectTools.getRectOffsetOutsideContainer(CollisionTools.getShapeGlobalBounds(characterBodyComponent.body), targetRect)
+	var displacement: Vector2 = RectTools.getRectOffsetOutsideContainer(CollisionTools.getAllShapeGlobalBounds(characterBodyComponent.body), targetRect)
 	# Walk into the interior
 	if not displacement.is_zero_approx():
 		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
