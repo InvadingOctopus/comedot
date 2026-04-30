@@ -876,7 +876,9 @@ static func cycleThroughList(value: Variant, list: Array[Variant]) -> Variant:
 ## Copies all serialized properties back onto the live instance IN-PLACE,
 ## preserving all signal connections, [Dictionary] caches, and external references.
 ## Returns `true` if successful. Returns `false` if the [param resource] has no [member Resource.resource_path] (e.g. if it's an inline Resource inside a `.tscn` scene)
+## EXAMPLE: Resetting stats like health, ammo, etc. and other flags etc. when resetting a level after death etc.
 ## TIP: For a [Stat], this restores the [member Stat.value] to the designer's saved default, which may differ from [member Stat.min] and [member Stat.max]
+## ALERT: This is a "shallow" reset that does NOT preserve stored Array, Dictionary, and nested Resource/Object properties within the [param resource]
 ## ALERT: Property setters WILL fire during the reset, which may emit signals such as [signal Resource.changed]/[signal Stat.didMin]/[signal Stat.didMax]
 ## @experimental
 static func resetResource(resource: Resource) -> bool:
