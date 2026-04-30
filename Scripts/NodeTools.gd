@@ -1,4 +1,5 @@
 ## Helper functions to assist with common tasks involving [Node] or [Node2D]
+## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
 
 class_name NodeTools
 extends GDScript # NOTE: DESIGN: We cannot `extends Node` because we want these functions to be globally available, not just for instances of a special subclass.

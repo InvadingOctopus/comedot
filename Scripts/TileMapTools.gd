@@ -1,4 +1,5 @@
 ## Helper functions to assist with common tasks involving [TileMap], [TileMapLayer] or [TileMapCellData]
+## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
 
 class_name TileMapTools
 extends GDScript # NOTE: DESIGN: We cannot `extends TileMapLayer` because we want these functions to be globally available, not just for instances of a special subclass.

@@ -1,4 +1,5 @@
 ## Helper functions to assist with common tasks involving rectangles: [Rect2] or [Rect2i]
+## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
 
 class_name RectTools
 extends GDScript # NOTE: DESIGN: We cannot `extends Rect2` because we want these functions to be global and also available for [Rect2i], not just for instances of a special subclass.

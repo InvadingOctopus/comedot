@@ -1,8 +1,8 @@
 ## Helper functions to assist with common tasks involving files & folders.
+## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
 
 class_name FileSystemTools
 extends GDScript
-
 
 
 ## Returns a copy of the specified [param path] with the specified [param prefix] added if the path does not begin with "res://" or "user://".
