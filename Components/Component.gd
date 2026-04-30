@@ -186,7 +186,7 @@ func _enter_tree() -> void:
 		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
 		self.checkRequiredComponents()
 	else:
-		self.coComponents.clear() # Clear our previous memory of any siblings # Dictionary.clear() is apparently better than `= {}`
+		self.coComponents = {} # Unlink from `parentEntity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() parentEntity's `components`!
 		if not allowNonEntityParent: printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
 
 
@@ -267,7 +267,7 @@ func unregisterEntity() -> void:
 	if debugMode: printDebug(str("unregisterEntity() ", get_parent()))
 	if parentEntity:
 		willRemoveFromEntity.emit()
-		self.coComponents.clear() # Dictionary.clear() is apparently better than `= {}`
+		self.coComponents = {} # Unlink from `parentEntity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() parentEntity's `components`!
 		parentEntity.unregisterComponent(self)
 		self.parentEntity = null # TBD: Use .set_deferred()?
 		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
