@@ -225,14 +225,36 @@ func registerEntity(newParentEntity: Entity) -> void:
 
 
 ## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
-## Components that are only removed but not freed may be re-added to any entity,
+## If [member shouldCheckGrandparentsForEntity] or [member allowNonEntityParent] then the immediate parent [Node] may not be an [Entity].
+## Components that are only removed but not freed may be re-added to any entity.
 func removeFromEntity(shouldFree: bool = true) -> void:
-	if parentEntity and parentEntity == self.get_parent():
-		# NOTE: Entity.unregisterComponent() will be called by NOTIFICATION_UNPARENTED → unregisterEntity()
-		parentEntity.remove_child(self)
-	else:
+	# NOTE: Entity.unregisterComponent() will be called by NOTIFICATION_UNPARENTED → unregisterEntity()
+	# even if the `parentEntity` is not the immediate parent Node, in case of `shouldCheckGrandparentsForEntity`
+
+	var parentNode: Node = self.get_parent()
+
+	if not parentNode:
+		printWarning("removeFromEntity(): Component has no parent!")
+		# Fall through to `shouldFree`
+
+	elif parentEntity:
+		if  parentEntity == parentNode: # Normal scenario
+			parentEntity.remove_child(self)
+
+		elif shouldCheckGrandparentsForEntity and parentEntity.is_ancestor_of(self): # Entity is not the immediate parent node
+			parentNode.remove_child(self)
+
+		else: # Faulty State: Have a `parentEntity` but it's not a parent or ancestor node
+			printWarning(str("removeFromEntity(): parentEntity: ", parentEntity.logFullName, " is not the parent node or ancestor: ", parentNode))
+			parentNode.remove_child(self) # TBD: Remove anyway if invalid state?
+	
+	elif allowNonEntityParent:
+		parentNode.remove_child(self)
+
+	else: # Have a parent Node but no parent Entity?
 		# TBD: Display a warning or would it be redundant if the component is already removed?
 		pass # DEBUG: printWarning(str("Cannot removeFromEntity: ", parentEntity))
+
 	if shouldFree: self.queue_free()
 
 
