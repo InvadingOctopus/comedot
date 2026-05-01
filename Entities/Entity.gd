@@ -74,10 +74,6 @@ func _notification(what: int) -> void:
 			# UNUSED: unParented.emit() # Not needed yet
 
 
-func _ready() -> void:
-	printDebug("_ready()")
-
-
 ## Called when the Entity enters the Scene Tree for the first time.
 ## NOTE: Called BEFORE Components and child nodes are loaded from the Scene.
 func _enter_tree() -> void:
@@ -96,6 +92,12 @@ func connectSignals() -> void:
 	# TBD: UNUSED: Unneeded for now
 	# Tools.connectSignal(self.child_entered_tree, self.onChildEnteredTree)
 	# Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
+
+
+## Stub that does nothing by default. If overridden, subclasses MUST call `super._ready()`
+func _ready() -> void:
+	printDebug("_ready()")
+	# TBD: Fire some kind of special "Entity Ready" signal or callback here for all Components?
 
 
 ## NOTE: Any subclass calling `super._physics_process()` must be aware that this method disables the per-frame processing by calling `set_physics_process(false)`

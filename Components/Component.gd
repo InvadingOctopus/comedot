@@ -31,7 +31,7 @@ extends Node
 #region Core Properties
 # TBD: @export_storage?
 
-var parentEntity: Entity:
+var parentEntity: Entity: # TBD: @export_storage?
 	set(newValue):
 		if newValue != parentEntity:
 			if debugMode: printChange("parentEntity", parentEntity, newValue)
@@ -159,7 +159,7 @@ func _enter_tree() -> void:
 	# Find which Entity this Component belongs to, if not already set.
 	if not parentEntity:
 		var parentNode := self.get_parent()
-		
+
 		# First, what should be the most common case, see if the immediate parent node is an Entity
 		if parentNode is Entity:
 			registerEntity(parentNode) # TBD: Should we registerEntity() only from validateParent()?
@@ -170,7 +170,7 @@ func _enter_tree() -> void:
 				printLog(str("􀈅 [b]_enter_tree() → [/b]allowNonEntityParent: [b]", self.get_parent(), "[/b]"), self.logFullName)
 			else:
 				printWarning("􀈅 [b]_enter_tree(): No valid parent![/b]")
-		
+
 		# Finally, try to find an entity parent/grandparent in our tree
 		else:
 			registerEntity(findParentEntity())
