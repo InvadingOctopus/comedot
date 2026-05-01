@@ -38,8 +38,8 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 	if not script:
 		Debug.printWarning("executeImplementation(): Missing payloadScript", self.logName)
 		return false
-	
-	if not Tools.findMethodInScript(script, payloadScriptMethodName):
+
+	if not script.has_script_method(payloadScriptMethodName):
 		Debug.printWarning(str("Missing method: ", payloadScriptMethodName), self.logName)
 		return false
 
