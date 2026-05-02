@@ -83,20 +83,16 @@ const plusMinusOne:				Array[int]	 = [-1, +1] # TBD: Name :')
 const plusMinusOneFloat:		Array[float] = [-1.0, +1.0] # TBD: Name :')
 
 
-## A sequence of [float] numbers from 0.25 to 1.0 in steps of 0.25
-## TIP: Use [method Array.pick_random] from this list for colors etc.
-const sequenceQuarters:			Array[float] = [0.25, 0.5, 0.75, 1.0] # TBD: Include 0.0?
+## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.25
+const sequenceQuarters:			Array[float] = [0,0, 0.25, 0.5, 0.75, 1.0]
 
-## A sequence of [float] numbers from 0.2 to 1.0 in steps of 0.2
-## TIP: Use [method Array.pick_random] from this list for colors etc.
-const sequenceFifths:			Array[float] = [0.2, 0.4, 0.6, 0.8, 1.0] # TBD: Include 0.0?
+## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.2
+const sequenceFifths:			Array[float] = [0,0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
-## A sequence of [float] numbers from 0.1 to 1.0 in steps of 0.1
-## TIP: Use [method Array.pick_random] from this list for colors etc.
-const sequenceTenths:			Array[float] = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0] # TBD: Include 0.0?
+## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.1
+const sequenceTenths:			Array[float] = [0,0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 ## A sequence of [float] numbers from -1.0 to +1.0 in steps of 0.1
-## TIP: Use [method Array.pick_random] from this list for colors etc.
 const rangeTenthsSigned:		Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0]
 
 #endregion
@@ -242,7 +238,7 @@ static func getRandomQuantizedColor(steps: Array[float] = Tools.sequenceQuarters
 
 
 ## Returns an "HSV" [Color] with the Hue part set to a random value "quantized" to discrete steps (in increments of 0.2 by default)
-static func getRandomQuantizedColorHue(steps: Array[float] = Tools.rangeTenthsSigned, saturation: float = 0.75, value: float = 1.0, alpha: float = 1.0) -> Color: # Using `rangeTenthsSigned` instead of `sequenceTenths` to include 0.0
+static func getRandomQuantizedColorHue(steps: Array[float] = Tools.sequenceTenths, saturation: float = 0.75, value: float = 1.0, alpha: float = 1.0) -> Color:
 	return Color.from_hsv(steps.pick_random(), saturation, value, alpha)
 
 
