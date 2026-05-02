@@ -236,10 +236,14 @@ xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
 	return randomizedPosition
 
 
-## Returns a [Color] with R,G,B each set to a random value "quantized" to steps of 0.25
-static func getRandomQuantizedColor() -> Color:
-	const steps: Array[float] = [0.25, 0.5, 0.75, 1.0]
-	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random())
+## Returns a [Color] with R,G,B each set to a random value "quantized" to discrete steps (in increments of 0.25 by default)
+static func getRandomQuantizedColor(steps: Array[float] = Tools.sequenceQuarters, alpha: float = 1.0) -> Color:
+	return Color(steps.pick_random(), steps.pick_random(), steps.pick_random(), alpha)
+
+
+## Returns an "HSV" [Color] with the Hue part set to a random value "quantized" to discrete steps (in increments of 0.2 by default)
+static func getRandomQuantizedColorHue(steps: Array[float] = Tools.rangeTenthsSigned, saturation: float = 0.75, value: float = 1.0, alpha: float = 1.0) -> Color: # Using `rangeTenthsSigned` instead of `sequenceTenths` to include 0.0
+	return Color.from_hsv(steps.pick_random(), saturation, value, alpha)
 
 
 ## Returns the global position of the top-left corner of the screen in the camera's view.
