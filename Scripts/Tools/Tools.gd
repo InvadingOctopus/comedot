@@ -82,9 +82,22 @@ const plusMinusOne:				Array[int]	 = [-1, +1] # TBD: Name :')
 ## For use with [method Array.pick_random] with an optional scaling factor.
 const plusMinusOneFloat:		Array[float] = [-1.0, +1.0] # TBD: Name :')
 
-## A sequence of float numbers from -1.0 to +1.0 stepped by 0.1
-## TIP: Use [method Array.pick_random] to pick a random variation from this list for colors etc.
-const sequenceNegative1toPositive1stepPoint1: Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0] # TBD: Better name pleawse :')
+
+## A sequence of [float] numbers from 0.25 to 1.0 in steps of 0.25
+## TIP: Use [method Array.pick_random] from this list for colors etc.
+const sequenceQuarters:			Array[float] = [0.25, 0.5, 0.75, 1.0] # TBD: Include 0.0?
+
+## A sequence of [float] numbers from 0.2 to 1.0 in steps of 0.2
+## TIP: Use [method Array.pick_random] from this list for colors etc.
+const sequenceFifths:			Array[float] = [0.2, 0.4, 0.6, 0.8, 1.0] # TBD: Include 0.0?
+
+## A sequence of [float] numbers from 0.1 to 1.0 in steps of 0.1
+## TIP: Use [method Array.pick_random] from this list for colors etc.
+const sequenceTenths:			Array[float] = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0] # TBD: Include 0.0?
+
+## A sequence of [float] numbers from -1.0 to +1.0 in steps of 0.1
+## TIP: Use [method Array.pick_random] from this list for colors etc.
+const rangeTenthsSigned:		Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0]
 
 #endregion
 
