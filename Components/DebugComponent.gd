@@ -93,7 +93,8 @@ func createCharts() -> void:
 	for path: NodePath in propertiesToChartAbsolutePaths:
 		nodeAndPropertyPaths = Tools.splitPathIntoNodeAndProperty(path)
 		# DEBUG: Debug.printLog(str("path: ", path, ", nodePath: ", nodeAndPropertyPaths[0], ", propertyPath: ", nodeAndPropertyPaths[1]))
-		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartHeight, self.chartYScale)
+		Debug.createChartWindow(nodeAndPropertyPaths[0], nodeAndPropertyPaths[1], self.chartHeight, self.chartYScale) \
+			.shouldRandomizeLineColor = false # Use the `randomDebugColor` of the Component to be monitored
 
 
 #region Labels

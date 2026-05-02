@@ -574,7 +574,7 @@ var isLoggingInitialized:	bool
 
 func initializeLog() -> void:
 	if isLoggingInitialized: return
-	randomDebugColor	 = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, Tools.sequenceQuarters.slice(1).pick_random()) # Prevent 0.0
+	randomDebugColor	 = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, Tools.sequenceQuarters.slice(1).pick_random()) # Prevent low saturation
 	randomDebugColorCode = "[color=#" + randomDebugColor.to_html(false) + "]"
 	updateLogNames()
 	if not self.renamed.is_connected(self.updateLogNames): self.renamed.connect(self.updateLogNames, 0) # PERFORMANCE: Don't call Tools.connectSignal()

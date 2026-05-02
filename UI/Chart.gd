@@ -38,7 +38,7 @@ extends Node2D
 @export_range(0.1, 2.0, 0.05)	var yScale: float = 0.5
 
 @export var shouldRandomizeLineColor: bool = true ## Overrides [member lineColor]
-@export var lineColor:	Color = Color(0.0, 1.0, 0.25, 0.5) ## Overridden by [member shouldRandomizeLineColor]
+@export var lineColor:	Color = Color(0.0, 1.0, 0.25, 0.5) ## Overridden by [member shouldRandomizeLineColor], otherwise, if [member nodeToMonitor] is a [Component], then the [member Component.randomDebugColor] is used.
 @export var gridColor:	Color = Color(0.0, 0.2, 0.3,  0.5)
 @export var headColor:	Color = Color(0.5, 0.5, 0.75, 0.25) ## The color of the vertical "head" or "tracker" line.
 
@@ -75,13 +75,11 @@ var headLineEnd:	Vector2
 #endregion
 
 
+#region Setup
+
 func _ready() -> void:
 	# Give a distinct random color to each chart?
-	if shouldRandomizeLineColor: self.lineColor = Color(
-		0.2 * randi_range(1, 4), 
-		0.2 * randi_range(1, 5),
-		0.2 * randi_range(1, 5),
-		0.5)
+	if shouldRandomizeLineColor: self.lineColor = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, Tools.sequenceQuarters.slice(1).pick_random(), 1.0, 0.5) # Prevent low saturation
 
 	resizeArrays()
 	createGridLines()
@@ -93,89 +91,6 @@ func resizeArrays() -> void:
 	currentHistoryIndex = clampi(currentHistoryIndex, 0, maxHistorySize - 1) # The last valid index is size - 1 # TBD: Clamp or just reset to 0?
 	monitoredVariableHistory.resize(maxHistorySize) # TBD: No need to reset prior history, right?
 	valueLines.resize(maxHistorySize * 2) # Each line needs 2 vectors
-
-
-func _draw() -> void:
-	if not isEnabled: return
-	draw_multiline(gridLines,  gridColor, gridWidth, false)
-
-	# Draw the "head" line
-	draw_line(headLineStart, headLineEnd, headColor, 1.0, false)
-
-	draw_multiline(valueLines, lineColor, lineWidth, false)
-
-
-func _process(_delta: float) -> void:
-	recordMonitoredVariable()
-	updateMinMaxLabels()
-
-	# DEBUG:
-	# Debug.watchList.historyIndex = currentHistoryIndex
-	# Debug.watchList.historyValue = monitoredVariableHistory[currentHistoryIndex]
-
-	headLineStart.x	= currentHistoryIndex
-	headLineEnd.x	= currentHistoryIndex
-	queue_redraw()
-
-
-func recordMonitoredVariable() -> void:
-	var node: Node = self.get_tree().root.get_node_or_null(nodeToMonitor) # TBD: PERFORMANCE: Should we resolve the [NodePath] once & cache `node`?
-	if  not is_instance_valid(node):
-		nameLabel.text = str("INVALID:", nodeToMonitor)
-		return
-
-	var variant: Variant = node.get_indexed(propertyToMonitor)
-	var value:	 float
-	if  variant is float:
-		value = variant
-	elif variant is int:
-		value = float(variant)
-	else:
-		nameLabel.text = str("INVALID:", propertyToMonitor)
-		return
-
-	monitoredVariableHistory[currentHistoryIndex] = value
-
-	# Record the minimum and maximum values
-	if shouldResetMinMax:
-		minRecordedValue  = value
-		maxRecordedValue  = value
-		shouldResetMinMax = false
-	else:
-		if value < minRecordedValue: minRecordedValue = value
-		if value > maxRecordedValue: maxRecordedValue = value
-
-	# DEBUG:
-	# Debug.printLog(str("velocity: ", platformerPhysicsComponent.body.velocity.y))
-	# Debug.printLog(str("currentHistoryIndex: ", currentHistoryIndex))
-
-	# Add a line
-	createLine(currentHistoryIndex) # NOTE: Update BEFORE incrementing `currentHistoryIndex`
-
-	# Increment or wrap-around the index
-	currentHistoryIndex += 1
-	if  currentHistoryIndex >= maxHistorySize:
-		currentHistoryIndex = 0
-
-
-func createLine(index: int = currentHistoryIndex) -> void:
-	# NOTE: Each line needs 2 vectors.
-
-	var currentLineIndex: int = index * 2
-
-	# DEBUG: Debug.printLog(str("currentLineIndex: ", currentLineIndex))
-
-	valueLines[currentLineIndex] = Vector2(index, 0)
-
-	valueLines[currentLineIndex + 1] = Vector2( \
-		index,
-		# NOTE: Negative Y values must go DOWNWARDS in the chart
-		# NOTE: If the monitored variable is 0 then there should be no line (cleaner and more accurate)
-		-(monitoredVariableHistory[index] * yScale))
-
-	# DEBUG:
-	# Debug.printLog(str("Vector ", currentLineIndex, ": ", valueLines[currentLineIndex]))
-	# Debug.printLog(str("Vector ", currentLineIndex+1, ": ", valueLines[currentLineIndex+1]))
 
 
 func createGridLines() -> void:
@@ -201,7 +116,7 @@ func createGridLines() -> void:
 	var numberOfGridLinesY: int = ((gridMaxY - gridMinY) / gridStepY) + 1
 
 	var gridLinesCount:		int = (numberOfGridLinesX + numberOfGridLinesY) * 2 # Each line needs 2 vectors
-	
+
 	if  gridLines.size() != gridLinesCount: gridLines.resize(gridLinesCount)
 
 	# DEBUG: Debug.printLog(str("numberOfGridLines X, Y: ", numberOfGridLinesX, ", ", numberOfGridLinesY))
@@ -246,3 +161,100 @@ func updateNameLabel() -> void:
 func updateMinMaxLabels() -> void:
 	minLabel.text = str("MIN: ", minRecordedValue)
 	maxLabel.text = str("MAX: ", maxRecordedValue)
+
+#endregion
+
+
+#region Data
+
+func recordMonitoredVariable() -> void:
+	var node: Node = self.get_tree().root.get_node_or_null(nodeToMonitor) # TBD: PERFORMANCE: Should we resolve the [NodePath] once & cache `node`?
+	if  not is_instance_valid(node):
+		nameLabel.text = str("INVALID:", nodeToMonitor)
+		return
+
+	var variant: Variant = node.get_indexed(propertyToMonitor)
+	var value:	 float
+	if  variant is float:
+		value = variant
+	elif variant is int:
+		value = float(variant)
+	else:
+		nameLabel.text = str("INVALID:", propertyToMonitor)
+		return
+
+	monitoredVariableHistory[currentHistoryIndex] = value
+
+	# Record the minimum and maximum values
+	if shouldResetMinMax:
+		minRecordedValue  = value
+		maxRecordedValue  = value
+		shouldResetMinMax = false
+	else:
+		if value < minRecordedValue: minRecordedValue = value
+		if value > maxRecordedValue: maxRecordedValue = value
+
+	# DEBUG:
+	# Debug.printLog(str("velocity: ", platformerPhysicsComponent.body.velocity.y))
+	# Debug.printLog(str("currentHistoryIndex: ", currentHistoryIndex))
+
+	# Add a line
+	if not self.shouldRandomizeLineColor and node is Component: self.lineColor = node.randomDebugColor
+	createLine(currentHistoryIndex) # NOTE: Update BEFORE incrementing `currentHistoryIndex`
+
+	# Increment or wrap-around the index
+	currentHistoryIndex += 1
+	if  currentHistoryIndex >= maxHistorySize:
+		currentHistoryIndex = 0
+
+
+func createLine(index: int = currentHistoryIndex) -> void:
+	# NOTE: Each line needs 2 vectors.
+
+	var currentLineIndex: int = index * 2
+
+	# DEBUG: Debug.printLog(str("currentLineIndex: ", currentLineIndex))
+
+	valueLines[currentLineIndex] = Vector2(index, 0)
+
+	valueLines[currentLineIndex + 1] = Vector2( \
+		index,
+		# NOTE: Negative Y values must go DOWNWARDS in the chart
+		# NOTE: If the monitored variable is 0 then there should be no line (cleaner and more accurate)
+		-(monitoredVariableHistory[index] * yScale))
+
+	# DEBUG:
+	# Debug.printLog(str("Vector ", currentLineIndex, ": ", valueLines[currentLineIndex]))
+	# Debug.printLog(str("Vector ", currentLineIndex+1, ": ", valueLines[currentLineIndex+1]))
+
+#endregion
+
+
+#region Draw
+
+func _process(_delta: float) -> void:
+	recordMonitoredVariable()
+	updateMinMaxLabels()
+
+	# DEBUG:
+	# Debug.watchList.historyIndex = currentHistoryIndex
+	# Debug.watchList.historyValue = monitoredVariableHistory[currentHistoryIndex]
+
+	headLineStart.x	= currentHistoryIndex
+	headLineEnd.x	= currentHistoryIndex
+	queue_redraw()
+
+
+func _draw() -> void:
+	if not isEnabled: return
+	
+	# Grid
+	draw_multiline(gridLines,  gridColor, gridWidth, false)
+
+	# Draw the "head"/"tracker" line
+	draw_line(headLineStart, headLineEnd, headColor, 1.0, false)
+
+	# Data
+	draw_multiline(valueLines, lineColor, lineWidth, false)
+
+#endregion
