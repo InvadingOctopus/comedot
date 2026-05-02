@@ -84,13 +84,13 @@ const plusMinusOneFloat:		Array[float] = [-1.0, +1.0] # TBD: Name :')
 
 
 ## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.25
-const sequenceQuarters:			Array[float] = [0,0, 0.25, 0.5, 0.75, 1.0]
+const sequenceQuarters:			Array[float] = [0.0, 0.25, 0.5, 0.75, 1.0]
 
 ## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.2
-const sequenceFifths:			Array[float] = [0,0, 0.2, 0.4, 0.6, 0.8, 1.0]
+const sequenceFifths:			Array[float] = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
 ## A sequence of [float] numbers from 0.0 to 1.0 in steps of 0.1
-const sequenceTenths:			Array[float] = [0,0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+const sequenceTenths:			Array[float] = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 ## A sequence of [float] numbers from -1.0 to +1.0 in steps of 0.1
 const sequenceTenthsSigned:		Array[float] = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3, +0.4, +0.5, +0.6, +0.7, +0.8, +0.9, +1.0]
