@@ -96,6 +96,8 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	match what:
+		## ALERT: Notifications are received by subclass AFTER the base class,
+		## so this component has already been unregistered at this point, but we don't need `parentEntity` etc. so it's OK
 		NOTIFICATION_UNPARENTED: if isChoosing: cancelTargetSelection() # Remove selection UI etc. if we're getting forcibly evicted :')
 	# NOTE: FIXED: AVOID: _notification() is called for superclass automatically! Manually calling `super._notification(what)` causes bugs!!
 

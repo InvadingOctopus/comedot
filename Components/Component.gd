@@ -106,6 +106,9 @@ func checkRequiredComponents() -> bool:
 #region Life Cycle
 # NOTIFICATION_PARENTED → _enter_tree() → _ready()
 
+## ALERT: Unlike other virtual methods, Godot calls inherited [method Object._notification] automatically, usually the base class first. Subclasses should NOT call `super._notification()`
+## Events such as [method Component.unregisterEntity] run BEFORE a subclass's [constant Node.NOTIFICATION_UNPARENTED]:
+## TIP: Cleanup that needs the [member parentEntity] should connect to [signal willRemoveFromEntity] or override [method unregisterEntity] before calling `super()`
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PARENTED:   validateParent()	# Received when a node is set as the child of another node,  not necessarily when the node enters the SceneTree.

@@ -2,7 +2,7 @@
 ## A main advantage of having a shared input state versus checking [method Node._input] directly, is that other components/scripts can modify the shared state. e.g. a [PlatformerPatrolComponent] "injecting" movement into a [PlatformerPhysicsComponent].
 ## NOTE: Does NOT check mouse motion input.
 ## ATTENTION: If mouse input events are not reaching this component, check the [member Control.mouse_filter] property of any overlaying nodes,
-## and set it to [const Control.MOUSE_FILTER_PASS] or [const Control.MOUSE_FILTER_IGNORE].
+## and set it to [constant Control.MOUSE_FILTER_PASS] or [constant Control.MOUSE_FILTER_IGNORE].
 ## NOTE: To improve performance, small independent components may do their own input polling. Therefore, this [InputComponent] makes most sense when a chain of multiple components depend upon it, such as [TurningControlComponent] + [ThrustControlComponent].
 ## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
 ## TIP: May be subclassed for AI-control or pre-recorded demos or "attract mode" etc.
@@ -95,7 +95,7 @@ extends Component
 #region State
 # TBD: @export_storage
 
-## A list of all the input actions from [const inputActionsToMonitor] that are currently pressed.
+## A list of all the input actions from [constant inputActionsToMonitor] that are currently pressed.
 var inputActionsPressed: PackedStringArray
 
 var previousMovementDirection:	Vector2
@@ -317,7 +317,7 @@ func handleInput(event: InputEvent) -> void:
 
 ## Updates [member inputActionsPressed].
 ## Affected by [member isEnabled] but NOT affected by [member isPlayerControlled], to allow control by AI/code.
-## Returns `true` if [param event] contains one of the input actions included in [const inputActionsToMonitor].
+## Returns `true` if [param event] contains one of the input actions included in [constant inputActionsToMonitor].
 func processMonitoredInputActions(event: InputEvent = null) -> bool:
 	if not isEnabled: return false
 

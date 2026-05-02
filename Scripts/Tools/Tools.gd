@@ -499,7 +499,7 @@ static func checkResult(value: Variant) -> bool:
 	elif  value is int:		return true  # TBD: Return `true` even if a number is 0?
 	elif  value is float:	return not is_nan(value)
 	elif  value is Array or value is Dictionary: return not value.is_empty()
-	else: 
+	else:
 		# Check for Packed Arrays
 		var valueTypeName: String = type_string(typeof(value))
 		if    valueTypeName.begins_with("Packed") and valueTypeName.ends_with("Array"): return not value.is_empty()
