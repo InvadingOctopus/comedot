@@ -228,7 +228,7 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 
 			count += 1
 			file   = folder.path_join(file) # Append the folder path because Godon't; path_join() may be better than `+ "/" +` on Windows etc.
-			
+
 			if not verifyComponent(file): hasIssues = true
 
 	if not hasIssues: printLog(str("verifyAllComponents(): ", count, " components checked. All OK."))
