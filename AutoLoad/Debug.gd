@@ -293,7 +293,7 @@ func printLog(message: String = "", object: Variant = null, messageColor: String
 ## Useful for logging entries before the framework is completely ready.
 func printAutoLoadLog(message: String = "") -> void:
 	var caller: String = get_stack()[1].source.get_file().trim_suffix(".gd")
-	print_rich(str("[color=ORANGE]", caller, "[/color] ", message))
+	print_rich(str("[color=orange]", caller, "[/color] ", message))
 
 
 ## Prints a faded message to reduce visual clutter.

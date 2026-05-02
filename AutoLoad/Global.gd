@@ -63,7 +63,11 @@ class TileMapCustomData:
 
 
 class Colors:
-	const logResource	:= "pink"
+	const logEntity			:= "lightGreen"
+	const logEntityName		:= "green"
+	const logComponent		:= "lightBlue"
+	const logComponentName	:= "cyan"
+	const logResource		:= "pink"
 
 #endregion
 

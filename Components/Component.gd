@@ -111,7 +111,9 @@ func checkRequiredComponents() -> bool:
 ## TIP: Cleanup that needs the [member parentEntity] should connect to [signal willRemoveFromEntity] or override [method unregisterEntity] before calling `super()`
 func _notification(what: int) -> void:
 	match what:
-		NOTIFICATION_PARENTED:   validateParent()	# Received when a node is set as the child of another node,  not necessarily when the node enters the SceneTree.
+		NOTIFICATION_PARENTED: # Received when a node is set as the child of another node, not necessarily when the node enters the SceneTree.
+			initializeLog()
+			validateParent()
 		NOTIFICATION_UNPARENTED: unregisterEntity() # Received when a parent calls remove_child() on a child node, not necessarily when the node exit the SceneTree.
 		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
 
@@ -434,31 +436,43 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInParen
 ## NOTE: Suppresses `debugMode = false` i.e. [method printDebug] is always printed.
 @export var debugModeTrace:	bool
 
-
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
 ## NOTE: Does NOT affect warnings and errors!
 var isLoggingEnabled:		bool
 
-var logName: String: # NOTE: This is a dynamic property because direct assignment would set the value before the `name` is set.
-	get: return "􀥭 " + self.name
 
-## A more detailed name including the node name, instance, and the script's `class_name`.
-var logFullName: String:
-	get: return str("􀥭 ", self, ":", self.get_script().get_global_name())
+const logSymbol:			String = "􀥭" # NOTE: Using Apple's SF Symbols, currently only supported on macOS/iOS/etc.
+var logName:				String
+var logFullName:			String ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`.
+var randomDebugColor:		Color  ## Used by logs and debugging tools etc. to distinguish different entities from each other.
+var randomDebugColorCode:	String
+var isLoggingInitialized:	bool
 
-## [member Component.logName] + [member Entity.logName]
-var logNameWithEntity: String:
+var logNameWithEntity:		String: ## [member Component.logName] + [member Entity.logName] if there is a [member parentEntity]
 	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
 
-## [member Component.logFullName] + [member Entity.logFullName]
-var logFullNameWithEntity: String:
+var logFullNameWithEntity:	String: ## [member Component.logFullName] + [member Entity.logFullName] if there is a [member parentEntity]
 	get: return self.logFullName + ((" " + parentEntity.logFullName) if parentEntity else "")
 
-var randomDebugColor: Color = Tools.getRandomQuantizedColor() ## Used by [method emitDebugBubble] etc. to distinguish different components from each other.
+
+func initializeLog() -> void:
+	if isLoggingInitialized: return
+	randomDebugColor	 = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, 0.5)
+	randomDebugColorCode = "[color=#" + randomDebugColor.to_html(false) + "]"
+	updateLogNames()
+	if not self.renamed.is_connected(self.updateLogNames): self.renamed.connect(self.updateLogNames, 0) # PERFORMANCE: Don't call Tools.connectSignal()
+	isLoggingInitialized = true
+
+
+func updateLogNames() -> void:
+	var logSymbolWithColor: String = randomDebugColorCode + logSymbol + "[/color] "
+	logName		= logSymbolWithColor + self.name
+	logFullName = str(logSymbolWithColor, self, ":", self.get_script().get_global_name())
+
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return # PERFORMANCE: Callers may also check this to avoid String constructions/conversions before calling this method
-	Debug.printLog(message, object, "lightBlue", "cyan")
+	Debug.printLog(message, object, Global.Colors.logComponent, Global.Colors.logComponentName)
 
 
 ## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
@@ -466,27 +480,27 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 ## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if debugModeTrace: Debug.printTrace(message.split(", "), self.logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
-	elif debugMode: Debug.printDebug(message, logName, "cyan")
+	if debugModeTrace: Debug.printTrace(message.split(", "), logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
+	elif debugMode: Debug.printDebug(message, logName, Global.Colors.logComponentName)
 
 
 ## Calls [method Debug.printWarning]
 ## NOTE: Ignores [member isLoggingEnabled]
 func printWarning(message: String = "") -> void:
-	Debug.printWarning(message, logFullName, "cyan")
+	Debug.printWarning(message, logFullName, Global.Colors.logComponentName)
 
 
 ## Calls [method Debug.printError]
 ## NOTE: Ignores [member isLoggingEnabled]
 func printError(message: String = "") -> void:
-	Debug.printError(message, logFullName, "cyan")
+	Debug.printError(message, logFullName, Global.Colors.logComponentName)
 
 
 ## Prints an array of variables in a highlighted color, along with a short "stack trace" of recent functions and their filenames before [method Debug.printTrace] was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## Affected by [member debugMode] and only printed in debug builds.
 func printTrace(...values: Array[Variant]) -> void:
-	Debug.printTrace(values, self.logNameWithEntity, 3) # Start further from the call stack to skip this method
+	Debug.printTrace(values, logNameWithEntity, 3) # Start further from the call stack to skip this method
 
 
 ## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].

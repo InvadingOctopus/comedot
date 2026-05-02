@@ -79,6 +79,7 @@ func _notification(what: int) -> void:
 func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
+	initializeLog()
 	printDebug("_enter_tree()")
 	if not self.is_in_group(Global.Groups.entities): self.add_to_group(Global.Groups.entities, true) # persistent
 	printLog("􀈅 [b]_enter_tree() → " + str(self.get_parent()) + "[/b]", self.logFullName)
@@ -88,8 +89,9 @@ func _enter_tree() -> void:
 ## WARNING: When overriding in a subclass, call `super.connectSignals()`,
 ## but do NOT call [method Entity.connectSignals] manually from [method _enter_tree] or [method _ready], to ensure that all signals are connected and ONLY ONCE.
 func connectSignals() -> void:
-	printDebug("connectSignals()")
+	pass
 	# TBD: UNUSED: Unneeded for now
+	# printDebug("connectSignals()")
 	# Tools.connectSignal(self.child_entered_tree, self.onChildEnteredTree)
 	# Tools.connectSignal(self.child_exiting_tree, self.onChildExitingTree)
 
@@ -559,21 +561,35 @@ func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: b
 
 ## Enables more detailed debugging information for this entity, such as verbose log messages. Subclasses may add their own information or may not respect this flag.
 ## NOTE: Even though [method printDebug] also checks this flag, this flag should be checked before calls to `printDebug()` with functions such as `str()` that might reduce performance.
-@export var debugMode: bool = false
+@export var debugMode:		bool = false
 
 
-var logName: String: # Static assignment would set the property before the `name` is set.
-	# Entities just need to show their name as they're almost always the same type/eclass.
-	get: return "􀕽 " + self.name
+const logSymbol:			String = "􀕽" # NOTE: Using Apple's SF Symbols, currently only supported on macOS/iOS/etc.
+var logName:				String
+var logFullName:			String ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`.
+var randomDebugColor:		Color  ## Used by logs and debugging tools etc. to distinguish different entities from each other.
+var randomDebugColorCode:	String
+var isLoggingInitialized:	bool
 
-## A more detailed name including the node name, instance, and the script's `class_name`.
-var logFullName: String:
-	get: return str("􀕽 ", self, ":", self.get_script().get_global_name())
+
+func initializeLog() -> void:
+	if isLoggingInitialized: return
+	randomDebugColor	 = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, 0.5)
+	randomDebugColorCode = "[color=#" + randomDebugColor.to_html(false) + "]"
+	updateLogNames()
+	if not self.renamed.is_connected(self.updateLogNames): self.renamed.connect(self.updateLogNames, 0) # PERFORMANCE: Don't call Tools.connectSignal()
+	isLoggingInitialized = true
+
+
+func updateLogNames() -> void:
+	var logSymbolWithColor: String = randomDebugColorCode + logSymbol + "[/color] "
+	logName		= logSymbolWithColor + self.name # Entities just need to show their name, not their type, as they're almost always the same type/eclass
+	logFullName = str(logSymbolWithColor, self, ":", self.get_script().get_global_name())
 
 
 func printLog(message: String = "", object: Variant = self.logName) -> void:
 	if not isLoggingEnabled: return
-	Debug.printLog(message, object, "lightGreen", "green")
+	Debug.printLog(message, object, Global.Colors.logEntity, Global.Colors.logEntityName)
 
 
 ## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
@@ -581,19 +597,19 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
 	if not debugMode: return
-	Debug.printDebug(message, logName, "green")
+	Debug.printDebug(message, logName, Global.Colors.logEntityName)
 
 
 ## Calls [method Debug.printWarning]
 ## NOTE: Ignores [member isLoggingEnabled]
 func printWarning(message: String = "") -> void:
-	Debug.printWarning(message, logFullName, "green")
+	Debug.printWarning(message, logFullName, Global.Colors.logEntityName)
 
 
 ## Calls [method Debug.printError]
 ## NOTE: Ignores [member isLoggingEnabled]
 func printError(message: String = "") -> void:
-	Debug.printError(message, logFullName, "green")
+	Debug.printError(message, logFullName, Global.Colors.logEntityName)
 
 
 ## Logs an entry showing a variable's previous and new values, IF there is a change and [member debugMode].
