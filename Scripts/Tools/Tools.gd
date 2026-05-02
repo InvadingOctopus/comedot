@@ -384,23 +384,6 @@ static func rollChance(chancePercent: int) -> bool:
 	return randi_range(1, 100) <= chancePercent
 
 
-## Returns a copy of a number wrapped around to the [param minimum] or [param maximum] value if it exceeds or goes below either limit (inclusive).
-## May be used to cycle through a range by adding/subtracting an offset to [param current] such as +1 or -1. The number may be an array index or `enum` state, or a sprite position to wrap it around the screen Pac-Man-style.
-## If [param minimum] > [param maximum] then [param current] is returned unmodified.
-static func wrapInteger(minimum: int, current: int, maximum: int) -> int:
-	# NOTE: Cannot use Godot's pingpong() because it "bounces" not "wraps"
-	if minimum > maximum:
-		Debug.printWarning(str("wrapInteger(): minimum ", minimum, " > maximum ", maximum, ", returning current: ", current))
-		return current # TBD: Return `current` or `minimum` or `maximum` in case of invalid arguments??
-	elif minimum == maximum: # If there is no difference between the range, just return either.
-		return minimum
-
-	# NOTE: Do NOT clamp first! So that an already-offset value may be provided for `current`
-
-	# THANKS: rubenverg@Discord, lololol__@Discord
-	return posmod(current - minimum, maximum - minimum + 1) + minimum # +1 to make limits inclusive
-
-
 ## Wraps a [float] value around if it is below 0.0 or higher than 1.0
 static func wrapUnitFloat(value: float) -> float:
 	if value < 0.0 or value > 1.0: return fposmod(value, 1.0)
@@ -420,7 +403,7 @@ static func validateArrayIndex(array: Array, index: int) -> bool:
 ## Returns 0 if the array is empty, which will be an invalid index.
 ## NOTE: Packed arrays such as [PackedStringArray] etc. are accepted even though [param array] is typed as [Array]
 static func wrapArrayIndex(array: Array, index: int, increment: int) -> int:
-	if not array.is_empty(): return Tools.wrapInteger(0, index + increment, array.size() - 1)
+	if not array.is_empty(): return wrapi(0, index + increment, array.size()) # max is exclusive
 	else: return 0
 
 
