@@ -57,19 +57,16 @@ static func findAllSubfolders(initialPath: String = "res://") -> PackedStringArr
 ## NOTE: When used on a "res://" path in an exported project, only the files actually included in the PCK at the given folder level are returned.
 static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
 	folderPath = FileSystemTools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
-	var folder: DirAccess = DirAccess.open(folderPath)
-	if folder == null:
-		Debug.printWarning("getFilesFromFolder() cannot open " + folderPath)
+	if DirAccess.open(folderPath) == null: # Open and discard just to verify access
+		Debug.printWarning(str("getFilesInFolder() Error: ", DirAccess.get_open_error(), ": Cannot open ", folderPath))
 		return []
 
-	folder.list_dir_begin() # CHECK: Necessary for get_files()?
 	var files: PackedStringArray
 
-	for fileName: String in folder.get_files():
+	for fileName: String in DirAccess.get_files_at(folderPath):
 		if filter.is_empty() or fileName.containsn(filter):
-			files.append(folder.get_current_dir() + "/" + fileName) # CHECK: Use get_current_dir() instead of folderPath?
+			files.append(folderPath.path_join(fileName))
 
-	folder.list_dir_end() # CHECK: Necessary for get_files()?
 	return files
 
 
