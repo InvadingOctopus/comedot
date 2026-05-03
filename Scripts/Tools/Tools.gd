@@ -374,7 +374,7 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 #endregion
 
 
-#region Maths Functions
+#region Math Functions
 
 ## TIP: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
 
@@ -385,9 +385,9 @@ static func rollChance(chancePercent: int) -> bool:
 
 
 ## Wraps a [float] value around if it is below 0.0 or higher than 1.0
+## NOTE: This is different from Godot's builtin [method @GlobalScope.wrapf] because in this method 1.0 is INCLUSIVE.
 static func wrapUnitFloat(value: float) -> float:
-	if value < 0.0 or value > 1.0: return fposmod(value, 1.0)
-	else: return value
+	return fposmod(value, 1.0) if (value < 0.0 or value > 1.0) else value
 
 #endregion
 
