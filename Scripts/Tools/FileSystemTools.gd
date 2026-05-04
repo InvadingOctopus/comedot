@@ -76,7 +76,7 @@ static func getFilesInFolder(folderPath: String, filter: String = "") -> PackedS
 static func getResourcesInFolder(folderPath: String, filter: String = "") -> PackedStringArray:
 	folderPath = FileSystemTools.addPathPrefixIfMissing(folderPath, "res://") # Use the exported/packaged resources path if omitted.
 	var resources: PackedStringArray = ResourceLoader.list_directory(folderPath)
-	if resources.is_empty(): return []
+	if  resources.is_empty(): return []
 
 	if not folderPath.ends_with("/"): folderPath += "/" # Tack the tail on
 

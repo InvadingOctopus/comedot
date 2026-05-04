@@ -156,6 +156,7 @@ static func callCustom(object: Object, functionName: StringName, ...arguments: A
 
 ## Returns a [StringName] with the `class_name` from a [Script] type.
 ## NOTE: This method is needed because we cannot directly write `SomeTypeName.get_global_name()` :(
+## TIP: PERFORMANCE: If needed frequently at runtime, replace calls to this method with the builtin API: `object.get_script().get_global_name()`
 static func getStringNameFromClass(type: Script) -> StringName:
 	return type.get_global_name()
 
