@@ -19,10 +19,6 @@ metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [node name="InteractionMouseControlComponent" unique_id=1494182240 instance=ExtResource("1_x2yas")]
 script = ExtResource("2_uocm8")
-shouldCheckGrandparentsForEntity = false
-allowNonEntityParent = false
-debugMode = false
-debugModeTrace = false
 
 [node name="InteractionControlShape" parent="." index="0" unique_id=218436281]
 shape = SubResource("CircleShape2D_yoroa")
