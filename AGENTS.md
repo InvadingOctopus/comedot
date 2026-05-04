@@ -52,13 +52,13 @@
 - No formal coverage targets are defined; keep regression tests near the relevant feature.
 
 
-## Review Guidelines
+## Code Review
 - Ignore the contents of `Temporary/` and `Lab/`
 - Functions and types marked with an `@experimental` comment are expected to have bugs and incomplete implementations. Findings involving experimental code should be a lower priority and not expected to be fixed, unless important non-experimental code depends on that experimental code.
 - Not all `null`-able references need to be guarded: In some cases, a crash is better than a warning or a silent failure/skip, specially if it's a core object which should never be missing at runtime under normal circumstances.
 - Ignore the contents of `Game/` unless the prompt and context involves a specific game being made with the main framework project.
 - The contents of `Game/` are subject to the instructions in `Game/AGENTS.override.md`
-
+- If an inline source code renderer does not support syntax highlighting for GDScript, use Swift syntax highlighting for fenced GDScript code blocks, as it closely resembles GDScript highlighting.
 
 ## Coding Style & Naming Conventions
 Follow the guidelines in `Conventions.md`, which includes these key rules:
