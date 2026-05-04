@@ -85,28 +85,18 @@ static func findFirstParentOfType(childNode: Node, parentType: Variant) -> Node:
 	return parent
 
 
-## Appends a linear/"flattened" list of ALL the child nodes AND their subchildren and so on, recursively, from the specified [param firstNode].
-## e.g. `[FirstNode, Child1ofFirstNode, Child1ofChild1ofFirstNode, Child2ofChild1ofFirstNode, Child2ofFirstNode, …]`
-## TIP: EXAMPLE USAGE: This may be useful for setting UI focus chains in trees/lists etc.
-## WARNING: May cause stack overflow if [param nodeToIterate] has a deeply-nested node trees.
-## @experimental
-static func flatMapNodeTree(nodeToIterate: Node, existingList: Array[Node]) -> void:
-	# TODO: Better name?
-	# TODO: Filtering
-	# TODO: This should be a generic function for flattening trees of any type :')
-	existingList.append(nodeToIterate)
-	for index in nodeToIterate.get_child_count(): # No need to -1 because the end of a range is EXCLUSIVE
-		flatMapNodeTree(nodeToIterate.get_child(index), existingList)
-
-
-## Calls [method NodeTools.flatMapNodeTree] to return a linear/"flattened" list of ALL the child nodes AND their subchildren, recursively, from the specified [param firstNode].
-## NOTE: INCLUDES [param firstNode] (the parent)
-## @experimental
-static func getAllChildrenRecursively(firstNode: Node) -> Array[Node]:
-	# TBD: Merge with flatMapNodeTree()?
-	var flatList: Array[Node]
-	NodeTools.flatMapNodeTree(firstNode, flatList)
-	return flatList
+## Returns a linear/"flattened" list of [param nodeToIterate] AND all its children and subchildren, recursively.
+## NOTE: INCLUDES [param rootNode] (the parent)
+## e.g. `[RootNode, Child1ofFirstNode, Child1ofChild1ofFirstNode, Child2ofChild1ofFirstNode, Child2ofFirstNode, …]`
+## NOTE: This includes internal children, matching [method Node.find_children]
+## TIP: EXAMPLE USAGE: Setting UI focus chains in trees/lists etc.
+## WARNING: PERFORMANCE: May be slow on deeply-nested node trees.
+static func flatMapNodeTree(rootNode: Node, type: String = "") -> Array[Node]:
+	# TBD: Better name?
+	# TBD: PERFORMANCE: Cache?
+	var nodes: Array[Node] = [rootNode]
+	nodes.append_array(rootNode.find_children("*", type, true, false)) # recursive, not owned (include unowned)
+	return nodes
 
 
 ## Replaces a child node with another node at the same index (order), optionally copying position, rotation etc.
