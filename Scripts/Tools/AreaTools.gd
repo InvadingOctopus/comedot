@@ -8,30 +8,58 @@ extends GDScript # NOTE: DESIGN: We cannot `extends Area2D` because we want thes
 #region Geometry
 
 ## Returns a random point inside the combined rectangular boundary of ALL an [Area2D]'s [Shape2D]s.
-## On failure, i.e. if the area has an invalid size, returns (0,0)
-## NOTE: Does NOT verify whether a point is actually enclosed inside a [Shape2D]
+## Returns (0,0) on failure, i.e. if the area has an invalid size.
+## ALERT: Does NOT perform collision detection to verify that a point is enclosed within a [Shape2D]; it may be outside the [Area2D]'s actual collision region.
 ## Best suited for areas with a single [RectangleShape2D]
-static func getRandomPositionInArea(area: Area2D) -> Vector2:
-	var areaBounds: Rect2 = CollisionTools.getAllShapeBounds(area)
-
+## TIP: To use the exact collision region covered by all [Shape2D]s, call [method getRandomPositionInArea]
+static func getRandomPositionInAreaBounds(area: Area2D) -> Vector2:
+	var areaBounds: Rect2 = CollisionTools.getAllShapeBounds(area) # TBD: PERFORMANCE: Cache or skip?
 	if not areaBounds.has_area(): return Vector2.ZERO
 
 	# Generate a random position within the area.
-
-	#randomize() # TBD: Do we need this?
-
-	#var isWithinArea: bool = false
-	#while not isWithinArea:
-
-	var x: float = randf_range(areaBounds.position.x, areaBounds.end.x)
-	var y: float = randf_range(areaBounds.position.y, areaBounds.end.y)
-	var randomPosition: Vector2 = Vector2(x, y)
-
-	#if shouldVerifyWithinArea: isWithinArea = ... # TODO: Cannot check if a point is within an area :( [as of 4.3 Dev 3]
-	#else: isWithinArea = true
+	# randomize() # TBD: Do we need this?
+	var randomPosition: Vector2 = Vector2(
+		randf_range(areaBounds.position.x, areaBounds.end.x),
+		randf_range(areaBounds.position.y, areaBounds.end.y))
 
 	# DEBUG: Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
 	return randomPosition
+
+
+## Returns a random point inside the combined collision region of ALL an [Area2D]'s [Shape2D]s.
+## Returns [Vector2.INF] on failure, e.g. if the area has an invalid size or [param maximumAttempts] are exceeded; check with [method Vector2.is_finite]
+## TIP: PERFORMANCE: For areas with a single [RectangleShape2D] call [method getRandomPositionInAreaBounds] to only use the rectangular bounds.
+static func getRandomPositionInArea(area: Area2D, maximumAttempts: int = 32, maximumIntersections: int = 32) -> Vector2:
+	# TODO: Verify with visual tests
+	var areaBounds: Rect2 = CollisionTools.getAllShapeBounds(area) # TBD: PERFORMANCE: Cache or skip?
+	if not areaBounds.has_area(): return Vector2.INF
+
+	# Set up the physics query
+	var spaceState: PhysicsDirectSpaceState2D	  = area.get_world_2d().direct_space_state
+	var pointQuery: PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
+	pointQuery.canvas_instance_id	= PhysicsServer2D.area_get_canvas_instance_id(area.get_rid())
+	pointQuery.collision_mask		= area.collision_layer
+	pointQuery.collide_with_areas	= true
+	pointQuery.collide_with_bodies	= false
+
+	#randomize() # TBD: Do we need this?
+	var randomPosition: Vector2
+
+	while maximumAttempts > 0:
+		maximumAttempts -= 1
+		randomPosition   = Vector2(
+			randf_range(areaBounds.position.x, areaBounds.end.x),
+			randf_range(areaBounds.position.y, areaBounds.end.y))
+
+		pointQuery.position = area.to_global(randomPosition)
+
+		# See if our `area` is among the colliders
+		for intersection: Dictionary in spaceState.intersect_point(pointQuery, maximumIntersections):
+			if intersection.get("collider") == area:
+				# DEBUG: Debug.printDebug(str("area: ", area, ", areaBounds: ", areaBounds, ", randomPosition: ", randomPosition))
+				return randomPosition
+	# else:
+	return Vector2.INF
 
 
 ## Checks a list of [Area2D]s and returns the area nearest to a specified reference area.
