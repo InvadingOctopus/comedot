@@ -22,18 +22,24 @@ extends Node
 ## A [Dictionary] of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
 ## Updating the value of an existing key will update the label for that property i.e. to show its value at runtime.
 ## EXAMPLE: `Debug.watchList.velocity = characterBody.velocity`
-## NOTE: Clearing the list will not cause [member watchListLabel] to be cleared because the per-frame [method _process] is skipped when [member watchList] is empty.
 ## ALERT: Replace "[" & "]" in variable values to avoid BBCode injection! Tags like "[color]" or "[url]" may wonk the entire [member watchListLabel] and may even be intentionally malicious!
 ## `watchList[value].replace("[", "[lb]")`
-@export var watchList: Dictionary[StringName, Variant] = {}
+@export var watchList: Dictionary[StringName, Variant]
 
 ## Affects the `force_readable_name` parameter of [method Node.add_child] at some call sites such as [method NodeTools.addChildAndSetOwner].
 ## If `true`, each child node added dynamically at runtime will have a unique and "readable" name to aid debugging etc.
 ## WARNING: PERFORMANCE: `force_readable_name` may be "very slow" according to Godot documentation.
-@export var shouldForceReadableName: bool = OS.is_debug_build()
+@export var shouldForceReadableName: bool	= OS.is_debug_build()
 
-const customLogEntryScene: PackedScene = preload("res://UI/CustomLogEntryUI.tscn")
-const customLogMaximumEntries: int = 100
+const customLogEntryScene:		PackedScene	= preload("res://UI/CustomLogEntryUI.tscn")
+const customLogMaximumEntries:	int			= 100
+
+# NOTE: Using Apple's SF Symbols, currently only supported on macOS/iOS/etc.
+const entityLogSymbol:		String = "􀕽"
+const componentLogSymbol:	String = "􀥭"
+const initLogSymbol:		String = "􀈅"
+const exitLogSymbol:		String = "􀈃"
+const deleteLogSymbol:		String = "􀆄"
 
 #endregion
 
@@ -60,7 +66,7 @@ static var customLog:				Array[Dictionary]
 static var customLogColorFlag:		bool
 
 const debugWindowSpacing:			int = 10
-static var nextChartWindowPosition:	Vector2i ## For [Chart] & `ChartWindow.tscn` 
+static var nextChartWindowPosition:	Vector2i ## For [Chart] & `ChartWindow.tscn`
 
 static var testMode:				bool ## Set by [TestMode].gd for use by other scripts, for temporary gameplay testing.
 
@@ -69,14 +75,16 @@ static var testMode:				bool ## Set by [TestMode].gd for use by other scripts, f
 
 #region Initialization
 
-func _enter_tree() -> void:
-	displayInitializationMessage()
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
 
 
 func _ready() -> void:
-	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
+	# Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
 	initializeLogWindow()
 	initializeDebugWindow()
+	displayInitializationMessage("_ready()")
 	resetLabels()
 	setLabelVisibility()
 	performFrameworkChecks()
@@ -104,18 +112,18 @@ func performFrameworkChecks() -> void:
 	warningLabel.text = "\n".join(warnings)
 
 
-func displayInitializationMessage() -> void:
+func displayInitializationMessage(initialText: String = "") -> void:
 	# Get the actual input key if any for the Debug Window
-	var debugWindowInputs: PackedStringArray = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow)
-	var debugWindowInput:  String = debugWindowInputs[0] if not debugWindowInputs.is_empty() else "(unbound)"
-
-	var message: String = \
-		"_enter_tree()\n" + \
+	var debugWindowInputs:	PackedStringArray = GlobalInput.getInputEventText(GlobalInput.Actions.debugWindow)
+	var debugWindowInput:	String = debugWindowInputs[0] if not debugWindowInputs.is_empty() else "(unbound)"
+	var scriptFileName:		String = self.get_script().resource_path.get_file()
+	var message:			String = \
+		initialText + "\n" + \
 		"\t" + debugWindowInput + ": Toggle Debug Window\n" + \
 		"\tSee Input Map for more shortcuts"
 
 	Debug.printAutoLoadLog(message)
-	self.addTemporaryLabel(Global.frameworkTitle, message)
+	self.addTemporaryLabel(Global.frameworkTitle, scriptFileName + " " + message)
 
 #endregion
 
@@ -124,8 +132,11 @@ func displayInitializationMessage() -> void:
 
 func _process(_delta: float) -> void:
 	# TODO: PERFORMANCE: Disable per-frame updates when `watchList` is empty. Use [Timer]?
-	# NOTE: Clearing the `watchList` will not cause `watchListLabel` to be cleared.
-	if watchList.is_empty() or not is_instance_valid(debugWindow) or not debugWindow.visible: return # showDebugLabels checked by property setter
+	if not is_instance_valid(debugWindow) or not debugWindow.visible: return # `showDebugLabels` property setter updates _set_process()
+
+	if  watchList.is_empty() and not watchListLabel.text.is_empty():
+		watchListLabel.text = ""
+		return
 
 	var text:  String = ""
 	for value: Variant in watchList:
@@ -152,18 +163,16 @@ func addTemporaryLabel(key: StringName, text: String, duration: float = 3.0) -> 
 ## EXAMPLE: `{velocity = body.velocity}` where "velocity" is the text string for the property name to show in the watchlist label.
 ## WARNING: Calling this method again with the same [param key] but with different [param variables] will remove the previous variables.
 ## This method should be called once for each specific object with the same set of variables, e.g. in a `showDebugInfo()` method.
-func addCombinedWatchList(key: StringName, variables: Dictionary) -> void:
-	# FIXME: TODO: Typed Dictionary[String, Variant] worked before but is crashing in Godot 4.5 Beta 6
+func addCombinedWatchList(key: StringName, variables: Dictionary[String, Variant]) -> void:
 	var variablesText: String = ""
-	for variableName: String in variables:
-		variablesText += str(" [color=lightgray]", variableName, ": [color=gray]", variables[variableName], "\n")
+	for variableName:  String in variables:
+		variablesText   += str(" [color=lightgray]", variableName, ": [color=gray]", variables[variableName], "\n")
 	Debug.watchList[key] = "\n" + variablesText
 
 
 ## Adds a set of properties from a [Component] to the [member watchList] and formats them as a single watchlist entry along with the component & entity's name.
 ## Calls [method Debug.addCombinedWatchList]. See the documentation for that method for more details.
-func addComponentWatchList(component: Component, variables: Dictionary) -> void:
-	# FIXME: TODO: Typed Dictionary[String, Variant] worked before but is crashing in Godot 4.5 Beta 6
+func addComponentWatchList(component: Component, variables: Dictionary[String, Variant]) -> void:
 	Debug.addCombinedWatchList(str(component.parentEntity.name, ".", component.name), variables)
 
 #endregion
@@ -292,8 +301,8 @@ func printLog(message: String = "", object: Variant = null, messageColor: String
 ## Prints a log message for an AutoLoad script without using any state variables such as the current frame.
 ## Useful for logging entries before the framework is completely ready.
 func printAutoLoadLog(message: String = "") -> void:
-	var caller: String = get_stack()[1].source.get_file().trim_suffix(".gd")
-	print_rich(str("[color=orange]", caller, "[/color] ", message))
+	var caller: String = get_stack()[1].source.get_file().get_basename()
+	print_rich(str("[color=", Global.Colors.logAutoload, "]", caller, "[/color]\t", message))
 
 
 ## Prints a faded message to reduce visual clutter.
@@ -513,19 +522,20 @@ func addCustomLogUIItem(customLogEntry: Dictionary) -> void:
 ## Returns a dictionary of almost all details about an object, using the [Debug.CustomLogKeys]
 static func getObjectDetails(object: Variant) -> Dictionary[StringName, Variant]:
 	# TBD: Should the values be actual variables or Strings?
+	if object == null: return {} # TBD: A better way to handle invalid objects?
 
 	var dictionary: Dictionary[StringName, Variant] = {
 		CustomLogKeys.frameTime:	str("F", Engine.get_frames_drawn(), " ", float(Time.get_ticks_msec()) / 1000),
 		CustomLogKeys.object:		object,
-		CustomLogKeys.instance:		object.get_instance_id(),
-		CustomLogKeys.name:			object.name,
+		CustomLogKeys.instance:		object.get_instance_id() if object is Node else 0,
+		CustomLogKeys.name:			object.name if object is Node else "",
 		CustomLogKeys.type:			type_string(typeof(object)),
 		CustomLogKeys.nodeClass:	object.get_class()
 	}
 
 	var script: Script = object.get_script()
 
-	if script:
+	if  script:
 		dictionary[CustomLogKeys.className] = script.get_global_name()
 
 		var baseScript: Script = script.get_base_script()

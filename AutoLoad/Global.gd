@@ -63,6 +63,7 @@ class TileMapCustomData:
 
 
 class Colors:
+	const logAutoload		:= "orange"
 	const logEntity			:= "lightGreen"
 	const logEntityName		:= "green"
 	const logComponent		:= "lightBlue"
