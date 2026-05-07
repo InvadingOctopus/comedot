@@ -104,8 +104,9 @@ signal didDeleteInputEvent(inputAction: StringName,	inputEvent: InputEvent) ## E
 
 #region Global Events
 
-func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree()")
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
 
 
 ## Global shortcuts including gamepad etc.
@@ -143,6 +144,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		breakpoint # TBD: Use `breakpoint` or `assert(false)`? `assert` also adds a message but only runs in debug builds.
 		# assert(false, "Debug Breakpoint Input Received")
 		isHandled = true
+
 	elif event.is_action_released(Actions.debugWindow):
 		Debug.toggleDebugWindow()
 		isHandled = true

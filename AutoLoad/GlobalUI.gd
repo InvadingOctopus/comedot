@@ -59,8 +59,9 @@ const pauseOverlayScene := preload("res://UI/PauseOverlay.tscn")
 
 #region Setup
 
-func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree()")
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
 
 
 func _ready() -> void:

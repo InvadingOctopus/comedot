@@ -229,12 +229,13 @@ signal willStartDelay(timer: Timer) ## Emitted when one of the timers between ea
 
 #region Life Cycle
 
-func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree()")
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
 
 
 func _ready() -> void:
-	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
+	Debug.printAutoLoadLog("_ready()")
 
 	currentTurnState = TurnBasedState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities

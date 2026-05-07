@@ -56,8 +56,9 @@ signal gameWillRestart ## Emitted when the player chooses to restart the game or
 
 #region Setup
 
-func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree()")
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
 
 
 ## Instantiates a scene and adds it as a new child node to the GameState AutoLoad, which may act as an additional game-specific global state "manager" script or UI layers etc.
