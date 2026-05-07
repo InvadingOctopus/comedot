@@ -123,8 +123,10 @@ class Setting:
 
 #region Initialization
 
-func _enter_tree() -> void:
-	Debug.printAutoLoadLog("_enter_tree(): Loading user preferences from configuration file…")
+func _notification(what: int) -> void: # This happens earlier than _enter_tree()
+	# TBD: Start earlier on NOTIFICATION_PARENTED or a little later on _enter_tree()?
+	if what != NOTIFICATION_PARENTED: return
+	Debug.printAutoLoadLog("NOTIFICATION_PARENTED: Loading user preferences from configuration file…")
 	loadConfig()
 	loadProjectUserSettings()
 
