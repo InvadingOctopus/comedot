@@ -64,11 +64,9 @@ func _enter_tree() -> void:
 	if not self.is_in_group(Global.Groups.turnBased): self.add_to_group(Global.Groups.turnBased, true) # persistent
 
 
-func registerEntity(newParentEntity: Entity) -> void:
-	super.registerEntity(newParentEntity)
-	if newParentEntity == null: return
-	if not is_instance_of(parentEntity, TurnBasedEntity):
-		printWarning("Parent Entity is not a TurnBasedEntity! " + parentEntity.logFullName) # DESIGN: Crash if no parentEntity
+func onDidInstall() -> void:
+	if not is_instance_of(self.entity, TurnBasedEntity):
+		printWarning("Entity is not a TurnBasedEntity! " + entity.logFullName) # DESIGN: Crash if no `entity`
 
 #endregion
 

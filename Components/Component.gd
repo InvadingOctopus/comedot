@@ -1,26 +1,24 @@
-## The core of the composition framework. A node which represents a distinct behavior or property of a game character or object.
-## A parent node made up of Component child nodes is an [Entity]. The Entity is the "scaffolding" and Components do the actual work (play).
+## The core of the composition framework: A node+script pair which represents a distinct behavior or property of a game character or object.
+## A parent node containing [Component] child nodes is an [Entity]. The Entity is the "scaffolding" and Components do the actual work/play.
 ## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
-## Components may directly modify the parent entity or interact with other components,
-## such as a [DamageComponent] communicating with another Entity's [DamageReceivingComponent] which then modifies a [HealthComponent].
+## Components may directly modify the parent [Node] or interact with other components,
+## such as a [DamageComponent] communicating with another Entity's [DamageReceivingComponent] which then modifies a [HealthComponent]
 
-#@tool # Not useful because it's not inherited :(
+#@tool # UNUSED: Not useful because @tool is not inherited :(
 @icon("res://Assets/Icons/Component.svg")
 
 @abstract class_name Component
 extends Node
 
+# DESIGN: Components should not perform Entity validation, beyond checking for dependencies and basic "sanity check" logs.
+# This separation keeps the core Component script lightweight and consolidates the life cycle management and "installation" methods into the Entity script,
+# and also allows edge cases such as adding basic components to any non-Entity nodes,
+# if the component only performs a simple task such as a [SpinComponent] that rotates the parent node every frame.
+
 
 #region Advanced Parameters
 
-## If the parent node is not an [Entity], should all great/grandparents be checked until an [Entity] is found up the scene tree hierarchy?
-## Overridden by [member allowNonEntityParent]
-## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing!
-## @experimental
-@export var shouldCheckGrandparentsForEntity: bool = false
-
-## Let this component be added to nodes that are not an [Entity]?
-## Overrides [member shouldCheckGrandparentsForEntity]
+## Let this [Component] be added to nodes that are not an [Entity]?
 ## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing, or for cases like adding "payload" components to [InjectorComponent] etc.
 ## @experimental
 @export var allowNonEntityParent: bool = false
@@ -31,31 +29,141 @@ extends Node
 #region Core Properties
 # TBD: @export_storage?
 
-var parentEntity: Entity: # TBD: @export_storage?
+var entity: Entity: # TBD: @export_storage?
 	set(newValue):
-		if newValue != parentEntity:
-			if debugMode: printChange("parentEntity", parentEntity, newValue)
-			parentEntity = newValue
-			if parentEntity and parentEntity != self.get_parent(): # Don't verify if `null`, because during NOTIFICATION_UNPARENTED get_parent() will still return the about-to-unparent Entity.
-				printWarning(str("parentEntity set to: ", parentEntity, ", not the actual parent: ", self.get_parent()))
-			# NOTE: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
+		if newValue != entity:
+			if debugMode: printChange("entity", entity, newValue)
+			entity = newValue
+			# Do a basic check, but don't verify if `null`, because during `NOTIFICATION_UNPARENTED` get_parent() will still return the about-to-unparent Entity.
+			if entity \
+			and (not self.get_parent() == entity and not entity.is_ancestor_of(self)): # PERFORMANCE: Try the faster check first
+				printWarning(str("entity set to: ", entity.logFullName, " but it is not the actual parent or ancestor of: ", self))
+			# NOTE: DESIGN: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
 			# to be in proper order with other operations such as signals etc.
 
-## A [Dictionary] of other [Component]s in the [member parentEntity]'s [member Entity.components], including this component itself.
+## A [Dictionary] of other [Component]s in the [member entity]'s [member Entity.components], including this component itself.
 ## TIP: Access via the shortcut of `coComponents.ComponentClassName`
 ## or use [method getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
+## Temporary proxy to [member entity] for compatibility.
+## @deprecated: Renamed to [member entity]
+var parentEntity: Entity:
+	get: return entity
+	set(newValue): entity = newValue
+
 #endregion
 
 
 #region Signals
+# DESIGN: There is no `willInstallInEntity` or similar signal because Components are not intended to be "active" "outside" an Entity anyway.
 
-## Emitted on [constant Node.NOTIFICATION_UNPARENTED].
+## Emitted by [method Entity.uninstallComponent] before this Component is removed from the Entity.
 ## May be connected to by subclasses to perform cleanup specific to each component.
-## NOTE: [member parentEntity] is still assigned at this point and set to `null` after this signal is emitted.
+## NOTE: [member entity] is still assigned at this point and set to `null` after this signal is emitted.
+@warning_ignore("unused_signal") # Emitted from Entity.gd
 signal willRemoveFromEntity
+
+#endregion
+
+
+#region Life Cycle
+# INFO: Godot Node Life Cycle:
+# Initialization: [Parented] → [Enter Tree] → [Ready]
+# Deletion: [Exit Tree] → [Unparented]
+# Each of these phases may include multiple events such as _notification(), function callbacks, and signals.
+
+# Init:						Component.NOTIFICATION_PARENTED  → Component.onParented() → Entity.onComponent_parented()	  → Entity.installComponent() → Component.onDidInstall()		→ Component._enter_tree()	  → Component._ready()
+# Component.queue_free():	Component.NOTIFICATION_PREDELETE → Component._exit_tree() → Component.NOTIFICATION_UNPARENTED → Component.onUnparented()  → Entity.onComponent_unparented()	→ Entity.uninstallComponent() → Component.onWillUninstall()
+# Entity.queue_free():		Component._exit_tree()			 → Component.NOTIFICATION_PREDELETE → …
+
+
+## Godot Engine notifications.
+## ALERT: Subclasses should NOT call `super._notification()` because unlike other virtual methods, Godot calls inherited [method Object._notification] automatically, usually the base class first.
+## TIP: External scripts that require access to a Component's [member entity] for cleanup should connect to the component's [signal willRemoveFromEntity] which is emitted before [member entity] is set to `null`
+func _notification(what: int) -> void:
+	# Init Order: 1
+	# Deinit Order: 1/3
+	# DESIGN: HACK: Dumbdot has no straightforward way for a parent node to react to the addition/removal of specific children (there's only a moronic NOTIFICATION_CHILD_ORDER_CHANGED)
+	# so child nodes must forward these notifications to a callback on the parent.
+	match what:
+		NOTIFICATION_PARENTED:   onParented()   # Received when a node is set as the child of another node, not necessarily when the node enters the SceneTree.
+		NOTIFICATION_UNPARENTED: onUnparented() # Received when a parent calls remove_child() on a child node, not necessarily when the node exits the SceneTree.
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog(str("[color=brown]", Debug.deleteLogSymbol, " PreDelete", (" • Entity: " + entity.logName) if entity else ""))
+		# NOTIFICATION_PREDELETE may occur before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed
+
+
+## A simple relay to [method Entity.onComponent_parented] → [method Entity.installComponent]
+## Called from [method Component._notification] on [constant Component.NOTIFICATION_PARENTED]
+## INFO: This is a workaround for Godot's lack of a direct way for parent nodes to react to the addition of a child node.
+func onParented() -> void:
+	# Init Order: 2: After Component._notification() on NOTIFICATION_PARENTED
+	initializeLog()
+	if debugMode: printDebug("onParented()")
+	var parent: Node = self.get_parent()
+	if  parent is Entity: parent.onComponent_parented(self)
+
+
+## May be implemented in subclasses.
+func onDidInstall() -> void:
+	# Init Order: 3: After Entity.installComponent()
+	if debugMode: printDebug(str("onDidInstall() in entity: ", self.entity))
+
+
+## Called when the node enters the scene tree for the first time.
+func _enter_tree() -> void:
+	# Init Order: 4: After Entity._enter_tree()
+	if debugMode: printDebug(str("_enter_tree() parent: ", get_parent()))
+
+	if not self.is_in_group(Global.Groups.components): self.add_to_group(Global.Groups.components, true) # persistent # TBD: Should this [also] be done by the Entity?
+
+	var parent:		  Node	 = self.get_parent()
+	var activeEntity: Entity = entity if is_instance_valid(entity) else parent as Entity
+
+	printLog(Debug.initLogSymbol + " [b]_enter_tree() → " + (activeEntity.logName if activeEntity else str(parent)) + "[/b]", self.logFullName)
+
+	if not activeEntity and not allowNonEntityParent:
+		printWarning(str(Debug.initLogSymbol, " [b]_enter_tree(): Parent Node is not an Entity: ", parent, "[/b]"))
+
+	# UNUSED: update_configuration_warnings() # Only useful if @tool script
+
+	if activeEntity:
+		checkRequiredComponents() # Ignore return; only called for logging # TBD: Should this be checked by the Entity or elsewhere in the startup sequence?
+		# `coComponents` & logging flags & other properties are set by Entity.installComponent()
+	else:
+		self.coComponents = {} # Unlink from `entity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() entity's `components`!
+
+
+# UNUSED: Implement in subclasses only.
+# func _ready() -> void:
+# 	if debugMode: printDebug(str("_ready(): ", self))
+# 	pass
+
+
+## NOTE: This method is called even when the Entity is removed from the SCENE (along with ALL its child nodes),
+## so it does not necessarily mean that this Component was removed from the ENTITY.
+func _exit_tree() -> void:
+	# Deinit Order: 1 if Entity.queue_free() / 2 if Component.queue_free(): Before Component.NOTIFICATION_UNPARENTED, Entity._exit_tree()
+	# NOTE: AVOID: `entity` must NOT be `null`ed here! nor `coComponents`!
+	# because a Component may _exit_tree() while it is still a child of an Entity, if the Entity itself _exit_tree()s
+	var entityName: String = entity.logName if entity else "null" # Check entity since components may be freed without being children of an Entity
+	printLog("[color=brown]" + Debug.exitLogSymbol + " _exit_tree() entity: " + entityName, self.logFullName)
+
+
+## A simple relay to [method Entity.onComponent_unparented] → [method Entity.uninstallComponent]
+## Called from [method Component._notification] on [constant Component.NOTIFICATION_UNPARENTED]
+## INFO: This is a workaround for Godot's lack of a direct way for parent nodes to react to the removal of a child node.
+func onUnparented() -> void:
+	# Deinit Order 4: After Component._notification() on NOTIFICATION_UNPARENTED
+	if isLoggingEnabled: printLog("[color=brown]" + Debug.deleteLogSymbol + " Unparented")
+	if self.entity: entity.onComponent_unparented(self)
+
+
+## May be implemented in subclasses.
+func onWillUninstall() -> void:
+	# Deinit Order 5: After Entity.uninstallComponent() starts
+	if debugMode: printDebug(str("onWillUninstall() from entity: ", entity.logFullName if entity else "null"))
 
 #endregion
 
@@ -66,7 +174,7 @@ signal willRemoveFromEntity
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 
-	if not is_instance_of(self.get_parent(), Entity):
+	if not allowNonEntityParent and self.get_parent() is not Entity:
 		warnings.append("Component nodes should be added to a parent which inherits from the Entity class.")
 
 	if not checkRequiredComponents():
@@ -86,228 +194,19 @@ func getRequiredComponents() -> Array[Script]:
 ## NOTE: Does not include subclasses of required components.
 func checkRequiredComponents() -> bool:
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
-	if requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
-	elif not parentEntity or parentEntity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :(
+	if  requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
+	elif not entity or entity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :(
 
 	var haveAllRequirements: bool = true # Start `true` then make it `false` if there is any missing requirement.
 
 	for requirement in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
 		# TBD: Include subclasses?
-		if not parentEntity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
-			printWarning(str("Missing requirement: ", requirement.get_global_name(), " in ", parentEntity.logName))
+		if not entity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
+			printWarning(str("Missing requirement: ", requirement.get_global_name(), " in ", entity.logName))
 			haveAllRequirements = false
 
 	return haveAllRequirements
-
-#endregion
-
-
-#region Life Cycle
-# NOTIFICATION_PARENTED → _enter_tree() → _ready()
-
-## ALERT: Unlike other virtual methods, Godot calls inherited [method Object._notification] automatically, usually the base class first. Subclasses should NOT call `super._notification()`
-## Events such as [method Component.unregisterEntity] run BEFORE a subclass's [constant Node.NOTIFICATION_UNPARENTED]:
-## TIP: Cleanup that needs the [member parentEntity] should connect to [signal willRemoveFromEntity] or override [method unregisterEntity] before calling `super()`
-func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_PARENTED: # Received when a node is set as the child of another node, not necessarily when the node enters the SceneTree.
-			initializeLog()
-			validateParent()
-		NOTIFICATION_UNPARENTED: unregisterEntity() # Received when a parent calls remove_child() on a child node, not necessarily when the node exit the SceneTree.
-		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog("[color=brown]􀆄 PreDelete") # NOTE: Cannot print [parentEntity] here because it will always be `null` (?)
-
-
-## Called by [method _notification] when the component receives [constant NOTIFICATION_PARENTED],
-## which is when the node is added as a child of any parent node. NOTE: This does not mean the node has entered the SceneTree (yet).
-## If the parent node is an [Entity] then this component is registered with that Entity,
-## otherwise if [member shouldCheckGrandparentsForEntity] then all grandparents will be searched until an Entity is found.
-func validateParent() -> void:
-	# Initialization Order: 1: This seems to be called before any other methods, via the notification, at least when creating a new instance e.g. by a GunComponent
-
-	var newParent: Node = self.get_parent()
-	if debugMode: printDebug(str("validateParent(): ", newParent))
-
-	# If the parent node is not an Entity, print a warning if needed
-	if not is_instance_of(newParent, Entity):
-		var message: String = str("validateParent(): Parent node is not an Entity: ", newParent, " ／ This may prevent sibling components from finding this component.")
-		if self.allowNonEntityParent: printLog(message + " allowNonEntityParent: true")
-		else: printWarning(message)
-
-	if not parentEntity: # Are we a new Component [or] not owned by an Entity?
-
-		if newParent is Entity: # If our parent is an Entity, all's well and good in the world.
-			self.registerEntity(newParent) # TBD: Should we registerEntity() only from _enter_tree()?
-
-		# If our immediate parent node is not an Entity, should we search up the scene tree hierarchy for an Entity to adopt this Component?
-		elif shouldCheckGrandparentsForEntity and not allowNonEntityParent:
-			var grandparentEntity: Entity = self.findParentEntity(true)
-			if grandparentEntity:
-				self.registerEntity(grandparentEntity)
-
-	else: # Do we already have an Entity?
-
-		if parentEntity == newParent:
-			# Warn because why are this initialization method being called again?
-			printWarning(str("validateParent() called again for parentEntity that is already set: ", parentEntity))
-		else: # Are we already owned by an Entity Node that is NOT the new parent?
-			# CHECK: This situation should never happen, so treat it as an Error, right?
-			printError(str("parentEntity already set to a different parent: ", parentEntity))
-
-
-## Called when the node enters the scene tree for the first time.
-func _enter_tree() -> void:
-	# Initialization Order: 2: After Entity._enter_tree(), before Entity.childEnteredTree()
-
-	if not self.is_in_group(Global.Groups.components): self.add_to_group(Global.Groups.components, true) # persistent
-
-	# Find which Entity this Component belongs to, if not already set.
-	if not parentEntity:
-		var parentNode := self.get_parent()
-
-		# First, what should be the most common case, see if the immediate parent node is an Entity
-		if parentNode is Entity:
-			registerEntity(parentNode) # TBD: Should we registerEntity() only from validateParent()?
-		
-		# Otherwise, see if it's ok to have a non-entity parent, which should be a rare exception
-		elif allowNonEntityParent:
-			if self.get_parent() != null: # TBD: Use is_instance_valid()?
-				printLog(str("􀈅 [b]_enter_tree() → [/b]allowNonEntityParent: [b]", self.get_parent(), "[/b]"), self.logFullName)
-			else:
-				printWarning("􀈅 [b]_enter_tree(): No valid parent![/b]")
-
-		# Finally, try to find an entity parent/grandparent in our tree
-		else:
-			registerEntity(findParentEntity())
-
-	# UNUSED: update_configuration_warnings() # Only useful if @tool script
-
-	if parentEntity:
-		# NOTE: DESIGN: If the entity's logging flags are true, it makes sense to adopt them by default,
-		# but if the entity's logging is off and a specific component's logging is on, the component's flag should be respected.
-		# CHECK: Are these flags set only ONCE when _enter_tree() the first time, or also when a new `parentEntity` is set?
-		self.isLoggingEnabled = self.isLoggingEnabled or parentEntity.isLoggingEnabled
-		self.debugMode		  = self.debugMode or parentEntity.debugMode
-		printLog("􀈅 [b]_enter_tree() → " + parentEntity.logName + "[/b]", self.logFullName)
-		self.checkRequiredComponents()
-	else:
-		self.coComponents = {} # Unlink from `parentEntity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() parentEntity's `components`!
-		if not allowNonEntityParent: printWarning("􀈅 [b]_enter_tree() with no parentEntity![/b]")
-
-
-## Search up the scene tree for a parent or grandparent node which is of type [Entity] and returns it.
-## i.e. each parent node's parent is checked until an [Entity] is found.
-func findParentEntity(checkGrandparents: bool = self.shouldCheckGrandparentsForEntity) -> Entity:
-	var parentOrGrandparent: Node = self.get_parent()
-
-	# If parent is null or not an Entity, check the grandparent (parent's parent) and keep searching up the tree.
-	if checkGrandparents:
-		while not (parentOrGrandparent is Entity) and not (parentOrGrandparent == null):
-			if debugMode: printDebug(str("findParentEntity() checking parent of non-Entity node: ", parentOrGrandparent))
-			parentOrGrandparent = parentOrGrandparent.get_parent()
-
-	if parentOrGrandparent is Entity:
-		if debugMode: printDebug(str("findParentEntity() result: ", parentOrGrandparent))
-		return parentOrGrandparent
-	elif not allowNonEntityParent:
-		printWarning(str("findParentEntity() found no Entity! checkGrandparents: ", checkGrandparents))
-
-	return null
-
-
-func registerEntity(newParentEntity: Entity) -> void:
-	if debugMode: printDebug(str("registerEntity(): ", newParentEntity))
-	if not newParentEntity or newParentEntity == self.parentEntity: return
-
-	# If we already have a parent, disown it :')
-	if is_instance_valid(self.parentEntity):
-		printWarning(str("registerEntity() newParentEntity: ", newParentEntity, " • Replacing existing parentEntity: ", parentEntity))
-		self.removeFromEntity(false) # not shouldFree
-
-	if newParentEntity.registerComponent(self): # NOTE: DESIGN: The COMPONENT must call this method. See Entity.childEnteredTree() notes for explanation.
-		self.parentEntity = newParentEntity
-		self.coComponents = parentEntity.components # Meet our new siblings! # NOTE: This makes both properties point to the same Dictionary; editing one edits the other etc.
-
-
-## Removes this component from the parent [Entity] and frees (deletes) the component unless specified.
-## If [member shouldCheckGrandparentsForEntity] or [member allowNonEntityParent] then the immediate parent [Node] may not be an [Entity].
-## Components that are only removed but not freed may be re-added to any entity.
-func removeFromEntity(shouldFree: bool = true) -> void:
-	# NOTE: Entity.unregisterComponent() will be called by NOTIFICATION_UNPARENTED → unregisterEntity()
-	# even if the `parentEntity` is not the immediate parent Node, in case of `shouldCheckGrandparentsForEntity`
-
-	var parentNode: Node = self.get_parent()
-
-	if not parentNode:
-		printWarning("removeFromEntity(): Component has no parent!")
-		# Fall through to `shouldFree`
-
-	elif parentEntity:
-		if  parentEntity == parentNode: # Normal scenario
-			parentEntity.remove_child(self)
-
-		elif shouldCheckGrandparentsForEntity and parentEntity.is_ancestor_of(self): # Entity is not the immediate parent node
-			parentNode.remove_child(self)
-
-		else: # Faulty State: Have a `parentEntity` but it's not a parent or ancestor node
-			printWarning(str("removeFromEntity(): parentEntity: ", parentEntity.logFullName, " is not the parent node or ancestor: ", parentNode))
-			parentNode.remove_child(self) # TBD: Remove anyway if invalid state?
-	
-	elif allowNonEntityParent:
-		parentNode.remove_child(self)
-
-	else: # Have a parent Node but no parent Entity?
-		# TBD: Display a warning or would it be redundant if the component is already removed?
-		pass # DEBUG: printWarning(str("Cannot removeFromEntity: ", parentEntity))
-
-	if shouldFree: self.queue_free()
-
-
-## Calls [method queue_free()] on itself if the parent entity approves. Returns `true` if removed.
-## May be overridden in subclasses to check additional conditions and logic.
-func requestDeletion() -> bool:
-	# TBD: Ask the parent entity for approval?
-	self.queue_free()
-	return true
-
-
-## Returns `true` if the parent [Entity] agrees to [method Entity.requestDeletion] or if there is no [member parentEntity].
-func requestDeletionOfParentEntity() -> bool:
-	if parentEntity:
-		if debugMode: printDebug(str("requestDeletionOfParentEntity(): ", parentEntity.logName))
-		if parentEntity.requestDeletion():
-			return true
-		else:
-			if debugMode: printDebug(str("requestDeletionOfParentEntity(): requestDeletion() refused by ", parentEntity.logName))
-			return false
-	else:
-		if debugMode: printWarning("requestDeletionOfParentEntity(): parentEntity already null!")
-		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
-
-
-## Called by [method _notification] when the component receives [constant NOTIFICATION_UNPARENTED],
-## which is when the parent node calls [method Node.remove_child] on the component node.
-## NOTE: This does not mean the node has exited the SceneTree (yet).
-func unregisterEntity() -> void:
-	# Deinitialization Order: 2: After Entity._exit_tree()
-	# CHECK: Is there still a parent reference available at this point?
-	if debugMode: printDebug(str("unregisterEntity() ", get_parent()))
-	if parentEntity:
-		willRemoveFromEntity.emit()
-		self.coComponents = {} # Unlink from `parentEntity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() parentEntity's `components`!
-		parentEntity.unregisterComponent(self)
-		self.parentEntity = null # TBD: Use .set_deferred()?
-		if isLoggingEnabled: printLog("[color=brown]􀆄 Unparented")
-
-
-## NOTE: This method is called even when the Entity is removed from the SCENE (along with ALL its child nodes),
-## so it does not necessarily mean that this Component was removed from the ENTITY.
-func _exit_tree() -> void:
-	# Deinitialization Order: 1: Before Entity.childExitingTree(), Entity._exit_tree()
-	# NOTE: AVOID: `parentEntity` must NOT be `null`ed here! nor `coComponents`!
-	# because a Component may _exit_tree() while it is still a child of an Entity, if the Entity itself _exit_tree()s
-	var entityName: String = parentEntity.logName if parentEntity else "null" # Check parentEntity since components may be freed without being children of an Entity
-	printLog("[color=brown]􀈃 _exit_tree() parentEntity: " + entityName, self.logFullName)
 
 #endregion
 
@@ -324,7 +223,7 @@ func _exit_tree() -> void:
 func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
 	
-	if not is_instance_valid(parentEntity): # If there's no entity, there are no other components!
+	if not is_instance_valid(entity): # If there's no entity, there are no other components!
 		if warnIfMissing: printWarning("getCoComponent(): No parent entity!")
 		return null
 
@@ -334,20 +233,45 @@ func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: b
 	if not coComponent: # TBD: Use is_instance_valid()?
 
 		if findSubclasses: # Try subclasses
-			coComponent = parentEntity.findFirstComponentSubclass(type)
-			if debugMode: printDebug(str("Searching for subclass of ", type, " in parentEntity: ", parentEntity, " — Found: ", coComponent))
+			coComponent = entity.findFirstComponentSubclass(type)
+			if debugMode: printDebug(str("Searching for subclass of ", type, " in entity: ", entity, " — Found: ", coComponent))
 
 		if warnIfMissing and not coComponent: # Did we still not find any match? :(
-			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", parentEntity.logName, " • findSubclasses: ", findSubclasses))
+			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", entity.logName, " • findSubclasses: ", findSubclasses))
 
 	return coComponent
 
 
-## Asks the parent [Entity] to remove all other components of the same class as this component.
-## Useful for replacing components when there should be only one component of a specific class, such as a [FactionComponent].
-## Returns: The number of components removed.
-func removeSiblingComponentsOfSameType(shouldFree: bool = true) -> int:
-	return NodeTools.removeSiblingsOfSameType(self, shouldFree)
+## Calls [method Entity.removeComponent] on the current [member entity] if any, and frees (deletes) the component if [param shouldFree]
+func removeFromEntity(shouldFree: bool = true) -> void:
+	if debugMode: printDebug(str("removeFromEntity() shouldFree: ", shouldFree))
+	if entity: entity.removeComponent(self, shouldFree)
+	else:
+		printWarning("removeFromEntity(): Component has no Entity!")
+		# Just delete the Node even if we don't have an Entity
+		if shouldFree: self.queue_free()
+
+
+## Calls [method queue_free] on itself and returns `true` if removed.
+## May be overridden in subclasses to ask the parent [Entity] for approval and check additional conditions and logic.
+func requestDeletion() -> bool:
+	if debugMode: printDebug("requestDeletion()")
+	self.queue_free()
+	return true
+
+
+## Returns `true` if the parent [Entity] agrees to [method Entity.requestDeletion] or if there is no [member entity].
+func requestDeletionOfParentEntity() -> bool:
+	if debugMode: printDebug(str("requestDeletionOfParentEntity() entity: ", entity.logName if entity else "null"))
+	if entity:
+		if entity.requestDeletion():
+			return true
+		else:
+			if debugMode: printDebug(str("requestDeletionOfParentEntity(): requestDeletion() refused by ", entity.logName))
+			return false
+	else:
+		if debugMode: printWarning("requestDeletionOfParentEntity(): entity already null!") # TBD: Should this be a warning?
+		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 #endregion
 
@@ -441,22 +365,22 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInParen
 var isLoggingEnabled:		bool
 
 
-const logSymbol:			String = "􀥭" # NOTE: Using Apple's SF Symbols, currently only supported on macOS/iOS/etc.
-var logName:				String
-var logFullName:			String ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`.
-var randomDebugColor:		Color  ## Used by logs and debugging tools etc. to distinguish different entities from each other.
-var randomDebugColorCode:	String
+var logName:				String = self.name  # Set defaults to avoid blank logs before initializeLog()
+var logFullName:			String = str(self)  ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`.
+var randomDebugColor:		Color  = Color.GRAY ## Used by logs and debugging tools etc. to distinguish different entities from each other.
+var randomDebugColorCode:	String = "808080"   #  A default for pre-initializeLog()
 var isLoggingInitialized:	bool
 
-var logNameWithEntity:		String: ## [member Component.logName] + [member Entity.logName] if there is a [member parentEntity]
-	get: return self.logName + ((" " + parentEntity.logName) if parentEntity else "")
+var logNameWithEntity:		String: ## [member Component.logName] + [member Entity.logName] if there is a [member entity]
+	get: return self.logName + ((" " + entity.logName) if entity else "")
 
-var logFullNameWithEntity:	String: ## [member Component.logFullName] + [member Entity.logFullName] if there is a [member parentEntity]
-	get: return self.logFullName + ((" " + parentEntity.logFullName) if parentEntity else "")
+var logFullNameWithEntity:	String: ## [member Component.logFullName] + [member Entity.logFullName] if there is a [member entity]
+	get: return self.logFullName + ((" " + entity.logFullName) if entity else "")
 
 
 func initializeLog() -> void:
 	if isLoggingInitialized: return
+	if debugMode: Debug.printDebug(str("initializeLog(): ", self))
 	randomDebugColor	 = Tools.getRandomQuantizedColorHue(Tools.sequenceTenths, Tools.sequenceQuarters.slice(1).pick_random()) # Prevent low saturation
 	randomDebugColorCode = "[color=#" + randomDebugColor.to_html(false) + "]"
 	updateLogNames()
@@ -465,7 +389,7 @@ func initializeLog() -> void:
 
 
 func updateLogNames() -> void:
-	var logSymbolWithColor: String = randomDebugColorCode + logSymbol + "[/color] "
+	var logSymbolWithColor: String = randomDebugColorCode + Debug.componentLogSymbol + "[/color] "
 	logName		= logSymbolWithColor + self.name
 	logFullName = str(logSymbolWithColor, self, ":", self.get_script().get_global_name())
 
@@ -475,13 +399,14 @@ func printLog(message: String = "", object: Variant = self.logName) -> void:
 	Debug.printLog(message, object, Global.Colors.logComponent, Global.Colors.logComponentName)
 
 
-## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled].
-## NOTE: If [member debugModeTrace] is on, then [method Debug.printTrace] is ALWAYS called even if debugMode is off.
-## TIP: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like `str()` and improve performance.
+## Print a dim message for low priority events and superfluous tracing etc.
+## Affected by [member debugMode], but NOT affected by [member isLoggingEnabled]
+## TIP: Enable [member debugModeTrace] to track function call order and ALWAYS call [method Debug.printTrace] EVEN IF [member debugMode] is off.
+## TIP: PERFORMANCE: Even though this method checks for [member debugMode], check for that flag before calling [method printDebug] to avoid unnecessary function calls like [method @GlobalScope.str] and improve performance.
 func printDebug(message: String = "") -> void:
 	# DESIGN: isLoggingEnabled is not respected for this method because we often need to disable common "bookkeeping" logs such as creation/destruction but we need debugging info when developing new features.
-	if debugModeTrace: Debug.printTrace(message.split(", "), logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
-	elif debugMode: Debug.printDebug(message, logName, Global.Colors.logComponentName)
+	if debugModeTrace:  Debug.printTrace(message.split(", "), logNameWithEntity, 3) # Start further from the call stack to skip this method # TBD: Split into array by ", " for the common usage case?
+	elif debugMode:		Debug.printDebug(message, logName, Global.Colors.logComponentName)
 
 
 ## Calls [method Debug.printWarning]
@@ -520,7 +445,7 @@ func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor
 
 	@warning_ignore("incompatible_ternary")
 	var bubble: TextBubble = TextBubble.create(str(textOrObject), \
-		parentEntity if emitFromEntity else self, \
+		entity if emitFromEntity else self, \
 		Vector2([-16, -8, 0, +8, +16].pick_random(), [-8, 0, +8].pick_random())) # Randomize position to reduce overlap
 
 	bubble.label.label_settings.font_color = color

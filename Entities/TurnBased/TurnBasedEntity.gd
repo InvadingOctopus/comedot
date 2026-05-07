@@ -237,24 +237,26 @@ func processTurnEnd() -> void:
 
 #region Component Management
 
-func registerComponent(newComponent: Component) -> bool:
-	if super.registerComponent(newComponent):
-		# Also register the component in our array if it is turn-based
-		if is_instance_of(newComponent, TurnBasedComponent):
-			self.turnBasedComponents.append(newComponent)
-		return true # Return `true` even if a non-turn-based component was registered by the Entity superclass.
-	else:
-		return false
+func installComponent(component: Component) -> bool:
+	if not super.installComponent(component): return false
+
+	# Also register the component in our array if it is turn-based
+	if is_instance_of(component, TurnBasedComponent):
+		if not self.turnBasedComponents.has(component):
+			self.turnBasedComponents.append(component)
+
+	return true # DESIGN: Return `true` even if a non-turn-based component was registered by the Entity base class..
 
 
-func unregisterComponent(componentToRemove: Component) -> bool:
-	var didUnregister: bool = super.unregisterComponent(componentToRemove)
+func uninstallComponent(componentToRemove: Component, shouldFree: bool = true) -> bool:
+	var didUninstall: bool = super.uninstallComponent(componentToRemove, shouldFree)
+
 	# Also remove the component from our array if it is turn-based
-	if didUnregister and is_instance_of(componentToRemove, TurnBasedComponent):
+	if didUninstall and is_instance_of(componentToRemove, TurnBasedComponent):
 		self.turnBasedComponents.erase(componentToRemove)
 		return true
 	else:
-		return didUnregister
+		return didUninstall
 
 
 ## Searches all children and returns an array of all nodes that extend [TurnBasedComponent].
