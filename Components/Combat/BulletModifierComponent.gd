@@ -40,6 +40,6 @@ func onGunComponent_didFire(bullet: Entity) -> void:
 	if not isEnabled: return
 
 	bullet.components.DamageComponent.damageOnCollision += self.damageModifier
-	bullet.removeComponents(componentsToRemove)
+	bullet.removeComponentTypes(componentsToRemove)
 	bullet.createNewComponents(componentsToCreate)
 	didModifyBullet.emit(bullet)

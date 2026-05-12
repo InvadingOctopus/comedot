@@ -191,9 +191,8 @@ func onInputComponent_didChangeHorizontalDirection() -> void:
 		riderSprite.flip_h = mountSprite.flip_h
 
 
-func unregisterEntity() -> void:
+func onWillUninstall() -> void:
 	self.dismount()
-	super.unregisterEntity()
 
 
 func _exit_tree() -> void:

@@ -48,7 +48,7 @@ func onCollide(collidingNode: Node2D) -> void:
 				node.queue_free() # TBD: Should this be optional?
 
 		if is_instance_valid(entity):
-			entity.removeComponents(componentsToRemove)
+			entity.removeComponentTypes(componentsToRemove)
 			didAddComponents.emit(entity.createNewComponents(componentsToCreate))
 
 		if payload: payload.execute(self.parentEntity, collidingNode)

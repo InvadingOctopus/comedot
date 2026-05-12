@@ -90,7 +90,7 @@ func removeCurrentSet(shouldFreeOverride: bool = self.shouldFree) -> int:
 	# DESIGN: Use [currentSet] not [componentsRecentlySwappedIn]
 	# to ensure removal even if other component instances were later added to the entiy,
 	# Because that will be the expected behavior: If a component's name is on the list, it MUST be added/removed.
-	var removedComponentsCount: int = parentEntity.removeComponents(self.currentSet.components, shouldFreeOverride)
+	var removedComponentsCount: int = parentEntity.removeComponentTypes(self.currentSet.components, shouldFreeOverride)
 	var removedSetName: StringName = currentSetName
 	currentSetName = "" # Clear the name before the signal
 	didRemoveSet.emit(removedSetName)

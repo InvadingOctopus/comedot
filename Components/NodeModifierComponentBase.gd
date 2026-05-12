@@ -49,7 +49,7 @@ func removeComponents() -> void:
 	if debugMode: printDebug(str("removeComponents(): ", componentsToRemove, ", isEnabled: " if isEnabled else ""))
 	if not isEnabled or componentsToRemove.is_empty(): return
 	if parentEntity: savedParentEntity = self.parentEntity
-	savedParentEntity.removeComponents(componentsToRemove)
+	savedParentEntity.removeComponentTypes(componentsToRemove)
 	
 
 ## Returns an array of the newly created [Component]s.

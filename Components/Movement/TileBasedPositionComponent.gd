@@ -177,12 +177,10 @@ func _ready() -> void:
 	if tileMap: applyInitialCoordinates()
 
 	updateIndicator() # Fix the visually-annoying initial snap from the default position
-	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
 
 
-func onWillRemoveFromEntity() -> void:
-	# Set our cell as vacant before this component or entity is removed.
-	vacateCell()
+func onWillUninstall() -> void:
+	vacateCell() # Set our cell as vacant before this component or entity is removed.
 
 #endregion
 

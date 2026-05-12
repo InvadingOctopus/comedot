@@ -91,19 +91,16 @@ func _ready() -> void:
 
 #region Detachment & Reattachment
 
-func registerEntity(newParentEntity: Entity) -> void:
-	# NOTE: This method is overridden in order to reconnect signals in case the new parent is also an Entity.
-	super.registerEntity(newParentEntity)
-	if newParentEntity: connectSignals() # Make sure the new parent is an Entity
+func onDidInstall() -> void:
+	Tools.connectSignal(entity.preDelete, self.onEntity_preDelete)
 
 
-func connectSignals() -> void:
-	Tools.connectSignal(parentEntity.preDelete, self.onEntity_preDelete)
+func onWillUninstall() -> void:
+	Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete)
 
 
 func onEntity_preDelete() -> void:
-	if parentEntity:
-		Tools.disconnectSignal(parentEntity.preDelete, self.onEntity_preDelete) # Prevent multiple calls!
+	if entity: Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete) # Prevent multiple calls!
 	if shouldAttachToGrandparentOnEntityRemoval:
 		self.cancel_free() # We still want to live!
 		attachToGrandparent()

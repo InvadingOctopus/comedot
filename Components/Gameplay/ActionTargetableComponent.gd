@@ -33,16 +33,11 @@ func _ready() -> void:
 
 	self.add_to_group(Global.Groups.targetables)
 	parentEntity.add_to_group(Global.Groups.targetables)
-	connectSignals()
 	updateMouseHover()
 
 
-func connectSignals() -> void:
-	self.willRemoveFromEntity.connect(self.onWillRemoveFromEntity)
-
-
-func onWillRemoveFromEntity() -> void:
-	parentEntity.remove_from_group(Global.Groups.targetables) # CHECK: Will this cause problems if there are somehow multiple ActionTargetableComponent subclasses on an Entity?
+func onWillUninstall() -> void:
+	entity.remove_from_group(Global.Groups.targetables) # CHECK: Will this cause problems if there are somehow multiple ActionTargetableComponent subclasses on an Entity?
 
 
 #region Action Targeting

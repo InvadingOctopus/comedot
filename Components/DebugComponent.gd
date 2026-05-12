@@ -99,19 +99,18 @@ func createCharts() -> void:
 
 #region Labels
 
-func registerEntity(newParentEntity: Entity) -> void:
-	super.registerEntity(newParentEntity)
+func onDidInstall() -> void:
 	if self.is_node_ready():
-		entityLabel.text = parentEntity.name
-		entityLabel.tooltip_text = parentEntity.logFullName
+		entityLabel.text		 = entity.name
+		entityLabel.tooltip_text = entity.logFullName
 
 
 func updateLabelsVisibility() -> void:
 	# DESIGN: The Entity/Component name labels can be set manually via "Editable Children"
 	$VisibilityToggleHotspot.visible = isEnabled and shouldHideLabelsUntilHover
-	%Labels.visible = isEnabled and not shouldHideLabelsUntilHover
-	%Labels.z_index = 2000 if shouldHideLabelsUntilHover else 100
-	%PropertiesLabel.visible = not propertiesToLabel.is_empty()
+	%Labels.visible					 = isEnabled and not shouldHideLabelsUntilHover
+	%Labels.z_index					 = 2000 if shouldHideLabelsUntilHover else 100
+	%PropertiesLabel.visible		 = not propertiesToLabel.is_empty()
 
 
 func _process(_delta: float) -> void:

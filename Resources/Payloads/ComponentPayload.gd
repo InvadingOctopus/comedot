@@ -38,7 +38,7 @@ func executeImplementation(source: Variant, target: Variant) -> Variant:
 
 func removeComponents(entity: Entity) -> int:
 	if not is_instance_valid(entity) or componentsToRemove.is_empty(): return 0
-	return entity.removeComponents(componentsToRemove)
+	return entity.removeComponentTypes(componentsToRemove)
 
 
 ## Returns an array of the newly created [Component]s.
