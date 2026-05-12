@@ -69,11 +69,11 @@ func _enter_tree() -> void:
 
 	# If this Component is not an Area2D, try using the area specified on the Entity.
 	if not self.area:
-		if debugMode: printDebug(str("Cannot cast self as Area2D. parentEntity.getArea(): ", area))
-		self.area = parentEntity.getArea()
+		if debugMode: printDebug(str("Cannot cast self as Area2D. entity.getArea(): ", area))
+		self.area = entity.getArea()
 
 	# Still nothing? :(
-	if not self.area: printWarning("Missing area. Cannot cast self as Area2D & cannot get area from parentEntity: " + parentEntity.logFullName)
+	if not self.area: printWarning("Missing area. Cannot cast self as Area2D & cannot get area from entity: " + entity.logFullName)
 	elif debugMode:   printDebug(str("area parent: ", area.get_parent()))
 
 

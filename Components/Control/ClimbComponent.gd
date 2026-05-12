@@ -370,8 +370,8 @@ func snapToActiveClimbingArea() -> Vector2:
 
 	if not displacement.is_zero_approx():
 		characterBodyComponent.body.velocity = Vector2.ZERO # Stop all other inertia
-		parentEntity.position += -displacement # NOTE: Recorrect the position by applying the NEGATIVE of the displacement,
-		parentEntity.reset_physics_interpolation() # TBD: Is the reset necessary?
+		entity.position += -displacement # NOTE: Recorrect the position by applying the NEGATIVE of the displacement,
+		entity.reset_physics_interpolation() # TBD: Is the reset necessary?
 	return -displacement
 
 
@@ -419,13 +419,13 @@ func _physics_process(delta: float) -> void:
 	elif lastVerticalInputDirection > 0 and not characterBodyComponent.isOnFloor: # Descend down only if not already on ground
 		verticalPositionOffset = (platformerPhysicsComponent.parameters.climbDownSpeed * -characterBodyComponent.body.up_direction.y) * abs(lastVerticalInput) * delta # NOTE: Since `CharacterBody2D.up_direction` is normally -1 we have to make it +1 to climb DOWN
 
-	parentEntity.position.y += verticalPositionOffset
+	entity.position.y += verticalPositionOffset
 
 	# NOTE: shouldConfineHorizontally & shouldConfineVertically will take effect in oncharacterBodyComponent_didMove()
 	# to ensure that ANY movement from ANY physics source is confined within the Climbable area.
 	# DESIGN: For effects that knock the character off a Climbable, like receiving damage, there should be separate flags & logic.
 
-	parentEntity.reset_physics_interpolation() # TBD: Is the reset necessary?
+	entity.reset_physics_interpolation() # TBD: Is the reset necessary?
 	characterBodyComponent.shouldMoveThisFrame = true # TBD: Is move_and_slide() necessary?
 	if debugMode: showDebugInfo() # Refresh the watchlist after all the various conditional updates
 
@@ -441,13 +441,13 @@ func oncharacterBodyComponent_didMove(_delta: float) -> void:
 
 	if not displacement.is_zero_approx(): # Are we going to be within the Climbable bounds?
 		# NOTE: Recorrect the position by applying the NEGATIVE of the displacement, to put the node back inside the target area. e.g. -1 means 1 pixel outside the container's LEFT edge, so ADD 1 pixel to X.
-		if shouldConfineVertically:   parentEntity.position.y += -displacement.y
+		if shouldConfineVertically:   entity.position.y += -displacement.y
 		if shouldConfineHorizontally:
-			if not characterBodyComponent.isOnFloor: parentEntity.position.x += -displacement.x
+			if not characterBodyComponent.isOnFloor: entity.position.x += -displacement.x
 			# NOTE: If we're on the floor, let us WALK OUT of the climbable!
 			# TBD: Should this be an optional flag?
 			else: stopClimbing()
-		parentEntity.reset_physics_interpolation() # TBD: Is the reset necessary?
+		entity.reset_physics_interpolation() # TBD: Is the reset necessary?
 
 #endregion
 

@@ -78,11 +78,11 @@ func _enter_tree() -> void:
 	# DESIGN: Crash if no entity
 	super._enter_tree()
 
-	if self.body == null and parentEntity != null:
-		self.body = parentEntity.getBody()
+	if self.body == null and entity != null:
+		self.body = entity.getBody()
 
 	if not is_instance_valid(body):
-		printError("Missing CharacterBody2D in parent Entity: \n" + parentEntity.logFullName)
+		printError("Missing CharacterBody2D in parent Entity: \n" + entity.logFullName)
 		# TBD: set_physics_process(false)
 
 
@@ -105,7 +105,7 @@ func _physics_process(delta: float) -> void:
 		if debugMode and not body.velocity.is_equal_approx(previousVelocity): printDebug(str("_physics_process() delta: ", delta, ", body.velocity: ", body.velocity))
 
 		# TBD: PERFORMANCE: Should `entity.callOnceThisFrame()` be used, or call `move_and_slide()` directly?
-		# DISABLED FOR PERFORMANCE: parentEntity.callOnceThisFrame(body.move_and_slide)
+		# DISABLED FOR PERFORMANCE: entity.callOnceThisFrame(body.move_and_slide)
 		body.move_and_slide()
 		self.updateStateAfterMove(delta)
 

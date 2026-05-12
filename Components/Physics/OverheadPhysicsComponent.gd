@@ -39,7 +39,7 @@ func _ready() -> void:
 
 		# UNUSED: characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove) # PERFORMANCE: Reset state directly instead of via signal for now
 	else:
-		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
+		printWarning("Missing CharacterBody2D in Entity: " + entity.logName)
 
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 

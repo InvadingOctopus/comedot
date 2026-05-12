@@ -5,7 +5,7 @@ extends GDScript
 
 
 ## NOTE: [ActionReactionComponent] calls [method Payload.execute] with these arguments:
-## ([sourceEntity, action, actionResult], ActionReactionComponent's parentEntity)
+## ([sourceEntity, action, actionResult], ActionReactionComponent's entity)
 static func onPayload_didExecute(_payload: Payload, source: Variant, target: Entity) -> Variant:
 	# Function entry logging done in ScriptPayload.executeImplementation()
 	GlobalUI.createTemporaryLabel(str("I was looked at by ", source)) \

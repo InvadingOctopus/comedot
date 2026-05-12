@@ -103,22 +103,22 @@ func performAction(actionName: StringName, target: Entity = null) -> Variant:
 
 	# NOTE: Make sure the Action can be performed with the current state and parameters,
 	# BEFORE choosing a target, in case the targeting UI has side-effects etc.
-	if not actionToPerform.checkUsability(self.parentEntity, target, statToPayWith):
+	if not actionToPerform.checkUsability(self.entity, target, statToPayWith):
 		return false
 
 	# If the Action requires a target and we haven't been provided one,
 	# let the UI prompt the player for a target.
 	if actionToPerform.requiresTarget and target == null:
 		if debugMode: printDebug("Missing target")
-		self.didRequestTarget.emit(actionToPerform, self.parentEntity) # To be handled by ActionControlComponent
-		GlobalUI.actionDidRequestTarget.emit(actionToPerform, self.parentEntity) # This should be emitted here next to `didRequestTarget` as this is the first point where a target is requested, not ActionControlComponent.
+		self.didRequestTarget.emit(actionToPerform, self.entity) # To be handled by ActionControlComponent
+		GlobalUI.actionDidRequestTarget.emit(actionToPerform, self.entity) # This should be emitted here next to `didRequestTarget` as this is the first point where a target is requested, not ActionControlComponent.
 		# TBD: ALSO emit the Action's signal?
 		# What would be the behavior expected by objects connecting to these signals? If an ActionControlComponent is used, then it is the ActionControlComponent requesting a target, right? The Action should not also request a target, to avoid UI duplication, right?
 		return false
 
 	# Alakazam!
 	self.willPerformAction.emit(actionToPerform)
-	var result: Variant = actionToPerform.perform(self.parentEntity, target, statToPayWith)
+	var result: Variant = actionToPerform.perform(self.entity, target, statToPayWith)
 
 	# Check the result
 	# NOTE: If the Action's Payload fails the Stat cost is refunded by Action.perform()

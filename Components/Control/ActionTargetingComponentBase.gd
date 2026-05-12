@@ -51,7 +51,7 @@ func _ready() -> void:
 	self.set_process_unhandled_input(isEnabled)
 
 	if action and self.isChoosing:
-		GlobalUI.actionIsChoosingTarget.emit(action, self.parentEntity) # Let any UI such as ActionButton update itself.
+		GlobalUI.actionIsChoosingTarget.emit(action, self.entity) # Let any UI such as ActionButton update itself.
 
 
 #region Selection
@@ -60,11 +60,11 @@ func _ready() -> void:
 ## Returns the [Entity] of the chosen [ActionTargetableComponent] if successful.
 func chooseTarget(target: ActionTargetableComponent) -> Entity:
 	if debugMode: printLog("chooseTarget(): " + target.logFullNameWithEntity)
-	if isEnabled and target.requestToChoose(action, self.parentEntity):
-		var targetEntity: Entity = target.parentEntity
+	if isEnabled and target.requestToChoose(action, self.entity):
+		var targetEntity: Entity = target.entity
 		# Signals
 		self.didChooseTarget.emit(targetEntity)
-		GlobalUI.actionDidChooseTarget.emit(action, self.parentEntity, targetEntity)
+		GlobalUI.actionDidChooseTarget.emit(action, self.entity, targetEntity)
 		# Go!
 		actionsComponent.performAction(action.name, targetEntity) # NOTE: Perform actions by their name ID # TBD: Use the actual Action instance?
 		return targetEntity
@@ -78,10 +78,10 @@ func chooseTarget(target: ActionTargetableComponent) -> Entity:
 #region Cancellation
 
 func cancelTargetSelection() -> void:
-	TextBubble.create.call_deferred(str("CANCEL:", self.action.name), parentEntity) # call_deferred() because of Godot error: "Parent node is busy setting up children" when this Component is replaced by another targeting component, e.g. when clicking another Button while we are still choosing.
+	TextBubble.create.call_deferred(str("CANCEL:", self.action.name), entity) # call_deferred() because of Godot error: "Parent node is busy setting up children" when this Component is replaced by another targeting component, e.g. when clicking another Button while we are still choosing.
 	self.isChoosing = false
 	self.didCancel.emit()
-	GlobalUI.actionDidCancelTarget.emit(action, self.parentEntity)
+	GlobalUI.actionDidCancelTarget.emit(action, self.entity)
 	self.requestDeletion()
 
 
@@ -97,7 +97,7 @@ func _input(event: InputEvent) -> void:
 func _notification(what: int) -> void:
 	match what:
 		## ALERT: Notifications are received by subclass AFTER the base class,
-		## so this component has already been unregistered at this point, but we don't need `parentEntity` etc. so it's OK
+		## so this component has already been unregistered at this point, but we don't need `entity` etc. so it's OK
 		NOTIFICATION_UNPARENTED: if isChoosing: cancelTargetSelection() # Remove selection UI etc. if we're getting forcibly evicted :')
 	# NOTE: FIXED: AVOID: _notification() is called for superclass automatically! Manually calling `super._notification(what)` causes bugs!!
 

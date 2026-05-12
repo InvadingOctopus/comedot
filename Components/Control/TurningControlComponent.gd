@@ -38,7 +38,7 @@ var rotationDirection: float: ## The current rotation to apply to [param nodeToR
 
 func _ready() -> void:
 	super._ready()
-	if not nodeToRotate: nodeToRotate = self.parentEntity
+	if not nodeToRotate: nodeToRotate = self.entity
 	self.set_physics_process(isEnabled and not is_zero_approx(rotationDirection)) # Apply setters because Godot doesn't on initialization
 	Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 

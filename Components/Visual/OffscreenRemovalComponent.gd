@@ -22,8 +22,8 @@ extends Component
 
 ## Delete parent node when offscreen
 func onScreenExited() -> void:
-	if not isEnabled or (ignoreIfHidden and not parentEntity.visible): return
+	if not isEnabled or (ignoreIfHidden and not entity.visible): return
 	if removalDelay > 0 and not is_zero_approx(removalDelay): # Just to be safe
 		await self.get_tree().create_timer(removalDelay).timeout
 
-	parentEntity.requestDeletion()
+	entity.requestDeletion()

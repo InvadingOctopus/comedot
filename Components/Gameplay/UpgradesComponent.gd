@@ -120,19 +120,19 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 	# But we gotta pay first!
 	var statToOffer: Stat = self.findPaymentStat(newUpgrade)
 
-	if newUpgrade.requestToAcquire(self.parentEntity, statToOffer):
+	if newUpgrade.requestToAcquire(self.entity, statToOffer):
 		self.upgrades.append(newUpgrade)
 		self.upgradesDictionary[newUpgrade.name] = newUpgrade
 
 		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
 		# because any handlers connected to the Upgrade will except the Upgrade to be already installed in a component when they receive the `didAcquire` signal.
 		self.didAcquire.emit(newUpgrade)
-		newUpgrade.setAcquisition(self.parentEntity) ## Let the Upgrade emit its signal and set its flags etc.
+		newUpgrade.setAcquisition(self.entity) ## Let the Upgrade emit its signal and set its flags etc.
 		
 		printLog(str("Upgrade added: ", newUpgrade.logName))
 
 		# After the upgrade is installed, perform its ACTUAL JOB!
-		newUpgrade.processPayload(self.parentEntity) # TBD: Handle Payload result?
+		newUpgrade.processPayload(self.entity) # TBD: Handle Payload result?
 
 	return true
 
@@ -140,9 +140,9 @@ func addUpgrade(newUpgrade: Upgrade, overwrite: bool = false) -> bool:
 ## Attempts to increase the level of the Upgrade after paying the required Stat cost.
 func incrementUpgradeLevel(upgrade: Upgrade) -> bool:
 	var statToOffer: Stat = self.findPaymentStat(upgrade)
-	if upgrade.requestLevelUp(self.parentEntity, statToOffer):
+	if upgrade.requestLevelUp(self.entity, statToOffer):
 		# After the upgrade is leveled up, perform its ACTUAL JOB at the new level!
-		upgrade.processPayload(self.parentEntity)
+		upgrade.processPayload(self.entity)
 		return true
 	else:
 		return false
@@ -178,7 +178,7 @@ func discardUpgrade(nameToDiscard: StringName) -> bool:
 		# DESIGN: The Upgrade's signal should be emitted AFTER the component's signal,
 		# because any handlers connected to the Upgrade will except the Upgrade to not be in any component when they receive the discard signal.
 		self.didDiscard.emit(upgradeToDiscard)
-		upgradeToDiscard.discard(parentEntity) # Let the Upgrade perform its cleanup.
+		upgradeToDiscard.discard(entity) # Let the Upgrade perform its cleanup.
 		return true
 	else:
 		return false

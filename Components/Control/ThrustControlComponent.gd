@@ -27,11 +27,11 @@ extends CharacterBodyDependentComponentBase
 
 func _ready() -> void:
 	# Set the entity's [CharacterBody2D] motion mode to Floating.
-	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Floating")
-		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	if entity.body:
+		printLog("entity.body.motion_mode → Floating")
+		entity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	else:
-		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+		printWarning("Missing entity.body: " + entity.logName)
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 

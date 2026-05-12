@@ -20,7 +20,7 @@ extends Component
 		if newValue != shouldTint:
 			shouldTint = newValue
 			if shouldTint: updateTint()
-			else: parentEntity.modulate = Color.WHITE
+			else: entity.modulate = Color.WHITE
 
 
 @export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the current health value or the difference.
@@ -34,8 +34,8 @@ extends Component
 
 var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponent].
 	get:
-		# Check for `parentEntity` in case this getter was called by the `shouldTint` setter
-		if parentEntity and not healthComponent: healthComponent = getCoComponent(HealthComponent, true) # findSubclasses
+		# Check for `entity` in case this getter was called by the `shouldTint` setter
+		if entity and not healthComponent: healthComponent = getCoComponent(HealthComponent, true) # findSubclasses
 		return healthComponent
 #endregion
 
@@ -61,16 +61,16 @@ func updateTint()-> void:
 	if self.shouldTint and healthComponent:
 		var health: Stat  = healthComponent.health
 		var red:	float = (1.0 - health.percentNormalized) * 5.0 # Increase redness as health gets lower
-		var targetModulate:  Color = parentEntity.modulate
+		var targetModulate:  Color = entity.modulate
 		targetModulate.r = red
 		if debugMode: Debug.printVariables([health.logName, red, targetModulate])
-		Animations.tweenProperty(self.parentEntity, ^"modulate", targetModulate, 0.1)
+		Animations.tweenProperty(self.entity, ^"modulate", targetModulate, 0.1)
 
 
 ## @experimental
 func animate(damageAmount: int) -> void:
 	if damageAmount > 0:
-		Animations.blink(self.parentEntity, 3)
+		Animations.blink(self.entity, 3)
 
 
 func emitBubble(damageAmount: int) -> void:
@@ -78,5 +78,5 @@ func emitBubble(damageAmount: int) -> void:
 	if self.shouldShowRemainingHealth and healthComponent: text = str(healthComponent.health.value)
 	else: str("-," if damageAmount > 0 else "", damageAmount)
 
-	var bubble: TextBubble = TextBubble.create(text, self.parentEntity)
+	var bubble: TextBubble = TextBubble.create(text, self.entity)
 	bubble.label.label_settings.font_color = Color.ORANGE

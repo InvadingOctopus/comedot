@@ -125,7 +125,7 @@ func updateIndicator() -> void:
 func shouldIncludeArea(areaToCheck: Area2D) -> bool:
 	# NOTE: Don't check isEnabled so we can still allow exits
 	return  is_instance_of(areaToCheck, InteractionControlComponent) \
-			and not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck)) \
+			and not (areaToCheck == entity or entity.is_ancestor_of(areaToCheck)) \
 			and (groupToInclude.is_empty() or areaToCheck.is_in_group(groupToInclude))
 
 
@@ -140,7 +140,7 @@ func onCollide(collidingNode: Node2D) -> void:
 	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity, ", isAutomatic: ", isAutomatic))
 	
 	if self.interactionIndicator: updateIndicator() # Display the indicators and labels, if any
-	didEnterInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
+	didEnterInteractionArea.emit(interactionControlComponent.entity, interactionControlComponent)
 	if self.isAutomatic: performAutomaticInteraction(interactionControlComponent) # Separate method so subclasses may override it
 
 
@@ -152,7 +152,7 @@ func onExit(exitingNode: Node2D) -> void:
 	if debugMode: printDebug(str("onExit(): ", exitingNode, ", interactionControlComponent: ", interactionControlComponent.logNameWithEntity))
 
 	if self.interactionIndicator: updateIndicator() # Hide the indicators and labels.
-	didExitInteractionArea.emit(interactionControlComponent.parentEntity, interactionControlComponent)
+	didExitInteractionArea.emit(interactionControlComponent.entity, interactionControlComponent)
 
 #endregion
 

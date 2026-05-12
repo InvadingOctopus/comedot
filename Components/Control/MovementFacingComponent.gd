@@ -22,9 +22,9 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	if not nodeToRotate: nodeToRotate = parentEntity
+	if not nodeToRotate: nodeToRotate = entity
 	if inputComponent: Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
-	else: printWarning(str("Missing InputComponent in ", parentEntity.logFullName))
+	else: printWarning(str("Missing InputComponent in ", entity.logFullName))
 
 
 func onInputComponent_didProcessInput(_event: InputEvent) -> void:

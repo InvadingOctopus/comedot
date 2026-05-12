@@ -51,7 +51,7 @@ func _ready() -> void:
 		# TBD: Emit the signal or not? because this may have happened a long time ago
 		self.isMoving = false # Calls set_physics_process()
 		if shouldDeleteParentAtMaximumDistance:
-			parentEntity.queue_free()
+			entity.queue_free()
 			return
 
 	self.set_physics_process(isEnabled and isMoving) # Apply setters because Godot doesn't on initialization
@@ -65,11 +65,11 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 			# DEBUG: printDebug("distanceTraveled: " + str(distanceTraveled) + " >= maximumDistance: " + str(maximumDistance))
 			if shouldStopAtMaximumDistance: self.isMoving = false
 			didReachMaximumDistance.emit() # Emit the signal after updating the flag and before we delete the entity!
-			if shouldDeleteParentAtMaximumDistance: parentEntity.queue_free()
+			if shouldDeleteParentAtMaximumDistance: entity.queue_free()
 			return
 
 	# Get the current direction
-	var direction: Vector2 = Vector2.RIGHT.rotated(parentEntity.rotation) # WHYNOT: Vector2.from_angle() is not guaranteed to be a 1.0 unit vector
+	var direction: Vector2 = Vector2.RIGHT.rotated(entity.rotation) # WHYNOT: Vector2.from_angle() is not guaranteed to be a 1.0 unit vector
 
 	# Acceleration or Friction
 	if shouldApplyModifier:
@@ -93,8 +93,8 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 			offset = direction * remainingDistance
 
 	# Move
-	parentEntity.position += offset # TBD: PERFORMANCE: Use translate(offset)?
-	parentEntity.reset_physics_interpolation() # CHECK: Is this necessary? Avoid physics "teleportation" glitches
+	entity.position += offset # TBD: PERFORMANCE: Use translate(offset)?
+	entity.reset_physics_interpolation() # CHECK: Is this necessary? Avoid physics "teleportation" glitches
 	self.distanceTraveled += offset.length()
 
 	if debugMode: printDebug(str("offset: ", offset, ", direction: ", direction, ", distanceTraveled: ", distanceTraveled, " of ", maximumDistance))

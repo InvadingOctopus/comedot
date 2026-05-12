@@ -40,7 +40,7 @@ func _ready() -> void:
 
 @warning_ignore("unused_parameter")
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
-	if not isEnabled or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
+	if not isEnabled or bodyEntered == self.entity or bodyEntered.owner == self.entity: return
 	if bodyEntered is TileMapLayer: # Dummy Godot can't cast without this
 		if bodyEntered.physics_quadrant_size != 1:
 			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyEntered))
@@ -50,7 +50,7 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 
 		if debugMode:
 			printDebug(str("TileMapLayer entered: ", bodyEntered, " @", cellCoordinates))
-			TextBubble.create(str("IN ", cellCoordinates), self.parentEntity).label.label_settings.font_color = Color.GREEN
+			TextBubble.create(str("IN ", cellCoordinates), self.entity).label.label_settings.font_color = Color.GREEN
 
 		self.onCollideCell(bodyEntered, cellCoordinates)
 		didEnterTileCell.emit(bodyEntered, cellCoordinates)
@@ -59,7 +59,7 @@ func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, 
 ## NOTE: If the cell was destroyed, for example by [method TileMapTools.damageTileMapCell], then the coordinates are reported as (-1,-1)
 @warning_ignore("unused_parameter")
 func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
-	if bodyExited == self.parentEntity or bodyExited.owner == self.parentEntity: return
+	if bodyExited == self.entity or bodyExited.owner == self.entity: return
 	if bodyExited is TileMapLayer: # Dummy Godot can't cast without this
 		if bodyExited.physics_quadrant_size != 1:
 			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyExited))
@@ -70,7 +70,7 @@ func onBodyShapeExited(bodyRID: RID, bodyExited: Node2D, bodyShapeIndex: int, lo
 
 		if debugMode:
 			printDebug(str("TileMapLayer exited: ", bodyExited, " @", cellCoordinates))
-			if is_instance_valid(parentEntity): TextBubble.create(str("EX ", cellCoordinates), parentEntity).label.label_settings.font_color = Color.CYAN
+			if is_instance_valid(entity): TextBubble.create(str("EX ", cellCoordinates), entity).label.label_settings.font_color = Color.CYAN
 
 		self.onExitCell(bodyExited, cellCoordinates)
 		didExitTileCell.emit(bodyExited, cellCoordinates)

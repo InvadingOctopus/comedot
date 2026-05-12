@@ -68,8 +68,8 @@ func _physics_process(delta: float) -> void:
 	if shouldUseInputComponent and inputComponent:
 		inputComponent.movementDirection = currentDirection
 	elif not shouldUseInputComponent:
-		parentEntity.position += currentDirection * speed * delta
-		parentEntity.reset_physics_interpolation()
+		entity.position += currentDirection * speed * delta
+		entity.reset_physics_interpolation()
 
 	if debugMode: showDebugInfo()
 

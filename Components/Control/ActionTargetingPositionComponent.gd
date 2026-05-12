@@ -27,7 +27,7 @@ func _ready() -> void:
 		maximumDistanceFromEntity = cursor.get_viewport_rect().size.y
 	# Set the initial position to the mouse pointer, unless an InputComponent suppressed the mouse
 	if not inputComponent or not inputComponent.shouldSuppressMouseMotion:
-		cursor.global_position = parentEntity.get_global_mouse_position()
+		cursor.global_position = entity.get_global_mouse_position()
 	if inputComponent: Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
 
 
@@ -40,9 +40,9 @@ func _process(delta: float) -> void:
 	# Fallback to mouse if there is no InputComopnent
 	if inputComponent and inputComponent.shouldSuppressMouseMotion:
 		cursor.global_position += inputComponent.aimDirection * joystickSpeed * delta
-		cursor.global_position += NodeTools.clampPositionToAnchor(cursor, parentEntity, maximumDistanceFromEntity)
+		cursor.global_position += NodeTools.clampPositionToAnchor(cursor, entity, maximumDistanceFromEntity)
 	else:
-		cursor.global_position = parentEntity.get_global_mouse_position()
+		cursor.global_position = entity.get_global_mouse_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:

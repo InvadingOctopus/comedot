@@ -17,11 +17,11 @@ var gravity: float = Settings.gravity
 
 
 func _ready() -> void:
-	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Grounded")
-		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+	if entity.body:
+		printLog("entity.body.motion_mode → Grounded")
+		entity.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 	else:
-		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+		printWarning("Missing entity.body: " + entity.logName)
 
 	if coComponents.get("PlatformerPhysicsComponent"):
 		printWarning("GravityComponent & PlatformerPhysicsComponent both process gravity; Remove one!")

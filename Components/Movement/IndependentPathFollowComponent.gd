@@ -56,13 +56,13 @@ func setDependencies() -> bool:
 
 	if not path:
 
-		var parentEntityParent: Node = parentEntity.get_parent()
+		var entityParent: Node = entity.get_parent()
 
-		if is_instance_of(parentEntityParent, Path2D):
-			self.path = parentEntityParent as Path2D
+		if is_instance_of(entityParent, Path2D):
+			self.path = entityParent as Path2D
 			if not path: printWarning("Cannot find a Path2D!")
 		else:
-			printWarning(str("parentEntity's parent is not a Path2D: ", parentEntityParent))
+			printWarning(str("entity's parent is not a Path2D: ", entityParent))
 			return false
 
 	if debugMode: printDebug(str("path → ", self.path))
@@ -96,7 +96,7 @@ func snapEntityToCurve() -> Vector2:
 	# Get the entity's position in the Path's space
 	# NOTE: The Curve2D's position is in the Path2D's space
 
-	var entityPositionInPathSpace: Vector2 = path.to_local(parentEntity.global_position)
+	var entityPositionInPathSpace: Vector2 = path.to_local(entity.global_position)
 
 	# Get the closest position on the Curve2D
 	var snappedOffset:   float = curve.get_closest_offset(entityPositionInPathSpace)
@@ -105,7 +105,7 @@ func snapEntityToCurve() -> Vector2:
 	if self.shouldRotate: # Do we also need to rotate?
 		var bakedTransform: Transform2D = curve.sample_baked_with_rotation(snappedOffset, self.shouldCubicInterpolate)
 		snappedPosition = bakedTransform.get_origin()
-		parentEntity.rotation = bakedTransform.get_rotation()
+		entity.rotation = bakedTransform.get_rotation()
 	else:
 		snappedPosition = curve.sample_baked(snappedOffset, self.shouldCubicInterpolate)
 
@@ -116,7 +116,7 @@ func snapEntityToCurve() -> Vector2:
 	snappedPosition = path.to_global(snappedPosition)
 
 	# Move the entity
-	parentEntity.global_position = snappedPosition
+	entity.global_position = snappedPosition
 
 	if debugMode: printDebug(str("snapEntityToCurve() entityPositionInPathSpace: ", entityPositionInPathSpace, " → ", snappedPosition, ", snappedOffset: ", snappedOffset))
 
@@ -143,20 +143,20 @@ func _physics_process(delta: float) -> void:
 
 
 func setPosition() -> Vector2:
-	if not isEnabled or not path or not curve: return parentEntity.position
+	if not isEnabled or not path or not curve: return entity.position
 
 	var newPositionInPathSpace: Vector2
 
 	if self.shouldRotate: # Do we also need to rotate?
 		var bakedTransform: Transform2D = curve.sample_baked_with_rotation(self.progress, self.shouldCubicInterpolate)
 		newPositionInPathSpace = bakedTransform.get_origin()
-		parentEntity.rotation = bakedTransform.get_rotation()
+		entity.rotation = bakedTransform.get_rotation()
 	else:
 		newPositionInPathSpace = curve.sample_baked(self.progress, self.shouldCubicInterpolate)
 
 	# Convert the position from the Path2D's space to the global space
-	parentEntity.global_position = path.to_global(newPositionInPathSpace)
+	entity.global_position = path.to_global(newPositionInPathSpace)
 
-	return parentEntity.position
+	return entity.position
 
 #endregion

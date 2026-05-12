@@ -92,7 +92,7 @@ func _ready() -> void:
 		printLog("characterBodyComponent.body.motion_mode → Grounded")
 		characterBodyComponent.body.motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
 	else:
-		printWarning("Missing CharacterBody2D in Entity: " + parentEntity.logName)
+		printWarning("Missing CharacterBody2D in Entity: " + entity.logName)
 
 	if coComponents.get("GravityComponent"):
 		printWarning("PlatformerPhysicsComponent & GravityComponent both process gravity; Remove one!")

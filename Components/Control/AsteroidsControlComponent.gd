@@ -45,11 +45,11 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Floating")
-		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	if entity.body:
+		printLog("entity.body.motion_mode → Floating")
+		entity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	else:
-		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+		printWarning("Missing entity.body: " + entity.logName)
 
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization

@@ -73,7 +73,7 @@ func _ready() -> void:
 #region Collisions
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
+	if not isEnabled or areaEntered == self.entity or areaEntered.owner == self.entity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
 	var damageComponent: DamageComponent = getDamageComponent(areaEntered)
 	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", damageComponent: ", damageComponent.logNameWithEntity if damageComponent else "null"))
 
@@ -104,8 +104,8 @@ func getDamageComponent(collidingArea: Area2D) -> DamageComponent:
 		return null
 
 	# Is it our own entity?
-	if self.parentEntity and damageComponent.parentEntity == self.parentEntity:
-		if debugMode: printDebug(str("DamageComponent belongs to this DamageComponent's Entity: ", damageComponent.parentEntity.logName))
+	if self.entity and damageComponent.entity == self.entity:
+		if debugMode: printDebug(str("DamageComponent belongs to this DamageComponent's Entity: ", damageComponent.entity.logName))
 		return null
 
 	return damageComponent
@@ -121,7 +121,7 @@ func processCollision(damageComponent: DamageComponent, attackerFactionComponent
 	if attackerFactionComponent:
 		return self.processDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, attackerFactionComponent.factions, damageComponent.friendlyFire)
 	else: # If the attacker has no factions, damage must be dealt to everyone.
-		if debugMode: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.parentEntity.logName)
+		if debugMode: printDebug("No FactionComponent on attacker DamageComponent's Entity: " + damageComponent.entity.logName)
 		return self.processDamage(damageComponent, damageComponent.damageOnCollisionWithModifier, 0, damageComponent.friendlyFire)
 
 #endregion

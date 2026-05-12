@@ -57,4 +57,4 @@ func onInputComponent_didProcessInput(_event: InputEvent) -> void:
 
 func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` or `_process()`?
 	# NOTE: Cannot use _input() because `delta` is needed.
-	parentEntity.position += lastDirection * speed * delta
+	entity.position += lastDirection * speed * delta

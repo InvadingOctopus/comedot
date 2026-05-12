@@ -173,7 +173,7 @@ func addCombinedWatchList(key: StringName, variables: Dictionary[String, Variant
 ## Adds a set of properties from a [Component] to the [member watchList] and formats them as a single watchlist entry along with the component & entity's name.
 ## Calls [method Debug.addCombinedWatchList]. See the documentation for that method for more details.
 func addComponentWatchList(component: Component, variables: Dictionary[String, Variant]) -> void:
-	Debug.addCombinedWatchList(str(component.parentEntity.name, ".", component.name), variables)
+	Debug.addCombinedWatchList(str(component.entity.name, ".", component.name), variables)
 
 #endregion
 

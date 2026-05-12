@@ -81,7 +81,7 @@ func resetContactLists() -> void:
 func shouldIncludeArea(areaToCheck: Area2D) -> bool:
 	# NOTE: Don't check isEnabled so we can still allow exits
 	return  is_instance_of(areaToCheck, InteractionComponent) \
-			and not (areaToCheck == parentEntity or parentEntity.is_ancestor_of(areaToCheck)) \
+			and not (areaToCheck == entity or entity.is_ancestor_of(areaToCheck)) \
 			and (groupToInclude.is_empty() or areaToCheck.is_in_group(groupToInclude))
 
 
@@ -96,7 +96,7 @@ func onCollide(collidingNode: Node2D) -> void:
 	if debugMode: printDebug(str("onCollide(): ", collidingNode, ", interactionComponent: ", interactionComponent.logNameWithEntity, ", isAutomatic: ", interactionComponent.isAutomatic))
 
 	updateIndicator()
-	didEnterInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
+	didEnterInteractionArea.emit(interactionComponent.entity, interactionComponent)
 
 
 ## Handles collisions with [InteractionComponent]
@@ -107,7 +107,7 @@ func onExit(exitingNode: Node2D) -> void:
 	if debugMode: printDebug(str("onCollide(): ", exitingNode, ", interactionComponent: ", interactionComponent.logNameWithEntity, ", isAutomatic: ", interactionComponent.isAutomatic))
 
 	updateIndicator()
-	didExitInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
+	didExitInteractionArea.emit(interactionComponent.entity, interactionComponent)
 
 
 func updateIndicator() -> void:
@@ -151,11 +151,11 @@ func interactAll(continueOnFailure: bool = true) -> int:
 		if not is_instance_of(interactionComponent, InteractionComponent): continue # Just in case
 
 		# Ask each interaction if it's ready and ok with us
-		if interactionComponent.requestToInteract(self.parentEntity, self):
+		if interactionComponent.requestToInteract(self.entity, self):
 			if debugMode: printDebug(str("interact() ", count + 1, " of ", maximumSimultaneousInteractions))
 
-			self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
-			var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
+			self.willPerformInteraction.emit(interactionComponent.entity, interactionComponent)
+			var result: Variant = interactionComponent.performInteraction(self.entity, self)
 
 			count += 1 # TBD: Increase counter at start or end?
 			self.didPerformInteraction.emit(result) # NOTE: Always emit the raw result even on failures
@@ -193,14 +193,14 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 	if not isEnabled or cooldownTimer.isOnCooldown: return null
 
 	if not ignoreRange and not self.areasInContact.has(interactionComponent):
-		printLog(str("Cannot interact, out of range: ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
+		printLog(str("Cannot interact, out of range: ", interactionComponent.entity.logFullName, " ", interactionComponent.logFullName))
 		return null
 
-	if debugMode: printLog(str("interact() with ", interactionComponent.parentEntity.logFullName, " ", interactionComponent.logFullName))
+	if debugMode: printLog(str("interact() with ", interactionComponent.entity.logFullName, " ", interactionComponent.logFullName))
 
-	if interactionComponent.requestToInteract(self.parentEntity, self):
-		self.willPerformInteraction.emit(interactionComponent.parentEntity, interactionComponent)
-		var result: Variant = interactionComponent.performInteraction(self.parentEntity, self)
+	if interactionComponent.requestToInteract(self.entity, self):
+		self.willPerformInteraction.emit(interactionComponent.entity, interactionComponent)
+		var result: Variant = interactionComponent.performInteraction(self.entity, self)
 		if debugMode: printLog(str("Result: ", result, ", cooldown: ", cooldownTimer.cooldownSeconds if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
 
 		# Start the regular cooldown or the failure cooldown or neither?
@@ -212,7 +212,7 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 		return result
 
 	else:
-		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.parentEntity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
+		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.entity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
 		if self.shouldCooldownOnFailure and not interactionComponent.shouldSkipInteractorCooldown: cooldownTimer.startCooldown(cooldownOnFailure)
 
 	return null

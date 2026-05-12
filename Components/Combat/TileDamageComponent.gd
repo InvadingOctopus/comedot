@@ -29,7 +29,7 @@ func _ready() -> void:
 @warning_ignore("unused_parameter")
 func onBodyShapeEntered(bodyRID: RID, bodyEntered: Node2D, bodyShapeIndex: int, localShapeIndex: int) -> void:
 	# TBD: Remove code duplication from TileCollisionComponent
-	if not isEnabled or bodyEntered is not TileMapLayer or bodyEntered == self.parentEntity or bodyEntered.owner == self.parentEntity: return
+	if not isEnabled or bodyEntered is not TileMapLayer or bodyEntered == self.entity or bodyEntered.owner == self.entity: return
 	if bodyEntered is TileMapLayer: # Dummy Godot can't cast without this
 		if bodyEntered.physics_quadrant_size != 1:
 			printWarning(str("TileMapLayer.physics_quadrant_size is not 1! Cannot get cell coordinates: ", bodyEntered))

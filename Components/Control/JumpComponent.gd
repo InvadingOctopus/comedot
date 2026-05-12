@@ -256,7 +256,7 @@ func processJump() -> void:
 		# EXAMPLE: If a normal jump is -100 and a short jump is -50, then when falling the `body.velocity.y` would be POSITIVE (down),
 		# so the comparison should be made after taking the `body.up_direction` into account.
 
-		if debugMode: Debug.printVariables([parentEntity.name, body.velocity.y, parameters.jumpVelocity1stJumpShort * body.up_direction.y, body.up_direction.y])
+		if debugMode: Debug.printVariables([entity.name, body.velocity.y, parameters.jumpVelocity1stJumpShort * body.up_direction.y, body.up_direction.y])
 
 		# CHECK: Verify that we got this understanding correct!
 

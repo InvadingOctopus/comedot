@@ -60,7 +60,7 @@ func swapToSet(newSetName: StringName, forceReload: bool = false) -> int:
 	# Swap the new set in
 	willLoadSet.emit(newSetName)
 	var newComponentSet: ComponentSet	  = componentSets[newSetName]
-	var newComponents:	 Array[Component] = parentEntity.createNewComponents(newComponentSet.components)
+	var newComponents:	 Array[Component] = entity.createNewComponents(newComponentSet.components)
 
 	# Update state
 	if not newComponents.is_empty():
@@ -90,7 +90,7 @@ func removeCurrentSet(shouldFreeOverride: bool = self.shouldFree) -> int:
 	# DESIGN: Use [currentSet] not [componentsRecentlySwappedIn]
 	# to ensure removal even if other component instances were later added to the entiy,
 	# Because that will be the expected behavior: If a component's name is on the list, it MUST be added/removed.
-	var removedComponentsCount: int = parentEntity.removeComponentTypes(self.currentSet.components, shouldFreeOverride)
+	var removedComponentsCount: int = entity.removeComponentTypes(self.currentSet.components, shouldFreeOverride)
 	var removedSetName: StringName = currentSetName
 	currentSetName = "" # Clear the name before the signal
 	didRemoveSet.emit(removedSetName)

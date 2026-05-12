@@ -33,4 +33,4 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void: # TBD: Use _physics_process() or _process()?
-	parentEntity.position += Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown) * speed * delta
+	entity.position += Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown) * speed * delta

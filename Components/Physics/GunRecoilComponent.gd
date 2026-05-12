@@ -27,7 +27,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	if gunComponent: gunComponent.didFire.connect(self.onGunComponentDidFire)
-	else: printWarning("No GunComponent found in parent Entity: " + parentEntity.logName) # TBD: Warning or Error?
+	else: printWarning("No GunComponent found in parent Entity: " + entity.logName) # TBD: Warning or Error?
 
 
 func onGunComponentDidFire(bullet: Entity) -> void:

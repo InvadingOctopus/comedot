@@ -37,7 +37,7 @@ func onCollide(collidingNode: Node2D) -> void:
 
 	connectAreaSignals(collidingNode as Area2D, interactionComponent)
 	updateIndicator()
-	didEnterInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
+	didEnterInteractionArea.emit(interactionComponent.entity, interactionComponent)
 	# Cursor will be updated by onInteractionComponent_mouseEntered()
 
 
@@ -52,7 +52,7 @@ func onExit(exitingNode: Node2D) -> void:
 	disconnectAreaSignals(exitingNode as Area2D)
 	updateIndicator()
 	if shouldUpdateCursor and areasInContact.is_empty(): Input.set_default_cursor_shape(Input.CURSOR_ARROW) # Reset cursor if we walked away from all interactive objects
-	didExitInteractionArea.emit(interactionComponent.parentEntity, interactionComponent)
+	didExitInteractionArea.emit(interactionComponent.entity, interactionComponent)
 
 
 func connectAreaSignals(interactionArea: Area2D, interactionComponent: InteractionComponent) -> void:

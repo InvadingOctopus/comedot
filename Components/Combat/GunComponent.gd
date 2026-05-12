@@ -196,7 +196,7 @@ func fire(emitter: Node2D = self.bulletEmitter, ignoreCooldown: bool = false) ->
 	
 	# Is it this component's internal Marker2D or its own node itself? Then the entity's parent (usually the root scene) should contain the bullet
 	elif bulletEmitter == internalBulletEmitter or bulletEmitter == self or bulletEmitter.get_parent() == self:
-		bulletParent = parentEntity.get_parent()
+		bulletParent = entity.get_parent()
 		
 	# Otherwise, get the parent of whatever the "custom" emitter node is
 	else: bulletParent = bulletEmitter.get_parent()
@@ -303,7 +303,7 @@ func createBullet(emitter: Node2D = self.bulletEmitter, shouldUseAmmo: bool = tr
 	# Use `get()` to avoid crash if `null`
 
 	var bulletDamageComponent: DamageComponent = newBullet.components.get(&"DamageComponent")
-	if  bulletDamageComponent: bulletDamageComponent.initiatorEntity = self.parentEntity
+	if  bulletDamageComponent: bulletDamageComponent.initiatorEntity = self.entity
 
 	# Factions: Does this gun's entity have a faction and does the bullet also have a FactionComponent? If so, copy the attacker's factions to the new bullet.
 

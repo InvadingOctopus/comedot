@@ -70,7 +70,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	if tileBasedPositionComponent: connectSignals()
-	else: printWarning(str("Missing TileBasedPositionComponent in parentEntity: ", parentEntity.logFullName))
+	else: printWarning(str("Missing TileBasedPositionComponent in entity: ", entity.logFullName))
 
 
 func connectSignals() -> void:

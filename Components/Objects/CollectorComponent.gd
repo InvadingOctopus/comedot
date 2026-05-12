@@ -33,7 +33,7 @@ func handleCollection(collectibleComponent: CollectibleComponent) -> Variant:
 		printDebug("CollectorComponent denied collection: " + self.logFullName)
 		return false
 
-	if collectibleComponent.requestToCollect(self.parentEntity, self) == true:
+	if collectibleComponent.requestToCollect(self.entity, self) == true:
 		return collect(collectibleComponent)
 	else:
 		printDebug("CollectibleComponent denied collection: " + collectibleComponent.logFullName)

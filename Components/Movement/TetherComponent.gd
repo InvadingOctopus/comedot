@@ -38,13 +38,13 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var offset: Vector2 = NodeTools.clampPositionToAnchor(parentEntity, anchorNode, maximumDistance)
+	var offset: Vector2 = NodeTools.clampPositionToAnchor(entity, anchorNode, maximumDistance)
 	if shouldRepositionImmediately:
-		parentEntity.global_position += offset
+		entity.global_position += offset
 	else:
 		if shouldUseInputComponent and inputComponent:
 			inputComponent.movementDirection = offset.normalized()
 		else:
-			parentEntity.global_position = parentEntity.global_position.move_toward(parentEntity.global_position + offset, speed * delta)
+			entity.global_position = entity.global_position.move_toward(entity.global_position + offset, speed * delta)
 
-	parentEntity.reset_physics_interpolation() # CHECK: Necessary?
+	entity.reset_physics_interpolation() # CHECK: Necessary?

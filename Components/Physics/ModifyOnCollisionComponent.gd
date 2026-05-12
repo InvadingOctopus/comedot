@@ -38,7 +38,7 @@ func onCollide(collidingNode: Node2D) -> void:
 		self.requestDeletionOfParentEntity()
 
 	else:
-		var entity: Entity = self.parentEntity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! Which invalidates parentEntity
+		var entity: Entity = self.entity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! Which invalidates entity
 
 		# NOTE: Check for valid nodes/parents to avoid crashes if we collided TOO soon :')
 
@@ -51,4 +51,4 @@ func onCollide(collidingNode: Node2D) -> void:
 			entity.removeComponentTypes(componentsToRemove)
 			didAddComponents.emit(entity.createNewComponents(componentsToCreate))
 
-		if payload: payload.execute(self.parentEntity, collidingNode)
+		if payload: payload.execute(self.entity, collidingNode)

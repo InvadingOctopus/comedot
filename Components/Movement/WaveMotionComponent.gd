@@ -43,7 +43,7 @@ var secondsToMaxAmplitudeY: float ## For logging & debugging
 
 
 func _ready() -> void:
-	if not nodeToMove: nodeToMove = parentEntity
+	if not nodeToMove: nodeToMove = entity
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
@@ -85,12 +85,12 @@ func showDebugInfo(delta: float) -> void:
 
 	secondsToMaxAmplitudeX += delta
 	if not is_zero_approx(xAmplitude) and is_equal_approx(abs(nodeToMove.position.x), abs(xAmplitude)):
-		Debug.printVariables([parentEntity.name, time, "Seconds to X:", secondsToMaxAmplitudeX, wavePosition.x, nodeToMove.position.x])
+		Debug.printVariables([entity.name, time, "Seconds to X:", secondsToMaxAmplitudeX, wavePosition.x, nodeToMove.position.x])
 		secondsToMaxAmplitudeX = 0
 
 	secondsToMaxAmplitudeY += delta
 	if not is_zero_approx(yAmplitude) and is_equal_approx(abs(nodeToMove.position.y), abs(yAmplitude)):
-		Debug.printVariables([parentEntity.name, time, "Seconds to Y:", secondsToMaxAmplitudeY, wavePosition.y, nodeToMove.position.y])
+		Debug.printVariables([entity.name, time, "Seconds to Y:", secondsToMaxAmplitudeY, wavePosition.y, nodeToMove.position.y])
 		secondsToMaxAmplitudeY = 0
 
 #endregion

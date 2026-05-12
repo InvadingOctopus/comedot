@@ -18,7 +18,7 @@ extends Component
 
 
 #region State
-var savedParentEntity: Entity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! because that invalidates parentEntity
+var savedParentEntity: Entity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! because that invalidates entity
 #endregion
 
 
@@ -30,8 +30,8 @@ signal didAddComponents(components: Array[Component])
 
 func removeEntity() -> void:
 	if debugMode: printDebug(str("removeEntity(): ", shouldRemoveEntity, ", isEnabled: " if isEnabled else ""))
-	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(parentEntity): return
-	savedParentEntity = self.parentEntity
+	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(entity): return
+	savedParentEntity = self.entity
 	self.willRemoveEntity.emit()
 	self.requestDeletionOfParentEntity()
 
@@ -39,7 +39,7 @@ func removeEntity() -> void:
 func removeNodes() -> void:
 	if debugMode: printDebug(str("removeNodes(): ", nodesToRemove, ", isEnabled: " if isEnabled else ""))
 	if not isEnabled or nodesToRemove.is_empty(): return
-	if parentEntity: savedParentEntity = self.parentEntity
+	if entity: savedParentEntity = self.entity
 	for node in nodesToRemove:
 		node.get_parent().remove_child(node)
 		node.queue_free() # TBD: Should this be optional?
@@ -48,7 +48,7 @@ func removeNodes() -> void:
 func removeComponents() -> void:
 	if debugMode: printDebug(str("removeComponents(): ", componentsToRemove, ", isEnabled: " if isEnabled else ""))
 	if not isEnabled or componentsToRemove.is_empty(): return
-	if parentEntity: savedParentEntity = self.parentEntity
+	if entity: savedParentEntity = self.entity
 	savedParentEntity.removeComponentTypes(componentsToRemove)
 	
 
@@ -63,7 +63,7 @@ func createComponents(entityOverride: Entity = self.savedParentEntity) -> Array[
 
 func executePayload(target: Variant) -> void:
 	if debugMode: printDebug(str("executePayload(): ", payload, ", target: ", target))
-	if payload: payload.execute(self.parentEntity, target)
+	if payload: payload.execute(self.entity, target)
 
 
 ## Calls all the other methods in order: If [member shouldRemoveEntity] then only [method removeEntity], otherwise: [method removeNodes] → [method removeComponents] → [method createComponents]

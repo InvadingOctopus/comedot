@@ -66,9 +66,9 @@ func onHealthChanged() -> void:
 			healthDidZero.emit()
 			
 			if isEnabled:
-				if shouldRemoveEntityOnZero and parentEntity:
+				if shouldRemoveEntityOnZero and entity:
 					willRemoveEntity.emit()
-					parentEntity.requestDeletion()
+					entity.requestDeletion()
 				if shouldGameOverOnZero:
 					GameState.gameDidOver.emit()
 

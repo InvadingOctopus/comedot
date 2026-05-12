@@ -46,13 +46,13 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	parentEntity.getSprite() # Let the Entity decide its own sprite, even if it's just a Sprite2D, so we can flip it when the direction changes
+	entity.getSprite() # Let the Entity decide its own sprite, even if it's just a Sprite2D, so we can flip it when the direction changes
 
 	if not self.animatedSprite: # If this component's property is unspecified
-		if parentEntity.sprite is AnimatedSprite2D: # Try the Entity's sprite in case it's animated
-			self.animatedSprite	= parentEntity.sprite
+		if entity.sprite is AnimatedSprite2D: # Try the Entity's sprite in case it's animated
+			self.animatedSprite	= entity.sprite
 		if not self.animatedSprite: # Find some other AnimatedSprite2D if it'the Entity's primary sprite isn't one
-			self.animatedSprite	= parentEntity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
+			self.animatedSprite	= entity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
 		if not self.animatedSprite: printWarning("Missing AnimatedSprite2D!")
 
 	if inputComponent:
@@ -64,7 +64,7 @@ func _ready() -> void:
 func onInputComponent_didChangeHorizontalDirection() -> void:
 	if not isEnabled: return
 	# Even if we don't have an AnimatedSprite2D we can flip a normal Sprite2D
-	(animatedSprite if self.animatedSprite else parentEntity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the `previousMovementDirection` because that would be the opposite!
+	(animatedSprite if self.animatedSprite else entity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the `previousMovementDirection` because that would be the opposite!
 
 
 func _process(_delta: float) -> void:

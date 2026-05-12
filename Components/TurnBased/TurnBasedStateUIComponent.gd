@@ -75,12 +75,12 @@ func connectSignals() -> void:
 	TurnBasedCoordinator.stateTimer.timeout	.connect(self.onTurnBasedCoordinator_stateTimerTimeout)
 	TurnBasedCoordinator.entityTimer.timeout.connect(self.onTurnBasedCoordinator_entityTimerTimeout)
 
-	parentEntity.willBeginTurn	.connect(self.onEntity_willBeginTurn)
-	parentEntity.didBeginTurn	.connect(self.onEntity_didBeginTurn)
-	parentEntity.willUpdateTurn	.connect(self.onEntity_willUpdateTurn)
-	parentEntity.didUpdateTurn	.connect(self.onEntity_didUpdateTurn)
-	parentEntity.willEndTurn	.connect(self.onEntity_willEndTurn)
-	parentEntity.didEndTurn		.connect(self.onEntity_didEndTurn)
+	entity.willBeginTurn	.connect(self.onEntity_willBeginTurn)
+	entity.didBeginTurn	.connect(self.onEntity_didBeginTurn)
+	entity.willUpdateTurn	.connect(self.onEntity_willUpdateTurn)
+	entity.didUpdateTurn	.connect(self.onEntity_didUpdateTurn)
+	entity.willEndTurn	.connect(self.onEntity_willEndTurn)
+	entity.didEndTurn		.connect(self.onEntity_didEndTurn)
 
 
 #region TurnBasedCoordinator Signal Handlers
@@ -144,22 +144,22 @@ func onTurnBasedCoordinator_didProcessEntity(entity: TurnBasedEntity) -> void:
 #region Parent Entity Signal Handlers
 
 func onEntity_willBeginTurn() -> void:
-	displayMessage(parentEntity.name + ".willBeginTurn", colorBegin)
+	displayMessage(entity.name + ".willBeginTurn", colorBegin)
 
 func onEntity_didBeginTurn() -> void:
-	displayMessage(parentEntity.name + ".didBeginTurn", colorBegin)
+	displayMessage(entity.name + ".didBeginTurn", colorBegin)
 
 func onEntity_willUpdateTurn() -> void:
-	displayMessage(parentEntity.name + ".willUpdateTurn", colorUpdate)
+	displayMessage(entity.name + ".willUpdateTurn", colorUpdate)
 
 func onEntity_didUpdateTurn() -> void:
-	displayMessage(parentEntity.name + ".didUpdateTurn", colorUpdate)
+	displayMessage(entity.name + ".didUpdateTurn", colorUpdate)
 
 func onEntity_willEndTurn() -> void:
-	displayMessage(parentEntity.name + ".willEndTurn", colorEnd)
+	displayMessage(entity.name + ".willEndTurn", colorEnd)
 
 func onEntity_didEndTurn() -> void:
-	displayMessage(parentEntity.name + ".didEndTurn", colorEnd)
+	displayMessage(entity.name + ".didEndTurn", colorEnd)
 
 #endregion
 

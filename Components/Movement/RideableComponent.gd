@@ -126,8 +126,8 @@ func syncSpriteFlip() -> bool:
 
 func _ready() -> void:
 	# Cache a reference to our sprite to synchronize the flip direction between mount and rider.
-	self.parentEntity.getSprite()
-	self.mountSprite = parentEntity.sprite
+	self.entity.getSprite()
+	self.mountSprite = entity.sprite
 
 	Tools.connectSignal(self.didMount,    self.onSelf_didMount)
 	Tools.connectSignal(self.didDismount, self.onSelf_didDismount)
@@ -164,7 +164,7 @@ func onSelf_didMount(newRider: Entity) -> void:
 		newRider.toggleComponents(componentsToDisableOnRider,   false, shouldTogglePause)
 	if not componentsToEnableOnMount.is_empty():
 		if debugMode: printDebug(str("componentsToEnableOnMount: ", componentsToEnableOnMount))
-		parentEntity.toggleComponents(componentsToEnableOnMount, true, shouldTogglePause)
+		entity.toggleComponents(componentsToEnableOnMount, true, shouldTogglePause)
 
 
 func onSelf_didDismount(previousRider: Entity) -> void:
@@ -182,7 +182,7 @@ func onSelf_didDismount(previousRider: Entity) -> void:
 		previousRider.toggleComponents(componentsToDisableOnRider, true, shouldTogglePause) # Re-enable
 	if not componentsToEnableOnMount.is_empty():
 		if debugMode: printDebug(str("Disabling componentsToEnableOnMount: ", componentsToEnableOnMount))
-		parentEntity.toggleComponents(componentsToEnableOnMount,  false, shouldTogglePause) # Disable
+		entity.toggleComponents(componentsToEnableOnMount,  false, shouldTogglePause) # Disable
 
 
 func onInputComponent_didChangeHorizontalDirection() -> void:

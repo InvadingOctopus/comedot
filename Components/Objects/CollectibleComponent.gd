@@ -77,7 +77,7 @@ func requestToCollect(collectorEntity: Entity, collectorComponent: CollectorComp
 ## If the collection is successful, this [CollectibleComponent] may then remove itself from the scene, or it may choose to enter a cooldown recovery state.
 ## Returns: The result of [method Payload.execute] or `false` if the [member payload] is missing.
 func collect(collectorComponent: CollectorComponent) -> Variant:
-	self.previousPayloadResult = Tools.checkResult(payload.execute(self, collectorComponent.parentEntity)) if payload else false
+	self.previousPayloadResult = Tools.checkResult(payload.execute(self, collectorComponent.entity)) if payload else false
 
 	if debugMode: printDebug(str("collect() collectorComponent: ", collectorComponent, ", previousPayloadResult: ", previousPayloadResult))
 

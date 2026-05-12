@@ -34,16 +34,16 @@ var lastDirection:		Vector2 = Vector2.ZERO ## Normalized
 
 
 func _ready() -> void:
-	if parentEntity.body:
-		printLog("parentEntity.body.motion_mode → Floating & parentEntity.body.wall_min_slide_angle → 0")
-		parentEntity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	if entity.body:
+		printLog("entity.body.motion_mode → Floating & entity.body.wall_min_slide_angle → 0")
+		entity.body.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 		# NOTE: Allow the ship or vehicle to slide laterally against orthogonal walls.
 		# This may be the behavior most convenient and expected for the player.
-		parentEntity.body.wall_min_slide_angle = 0
+		entity.body.wall_min_slide_angle = 0
 	else:
-		printWarning("Missing parentEntity.body: " + parentEntity.logName)
+		printWarning("Missing entity.body: " + entity.logName)
 
-	if not self.camera: self.camera = parentEntity.findFirstChildOfType(Camera2D)
+	if not self.camera: self.camera = entity.findFirstChildOfType(Camera2D)
 
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	Tools.connectSignal(characterBodyComponent.didMove, self.onCharacterBodyComponent_didMove)
@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 
 func onCharacterBodyComponent_didMove(_delta: float) -> void:
 	# Avoid the "glue effect" where the character sticks to a wall until the velocity changes to the opposite direction.
-	parentEntity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
+	entity.callOnceThisFrame(Tools.resetBodyVelocityIfZeroMotion, [body]) # TBD: Should this be optional?
 	# if debugMode: showDebugInfo()
 
 

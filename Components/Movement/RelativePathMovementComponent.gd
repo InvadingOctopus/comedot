@@ -13,7 +13,7 @@ extends Component
 
 #region Parameters
 
-@export var nodeOverride: Node2D ## If `null` then the parentEntity is used.
+@export var nodeOverride: Node2D ## If `null` then the entity is used.
 
 @export_range(0, 1000, 4) var speed: float = 48
 
@@ -61,8 +61,8 @@ func _ready() -> void:
 
 	if self.nodeOverride:
 		self.node = self.nodeOverride
-	elif self.parentEntity:
-		self.node = self.parentEntity
+	elif self.entity:
+		self.node = self.entity
 	elif self.get_parent():
 		self.node = self.get_parent()
 	else:

@@ -39,8 +39,8 @@ func modifyStats() -> void:
 			# TBD:  Put a space between text & number?
 			var labelSettings: LabelSettings = TextBubble.create( \
 				str(stat.displayName, "%+d" % stat.previousChange), \
-				parentEntity.get_parent(), \
-				Vector2(parentEntity.position.x, parentEntity.position.y + bubbleOffsetY)) \
+				entity.get_parent(), \
+				Vector2(entity.position.x, entity.position.y + bubbleOffsetY)) \
 					.label.label_settings
 			if shouldColorBubble:
 				if   stat.previousChange > 0: labelSettings.font_color = Color.GREEN

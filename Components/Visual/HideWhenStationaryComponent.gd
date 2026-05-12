@@ -37,7 +37,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	if not nodeToHide: nodeToHide = parentEntity
+	if not nodeToHide: nodeToHide = entity
 
 	if isEnabled:
 		if shouldHideOnReady: nodeToHide.visible = false

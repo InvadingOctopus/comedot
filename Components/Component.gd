@@ -47,12 +47,6 @@ var entity: Entity: # TBD: @export_storage?
 ## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead.
 var coComponents: Dictionary[StringName, Component]
 
-## Temporary proxy to [member entity] for compatibility.
-## @deprecated: Renamed to [member entity]
-var parentEntity: Entity:
-	get: return entity
-	set(newValue): entity = newValue
-
 #endregion
 
 

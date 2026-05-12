@@ -63,8 +63,8 @@ func _ready() -> void:
 
 	if not isEnabled: return
 
-	entityLabel.text		 = parentEntity.name
-	entityLabel.tooltip_text = parentEntity.logFullName
+	entityLabel.text		 = entity.name
+	entityLabel.tooltip_text = entity.logFullName
 
 	propertiesToChartAbsolutePaths = convertPathsToAbsolute(propertiesToChart)
 	propertiesToLabelAbsolutePaths = convertPathsToAbsolute(propertiesToLabel)

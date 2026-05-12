@@ -48,8 +48,8 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	if parentEntity != null and self.area == null:
-		self.area = parentEntity.getArea()	
+	if entity != null and self.area == null:
+		self.area = entity.getArea()	
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
 	self.set_process_input(isEnabled)

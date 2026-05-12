@@ -111,12 +111,12 @@ func onEntity_preDelete() -> void:
 ## NOTE: Does NOT check for [member shouldAttachToGrandparentOnParentRemoval] as it must done by other event-handling methods.
 func attachToGrandparent() -> void:
 	# TBD: Should we still detach from any parent, not just an Entity?
-	if not is_instance_valid(parentEntity): return
-	if debugMode: printDebug(str("attachToGrandparent(): Detaching from parent entity: ", parentEntity))
+	if not is_instance_valid(entity): return
+	if debugMode: printDebug(str("attachToGrandparent(): Detaching from parent entity: ", entity))
 
 	# See if the Entity has a parent
 	var newParent: Node
-	newParent = parentEntity.get_parent()
+	newParent = entity.get_parent()
 
 	# If not, just put this camera on the scene tree
 	if not is_instance_valid(newParent):

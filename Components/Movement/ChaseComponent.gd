@@ -101,7 +101,7 @@ func updateTarget() -> Node2D:
 
 	# If not, get the nearest target from a list.
 	elif not groupToChase.is_empty():
-		activeTarget = NodeTools.findNearestNodeInGroup(parentEntity.global_position, groupToChase)
+		activeTarget = NodeTools.findNearestNodeInGroup(entity.global_position, groupToChase)
 
 	# If no other targets, settle for a player.
 	elif playerIndexToChase >= 0 and playerIndexToChase < GameState.players.size():
@@ -129,7 +129,7 @@ func _physics_process(delta: float) -> void:
 	# Reverify instance to account for destroyed entities etc.
 	if not is_instance_valid(activeTarget): return # `isEnabled` checked by property setters
 
-	self.recentChaseDirection = parentEntity.global_position.direction_to(activeTarget.global_position).normalized()
+	self.recentChaseDirection = entity.global_position.direction_to(activeTarget.global_position).normalized()
 	inputComponent.movementDirection = self.recentChaseDirection
 
 	if debugMode: showDebugInfo()

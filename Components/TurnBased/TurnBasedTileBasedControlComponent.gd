@@ -20,7 +20,7 @@ extends TurnBasedComponent
 #region State
 var recentInputVector: Vector2i:
 	set(newValue):
-		printChange(parentEntity.logName + " recentInputVector", recentInputVector, newValue)
+		printChange(entity.logName + " recentInputVector", recentInputVector, newValue)
 		recentInputVector = newValue
 #endregion
 

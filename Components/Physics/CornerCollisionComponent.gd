@@ -32,7 +32,7 @@ extends Component
 
 var sprite: Sprite2D:
 	get:
-		if not sprite: sprite = parentEntity.findFirstChildOfType(Sprite2D) # TODO: Check that this also picks up [AnimatedSprite2D]
+		if not sprite: sprite = entity.findFirstChildOfType(Sprite2D) # TODO: Check that this also picks up [AnimatedSprite2D]
 		return sprite
 
 var areaNWCollisionCount:	int

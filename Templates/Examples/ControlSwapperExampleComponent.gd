@@ -33,10 +33,10 @@ func enableFlyingComponentSet(isPlayerFlying: bool) -> void:
 	# NOTE: Mind the order of component dependencies!
 	if isPlayerFlying:
 		self.swapToSet(flyingComponentSet)
-		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
+		entity.findFirstChildOfType(AnimatedSprite2D).play(&"fly")
 	else:
 		self.swapToSet(walkingComponentSet)
-		parentEntity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so other components may control it
-		parentEntity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
+		entity.move_child(coComponents.PlatformerPhysicsComponent, -1) # Put last so other components may control it
+		entity.findFirstChildOfType(AnimatedSprite2D).play(&"walk")
 
-	parentEntity.move_child(coComponents.CharacterBodyComponent, -1) # Put last so other components may control it
+	entity.move_child(coComponents.CharacterBodyComponent, -1) # Put last so other components may control it

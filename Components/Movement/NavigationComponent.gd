@@ -71,7 +71,7 @@ func onDestinationUpdateTimer_timeout() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if not isEnabled or not destinationNode: return
-	self.recentDirection = parentEntity.to_local(selfAsAgent.get_next_path_position()).normalized()
+	self.recentDirection = entity.to_local(selfAsAgent.get_next_path_position()).normalized()
 	moveTowardsDestination()
 	
 	if debugMode: showDebugInfo()
@@ -84,8 +84,8 @@ func moveTowardsDestination() -> void:
 	if inputComponent:
 		inputComponent.setMovementDirection(self.recentDirection)
 	else:
-		parentEntity.position += self.recentDirection
-		parentEntity.reset_physics_interpolation() # CHECK: Necessary?
+		entity.position += self.recentDirection
+		entity.reset_physics_interpolation() # CHECK: Necessary?
 
 
 func showDebugInfo() -> void:

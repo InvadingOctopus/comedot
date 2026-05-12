@@ -33,7 +33,7 @@ signal didDrop(node: Node2D)
 var parentForSpawnedNode: Node2D:
 	get:
 		if parentOverrideForSpawnedNode: return parentOverrideForSpawnedNode
-		else: return parentEntity.get_parent()
+		else: return entity.get_parent()
 
 #endregion
 
@@ -57,7 +57,7 @@ func onHealthComponent_healthDidZero() -> void:
 func drop() -> Node:
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
 	# and add the offset.
-	var position: Vector2 = parentForSpawnedNode.to_local(parentEntity.global_position) + positionOffset
+	var position: Vector2 = parentForSpawnedNode.to_local(entity.global_position) + positionOffset
 
 	var spawnedNode := SceneManager.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
 	

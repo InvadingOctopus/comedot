@@ -12,9 +12,9 @@ static func onPayload_didExecute(payload: Payload, source: InteractionComponent,
 		Debug.printWarning(str("onPayload_didExecute(): Payload: ", payload, " source: ", source, " is null or not an InteractionComponent"), payload)
 		return false
 
-	var mountEntity: Entity = source.parentEntity
+	var mountEntity: Entity = source.entity
 	if not mountEntity:
-		Debug.printWarning(str("onPayload_didExecute(): Payload: ", payload, " source.parentEntity: ", mountEntity, " is null or not an Entity"), payload)
+		Debug.printWarning(str("onPayload_didExecute(): Payload: ", payload, " source.entity: ", mountEntity, " is null or not an Entity"), payload)
 		return false
 
 	if not riderEntity:

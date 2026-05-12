@@ -21,4 +21,4 @@ func getRequiredComponents() -> Array[Script]:
 func _ready() -> void:
 	# DESIGN: _enter_tree() cannot be used because components that depend on CharacterBodyComponent may enter the tree before CharacterBodyComponent
 	if not characterBodyComponent:
-		printError(str("Missing CharacterBodyComponent in ", parentEntity.logFullName)) # If a component inherits this class then it means so a missing dependency is an ERROR!
+		printError(str("Missing CharacterBodyComponent in ", entity.logFullName)) # If a component inherits this class then it means so a missing dependency is an ERROR!

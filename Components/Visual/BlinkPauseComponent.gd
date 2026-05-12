@@ -29,19 +29,19 @@ func _ready() -> void:
 
 
 func startBlink() -> void: # Not named "start" to avoid conflict with Timer.start()
-	self.entityPreviousProcessMode  = parentEntity.process_mode
-	parentEntity.visible = false
-	parentEntity.process_mode = Node.PROCESS_MODE_DISABLED
+	self.entityPreviousProcessMode  = entity.process_mode
+	entity.visible = false
+	entity.process_mode = Node.PROCESS_MODE_DISABLED
 
 
 func onTimeout() -> void:
-	parentEntity.visible = not parentEntity.visible
-	if parentEntity.visible:  count += 1 # 2 ticks of the Timer count as 1 "blink"; when the node becomes visible again.
+	entity.visible = not entity.visible
+	if entity.visible:  count += 1 # 2 ticks of the Timer count as 1 "blink"; when the node becomes visible again.
 	if count >= timesToBlink: finishBlink()
 
 
 func finishBlink() -> void:
-	parentEntity.visible = true
-	parentEntity.process_mode = self.entityPreviousProcessMode
+	entity.visible = true
+	entity.process_mode = self.entityPreviousProcessMode
 	didFinishBlinking.emit() # In case we are used as a death animation
 	self.removeFromEntity()

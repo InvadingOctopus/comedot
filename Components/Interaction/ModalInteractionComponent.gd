@@ -44,7 +44,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 	# Set the position if the view can be positioned
 	var positionableView: Node2D = (modalView.get_node(^".") as Node2D)
 	if positionableView:
-		if setViewGlobalPositionToEntity: positionableView.global_position = parentEntity.global_position
+		if setViewGlobalPositionToEntity: positionableView.global_position = entity.global_position
 		positionableView.position += viewPositionOffset
 	
 	# Pause the gameplay and display the view

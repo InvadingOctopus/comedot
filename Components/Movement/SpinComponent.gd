@@ -21,7 +21,7 @@ extends Component
 
 
 func _ready() -> void:
-	if not nodeToRotate: self.nodeToRotate = parentEntity
+	if not nodeToRotate: self.nodeToRotate = entity
 	self.set_physics_process(isEnabled and not is_zero_approx(rotationPerFrame)) # Apply setters because Godot doesn't on initialization
 
 

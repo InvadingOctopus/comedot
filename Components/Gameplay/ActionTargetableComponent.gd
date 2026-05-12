@@ -32,7 +32,7 @@ func _ready() -> void:
 	selfAsArea.monitoring = false # This [Area2D] does not need to monitor any other areas; it only needs to be `monitorable`
 
 	self.add_to_group(Global.Groups.targetables)
-	parentEntity.add_to_group(Global.Groups.targetables)
+	entity.add_to_group(Global.Groups.targetables)
 	updateMouseHover()
 
 
@@ -93,6 +93,6 @@ func disconnectMouseSignals() -> void:
 
 
 func setHighlight(highlight: bool = true) -> void:
-	parentEntity.modulate = Color.GREEN if highlight else Color.WHITE
+	entity.modulate = Color.GREEN if highlight else Color.WHITE
 
 #endregion

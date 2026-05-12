@@ -10,5 +10,5 @@ extends Component
 
 
 func _process(_delta: float) -> void:
-	parentEntity.position.clamp(minimum, maximum)
+	entity.position.clamp(minimum, maximum)
 	print("SCRIPT ONLY WORKING") # DEBUG

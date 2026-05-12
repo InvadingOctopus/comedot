@@ -54,7 +54,7 @@ var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponen
 
 
 func _ready() -> void:
-	if not nodeToAnimate: nodeToAnimate = parentEntity.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
+	if not nodeToAnimate: nodeToAnimate = entity.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
 	if debugMode: printDebug(str("nodeToAnimate: ", nodeToAnimate))
 
 	connectSignals()
@@ -97,8 +97,8 @@ func emitBubble(difference: int) -> void:
 
 	if not detachedBubbles:
 		# NOTE: Emit the bubble from the ENTITY, so it's not affected by the effects on `nodeToAnimate`.
-		TextBubble.create(text, self.parentEntity) \
+		TextBubble.create(text, self.entity) \
 			.label.label_settings.font_color = color
 	else:
-		TextBubble.create(text, parentEntity.get_parent(), parentEntity.global_position) \
+		TextBubble.create(text, entity.get_parent(), entity.global_position) \
 			.label.label_settings.font_color = color

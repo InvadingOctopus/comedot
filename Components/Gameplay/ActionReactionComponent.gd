@@ -80,7 +80,7 @@ func didTarget(action: Action, sourceEntity: Entity = null, actionResult: Varian
 	self.wasTargeted.emit(action, sourceEntity, actionResult) # Emit the "targeted" signal first,
 	self.willExecutePayload.emit(payload, action, sourceEntity) # then the "reaction" signal
 
-	var reactionResult: Variant = payload.execute([sourceEntity, action, actionResult], self.parentEntity) # TBD: Should `source` be the Action or the source Entity?
+	var reactionResult: Variant = payload.execute([sourceEntity, action, actionResult], self.entity) # TBD: Should `source` be the Action or the source Entity?
 
 	if debugMode: printLog(str("didTarget() reactionResult: ", reactionResult))
 	self.didExecutePayload.emit(payload, action, sourceEntity, reactionResult)

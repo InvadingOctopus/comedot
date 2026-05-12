@@ -20,7 +20,7 @@ extends Component
 
 var animatedSprite: AnimatedSprite2D:
 	get:
-		if not animatedSprite: animatedSprite = parentEntity.findFirstChildOfType(AnimatedSprite2D)
+		if not animatedSprite: animatedSprite = entity.findFirstChildOfType(AnimatedSprite2D)
 		return animatedSprite
 
 func getRequiredComponents() -> Array[Script]:

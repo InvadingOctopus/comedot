@@ -70,7 +70,7 @@ signal didTurn ## Emitted after the entity has turned around at the end of a pla
 
 var sprite: Sprite2D:
 	get:
-		if not sprite: sprite = parentEntity.getSprite()
+		if not sprite: sprite = entity.getSprite()
 		return sprite
 
 func getRequiredComponents() -> Array[Script]:

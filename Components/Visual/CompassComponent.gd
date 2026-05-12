@@ -30,7 +30,7 @@ func _process(delta: float) -> void:
 	var targetPosition: Vector2 = nodeToTrack.global_position
 
 	if shouldDisappearWhenNear:
-		var distance: float = parentEntity.global_position.distance_to(targetPosition)
+		var distance: float = entity.global_position.distance_to(targetPosition)
 
 		if distance < proximityDistance or is_equal_approx(distance, proximityDistance):
 			compass.visible = false
@@ -44,9 +44,9 @@ func _process(delta: float) -> void:
 	if shouldRotateInstantly:
 		compass.look_at(targetPosition)
 	else:
-		var parentEntityPosition: Vector2 = parentEntity.global_position
+		var entityPosition: Vector2 = entity.global_position
 		var rotateFrom:	float = compass.global_rotation
-		var rotateTo:	float = parentEntityPosition.angle_to_point(targetPosition)
+		var rotateTo:	float = entityPosition.angle_to_point(targetPosition)
 
 		compass.global_rotation = rotate_toward(rotateFrom, rotateTo, rotationSpeed * delta)
 

@@ -9,12 +9,12 @@ extends ActionTargetingCursorComponentBase
 
 func _ready() -> void:
 	super._ready()
-	cursor.global_position = parentEntity.get_global_mouse_position()
+	cursor.global_position = entity.get_global_mouse_position()
 
 
 func _process(_delta: float) -> void:
 	if not isEnabled or not isChoosing: return
-	cursor.global_position = parentEntity.get_global_mouse_position()
+	cursor.global_position = entity.get_global_mouse_position()
 
 
 func _unhandled_input(event: InputEvent) -> void:

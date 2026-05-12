@@ -90,8 +90,8 @@ func _ready() -> void:
 func onActionsComponent_didRequestTarget(action: Action, source: Entity) -> void:
 	if not isEnabled: return
 	if debugMode: printDebug(str("onActionsComponent_didRequestTarget() ", action, ", source: ", source))
-	if source == self.parentEntity: createTargetingComponent(action) # Create & add a component which prompt the player to choose a target.
-	else: printDebug(str("Action source: ", source, " is not parentEntity: ", parentEntity))
+	if source == self.entity: createTargetingComponent(action) # Create & add a component which prompt the player to choose a target.
+	else: printDebug(str("Action source: ", source, " is not entity: ", entity))
 
 
 func createTargetingComponent(actionToPerform: Action) -> ActionTargetingComponentBase:
@@ -102,8 +102,8 @@ func createTargetingComponent(actionToPerform: Action) -> ActionTargetingCompone
 		return null
 
 	targetingComponent.action = actionToPerform
-	parentEntity.addComponent(targetingComponent)
-	# GlobalUI.actionDidRequestTarget.emit(actionToPerform, parentEntity) # This should be emitted by ActionsComponent next to its `didRequestTarget` as that's the first point where a target is requested.
+	entity.addComponent(targetingComponent)
+	# GlobalUI.actionDidRequestTarget.emit(actionToPerform, entity) # This should be emitted by ActionsComponent next to its `didRequestTarget` as that's the first point where a target is requested.
 	return targetingComponent
 
 #endregion

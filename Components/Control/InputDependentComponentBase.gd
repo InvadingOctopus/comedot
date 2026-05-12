@@ -22,7 +22,7 @@ func _ready() -> void:
 		Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 		Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.onInputComponent_didUpdateInputActionsList) # Optional
 	else:
-		printError(str("Missing InputComponent in ", parentEntity.logFullName)) # If a component inherits this class then it means so a missing dependency is an ERROR!
+		printError(str("Missing InputComponent in ", entity.logFullName)) # If a component inherits this class then it means so a missing dependency is an ERROR!
 
 
 #region Abstract Methods

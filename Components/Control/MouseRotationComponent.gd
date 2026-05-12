@@ -43,7 +43,7 @@ var didRotateThisFrame: bool
 
 func _ready() -> void:
 	if not nodeToRotate:
-		nodeToRotate = self.parentEntity
+		nodeToRotate = self.entity
 
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	setMouseCursor()
@@ -74,7 +74,7 @@ func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> vo
 func _physics_process(delta: float) -> void: # CHECK: _physics_process() instead of _process() because any movement may interact with physics, right?
 	# Keep track of any actual changes in position & rotation, for any other components to monitor.
 
-	# TBD: Where to `get_global_mouse_position()` from? The parentEntity or nodeToRotate?
+	# TBD: Where to `get_global_mouse_position()` from? The entity or nodeToRotate?
 	# NOTICE: Can't use `self.get_global_mouse_position()` because Component is not a CanvasItem :(
 	# `DisplayServer.mouse_get_position()` doesn't work well either.
 

@@ -83,7 +83,7 @@ extends Component
 ## The "attacker" [Entity] that "initiated" the damage or fired the bullet etc. It may be the player entity, a monster, or a "hazard" like a pool of acid.
 ## Optional; may be used to handle various situations such as ignoring the collision of a bullet against the entity that fired the bullet (not currently implemented).
 ## NOTE: When applied to the [DamageComponent] of a "bullet" entity, this value is NOT the bullet entity: It's the entity that FIRED the bullet.
-## If `null` on [method _ready], it is set to this component's [member parentEntity]
+## If `null` on [method _ready], it is set to this component's [member entity]
 ## @experimental
 @export_storage var initiatorEntity: Entity
 
@@ -124,7 +124,7 @@ signal didDamage(damageReceivingComponent:			DamageReceivingComponent, damage: i
 
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
-	if self.initiatorEntity == null: self.initiatorEntity = self.parentEntity
+	if self.initiatorEntity == null: self.initiatorEntity = self.entity
 	# Apply setters because Godot doesn't on initialization
 	self.set_physics_process(isEnabled)
 	if  area:
@@ -139,7 +139,7 @@ func _ready() -> void:
 #region Collisions
 
 func onAreaEntered(areaEntered: Area2D) -> void:
-	if not isEnabled or areaEntered == self.parentEntity or areaEntered.owner == self.parentEntity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
+	if not isEnabled or areaEntered == self.entity or areaEntered.owner == self.entity: return # Don't run into ourselves. TBD: Will all these checks harm performance?
 	var damageReceivingComponent: DamageReceivingComponent = getDamageReceivingComponent(areaEntered)
 	if debugMode:
 		printDebug(str("onAreaEntered(): ", areaEntered, ", damageReceivingComponent: ", damageReceivingComponent.logNameWithEntity if damageReceivingComponent else "null"))
@@ -184,8 +184,8 @@ func getDamageReceivingComponent(collidingArea: Area2D) -> DamageReceivingCompon
 		return null
 
 	# Is it our own entity?
-	if self.parentEntity and damageReceivingComponent.parentEntity == self.parentEntity:
-		if debugMode: printDebug(str("DamageReceivingComponent belongs to this DamageComponent's Entity: ", damageReceivingComponent.parentEntity.logName))
+	if self.entity and damageReceivingComponent.entity == self.entity:
+		if debugMode: printDebug(str("DamageReceivingComponent belongs to this DamageComponent's Entity: ", damageReceivingComponent.entity.logName))
 		return null
 
 	return damageReceivingComponent
