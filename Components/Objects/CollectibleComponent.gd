@@ -83,7 +83,7 @@ func collect(collectorComponent: CollectorComponent) -> Variant:
 
 	if checkRemovalConditions():
 		willBeFreed.emit()
-		self.requestDeletionOfParentEntity()
+		self.requestDeletionOfEntity()
 
 	return previousPayloadResult
 

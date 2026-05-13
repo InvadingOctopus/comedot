@@ -164,7 +164,7 @@ func processDamage(damageComponent: DamageComponent, damageAmount: int, attacker
 
 	if not healthComponent and shouldRemoveEntityIfNoHealthComponent:
 		self.willRemoveEntity.emit()
-		self.requestDeletionOfParentEntity()
+		self.requestDeletionOfEntity()
 
 	return true # There were opposing (or no) factions or friendly fire.
 

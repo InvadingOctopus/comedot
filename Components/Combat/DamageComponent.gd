@@ -157,7 +157,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 			if debugMode: printDebug("shouldRemoveEntityOnCollision")
 			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
-			self.requestDeletionOfParentEntity()
+			self.requestDeletionOfEntity()
 
 
 ## NOTE: Cleanup is NOT affected by `isEnabled`; areas that exit should ALWAYS be removed!
@@ -243,7 +243,7 @@ func causeCollisionDamage(damageReceivingComponent: DamageReceivingComponent) ->
 			if debugMode: printDebug("shouldRemoveEntityOnDamage")
 			self.isEnabled = false # Disable and remove self just in case, to avoid hurting any other victims in the same physics pass :')
 			self.removeFromEntity.call_deferred() # AVOID: Godot error: "Removing a CollisionObject node during a physics callback is not allowed and will cause undesired behavior."
-			self.requestDeletionOfParentEntity()
+			self.requestDeletionOfEntity()
 
 
 ## Calls [method causeCollisionDamage] on ALL the [DamageReceivingComponent]s in [member damageReceivingComponentsInContact].

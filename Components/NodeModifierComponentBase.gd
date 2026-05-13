@@ -33,7 +33,7 @@ func removeEntity() -> void:
 	if not isEnabled or not shouldRemoveEntity or not is_instance_valid(entity): return
 	savedParentEntity = self.entity
 	self.willRemoveEntity.emit()
-	self.requestDeletionOfParentEntity()
+	self.requestDeletionOfEntity()
 
 
 func removeNodes() -> void:

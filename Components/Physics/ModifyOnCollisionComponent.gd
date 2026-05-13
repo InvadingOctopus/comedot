@@ -35,7 +35,7 @@ func onCollide(collidingNode: Node2D) -> void:
 
 	if shouldRemoveEntity:
 		self.willRemoveEntity.emit()
-		self.requestDeletionOfParentEntity()
+		self.requestDeletionOfEntity()
 
 	else:
 		var entity: Entity = self.entity # NOTE: Save the parent Entity in case THIS component ITSELF is among the removed nodes! Which invalidates entity

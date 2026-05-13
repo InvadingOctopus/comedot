@@ -255,16 +255,16 @@ func requestDeletion() -> bool:
 
 
 ## Returns `true` if the parent [Entity] agrees to [method Entity.requestDeletion] or if there is no [member entity].
-func requestDeletionOfParentEntity() -> bool:
-	if debugMode: printDebug(str("requestDeletionOfParentEntity() entity: ", entity.logName if entity else "null"))
+func requestDeletionOfEntity() -> bool:
+	if debugMode: printDebug(str("requestDeletionOfEntity() entity: ", entity.logName if entity else "null"))
 	if entity:
 		if entity.requestDeletion():
 			return true
 		else:
-			if debugMode: printDebug(str("requestDeletionOfParentEntity(): requestDeletion() refused by ", entity.logName))
+			if debugMode: printDebug(str("requestDeletionOfEntity(): requestDeletion() refused by ", entity.logName))
 			return false
 	else:
-		if debugMode: printWarning("requestDeletionOfParentEntity(): entity already null!") # TBD: Should this be a warning?
+		if debugMode: printWarning("requestDeletionOfEntity(): entity already null!") # TBD: Should this be a warning?
 		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 #endregion

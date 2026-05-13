@@ -175,6 +175,6 @@ func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
 	if shouldRemoveEntityOnDepletion and contents.value <= 0 and contents.previousValue > 0:
 		printDebug("onWillPerformInteraction(): shouldRemoveEntityOnDepletion")
 		self.willRemoveEntity.emit()
-		self.requestDeletionOfParentEntity()
+		self.requestDeletionOfEntity()
 
 #endregion
