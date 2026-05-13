@@ -91,7 +91,7 @@ func onActionsComponent_didRequestTarget(action: Action, source: Entity) -> void
 	if not isEnabled: return
 	if debugMode: printDebug(str("onActionsComponent_didRequestTarget() ", action, ", source: ", source))
 	if source == self.entity: createTargetingComponent(action) # Create & add a component which prompt the player to choose a target.
-	else: printDebug(str("Action source: ", source, " is not entity: ", entity))
+	else: printDebug(str("Action source: ", source, " is not the parent entity: ", entity))
 
 
 func createTargetingComponent(actionToPerform: Action) -> ActionTargetingComponentBase:
