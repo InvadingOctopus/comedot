@@ -242,8 +242,12 @@ func removeFromEntity(shouldFree: bool = true) -> void:
 	if entity: entity.removeComponent(self, shouldFree)
 	else:
 		printWarning("removeFromEntity(): Component has no Entity!")
-		# Just delete the Node even if we don't have an Entity
-		if shouldFree: self.queue_free()
+		# DESIGN: Remove & delete the Node from its parent even it's not an Entity
+		# That would be the behavior expected by the caller of this method
+		# TBD: Check `allowNonEntityParent`?
+		var parent: Node = self.get_parent()
+		if  parent: parent.remove_child(self)
+		if  shouldFree: self.queue_free()
 
 
 ## Calls [method queue_free] on itself and returns `true` if removed.
