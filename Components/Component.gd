@@ -310,16 +310,16 @@ func toggleEnabled(overrideIsEnabled: Variant = null, togglePause: bool = false)
 #region Static Methods
 
 ## Attempts to cast any [Node] subtype as a specific component, since the `Component.gd` script may be attached to any Node.
-## If the [param node] is not a [Component] of [param componentType] but the node's parent/grandparent is an [Entity], the entity is searched to find the matching [param componentType] if [param findInParentEntity].
+## If the [param node] is not a [Component] of [param componentType] but the node's parent/grandparent is an [Entity], the entity is searched to find the matching [param componentType] if [param findInEntity].
 ## WARNING: May not find subclasses of [param componentType].
 ## @experimental
-static func castOrFindComponent(node: Node, componentType: GDScript, findInParentEntity: bool = true) -> Component:
+static func castOrFindComponent(node: Node, componentType: GDScript, findInEntity: bool = true) -> Component:
 	# First, try casting the node itself.
 	var component: Component = node.get_node(^".") as Component # HACK: Find better way to cast self?
 
 	if is_instance_of(component, componentType): # CHECK: How does this handle subclasses?
 		return component
-	elif findInParentEntity: # Try to see if the node's grand/parent is an Entity
+	elif findInEntity: # Try to see if the node's grand/parent is an Entity
 		var nodeParent: Entity = NodeTools.findFirstParentOfType(node, Entity)
 		if nodeParent:
 			component = nodeParent.components.get(componentType.get_global_name())
