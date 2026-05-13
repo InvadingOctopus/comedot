@@ -78,11 +78,12 @@ func _notification(what: int) -> void:
 	# Deinit Order: 1/3
 	match what:
 		# NOTIFICATION_PREDELETE may occur before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed
+		# Make sure Debug exists to avoid crash at shutdown
 		NOTIFICATION_PREDELETE: # NOTE: WTF: Odd Godot sends this BEFORE NOTIFICATION_UNPARENTED and the `tree_exiting` signal etc.
-			if isLoggingEnabled: printLog("[color=brown]" + Debug.deleteLogSymbol + " PreDelete")
+			if isLoggingEnabled and Debug: printLog("[color=brown]" + Debug.deleteLogSymbol + " PreDelete")
 			preDelete.emit()
 		NOTIFICATION_UNPARENTED: # NOTE: WTF: AFTER NOTIFICATION_PREDELETE! Odd Godot naming.
-			if isLoggingEnabled: printLog("[color=brown]" + Debug.deleteLogSymbol + " Unparented")
+			if isLoggingEnabled and Debug: printLog("[color=brown]" + Debug.deleteLogSymbol + " Unparented")
 			# UNUSED: unparented.emit() # Not needed yet
 
 
@@ -139,8 +140,9 @@ func requestDeletion() -> bool: # TBD: Should this be renamed to `requestDeletio
 
 func _exit_tree() -> void:
 	# Deinit Order: ?
-	if debugMode: printDebug("_exit_tree()")
-	printLog("[color=brown]" + Debug.exitLogSymbol + " _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
+	if Debug: # Make sure Debug exists to avoid crash at shutdown
+		if debugMode: printDebug("_exit_tree()")
+		printLog("[color=brown]" + Debug.exitLogSymbol + " _exit_tree() parent: " + str(self.get_parent()), self.logFullName)
 
 #endregion
 

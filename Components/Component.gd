@@ -84,7 +84,7 @@ func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PARENTED:   onParented()   # Received when a node is set as the child of another node, not necessarily when the node enters the SceneTree.
 		NOTIFICATION_UNPARENTED: onUnparented() # Received when a parent calls remove_child() on a child node, not necessarily when the node exits the SceneTree.
-		NOTIFICATION_PREDELETE:  if isLoggingEnabled: printLog(str("[color=brown]", Debug.deleteLogSymbol, " PreDelete", (" • Entity: " + entity.logName) if entity else ""))
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled and Debug: printLog(str("[color=brown]", Debug.deleteLogSymbol, " PreDelete", (" • Entity: " + entity.logName) if entity else "")) # Make sure Debug exists to avoid crash at shutdown
 		# NOTIFICATION_PREDELETE may occur before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed
 
 
@@ -142,7 +142,7 @@ func _exit_tree() -> void:
 	# NOTE: AVOID: `entity` must NOT be `null`ed here! nor `coComponents`!
 	# because a Component may _exit_tree() while it is still a child of an Entity, if the Entity itself _exit_tree()s
 	var entityName: String = entity.logName if entity else "null" # Check entity since components may be freed without being children of an Entity
-	printLog("[color=brown]" + Debug.exitLogSymbol + " _exit_tree() entity: " + entityName, self.logFullName)
+	if Debug: printLog("[color=brown]" + Debug.exitLogSymbol + " _exit_tree() entity: " + entityName, self.logFullName) # # Make sure Debug exists to avoid crash at shutdown
 
 
 ## A simple relay to [method Entity.onComponent_unparented] → [method Entity.uninstallComponent]
@@ -150,7 +150,7 @@ func _exit_tree() -> void:
 ## INFO: This is a workaround for Godot's lack of a direct way for parent nodes to react to the removal of a child node.
 func onUnparented() -> void:
 	# Deinit Order 4: After Component._notification() on NOTIFICATION_UNPARENTED
-	if isLoggingEnabled: printLog("[color=brown]" + Debug.deleteLogSymbol + " Unparented")
+	if isLoggingEnabled and Debug: printLog("[color=brown]" + Debug.deleteLogSymbol + " Unparented") # Make sure Debug exists to avoid crash at shutdown
 	if self.entity: entity.onComponent_unparented(self)
 
 

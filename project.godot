@@ -36,13 +36,13 @@ buses/channel_disable_threshold_db=-55.0
 
 Global="*res://AutoLoad/Global.gd"
 Settings="*res://AutoLoad/Settings.gd"
+Debug="*res://AutoLoad/Debug.tscn"
 SceneManager="*res://AutoLoad/SceneManager.gd"
 GlobalInput="*res://AutoLoad/GlobalInput.gd"
 GameState="*res://AutoLoad/GameState.gd"
 GlobalUI="*res://AutoLoad/GlobalUI.tscn"
 GlobalSonic="*res://AutoLoad/GlobalSonic.tscn"
 TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
-Debug="*res://AutoLoad/Debug.tscn"
 
 [debug]
 
