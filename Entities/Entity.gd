@@ -148,6 +148,11 @@ func _exit_tree() -> void:
 
 
 #region Component Life Cycle
+# DESIGN: A child Node is added to the Entity Node → Is it a Component? → 
+# 	→ Add the Component to the `components` Dictionary,
+#	& Set the Component's `entity` reference to the parent Entity Node,
+#	& Set the Component's `coComponents` reference to the Entity's `components` Dictionary. → 
+#	→ Emit signals & call event hooks.
 
 ## A simple relay from [method Component.onParented] → [method Entity.installComponent]
 ## To be called from a [Component]'s [method Component._notification] on [constant Component.NOTIFICATION_PARENTED]

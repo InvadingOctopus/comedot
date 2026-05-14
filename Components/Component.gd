@@ -68,6 +68,8 @@ signal willRemoveFromEntity
 # Deletion: [Exit Tree] → [Unparented]
 # Each of these phases may include multiple events such as _notification(), function callbacks, and signals.
 
+# See `Component Life Cycle` in `Entity.gd` for the design.
+
 # Init:						Component.NOTIFICATION_PARENTED  → Component.onParented() → Entity.onComponent_parented()	  → Entity.installComponent() → Component.onDidInstall()		→ Component._enter_tree()	  → Component._ready()
 # Component.queue_free():	Component.NOTIFICATION_PREDELETE → Component._exit_tree() → Component.NOTIFICATION_UNPARENTED → Component.onUnparented()  → Entity.onComponent_unparented()	→ Entity.uninstallComponent() → Component.onWillUninstall()
 # Entity.queue_free():		Component._exit_tree()			 → Component.NOTIFICATION_PREDELETE → …
