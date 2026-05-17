@@ -118,9 +118,10 @@ class Line: # UNUSED: Until Godot can support custom class @export :')
 #region Script Tools
 
 ## Connects or reconnects a [Signal] to a [Callable] only if the connection does not already exist, to silence any annoying Godot errors about existing connections (presumably for reference counting).
+## Returns [constant @GlobalScope.ERR_INVALID_PARAMETER] on failure.
 static func connectSignal(sourceSignal: Signal, targetCallable: Callable, flags: int = 0) -> int:
 	if not sourceSignal.is_connected(targetCallable):
-		return sourceSignal.connect(targetCallable, flags) # No idea what the return value is for
+		return sourceSignal.connect(targetCallable, flags)
 	else:
 		return 0
 
