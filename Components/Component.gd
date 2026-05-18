@@ -1,8 +1,8 @@
-## The core of the composition framework: A node+script pair which represents a distinct behavior or property of a game character or object.
+## The core of the composition framework: A node+script pair which represents a distinct behavior or trait of a game character or object.
 ## A parent node containing [Component] child nodes is an [Entity]. The Entity is the "scaffolding" and Components do the actual work/play.
-## Components may be reused in different kinds of entities, such as a [HealthComponent] used for the player's character and also the monsters.
+## Components may be reused (as different instances) for different kinds of characters/objects, such as [HealthComponent] for the player's character and also for monsters and destructible props etc.
 ## Components may directly modify the parent [Node] or interact with other components,
-## such as a [DamageComponent] communicating with another Entity's [DamageReceivingComponent] which then modifies a [HealthComponent]
+## such as a monster's [DamageComponent] communicating with the player's [DamageReceivingComponent] which then modifies the player's [HealthComponent] and so on.
 
 #@tool # UNUSED: Not useful because @tool is not inherited :(
 @icon("res://Assets/Icons/Component.svg")
@@ -10,52 +10,58 @@
 @abstract class_name Component
 extends Node
 
-# DESIGN: Components should not perform Entity validation, beyond checking for dependencies and basic "sanity check" logs.
-# This separation keeps the core Component script lightweight and consolidates the life cycle management and "installation" methods into the Entity script,
-# and also allows edge cases such as adding basic components to any non-Entity nodes,
-# if the component only performs a simple task such as a [SpinComponent] that rotates the parent node every frame.
 
-
-#region Advanced Parameters
-
-## Let this [Component] be added to nodes that are not an [Entity]?
-## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing, or for cases like adding "payload" components to [InjectorComponent] etc.
-## @experimental
-@export var allowNonEntityParent: bool = false
-
-#endregion
-
-
-#region Core Properties
-# TBD: @export_storage?
+#region Core State
 
 var entity: Entity: # TBD: @export_storage?
 	set(newValue):
 		if newValue != entity:
 			if debugMode: printChange("entity", entity, newValue)
 			entity = newValue
-			# Do a basic check, but don't verify if `null`, because during `NOTIFICATION_UNPARENTED` get_parent() will still return the about-to-unparent Entity.
+
+			# NOTE: DESIGN: Entity-dependent flags & properties should be copied/cleared in the related lifecycle methods like Entity.installComponent(), to be in proper order with other operations such as signals etc.
+			# Just do some basic checks here, but skip if `null` because during `NOTIFICATION_UNPARENTED` get_parent() will still return the about-to-unparent Entity.
 			if entity \
 			and (not self.get_parent() == entity and not entity.is_ancestor_of(self)): # PERFORMANCE: Try the faster check first
 				printWarning(str("entity set to: ", entity.logFullName, " but it is not the actual parent or ancestor of: ", self))
-			# NOTE: DESIGN: Entity-dependent flags & properties should be copied/cleared in the related life cycle methods,
-			# to be in proper order with other operations such as signals etc.
 
-## A [Dictionary] of other [Component]s in the [member entity]'s [member Entity.components], including this component itself.
-## TIP: Access via the shortcut of `coComponents.ComponentClassName`
-## or use [method getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`.
-## NOTE: Does NOT find subclasses which inherit the specified type; use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead.
+
+## A [Dictionary] of all the [Component]s in the [member entity]'s [member Entity.components], including this component itself.
+## TIP: Access via the convenient shortcut of `coComponents.ComponentClassName` e.g. `coComponents.HealthComponent`
+## or use [method getCoComponent] or `coComponents.get(&"ComponentClassName")` to avoid a crash if an optional component is missing and just return `null`
+## ALERT: Does NOT find subclasses which inherit the specified type;
+## TIP: use [method Entity.getCoComponent] with `findSubclasses` or [method Entity.findFirstComponentSubclass] instead, e.g. to include [ShieldedHealthComponent] when searching for [HealthComponent]
 var coComponents: Dictionary[StringName, Component]
 
 #endregion
 
 
-#region Signals
-# DESIGN: There is no `willInstallInEntity` or similar signal because Components are not intended to be "active" "outside" an Entity anyway.
+#region Advanced Parameters
+@export_group("Advanced")
 
-## Emitted by [method Entity.uninstallComponent] before this Component is removed from the Entity.
-## May be connected to by subclasses to perform cleanup specific to each component.
-## NOTE: [member entity] is still assigned at this point and set to `null` after this signal is emitted.
+## If `true`, [method onEntityDidReady] is called after the [Entity] finishes its [method Entity._ready]
+## which implies all other components and child nodes have also finished their [method Node._ready]
+## PERFORMANCE: This is an optional behavior to improve performance by avoiding signal connections unless needed.
+## IMPORTANT: This flag must be enabled BEFORE [method Entity.installComponent] e.g. during [constant NOTIFICATION_PARENTED] or [method Component.onParented]
+## @experimental
+var shouldNotifyOnEntityReady:		bool = false # DESIGN: Not `@export` because it's an internal flag that should be set by a component script that needs it. 
+
+## Let this [Component] be added to nodes that are not an [Entity]?
+## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing, or for cases like adding "payload" components to [InjectorComponent] etc.
+## @experimental
+@export var allowNonEntityParent:	bool = false
+
+#endregion
+
+
+#region Signals
+# DESIGN: There is no `willInstallInEntity` or similar signals because Components are not intended to be "active" "outside" an Entity anyway.
+
+## Emitted by [method Entity.uninstallComponent] before this [Component] is unregistered from the [Entity]
+## BEFORE [method Component.onWillUninstall]
+## Other scripts may use this to perform cleanup etc.
+## NOTE: [member entity] & [member coComponents] are still assigned at this point, and reset AFTER this signal is emitted and handled.
+## TIP: For component subclasses, simply override [method Component.onWillUninstall] instead of connecting to this signal.
 @warning_ignore("unused_signal") # Emitted from Entity.gd
 signal willRemoveFromEntity
 
@@ -68,9 +74,12 @@ signal willRemoveFromEntity
 # Deletion: [Exit Tree] → [Unparented]
 # Each of these phases may include multiple events such as _notification(), function callbacks, and signals.
 
-# See `Component Life Cycle` in `Entity.gd` for the design.
+# DESIGN: IMPORTANT: Components should NOT perform Entity validation, beyond checking for dependencies and basic "sanity checks" and logging.
+# This separation keeps the base Component script lightweight and consolidates the life cycle management and "installation" methods inside the Entity script.
+# This also allows advanced edge cases such as adding basic components to any non-Entity nodes, if the component only performs a simple task such as a [SpinComponent] that rotates the parent node every frame.
+# See `Component Life Cycle` in `Entity.gd` for more details.
 
-# Init:						Component.NOTIFICATION_PARENTED  → Component.onParented() → Entity.onComponent_parented()	  → Entity.installComponent() → Component.onDidInstall()		→ Component._enter_tree()	  → Component._ready()
+# Init:						Component.NOTIFICATION_PARENTED  → Component.onParented() → Entity.onComponent_parented()	  → Entity.installComponent() → Component.onDidInstall()		→ Component._enter_tree()	  → Component._ready()			→ Component.onEntityDidReady()
 # Component.queue_free():	Component.NOTIFICATION_PREDELETE → Component._exit_tree() → Component.NOTIFICATION_UNPARENTED → Component.onUnparented()  → Entity.onComponent_unparented()	→ Entity.uninstallComponent() → Component.onWillUninstall()
 # Entity.queue_free():		Component._exit_tree()			 → Component.NOTIFICATION_PREDELETE → …
 
@@ -107,7 +116,7 @@ func onDidInstall() -> void:
 	if debugMode: printDebug(str("onDidInstall() in entity: ", self.entity))
 
 
-## Called when the node enters the scene tree for the first time.
+## Called whenever the Component Node enters the Scene Tree. May be called multiple times.
 func _enter_tree() -> void:
 	# Init Order: 4: After Entity._enter_tree()
 	if debugMode: printDebug(str("_enter_tree() parent: ", get_parent()))
@@ -125,7 +134,7 @@ func _enter_tree() -> void:
 	# UNUSED: update_configuration_warnings() # Only useful if @tool script
 
 	if activeEntity:
-		checkRequiredComponents() # Ignore return; only called for logging # TBD: Should this be checked by the Entity or elsewhere in the startup sequence?
+		checkRequiredComponents() # Ignore return; only called for logging # TBD: Should this be checked by the Entity or Component.onEntityDidReady() or elsewhere in the startup sequence?
 		# `coComponents` & logging flags & other properties are set by Entity.installComponent()
 	else:
 		self.coComponents = {} # Unlink from `entity.components` # AVOID: Do NOT self.coComponents.clear() because that will also .clear() entity's `components`!
@@ -135,6 +144,19 @@ func _enter_tree() -> void:
 # func _ready() -> void:
 # 	if debugMode: printDebug(str("_ready(): ", self))
 # 	pass
+
+
+## Called AFTER the Entity's [method Entity._ready] → [constant Entity.NOTIFICATION_READY] → [signal Entity.ready]
+## and after this [Component]'s own [method Component._ready]
+## and after ALL other scene-loaded [Component]s and initial child [Node]s are also _ready()
+## TIP: This hook may be used to perform setup and behaviors that depend on all nodes being ready,
+## such as validating the order of components in the entity's subtree or checking dependencies etc.
+## ALERT: May be called multiple times if this component is re-added to different entities.
+## ALERT: If a new component is added from another component’s _ready() after the entity is already ready, then onEntityDidReady() may be called BEFORE the preceding component has finished its _ready()
+## @experimental
+func onEntityDidReady() -> void:
+	if debugMode: printDebug(str("onEntityDidReady(): ", entity))
+	pass
 
 
 ## NOTE: This method is called even when the Entity is removed from the SCENE (along with ALL its child nodes),
@@ -157,6 +179,7 @@ func onUnparented() -> void:
 
 
 ## May be implemented in subclasses.
+## NOTE: Called AFTER [signal willRemoveFromEntity]
 func onWillUninstall() -> void:
 	# Deinit Order 5: After Entity.uninstallComponent() starts
 	if debugMode: printDebug(str("onWillUninstall() from entity: ", entity.logFullName if entity else "null"))
@@ -179,14 +202,14 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return warnings
 
 
-## Returns: A list of other component types which this component depends on.
-## Must be overridden by subclasses.
+## Returns a list of other [Component] types which this component depends on.
+## Should be overridden by subclasses that depend on other components.
 func getRequiredComponents() -> Array[Script]:
 	# This is needed to be a method because properties cannot be overridden :')
 	return []
 
 
-## Verifies the presence of dependencies as returned by [method getRequiredComponents].
+## Verifies the presence of dependencies as returned by [method getRequiredComponents]
 ## NOTE: Does not include subclasses of required components.
 func checkRequiredComponents() -> bool:
 	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
@@ -214,17 +237,17 @@ func checkRequiredComponents() -> bool:
 ## after converting the [param type] [method Script.get_global_name] to a [StringName] key.
 ## NOTE: Unlike a direct [Dictionary] lookup, this method does not crash if a component/key does not exist.
 ## TIP: To include subclasses such as [ShieldedHealthComponent] when searching for [HealthComponent], set [param findSubclasses] to `true` to use [method Entity.findFirstComponentSubclass] when an exact match isn't found.
-## ALERT: PERFORMANCE: Slower performance compared to accessing the [member coComponents] [Dictionary] directly!
+## ALERT: PERFORMANCE: Slower than accessing the [member coComponents] [Dictionary] directly!
 ## TIP: Use this method only if a warning is needed instead of a crash, in case of a missing component.
 func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: bool = true) -> Component:
 	# TBD: Is [Script] the correct type for the argument?
-	
+
 	if not is_instance_valid(entity): # If there's no entity, there are no other components!
 		if warnIfMissing: printWarning("getCoComponent(): No parent entity!")
 		return null
 
 	if coComponents.is_empty(): return null
-	
+
 	var coComponent: Component = coComponents.get(type.get_global_name())
 	if not coComponent: # TBD: Use is_instance_valid()?
 
@@ -244,7 +267,7 @@ func removeFromEntity(shouldFree: bool = true) -> void:
 	if entity: entity.removeComponent(self, shouldFree)
 	else:
 		printWarning("removeFromEntity(): Component has no Entity!")
-		# DESIGN: Remove & delete the Node from its parent even it's not an Entity
+		# DESIGN: Remove & delete the Node from its parent even if it's not an Entity
 		# That would be the behavior expected by the caller of this method
 		# TBD: Check `allowNonEntityParent`?
 		var parent: Node = self.get_parent()
@@ -271,7 +294,7 @@ func requestDeletionOfEntity() -> bool:
 			return false
 	else:
 		if debugMode: printWarning("requestDeletionOfEntity(): entity already null!") # TBD: Should this be a warning?
-		return true # NOTE: DESIGN: If a code calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
+		return true # NOTE: DESIGN: If a script calls this function, then it wants the Entity to be gone, so if it's already gone, we should return `true` :)
 
 #endregion
 
@@ -357,7 +380,7 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInEntit
 
 ## If `true`, all calls to [method Component.printDebug] are forwarded to [method Debug.printTrace] which includes a list of the recent function calls and a highlighted color.
 ## This may help with quickly tracking a specific issue in specific components.
-## NOTE: Suppresses `debugMode = false` i.e. [method printDebug] is always printed.
+## NOTE: Ignores `debugMode = false` i.e. [method printDebug] calls are always printed.
 @export var debugModeTrace:	bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
@@ -366,8 +389,8 @@ var isLoggingEnabled:		bool
 
 
 var logName:				String = self.name  # Set defaults to avoid blank logs before initializeLog()
-var logFullName:			String = str(self)  ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`.
-var randomDebugColor:		Color  = Color.GRAY ## Used by logs and debugging tools etc. to distinguish different entities from each other.
+var logFullName:			String = str(self)  ## A detailed name for logging, including the node's name in the scene, instance, and the script's `class_name`
+var randomDebugColor:		Color  = Color.GRAY ## Used by logs and debugging tools etc. to distinguish different [Component]s from each other.
 var randomDebugColorCode:	String = "808080"   #  A default for pre-initializeLog()
 var isLoggingInitialized:	bool
 
@@ -423,7 +446,7 @@ func printError(message: String = "") -> void:
 
 ## Prints an array of variables in a highlighted color, along with a short "stack trace" of recent functions and their filenames before [method Debug.printTrace] was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
-## Affected by [member debugMode] and only printed in debug builds.
+## Only printed in debug builds.
 func printTrace(...values: Array[Variant]) -> void:
 	Debug.printTrace(values, logNameWithEntity, 3) # Start further from the call stack to skip this method
 
@@ -450,7 +473,7 @@ func emitDebugBubble(textOrObject: Variant, color: Color = self.randomDebugColor
 
 	bubble.label.label_settings.font_color = color
 	bubble.z_index = 220
-	
+
 	# Customize the animation to improve readability
 	if bubble.tween: bubble.tween.kill() # Stop the default TextBubble._ready() behavior...
 	bubble.cancel_free()

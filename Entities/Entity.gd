@@ -1,62 +1,66 @@
-## The core of the composition framework. Represents a game character or object made up of standalone and reusable behaviors provided by [Component] child nodes.
+## The core of the composition framework. Represents a game character or object made up of modular and reusable behaviors provided by [Component] child nodes.
 ## Provides methods for managing components and other common tasks. The Entity is the "scaffolding" and Components do the actual work (play).
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
-## TIP: If the entity is a [CharacterBody2D] then a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components may queue their updates through it.
+## TIP: If the entity is a [CharacterBody2D] then a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components may queue their physics updates through it.
 
 @icon("res://Assets/Icons/Entity.svg")
 
 class_name Entity
-extends Node2D # An "entity" would always have a visual presence, so it cannot be just a [Node].
+extends Node2D # Any "entity" would almost always have a visual presence, so it cannot be just a [Node].
+
+
+#region Core State
+
+## A [Dictionary] of {StringName:Component} where the key is the `class_name` of each Component, as discovered via [method Script.get_global_name]
+## Updated by [method installComponent] which is called by [method onComponent_parented] after the component's [constant Node.NOTIFICATION_PARENTED]
+## PERFORMANCE: Used by components to quickly find other sibling components, to avoid requiring a dynamic search at runtime.
+## ALERT: Does NOT resolve subclasses! i.e. a [ShieldedHealthComponent] will not be found if searching for a [HealthComponent]
+## TIP: Call [method getComponent] with `findSubclasses` or [method findFirstComponentSubclass] to include subclasses.
+var components:	Dictionary[StringName, Component]
+
+## Set AFTER [method Entity._ready] finishes → [constant Entity.NOTIFICATION_READY]
+## Used for notifying [Component]s via [method Component.onEntityDidReady]
+## NOTE: This extra flag is necessary because [method Node.is_node_ready] is `true` BEFORE [method Node._ready] finishes.
+var didReady:	bool # TBD: @export_storage?
+
+## A [Dictionary] of functions that should be called only once per frame, for example [method CharacterBody2D.move_and_slide] on a [CharacterBody2D]
+var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
+
+#endregion
 
 
 #region Parameters
-
-# PERFORMANCE: Not using `get` for the properties below to avoid extra calls on each access etc.
-# Do not initialize these properties until they are needed, or it may slow performance when lots of entities are being created.
-
-## The primary visual representation of this [Entity] for [Component]s to manipulate.
-## If `null`, the [Entity] node itself will be used if it's an [AnimatedSprite2D] or [Sprite2D],
-## otherwise it will be the first matching child node.
-## Call [method getSprite] to set.
-@export var sprite: Node2D
+# PERFORMANCE: Not using `get`ters for the properties below to avoid extra calls on every access etc.
+# Don't initialize these properties until they are needed, or it may slow performance when lots of entities are being created.
 
 ## The primary [Area2D] represented by this [Entity] for [Component]s to monitor or manipulate.
 ## If `null`, the [Entity] node itself will be used if it's an [Area2D],
 ## otherwise it will be the first matching child node.
 ## Call [method getArea] to set.
-@export var area: Area2D
+@export var area:	Area2D
 
 ## The primary [CharacterBody2D] represented by this [Entity] for [Component]s to monitor or manipulate.
 ## If `null`, the [Entity] node itself will be used if it's a [CharacterBody2D],
 ## otherwise it will be the first matching child node.
 ## Call [method getBody] to set.
-@export var body: CharacterBody2D
+@export var body:	CharacterBody2D
 
-#endregion
-
-
-#region State
-
-## A dictionary of {StringName:Component} where the key is the `class_name` of each Component, which may be discovered via [method Script.get_global_name].
-## Updated by [method installComponent] which is called by [method onComponent_parented] after a component's [constant Node.NOTIFICATION_PARENTED]
-## PERFORMANCE: Used by components to quickly find other sibling components, without a dynamic search at runtime.
-## NOTE: Does NOT resolve subclasses! i.e. a [ShieldedHealthComponent] will not be accessed by searching for [HealthComponent]
-## TIP: Call [method getComponent] with `findSubclasses` or [method findFirstComponentSubclass] to find subclasses.
-var components: Dictionary[StringName, Component]
-
-## A dictionary of functions that should be called only once per frame, for example [member CharacterBody2D.move_and_slide] on a [CharacterBody2D].
-var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
+## The primary visual representation of this [Entity] for [Component]s to manipulate.
+## If `null`, the [Entity] node itself will be used if it's an [AnimatedSprite2D] or [Sprite2D],
+## otherwise it will be the first matching child node.
+## Call [method getSprite] to set.
+@export var sprite:	Node2D
 
 #endregion
 
 
 #region Signals
 
-## Emitted when the Entity Node receives the [constant NOTIFICATION_PREDELETE] [method _notification]
-## Used by components and other scripts that must react to the imminent removal of the Entity itself,
+## Emitted after the [Entity] Node receives the [constant NOTIFICATION_PREDELETE] in [method _notification]
+## Used by components and other scripts that must react to the imminent removal of the entity itself,
 ## e.g. when a [CameraComponent] wants to detach itself if [member CameraComponent.shouldAttachToGrandparentOnEntityRemoval] to preserve the current viewing location on screen.
 ## NOTE: This does NOT always mean that the node has exited the [SceneTree] (yet). Godot may send it on [method queue_free] which may happen BEFORE [constant NOTIFICATION_UNPARENTED] and the [signal Node.tree_exiting] signal etc.
-signal preDelete
+signal preDelete # DESIGN: Named in camelCase to match the `willDo`/`didDo` etc. convention
 
 #endregion
 
@@ -67,7 +71,7 @@ signal preDelete
 # Deletion: [Exit Tree] → [Unparented]
 # Each of these phases may include multiple events such as _notification(), function callbacks, and signals.
 
-# Entity Init: Entity.NOTIFICATION_PARENTED → Entity._enter_tree() → Component._enter_tree() → Component._ready() → Entity._ready() (excluding Component installation events)
+# Entity Init: Entity.NOTIFICATION_PARENTED → Entity._enter_tree() → Component._enter_tree() → Component._ready() → Entity._ready() (excluding Component installation events) → Component.onEntityDidReady() if Component.shouldNotifyOnEntityReady
 # Entity.queue_free(): Entity.NOTIFICATION_PREDELETE → Component._exit_tree() → Entity._exit_tree() → Entity.NOTIFICATION_UNPARENTED → Component.NOTIFICATION_PREDELETE → Component.NOTIFICATION_UNPARENTED … (component deinit & uninstallation)
 
 
@@ -77,7 +81,9 @@ func _notification(what: int) -> void:
 	# Init Order: 1
 	# Deinit Order: 1/3
 	match what:
-		# NOTIFICATION_PREDELETE may occur before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed
+		NOTIFICATION_READY: # AFTER _ready() and BEFORE the `ready` Signal
+			self.didReady = true # TBD: Set on [signal ready]?
+
 		# Make sure Debug exists to avoid crash at shutdown
 		NOTIFICATION_PREDELETE: # Sent after queue_free() or free() or scene/game shutdown. ALERT: May happen BEFORE "UNPARENTED" and before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed etc.
 			if isLoggingEnabled and Debug: printLog("[color=brown]" + Debug.deleteLogSymbol + " PreDelete")
@@ -88,8 +94,8 @@ func _notification(what: int) -> void:
 			# UNUSED: unparented.emit() # Not needed yet
 
 
-## Called when the Entity enters the Scene Tree for the first time.
-## NOTE: Called BEFORE Components and child nodes are loaded from the Scene.
+## Called whenever the Entity Node enters the Scene Tree. May be called multiple times.
+## NOTE: Called BEFORE Components and child nodes enter the Scene.
 func _enter_tree() -> void:
 	# NOTE: This should not be `_ready()` because `_ready()` is called AFTER child nodes are loaded from the packed scene,
 	# so signals like `child_entered_tree` will be missed for the initial components.
@@ -115,7 +121,6 @@ func connectSignals() -> void:
 func _ready() -> void:
 	# Init Order: ? After Component._ready()
 	if debugMode: printDebug("_ready()")
-	# TBD: Fire some kind of special "Entity Ready" signal or callback here for all Components?
 
 
 ## NOTE: Any subclass calling `super._physics_process()` must be aware that this method disables the per-frame processing by calling `set_physics_process(false)`
@@ -149,18 +154,22 @@ func _exit_tree() -> void:
 
 
 #region Component Life Cycle
-# DESIGN: A child Node is added to the Entity Node → Is it a Component? → 
+# DESIGN: The Entity should perform and manage all of a Component's life cycle related tasks, to keep the base Component script lightweight.
+# See `Life Cycle` in `Component.gd` for related information.
+
+# PLAN: A child Node is added to the Entity Node → Is it a Component? → 
 # 	→ Add the Component to the `components` Dictionary,
 #	& Set the Component's `entity` reference to the parent Entity Node,
 #	& Set the Component's `coComponents` reference to the Entity's `components` Dictionary. → 
 #	→ Emit signals & call event hooks.
+
 
 ## A simple relay from [method Component.onParented] → [method Entity.installComponent]
 ## To be called from a [Component]'s [method Component._notification] on [constant Component.NOTIFICATION_PARENTED]
 ## INFO: This is a workaround for Godot's lack of a direct way for parent nodes to react to the addition of a child node.
 func onComponent_parented(component: Component) -> bool:
 	if debugMode: printDebug(str("onComponent_parented(): ", component))
-	# First make sure the Component a child of this Entity
+	# First make sure the Component is a child of this Entity
 	# TBD: Allow grandchildren and use is_ancestor_of()?
 	var componentParent := component.get_parent()
 	if  componentParent != self:
@@ -201,15 +210,13 @@ func validateComponent(component: Component) -> Array[Variant]:
 		printWarning(str("validateComponent(): Component has no `class_name`: ", component.logFullName, " • script: ", component.get_script()))
 		return [false]
 
-	var isDescendant:		bool = component.get_parent() == self # PERFORMANCE: Try the faster check first
+	var isDescendant:		bool = component.get_parent() == self # TBD: Allow components that are not immediate child nodes? # self.is_ancestor_of(component)
 	var isKeyRegistered:	bool = self.components.has(className)
 	var isInstalled:		bool = isKeyRegistered and self.components[className] == component
 	var componentParent:	Node = component.get_parent()
 
 	# First, check for invalid or "corrupted" cases & states
 
-	# DESIGN: Allow components that are not immediate children, if manually installed
-	# but they MUST be grandchildren inside this Entity's subtree.
 	if not isDescendant:
 		# If the Component is already installed but NOT a descendant, then that is an invalid state which should not have occurred; treat it as an error
 		if isInstalled: printError(str("validateComponent(): ", component.logFullName, " is ALREADY registered in this Entity but has a DIFFERENT parent/grandparent Node: ", componentParent))
@@ -223,8 +230,8 @@ func validateComponent(component: Component) -> Array[Variant]:
 ## "Install" or "register" a [Component] into this [Entity]
 ## Called by [method onComponent_parented] after a [Component]'s [constant Component.NOTIFICATION_PARENTED]
 ## Adds a [Component] to the [member components] [Dictionary] for quicker access afterwards, with the component's `class_name` as the key.
-## Disallows duplicate components.
-## Returns `true` if successfully registered. ALERT: A component with missing dependencies may count as a successful installation but not work as expected.
+## ALERT: Disallows duplicate components: A new component of the same type as a previously-registered component uninstalls and replaces the previous component!
+## Returns `true` if successfully registered. ALERT: A component with missing dependencies counts as a successful installation but may not work as expected.
 func installComponent(component: Component) -> bool:
 	if debugMode: printDebug(str("installComponent(): ", component))
 
@@ -248,7 +255,7 @@ func installComponent(component: Component) -> bool:
 			# CHECK: Will removal be refused if called while adding other children?
 			self.uninstallComponent(conflictingComponent, true) # shouldFree
 			isKeyRegistered = self.components.has(className) # Confirm just in case
-			if isKeyRegistered: # Still arround?
+			if isKeyRegistered: # Still around?
 				printWarning(str("installComponent(): Could not uninstall conflicting component: ", conflictingComponent))
 				return false
 		else:
@@ -295,21 +302,58 @@ func installComponent(component: Component) -> bool:
 	component.isLoggingEnabled	= component.isLoggingEnabled or self.isLoggingEnabled
 	component.debugMode			= component.debugMode or self.debugMode
 
-	# Let the Component check for any required siblings
+	# Let the component perform its on-installation setup if any
+	# DESIGN: Call onDidInstall() before onEntityDidReady() to allow per-component initialization before setup that depends on all other sibling nodes being ready.
 	# DESIGN: Allow components with missing requirements, as they may still perform fallback/alternative behavior
-	# UNUSED: Done by Component._enter_tree(): component.checkRequiredComponents() # Ignore return; only called for logging
+	# UNUSED: Let Component._enter_tree() call component.checkRequiredComponents() # Ignore return; only called for logging
 	component.onDidInstall()
+	if component.shouldNotifyOnEntityReady: connectComponentSignals(component) # PERFORMANCE: Connect only if needed
 
-	# TBD: PERFORMANCE: Revalidate all other checks like is_ancestor_of() etc? component.entity == self # Just in case it got mutated during onDidInstall()
 	return true
 
+	# TBD: PERFORMANCE: Revalidate all other checks like is_ancestor_of() etc? component.entity == self # Just in case it got mutated during onDidInstall()
 	# else:
 	# 	printWarning(str("installComponent(): ", component.logFullName, " failed. isDescendant: ", isDescendant, ", isInstalled: ", isInstalled))
 	# 	return false
 
 
+## @experimental
+func connectComponentSignals(component: Component) -> void:
+	# TBD: PERFORMANCE: if component.entity != self: return
+	# PERFORMANCE: Connect signals directly here instead of calling Tools.connectSignal()
+	# NOTE: Used a "proxy" method to make sure the `Component.entity` is still this entity before calling Component.onEntityDidReady()
+	var readyHandler: Callable = self.notifyComponentOnEntityReady.bind(component)
+
+	if self.didReady:
+		# Is this entity already _ready() & the component is also _ready() (i.e. an existing component added at runtime)?
+		if component.is_node_ready():
+			self.notifyComponentOnEntityReady(component) # TBD: .call_deferred() to ensure that Component._ready() finishes before calling Component.onEntityDidReady()?
+
+		# Otherwise, wait for the component to finish running its _ready()
+		# then let it know that the entity is _ready() too.
+		elif not component.ready.is_connected(readyHandler):
+			component.ready.connect(readyHandler, CONNECT_ONE_SHOT)
+
+	# If this entity has not run _ready() yet (i.e. the scene is still being loaded),
+	# let the component know later when this entity is ready.
+	elif not self.ready.is_connected(readyHandler):
+		self.ready.connect(readyHandler, CONNECT_ONE_SHOT)
+
+
+## Calls [method Component.onEntityDidReady] to let a new [Component] know if/when this [Entity] has finished its [method Entity._ready]
+## The entity is ready after ALL scene-loaded components and other child nodes are ready,
+## so [method Component.onEntityDidReady] is ideal for any setup that depends on other components/nodes,
+## such as validating node order or connecting with dependencies etc.
+## NOTE: This is used as a "proxy" method instead of calling [method Component.onEntityDidReady] directly,
+## so that every [method Component.onEntityDidReady] implementation doesn't have to perform entity verification etc.
+## @experimental
+func notifyComponentOnEntityReady(component: Component) -> void:
+	if  component.entity == self: # NOTE: Make sure the component is still installed, in case it was removed/uninstalled before it finished _ready() etc.
+		component.onEntityDidReady()
+
+
 ## Unregisters a [Component] from this [Entity] and frees (deletes) the Component [Node] if [param shouldFree] (`true` by default)
-## NOTE: Does NOT remove the Component's [Node] from the parent in the Scene Tree; a caller such as [method Component.removeFromEntity] must manually call [method Node.remove_child] on the [Entity] [Node].
+## NOTE: If [param shouldFree] is `false`, the Component's [Node] is NOT removed from the parent in the Scene Tree; a caller such as [method Component.removeFromEntity] must manually call [method Node.remove_child] on the [Entity] [Node].
 ## Called by [method onComponent_unparented] after a [Component]'s [constant Component.NOTIFICATION_UNPARENTED]
 ## Clears the `class_name` key from the [member components] [Dictionary]
 ## TIP: If [param shouldFree] is `false` the component is only removed but not freed and may be re-added to any other entity.
@@ -359,6 +403,7 @@ func uninstallComponent(componentToRemove: Component, shouldFree: bool = true) -
 
 	# DESIGN: Even if the component is not fully installed, clear its state anyway,
 	# because the intent and expected behavior of calling uninstallComponent() would be to unlink a component from an entity
+	if componentToRemove.shouldNotifyOnEntityReady: disconnectComponentSignals(componentToRemove) # TBD: Disconnect always? BUGRISK: If `shouldNotifyOnEntityReady` becomes `false` AFTER connectComponentSignals() then signals will remain connected!
 	componentToRemove.coComponents	= {} # Unlink the reference, NOT .clear() because that clears the Entity's Dictionary too!
 	componentToRemove.entity		= null # TBD: Use .set_deferred()?
 
@@ -367,6 +412,17 @@ func uninstallComponent(componentToRemove: Component, shouldFree: bool = true) -
 	if shouldFree: componentToRemove.queue_free()
 
 	return true
+
+
+## @experimental
+func disconnectComponentSignals(component: Component) -> void:
+	# TBD: Find and remove all `Entity.preDelete` connections too?
+	# PERFORMANCE: Connect signals directly here instead of calling Tools.connectSignal()
+	var readyHandler: Callable = self.notifyComponentOnEntityReady.bind(component)
+	if  self.ready.is_connected(readyHandler):
+		self.ready.disconnect(readyHandler)
+	if  component.ready.is_connected(readyHandler):
+		component.ready.disconnect(readyHandler)
 
 
 # ## @experimental
@@ -572,7 +628,7 @@ func toggleComponents(componentTypes: Array[Script], overrideIsEnabled: Variant 
 #region General Child Node Management
 
 ## Returns the first child node which matches the specified [param type].
-## If [param includeEntity] is `true` (default) then this ENTITY ITSELF may be returned if it is node of a matching type. Useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
+## If [param includeEntity] is `true` (default) then this ENTITY ITSELF may be returned if it's a node of a matching type. Useful for [Sprite2D] or [Area2D] etc. nodes with the `Entity.gd` script.
 ## NOTE: Also returns any SUBCLASSES which inherit from the specified [param type].
 ## ALERT: TIP: PERFORMANCE: [method Entity.findFirstComponentSubclass] is faster when searching for components including subclasses, as it only searches the [member Entity.components] dictionary.
 func findFirstChildOfType(type: Variant, includeEntity: bool = true) -> Node:
@@ -717,7 +773,7 @@ func spawnPath(scenePath: String, positionOffset: Vector2 = Vector2.ZERO, copyZI
 	return newNode
 
 
-## Adds an existing node it to this Entity's parent node at the specified offset from this Entity's position.
+## Adds an existing node to this Entity's parent node at the specified offset from this Entity's position.
 ## Removes the node from any other parent. Returns the same node.
 func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: bool = false) -> Node:
 	var entityParent: Node = self.get_parent()
@@ -748,7 +804,7 @@ func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: b
 
 @export_group("Debugging")
 
-## If `false`, suppresses log messages from this entity and its child [Component]s.
+## Enables log messages from this entity and its child [Component]s.
 ## NOTE: Does NOT affect warnings and errors!
 @export var isLoggingEnabled: bool = true
 
