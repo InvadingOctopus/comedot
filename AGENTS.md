@@ -79,7 +79,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - There is no automated formatter configured; match existing style manually.
 
 
-## Generating New Code & Scenes
+## Generating Code, Scripts, Scenes & Files
 - DO NOT EDIT ANY FILES UNLESS EXPLICITLY ASKED.
 	- Untracked files in `/Temporary/` may be modified without requiring approval.
 	- Use `/Lab/Tests/` for creating temporary tests to verify logic/behavior etc.
