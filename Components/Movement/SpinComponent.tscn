@@ -4,3 +4,4 @@
 
 [node name="SpinComponent" type="Node" unique_id=1049083317 groups=["components"]]
 script = ExtResource("1_k46wd")
+allowNonEntityParent = true

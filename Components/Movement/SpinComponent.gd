@@ -6,7 +6,8 @@ extends Component
 
 
 #region Parameters
-@export var nodeToRotate: Node2D ## If unspecified, this component's parent Entity is rotated.
+
+@export var nodeToRotate: Node2D ## If unspecified, this component's parent [Entity] is selected.
 
 @export_range(-20, 20, 0.1) var rotationPerFrame: float = 1.0:
 	set(newValue):
@@ -17,11 +18,12 @@ extends Component
 	set(newValue):
 		isEnabled = newValue # Don't bother checking for a change
 		self.set_physics_process(isEnabled and not is_zero_approx(rotationPerFrame)) # PERFORMANCE: Set once instead of every frame
+
 #endregion
 
 
 func _ready() -> void:
-	if not nodeToRotate: self.nodeToRotate = entity
+	if not nodeToRotate: self.nodeToRotate = entity if entity else self.get_parent() # DESIGN: Allow non-Entity parents because spinning is such a basic task
 	self.set_physics_process(isEnabled and not is_zero_approx(rotationPerFrame)) # Apply setters because Godot doesn't on initialization
 
 
