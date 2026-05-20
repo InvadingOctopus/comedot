@@ -1,5 +1,5 @@
-## Provides player input to a [TileBasedPositionComponent].
-## Requirements: [TileBasedPositionComponent]
+## Takes player/AI input from an [InputComponent] to modify the [Entity]'s position on a [TileMapLayer] via a [TileBasedPositionComponent]
+## Requirements: [TileBasedPositionComponent], [InputComponent]
 
 class_name TileBasedControlComponent
 extends Component

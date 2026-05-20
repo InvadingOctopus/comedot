@@ -1,4 +1,4 @@
-## Sets the position of the parent Entity to the position of a grid cell in an associated [TileMapLayer].
+## Sets the position of the [Entity] to the position of a grid cell in an associated [TileMapLayer].
 ## NOTE: Does NOT receive player control input, or perform path-finding or any other validation logic
 ## except checking the tile map bounds and tile vacancy/collision.
 ## TIP: To provide player input, use [TileBasedControlComponent].
