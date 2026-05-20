@@ -81,7 +81,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 
 ## Generating Code, Scripts, Scenes & Files
 - DO NOT EDIT ANY FILES UNLESS EXPLICITLY ASKED.
-	- Untracked files in `/Temporary/` may be modified without requiring approval.
+	- Files in `/Temporary/` & `/.codex/` & `/.claude/` may be created/modified/deleted without requiring approval.
 	- Use `/Lab/Tests/` for creating temporary tests to verify logic/behavior etc.
 - See `/HowTo.md` for human guidance that may also apply to AI agents (specially the "Avoid" section)
 	- In case of conflicts, this `/AGENTS.md` has precedence.
