@@ -366,14 +366,15 @@ func vacateCell(coordinates: Vector2i = self.currentCoordinates) -> bool:
 
 #region Control
 
-## This method must be called by a control component upon receiving player input.
+## This method must be called by control components such as [TileBasedControlComponent] upon receiving player input.
 ## EXAMPLE: `inputVector = Vector2i(Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown))`
-func processInput(inputVectorOverride: Vector2i = inputVector) -> void:
-	# TODO: Check for TileMap bounds.
-	# Don't accept input if already moving to a new tile.
-	if (not isEnabled) or isMovingToNewCell: return
+## Returns the result of [method setDestinationCoordinates] or `false` if [member isMovingToNewCell] or not [member isEnabled]
+func processInput(inputVectorOverride: Vector2i = inputVector) -> bool:
+	# TODO: Check for TileMap bounds
+	if isMovingToNewCell or not isEnabled: return false # Don't accept input if already moving to a new tile.
 	# TBD: Update previousInputVector = inputVectorOverride or should it only be a temporary override?
-	setDestinationCoordinates(currentCoordinates + inputVectorOverride)
+	# TBD: Return `true` only if the `destinationCoordinates` are actually changed?
+	return setDestinationCoordinates(currentCoordinates + inputVectorOverride)
 
 
 ## Begins movement towards a new cell and updates the occupancy of the previous and new cells.
