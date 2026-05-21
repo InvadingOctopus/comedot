@@ -38,7 +38,7 @@ var recentInputVector: Vector2i:
 			hasInput = recentInputVector.length_squared() != 0 # PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
 			self.set_physics_process(hasInput and isEnabled and shouldMoveContinuously)
 
-var hasInput: bool   = recentInputVector.length_squared() != 0
+var hasInput: bool   = recentInputVector.length_squared() != 0 # DESIGN: "has" instead of "have" so we can write "if someComponent.hasSomething" :)
 
 @onready var stepTimer: Timer = self.get_node(^".") as Timer
 #endregion

@@ -8,26 +8,26 @@ extends Node
 #region Input Actions & Events Constants
 
 
-## Input event labels.
-## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each action.
-## NOTE: This is NOT the same as the [Action] Resource which represent special actions performed by explicit in-game choices.
+## [InputMap] [InputEventAction] names.
+## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each input action.
+## NOTE: This is NOT the same as the [Action] Resource which represent special game-specific actions performed by explicit in-game choices.
 class Actions:
 	# TBD: Rename to "InputAction" or "InputEventName" etc. to disambiguate from Comedot-specific "special/explicit" [Action]s?
 
-	# The primary movement axes in most games. Gamepad Left Joystick, Gamepad D-Pad.
-	const moveLeft		:= &"moveLeft"
-	const moveRight		:= &"moveRight"
-	const moveUp		:= &"moveUp"
-	const moveDown		:= &"moveDown"
+	# The primary movement axes in most games. Gamepad Left Joystick & D-Pad. May use the same physical controls as menu/UI selection.
+	const moveLeft		:= &"moveLeft"		## May mean "strafe" as opposed to [constant turnLeft]
+	const moveRight		:= &"moveRight"		## May mean "strafe" as opposed to [constant turnRight]
+	const moveUp		:= &"moveUp"		## May mean "increase elevation" as opposed to [constant moveForward]
+	const moveDown		:= &"moveDown"		## May mean "decrease elevation" as opposed to [constant moveBackward]
 
 	# Relative-movement controls in games where a character rotates left/right and "thrusts" forward or "reverses" backward.
 	# Also known as "tank controls", and used in games like Asteroids.
-	const turnLeft		:= &"turnLeft"  ## Gamepad Left Joystick
-	const turnRight		:= &"turnRight" ## Gamepad Left Joystick
-	const moveForward	:= &"moveForward"
-	const moveBackward	:= &"moveBackward"
+	const turnLeft		:= &"turnLeft"		## May be used for rotation if [constant moveLeft] means "strafe"
+	const turnRight		:= &"turnRight"		## May be used for rotation if [constant moveRight] means "strafe"
+	const moveForward	:= &"moveForward"	## May be used for "thrust" if [constant moveUp] controls "elevation"
+	const moveBackward	:= &"moveBackward"	## May be used for "reverse" if [constant moveDown] controls "elevation"
 
-	# A secondary axis for controlling a camera or aiming gun, cursor etc. Gamepad Right Joystick.
+	# A secondary axis for controlling a camera or aiming a gun, or a UI cursor etc. Gamepad Right Joystick.
 	const aimLeft		:= &"aimLeft"
 	const aimRight		:= &"aimRight"
 	const aimUp			:= &"aimUp"
