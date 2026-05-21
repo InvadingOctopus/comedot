@@ -251,7 +251,6 @@ static func reparentNodes(currentParent: Node, nodesToTransfer: Array[Node], new
 
 #region Position
 
-
 ## Returns the specified "design size" centered on a Node's Viewport.
 ## NOTE: The viewport size may different from the scaled screen/window size.
 static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, designHeight: float) -> Vector2:
@@ -304,6 +303,17 @@ static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistan
 		return (anchor.global_position + offset) - nodeToClamp.global_position
 	else:
 		return Vector2.ZERO
+
+#endregion
+
+
+#region Rotation
+
+## Returns the closest [enum Tools.CompassDirection] for a [Node2D].[member Node2D.rotation_degrees]
+## NOTE: 360º == 0º
+## TIP:  To use radians, use [method @GlobalScope.rad_to_deg]
+static func getDirectionFromRotationDegrees(rotationDegrees: float) -> Tools.CompassDirection:
+	return wrapi(int(round(rotationDegrees / 45.0)) * 45, 0, 360) as Tools.CompassDirection
 
 #endregion
 

@@ -13,6 +13,7 @@ extends GDScript
 enum CompassDirection {
 	# DESIGN: Start from East to match the default rotation angle of 0
 	# TBD: Should this be in `Tools.gd` or in `Global.gd`? :')
+	# TBD: PERFORMANCE: `int` or `float`?
 	none		=  -1,
 	east		=   0,
 	southEast	=  45,
