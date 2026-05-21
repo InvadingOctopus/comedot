@@ -93,6 +93,7 @@ extends Component
 
 
 #region State
+# TBD: Better names? "Input" → "Vector"? "Direction" → "Axis"?
 # TBD: @export_storage
 
 ## A list of all the input actions from [constant inputActionsToMonitor] that are currently pressed.
@@ -139,7 +140,7 @@ var verticalInput:	 			float:
 
 var aimDirection:		Vector2 ## The Right Joystick. May be used as the "look" direction for moving the camera, or for aiming a weapoon in dual-stick shoot-em-ups etc.
 var turnInput:			float ## The horizontal X axis for the Left Joystick (NOT D-pad). May be identical to [member horizontalInput]. TBD: Include D-Pad?
-var thrustInput:		float ## The vertical Y axis for the Left Joystick (NOT D-pad). May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
+var thrustInput:		float ## The vertical Y axis for the Left Joystick (NOT D-pad) representing "forward" or "backward". May be the INVERSE of [member verticalInput] because Godot's Y axis is negative for UP, but for joystick input UP is POSITIVE. TBD: Include D-Pad?
 
 var lastInputEvent:		InputEvent ## The most recent [InputEvent] received by [method handleInput]. NOTE: Only input "action" events where [method InputEvent.is_action_type] are included.
 
@@ -157,6 +158,15 @@ var shouldSuppressMouseMotion: bool = false:
 			shouldSuppressMouseMotion = newValue
 			didToggleMouseSuppression.emit(shouldSuppressMouseMotion)
 
+#endregion
+
+
+#region Derived State
+var thrustInputSign: int: ## +1 if thrusting forward (up), -1 if backwards (down) ## ALERT: This is unlike [member verticalInput] where "up" is NEGATIVE!
+	get: return int(signf(thrustInput))
+
+var turnInputSign: int: ## +1 if turning clockwise (right), -1 if counter-clockwise (left)
+	get: return int(signf(turnInput))
 #endregion
 
 
