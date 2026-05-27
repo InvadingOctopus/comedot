@@ -7,3 +7,5 @@ editor_description = "Monitors an InputComponent and controls a TileBasedPositio
 wait_time = 0.1
 one_shot = true
 script = ExtResource("1_lmkju")
+
+[connection signal="timeout" from="." to="." method="onTimeout"]
