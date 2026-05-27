@@ -22,8 +22,10 @@ enum CompassDirection {
 	west		= 180,
 	northWest	= 225,
 	north		= 270,
-	northEast	= 315
+	northEast	= 315,
 	}
+
+const degreesPerCompassDirection = 45 ## The "steps" between each [enum CompassDirection] element.
 
 const compassDirectionVectors: Dictionary[CompassDirection, Vector2i] = {
 	CompassDirection.none:		Vector2i.ZERO,
