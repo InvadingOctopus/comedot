@@ -73,6 +73,15 @@
 		"description": "A Node's input handling method."
 	},
 
+	"Turn-Based Function": {
+		"prefix": "turnBased",
+		"body": [
+			"func processTurn${1|Begin,Update,End|}() -> void:",			
+			"\t${2:pass}\n\n"
+		],
+		"description": "A function for processing a phase of a turn-based game."
+	},
+
 	"Void": {
 		"prefix": "void",
 		"body": [
@@ -81,6 +90,7 @@
 		],
 		"description": "Embrace the void."
 	},
+
 
 	"Export": {
 		"prefix": ["@export", "export"],
@@ -115,6 +125,7 @@
 		],
 		"description": "A property that returns another object's property."
 	},
+
 
 	"Property Getter": {
 		"prefix": "get",
@@ -151,7 +162,8 @@
 		],
 		"description": "A property setter which only updates a variable if the new value is different and prints a log of the change."
 	},
-	
+
+
 	"Lazy Property": {
 		"prefix": "lazyVar",
 		"body": [
@@ -161,15 +173,6 @@
 			"\t\treturn ${1:lazyProperty}\n"
 		],
 		"description": "A property which is initialized only when it is accessed."
-	},
-
-	"Signal Connection": {
-		"prefix": "connect",
-		"body": [ 
-			"Tools.connectSignal(${1}.${2}, self.${3:on${1/(.)/${1:/capitalize}/}_${2}})\n\n",
-			"${0:func $3() -> void:\n\tpass}"
-		],
-		"description": "A safe signal connector and a function to handle the signal."
 	},
 
 	"Component Dependency": {
@@ -205,18 +208,6 @@
 		"description": "Store a reference to a Stat from a StatsComponent."
 	},
 
-	"SelfCast": {
-		"prefix": "selfAs",
-		"body": ["var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}\n$0"],
-		"description": "Store reference to self casted as a different type."
-	},
-
-	"CastNode": {
-		"prefix": "castAs",
-		"body": ["var ${1/(.)/${1:/downcase}/}: ${1:Type} = ${2:nodeToCast}.get_node(^\".\") as ${1}\n$0"],
-		"description": "Access a Node as a different Node subclass."
-	},
-
 	"EnabledFlag": {
 		"prefix": "var isEnabled",
 		"body": [
@@ -229,6 +220,29 @@
 		],
 		"description": "A flag to enable/disable a script and also set per-frame updates."
 	},
+
+	"SelfCast": {
+		"prefix": "selfAs",
+		"body": ["var selfAs${1:Type}: ${1} = self.get_node(^\".\") as ${1}\n$0"],
+		"description": "Store reference to self casted as a different type."
+	},
+
+	"CastNode": {
+		"prefix": "castAs",
+		"body": ["var ${1/(.)/${1:/downcase}/}: ${1:Type} = ${2:nodeToCast}.get_node(^\".\") as ${1}\n$0"],
+		"description": "Access a Node as a different Node subclass."
+	},
+
+
+	"Signal Connection": {
+		"prefix": "connect",
+		"body": [ 
+			"Tools.connectSignal(${1}.${2}, self.${3:on${1/(.)/${1:/capitalize}/}_${2}})\n\n",
+			"${0:func $3() -> void:\n\tpass}"
+		],
+		"description": "A safe signal connector and a function to handle the signal."
+	},
+
 
 	"Debug": {
 		"prefix": "debug",
@@ -284,15 +298,6 @@
 		"description": "Prints a list of variables and recent function calls and pauses game execution."
 	},
 
-	"Region": {
-		"prefix": "region",
-		"body": [
-			"#region ${1:Title}",
-			"$0",
-			"#endregion\n\n"
-		],
-		"description": "A code region."
-	},
 
 	"Animation Tween": {
 		"prefix": "tween",
@@ -311,13 +316,33 @@
 		"description": "A function for creating a customizable animation at runtime."
 	},
 
-	"Turn-Based Function": {
-		"prefix": "turnBased",
+
+	"Region": {
+		"prefix": "region",
 		"body": [
-			"func processTurn${1|Begin,Update,End|}() -> void:",			
-			"\t${2:pass}\n\n"
+			"#region ${1:Title}",
+			"$0",
+			"#endregion\n\n"
 		],
-		"description": "A function for processing a phase of a turn-based game."
+		"description": "A code region."
+	},
+
+	"Member Link": {
+		"prefix": "member",
+		"body": ["[member ${1:property}] $0"],
+		"description": "Documentation comment link for class properties."
+	},
+
+	"Method Link": {
+		"prefix": "method",
+		"body": ["[method ${1:function}] $0"],
+		"description": "Documentation comment link for methods/functions."
+	},
+
+	"Signals Link": {
+		"prefix": "signal",
+		"body": ["[signal ${1:didSomething}] $0"],
+		"description": "Documentation comment link for signals."
 	},
 
 	"Experimental Tag": {
@@ -331,6 +356,7 @@
 		"body": ["## @deprecated${1: optional explanation}\n$0"],
 		"description": "Adds a comment to mark a script, method or property as deprecated."
 	},
+
 
 	"GDScript File Template": {
   	  "isFileTemplate": true,
