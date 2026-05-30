@@ -253,8 +253,9 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 		# First of all, is horizontal movement not allowed during climbing?
 		if not self.shouldAllowHorizontalInput and not is_zero_approx(inputComponent.horizontalInput) \
 		and not characterBodyComponent.isOnFloor: # Cancel only when not touching the ground! To allow walking while holding a fence or cliff etc. for example.
-			inputComponent.movementDirection.x = 0
-			inputComponent.horizontalInput = 0
+			# TBD: PERFORMANCE: Call InputComponent.clearMovementInputs()?
+			inputComponent.horizontalInput		= 0
+			inputComponent.movementDirection.x	= 0
 
 		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
 		# TBD:  Also check Input.is_action_just_pressed()?
@@ -303,9 +304,10 @@ func climbNearestArea() -> Area2D:
 
 		# Stop walking or flying off the ladder if trying to climb in mid-air/jump!
 		# TBD: Is this necessary or the expected behavior?
-		inputComponent.movementDirection.x = 0
-		inputComponent.horizontalInput = 0
-		characterBodyComponent.body.velocity.x = 0
+		# TBD: PERFORMANCE: Call InputComponent.clearMovementInputs()?
+		inputComponent.horizontalInput			= 0
+		inputComponent.movementDirection.x		= 0
+		characterBodyComponent.body.velocity.x	= 0
 
 		isClimbing = true
 		didStartClimb.emit(activeClimbingArea)

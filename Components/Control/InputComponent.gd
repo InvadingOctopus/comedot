@@ -98,7 +98,7 @@ extends Component
 var inputActionsPressed: PackedStringArray
 
 ## The primary movement input from the combined horizontal + vertical axes. Includes the Left Joystick & the D-pad.
-## NOTE: Diagonal movement is "normalized" as polled via [method Input.get_vector] e.g. up+right = (0.707,-0.707). For "raw" axes, use [member horizontalInput] and [member verticalInput]
+## NOTE: Diagonal movement is "normalized" as polled via [method Input.get_vector] e.g. up+right = (0.707, -0.707). For "raw" axes, use [member horizontalInput] and [member verticalInput]
 ## ALERT: This property is NOT modified on "echo" events (keys held down); ONLY on CHANGES!
 ## ALERT: Directly modifying this vector does NOT automatically update [member horizontalInput] or [member verticalInput]
 ## TIP: Call [method setMovementDirection] to properly update related state and apply normalization etc.
@@ -339,7 +339,7 @@ func handleEvent(event: InputEvent) -> void:
 	or event.is_action(GlobalInput.Actions.moveUp)		\
 	or event.is_action(GlobalInput.Actions.moveDown):
 
-		# NOTE: get_vector() is "normalized" for diagonals e.g. up+right = (0.707,-0.707), get_axis() is "raw" e.g. (1.0,-1.0)
+		# NOTE: get_vector() is "normalized" for diagonals e.g. up+right = (0.707, -0.707), get_axis() is "raw" e.g. (1.0, -1.0)
 		resyncMovementInput()
 		didHandleEvent		= true
 
@@ -434,7 +434,7 @@ func resyncAllInputs() -> void:
 ## Signals such as [signal didUpdateMovementDirection] are emitted in turn as each property is modified.
 ## NOTE: Does NOT check any [InputEvent]
 func resyncMovementInput() -> void:
-	# NOTE: get_vector() is "normalized" for diagonals e.g. up+right = (0.707,-0.707), get_axis() is "raw" e.g. (1.0,-1.0)
+	# NOTE: get_vector() is "normalized" for diagonals e.g. up+right = (0.707, -0.707), get_axis() is "raw" e.g. (1.0, -1.0)
 	# NOTE: Update `movementDirection` last so signal handlers for `didUpdateMovementDirection` can see the updated axes too
 	self.horizontalInput	= Input.get_axis(GlobalInput.Actions.moveLeft,	 GlobalInput.Actions.moveRight) * movementDirectionScale.x
 	self.verticalInput		= Input.get_axis(GlobalInput.Actions.moveUp,	 GlobalInput.Actions.moveDown)  * movementDirectionScale.y	
@@ -479,25 +479,47 @@ func onDidSetPause(isPaused: bool) -> void:
 func clearAllInputs() -> void:
 	if debugMode: printDebug("clearAllInputs()")
 	inputActionsPressed.clear()
+	# TBD: Update order: Which signals to emit first?
 	lastInputEvent				= null # NOTE: Clear this before modifying other properties, in case some setters access it.
-	movementDirection			= Vector2.ZERO
 	lastNonzeroHorizontalInput	= 0
 	horizontalInput				= 0
 	lastNonzeroVerticalInput	= 0
 	verticalInput				= 0
+	movementDirection			= Vector2.ZERO
 	aimDirection				= Vector2.ZERO
 	turnInput					= 0
 	thrustInput					= 0
 	didClearAllInputs.emit() # Let dependent components release "held" inputs like Jump/Fire etc.
 
 
+## Zeroes [member horizontalInput] & [member verticalInput] & [member movementDirection] 
+## If [param shouldClearLastNonzeroInput], also zeroes [member lastNonzeroHorizontalInput] & [member lastNonzeroVerticalInput] first.
+## ALERT: Does NOT "re-normalize" diagonal inputs! i.e. clearing X from (0.707, 0.707) leaves (0, 0.707) NOT (0, 1)
+func clearMovementInputs(shouldZeroX: bool = true, shouldZeroY: bool = true, shouldClearLastNonzeroInput: bool = false) -> void:
+	if shouldClearLastNonzeroInput:
+		if shouldZeroX: self.lastNonzeroHorizontalInput	= 0
+		if shouldZeroY: self.lastNonzeroVerticalInput	= 0
+	# TBD: Update order: Emit axes signals before `didUpdateMovementDirection`?
+	if shouldZeroX and shouldZeroY:
+		self.horizontalInput	 = 0
+		self.verticalInput		 = 0
+		self.movementDirection	 = Vector2.ZERO # Update once instead of emitting `didUpdateMovementDirection` 2 times
+	elif shouldZeroX:
+		self.horizontalInput	 = 0
+		self.movementDirection.x = 0
+	elif shouldZeroY:
+		self.verticalInput		 = 0
+		self.movementDirection.y = 0
+
+
 ## Directly modifies the [member movementDirection], applies scaling, and updates [member horizontalInput] & [member verticalInput] accordingly.
 ## NOTE: If [param shouldNormalize] is `true` (default), this method matches the behavior of actual input events,
-## where [member movementDirection] is "normalized" for diagonals, polled via [method Input.get_vector] e.g. up+right = (0.707,-0.707),
-## whereas [member horizontalInput] & [member verticalInput] are polled via [method Input.get_axis] e.g. up+right = (1.0,-1.0)
+## where [member movementDirection] is "normalized" for diagonals, polled via [method Input.get_vector] e.g. up+right = (0.707, -0.707),
+## whereas [member horizontalInput] & [member verticalInput] are polled via [method Input.get_axis] e.g. up+right = (1.0, -1.0)
 ## WARNING: Do NOT pass pre-normalized values if [param shouldNormalize]
 func setMovementDirection(newDirection: Vector2, scaleOverride: Vector2 = self.movementDirectionScale, shouldNormalize: bool = true) -> void:
 	var scaledDirection: Vector2 = newDirection * scaleOverride
+	# TBD: Update order: Emit axes signals before `didUpdateMovementDirection`?
 	self.horizontalInput	= scaledDirection.x
 	self.verticalInput		= scaledDirection.y
 	self.movementDirection	= scaledDirection if not shouldNormalize else newDirection.limit_length(1.0) * scaleOverride
