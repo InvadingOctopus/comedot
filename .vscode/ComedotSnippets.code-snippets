@@ -327,22 +327,10 @@
 		"description": "A code region."
 	},
 
-	"Member Link": {
-		"prefix": "member",
-		"body": ["[member ${1:property}] $0"],
-		"description": "Documentation comment link for class properties."
-	},
-
-	"Method Link": {
-		"prefix": "method",
-		"body": ["[method ${1:function}] $0"],
-		"description": "Documentation comment link for methods/functions."
-	},
-
-	"Signals Link": {
-		"prefix": "signal",
-		"body": ["[signal ${1:didSomething}] $0"],
-		"description": "Documentation comment link for signals."
+	"Documentation Link": {
+		"prefix": ["documentation", "doc"],
+		"body": ["[${1|member,method,signal,constant,enum|} ${2:name}] $0"],
+		"description": "Documentation comment link for class properties, methods/functions, signals etc."
 	},
 
 	"Experimental Tag": {
