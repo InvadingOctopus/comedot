@@ -64,7 +64,7 @@ func _ready() -> void:
 func onInputComponent_didChangeHorizontalDirection() -> void:
 	if not isEnabled: return
 	# Even if we don't have an AnimatedSprite2D we can flip a normal Sprite2D
-	(animatedSprite if self.animatedSprite else entity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the `previousMovementDirection` because that would be the opposite!
+	(animatedSprite if self.animatedSprite else entity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the previous/change of `movementDirection` because that would be the opposite!
 
 
 func _process(_delta: float) -> void:

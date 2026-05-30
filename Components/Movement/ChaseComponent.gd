@@ -122,7 +122,7 @@ func _physics_process(delta: float) -> void:
 
 	if shouldUpdateTargetRegularly:
 		timeToUpdateTarget -= delta
-		if timeToUpdateTarget < 0 or is_zero_approx(timeToUpdateTarget):
+		if  timeToUpdateTarget < 0 or is_zero_approx(timeToUpdateTarget):
 			timeToUpdateTarget = updateTargetInterval
 			updateTarget()
 
@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(activeTarget): return # `isEnabled` checked by property setters
 
 	self.recentChaseDirection = entity.global_position.direction_to(activeTarget.global_position).normalized()
-	inputComponent.movementDirection = self.recentChaseDirection
+	inputComponent.setMovementDirection(self.recentChaseDirection, Vector2.ONE, false) # TBD: Ignore scale, not shouldNormalize? # Also updates related axes
 
 	if debugMode: showDebugInfo()
 

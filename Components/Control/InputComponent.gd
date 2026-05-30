@@ -101,6 +101,7 @@ var inputActionsPressed: PackedStringArray
 ## NOTE: Diagonal movement is "normalized" as polled via [method Input.get_vector] e.g. up+right = (0.707,-0.707). For "raw" axes, use [member horizontalInput] and [member verticalInput]
 ## ALERT: This property is NOT modified on "echo" events (keys held down); ONLY on CHANGES!
 ## ALERT: Directly modifying this vector does NOT automatically update [member horizontalInput] or [member verticalInput]
+## TIP: Call [method setMovementDirection] to properly update related state and apply normalization etc.
 var movementDirection: Vector2:
 	set(newValue):
 		if newValue != movementDirection: # Ignore "echoes" (repeated events generated when the same input is pressed and held)

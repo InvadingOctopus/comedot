@@ -58,7 +58,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	# Chec if an input already pressed before this component was ready
-	# TBD: inputComponent.resyncInput()?
+	# TBD: inputComponent.resyncAllInputs()?
 	if not inputComponent.movementDirection.is_zero_approx():
 		self.onInputComponent_didProcessInput(null)
 

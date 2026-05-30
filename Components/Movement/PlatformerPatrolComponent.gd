@@ -107,7 +107,13 @@ func _physics_process(delta: float) -> void:
 	updateCollisionFlags() # TBD: Should the raycasts be updated before or after movement?
 	updatePatrolDirection()
 	inputComponent.shouldSkipNextEvent = true
-	inputComponent.horizontalInput = getNextHorizontalInput(delta)
+
+	var nextHorizontalInput: float = getNextHorizontalInput(delta)
+
+	if not is_equal_approx(nextHorizontalInput, inputComponent.horizontalInput): # PERFORMANCE: Avoid calls if no changes
+		inputComponent.setMovementDirection(
+			Vector2(nextHorizontalInput, inputComponent.verticalInput),
+			Vector2.ONE) # Also updates related axes # TBD: Ignore scale or allow inverted movement etc.?
 
 	if debugMode: showDebugInfo()
 

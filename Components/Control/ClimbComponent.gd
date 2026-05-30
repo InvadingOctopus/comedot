@@ -253,6 +253,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 		# First of all, is horizontal movement not allowed during climbing?
 		if not self.shouldAllowHorizontalInput and not is_zero_approx(inputComponent.horizontalInput) \
 		and not characterBodyComponent.isOnFloor: # Cancel only when not touching the ground! To allow walking while holding a fence or cliff etc. for example.
+			inputComponent.movementDirection.x = 0
 			inputComponent.horizontalInput = 0
 
 		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
@@ -302,6 +303,7 @@ func climbNearestArea() -> Area2D:
 
 		# Stop walking or flying off the ladder if trying to climb in mid-air/jump!
 		# TBD: Is this necessary or the expected behavior?
+		inputComponent.movementDirection.x = 0
 		inputComponent.horizontalInput = 0
 		characterBodyComponent.body.velocity.x = 0
 
@@ -344,15 +346,20 @@ func getOffsetOutsideClimbable(targetRect: Rect2) -> Vector2:
 func walkIntoArea(targetArea: Area2D) -> Vector2:
 	# DESIGN: Cannot use PlatformerPhysicsComponent.walkIntoRect() because ClimbComponent uses its own Area2D, not the CharacterBody2D's CollisionShape2D.
 
-	var displacement: Vector2 = getOffsetOutsideClimbable(CollisionTools.getAllShapeGlobalBounds(targetArea))
+	var displacement:  Vector2 = getOffsetOutsideClimbable(CollisionTools.getAllShapeGlobalBounds(targetArea))
+	var horizontalInput: float
 
 	# Walk into the interior
+
 	if not displacement.is_zero_approx():
 		# NOTE: Use the INVERSE of the displacement, because -1.0 means we're sticking out to the LEFT, so we need to move to the RIGHT
 		if absf(displacement.x) > 1 or is_equal_approx(absf(displacement.x), 1): # Check the absolute value because <0 means a leftwards offset
-			inputComponent.horizontalInput = signf(-displacement.x) # Set the input fully to the left or right (-1/+1)
+			horizontalInput = signf(-displacement.x) # Set the input fully to the left or right (-1/+1)
 		else:
-			inputComponent.horizontalInput = -displacement.x # If the displacement is too minor, don't use the maximum -1/+1 input range
+			horizontalInput = -displacement.x # If the displacement is too minor, don't use the maximum -1/+1 input range
+
+	if not is_equal_approx(horizontalInput, inputComponent.horizontalInput): # PERFORMANCE: Avoid calls if no changes
+		inputComponent.setMovementDirection(Vector2(horizontalInput, inputComponent.verticalInput)) # Also updates related properties # TBD: Ignore scale or allow inverted movement etc.?
 
 	# TBD: Neutralize inertia so we don't slide too deep into the Climbable?
 
