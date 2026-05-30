@@ -43,7 +43,7 @@ func _process(delta: float) -> void:
 		entity.global_position += offset
 	else:
 		if shouldUseInputComponent and inputComponent:
-			inputComponent.setMovementDirection(offset.normalized(), Vector2.ONE, false) # Ignore scale to maintain exact visual distance, not shouldNormalize # Also updates related axes
+			inputComponent.setMovementInputs(offset.normalized(), Vector2.ONE, false) # Ignore scale to maintain exact visual distance, not shouldNormalize # Also updates related axes
 		else:
 			entity.global_position = entity.global_position.move_toward(entity.global_position + offset, speed * delta)
 

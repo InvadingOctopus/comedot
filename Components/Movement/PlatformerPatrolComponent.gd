@@ -111,7 +111,7 @@ func _physics_process(delta: float) -> void:
 	var nextHorizontalInput: float = getNextHorizontalInput(delta)
 
 	if not is_equal_approx(nextHorizontalInput, inputComponent.horizontalInput): # PERFORMANCE: Avoid calls if no changes
-		inputComponent.setMovementDirection(
+		inputComponent.setMovementInputs(
 			Vector2(nextHorizontalInput, inputComponent.verticalInput),
 			Vector2.ONE) # Also updates related axes # TBD: Ignore scale or allow inverted movement etc.?
 

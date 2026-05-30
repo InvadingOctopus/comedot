@@ -101,7 +101,7 @@ var inputActionsPressed: PackedStringArray
 ## NOTE: Diagonal movement is "normalized" as polled via [method Input.get_vector] e.g. up+right = (0.707, -0.707). For "raw" axes, use [member horizontalInput] and [member verticalInput]
 ## ALERT: This property is NOT modified on "echo" events (keys held down); ONLY on CHANGES!
 ## ALERT: Directly modifying this vector does NOT automatically update [member horizontalInput] or [member verticalInput]
-## TIP: Call [method setMovementDirection] to properly update related state and apply normalization etc.
+## TIP: Call [method setMovementInputs] to properly update related state and apply normalization etc.
 var movementDirection: Vector2:
 	set(newValue):
 		if newValue != movementDirection: # Ignore "echoes" (repeated events generated when the same input is pressed and held)
@@ -517,7 +517,7 @@ func clearMovementInputs(shouldZeroX: bool = true, shouldZeroY: bool = true, sho
 ## where [member movementDirection] is "normalized" for diagonals, polled via [method Input.get_vector] e.g. up+right = (0.707, -0.707),
 ## whereas [member horizontalInput] & [member verticalInput] are polled via [method Input.get_axis] e.g. up+right = (1.0, -1.0)
 ## WARNING: Do NOT pass pre-normalized values if [param shouldNormalize]
-func setMovementDirection(newDirection: Vector2, scaleOverride: Vector2 = self.movementDirectionScale, shouldNormalize: bool = true) -> void:
+func setMovementInputs(newDirection: Vector2, scaleOverride: Vector2 = self.movementDirectionScale, shouldNormalize: bool = true) -> void:
 	var scaledDirection: Vector2 = newDirection * scaleOverride
 	# TBD: Update order: Emit axes signals before `didUpdateMovementDirection`?
 	self.horizontalInput	= scaledDirection.x

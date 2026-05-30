@@ -66,7 +66,7 @@ func _physics_process(delta: float) -> void:
 
 	# Apply the movement
 	if shouldUseInputComponent and inputComponent:
-		inputComponent.setMovementDirection(self.currentDirection, Vector2.ONE, false) # TBD: Ignore scale, not shouldNormalize? # Also updates related axes
+		inputComponent.setMovementInputs(self.currentDirection, Vector2.ONE, false) # TBD: Ignore scale, not shouldNormalize? # Also updates related axes
 	elif not shouldUseInputComponent:
 		entity.position += currentDirection * speed * delta
 		entity.reset_physics_interpolation()

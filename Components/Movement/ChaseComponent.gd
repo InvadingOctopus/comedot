@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(activeTarget): return # `isEnabled` checked by property setters
 
 	self.recentChaseDirection = entity.global_position.direction_to(activeTarget.global_position).normalized()
-	inputComponent.setMovementDirection(self.recentChaseDirection, Vector2.ONE, false) # TBD: Ignore scale, not shouldNormalize? # Also updates related axes
+	inputComponent.setMovementInputs(self.recentChaseDirection, Vector2.ONE, false) # TBD: Ignore scale, not shouldNormalize? # Also updates related axes
 
 	if debugMode: showDebugInfo()
 

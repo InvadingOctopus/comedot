@@ -361,7 +361,7 @@ func walkIntoArea(targetArea: Area2D) -> Vector2:
 			horizontalInput = -displacement.x # If the displacement is too minor, don't use the maximum -1/+1 input range
 
 	if not is_equal_approx(horizontalInput, inputComponent.horizontalInput): # PERFORMANCE: Avoid calls if no changes
-		inputComponent.setMovementDirection(Vector2(horizontalInput, inputComponent.verticalInput)) # Also updates related properties # TBD: Ignore scale or allow inverted movement etc.?
+		inputComponent.setMovementInputs(Vector2(horizontalInput, inputComponent.verticalInput)) # Also updates related properties # TBD: Ignore scale or allow inverted movement etc.?
 
 	# TBD: Neutralize inertia so we don't slide too deep into the Climbable?
 
