@@ -92,10 +92,11 @@ func getRequiredComponents() -> Array[Script]:
 #region Input & Setup
 
 func _ready() -> void:
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didUpdateMovementDirection,	self.onInputComponent_didUpdateMovementDirection)
+	Tools.connectSignal(inputComponent.didProcessInput,				self.onInputComponent_didProcessInput)
 
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didUpdateMovementDirection(_movementDirection: Vector2, _difference: Vector2) -> void:
 	if not isEnabled: return
 
 	# DESIGN: TBD: PERFORMANCE: Some of these `if` and `else` chains may seem redundant & excessive,
@@ -108,41 +109,45 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	lastVerticalInputDirection	= int(signf(lastVerticalInput))
 	isLastVerticalInputZero		= is_zero_approx(lastVerticalInput)
 
-	# Are we not climbing? Check for events that will start climbing.
+	# TBD:  Also check Input.is_action_just_pressed()?
+
+	# Are we not climbing? Check for inputs that can trigger climbing.
 	if not isClimbing:
-
-		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
-		# TBD:  Also check Input.is_action_just_pressed()?
-
 		# Was a vertical movement input received?
 		# NOTE: If we're on the ground, then climb ONLY if the input is UP
-		if (event.is_action_pressed(GlobalInput.Actions.moveUp) \
-		or (not characterBodyComponent.isOnFloor and event.is_action_pressed(GlobalInput.Actions.moveDown))):
-
+		if  lastVerticalInputDirection < 0 \
+		or (lastVerticalInputDirection > 0 and not characterBodyComponent.isOnFloor):
 			var map: TileMapLayer = findTileMap()
 			if  map: climbTileMap(map)
 
-	# Are we already climbing? Check for events that will end the climb.
+	# Are we already climbing? Check for inputs that can end the climb.
 	elif isClimbing:
 
-		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
-
-		# Did we jump?
-		if event.is_action_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
-			stopClimbing()
-
-		# Did we cancel climbing?
-		# TBD: Cancel on "just pressed" or released?
-		elif not cancelClimbInputActionName.is_empty() and event.is_action_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
-			stopClimbing()
-
 		# If we try to go lower while already touching the ground, get off the ladder etc.
-		elif lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor:
+		if lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor:
 			stopClimbing()
 
+		# NOTE: Check for jump etc in onInputComponent_didProcessInput()
 		# TBD: set_input_as_handled() after each cancellation?
 
 	if debugMode: showDebugInfo()
+
+
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
+	# Check for non-movement inputs such as Jump that can cancel climbing
+	if not isEnabled or not isClimbing: return
+
+	# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
+	# TBD:  Also check Input.is_action_just_pressed()?
+
+	# Did we jump while touching the floor?
+	if event.is_action_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
+		stopClimbing()
+	
+	# Did we press a specici cancellation action?
+	# TBD: Cancel on "just pressed" or released?
+	elif not cancelClimbInputActionName.is_empty() and event.is_action_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
+		stopClimbing()
 
 
 ## Returns the [TileMapLayer] at the entity's [member Node2D.global_position].

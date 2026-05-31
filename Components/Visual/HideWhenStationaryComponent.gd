@@ -5,6 +5,7 @@ class_name HideWhenStationaryComponent
 extends Component
 
 # TODO: Add autohide on no MOTION (difference in position)
+# TODO: Ignore joysticks that don't cause any movement
 # TBD: Better name?
 
 
@@ -43,14 +44,14 @@ func _ready() -> void:
 		if shouldHideOnReady: nodeToHide.visible = false
 		else: hidingTimer.start()
 
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
-	Tools.connectSignal(inputComponent.didToggleMouseSuppression, self.onInputComponent_didToggleMouseSuppression)
+	Tools.connectSignal(inputComponent.didProcessInput,				self.onInputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didToggleMouseSuppression,	self.onInputComponent_didToggleMouseSuppression)
 
 
 #region Input
 
 func onInputComponent_didProcessInput(event: InputEvent) -> void:
-	# TODO: Ignore joysticks that don't cause any movement.
+	# PERFORMANCE: Not using `didUpdateMovementDirection` or `didUpdateAimDirection` to avoid too many signals, when we have `didProcessInput` anyway.
 	# Stay visible while there is movement input.
 	if  (not nodeToHide.visible or not hidingTimer.is_stopped()) \
 	and (not inputComponent.movementDirection.is_zero_approx() \
@@ -64,8 +65,8 @@ func onInputComponent_didToggleMouseSuppression(shouldSuppressMouse: bool) -> vo
 
 
 func _input(event: InputEvent) -> void:
-	# Did the mouse move?
-	if event is InputEventMouseMotion and not nodeToHide.visible or not hidingTimer.is_stopped():
+	# Stay visible while the mosue is moving.
+	if event is InputEventMouseMotion and (not nodeToHide.visible or not hidingTimer.is_stopped()):
 		show()
 
 #endregion

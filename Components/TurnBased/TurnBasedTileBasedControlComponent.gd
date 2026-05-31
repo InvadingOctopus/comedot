@@ -35,19 +35,14 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
+	Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
 	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` AFTER processTurnEnd()
 
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
-	if not isEnabled or shouldMoveRandomly or not event.is_action_type(): return
-
-	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
-	or event.is_action_pressed(GlobalInput.Actions.moveRight) \
-	or event.is_action_pressed(GlobalInput.Actions.moveUp) \
-	or event.is_action_pressed(GlobalInput.Actions.moveDown):
-		self.recentInputVector = inputComponent.movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
-		if validateMove(): move() # May start the turn
+func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
+	if not isEnabled or shouldMoveRandomly: return
+	self.recentInputVector = movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
+	if validateMove(): move() # May start the turn
 
 
 func onTurnBasedCoordinator_didReadyToStartTurn() -> void:

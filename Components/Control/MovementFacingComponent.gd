@@ -16,19 +16,18 @@ extends Component
 #region Dependencies
 @onready var inputComponent: InputComponent = getCoComponent(InputComponent, true) # findSubclasses
 
-func getRequiredComponents() -> Array[Script]:
-	return [InputComponent]
+func getRequiredComponents() -> Array[Script]: return [InputComponent]
 #endregion
 
 
 func _ready() -> void:
 	if not nodeToRotate: nodeToRotate = entity
-	if inputComponent: Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
+	if inputComponent: Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
 	else: printWarning(str("Missing InputComponent in ", entity.logFullName))
 
 
-func onInputComponent_didProcessInput(_event: InputEvent) -> void:
-	if not inputComponent.movementDirection.is_zero_approx(): faceInputDirection()
+func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
+	if not movementDirection.is_zero_approx(): faceInputDirection()
 
 
 func faceInputDirection() -> void:

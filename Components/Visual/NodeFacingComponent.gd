@@ -56,6 +56,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# TBD: Use InputComponent?
 	# Suppress the turning control if we also have a TurningControlComponent and there was a `turn` event.
 	if shouldDisableOnTurningInput and haveTurningControlComponent:
 		if self.isEnabled \

@@ -88,16 +88,25 @@ func _ready() -> void:
 
 	self.set_physics_process(isEnabled and is_instance_valid(targetingNode))
 
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
-	Tools.connectSignal(damageComponent.didCollideReceiver, self.onDamageComponent_didCollideReceiver)
+	Tools.connectSignal(inputComponent.didUpdateInputActionsList,	self.onInputComponent_didUpdateInputActionsList)
+	Tools.connectSignal(inputComponent.didResyncAllInputs,			self.resyncInput)
+	Tools.connectSignal(inputComponent.didClearAllInputs,			self.resyncInput)
+	Tools.connectSignal(damageComponent.didCollideReceiver,			self.onDamageComponent_didCollideReceiver)
 
 
 #region Input
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
-	if event.is_action(GlobalInput.Actions.fire):
-		self.isFiring = isEnabled and event.is_action_pressed(GlobalInput.Actions.fire)
-		if self.isFiring and not self.isOnCooldown: fire() # Fire when clicking.
+func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
+	if not event.is_action(GlobalInput.Actions.fire): return
+
+	resyncInput()
+	# Fire the initial shot only from a real fire-press event.
+	if self.isFiring and event.is_action_pressed(GlobalInput.Actions.fire) and not self.isOnCooldown: fire()
+
+
+## Resets input on [signal InputComponent.didClearAllInputs] & [signal InputComponent.didResyncAllInputs]
+func resyncInput() -> void:
+	self.isFiring = isEnabled and inputComponent.inputActionsPressed.has(GlobalInput.Actions.fire)
 
 
 func _physics_process(_delta: float) -> void:

@@ -161,16 +161,15 @@ func _ready() -> void:
 	if characterBodyComponent: characterBodyComponent.didMove.connect(self.characterBodyComponent_didMove)
 	else: printWarning("Missing CharacterBodyComponent")
 
-	# NOTE: Just handle the input event early on instead of waiting for the `didUpdateInputActionsList` signal
-	# because this component only depends on 1 event anyway: Jump.
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
-
+	Tools.connectSignal(inputComponent.didUpdateInputActionsList,	self.onInputComponent_didUpdateInputActionsList)
+	Tools.connectSignal(inputComponent.didResyncAllInputs,			self.resyncInput)
+	Tools.connectSignal(inputComponent.didClearAllInputs,			self.resyncInput)
 	self.set_physics_process(debugMode)
 
 
 #region Update Cycle
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 	if not isEnabled \
 	or not event.is_action(GlobalInput.Actions.jump) \
 	or parameters.maxNumberOfJumps < 1: return
@@ -195,6 +194,12 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 		processJump()
 		# If no jumps were made/possible, buffer the input if allowed
 		if jumpInputJustPressed and shouldBufferInput: inputBufferTimer.start() # To be handled in characterBodyComponent_didMove()
+
+
+## Resets input on [signal InputComponent.didClearAllInputs] & [signal InputComponent.didResyncAllInputs]
+func resyncInput() -> void:
+	self.jumpInput = isEnabled and parameters.maxNumberOfJumps >= 1 and inputComponent.inputActionsPressed.has(GlobalInput.Actions.jump)
+	clearInput()
 
 
 ## Performs updates that depend on the state AFTER the position is updated by [CharacterBody2D.move_and_slide].

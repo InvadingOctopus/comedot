@@ -1,5 +1,6 @@
 ## Sets the [Entity]'s position directly on player input, without any physics.
 ## May optionally use the secondary input axis such as the right gamepad joystick, to control the camera or an aiming cursor etc.
+## TIP: For collision-aware movement, use physics components such as [OverheadPhysicsComponent] that update velocity through [CharacterBodyComponent]
 
 class_name PositionControlComponent
 extends Component
@@ -17,14 +18,20 @@ extends Component
 ## that may be used to control a camera angle or an targeting cursor etc.
 ## TIP: If `true` then [member inputComponent.shouldJoystickAimingSuppressMouse] should be on.
 ## If `false` then [member inputComponent.shouldJoystickMovementSuppressMouse] should be on.
-@export var shouldUseSecondaryAxis: bool = false
+@export var shouldUseSecondaryAxis: bool = false:
+	set(newValue):
+		if newValue != shouldUseSecondaryAxis:
+			shouldUseSecondaryAxis = newValue
+			if self.is_node_ready():
+				toggleInputSignals()
+				syncInput()
 
 @export var isEnabled: bool = true:
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx())
-			Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
+			self.set_process(isEnabled and not self.lastDirection.is_zero_approx())
+			toggleInputSignals()
 
 #endregion
 
@@ -34,7 +41,7 @@ var lastDirection: Vector2:
 	set(newValue):
 		if newValue != lastDirection:
 			lastDirection = newValue
-			self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx())
+			self.set_process(isEnabled and not self.lastDirection.is_zero_approx())
 #endregion
 
 
@@ -47,14 +54,32 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	Tools.toggleSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput, self.isEnabled)
-	self.set_physics_process(isEnabled and not self.lastDirection.is_zero_approx()) # Apply setter because Godot doesn't on initialization
+	toggleInputSignals()
+	syncInput()
+	self.set_process(isEnabled and not self.lastDirection.is_zero_approx()) # Apply setter because Godot doesn't on _ready()
 
 
-func onInputComponent_didProcessInput(_event: InputEvent) -> void:
+func toggleInputSignals() -> void:
+	Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled and not self.shouldUseSecondaryAxis)
+	Tools.toggleSignal(inputComponent.didUpdateAimDirection,      self.onInputComponent_didUpdateAimDirection,      self.isEnabled and self.shouldUseSecondaryAxis)
+
+
+func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
+	# `shouldUseSecondaryAxis` checked by toggleInputSignals()
+	self.lastDirection = movementDirection
+
+
+func onInputComponent_didUpdateAimDirection(aimDirection: Vector2, _difference: Vector2) -> void:
+	# `shouldUseSecondaryAxis` checked by toggleInputSignals()
+	self.lastDirection = aimDirection
+
+
+## Syncs [member lastDirection] with [member InputComponent.movementDirection] or [member InputComponent.aimDirection] depending on [member shouldUseSecondaryAxis]
+func syncInput() -> void:
 	self.lastDirection = inputComponent.movementDirection if not shouldUseSecondaryAxis else inputComponent.aimDirection
 
 
-func _process(delta: float) -> void: # TBD: Should this be `_physics_process()` or `_process()`?
+func _process(delta: float) -> void:
+	# DESIGN: Use _process() instead of _physics_process() because this component directly changes visual position (e.g. for cursors) without CharacterBody2D physics etc.
 	# NOTE: Cannot use _input() because `delta` is needed.
 	entity.position += lastDirection * speed * delta

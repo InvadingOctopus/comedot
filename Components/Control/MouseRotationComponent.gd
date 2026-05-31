@@ -3,7 +3,7 @@
 ## ALERT: Mutually exclusive with [TurningControlComponent] etc. Add an [InputComponent] to resolve conflicts with joystick or keyboard turning input.
 
 class_name MouseRotationComponent
-extends Component # DESIGN: Not [InputDependentComponentBase] because [InputComponent] is optional
+extends Component
 
 # BUG: Custom mouse cursor disappears after mouse moves (macOS?)
 

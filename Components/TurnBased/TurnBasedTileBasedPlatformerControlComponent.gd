@@ -6,6 +6,7 @@
 class_name TurnBasedTileBasedPlatformerControlComponent
 extends TurnBasedTileBasedControlComponent
 
+# TODO: Use InputComponent
 # TBD: A better name...?
 
 

@@ -155,6 +155,7 @@ func _ready() -> void:
 
 	self.updateSetAllProcess()
 
+	Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	Tools.connectSignal(characterBodyComponent.didMove, self.oncharacterBodyComponent_didMove) # For confinement # TODO: Toggle signal based on flags
 
@@ -222,7 +223,7 @@ func updateActiveClimbingAreaBounds() -> Rect2:
 
 #region Input & Interface
 
-func onInputComponent_didProcessInput(event: InputEvent) -> void:
+func onInputComponent_didUpdateMovementDirection(_movementDirection: Vector2, _difference: Vector2) -> void:
 	if not isEnabled: return
 
 	# DESIGN: TBD: PERFORMANCE: Some of these `if` and `else` chains may seem redundant & excessive,
@@ -235,7 +236,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 	lastVerticalInputDirection	= int(signf(lastVerticalInput))
 	isLastVerticalInputZero		= is_zero_approx(lastVerticalInput)
 
-	# Are we not climbing? Check for events that will start climbing.
+	# Are we not climbing? Check for inputs that can trigger climbing.
 	if not isClimbing:
 
 		# Are we in a climbable area?
@@ -247,7 +248,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 			if lastVerticalInputDirection < 0 or not characterBodyComponent.isOnFloor:
 				startClimbing()
 
-	# Are we already climbing? Check for events that will end the climb.
+	# Are we already climbing? Check for inputs that can end the climb.
 	elif isClimbing:
 
 		# First of all, is horizontal movement not allowed during climbing?
@@ -257,24 +258,31 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 			inputComponent.horizontalInput		= 0
 			inputComponent.movementDirection.x	= 0
 
-		# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
-		# TBD:  Also check Input.is_action_just_pressed()?
-
-		# Did we jump?
-		if event.is_action_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
-			stopClimbing()
-
-		# Did we cancel climbing?
-		# TBD: Cancel on "just pressed" or released?
-		elif not cancelClimbInputActionName.is_empty() and event.is_action_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
-			stopClimbing()
-
 		# If we try to go lower while already touching the ground, get off the ladder etc.
-		elif lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor:
+		if lastVerticalInputDirection > 0 and characterBodyComponent.isOnFloor:
 			stopClimbing()
+
+		# NOTE: Check for jump etc in onInputComponent_didProcessInput()
 
 	# TBD: set_input_as_handled() after each cancellation?
 	# NOTE: Per-frame movement occurs in _physics_process()
+
+
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
+	# Check for non-movement inputs such as Jump that can cancel climbing
+	if not isEnabled or not isClimbing: return
+
+	# NOTE: Check `event` instead of Input.is_action_just_pressed() etc to allow for AI/scripted control etc.
+	# TBD:  Also check Input.is_action_just_pressed()?
+
+	# Did we jump while touching the floor?
+	if event.is_action_pressed(GlobalInput.Actions.jump) and characterBodyComponent.isOnFloor:
+		stopClimbing()
+	
+	# Did we press a specici cancellation action?
+	# TBD: Cancel on "just pressed" or released?
+	elif not cancelClimbInputActionName.is_empty() and event.is_action_pressed(cancelClimbInputActionName): # Make sure the string isn't empty first or we may match against unintended inputs!
+		stopClimbing()
 
 
 ## If not already climbing, uses [method climbNearestArea] to start climbing and returns the [member activeClimbingArea].
@@ -302,14 +310,13 @@ func climbNearestArea() -> Area2D:
 		characterBodyComponent.body.velocity.y = 0 # NOTE: Stop any other vertical movement. FIXES: Gradual buildup of gravity from "bouncing" outside a Climbable etc.
 		if shouldSnapToClimbableArea: snapToActiveClimbingArea()
 
-		# Stop walking or flying off the ladder if trying to climb in mid-air/jump!
+		# Stop walking or flying off the ladder if trying to climb in mid-air/during a jump!
 		# TBD: Is this necessary or the expected behavior?
+		self.isClimbing							= true
 		# TBD: PERFORMANCE: Call InputComponent.clearMovementInputs()?
 		inputComponent.horizontalInput			= 0
 		inputComponent.movementDirection.x		= 0
 		characterBodyComponent.body.velocity.x	= 0
-
-		isClimbing = true
 		didStartClimb.emit(activeClimbingArea)
 
 	return activeClimbingArea

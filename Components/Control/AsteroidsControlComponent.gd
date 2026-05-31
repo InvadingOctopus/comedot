@@ -51,21 +51,18 @@ func _ready() -> void:
 	else:
 		printWarning("Missing entity.body: " + entity.logName)
 
-	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 
 
 #region Update
 
-func onInputComponent_didProcessInput(_event: InputEvent) -> void:
-	# Cache InputComponent state for convenient local access
-	self.turnInput   = inputComponent.turnInput
-	self.thrustInput = inputComponent.thrustInput
-
-
 ## Get the input direction and handle the movement/deceleration.
 func processInput(delta: float) -> void:
 	if not isEnabled: return
+
+	# Cache InputComponent state for quick local access
+	self.turnInput   = inputComponent.turnInput
+	self.thrustInput = inputComponent.thrustInput
 
 	# Turn
 

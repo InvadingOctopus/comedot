@@ -124,13 +124,21 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	super._ready()
-	Tools.connectSignal(inputComponent.didUpdateInputActionsList, self.onInputComponent_didUpdateInputActionsList)
+	Tools.connectSignal(inputComponent.didUpdateInputActionsList,	self.onInputComponent_didUpdateInputActionsList)
+	Tools.connectSignal(inputComponent.didResyncAllInputs,			self.resyncInput)
+	Tools.connectSignal(inputComponent.didClearAllInputs,			self.resyncInput)
 	setProcess()
 
 
 #region Process Input
 
 func onInputComponent_didUpdateInputActionsList(_event: InputEvent) -> void:
+	# TBD: Check `event` instead of `Input`?
+	resyncInput()
+
+
+## Resets input on [signal InputComponent.didClearAllInputs] & [signal InputComponent.didResyncAllInputs]
+func resyncInput() -> void:
 	isFireActionPressed = inputComponent.inputActionsPressed.has(GlobalInput.Actions.fire) # DESIGN: Check state instead of InputEvent, to allow runtime modification/injection.
 	if isFireActionPressed: wasFireActionJustPressed = Input.is_action_just_pressed(GlobalInput.Actions.fire)
 	else: wasFireActionJustPressed = false
