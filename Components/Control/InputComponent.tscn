@@ -4,3 +4,4 @@
 
 [node name="InputComponent" type="Node" unique_id=1162744559 groups=["components"]]
 script = ExtResource("1_ixh7e")
+shouldNotifyOnEntityReady = true

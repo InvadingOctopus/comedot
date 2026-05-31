@@ -43,13 +43,14 @@ var coComponents: Dictionary[StringName, Component]
 ## which implies all other components and child nodes have also finished their [method Node._ready]
 ## PERFORMANCE: This is an optional behavior to improve performance by avoiding signal connections unless needed.
 ## IMPORTANT: This flag must be enabled BEFORE [method Entity.installComponent] e.g. during [constant NOTIFICATION_PARENTED] or [method Component.onParented]
+## WARNING: Disabling this flag in the Godot Editor Inspector may break some components that have enabled it in their scene.
 ## @experimental
-var shouldNotifyOnEntityReady:		bool = false # DESIGN: Not `@export` because it's an internal flag that should be set by a component script that needs it. 
+@export var shouldNotifyOnEntityReady:	bool = false # DESIGN: PERFORMANCE: `@export` so it can be set on a component .tscn scene instead of overriding one of the initialization methods.
 
 ## Let this [Component] be added to nodes that are not an [Entity]?
 ## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing, or for cases like adding "payload" components to [InjectorComponent] etc.
 ## @experimental
-@export var allowNonEntityParent:	bool = false
+@export var allowNonEntityParent:		bool = false
 
 #endregion
 

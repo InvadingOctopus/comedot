@@ -221,7 +221,7 @@ signal didChangeVerticalDirection
 
 ## Emitted after [member aimDirection] is updated with a non-zero [param difference]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member turnInput] or [member thrustInput] etc.
-signal didUpdateAimDirection(aimDirection: Vector2,	difference: Vector2)
+signal didUpdateAimDirection(aimDirection: Vector2, difference: Vector2)
 
 ## Emitted after [member turnInput] is updated with a non-zero [param difference]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member movementDirection] or [member aimDirection] etc.
@@ -247,12 +247,6 @@ signal didToggleMouseSuppression(shouldSuppressMouse: bool)
 
 #region Initialization
 
-func onParented() -> void:
-	# Connect to onEntityDidReady() so we can let other components sync with the initial input state, independent of node _ready() order.
-	self.shouldNotifyOnEntityReady = true # CHECK: Should this be done earlier, in _init() or something?
-	super.onParented()
-
-
 func _ready() -> void:
 	setAllProcesses() # Apply setters because Godot doesn't on _ready()
 
@@ -269,7 +263,7 @@ func setAllProcesses() -> void:
 
 
 func onEntityDidReady() -> void:
-	# NOTE: `shouldNotifyOnEntityReady` is set in onParented()
+	# NOTE: `shouldNotifyOnEntityReady` is set in the `InputComponent.tscn` scene
 	# Sync with input actions that were pressed/released BEFORE _ready() and let other components sync with the input state before the first update.
 	resyncAllInputs()
 
