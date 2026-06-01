@@ -17,17 +17,17 @@ extends Entity
 
 
 #region State
-var property: int ## Placeholder
+var property: int ## PLACEHOLDER
 #endregion
 
 
 #region Signals
-signal didSomethingHappen ## Placeholder
+signal didSomethingHappen ## PLACEHOLDER
 #endregion
 
 
 #region Dependencies
-@onready var childNode: Node2D = $Node2D  ## Placeholder
+@onready var childNode: Node2D = $Node2D  ## PLACEHOLDER
 #endregion
 
 
@@ -35,12 +35,12 @@ func _ready() -> void:
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
 	self.set_process_input(isEnabled)
-	# Placeholder: Add any code needed to configure and prepare the component.
+	# PLACEHOLDER: Add any code needed to configure and prepare the component.
 
 
 func _input(event: InputEvent) -> void:
-	pass # Placeholder: Handle one-shot input events such as jumping or firing.
+	pass # PLACEHOLDER: Handle one-shot input events such as jumping or firing.
 
 
 func _process(delta: float) -> void: # NOTE: If you need to process movement or collisions, use `_physics_process()`
-	pass # Placeholder: Perform any per-frame updates.
+	pass # PLACEHOLDER: Perform any per-frame updates.

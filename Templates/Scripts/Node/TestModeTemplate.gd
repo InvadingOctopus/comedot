@@ -18,6 +18,6 @@ func onDidToggleTestMode() -> void:
 
 func _process(_delta: float) -> void:
 	# Perform any per-frame updates that may help with testing, such as displaying the values of other variables or clamping the physics of entities etc.
-	pass  
+	pass
 
 #endregion

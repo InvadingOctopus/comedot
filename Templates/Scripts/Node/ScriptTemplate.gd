@@ -12,12 +12,12 @@ extends Node
 
 
 #region State
-var placeholder: int ## Placeholder
+var placeholder: int ## PLACEHOLDER
 #endregion
 
 
 #region Signals
-signal didSomethingHappen ## Placeholder
+signal didSomethingHappen ## PLACEHOLDER
 #endregion
 
 
