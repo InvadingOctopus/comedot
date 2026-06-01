@@ -31,11 +31,11 @@ signal didHidePauseOverlay
 
 @warning_ignore_start("unused_signal") # IGNORE Godot Warning; these signals are used by other classes.
 
-# TBD: Should these signals be moved to Action itself?
-signal actionDidRequestTarget(action: Action, source: Entity) ## Emitted when an [Action] requires a target, so that the UI may prompt the player to choose a target.
-signal actionIsChoosingTarget(action: Action, source: Entity) ## Emitted when an [ActionTargetingComponentBase] prompts the player for an [Action] target. This signal may be used by UI such as [ActionButton] to update its visual state until a target is chosen.
-signal actionDidCancelTarget(action:  Action, source: Entity) ## Emitted when an [ActionTargetingComponentBase] cancels target selection.
-signal actionDidChooseTarget(action:  Action, source: Entity, target: Variant) ## Emitted when an [ActionTargetingComponentBase] chooses a target for an [Action]. This signal may be used by UI such as [ActionButton] to update its visual state.
+# TBD: Should these signals be moved to Ability itself?
+signal abilityDidRequestTarget(ability: Ability, source: Entity) ## Emitted when an [Ability] requires a target, so that the UI may prompt the player to choose a target.
+signal abilityIsChoosingTarget(ability: Ability, source: Entity) ## Emitted when an [AbilityTargetingComponentBase] prompts the player for an [Ability] target. This signal may be used by UI such as [AbilityButton] to update its visual state until a target is chosen.
+signal abilityDidCancelTarget(ability:  Ability, source: Entity) ## Emitted when an [AbilityTargetingComponentBase] cancels target selection.
+signal abilityDidChooseTarget(ability:  Ability, source: Entity, target: Variant) ## Emitted when an [AbilityTargetingComponentBase] chooses a target for an [Ability]. This signal may be used by UI such as [AbilityButton] to update its visual state.
 
 @warning_ignore_restore("unused_signal")
 #endregion

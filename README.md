@@ -61,7 +61,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
 	* `/Templates/` contains scenes and Entities with preset Components as a quick starting point for various gameplay.
 	* `/Scripts/` contains code for non-Entity nodes.
-	* `/UI/` contains customizable UI elements for health, ammo, actions, upgrades etc.
+	* `/UI/` contains customizable UI elements for health, ammo, abilities, upgrades etc.
 
 ![Custom Dock Plugin][comedock]
 

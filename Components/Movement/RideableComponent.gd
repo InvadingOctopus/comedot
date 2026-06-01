@@ -35,13 +35,13 @@ extends Component
 ## [method Entity.toggleComponents] is called to flip the `isEnabled` flag on each component if available, and pause the disabled components if [member shouldTogglePause].
 ## TIP: Use this to transfer player control from the main character to a vehicle/mount.
 ## TIP: Do not disable [InputComponent] on the rider, as that is required for [GunComponent] etc. Instead, disable [PlatformerPhysicsComponent] & [JumpComponent] etc.
-@export var componentsToDisableOnRider: Array[Script] = [JumpComponent, ActionsComponent, ActionControlComponent, PlatformerPhysicsComponent]
+@export var componentsToDisableOnRider: Array[Script] = [JumpComponent, AbilityComponent, AbilityControlComponent, PlatformerPhysicsComponent]
 
 ## The component types to temporarily ENABLE on this "mount/vehicle" entity when mounted.
 ## When unmounting, the components are disabled on the mount.
 ## [method Entity.toggleComponents] is called to flip the `isEnabled` flag on each component if available, and pause the disabled components if [member shouldTogglePause].
 ## TIP: Use this to temporarily transfer player control from the main character to a vehicle/mount.
-@export var componentsToEnableOnMount:  Array[Script] = [JumpComponent, ActionsComponent, ActionControlComponent, InputComponent]
+@export var componentsToEnableOnMount:  Array[Script] = [JumpComponent, AbilityComponent, AbilityControlComponent, InputComponent]
 
 
 ## If `true` then [method Entity.toggleComponents] also pauses each component in [member componentsToDisableOnRider] & [member componentsToEnableOnMount] when it is disabled.

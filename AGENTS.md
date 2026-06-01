@@ -30,11 +30,11 @@ Each section contains instructions or information starting with a `-` bullet lis
 
 ## Subsystems
 - Various sets or "chains" of components/scripts work together to implement the different "subsystems" involved in gameplay:
-	- Combat or passive damage: `DamageComponent`, `DamageReceivingComponent`, `FactionComponent`, `HealthComponent`
-	- Stats: `Stat`, `StatsComponent`, `StatUI`
-	- Collectibles (items that can be picked up): `CollectibleComponent`, `CollectorComponent`
-	- Interactive objects: `InteractionComponent`, `InteractionControlComponent`
-	- Special actions (such as a "dash" move, or magic spells, or abilities in an RPG etc.): `Action`, `ActionsComponent`, `ActionControlComponent`
+	- Combat or passive damage: `DamageComponent`, `DamageReceivingComponent`, `FactionComponent`, `HealthComponent` etc.
+	- Stats: `Stat`, `StatsComponent`, `StatUI` etc.
+	- Collectibles (items that can be picked up): `CollectibleComponent`, `CollectorComponent` etc.
+	- Interactive objects: `InteractionComponent`, `InteractionControlComponent` etc.
+	- Special abilities (such as a "dash" move, or magic spells, or skills in an RPG etc.): `Ability`, `AbilityComponent`, `AbilityControlComponent` etc.
 	- and their auxiliaries, such as `KnockbackOnHitComponent` which extends the combat/damage subsystem etc.
 - Classes with a "Base" suffix are used as the foundation for several other classes/systems, such as `GameplayResourceBase.gd` and `StatDependentResourceBase.gd`
 - In general, when a certain gameplay mechanic or feature is needed, search the framework for synonyms of that system to see if there is a component or script for it.

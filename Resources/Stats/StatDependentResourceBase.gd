@@ -1,5 +1,5 @@
 ## Abstract base class for [Resource]s that may cost a certain amount of an [Stat] to "purchase" or use.
-## For example, an item in a shop with a price represented as a Gold Stat, or a [TargetableAction] spell which requires a Mana Stat to cast.
+## For example, an item in a shop with a price represented as a Gold Stat, or a targeted [Ability] spell which requires a Mana Stat to cast.
 
 @warning_ignore("missing_tool")
 @abstract class_name StatDependentResourceBase
@@ -12,7 +12,7 @@ extends GameplayResourceBase # because we cannot have multiple inheritance in Go
 
 #region Common Parameters
 
-## The "currency" [Stat] required to "pay" for this gameplay resource or action, such as spending Money at a shop or using innate Mana to cast a spell.
+## The "currency" [Stat] required to "pay" for this gameplay resource or ability, such as spending Money at a shop or using innate Mana to cast a spell.
 ## If no Stat is specified, then this resource is considered to be always "free", e.g. moves such as "dash" etc. that are only limited by a cooldown and so on.
 ## Subclasses and other scripts may have exceptions to these rules.
 ## NOTE: This exact [Stat] instance should not be used for comparison when searching in a [StatsComponent] etc., ONLY THE STAT'S [member Stat.name]
@@ -57,7 +57,7 @@ var costStatName: StringName:
 	get: return costStat.name if costStat else &""
 
 ## `true` if the [member cost] is not 0 and a valid [member costStat] is present.
-## If either conditions are false, then this resource or action is considered to be free, and "payment" may be skipped.
+## If either conditions are false, then this resource or ability is considered to be free, and "payment" may be skipped.
 ## IMPORTANT: Check this flag before calling [method validateOfferedStat], [method deductCostFromStat] etc.
 ## because an invalid or missing [member costStat] will cause an error.
 ## costStat == null and cost == 0: Free
@@ -181,7 +181,7 @@ func updateFlags() -> void:
 ## Calls [method validateOfferedStat] if [param validateOffer], which may be skipped if the caller has already performed validation.
 ## IMPORTANT: PERFORMANCE: The caller must check [member hasCost] BEFORE offering any "payment" or doing any other validation; a missing [member costStat] is an error!
 ## ALERT: If [param offeredStat]'s [member Stat.min] is not 0, then the cost may not be fully deducted.
-## TIP: When tracking a [Stat]'s value for "refunds" (in the case of cancelled actions etc.), compare [Stat.previousChange] with the return value of this method,
+## TIP: When tracking a [Stat]'s value for "refunds" (in the case of cancelled abilities etc.), compare [Stat.previousChange] with the return value of this method,
 ## to make sure the [param offeredStat]'s previous change was not caused by a different source!
 func deductCostFromStat(offeredStat: Stat, validateOffer: bool = true) -> int:
 	# TBD: Review & replace with a better interface if needed

@@ -34,7 +34,7 @@ enum ParentOptions {
 #endregion
 
 
-## Executes the payload, where the [param source] is the [Action], [InteractionComponent] or [Upgrade] etc. and the [param target] is the Entity etc. to which the node payload will be attached.
+## Executes the payload, where the [param source] is the [Ability], [InteractionComponent] or [Upgrade] etc. and the [param target] is the Entity etc. to which the node payload will be attached.
 ## Returns the [Node] instance that was created from the [member payloadScene].
 func executeImplementation(source: Variant, target: Variant) -> Node:
 	printLog(str("executeImplementation() scene: ", payloadScene, ", source: ", source, ", target: ", target))

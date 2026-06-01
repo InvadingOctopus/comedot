@@ -10,9 +10,7 @@ extends Node
 
 ## [InputMap] [InputEventAction] names.
 ## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each input action.
-## NOTE: This is NOT the same as the [Action] Resource which represent special game-specific actions performed by explicit in-game choices.
 class Actions:
-	# TBD: Rename to "InputAction" or "InputEventName" etc. to disambiguate from Comedot-specific "special/explicit" [Action]s?
 
 	# The primary movement axes in most games. Gamepad Left Joystick & D-Pad. May use the same physical controls as menu/UI selection.
 	const moveLeft		:= &"moveLeft"		## May mean "strafe" as opposed to [constant turnLeft]
@@ -37,11 +35,11 @@ class Actions:
 	const fire			:= &"fire"
 	const interact		:= &"interact"
 
-	## Used for generating and detecting input events for an [Action], a Resource which represents an explicitly-chosen game-specific special ability, such as casting a spell.
-	## See [ActionControlComponent] & [ActionButton] etc.
-	## NOTE: This string should end in an underscore `_` to separate the prefix from the [member Action.name] which normally begins with a lowercase letter as well.
-	## Edit the Godot Project Settings' Input Map to add shortcuts for special [Actions] e.g `specialAction_dash`.
-	const specialActionPrefix := &"specialAction_" # TBD: Less ambiguous name? :')
+	## Used for generating and detecting input events for an [Ability], a Resource which represents an explicitly-chosen game-specific special ability, such as casting a spell.
+	## See [AbilityControlComponent] & [AbilityButton] etc.
+	## NOTE: This string should end in an underscore `_` to separate the prefix from the [member Ability.name] which normally begins with a lowercase letter as well.
+	## Edit the Godot Project Settings' Input Map to add shortcuts for special [Ability] resources e.g `ability_dash`.
+	const abilityPrefix := &"ability_"
 
 	const back			:= &"back"
 	const pause			:= &"pause"

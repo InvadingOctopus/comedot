@@ -1,4 +1,4 @@
-## An abstract base class for scripts that may be attached to any [Container] [Control]s to display a list of [GameplayResourceBase] Resources such as [Stat]s or [Action]s.
+## An abstract base class for scripts that may be attached to any [Container] [Control]s to display a list of [GameplayResourceBase] Resources such as [Stat]s or [Ability]s.
 
 @abstract class_name ResourceListBase
 extends Container

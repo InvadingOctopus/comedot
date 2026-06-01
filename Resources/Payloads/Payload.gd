@@ -3,7 +3,7 @@
 ## NOTE: Do NOT use this class when assigning the "payload" property of other objects; it has no effect. Use subclasses such as [SignalPayload], [CallablePayload], [ScriptPayload] or [NodePayload].
 ## Examples: A [CollectibleComponent] representing an apple could have a Payload that calls the function `decreaseHunger()`.
 ## The Payload of a BFG69420 gun [Upgrade] would be a customized [GunComponent] to be instantiated and attached to the player Entity.
-## The Payload of an [Action] representing a Fireball Spell would be the `Fireball.gd` script that may run complex code to check the terrain for flammability etc.
+## The Payload of an [Ability] representing a Fireball Spell would be the `Fireball.gd` script that may run complex code to check the terrain for flammability etc.
 ## TIP: A Payload may be omitted if signal handlers are enough e.g. [signal InteractionComponent.didPerformInteraction]
 ## or if a component performs its own effects by itself, e.g. [TextInteractionComponent]
 

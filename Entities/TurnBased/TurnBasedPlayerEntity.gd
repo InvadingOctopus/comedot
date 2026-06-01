@@ -14,8 +14,8 @@ extends TurnBasedEntity
 # TIP: Call getComponent() with `findSubclasses` or findFirstComponentSubclass() to include subclasses such as ShieldedHealthComponent
 # PERFORMANCE: Use direct access on Dictionary for better performance instead of getComponent()
 
-var actionsComponent: ActionsComponent:
-	get: return self.components.get(&"ActionsComponent")
+var abilityComponent: AbilityComponent:
+	get: return self.components.get(&"AbilityComponent")
 
 var bodyComponent: CharacterBodyComponent:
 	get: return self.components.get(&"CharacterBodyComponent")

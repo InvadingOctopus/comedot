@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bvld40na03sjv"]
+
+[ext_resource type="PackedScene" uid="uid://c6sthnygmcwpg" path="res://Components/Gameplay/AbilityTargetableComponent.tscn" id="1_cfycj"]
+[ext_resource type="Script" uid="uid://up6v8hd3samm" path="res://Components/Gameplay/AbilityReactionComponent.gd" id="2_buawl"]
+[ext_resource type="Script" uid="uid://dua4cd3nlawsb" path="res://Resources/Payloads/Payload.gd" id="3_ib5yy"]
+
+[node name="AbilityReactionComponent" unique_id=1605715762 instance=ExtResource("1_cfycj")]
+editor_description = "A component that executes its own Payload when targeted by an Ability."
+script = ExtResource("2_buawl")
+reactionPayloads = Dictionary[StringName, ExtResource("3_ib5yy")]({})
+fallbackPayload = null

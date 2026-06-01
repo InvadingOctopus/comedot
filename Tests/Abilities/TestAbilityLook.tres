@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://bryqvy7gb2xaj"]
+
+[ext_resource type="Script" uid="uid://q0i03i1tgbx7" path="res://Resources/Abilities/Ability.gd" id="1_cr1cv"]
+[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="1_sel1h"]
+[ext_resource type="Script" uid="uid://bxomhg0eo6ut0" path="res://Tests/Abilities/TestAbilityLook.gd" id="2_to615"]
+[ext_resource type="Script" uid="uid://cnho8p8evw7t0" path="res://Resources/Payloads/ScriptPayload.gd" id="2_xc7w0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kymal"]
+resource_name = "testLook"
+atlas = ExtResource("1_sel1h")
+region = Rect2(592, 208, 16, 16)
+
+[sub_resource type="Resource" id="Resource_7y27b"]
+script = ExtResource("2_xc7w0")
+payloadScript = ExtResource("2_to615")
+debugMode = true
+
+[resource]
+script = ExtResource("1_cr1cv")
+requiresTarget = true
+payload = SubResource("Resource_7y27b")
+debugMode = true
+usesRemaining = null
+name = &"testLook"
+displayName = "LOOK"
+description = "A \"Look\" Ability example."
+icon = SubResource("AtlasTexture_kymal")
