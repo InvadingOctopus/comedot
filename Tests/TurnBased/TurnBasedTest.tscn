@@ -187,7 +187,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_2l622")
 }],
-"loop": true,
+"loop": 1,
 "name": &"RESET",
 "speed": 5.0
 }, {
@@ -195,7 +195,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h3uip")
 }],
-"loop": true,
+"loop": 1,
 "name": &"turnBegin",
 "speed": 5.0
 }, {
@@ -203,7 +203,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_178cw")
 }],
-"loop": true,
+"loop": 1,
 "name": &"turnEnd",
 "speed": 5.0
 }, {
@@ -211,7 +211,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_nwalo")
 }],
-"loop": true,
+"loop": 1,
 "name": &"turnUpdate",
 "speed": 5.0
 }]
@@ -568,7 +568,5 @@ tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(8, 8)
 speed = 50.0
 debugMode = true
-
-[node name="InputComponent" parent="TurnBasedEntity2" unique_id=826594372 instance=ExtResource("12_h3uip")]
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]
