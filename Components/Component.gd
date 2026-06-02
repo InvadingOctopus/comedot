@@ -47,6 +47,10 @@ var coComponents: Dictionary[StringName, Component]
 ## @experimental
 @export var shouldNotifyOnEntityReady:	bool = false # DESIGN: PERFORMANCE: `@export` so it can be set on a component .tscn scene instead of overriding one of the initialization methods.
 
+## If `true` then [method checkRequiredComponents] calls [method Entity.getComponent] with `findSubclasses`
+## to include e.g. [ShieldedHealthComponent] if the requirement is [HealthComponent]
+@export var allowSubclassesWhenCheckingRequirements: bool = false
+
 ## Let this [Component] be added to nodes that are not an [Entity]?
 ## WARNING: ADVANCED option! May cause bugs or decrease performance. Use only if you know what you're doing, or for cases like adding "payload" components to [InjectorComponent] etc.
 ## @experimental
@@ -211,22 +215,28 @@ func getRequiredComponents() -> Array[Script]:
 
 
 ## Verifies the presence of dependencies as returned by [method getRequiredComponents]
-## NOTE: Does not include subclasses of required components.
-func checkRequiredComponents() -> bool:
-	var requiredComponentTypes: Array[Script] = self.getRequiredComponents()
-	if  requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
+## NOTE: Includes subclasses if [param findSubclasses] which defaults to [member allowSubclassesWhenCheckingRequirements]
+## This allows e.g. [ShieldedHealthComponent] to substitute for a [HealthComponent]
+func checkRequiredComponents(findSubclasses: bool = self.allowSubclassesWhenCheckingRequirements) -> bool:
+	var  requiredComponentTypes: Array[Script] = self.getRequiredComponents()
+
+	if   requiredComponentTypes.is_empty(): return true # If there are no requirements, we have everything we need :)
 	elif not entity or entity.components.keys().is_empty(): return false # If there are no other components, we don't have any of our requirements :(
+	elif entity.components.keys().size() == 1 and entity.getComponent(self.get_script(), findSubclasses) == self: return false # Also fail if the entity's only component is ourselves :')
 
-	var haveAllRequirements: bool = true # Start `true` then make it `false` if there is any missing requirement.
+	var missingRequirements: bool = false
 
-	for requirement in requiredComponentTypes:
+	for requirement: Script in requiredComponentTypes:
 		# DEBUG: printDebug(str(requirement))
-		# TBD: Include subclasses?
-		if not entity.components.keys().has(requirement.get_global_name()): # Convert `Script` types to their `StringName` keys
-			printWarning(str("Missing requirement: ", requirement.get_global_name(), " in ", entity.logName))
-			haveAllRequirements = false
+		# Convert `Script` types to their `StringName` keys
+		if  entity.components.keys().has(requirement.get_global_name()) \
+		or (findSubclasses and entity.getComponent(requirement, true)): #findSubclasses?
+			continue
+		else:
+			printWarning(str(("Missing requirement: " if not findSubclasses else "Missing requirement or its subclass: "), requirement.get_global_name(), " in ", entity.logName))
+			missingRequirements = true
 
-	return haveAllRequirements
+	return not missingRequirements
 
 #endregion
 
