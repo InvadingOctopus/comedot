@@ -23,6 +23,7 @@ collision_mask = 4096
 script = ExtResource("1_3nqhk")
 groupToInclude = &"interactions"
 shouldMonitorBodies = false
+shouldNotifyOnEntityReady = true
 metadata/_edit_group_ = true
 
 [node name="InteractionControlShape" type="CollisionShape2D" parent="." unique_id=218436281]

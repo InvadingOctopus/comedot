@@ -36,9 +36,14 @@ func setIsEnabled(newValue: bool) -> void:
 func _ready() -> void:
 	super._ready() # Start monitoring exits after adding existing overlaps
 	self.set_physics_process(self.debugMode) # Disable per-frame debugging until needed
-	# ALERT: Other compenents may not receive signals for already overlapping nodes,
-	# because they may connect to signals later in their own _ready() if they're ordered lower on the scene tree.
-	# TBD: Should we call_deferred() instead of right away?
+	if not shouldNotifyOnEntityReady: resetContactLists() # Update the existing collisions now if not onEntityDidReady()
+
+
+func onEntityDidReady() -> void:
+	# FIXES: Other compenents may not receive signals for already overlapping nodes,
+	# because they may connect to this component's signals later in their own _ready() if they're ordered lower on the scene tree.
+	# So we reset the contact lists after the entity has _ready()'ed, which implies all other components have _ready()'ed and connected.
+	# PERFORMANCE: `shouldNotifyOnEntityReady` is set in the `AreaContactComponent.tscn` scene, and may be disabled if not needed.
 	resetContactLists()
 
 

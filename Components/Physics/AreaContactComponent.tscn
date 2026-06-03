@@ -7,3 +7,4 @@
 script = ExtResource("2_lah8s")
 groupToInclude = &""
 shouldConnectSignalsOnReady = true
+shouldNotifyOnEntityReady = true
