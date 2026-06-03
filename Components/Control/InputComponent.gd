@@ -12,6 +12,8 @@
 class_name InputComponent
 extends Component
 
+# TBD: PERFORMANCE: Option to mirror a global input state? Choose a different shared global state per player?
+
 
 #region Parameters
 
@@ -196,7 +198,7 @@ var thrustInputSign: int: ## +1 if thrusting forward (up), -1 if backwards (down
 
 ## Emitted after an [InputEvent] has been fully processed and all state properties have been updated.
 ## NOTE: AFTER [signal didUpdateInputActionsList]
-## TIP: Other components/scripts should check the DERIVED properties like [member horizontalInput] instead of directly processing an [InputEvent] on their own.
+## TIP: In most cases, other components/scripts should check the property-modification signals like [member didUpdateMovementDirection] etc. instead of directly inspecting each input event.
 ## ALERT: This signal is NOT emitted if directly modifying properties such as [member movementDirection]
 signal didProcessInput(event: InputEvent)
 
@@ -205,7 +207,8 @@ signal didProcessInput(event: InputEvent)
 ## ALERT: This signal is NOT emitted if directly modifying properties such as [member movementDirection]
 signal didUpdateInputActionsList(event: InputEvent)
 
-## Emitted after [member movementDirection] is updated with a non-zero [param difference]
+## Emitted after [member movementDirection] is updated with a non-zero [param difference] by an input event or a direct modification.
+## NOTE: To detect presses/releases, use [signal didProcessInput]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member horizontalInput] or [member verticalInput] or [member aimDirection] etc.
 signal didUpdateMovementDirection(movementDirection: Vector2, difference: Vector2)
 
@@ -219,14 +222,18 @@ signal didChangeHorizontalDirection
 ## May be used for sprite flipping and other animations etc.
 signal didChangeVerticalDirection
 
-## Emitted after [member aimDirection] is updated with a non-zero [param difference]
+## Emitted after [member aimDirection] is updated with a non-zero [param difference] by an input event or a direct modification.
+## NOTE: To detect presses/releases, use [signal didProcessInput]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member turnInput] or [member thrustInput] etc.
 signal didUpdateAimDirection(aimDirection: Vector2, difference: Vector2)
 
-## Emitted after [member turnInput] is updated with a non-zero [param difference]
+## Emitted after [member turnInput] is updated with a non-zero [param difference] by an input event or a direct modification.
+## NOTE: To detect presses/releases, use [signal didProcessInput]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member movementDirection] or [member aimDirection] etc.
 signal didUpdateTurnInput(turnInput: float, difference: float)
 
+## Emitted after [member thrustInput] is updated with a non-zero [param difference] by an input event or a direct modification.
+## NOTE: To detect presses/releases, use [signal didProcessInput]
 ## ALERT: This signal may be emitted BEFORE other properties are updated, such as [member movementDirection] or [member aimDirection] etc.
 signal didUpdateThrustInput(thrustInput: float, difference: float)
 
