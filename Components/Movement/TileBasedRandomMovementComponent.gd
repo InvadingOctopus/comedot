@@ -24,6 +24,9 @@ const maximumTries: int = 10
 
 #region State
 @onready var randomStepTimer: Timer = $RandomStepTimer
+
+func getRequiredComponents() -> Array[Script]:
+	return [TileBasedPositionComponent] # InputComponent is not required for this subclass
 #endregion
 
 

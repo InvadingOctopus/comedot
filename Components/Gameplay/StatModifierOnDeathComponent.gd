@@ -1,6 +1,7 @@
 ## Modifies [Stat] Resources when the parent Entity's [HealthComponent] drops to 0.
 ## May be used for incrementing the player's score and XP when a monster is killed, or decreasing the player's lives when an ally NPC is killed, etc.
 ## TIP: To modify Stats repeatedly based on a time interval, such as draining/healing a character's life or mana etc., use [StatModifierComponent].
+## Requirements: [HealthComponent]
 
 class_name StatModifierOnDeathComponent
 extends Component
