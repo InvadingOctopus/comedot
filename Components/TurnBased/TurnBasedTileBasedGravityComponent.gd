@@ -83,7 +83,7 @@ func processTurnBegin() -> void:
 		fall()
 
 
-func processTurnUPdate() -> void:
+func processTurnUpdate() -> void:
 	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnUpdate and checkForFall():
 		fall()
 
