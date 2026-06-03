@@ -64,7 +64,7 @@ func _ready() -> void:
 	# Check if an input already pressed before this component was ready
 	# TBD: inputComponent.resyncAllInputs()?
 	if not inputComponent.movementDirection.is_zero_approx():
-		self.onInputComponent_didUpdateMovementDirection(inputComponent.movementDirection, Vector2.ZERO)
+		self.onInputComponent_didProcessInput(null)
 
 	# Apply setters because Godot doesn't on _ready()
 	toggleSignals()
@@ -74,27 +74,47 @@ func _ready() -> void:
 #region Input
 
 func toggleSignals() -> void:
-	Tools.toggleSignal(inputComponent.didUpdateMovementDirection,		self.onInputComponent_didUpdateMovementDirection,		self.isEnabled)
+	Tools.toggleSignal(inputComponent.didProcessInput,					self.onInputComponent_didProcessInput,					self.isEnabled)
 	Tools.toggleSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell,	self.isEnabled and self.hasInput)
+	# TRIED: Tools.toggleSignal(inputComponent.didUpdateMovementDirection,self.onInputComponent_didUpdateMovementDirection,		self.isEnabled) # Can't use because this cannot detect press/release
 
 
-func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
+func onInputComponent_didProcessInput(event: InputEvent) -> void:
+	# TRIED: Cannot use `inputComponent.didUpdateMovementDirection` because we need to detect press↔release transitions
 	if not isEnabled: return
 
-	if movementDirection.is_zero_approx():
+	# TODO: Add a little delay before processing input so the player has time to input diagonal movement instead of moving on the first orthogonal keypress.
+	# TBD: PERFORMANCE: Check for presses & releases only, or accept analog input too?
+	# TBD: PERFORMANCE: Use GlobalInput.hasActionTransitioned()?
+
+	# Manually stop echoes in case `inputComponent.shouldIgnoreEchoes` is `false`
+	if not shouldRepeatOnHeldInput and event and event.is_echo(): return
+
+	# NOTE: InputComponent emits "dummy" InputEventAction.new() events after clearing state on disable/pause.
+	# DESIGN: Held input is not resumed after unpause/re-enable & requires a new movement press, as that would be the more intuitive behavior, # TBD: right?
+	if inputComponent.movementDirection.is_zero_approx():
 		self.recentInputVector = Vector2.ZERO
 		return
 
-	if shouldAllowDiagonals:
-		self.recentInputVector = Vector2i(int(signf(movementDirection.x)), int(signf(movementDirection.y)))
-	else:
-		# NOTE: Fractional axis values will get zeroed in the conversion to integers,
-		# so a normalized diagonal input from Input.get_vector() such as Up+Right = (0.707,-0.707) will become (0,0)
-		# TBD: Fix <1 analog joystick input?
-		self.recentInputVector = movementDirection # NOTE: No need to explicitly cast float Vector2 to Vector2i because we want truncation
+	# Move only on the relevant input, to avoid movement when other input like jump/fire/etc. is pressed
+	# Include button/key releases too
+	# Allow null events for the inital sync on _ready()
+	if event == null \
+	or event.is_action(GlobalInput.Actions.moveLeft)  \
+	or event.is_action(GlobalInput.Actions.moveRight) \
+	or event.is_action(GlobalInput.Actions.moveUp)    \
+	or event.is_action(GlobalInput.Actions.moveDown): 
+	
+		if shouldAllowDiagonals:
+			self.recentInputVector = Vector2i(int(signf(inputComponent.movementDirection.x)), int(signf(inputComponent.movementDirection.y)))
+		else:
+			# NOTE: If diagonals are not allowed, fractional axis values will get zeroed when converted to Vector2i integers,
+			# so a normalized diagonal input from Input.get_vector() such as Up+Right = (0.707,-0.707) will become (0,0)
+			# TBD: Fix <1 analog joystick input?
+			self.recentInputVector = inputComponent.movementDirection # NOTE: No need to explicitly cast float Vector2 to Vector2i because we want truncation
 
-	if hasInput:
-		move() # checks all conditions
+		if hasInput and (shouldRepeatOnHeldInput or event == null or event.is_pressed()): # Non-repeated movement on input press only
+			move() # checks all conditions
 
 #endregion
 
