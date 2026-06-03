@@ -83,7 +83,7 @@ const minimumTurnDelay: float = 0.05
 			shouldWaitBetweenTurnStates = newValue
 			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitBetweenStates = newValue
 
-## The delay after each [enum TurnBasedCoordinator.TurnBasedState] if [member shouldWaitBetweenTurnStates]: Begin → Update → End. May be used for aesthetics or debugging.
+## The delay after each [enum TurnBasedCoordinator.TurnState] if [member shouldWaitBetweenTurnStates]: Begin → Update → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(minimumTurnDelay, 10, 0.05) var turnBasedDelayBetweenStates: float = TurnBasedCoordinator.delayBetweenStates if TurnBasedCoordinator else minimumTurnDelay:

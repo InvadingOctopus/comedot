@@ -16,7 +16,7 @@ extends TurnBasedComponent
 ## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenEntities].
 @export_range(0, 10, 0.05) var delayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities
 
-## The delay after each [enum TurnBasedState]. May be used for debugging.
+## The delay after each [enum TurnState]. May be used for debugging.
 ## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
 ## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenStates].
 @export_range(0, 10, 0.05) var delayBetweenStates: float = TurnBasedCoordinator.delayBetweenStates
@@ -193,9 +193,9 @@ func updateUI() -> void:
 		currentEntityName, " > ", nextEntityName)
 
 	match TurnBasedCoordinator.currentTurnState:
-		TurnBasedCoordinator.TurnBasedState.turnBegin:  stateColorRect.color = colorBegin
-		TurnBasedCoordinator.TurnBasedState.turnUpdate: stateColorRect.color = colorUpdate
-		TurnBasedCoordinator.TurnBasedState.turnEnd:	stateColorRect.color = colorEnd
+		TurnBasedCoordinator.TurnState.turnBegin:  stateColorRect.color = colorBegin
+		TurnBasedCoordinator.TurnState.turnUpdate: stateColorRect.color = colorUpdate
+		TurnBasedCoordinator.TurnState.turnEnd:	stateColorRect.color = colorEnd
 		_: stateColorRect.color = Color.GRAY
 
 

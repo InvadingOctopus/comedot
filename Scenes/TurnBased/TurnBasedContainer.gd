@@ -25,7 +25,7 @@ const minimumDelay: float = 0.05
 		delayBetweenEntities = newValue
 		if entityTimer: entityTimer.wait_time = newValue
 
-## The delay after each [enum TurnBasedState]. May be used for debugging.
+## The delay after each [enum TurnState]. May be used for debugging.
 ## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
@@ -52,7 +52,7 @@ const minimumDelay: float = 0.05
 ## Example: A poison damage-over-time component may apply damage at the END of a character's turn,
 ## but a healing-over-time component may increase the health at the START of a turn.
 ## The phases can be thought of as analogous to picking up a chess piece → moving it to a new position → and putting it down.
-enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
+enum TurnState { # TBD: Should this be renamed to "Phase"?
 	turnInvalid	= -1,
 	turnBegin	=  0,
 	turnUpdate	=  1,
@@ -74,7 +74,7 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		currentTurn = newValue
 		showDebugInfo()
 
-@export_storage var currentTurnState: TurnBasedState = TurnBasedState.turnInvalid: # TBD
+@export_storage var currentTurnState: TurnState = TurnState.turnInvalid: # TBD
 	set(newValue):
 		if currentTurnState == newValue: return
 		printChange("currentTurnState", currentTurnState, newValue)
@@ -85,9 +85,9 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 
 		# Update the state indicator for log messages, only once when the state changes.
 		match currentTurnState:
-			TurnBasedState.turnBegin:  logStateIndicator = "[color=green]T"
-			TurnBasedState.turnUpdate: logStateIndicator = "[color=yellow]T"
-			TurnBasedState.turnEnd:    logStateIndicator = "[color=orange]T"
+			TurnState.turnBegin:  logStateIndicator = "[color=green]T"
+			TurnState.turnUpdate: logStateIndicator = "[color=yellow]T"
+			TurnState.turnEnd:    logStateIndicator = "[color=orange]T"
 			_: logStateIndicator = "[color=dimgray]T"
 
 		showDebugInfo()
@@ -106,9 +106,9 @@ enum TurnBasedState { # TBD: Should this be renamed to "Phase"?
 		turnsProcessed = newValue
 		showDebugInfo()
 
-## Returns: `true` if the [member currentTurnState] is [constant TurnBasedState.turnBegin], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
+## Returns: `true` if the [member currentTurnState] is [constant TurnState.turnBegin], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
 var isReadyToStartTurn: bool:
-	get: return self.currentTurnState == TurnBasedState.turnBegin \
+	get: return self.currentTurnState == TurnState.turnBegin \
 			and not isProcessingEntities \
 			and is_zero_approx(stateTimer.time_left) \
 			and is_zero_approx(entityTimer.time_left)
@@ -220,7 +220,7 @@ func connectSignals() -> void:
 func _ready() -> void:
 	Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
 
-	currentTurnState = TurnBasedState.turnBegin
+	currentTurnState = TurnState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates
 	clearTimerFunctions()
@@ -273,19 +273,19 @@ func unpause() -> void:
 
 #region Coordinator State Cycle
 
-## Cycles through all the [enum TurnBasedState]s until the next turn's [constant TurnBasedState.turnBegin].
+## Cycles through all the [enum TurnState]s until the next turn's [constant TurnState.turnBegin].
 func cycleStatesUntilNextTurn() -> void:
 	# TODO: A less complex/ambiguous implementation
 	printDebug("cycleStatesUntilNextTurn()")
 
 	# If we're already at `turnBegin`, advance the state once.
-	if self.currentTurnState == TurnBasedState.turnBegin:
+	if self.currentTurnState == TurnState.turnBegin:
 		await self.processState()
 		await self.waitForStateTimer()
 		self.incrementState()
 
 	# Cycle through the states until we're at `turnBegin` again
-	while self.currentTurnState != TurnBasedState.turnBegin:
+	while self.currentTurnState != TurnState.turnBegin:
 		await self.processState()
 		await self.waitForStateTimer() # NOTE: Delay even if it's the last entity/state in the loop, because there should be a delay before the 1st entity/state of the NEXT turn too!
 		self.incrementState()
@@ -301,23 +301,23 @@ func processState() -> void:
 
 	match currentTurnState:
 		# `await` for Entity delays & animations etc.
-		TurnBasedState.turnBegin:	await processTurnBeginSignals()
-		TurnBasedState.turnUpdate:	await processTurnUpdateSignals()
-		TurnBasedState.turnEnd:		await processTurnEndSignals()
+		TurnState.turnBegin:	await processTurnBeginSignals()
+		TurnState.turnUpdate:	await processTurnUpdateSignals()
+		TurnState.turnEnd:		await processTurnEndSignals()
 		_:							Debug.printError("Invalid State!", self) # TBD: Should this be an Error or Warning?
 
 
 ## Increments the [member currentTurnState], warping to `turnBegin` after the `turnEnd` state.
 ## Stops the [member stateTimer] before returning to `turnBegin`
 ## Returns: The new state
-func incrementState() -> TurnBasedState:
+func incrementState() -> TurnState:
 	printDebug("incrementState()")
-	if currentTurnState < TurnBasedState.turnEnd:
+	if currentTurnState < TurnState.turnEnd:
 		@warning_ignore("int_as_enum_without_cast")
 		currentTurnState += 1 # IGNORE Godot Warning; How else to increment an enum?
-	elif currentTurnState >= TurnBasedState.turnEnd:
+	elif currentTurnState >= TurnState.turnEnd:
 		stateTimer.stop()
-		currentTurnState = TurnBasedState.turnBegin
+		currentTurnState = TurnState.turnBegin
 	return currentTurnState
 
 #endregion
@@ -331,7 +331,7 @@ func processTurnBeginSignals() -> void:
 	printDebug(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
-	currentTurnState = TurnBasedState.turnBegin
+	currentTurnState = TurnState.turnBegin
 
 	self.set_process(true) # TBD: Enable the `_process` method so it can perform per-frame updates and display the debug info.
 
@@ -346,7 +346,7 @@ func processTurnBeginSignals() -> void:
 func processTurnUpdateSignals() -> void:
 	printDebug(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
-	currentTurnState = TurnBasedState.turnUpdate
+	currentTurnState = TurnState.turnUpdate
 
 	willUpdateTurn.emit()
 	@warning_ignore("redundant_await")
@@ -359,7 +359,7 @@ func processTurnUpdateSignals() -> void:
 func processTurnEndSignals() -> void:
 	printDebug(str("processTurnEndSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
-	currentTurnState = TurnBasedState.turnEnd
+	currentTurnState = TurnState.turnEnd
 
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
@@ -477,21 +477,21 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
-	await processEntities(TurnBasedState.turnBegin)
+	await processEntities(TurnState.turnBegin)
 
 
 ## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
 func processTurnUpdate() -> void:
-	await processEntities(TurnBasedState.turnUpdate)
+	await processEntities(TurnState.turnUpdate)
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
-	await processEntities(TurnBasedState.turnEnd)
+	await processEntities(TurnState.turnEnd)
 
 
 ## Calls one of the "processTurn…" methods on all turn-based entities based on the [param state].
-func processEntities(state: TurnBasedState) -> void:
+func processEntities(state: TurnState) -> void:
 	# TBD: Check for invalid states?
 	self.currentEntityIndex = -1 # Let the loop start from 0
 	self.isProcessingEntities = true
@@ -505,9 +505,9 @@ func processEntities(state: TurnBasedState) -> void:
 		self.willProcessEntity.emit(turnBasedEntity)
 
 		match state:
-			TurnBasedState.turnBegin:	await turnBasedEntity.processTurnBeginSignals()
-			TurnBasedState.turnUpdate:	await turnBasedEntity.processTurnUpdateSignals()
-			TurnBasedState.turnEnd:		await turnBasedEntity.processTurnEndSignals()
+			TurnState.turnBegin:	await turnBasedEntity.processTurnBeginSignals()
+			TurnState.turnUpdate:	await turnBasedEntity.processTurnUpdateSignals()
+			TurnState.turnEnd:		await turnBasedEntity.processTurnEndSignals()
 
 		self.didProcessEntity.emit(turnBasedEntity) # NOTE: Emit this signal BEFORE the delay BETWEEN entities.
 
@@ -577,8 +577,8 @@ var logName: String: ## Customizes logs for the turn-based system to include the
 
 
 ## Returns a readable name for the [param state].
-func getStateLogText(state: TurnBasedState = self.currentTurnState) -> String:
-	return Tools.getEnumKey(TurnBasedState, state)
+func getStateLogText(state: TurnState = self.currentTurnState) -> String:
+	return Tools.getEnumKey(TurnState, state)
 
 
 func _process(_delta: float) -> void:

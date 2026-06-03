@@ -31,7 +31,7 @@ var currentTurn: int:
 	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [TurnBasedCoordinator.currentTurnState]
-var currentTurnState: TurnBasedCoordinator.TurnBasedState:
+var currentTurnState: TurnBasedCoordinator.TurnState:
 	get: return TurnBasedCoordinator.currentTurnState # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 

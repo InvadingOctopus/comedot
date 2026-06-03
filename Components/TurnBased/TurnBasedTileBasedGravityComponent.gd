@@ -13,7 +13,7 @@ extends TurnBasedComponent
 # The turn phase to process gravity in.
 # IGNORE: Godot error: "Cannot use simple "@export" annotation because the type of the initialized value can't be inferred." because TurnBasedCoordinator is an AutoLoad?
 # TBD: @export_enum("Begin:1", "Update:2", "End:3")
-@export var phaseToProcessIn: TurnBasedCoordinator.TurnBasedState = TurnBasedCoordinator.TurnBasedState.turnBegin
+@export var phaseToProcessIn: TurnBasedCoordinator.TurnState = TurnBasedCoordinator.TurnState.turnBegin
 #endregion
 
 
@@ -79,17 +79,17 @@ func fall() -> void:
 
 
 func processTurnBegin() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnBegin and checkForFall():
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnBegin and checkForFall():
 		fall()
 
 
 func processTurnUpdate() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnUpdate and checkForFall():
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnUpdate and checkForFall():
 		fall()
 
 
 func processTurnEnd() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnBasedState.turnEnd and checkForFall():
+	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnEnd and checkForFall():
 		fall()
 
 	startTimer()
