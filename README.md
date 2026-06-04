@@ -23,11 +23,13 @@
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-> [!TIP]
-> 🛠️ Even if you don't need the template or components, you can copy some of the logic code to use in your own scripts, or just yoink [*Tools.gd][tools]
-
 > [!WARNING]
 > _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
+
+> [!TIP]
+> ⚡️ You can ask AI agents to update your existing games to the latest Comedot version.
+>
+> 🛠️ If you don't need the entire template, you can just yoink specific code to use in your own scripts, like [*Tools.gd][tools]
 
 <br/>
 
