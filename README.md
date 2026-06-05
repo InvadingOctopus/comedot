@@ -27,7 +27,7 @@
 > _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
 > [!TIP]
-> ⚡️ You can ask AI agents to update your existing games to the latest Comedot version.
+> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
 >
 > 🛠️ If you don't need the entire template, you can just yoink specific code to use in your own scripts, like [*Tools.gd][tools]
 
