@@ -7,7 +7,6 @@ extends Node
 
 #region Input Actions & Events Constants
 
-
 ## [InputMap] [InputEventAction] names.
 ## See the Input Map in the Godot Project Settings for the default axes, buttons and keys assigned to each input action.
 class Actions:
@@ -78,10 +77,25 @@ class Actions:
 						allActions[constant] = value
 			return allActions
 
+
+## TIP: For "compass" mappings, see [const Tools.compassDirectionVectors] etc.
+const directions: PackedVector2Array = [
+	Vector2.ZERO, # TBD: Should (0,0) be included?
+	Vector2.RIGHT,
+	Vector2(+1, +1),
+	Vector2.DOWN,
+	Vector2(-1, +1),
+	Vector2.LEFT,
+	Vector2(-1, -1),
+	Vector2.UP,
+	Vector2(+1, -1)
+	]
+
 ## Replacements for certain strings in the text representations of InputEvent control names, such as "Keyboard" instead of "Physical".
 const eventTextReplacements: Dictionary[String, String] = {
 	"Physical": "Keyboard",
 	}
+
 #endregion
 
 

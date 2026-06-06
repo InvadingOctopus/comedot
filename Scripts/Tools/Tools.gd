@@ -27,6 +27,7 @@ enum CompassDirection {
 
 const degreesPerCompassDirection = 45 ## The "steps" between each [enum CompassDirection] element.
 
+## TIP: For a simple Array of [Vector2]s see [const GlobalInput.directions] etc.
 const compassDirectionVectors: Dictionary[CompassDirection, Vector2i] = {
 	CompassDirection.none:		Vector2i.ZERO,
 	CompassDirection.east:		Vector2i.RIGHT,
