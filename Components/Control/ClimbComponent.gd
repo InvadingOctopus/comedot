@@ -153,7 +153,7 @@ func _ready() -> void:
 	self.lastVerticalInputDirection = int(signf(self.lastVerticalInput))
 	self.isLastVerticalInputZero = lastVerticalInputDirection == 0
 
-	self.updateSetAllProcess()
+	self.setProcessing()
 
 	Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
 	Tools.connectSignal(inputComponent.didProcessInput, self.onInputComponent_didProcessInput)
@@ -171,10 +171,10 @@ func setIsEnabled(newValue: bool) -> void:
 		stopClimbing()
 		if isClimbing: self.isClimbing = false # Restore `platformerPhysicsComponent.isGravityEnabled`
 		self.isInClimbableArea = false
-	self.updateSetAllProcess()
+	self.setProcessing()
 
 
-func updateSetAllProcess() -> void:
+func setProcessing() -> void:
 	self.set_process_unhandled_input(isPlayerControlled and isEnabled)
 	self.set_physics_process(isInClimbableArea and isEnabled) # NOTE: Do NOT check `isLastVerticalInputZero` because `PlatformerPhysicsComponent.shouldSkipFriction` should be set every frame while climbing, even if there is no input.
 	self.set_process(debugMode)

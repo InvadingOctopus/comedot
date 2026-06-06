@@ -23,7 +23,7 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.setAllProcesses()
+			self.setProcessing()
 			if isEnabled: pass # TBD: Call resyncAllInputs() to automatically resume held inputs, or wait for a re-press?
 			else: clearAllInputs()
 
@@ -36,7 +36,7 @@ extends Component
 	set(newValue):
 		if newValue != isPlayerControlled:
 			isPlayerControlled = newValue
-			self.setAllProcesses()
+			self.setProcessing()
 
 ## Multiplies each of the [param movementDirection]'s axes, i.e. the primary movement control, including the Left Joystick & D-pad.
 ## TIP: Negative values invert player/AI control. e.g. (-1, 1) will flip the horizontal walking direction.
@@ -69,7 +69,7 @@ extends Component
 	set(newValue):
 		if newValue != shouldProcessUnhandledInputOnly:
 			shouldProcessUnhandledInputOnly = newValue
-			self.setAllProcesses()
+			self.setProcessing()
 
 ## If `true` (default) then an [InputEvent] is ignored if [method InputEvent.is_echo],
 ## i.e. a repeated event "echo" generated while holding a button or key pressed down.
@@ -255,7 +255,7 @@ signal didToggleMouseSuppression(shouldSuppressMouse: bool)
 #region Initialization
 
 func _ready() -> void:
-	setAllProcesses() # Apply setters because Godot doesn't on _ready()
+	setProcessing() # Apply setters because Godot doesn't on _ready()
 
 	# UNUSED: Let _notification() handle syncing after pause/unpause
 	# Tools.connectSignal(SceneManager.willSetPause, self.onWillSetPause)
@@ -263,7 +263,7 @@ func _ready() -> void:
 
 
 ## Enables or disables the per-frame and event processing according to the various flags.
-func setAllProcesses() -> void:
+func setProcessing() -> void:
 	self.set_process(debugMode)
 	self.set_process_input(isEnabled and isPlayerControlled and not shouldProcessUnhandledInputOnly)
 	self.set_process_unhandled_input(isEnabled and isPlayerControlled and shouldProcessUnhandledInputOnly)
