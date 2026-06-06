@@ -560,7 +560,6 @@ animationNode = NodePath("../AnimationPlayer")
 animationForTurnDidBegin = &""
 
 [node name="TurnBasedTileBasedControlComponent" parent="TurnBasedEntity2" unique_id=1640595213 instance=ExtResource("4_3bh2s")]
-shouldMoveRandomly = true
 debugMode = true
 
 [node name="TileBasedPositionComponent" parent="TurnBasedEntity2" unique_id=1019692023 node_paths=PackedStringArray("tileMap") instance=ExtResource("5_hle8a")]
@@ -568,5 +567,7 @@ tileMap = NodePath("../../BackgroundTileMap")
 initialDestinationCoordinates = Vector2i(8, 8)
 speed = 50.0
 debugMode = true
+
+[node name="InputComponent" parent="TurnBasedEntity2" unique_id=2125523254 instance=ExtResource("12_h3uip")]
 
 [connection signal="pressed" from="TurnBasedUIEntity/TurnBasedUI/BottomCenterContainer/MarginContainer/NextTurnButton" to="TurnBasedUIEntity" method="onNextTurnButton_pressed"]

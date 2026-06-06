@@ -1,27 +1,46 @@
-## Uses a [TileBasedPositionComponent] to move the entity based on player input, or randomly.
+## Uses a [TileBasedPositionComponent] to move a turn-based entity when it's ready to take a turn.
 ## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]. BEFORE [InputComponent]
-## @experimental
 
 class_name TurnBasedTileBasedControlComponent
 extends TurnBasedComponent
 
+# TODO: Allow diagonal movement
 # TODO: Check for collisions?
 # TODO: Better name :')
-# TBD:  Allow diagonal movement? or is that not necessary in turn-based gameplay?
-# BUG:  `shouldMoveContinuously` doesn't work sometimes, when changing direction during movement. CHECK: Is it only during diagonal input?
 
 
 #region Parameters
-@export var shouldMoveContinuously:	bool = true  ## If `true` then the entity keeps moving as long as the input direction is pressed. If `false` then the input must be released before moving again.
-@export var shouldMoveRandomly:		bool = false ## Move in a random direction each turn. NOTE: Ignores player input.
-#region
+
+## If `true` (default) then this component starts [method TurnBasedCoordinator.startTurnProcess] when a valid [InputComponent] move is received or held.
+## TIP: Useful in "Roguelikes" where the world "ticks" and NPCs/monsters move only when the player moves.
+@export var shouldStartTurnOnMove:	bool = true
+
+## If `true` (default) then the entity keeps moving as long as the input direction is pressed. If `false` then the input must be released before moving again.
+## TIP: Useful in "Roguelikes"
+@export var shouldRepeatOnHeldInput:bool = true
+
+#endregion
 
 
 #region State
-var recentInputVector: Vector2i:
+
+## The input vector that will be applied to [member tileBasedPositionComponent.inputVector] in [method processTurnUpdate]
+var queuedMovementDirection: Vector2i:
 	set(newValue):
-		printChange(entity.logName + " recentInputVector", recentInputVector, newValue)
-		recentInputVector = newValue
+		printChange(entity.logName + " queuedMovementDirection", queuedMovementDirection, newValue)
+		queuedMovementDirection = newValue
+		if debugMode: showDebugInfo()
+
+var canAcceptMove:	bool:
+	get: return self.isEnabled \
+		and TurnBasedCoordinator.isReadyToStartTurn \
+		and not tileBasedPositionComponent.isMovingToNewCell
+
+var canStartTurn:	bool: 
+	get: return self.isEnabled \
+		and TurnBasedCoordinator.isReadyToStartTurn \
+		and not tileBasedPositionComponent.isMovingToNewCell
+
 #endregion
 
 
@@ -36,67 +55,93 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
-	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` AFTER processTurnEnd()
+	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` & `tileBasedPositionComponent.didArriveAtNewCell` AFTER movement, i.e. in processTurnUpdate()
 
+
+#region Input
 
 func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
-	if not isEnabled or shouldMoveRandomly: return
-	self.recentInputVector = movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
-	if validateMove(): move() # May start the turn
+	if not isEnabled or not canAcceptMove: return
+	if validateMove(movementDirection):
+		self.queuedMovementDirection = movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
+
+		# Start the turn automatically? i.e. as in Roguelikes
+		if shouldStartTurnOnMove and canStartTurn: startTurn()
 
 
-func onTurnBasedCoordinator_didReadyToStartTurn() -> void:
-	if shouldMoveContinuously: # Move automatically?
-		if debugMode: printDebug("onTurnBasedCoordinator_didReadyToStartTurn(): shouldMoveContinuously")
-		self.recentInputVector = inputComponent.movementDirection
-		if validateMove(): move() # May start the turn
-
-
-## Returns `true` if the [TurnBasedCoordinator] is ready to start a new turn and the destination cell is vacant according to [method TileBasedPositionComponent.validateCoordinates].
-## NOTE: Call [method move] to actually reposition the entity after checking [method validateMove].
+## Returns `true` if the destination cell (in [member queuedMovementDirection] by default) is valid & vacant according to [method TileBasedPositionComponent.validateCoordinates]
+## NOTE: Call [method startTurn] to actually reposition the entity after checking [method validateMove]
 ## TIP: Subclasses may override this method to add custom validation, such as checking for "action points" etc. before moving.
-## IMPORTANT: If overridden, the subclass' method MUST call `super.validateMove()` to include the necessary checks.
-func validateMove() -> bool:
+## IMPORTANT: If overridden, the subclass's method MUST call `super.validateMove()` to include necessary checks.
+func validateMove(requestedDirection: Vector2i = self.queuedMovementDirection) -> bool:
 	# PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
-	if recentInputVector.length_squared() != 0  \
-	and TurnBasedCoordinator.isReadyToStartTurn \
-	and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + self.recentInputVector):
-		return true
-	else:
-		return false
+	return  requestedDirection.length_squared() != 0	\
+		and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + requestedDirection)
 
+#endregion
+
+
+#region Turn Cycle
 
 ## Calls [method TurnBasedCoordinator.startTurnProcess] and returns the TileMap coordinates that the entity will ATTEMPT to move into.
 ## IMPORTANT: Caller must call [method validateMove] BEFORE calling this method.
+## NOTE: May not succeed if [method TurnBasedCoordinator.startTurnProcess] refuses.
 ## TIP: Subclasses may override this method to add custom movement, such as deducting "action points" etc. after moving.
-func move() -> Vector2i:
-	TurnBasedCoordinator.startTurnProcess() # TBD: Should the caller start the turn?
-	return tileBasedPositionComponent.currentCoordinates + self.recentInputVector
+func startTurn() -> Vector2i:
+	TurnBasedCoordinator.startTurnProcess()
+	return tileBasedPositionComponent.currentCoordinates + self.queuedMovementDirection
 
 
 func processTurnBegin() -> void:
-	if debugMode: showDebugInfo()
+	pass # if debugMode: showDebugInfo()
 
 
 func processTurnUpdate() -> void:
-	# if not isEnabled: return # Done in superclass
-
-	if shouldMoveRandomly:
-		self.recentInputVector = Vector2i([-1, 1].pick_random(), [-1, 1].pick_random())
-
-	tileBasedPositionComponent.inputVector = Vector2i(self.recentInputVector)
+	# if not isEnabled: return # Checked by TurnBasedComponent
+	tileBasedPositionComponent.inputVector = Vector2i(self.queuedMovementDirection)
 	tileBasedPositionComponent.processInput()
-	if debugMode: showDebugInfo()
+
+	# Move again when the current move/turn completes?
+	Tools.toggleSignal(TurnBasedCoordinator.didReadyToStartTurn,		self.onTurnBasedCoordinator_didReadyToStartTurn,		self.shouldRepeatOnHeldInput)
+	Tools.toggleSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell,	self.shouldRepeatOnHeldInput)
+	# if debugMode: showDebugInfo()
 
 
 func processTurnEnd() -> void:
-	if not shouldMoveContinuously: recentInputVector = Vector2.ZERO
-	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` AFTER processTurnEnd()
-	# so that we can react to changes to `shouldMoveContinuously` during runtime
-	Tools.toggleSignal(TurnBasedCoordinator.didReadyToStartTurn, self.onTurnBasedCoordinator_didReadyToStartTurn, self.shouldMoveContinuously)
-	if debugMode: showDebugInfo()
+	if not shouldRepeatOnHeldInput: queuedMovementDirection = Vector2.ZERO
+	# if debugMode: showDebugInfo()
+
+#endregion
+
+
+#region Repeated Movement
+# If the input is held, move again & start a new turn immediately after the current move completes. i.e. similar to Roguelikes
+
+func onTurnBasedCoordinator_didReadyToStartTurn() -> void:
+	if debugMode: printDebug(str("onTurnBasedCoordinator_didReadyToStartTurn() shouldRepeatOnHeldInput: ", shouldRepeatOnHeldInput))
+	if not canAcceptMove: return
+	if self.shouldRepeatOnHeldInput: repeatMovement()
+
+
+func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
+	Tools.disconnectSignal(tileBasedPositionComponent.didArriveAtNewCell, self.onTileBasedPositionComponent_didArriveAtNewCell)
+	if not canAcceptMove: return
+	if self.shouldRepeatOnHeldInput: repeatMovement()
+
+
+## Reapplies [member inputComponent.movementDirection] to [member queuedMovementDirection] if [member shouldRepeatOnHeldInput],
+## and starts a new turn if [member shouldStartTurnOnMove] and [member canStartTurn]
+## TIP: May be used to implement "Roguelike" control.
+func repeatMovement() -> void:
+	if shouldRepeatOnHeldInput and validateMove(inputComponent.movementDirection):
+		queuedMovementDirection = inputComponent.movementDirection
+		if shouldStartTurnOnMove and canStartTurn: startTurn()
+
+#endregion
 
 
 func showDebugInfo() -> void:
 	# if not debugMode: return # Checked by caller
-	Debug.watchList.inputVector = recentInputVector
+	Debug.addComponentWatchList(self, {
+		vector	= queuedMovementDirection,
+		})
