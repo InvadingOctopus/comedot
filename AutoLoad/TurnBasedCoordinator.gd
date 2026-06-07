@@ -25,12 +25,14 @@ extends Node # + TurnBasedObjectBase
 # * After the `turnEnd` phase, the Coordinator must increment the turn counter and return to the `turnBegin` phase again, BUT it must NOT be executed until the game receives the control input to play the next turn.
 
 # TODO: Verify Entity-side animation delays etc.
-# TODO: A cleaner, simplified, reliable implementation? :')
 # TODO: Multiple turn increments and a "delta" for process methods
+# TODO: A reusable State Machine class? :')
 
 # DESIGN: TRIEDANDFAILED: Trying to implement multiple TurnBasedCoordinators in the same scene, e.g. to support multiplayer games, is not a good idea;
 # because entities often need to be children of different VISUAL nodes, so they cannot always be placed directly under a specific TurnBasedCoordinator.
 # For an experimental attempt, see [TurnBasedContainer].
+
+# DESIGN: PERFORMANCE: This script doesn't check `if debugMode: printDebug()` to avoid calls because this is for a turn-based system anyway :')
 
 
 #region Parameters
@@ -202,12 +204,6 @@ var nextEntityToProcess:		TurnBasedEntity:
 # to serve as the insertion point for "injecting" buff/debuff effects and other modifications at specific points in the turn cycle.
 # For example, a poison effect may cause damage at the END of a turn, while a healing effect may increase health at the BEGINNING of a turn.
 
-@warning_ignore("unused_signal")
-signal didAddEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
-
-@warning_ignore("unused_signal")
-signal didRemoveEntity(entity: TurnBasedEntity) ## Emitted by [TurnBasedEntity]
-
 signal didReadyToStartTurn
 
 signal willBeginTurn
@@ -219,8 +215,11 @@ signal didUpdateTurn
 signal willEndTurn
 signal didEndTurn
 
+@warning_ignore_start("unused_signal")
+signal didAddEntity(entity:		 TurnBasedEntity) ## Emitted by [TurnBasedEntity]
+signal didRemoveEntity(entity:	 TurnBasedEntity) ## Emitted by [TurnBasedEntity]
 signal willProcessEntity(entity: TurnBasedEntity)
-signal didProcessEntity(entity: TurnBasedEntity) ## NOTE: Emitted BEFORE the [member entityTimer] delay BETWEEN entities.
+signal didProcessEntity(entity:  TurnBasedEntity) ## NOTE: Emitted BEFORE the [member entityTimer] delay BETWEEN entities.
 
 signal willStartDelay(timer: Timer) ## Emitted when one of the timers between each state or entity is about to start.
 
@@ -237,7 +236,7 @@ func _notification(what: int) -> void: # This happens earlier than _enter_tree()
 func _ready() -> void:
 	Debug.printAutoLoadLog("_ready()")
 
-	currentTurnState = TurnState.turnBegin
+	currentTurnState	  = TurnState.turnBegin
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates
 	clearTimerFunctions()
@@ -327,7 +326,7 @@ func processState() -> void:
 		TurnState.turnBegin:	await processTurnBeginSignals()
 		TurnState.turnUpdate:	await processTurnUpdateSignals()
 		TurnState.turnEnd:		await processTurnEndSignals()
-		_:							Debug.printError("Invalid State!", self) # TBD: Should this be an Error or Warning?
+		_:						Debug.printWarning(str("processState() invalid currentTurnState: ", getStateLogText()), self) # TBD: Should this be an Error or Warning?
 
 
 ## Increments the [member currentTurnState], warping to `turnBegin` after the `turnEnd` state.
