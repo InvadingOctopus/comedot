@@ -55,7 +55,7 @@ extends Resource
 var shouldSkipNextValidationForStateSetter: bool = false
 
 var logName: String:
-	get: return str(self.get_script().get_global_name(), " ", self)
+	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
 
 #endregion
 
@@ -93,8 +93,12 @@ func getNextStates(sourceState: StringName = self.currentState) -> PackedStringA
 		return []
 
 
+## Checks to ensure [param sourceState] → [param requestedState] is a valid transition,
+## then calls [method overrideTransition] which may be implemented by subclasses to add further conditions.
 func validateTransition(sourceState: StringName, requestedState: StringName) -> bool:
 	if debugMode: printLog("validateTransition(): " + sourceState + " → " + requestedState)
+
+	if sourceState == requestedState: return true
 
 	if not states.has(sourceState):
 		Debug.printWarning("validateTransition() Missing source state: &\"" + sourceState + "\" → &\"" + requestedState + "\"", logName)
@@ -117,6 +121,8 @@ func validateTransition(sourceState: StringName, requestedState: StringName) -> 
 
 func transitionToState(nextState: StringName) -> bool:
 	if debugMode: printLog("transitionToState(): &\"" + self.currentState + "\" → &\"" + nextState + "\"")
+
+	if nextState == self.currentState: return true # If we're already in the requested state, we already succeeded!
 
 	if not validateTransition(self.currentState, nextState):
 		didRejectTransition.emit(self.currentState, nextState)
