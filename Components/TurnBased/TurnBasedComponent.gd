@@ -19,7 +19,14 @@ extends Component # + TurnBasedObjectBase
 
 
 #region Parameters
-@export var isEnabled: bool = true
+
+@export var isEnabled: bool = true:
+	set = setIsEnabled # Use a separate function for the property setter so that subclasses may override it.
+
+## Property setter for [member isEnabled] as a separate function to let subclasses override it.
+func setIsEnabled(newValue: bool) -> void:
+	isEnabled = newValue
+
 #endregion
 
 

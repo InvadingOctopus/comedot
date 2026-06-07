@@ -24,6 +24,15 @@ extends TurnBasedComponent
 
 #region State
 
+func setIsEnabled(newValue: bool) -> void:
+	if newValue != isEnabled:
+		super.setIsEnabled(newValue)
+		if self.is_node_ready():
+			Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled)
+			if not isEnabled: # These signals should not be reconnected when the component is re-enabled, only after a move if `shouldRepeatOnHeldInput`
+				Tools.disconnectSignal(TurnBasedCoordinator.didReadyToStartTurn,		self.onTurnBasedCoordinator_didReadyToStartTurn)
+				Tools.disconnectSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell)
+
 ## The input vector that will be applied to [member tileBasedPositionComponent.inputVector] in [method processTurnUpdate]
 var queuedMovementDirection: Vector2i:
 	set(newValue):
@@ -54,7 +63,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	Tools.connectSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection)
+	Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled)
 	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` & `tileBasedPositionComponent.didArriveAtNewCell` AFTER movement, i.e. in processTurnUpdate()
 
 
