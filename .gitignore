@@ -17,6 +17,7 @@ mono_crash.*.json
 .editorconfig
 
 # AI
+.codex/
 .claude/
 
 # Game-specific experiments
