@@ -44,25 +44,25 @@ func _ready() -> void:
 
 
 func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, difference: Vector2) -> void:
-	if not isEnabled: return
+	if not isEnabled or not TurnBasedCoordinator.isReadyToStartTurn: return
 	pass # PLACEHOLDER: Remove if input is not needed.
 
 
 func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
-	if not isEnabled: return
+	if not isEnabled or not TurnBasedCoordinator.isReadyToStartTurn: return
 	pass # PLACEHOLDER: Handle one-shot input events such as jumping or firing.
 
 
 func processTurnBegin() -> void:
-	# isEnabled is handled by parent class.
-	pass # Handle "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
+	# isEnabled is checked by [TurnBasedComponent]
+	pass # PLACEHOLDER: Handle "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
 
 
 func processTurnUpdate() -> void:
-	# isEnabled is handled by parent class.
-	pass # Handle The actual actions which occur every turn, such as movement or combat.
+	# isEnabled is checked by [TurnBasedComponent]
+	pass # PLACEHOLDER: Handle the actual actions which occur every turn, such as movement or combat.
 
 
 func processTurnEnd() -> void:
-	# isEnabled is handled by parent class.
-	pass # Handle any "post-turn" activity that happens AFTER the main activity, such as animations, damage-over-time effects, log messages, or cleanup.
+	# isEnabled is checked by [TurnBasedComponent]
+	pass # PLACEHOLDER: Handle any "post-turn" activity that happens AFTER the main activity, such as animations, damage-over-time effects, log messages, or cleanup.
