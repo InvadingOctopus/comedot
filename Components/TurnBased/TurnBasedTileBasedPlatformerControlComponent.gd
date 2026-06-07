@@ -1,12 +1,11 @@
 ## Provides platformer pseudo-"physics" for a turn-based game with tile-based positioning.
 ## TIP: Use [TurnBasedTileBasedGravityComponent] for gravity.
-## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]
+## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]. BEFORE [InputComponent]
 ## @experimental
 
 class_name TurnBasedTileBasedPlatformerControlComponent
 extends TurnBasedTileBasedControlComponent
 
-# TODO: Use InputComponent
 # TBD: A better name...?
 
 
@@ -22,18 +21,27 @@ extends TurnBasedTileBasedControlComponent
 #endregion
 
 
-## @experimental
-func _input(event: InputEvent) -> void:
-	if not isEnabled or not event.is_action_type(): return
+#region Input
+# NOTE: Only accept horizontal "walk" input; only allow vertical movement via jumps and gravity.
 
-	# NOTE: Only accept horizontal move input; only allow vertical movement via jumps and gravity.
 
-	if event.is_action_pressed(GlobalInput.Actions.moveLeft) \
-	or event.is_action_pressed(GlobalInput.Actions.moveRight):
+func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, difference: Vector2) -> void:
+	# Accept only changes on the horizontal axis, to avoid moves if just the vertical axis changes.
+	var previousHorizontalDirection: int = int(signf((movementDirection - difference).x))
+	var currentHorizontalDirection:  int = int(signf( movementDirection.x))
+	if  currentHorizontalDirection == previousHorizontalDirection: return
 
-		if debugMode: printLog(str(entity.logName, " ", event))
+	if canAcceptMove: updateInput()
 
-		self.queuedMovementDirection = Input.get_vector(GlobalInput.Actions.moveLeft, GlobalInput.Actions.moveRight, GlobalInput.Actions.moveUp, GlobalInput.Actions.moveDown)
-		self.queuedMovementDirection.y = 0 # NOTE: Negate the direct Y input; only allow vertical movement via jumps and gravity.
 
-		if validateMove(): startTurn()
+func repeatMovement() -> void:
+	if shouldRepeatOnHeldInput and canAcceptMove: updateInput()
+
+
+func updateInput() -> void:
+	var requestedDirection: Vector2i = Vector2i(int(signf(inputComponent.horizontalInput)), 0)
+	if  requestedDirection.x != 0 and validateMove(requestedDirection):
+		self.queuedMovementDirection = requestedDirection
+		if shouldStartTurnOnMove and canStartTurn: startTurn()
+
+#endregion
