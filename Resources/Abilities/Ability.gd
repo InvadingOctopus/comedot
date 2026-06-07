@@ -195,4 +195,4 @@ startCooldown:	bool = true) -> Variant:
 
 
 func printLog(message: String) -> void:
-	if debugMode: Debug.printLog(message, str(self.logName), "", Global.Colors.logResource)
+	if debugMode: Debug.printResourceLog(message, self.logName)

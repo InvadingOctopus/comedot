@@ -305,6 +305,12 @@ func printAutoLoadLog(message: String = "") -> void:
 	print_rich(str("[color=", Global.Colors.logAutoload, "]", caller, "[/color]\t", message))
 
 
+## Prints a log message for [Resource]s such as [Ability] etc. in a distinct color.
+func printResourceLog(message: String = "", object: Variant = null) -> void:
+	updateLastFrameLogged()
+	print_rich(str("[color=", Global.Colors.logResource, "]", object, "[/color] ", message)) # [/color] not necessary
+
+
 ## Prints a faded message to reduce visual clutter.
 ## Affected by [member shouldPrintDebugLogs]
 func printDebug(message: String = "", object: Variant = null, _objectColor: String = "") -> void:
