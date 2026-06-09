@@ -1,5 +1,5 @@
 # AGENTS.md
-# Repository Guidelines
+# Guidelines for the Comedot Project and Repository
 
 Search this file for section headers starting with `##` to quickly find instructions related to a specific category of tasks.
 
