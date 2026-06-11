@@ -1,0 +1,81 @@
+# Comedot for the Godot Asset Store
+
+Legacy Asset Library Submission: https://godotengine.org/asset-library/asset/3887
+
+
+## Settings
+
+Asset Name: Comedot ECS Template
+
+
+Asset Summary:
+All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art.
+
+
+Detailed Description:
+```
+**This is a work in constant progress!** For delicious details & the latest version, gaze upon the glorious GitHub repository: [https://github.com/InvadingOctopus/comedot/tree/develop](https://github.com/InvadingOctopus/comedot/tree/develop)
+
+* Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, turn-based logic etc.
+* Handles tricky edge case issues in physics, stats, collectibles, climbing etc.
+* UI controls like stat HUDs, buttons for special skills etc.
+* Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
+* Save/Load player preferences in config file with `Settings.anyName = 69`
+* Helper functions & debugging tools like realtime charts for monitoring variables.
+* Free-to-use 3rd-party assets for quick prototyping.
+* Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. \**(Comedot itself has no AI-generated code.)*
+
+
+💡 *Even if you don't need the entire template, you can cherry-pick specific code to use in your own scripts.*
+
+----
+*Third-party asset packs included for quick prototyping:*  
+Tilesets: **Kenney's 1-Bit Pack** https://kenney.nl/assets/1-bit-pack  
+Font: **Jayvee Enaguas (HarvettFox96)'s Pixel Operator** https://www.dafont.com/pixel-operator.font
+
+```
+
+Tags:			ECS, Components, Template, 2D, Pixel Art
+Type:			Templates
+License:		MIT
+Source Code:	https://github.com/invadingoctopus/comedot
+AI Disclosure:	No AI generated code or assets. Codex AI used for code review only. AGENTS.md provided for AI assistance.
+
+
+## Media
+
+Icon URL:		https://i.imgur.com/UJnNERn.png
+Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
+Screenshot 1:	Dock:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Comedock.png
+Screenshot 2:	Tree:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png
+Screenshot 3:	Main Menu:	https://i.imgur.com/7XqChTP.png
+Screenshot 4:	Input Map:	https://i.imgur.com/eiyfQ3h.png
+Screenshot 5:	Pause:		https://i.imgur.com/nWJXuiX.png
+Screenshot 6:	Charts:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Debug%20Charts%20%26%20Watchlists.png
+
+
+## Versions
+
+Version Name:	4.7.0.10.42
+	First 3 numbers: Godot version
+	4th: Dev/Beta/RC where <10 = Beta, 10+ = RC, 100 = release
+	6th: The Comedot release during that Godot version
+
+
+Version changelog:
+```
+Latest Commit: [eba42f916518c9b225db3e89e1530eac95f38a55](https://github.com/InvadingOctopus/comedot/commit/eba42f916518c9b225db3e89e1530eac95f38a55) on 2026-06-09
+
+Compare tags/branches on GitHub:
+[https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop](https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop)
+
+```
+
+Minimum required Godot version:		4.7
+Maximum compatible Godot version:	undefined
+
+
+## Pricing
+
+Donation Text:	Pay for my food & rent so I can continue my decadent lifestyle of perpetually making free shit
+Donation URL:	https://github.com/InvadingOctopus/comedot
