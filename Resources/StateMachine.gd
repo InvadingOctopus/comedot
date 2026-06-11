@@ -55,7 +55,7 @@ extends Resource
 var shouldSkipNextValidationForStateSetter: bool = false
 
 var logName: String:
-	get: return str(self.get_script().get_global_name(), " ", self, " ", self.name)
+	get: return str(self.get_script().get_global_name(), " ", self)
 
 #endregion
 
@@ -78,6 +78,15 @@ func resetState() -> void:
 	elif not states.is_empty():		currentState = states.keys().front()
 	else:							currentState = &"" # TBD: Log warning?
 	shouldSkipNextValidationForStateSetter = false # Just in case
+
+
+## Returns the "index" of the [param state] from the [member states] [method Dictionary.keys] or -1 if the [param state] is not in the list.
+## EXAMPLE: If the states are ["idle", "move"] then "idle" would be an index of 0
+## TIP: This may help with interoperability and conversion between `enum`s.
+## ALERT: Depending on Godot's internal implementation of [Dictionary], the keys may NOT be in the same order as originally entered/inserted!
+## PERFORMANCE: This may be a slow operation, so the results should be cached.
+func findStateIndex(state: StringName) -> int:
+	return states.keys().find(state) if states.has(state) else -1 # Check first to avoid a find() call
 
 
 ## Returns `true` if [param state] is not an empty [StringName] and is listed in the [member states] [Dictionary]
