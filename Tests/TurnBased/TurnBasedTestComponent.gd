@@ -15,7 +15,7 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	self.didUpdateTurn.connect(onDidUpdateTurn)
+	self.didExecuteTurn.connect(onDidExecuteTurn)
 	self.didEndTurn.connect(onDidEndTurn)
 	tileBasedPositionComponent.willStartMovingToNewCell.connect(self.onTileBasedPositionComponent_willStartMovingToNewCell)
 	tileBasedPositionComponent.didArriveAtNewCell.connect(self.onTileBasedPositionComponent_didArriveAtNewCell)
@@ -30,7 +30,7 @@ func processTurnBegin() -> void:
 	%WaitLabel.text = str(snappedf(randomDuration, 0.1), " WAITTIME")
 
 	printDebug("Playing animation…")
-	$AnimationPlayer.play(&"turnBegin")
+	$AnimationPlayer.play(TurnBasedCoordinator.TurnStates.begin)
 	await $AnimationPlayer.animation_finished
 
 	printDebug(str("Starting timer: ", $Timer.wait_time))
@@ -39,7 +39,7 @@ func processTurnBegin() -> void:
 	$WaitSprite.visible = false
 
 
-func onDidUpdateTurn() -> void:
+func onDidExecuteTurn() -> void:
 	pass
 
 

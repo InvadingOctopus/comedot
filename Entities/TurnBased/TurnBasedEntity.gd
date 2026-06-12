@@ -1,13 +1,13 @@
 ## Base class for turn-based entities. Performs actions by issuing commands to its child [TurnBasedComponent]s.
-## Each turn, the [TurnBasedCoordinator] calls the [method processTurnBegin], [method processTurnUpdate] and [method processTurnEnd] methods on each entity in order.
-## TIP: In most cases, just using [method processTurnUpdate] only is enough to implement gameplay.
+## Each turn, the [TurnBasedCoordinator] calls the [method processTurnBegin], [method processTurnExecute] and [method processTurnEnd] methods on each entity in order.
+## TIP: In most cases, just using [method processTurnExecute] only is enough to implement gameplay.
 ##
-## NOTE: The begin/update/end methods are NOT executed at once for a single entity:
+## NOTE: The begin/execute/end methods are NOT executed at once for a single entity:
 ## First, all entities perform the "Begin" phase: Entity1.processTurnBegin → Entity2.processTurnBegin ...
-## THEN all entities perform "Update" phase, and so on.
+## THEN all entities perform the "Execute" phase, and so on.
 ##
 ## NOTE: A [TurnBasedEntity] should not manage turn-coordination state; that is the job of the [TurnBasedCoordinator].
-## An entity should only call manage components and call their methods to perform the actual game actions.
+## An entity should only manage components and call their methods to perform the actual game actions.
 
 class_name TurnBasedEntity
 extends Entity # + TurnBasedObjectBase
@@ -47,9 +47,9 @@ var currentTurn: int:
 	get: return TurnBasedCoordinator.currentTurn
 	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
-## Returns: [TurnBasedCoordinator.currentTurnState]
-var currentTurnState: TurnBasedCoordinator.TurnState:
-	get: return TurnBasedCoordinator.currentTurnState
+## Returns: [member TurnBasedCoordinator.stateMachine]'s current state.
+var currentTurnState: StringName:
+	get: return TurnBasedCoordinator.stateMachine.currentState
 	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [TurnBasedCoordinator.turnsProcessed]
@@ -58,7 +58,7 @@ var turnsProcessed: int:
 	set(newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## This entity may only play a turn when this value is 0,
-## otherwise it skips [method processTurnBeginSignals], [method processTurnUpdateSignals], and [method processTurnEndSignals].
+## otherwise it skips [method processTurnBeginSignals], [method processTurnExecuteSignals], and [method processTurnEndSignals].
 ## Decremented by 1 at the start of every [method processTurnEndSignals] call.
 ## Reset to the [member turnRatio] at the end of [method processTurnEndSignals], if the ratio is higher than 1, which means a slower turn "speed" for this entity.
 @export_storage var turnsToSkip: int = self.turnRatio - 1: # -1 because if the turn "speed" is 1, then 0 turns to skip.
@@ -78,8 +78,8 @@ var turnsProcessed: int:
 signal willBeginTurn
 signal didBeginTurn
 
-signal willUpdateTurn
-signal didUpdateTurn
+signal willExecuteTurn
+signal didExecuteTurn
 
 signal willEndTurn
 signal didEndTurn
@@ -122,20 +122,20 @@ func processTurnBeginSignals() -> void:
 	didBeginTurn.emit()
 
 
-## Called by the [TurnBasedCoordinator] and calls [method processTurnUpdate].
+## Called by the [TurnBasedCoordinator] and calls [method processTurnExecute].
 ## Skipped if [member turnsToSkip] > 0.
 ## WARNING: Do NOT override in subclass.
-func processTurnUpdateSignals() -> void:
-	if not isEnabled or not checkSkipCounter("willUpdateTurn"): return
+func processTurnExecuteSignals() -> void:
+	if not isEnabled or not checkSkipCounter("willExecuteTurn"): return
 	if debugMode:
-		printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
-		TextBubble.create(str("turnUpdate ", currentTurn), self)
+		printLog(str("processTurnExecuteSignals() willExecuteTurn ", currentTurn))
+		TextBubble.create(str("turnExecute ", currentTurn), self)
 
-	willUpdateTurn.emit()
-	await self.processTurnUpdate()
+	willExecuteTurn.emit()
+	await self.processTurnExecute()
 
-	if debugMode: printLog("didUpdateTurn")
-	didUpdateTurn.emit()
+	if debugMode: printLog("didExecuteTurn")
+	didExecuteTurn.emit()
 
 
 ## Called by the [TurnBasedCoordinator] and calls [method processTurnEnd].
@@ -219,11 +219,11 @@ func processTurnBegin() -> void:
 		await turnBasedComponent.processTurnBeginSignals()
 
 
-## Calls [method TurnBasedComponent.processTurnUpdateSignals] on all child components.
-func processTurnUpdate() -> void:
+## Calls [method TurnBasedComponent.processTurnExecuteSignals] on all child components.
+func processTurnExecute() -> void:
 	if not self.isEnabled: return
 	for turnBasedComponent in self.turnBasedComponents:
-		await turnBasedComponent.processTurnUpdateSignals()
+		await turnBasedComponent.processTurnExecuteSignals()
 
 
 ## Calls [method TurnBasedComponent.processTurnEndSignals] on all child components.

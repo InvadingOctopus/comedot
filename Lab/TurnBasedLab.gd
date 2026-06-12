@@ -5,4 +5,4 @@ extends Start
 
 
 func onNextTurnButton_pressed() -> void:
-	TurnBasedCoordinator.startTurnProcess()
+	TurnBasedCoordinator.startTurn()

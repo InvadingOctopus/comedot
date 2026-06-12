@@ -46,7 +46,7 @@ color = Color(0.5, 0.5, 0.5, 1)
 
 [node name="StateDoneColorRect" type="ColorRect" parent="MarginContainer/GridContainer/HBoxContainer/StateColorRect" unique_id=1120469896]
 unique_name_in_owner = true
-editor_description = "Shown for didBegin, didUpdate, didEnd"
+editor_description = "Shown for didBegin, didExecute, didEnd"
 visible = false
 custom_minimum_size = Vector2(4, 4)
 layout_mode = 0

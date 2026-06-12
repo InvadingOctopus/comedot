@@ -11,7 +11,7 @@ extends TurnBasedComponent
 
 #region Parameters
 
-## If `true` (default) then this component starts [method TurnBasedCoordinator.startTurnProcess] when a valid [InputComponent] move is received or held.
+## If `true` (default) then this component starts [method TurnBasedCoordinator.startTurn] when a valid [InputComponent] move is received or held.
 ## TIP: Useful in "Roguelikes" where the world "ticks" and NPCs/monsters move only when the player moves.
 @export var shouldStartTurnOnMove:	bool = true
 
@@ -30,10 +30,10 @@ func setIsEnabled(newValue: bool) -> void:
 		if self.is_node_ready():
 			Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled)
 			if not isEnabled: # These signals should not be reconnected when the component is re-enabled, only after a move if `shouldRepeatOnHeldInput`
-				Tools.disconnectSignal(TurnBasedCoordinator.didReadyToStartTurn,		self.onTurnBasedCoordinator_didReadyToStartTurn)
+				Tools.disconnectSignal(TurnBasedCoordinator.isReadyToStartTurn,		self.onTurnBasedCoordinator_isReadyToStartTurn)
 				Tools.disconnectSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell)
 
-## The input vector that will be applied to [member tileBasedPositionComponent.inputVector] in [method processTurnUpdate]
+## The input vector that will be applied to [member tileBasedPositionComponent.inputVector] in [method processTurnExecute]
 var queuedMovementDirection: Vector2i:
 	set(newValue):
 		printChange(entity.logName + " queuedMovementDirection", queuedMovementDirection, newValue)
@@ -42,12 +42,12 @@ var queuedMovementDirection: Vector2i:
 
 var canAcceptMove:	bool:
 	get: return self.isEnabled \
-		and TurnBasedCoordinator.isReadyToStartTurn \
+		and TurnBasedCoordinator.canStartTurn \
 		and not tileBasedPositionComponent.isMovingToNewCell
 
 var canStartTurn:	bool: 
 	get: return self.isEnabled \
-		and TurnBasedCoordinator.isReadyToStartTurn \
+		and TurnBasedCoordinator.canStartTurn \
 		and not tileBasedPositionComponent.isMovingToNewCell
 
 #endregion
@@ -64,7 +64,7 @@ func getRequiredComponents() -> Array[Script]:
 
 func _ready() -> void:
 	Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled)
-	# NOTE: Connect `TurnBasedCoordinator.didReadyToStartTurn` & `tileBasedPositionComponent.didArriveAtNewCell` AFTER movement, i.e. in processTurnUpdate()
+	# NOTE: Connect `TurnBasedCoordinator.isReadyToStartTurn` & `tileBasedPositionComponent.didArriveAtNewCell` AFTER movement, i.e. in processTurnExecute()
 
 
 #region Input
@@ -92,12 +92,12 @@ func validateMove(requestedDirection: Vector2i = self.queuedMovementDirection) -
 
 #region Turn Cycle
 
-## Calls [method TurnBasedCoordinator.startTurnProcess] and returns the TileMap coordinates that the entity will ATTEMPT to move into.
+## Calls [method TurnBasedCoordinator.startTurn] and returns the TileMap coordinates that the entity will ATTEMPT to move into.
 ## IMPORTANT: Caller must call [method validateMove] BEFORE calling this method.
-## NOTE: May not succeed if [method TurnBasedCoordinator.startTurnProcess] refuses.
+## NOTE: May not succeed if [method TurnBasedCoordinator.startTurn] refuses.
 ## TIP: Subclasses may override this method to add custom movement, such as deducting "action points" etc. after moving.
 func startTurn() -> Vector2i:
-	TurnBasedCoordinator.startTurnProcess()
+	TurnBasedCoordinator.startTurn()
 	return tileBasedPositionComponent.currentCoordinates + self.queuedMovementDirection
 
 
@@ -105,13 +105,13 @@ func processTurnBegin() -> void:
 	pass # if debugMode: showDebugInfo()
 
 
-func processTurnUpdate() -> void:
+func processTurnExecute() -> void:
 	# if not isEnabled: return # Checked by TurnBasedComponent
 	tileBasedPositionComponent.inputVector = Vector2i(self.queuedMovementDirection)
 	tileBasedPositionComponent.processInput()
 
 	# Move again when the current move/turn completes?
-	Tools.toggleSignal(TurnBasedCoordinator.didReadyToStartTurn,		self.onTurnBasedCoordinator_didReadyToStartTurn,		self.shouldRepeatOnHeldInput)
+	Tools.toggleSignal(TurnBasedCoordinator.isReadyToStartTurn,		self.onTurnBasedCoordinator_isReadyToStartTurn,		self.shouldRepeatOnHeldInput)
 	Tools.toggleSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell,	self.shouldRepeatOnHeldInput)
 	# if debugMode: showDebugInfo()
 
@@ -126,8 +126,8 @@ func processTurnEnd() -> void:
 #region Repeated Movement
 # If the input is held, move again & start a new turn immediately after the current move completes. i.e. similar to Roguelikes
 
-func onTurnBasedCoordinator_didReadyToStartTurn() -> void:
-	if debugMode: printDebug(str("onTurnBasedCoordinator_didReadyToStartTurn() shouldRepeatOnHeldInput: ", shouldRepeatOnHeldInput))
+func onTurnBasedCoordinator_isReadyToStartTurn() -> void:
+	if debugMode: printDebug(str("onTurnBasedCoordinator_isReadyToStartTurn() shouldRepeatOnHeldInput: ", shouldRepeatOnHeldInput))
 	if not canAcceptMove: return
 	if self.shouldRepeatOnHeldInput: repeatMovement()
 

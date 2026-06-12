@@ -212,7 +212,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_nwalo")
 }],
 "loop": 1,
-"name": &"turnUpdate",
+"name": &"turnExecute",
 "speed": 5.0
 }]
 
@@ -360,7 +360,7 @@ tracks/3/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_s804s"]
-resource_name = "turnUpdate"
+resource_name = "turnExecute"
 tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -382,7 +382,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0.0666667),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"turnUpdate"]
+"values": [&"turnExecute"]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -402,7 +402,7 @@ _data = {
 &"RESET": SubResource("Animation_178cw"),
 &"turnBegin": SubResource("Animation_2l622"),
 &"turnEnd": SubResource("Animation_h3uip"),
-&"turnUpdate": SubResource("Animation_s804s")
+&"turnExecute": SubResource("Animation_s804s")
 }
 
 [node name="TurnBasedTest" type="Node2D" unique_id=1918247400]
@@ -449,7 +449,7 @@ layout_mode = 2
 text = "TURN START"
 label_settings = SubResource("LabelSettings_vvp6u")
 
-[node name="UpdateLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer" unique_id=1903209777]
+[node name="ExecuteLabel" type="Label" parent="TurnBasedUIEntity/TurnBasedUI/LabelsMarginContainer/VBoxContainer" unique_id=1903209777]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2

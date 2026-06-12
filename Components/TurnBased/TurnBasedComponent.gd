@@ -1,13 +1,13 @@
 ## Base class for all turn-based components.
-## Each turn, the parent [TurnBasedEntity] calls the [method processTurnBegin], [method processTurn] and [method processTurnEnd] methods on each of its component in order.
+## Each turn, the parent [TurnBasedEntity] calls the [method processTurnBegin], [method processTurnExecute] and [method processTurnEnd] methods on each of its components in order.
 ## NOTE: These methods MUST be overridden by subclasses to perform the game-specific actions every turn.
-## TIP: In most cases, just using [method processTurnUpdate] only is enough to implement gameplay.
+## TIP: In most cases, just using [method processTurnExecute] only is enough to implement gameplay.
 ## TIP: EXAMPLE: [method processTurnBegin] may be used for effects like healing-over-time that must occur at the START of a turn.
 ## TIP: EXAMPLE: [method processTurnEnd] may be used for effects like poison etc. damage-over-time that must occur at the END of a turn.
 ##
-## NOTE: The begin/update/end methods are NOT executed at once for a single component:
+## NOTE: The begin/execute/end methods are NOT executed at once for a single component:
 ## First, all components of an entity perform the "Begin" phase: Entity1.Component1.processTurnBegin → Entity1.Component2.processTurnBegin ...
-## THEN all components perform "Update" phase, and so on.
+## THEN all components perform the "Execute" phase, and so on.
 ##
 ## Requirements: [TurnBasedEntity], [AnimatedSprite2D]
 
@@ -37,9 +37,9 @@ var currentTurn: int:
 	get: return TurnBasedCoordinator.currentTurn # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
-## Returns: [TurnBasedCoordinator.currentTurnState]
-var currentTurnState: TurnBasedCoordinator.TurnState:
-	get: return TurnBasedCoordinator.currentTurnState # TBD: Should it forward to TurnBasedEntity?
+## Returns: [member TurnBasedCoordinator.stateMachine]'s current state.
+var currentTurnState: StringName:
+	get: return TurnBasedCoordinator.stateMachine.currentState # TBD: Should it forward to TurnBasedEntity?
 	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [TurnBasedCoordinator.turnsProcessed]
@@ -56,8 +56,8 @@ var turnsProcessed: int:
 signal willBeginTurn
 signal didBeginTurn
 
-signal willUpdateTurn
-signal didUpdateTurn
+signal willExecuteTurn
+signal didExecuteTurn
 
 signal willEndTurn
 signal didEndTurn
@@ -96,18 +96,18 @@ func processTurnBeginSignals() -> void:
 	didBeginTurn.emit()
 
 
-## Called by the parent [TurnBasedEntity] and calls [method processTurnUpdate].
+## Called by the parent [TurnBasedEntity] and calls [method processTurnExecute].
 ## WARNING: Do NOT override in subclass.
-func processTurnUpdateSignals() -> void:
+func processTurnExecuteSignals() -> void:
 	if not isEnabled: return
-	if debugMode: printLog(str("processTurnUpdateSignals() willUpdateTurn ", currentTurn))
+	if debugMode: printLog(str("processTurnExecuteSignals() willExecuteTurn ", currentTurn))
 
-	willUpdateTurn.emit()
+	willExecuteTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnUpdate() # IGNORE: Godot Warning; `await` is needed for animations etc.
+	await self.processTurnExecute() # IGNORE: Godot Warning; `await` is needed for animations etc.
 
-	if debugMode: printLog("didUpdateTurn")
-	didUpdateTurn.emit()
+	if debugMode: printLog("didExecuteTurn")
+	didExecuteTurn.emit()
 
 
 ## Called by the parent [TurnBasedEntity] and calls [method processTurnEnd].
@@ -138,7 +138,7 @@ func processTurnBegin() -> void:
 
 ## The actual actions which occur every turn, such as movement or combat.
 ## Abstract; To be implemented by subclasses.
-func processTurnUpdate() -> void:
+func processTurnExecute() -> void:
 	pass # if not isEnabled: return
 
 

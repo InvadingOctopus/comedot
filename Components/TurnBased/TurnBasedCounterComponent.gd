@@ -14,7 +14,7 @@ func processTurnBegin() -> void:
 	updateLabel()
 
 
-func processTurnUpdate() -> void:
+func processTurnExecute() -> void:
 	updateLabel()
 
 
@@ -26,4 +26,4 @@ func updateLabel() -> void:
 	if entity is TurnBasedEntity:
 		selfAsLabel.text = str(
 			"T", entity.currentTurn,
-			"\n", TurnBasedCoordinator.turnStateNames[entity.currentTurnState].capitalize())
+			"\n", String(entity.currentTurnState).trim_prefix("turn").capitalize())

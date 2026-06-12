@@ -142,9 +142,9 @@ When you need to add new functionality specific to your game, you have the follo
 
 3. Create new components which `extend TurnBasedComponent`
 
-4. Connect player input or a UI control such as a "Next Turn" button to the `TurnBasedCoordinator.startTurnProcess()` function.
+4. Connect player input or a UI control such as a "Next Turn" button to the `TurnBasedCoordinator.startTurn()` function.
 
-5. Each turn, all turn-based objects cycle through the following states/phases: `processTurnBegin()` → `processTurnUpdate()` → `processTurnEnd()`
+5. Each turn, all turn-based objects cycle through the following states/phases: `processTurnBegin()` → `processTurnExecute()` → `processTurnEnd()`
 
 	Your turn-based components must implement one or more of those methods and may connect to each other's signals to build your gameplay.
 

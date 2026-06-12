@@ -44,12 +44,12 @@ func _ready() -> void:
 
 
 func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, difference: Vector2) -> void:
-	if not isEnabled or not TurnBasedCoordinator.isReadyToStartTurn: return
+	if not isEnabled or not TurnBasedCoordinator.canStartTurn: return
 	pass # PLACEHOLDER: Remove if input is not needed.
 
 
 func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
-	if not isEnabled or not TurnBasedCoordinator.isReadyToStartTurn: return
+	if not isEnabled or not TurnBasedCoordinator.canStartTurn: return
 	pass # PLACEHOLDER: Handle one-shot input events such as jumping or firing.
 
 
@@ -58,7 +58,7 @@ func processTurnBegin() -> void:
 	pass # PLACEHOLDER: Handle "pre-turn" activity that happens BEFORE the main activity, such as animations, healing-over-time effects or any other setup.
 
 
-func processTurnUpdate() -> void:
+func processTurnExecute() -> void:
 	# isEnabled is checked by [TurnBasedComponent]
 	pass # PLACEHOLDER: Handle the actual actions which occur every turn, such as movement or combat.
 

@@ -16,12 +16,12 @@ extends TurnBasedComponent
 @export var animationNode: Node
 
 @export var defaultAnimation:			StringName = &"RESET"
-@export var animationForTurnWillBegin:	StringName = &"turnBegin"
-@export var animationForTurnDidBegin:	StringName = &"turnBegin"
-@export var animationForTurnWillUpdate:	StringName = &"turnUpdate"
-@export var animationForTurnDidUpdate:	StringName = &"turnUpdate"
-@export var animationForTurnWillEnd:	StringName = &"turnEnd"
-@export var animationForTurnDidEnd:		StringName = &"turnEnd"
+@export var animationForTurnWillBegin:	StringName = TurnBasedCoordinator.TurnStates.begin
+@export var animationForTurnDidBegin:	StringName = TurnBasedCoordinator.TurnStates.begin
+@export var animationForTurnWillExecute:StringName = TurnBasedCoordinator.TurnStates.execute
+@export var animationForTurnDidExecute:	StringName = TurnBasedCoordinator.TurnStates.execute
+@export var animationForTurnWillEnd:	StringName = TurnBasedCoordinator.TurnStates.end
+@export var animationForTurnDidEnd:		StringName = TurnBasedCoordinator.TurnStates.end
 
 ## If `true`, the component will `await` for the animation to finish.
 ## IMPORTANT: This may cause a delay in the turn state cycle, based on the animation duration.
@@ -62,8 +62,8 @@ func connectSignals() -> void:
 	# IMPORTANT: DESIGN: Connect to this COMPONENT's signals, NOT the Entity's, because this respects the scene tree's node order.
 	self.willBeginTurn.connect(self.onWillBeginTurn)
 	self.didBeginTurn.connect(self.onDidBeginTurn)
-	self.willUpdateTurn.connect(self.onWillUpdateTurn)
-	self.didUpdateTurn.connect(self.onDidUpdateTurn)
+	self.willExecuteTurn.connect(self.onWillExecuteTurn)
+	self.didExecuteTurn.connect(self.onDidExecuteTurn)
 	self.willEndTurn.connect(self.onWillEndTurn)
 	self.didEndTurn.connect(self.onDidEndTurn)
 
@@ -83,11 +83,11 @@ func onWillBeginTurn() -> void:
 func onDidBeginTurn() -> void:
 	playAnimation(animationForTurnDidBegin)
 
-func onWillUpdateTurn() -> void:
-	playAnimation(animationForTurnWillUpdate)
+func onWillExecuteTurn() -> void:
+	playAnimation(animationForTurnWillExecute)
 
-func onDidUpdateTurn() -> void:
-	playAnimation(animationForTurnDidUpdate)
+func onDidExecuteTurn() -> void:
+	playAnimation(animationForTurnDidExecute)
 
 func onWillEndTurn() -> void:
 	playAnimation(animationForTurnWillEnd)
@@ -105,9 +105,9 @@ func processTurnBegin() -> void:
 		if debugMode: printDebug("processTurnBegin(): Waiting for animation…")
 		await animationNode.animation_finished
 
-func processTurnUpdate() -> void:
+func processTurnExecute() -> void:
 	if shouldWaitForAnimation:
-		if debugMode: printDebug("processTurnUpdate(): Waiting for animation…")
+		if debugMode: printDebug("processTurnExecute(): Waiting for animation…")
 		await animationNode.animation_finished
 
 func processTurnEnd() -> void:

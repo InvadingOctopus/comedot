@@ -10,10 +10,8 @@ extends TurnBasedComponent
 
 
 #region Parameters
-# The turn phase to process gravity in.
-# IGNORE: Godot error: "Cannot use simple "@export" annotation because the type of the initialized value can't be inferred." because TurnBasedCoordinator is an AutoLoad?
-# TBD: @export_enum("Begin:1", "Update:2", "End:3")
-@export var phaseToProcessIn: TurnBasedCoordinator.TurnState = TurnBasedCoordinator.TurnState.turnBegin
+## The turn state to process gravity in.
+@export var stateToProcessIn: StringName = TurnBasedCoordinator.TurnStates.begin
 #endregion
 
 
@@ -48,7 +46,7 @@ func startTimer() -> void:
 
 func onGravityTimer_timeout() -> void:
 	# If we should fall, advance the turn, but let the actual fall occur during the turn phase process.
-	if checkForFall(): TurnBasedCoordinator.startTurnProcess()
+	if checkForFall(): TurnBasedCoordinator.startTurn()
 
 
 ## Returns `true` if the entity should fall to the [TileMapLayer] cell below the current position.
@@ -79,17 +77,17 @@ func fall() -> void:
 
 
 func processTurnBegin() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnBegin and checkForFall():
+	if self.stateToProcessIn == TurnBasedCoordinator.TurnStates.begin and checkForFall():
 		fall()
 
 
-func processTurnUpdate() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnUpdate and checkForFall():
+func processTurnExecute() -> void:
+	if self.stateToProcessIn == TurnBasedCoordinator.TurnStates.execute and checkForFall():
 		fall()
 
 
 func processTurnEnd() -> void:
-	if self.phaseToProcessIn == TurnBasedCoordinator.TurnState.turnEnd and checkForFall():
+	if self.stateToProcessIn == TurnBasedCoordinator.TurnStates.end and checkForFall():
 		fall()
 
 	startTimer()

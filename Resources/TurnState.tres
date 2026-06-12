@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="StateMachine" format=3 uid="uid://6gk3r6id8q1j"]
+
+[ext_resource type="Script" uid="uid://dx0dn242owwan" path="res://Resources/StateMachine.gd" id="1_0tasa"]
+
+[resource]
+resource_name = "TurnState"
+script = ExtResource("1_0tasa")
+states = Dictionary[StringName, PackedStringArray]({
+&"turnReady": PackedStringArray("turnBegin"),
+&"turnBegin": PackedStringArray("turnExecute"),
+&"turnExecute": PackedStringArray("turnEnd"),
+&"turnEnd": PackedStringArray("turnReady", "turnBegin"),
+})
+initialState = &"turnReady"
+metadata/_custom_type_script = "uid://dx0dn242owwan"

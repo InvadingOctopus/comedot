@@ -1,10 +1,10 @@
-## Manages turn-based gameplay and updates [TurnBasedEntity]s.
-## Each turn has 3 [enum TurnState]s or phases: Begin, Update, End.
-## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurnProcess].
+## Manages turn-based gameplay and executes [TurnBasedEntity]s.
+## Each turn cycles through the Begin, Execute, and End phases.
+## To execute the turn and advance to the next, the game's control system (such as a "Next Turn" button or the player's directional input) must call [method startTurn]
 ##
-## During each phase, the corresponding Begin/Update/End methods are called on all turn-based entities in order:
+## During each phase, the corresponding Begin/Execute/End methods are called on all turn-based entities in order:
 ## The entities then call the corresponding methods on each of their [TurnBasedComponent]s.
-## First, all objects perform the Begin methods, then all objects perform the Update methods, and so on.
+## First, all objects perform the Begin methods, then all objects perform the Execute methods, and so on.
 ##
 ## See the documentation for [TurnBasedEntity] and [TurnBasedComponent] for further details.
 ##
@@ -15,22 +15,21 @@
 extends Node # + TurnBasedObjectBase
 
 # PLAN:
-# * Each turn has three "states" or "phases": Begin, Update, End
+# * Each turn has three processing "states" or "phases": Begin, Execute, End
 # * Every turn must cycle through all 3 states
 # 	This helps game objects to play animations, perform actions, and do any setup/cleanup in the proper order every turn.
-# 	NOTE: An Entity must NOT execute Begin → Update → End all at once before the next Entity is updated;
-	# because that would be effectively just like executing only 1 method per Entity.
-# * The Coordinator must call `turnBegin()` on all entities, THEN `turnUpdate()` on all entities, THEN `turnEnd()` on all entities.
+# 	NOTE: An Entity must NOT execute Begin → Execute → End all at once before the next Entity is updated;
+# 	because that would be effectively just like executing only 1 method per Entity.
+# * The TurnBasedCoordinator must call `turnBegin()` on all entities, THEN `turnExecute()` on all entities, THEN `turnEnd()` on all entities (via the processTurn…Signals() proxy/wrapper methods)
 # * Each Entity must then call the same order on all its child components.
-# * After the `turnEnd` phase, the Coordinator must increment the turn counter and return to the `turnBegin` phase again, BUT it must NOT be executed until the game receives the control input to play the next turn.
+# * After the `TurnStates.end` phase, the TurnBasedCoordinator must return to `TurnStates.ready`, BUT it must NOT execute the next turn until the game receives the control input to play it.
 
-# TODO: Verify Entity-side animation delays etc.
 # TODO: Multiple turn increments and a "delta" for process methods
-# TODO: A reusable State Machine class? :')
+# TODO: A "TurnBasedContainer" node that calls future TurnBasedCoordinator helper methods to only run [TurnBasedEntity]s within a specific group or parent node.
+# TODO: A separate "queue" based system where entities are sorted according to speed or "initiative" that may change dynamically?
 
 # DESIGN: TRIEDANDFAILED: Trying to implement multiple TurnBasedCoordinators in the same scene, e.g. to support multiplayer games, is not a good idea;
 # because entities often need to be children of different VISUAL nodes, so they cannot always be placed directly under a specific TurnBasedCoordinator.
-# For an experimental attempt, see [TurnBasedContainer].
 
 # DESIGN: PERFORMANCE: This script doesn't check `if debugMode: printDebug()` to avoid calls because this is for a turn-based system anyway :')
 
@@ -42,7 +41,7 @@ extends Node # + TurnBasedObjectBase
 ## According to Godot documentation, it should be 0.05
 const minimumDelay: float = 0.05
 
-## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Update/End). May be used for aesthetics or debugging.
+## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Execute/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = 0.5:
@@ -53,8 +52,8 @@ const minimumDelay: float = 0.05
 
 @export var shouldWaitBetweenStates: bool = true ## Enables or disables [member delayBetweenStates].
 
-## The delay after each [enum TurnBasedCoordinator.TurnState] if [member shouldWaitBetweenStates]: Begin → Update → End. May be used for aesthetics or debugging.
-## NOTE: The delay will occur BEFORE the [member currentTurnState] is incremented.
+## The delay after each turn state if [member shouldWaitBetweenStates]: Begin → Execute → End. May be used for aesthetics or debugging.
+## NOTE: The delay will occur BEFORE [member stateMachine] transitions to the next state.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
 	set(newValue):
@@ -75,19 +74,17 @@ const minimumDelay: float = 0.05
 
 #region State: Turns
 
-## The "phases" of each turn: the Beginning, the Update, and the End.
-## The different states allow gameplay components to intercept and modify each other at different moments during the turn update cycle.
+## The "phases" of each turn: the Ready state, the Beginning, the Execution, and the End.
+## The different states allow gameplay components to intercept and modify each other at different moments during the turn execution cycle.
 ## Example: A poison damage-over-time component may apply damage at the END of a character's turn,
 ## but a healing-over-time component may increase the health at the START of a turn.
 ## The phases can be thought of as analogous to picking up a chess piece → moving it to a new position → and putting it down.
-enum TurnState { # TBD: Should this be renamed to "Phase"?
-	turnInvalid	= -1,
-	turnBegin	=  0,
-	turnUpdate	=  1,
-	turnEnd		=  2,
-	}
-
-const turnStateNames: Array[StringName] = [&"begin", &"update", &"end", &"invalid"] ## May be used to get the phase name by `turnStateNames[currentTurnState]`. NOTE: Godot indexes -1 from the end of an array, so we include the "invalid" state.
+class TurnStates:
+	const ready		:= &"turnReady"		## The state when the turn-based system is ready to start a new turn.
+	const begin		:= &"turnBegin"		## The beginning of a turn. EXAMPLE: Picking a chess piece up from its current square, before moving it.
+	const execute	:= &"turnExecute"	## The actual gameplay action. EXAMPLE: Moving a chess piece to a different square.
+	const end		:= &"turnEnd"		## The end or closure of a turn. EXAMPLE: Putting a chess piece down on a new square, after moving it.
+	# TBD: Should we have an additional "wait" state for when a turn-based entity or object is UNABLE to start a new turn, such as while a scene is loading or multiplayer sync etc.?
 
 
 ## The number of the current ONGOING turn. The first turn is 1.
@@ -98,29 +95,13 @@ const turnStateNames: Array[StringName] = [&"begin", &"update", &"end", &"invali
 		printChange("currentTurn", currentTurn, newValue)
 
 		# Warnings for abnormal behavior
-		if newValue < currentTurn: printWarning("currentTurn decrementing!")
+		if   newValue < currentTurn: printWarning("currentTurn decrementing!")
 		elif newValue > currentTurn + 1: printWarning("currentTurn incrementing by more than 1!")
 
 		currentTurn = newValue
 		showDebugInfo()
 
-@export_storage var currentTurnState: TurnState = TurnState.turnInvalid: # TBD
-	set(newValue):
-		if currentTurnState == newValue: return
-		printChange("currentTurnState", currentTurnState, newValue)
-
-		# Warnings for abnormal behavior
-		if newValue > currentTurnState + 1: printWarning("currentTurnState incrementing by more than 1!")
-		currentTurnState = newValue
-
-		# Update the state indicator for log messages, only once when the state changes.
-		match currentTurnState:
-			TurnState.turnBegin:  logStateIndicator = "[color=green]T"
-			TurnState.turnUpdate: logStateIndicator = "[color=yellow]T"
-			TurnState.turnEnd:    logStateIndicator = "[color=orange]T"
-			_: logStateIndicator = "[color=dimgray]T"
-
-		showDebugInfo()
+@export_storage var stateMachine: StateMachine = preload("res://Resources/TurnState.tres")
 
 ## The total count of turns that have been processed.
 ## Incremented BEFORE the [signal didEndTurn] signal but AFTER the [method processTurnEnd] method.
@@ -136,17 +117,13 @@ const turnStateNames: Array[StringName] = [&"begin", &"update", &"end", &"invali
 		turnsProcessed = newValue
 		showDebugInfo()
 
-## Returns: `true` if the [member currentTurnState] is [constant TurnState.turnBegin], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
-var isReadyToStartTurn: bool:
-	get: return self.currentTurnState == TurnState.turnBegin \
-			and not isCyclingStates \
-			and not isProcessingEntities \
-			and is_zero_approx(stateTimer.time_left) \
-			and is_zero_approx(entityTimer.time_left)
-
-## If `true` then the coordinator is in the process of cycling the current turn from Begin → Update → End.
-## Set by [method startTurnProcess] and [method cycleStatesUntilNextTurn] to avoid multiple calls: a new turn cannot be started while this is `true`.
-@export_storage var isCyclingStates: bool
+## Returns: `true` if [member stateMachine] is enabled and in [constant TurnStates.ready], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
+var canStartTurn: bool:
+	get: return self.stateMachine.currentState == TurnStates.ready \
+			and stateMachine.isEnabled \
+			and not self.isProcessingEntities \
+			and is_zero_approx(self.stateTimer.time_left) \
+			and is_zero_approx(self.entityTimer.time_left)
 
 #endregion
 
@@ -156,7 +133,7 @@ var isReadyToStartTurn: bool:
 ## NOTE: This depends on [TurnBasedEntity]s to add & remove themselves in [method TurnBasedEntity._enter_tree] & [method TurnBasedEntity._exit_tree]
 @export_storage var turnBasedEntities:	Array[TurnBasedEntity]
 
-## This flag helps decide [member isReadyToStartTurn], because some the Coordiantor may be `await`ing on an Entities while still in the `turnBegin` state.
+## This flag helps decide [member canStartTurn], because the [TurnBasedCoordinator] may be `await`ing on [TurnBasedEntity]s to finish animations etc. while still in [constant TurnStates.begin]
 @export_storage var isProcessingEntities: bool
 
 ## The index in the [member turnBasedEntities] of the entity that is currently being processed
@@ -204,13 +181,14 @@ var nextEntityToProcess:		TurnBasedEntity:
 # to serve as the insertion point for "injecting" buff/debuff effects and other modifications at specific points in the turn cycle.
 # For example, a poison effect may cause damage at the END of a turn, while a healing effect may increase health at the BEGINNING of a turn.
 
-signal didReadyToStartTurn
+## Emitted when the [TurnBasedCoordinator] can accept player/AI input or calls to start a new turn and transition the [member stateMachine] into [const TurnStates.begin]
+signal isReadyToStartTurn # TBD: Should this be "didReadyToStartTurn" for consistency? but awkward..
 
 signal willBeginTurn
 signal didBeginTurn
 
-signal willUpdateTurn
-signal didUpdateTurn
+signal willExecuteTurn
+signal didExecuteTurn
 
 signal willEndTurn
 signal didEndTurn
@@ -236,111 +214,160 @@ func _notification(what: int) -> void: # This happens earlier than _enter_tree()
 func _ready() -> void:
 	Debug.printAutoLoadLog("_ready()")
 
-	currentTurnState	  = TurnState.turnBegin
+	if not stateMachine:
+		Debug.printError("Missing stateMachine", self)
+		return
+
+	initStateMachine()
+
 	entityTimer.wait_time = delayBetweenEntities
 	stateTimer.wait_time  = delayBetweenStates
 	clearTimerFunctions()
 	showDebugInfo()
 
-	self.set_process(false) # TBD: Disable the `_process` method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
-	if isReadyToStartTurn:
-		printDebug("didReadyToStartTurn")
-		didReadyToStartTurn.emit()
+	self.set_process(false) # TBD: Disable the _process() method because we don't need per-frame updates until the turn cycle starts in the `Begin` phase.
+
+	if canStartTurn:
+		printDebug("isReadyToStartTurn")
+		isReadyToStartTurn.emit()
+	else:
+		# NOTE: Allow starting a turn after the initialization has completed
+		stateMachine.isEnabled = true
+		# Defer until everything else in the scene tree is also ready
+		if stateMachine.currentState == TurnStates.ready: self.isReadyToStartTurn.emit.call_deferred()
+		else: stateMachine.call_deferred(&"transitionToState", TurnStates.ready)
+
+
+func initStateMachine() -> void:
+	# Recreate the shared `TurnState` Resource to make sure it's the same as TurnBasedCoordinator's state lists,
+	# so this script can be "the source of truth" for turn-based gameplay.
+
+	stateMachine.states.clear()
+	# TBD: PERFORMANCE: Use [Array] of [StringName] instead of [PackedStringArray]?
+	stateMachine.states[TurnStates.ready]	= PackedStringArray([TurnStates.begin])
+	stateMachine.states[TurnStates.begin]	= PackedStringArray([TurnStates.execute])
+	stateMachine.states[TurnStates.execute]	= PackedStringArray([TurnStates.end])
+	stateMachine.states[TurnStates.end]		= PackedStringArray([TurnStates.ready, TurnStates.begin])
+
+	stateMachine.debugMode		= self.debugMode
+	stateMachine.initialState	= TurnStates.ready # ALERT: DESIGN: We are NOT actually ready to start a turn yet, but we don't want to over-model setup as a turn state.
+	stateMachine.resetState()
+	stateMachine.isEnabled		= false # NOTE: Lock transitions until initialization is complete and a gameplay scene is loaded.
+
+	Tools.connectSignal(stateMachine.didRejectTransition,	self.onStateMachine_didRejectTransition)
+	Tools.connectSignal(stateMachine.willTransition,		self.onStateMachine_willTransition)
+	Tools.connectSignal(stateMachine.didTransition,			self.onStateMachine_didTransition)
+
+#endregion
+
+
+#region State Machine Events
+
+func onStateMachine_didRejectTransition(_sourceState: StringName, _rejectedState: StringName) -> void:
+	pass
+
+
+func onStateMachine_willTransition(_outgoingState: StringName, _incomingState: StringName) -> void:
+	pass
+
+
+func onStateMachine_didTransition(_previousState: StringName, newState: StringName) -> void:
+	match newState:
+		TurnStates.ready:	self.isReadyToStartTurn.emit()
+
+		TurnStates.begin, TurnStates.execute, TurnStates.end:
+
+			## NOTE: Temporarily disable transitions to other states while we are waiting on entities & components to finish their turns,
+			## to prevent reentrancy & races etc.
+			stateMachine.isEnabled = false
+
+			await self.processState(newState) # `await` for Entity animations & delays etc.
+			await waitForStateTimer()
+
+			stateMachine.isEnabled = true
+			if stateMachine.currentState == newState: # JIC: Make sure processState() didn't muck up the state machine
+				transitionToNextState()
+
+		_: Debug.printWarning(str("onStateMachine_didTransition() to invalid state: ", newState), self) # TBD: Should this be an Error or Warning?
 
 #endregion
 
 
 #region Coordinator External Interface
 
-## Begins the processing of 1 full turn and cycling through each of its 3 states.
+## Begins the processing of 1 full turn, by transitioning the [member stateMachine] into [const TurnStates.begin] which then leads to cycling through each of the 3 states: Begin → Execute → End
+## May only be called while the current state is [const TurnStates.begin]
 ## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
-func startTurnProcess() -> void:
-	if debugMode: printLog(str("[color=white][b]startTurnProcess() currentTurn: ", currentTurn))
+## TIP: Call this method with `await` and set [param awaitForTurnEnd] to `true` to wait for the [signal didEndTurn] and ensure a full turn cycle.
+## TIP: Await for the [signal isReadyToStartTurn] signal to start the next turn.
+func startTurn(awaitForTurnEnd: bool = false) -> bool:
+	if debugMode: printLog(str("[color=white][b]startTurn() currentTurn: ", currentTurn))
 
 	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
 
-	if not self.isReadyToStartTurn:
-		if debugMode: printWarning("startTurnProcess() called when not isReadyToStartTurn") # Not an important warning
-		return
+	if not self.canStartTurn:
+		if debugMode: printWarning("startTurn() called when not canStartTurn") # Not an important warning
+		return false
 
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
-	await cycleStatesUntilNextTurn()
+	if stateMachine.transitionToState(TurnStates.begin):
+		if awaitForTurnEnd: await self.didEndTurn
+		return true
+	else:
+		printWarning("startTurn(): stateMachine.transitionToState() failed to transition to TurnStates.begin")
+		return false
 
 
 ## @experimental
 func pause() -> void:
 	# TODO: Implement more reliable pause/unpause
-	stateTimer.paused  = true
-	entityTimer.paused = true
+	stateMachine.isEnabled	= false
+	stateTimer.paused		= true
+	entityTimer.paused		= true
 
 
 ## @experimental
 func unpause() -> void:
 	# TODO: Implement more reliable pause/unpause
-	stateTimer.paused  = false
-	entityTimer.paused = false
+	stateMachine.isEnabled	= true
+	stateTimer.paused		= false
+	entityTimer.paused		= false
 
 #endregion
 
 
 #region Coordinator State Cycle
 
-## Cycles through all the [enum TurnState]s until the next turn's [constant TurnState.turnBegin].
-func cycleStatesUntilNextTurn() -> void:
-	# TODO: A less complex/ambiguous implementation
-	printDebug("cycleStatesUntilNextTurn()")
+## Calls one of the signal processing methods based on [member stateMachine]'s current state,
+## to let [TurnBasedEntity]s make their moves.
+func processState(state: StringName = stateMachine.currentState) -> void:
+	printDebug("processState(): " + stateMachine.currentState)
 
-	# Make sure we're not already in the middle of a cycle
-	if isCyclingStates: return
+	# TBD: Also set `stateMachine.isEnabled = false` here or only in onStateMachine_didTransition()?
+
+	match state:
+		# `await` for Entity animations & delays etc.
+		TurnStates.begin:	await processTurnBeginSignals()
+		TurnStates.execute:	await processTurnExecuteSignals()
+		TurnStates.end:		await processTurnEndSignals()
 	
-	isCyclingStates = true
-
-	# If we're already at `turnBegin`, advance the state once.
-	if self.currentTurnState == TurnState.turnBegin:
-		await self.processState()
-		await self.waitForStateTimer()
-		self.incrementState()
-
-	# Cycle through the states until we're at `turnBegin` again
-	while self.currentTurnState != TurnState.turnBegin:
-		await self.processState()
-		await self.waitForStateTimer() # NOTE: Delay even if it's the last entity/state in the loop, because there should be a delay before the 1st entity/state of the NEXT turn too!
-		self.incrementState()
-
-	if self.currentTurnState == TurnState.turnBegin:
-		isCyclingStates = false
-	
-	# TBD: BUGRISK: Let the `didReadyToStartTurn` signal be emitted multiple times if this method is called repeatedly?
-	if isReadyToStartTurn: 
-		printDebug("didReadyToStartTurn")
-		didReadyToStartTurn.emit()
 
 
-
-## Calls one of the signals processing methods based on the [member currentTurnState].
-func processState() -> void:
-	printDebug(str("processState(): ", getStateLogText()))
-
-	match currentTurnState:
-		# `await` for Entity delays & animations etc.
-		TurnState.turnBegin:	await processTurnBeginSignals()
-		TurnState.turnUpdate:	await processTurnUpdateSignals()
-		TurnState.turnEnd:		await processTurnEndSignals()
-		_:						Debug.printWarning(str("processState() invalid currentTurnState: ", getStateLogText()), self) # TBD: Should this be an Error or Warning?
-
-
-## Increments the [member currentTurnState], warping to `turnBegin` after the `turnEnd` state.
-## Stops the [member stateTimer] before returning to `turnBegin`
-## Returns: The new state
-func incrementState() -> TurnState:
-	printDebug("incrementState()")
-	if currentTurnState < TurnState.turnEnd:
-		@warning_ignore("int_as_enum_without_cast")
-		currentTurnState += 1 # IGNORE Godot Warning; How else to increment an enum?
-	elif currentTurnState >= TurnState.turnEnd:
-		stateTimer.stop()
-		currentTurnState = TurnState.turnBegin
-	return currentTurnState
+## Transitions [member stateMachine] to the next default turn state.
+## Stops the [member stateTimer] before returning to [constant TurnStates.ready].
+## Returns: `true` if the state transition succeeded.
+func transitionToNextState() -> bool:
+	printDebug("transitionToNextState()")
+	match stateMachine.currentState:
+		TurnStates.ready:	return stateMachine.transitionToState(TurnStates.begin)
+		TurnStates.begin:	return stateMachine.transitionToState(TurnStates.execute)
+		TurnStates.execute:	return stateMachine.transitionToState(TurnStates.end)
+		TurnStates.end:
+			stateTimer.stop()
+			return stateMachine.transitionToState(TurnStates.ready)
+		_:
+			Debug.printWarning(str("transitionToNextState() invalid state: ", stateMachine.currentState), self)
+			return false
 
 #endregion
 
@@ -353,7 +380,6 @@ func processTurnBeginSignals() -> void:
 	printDebug(str("processTurnBeginSignals() currentTurn → ", currentTurn + 1, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
 	currentTurn += 1 # NOTE: Must be incremented BEFORE [willBeginTurn] so the first turn would be 1
-	currentTurnState = TurnState.turnBegin
 
 	self.set_process(debugMode) # Enable the `_process` method so it can perform per-frame updates and display the debug info.
 
@@ -363,25 +389,21 @@ func processTurnBeginSignals() -> void:
 	didBeginTurn.emit()
 
 
-## Called by [method processState] and calls [method processTurnUpdate].
+## Called by [method processState] and calls [method processTurnExecute].
 ## WARNING: Do NOT override in subclass.
-func processTurnUpdateSignals() -> void:
-	printDebug(str("processTurnUpdateSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
+func processTurnExecuteSignals() -> void:
+	printDebug(str("processTurnExecuteSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
 
-	currentTurnState = TurnState.turnUpdate
-
-	willUpdateTurn.emit()
+	willExecuteTurn.emit()
 	@warning_ignore("redundant_await")
-	await self.processTurnUpdate() # `await` for Entity animations & delays etc.
-	didUpdateTurn.emit()
+	await self.processTurnExecute() # `await` for Entity animations & delays etc.
+	didExecuteTurn.emit()
 
 
 ## Called by [method processState] and calls [method processTurnEnd].
 ## WARNING: Do NOT override in subclass.
 func processTurnEndSignals() -> void:
 	printDebug(str("processTurnEndSignals() currentTurn: ", currentTurn, ", ", turnBasedEntities.size(), " entities: ", getEntityNames()))
-
-	currentTurnState = TurnState.turnEnd
 
 	willEndTurn.emit()
 	@warning_ignore("redundant_await")
@@ -454,28 +476,28 @@ func findTurnBasedEntities() -> Array[TurnBasedEntity]:
 # NOTE: TBD: Ensure that `await` waits for Entity delays & animations etc.
 # NOTE: Do NOT `await turnBasedEntity.did…` signals, because they are emitted within `turnBasedEntity.process…`, before the following `await`
 
-# NOTE: The `isProcessingEntities` flag affects the `isReadyToStartTurn` flag,
-# because some the Coordinator may be `await`ing on an Entities while still in the `turnBegin` state.
+# NOTE: The `isProcessingEntities` flag affects the `canStartTurn` flag,
+# because the TurnBasedCoordinator may be `await`ing entities while still in [constant TurnStates.begin].
 # TBD: Should `isProcessingEntities` be set at a higher scope to ensure no "leaks"? e.g. starting multiple turns.
 
 
 ## Calls [method TurnBasedEntity.processTurnBeginSignals] on all turn-based entities.
 func processTurnBegin() -> void:
-	await processEntities(TurnState.turnBegin)
+	await processEntities(TurnStates.begin)
 
 
-## Calls [method TurnBasedEntity.processTurnUpdateSignals] on all turn-based entities.
-func processTurnUpdate() -> void:
-	await processEntities(TurnState.turnUpdate)
+## Calls [method TurnBasedEntity.processTurnExecuteSignals] on all turn-based entities.
+func processTurnExecute() -> void:
+	await processEntities(TurnStates.execute)
 
 
 ## Calls [method TurnBasedEntity.processTurnEndSignals] on all turn-based entities.
 func processTurnEnd() -> void:
-	await processEntities(TurnState.turnEnd)
+	await processEntities(TurnStates.end)
 
 
 ## Calls one of the "processTurn…" methods on all turn-based entities based on the [param state].
-func processEntities(state: TurnState) -> void:
+func processEntities(state: StringName) -> void:
 	# TBD: Check for invalid states?
 	self.currentEntityIndex = -1 # Let the loop start from 0
 	self.isProcessingEntities = true
@@ -484,14 +506,14 @@ func processEntities(state: TurnState) -> void:
 		self.currentEntityIndex += 1
 		recentEntityIndex = currentEntityIndex
 
-		printDebug(str("processEntities(): #", currentEntityIndex, " ", turnBasedEntity.logName, " S", getStateLogText(state)))
+		printDebug(str("processEntities(): #", currentEntityIndex, " ", turnBasedEntity.logName, " S", state))
 
 		self.willProcessEntity.emit(turnBasedEntity)
 
 		match state:
-			TurnState.turnBegin:	await turnBasedEntity.processTurnBeginSignals()
-			TurnState.turnUpdate:	await turnBasedEntity.processTurnUpdateSignals()
-			TurnState.turnEnd:		await turnBasedEntity.processTurnEndSignals()
+			TurnStates.begin:	await turnBasedEntity.processTurnBeginSignals()
+			TurnStates.execute:	await turnBasedEntity.processTurnExecuteSignals()
+			TurnStates.end:		await turnBasedEntity.processTurnEndSignals()
 
 		self.didProcessEntity.emit(turnBasedEntity) # NOTE: Emit this signal BEFORE the delay BETWEEN entities.
 
@@ -554,16 +576,18 @@ func dummyTimerFunction() -> void:
 
 #region Logging & Debugging
 
-var logStateIndicator: String ## Text appended to log entries to indicate the current turn and state/phase.
+var logStateIndicator: String: ## Text appended to log entries to indicate the current turn and state/phase.
+	get: # TODO: PERFORMANCE: Change back to cached property
+		# Update the state indicator for log messages, only once when the state changes.
+		match stateMachine.currentState:
+			TurnStates.ready:	return "[color=lightgray]T"
+			TurnStates.begin:	return "[color=green]T"
+			TurnStates.execute:	return "[color=yellow]T"
+			TurnStates.end:		return "[color=orange]T"
+			_: return "[color=dimgray]T"
 
 var logName: String: ## Customizes logs for the turn-based system to include the turn+phase, because it's not related to frames.
 	get: return str("TurnBasedCoordinator ", logStateIndicator, currentTurn)
-
-
-## Returns a readable name for the [param state].
-func getStateLogText(state: TurnState = self.currentTurnState) -> String:
-	return Tools.getEnumKey(TurnState, state)
-
 
 func _process(_delta: float) -> void:
 	# NOTE: `_process()` is disabled by `set_process()` if `debugMode` is disabled, to avoid wasting performance each frame.
@@ -600,7 +624,7 @@ func showDebugInfo() -> void:
 	Debug.addCombinedWatchList("TurnBasedCoordinator", {
 		turnsProcessed	= turnsProcessed,
 		currentTurn		= currentTurn,
-		currentTurnState= currentTurnState,
+		currentState	= stateMachine.currentState,
 		stateTimer		= stateTimer.time_left,
 		entityTimer		= entityTimer.time_left,
 		})

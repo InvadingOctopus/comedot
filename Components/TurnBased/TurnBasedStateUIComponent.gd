@@ -16,13 +16,13 @@ extends TurnBasedComponent
 ## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenEntities].
 @export_range(0, 10, 0.05) var delayBetweenEntities: float = TurnBasedCoordinator.delayBetweenEntities
 
-## The delay after each [enum TurnState]. May be used for debugging.
-## NOTE: The delay will occur BEFORE the [member TurnBasedCoordinator.currentTurnState] is incremented.
+## The delay after each turn state. May be used for debugging.
+## NOTE: The delay will occur BEFORE [member TurnBasedCoordinator.stateMachine] transitions to the next state.
 ## NOTE: Overrides [member TurnBasedCoordinator.delayBetweenStates].
 @export_range(0, 10, 0.05) var delayBetweenStates: float = TurnBasedCoordinator.delayBetweenStates
 
 @export var colorBegin:	 Color = Color.GREEN
-@export var colorUpdate: Color = Color.YELLOW
+@export var colorExecute: Color = Color.YELLOW
 @export var colorEnd:	 Color = Color.ORANGE
 
 @export var shouldShowMessages: bool = false
@@ -63,8 +63,8 @@ func connectSignals() -> void:
 	
 	TurnBasedCoordinator.willBeginTurn		.connect(self.onTurnBasedCoordinator_willBeginTurn)
 	TurnBasedCoordinator.didBeginTurn		.connect(self.onTurnBasedCoordinator_didBeginTurn)
-	TurnBasedCoordinator.willUpdateTurn		.connect(self.onTurnBasedCoordinator_willUpdateTurn)
-	TurnBasedCoordinator.didUpdateTurn		.connect(self.onTurnBasedCoordinator_didUpdateTurn)
+	TurnBasedCoordinator.willExecuteTurn		.connect(self.onTurnBasedCoordinator_willExecuteTurn)
+	TurnBasedCoordinator.didExecuteTurn		.connect(self.onTurnBasedCoordinator_didExecuteTurn)
 	TurnBasedCoordinator.willEndTurn		.connect(self.onTurnBasedCoordinator_willEndTurn)
 	TurnBasedCoordinator.didEndTurn			.connect(self.onTurnBasedCoordinator_didEndTurn)
 
@@ -77,8 +77,8 @@ func connectSignals() -> void:
 
 	entity.willBeginTurn	.connect(self.onEntity_willBeginTurn)
 	entity.didBeginTurn	.connect(self.onEntity_didBeginTurn)
-	entity.willUpdateTurn	.connect(self.onEntity_willUpdateTurn)
-	entity.didUpdateTurn	.connect(self.onEntity_didUpdateTurn)
+	entity.willExecuteTurn	.connect(self.onEntity_willExecuteTurn)
+	entity.didExecuteTurn	.connect(self.onEntity_didExecuteTurn)
 	entity.willEndTurn	.connect(self.onEntity_willEndTurn)
 	entity.didEndTurn		.connect(self.onEntity_didEndTurn)
 
@@ -105,14 +105,14 @@ func onTurnBasedCoordinator_didBeginTurn() -> void:
 	%StateDoneColorRect.visible = true
 
 
-func onTurnBasedCoordinator_willUpdateTurn() -> void:
-	displayMessage("TurnBasedCoordinator.willUpdateTurn", colorUpdate, 5)
+func onTurnBasedCoordinator_willExecuteTurn() -> void:
+	displayMessage("TurnBasedCoordinator.willExecuteTurn", colorExecute, 5)
 	updateUI()
 	%StateDoneColorRect.visible = false
 
 
-func onTurnBasedCoordinator_didUpdateTurn() -> void:
-	displayMessage("TurnBasedCoordinator.didUpdateTurn", colorUpdate, 5)
+func onTurnBasedCoordinator_didExecuteTurn() -> void:
+	displayMessage("TurnBasedCoordinator.didExecuteTurn", colorExecute, 5)
 	updateUI()
 	%StateDoneColorRect.visible = true
 
@@ -149,11 +149,11 @@ func onEntity_willBeginTurn() -> void:
 func onEntity_didBeginTurn() -> void:
 	displayMessage(entity.name + ".didBeginTurn", colorBegin)
 
-func onEntity_willUpdateTurn() -> void:
-	displayMessage(entity.name + ".willUpdateTurn", colorUpdate)
+func onEntity_willExecuteTurn() -> void:
+	displayMessage(entity.name + ".willExecuteTurn", colorExecute)
 
-func onEntity_didUpdateTurn() -> void:
-	displayMessage(entity.name + ".didUpdateTurn", colorUpdate)
+func onEntity_didExecuteTurn() -> void:
+	displayMessage(entity.name + ".didExecuteTurn", colorExecute)
 
 func onEntity_willEndTurn() -> void:
 	displayMessage(entity.name + ".willEndTurn", colorEnd)
@@ -170,8 +170,8 @@ func processTurnBegin() -> void:
 	displayMessage(str(self.name, ".processTurnBegin()"), colorBegin)
 
 
-func processTurnUpdate() -> void:
-	displayMessage(str(self.name, ".processTurnUpdate()"), colorUpdate)
+func processTurnExecute() -> void:
+	displayMessage(str(self.name, ".processTurnExecute()"), colorExecute)
 
 
 func processTurnEnd() -> void:
@@ -192,10 +192,10 @@ func updateUI() -> void:
 		"TURN#%02d: " % TurnBasedCoordinator.currentTurn,
 		currentEntityName, " > ", nextEntityName)
 
-	match TurnBasedCoordinator.currentTurnState:
-		TurnBasedCoordinator.TurnState.turnBegin:  stateColorRect.color = colorBegin
-		TurnBasedCoordinator.TurnState.turnUpdate: stateColorRect.color = colorUpdate
-		TurnBasedCoordinator.TurnState.turnEnd:	stateColorRect.color = colorEnd
+	match TurnBasedCoordinator.stateMachine.currentState:
+		TurnBasedCoordinator.TurnStates.begin:	stateColorRect.color = colorBegin
+		TurnBasedCoordinator.TurnStates.execute:	stateColorRect.color = colorExecute
+		TurnBasedCoordinator.TurnStates.end:		stateColorRect.color = colorEnd
 		_: stateColorRect.color = Color.GRAY
 
 
