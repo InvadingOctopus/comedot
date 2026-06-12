@@ -9,11 +9,12 @@ extends Resource
 
 ## A [Dictionary] where each [StringName] key is the name of a state,
 ## and each state is associated with a [PackedStringArray] list of other state names that it can transition to.
-@export var states:			Dictionary[StringName, PackedStringArray]
+@export var states:			Dictionary[StringName, PackedStringArray] # CHECK: PERFORMANCE: Is Array of [StringName]s faster than [PackedStringArray]? But Godot can't use nested typed collections :(
 
 @export var initialState:	StringName = states.keys().front() if not states.is_empty() else &"" # CHECK: This kind of assignment doesn't work currently in Godot
 
-@export var debugMode:		bool
+@export var isEnabled: bool = true
+@export var debugMode: bool
 
 #endregion
 
@@ -25,7 +26,11 @@ extends Resource
 @export_storage var currentState: StringName:
 	set(newValue):
 		if newValue != currentState:
-			if debugMode: Debug.printChange("currentState", currentState,  newValue, true) # logAsTrace
+			if not isEnabled: 
+				if debugMode: Debug.printChange("currentState not isEnabled, rejected", currentState, newValue)
+				return
+
+			if debugMode: Debug.printChange("currentState", currentState, newValue, true) # logAsTrace
 
 			# NOTE: emit_changed() in case UI/Godot Editor/debug views are observing this Resource
 
@@ -61,9 +66,9 @@ var logName: String:
 
 
 #region Signals
+signal didRejectTransition(sourceState:	 StringName, rejectedState:	StringName)
 signal willTransition(outgoingState:	 StringName, incomingState:	StringName)
 signal didTransition(previousState:		 StringName, newState:		StringName)
-signal didRejectTransition(sourceState:	 StringName, rejectedState:	StringName)
 #endregion
 
 
@@ -129,11 +134,11 @@ func validateTransition(sourceState: StringName, requestedState: StringName) -> 
 
 
 func transitionToState(nextState: StringName) -> bool:
-	if debugMode: printLog("transitionToState(): &\"" + self.currentState + "\" → &\"" + nextState + "\"")
+	if debugMode: printLog(str("transitionToState(): &\"" + self.currentState + "\" → &\"" + nextState + "\" isEnabled: ", isEnabled))
 
 	if nextState == self.currentState: return true # If we're already in the requested state, we already succeeded!
 
-	if not validateTransition(self.currentState, nextState):
+	if not isEnabled or not validateTransition(self.currentState, nextState):
 		didRejectTransition.emit(self.currentState, nextState)
 		return false
 
@@ -152,11 +157,13 @@ func transitionToState(nextState: StringName) -> bool:
 
 
 #region Abstract Hooks
+# TBD: Add a `Callback` property?
 
 ## May be implemented in subclasses to add extra dynamic conditions between state transitions or reject transitions.
+## IMPORTANT: Subclasses MUST check [member isEnabled]
 func overrideTransition(sourceState: StringName, requestedState: StringName) -> bool:
 	if debugMode: printLog("overrideTransition(): &\"" + sourceState + "\" → &\"" + requestedState + "\"")
-	return true
+	return isEnabled
 
 #endregion
 
