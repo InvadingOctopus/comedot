@@ -98,7 +98,7 @@ func validateMove(requestedDirection: Vector2i = self.queuedMovementDirection) -
 ## NOTE: May not succeed if [method TurnBasedCoordinator.startTurn] refuses.
 ## TIP: Subclasses may override this method to add custom movement, such as deducting "action points" etc. after moving.
 func startTurn() -> Vector2i:
-	TurnBasedCoordinator.startTurn()
+	TurnBasedCoordinator.startTurn() # TBD: `awaitForTurnEnd`?
 	return tileBasedPositionComponent.currentCoordinates + self.queuedMovementDirection
 
 
@@ -109,8 +109,12 @@ func processTurnBegin() -> void:
 func processTurnExecute() -> void:
 	# if not isEnabled: return # Checked by TurnBasedComponent
 	tileBasedPositionComponent.inputVector = Vector2i(self.queuedMovementDirection)
-	tileBasedPositionComponent.processInput()
 	
+	if tileBasedPositionComponent.processInput() and tileBasedPositionComponent.isMovingToNewCell:
+		# IMPORTANT: Wait for the move to complete so that the TurnBasedCoordinator doesn't transition to the next turn state!
+		# In case the `TileBasedPositionComponent.speed` is slow etc.
+		await tileBasedPositionComponent.didArriveAtNewCell
+
 	queuedMovementDirection = Vector2.ZERO # Always clear and let repeatMovement() repoll input if `shouldRepeatOnHeldInput`
 	# if debugMode: showDebugInfo()
 
