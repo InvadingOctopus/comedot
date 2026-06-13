@@ -65,6 +65,7 @@ func getRequiredComponents() -> Array[Script]:
 func _ready() -> void:
 	Tools.toggleSignal(inputComponent.didUpdateMovementDirection, self.onInputComponent_didUpdateMovementDirection, self.isEnabled)
 	# NOTE: Connect `TurnBasedCoordinator.isReadyToStartTurn` & `tileBasedPositionComponent.didArriveAtNewCell` AFTER movement, i.e. in processTurnExecute()
+	if debugMode: showDebugInfo()
 
 
 #region Input
@@ -109,16 +110,13 @@ func processTurnExecute() -> void:
 	# if not isEnabled: return # Checked by TurnBasedComponent
 	tileBasedPositionComponent.inputVector = Vector2i(self.queuedMovementDirection)
 	tileBasedPositionComponent.processInput()
+	
+	queuedMovementDirection = Vector2.ZERO # Always clear and let repeatMovement() repoll input if `shouldRepeatOnHeldInput`
+	# if debugMode: showDebugInfo()
 
 	# Move again when the current move/turn completes?
 	Tools.toggleSignal(TurnBasedCoordinator.isReadyToStartTurn,		self.onTurnBasedCoordinator_isReadyToStartTurn,		self.shouldRepeatOnHeldInput)
 	Tools.toggleSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell,	self.shouldRepeatOnHeldInput)
-	# if debugMode: showDebugInfo()
-
-
-func processTurnEnd() -> void:
-	if not shouldRepeatOnHeldInput: queuedMovementDirection = Vector2.ZERO
-	# if debugMode: showDebugInfo()
 
 #endregion
 
@@ -152,5 +150,5 @@ func repeatMovement() -> void:
 func showDebugInfo() -> void:
 	# if not debugMode: return # Checked by caller
 	Debug.addComponentWatchList(self, {
-		vector	= queuedMovementDirection,
+		vector = queuedMovementDirection,
 		})
