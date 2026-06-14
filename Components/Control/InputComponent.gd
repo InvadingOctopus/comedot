@@ -214,12 +214,12 @@ signal didUpdateMovementDirection(movementDirection: Vector2, difference: Vector
 
 ## Emitted when [member horizontalInput] and [member lastNonzeroHorizontalInput] have an OPPOSITE SIGN (positive/negative), signifying a flip between right ↔ left.
 ## Any 0 input is ignored, i.e. when movement stops but the direction doesn't change.
-## May be used for sprite flipping and other animations etc.
+## TIP: May be used for sprite flipping, animations, or checking the facing direction for a dash etc.
 signal didChangeHorizontalDirection
 
 ## Emitted when [member verticalInput] and [member lastNonzeroVerticalInput] have an OPPOSITE SIGN (positive/negative), signifying a flip between up ↔ down.
 ## Any 0 input is ignored, i.e. when movement stops but the direction doesn't change.
-## May be used for sprite flipping and other animations etc.
+## TIP: May be used for sprite flipping, animations, or checking the facing direction for a dash etc.
 signal didChangeVerticalDirection
 
 ## Emitted after [member aimDirection] is updated with a non-zero [param difference] by an input event or a direct modification.
