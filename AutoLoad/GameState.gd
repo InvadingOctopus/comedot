@@ -8,6 +8,7 @@ extends Node
 
 
 #region Game State
+# TBD: @export_storage?
 
 ## A [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
 ## TIP: When accessing a key for the first time, use [method Dictionary.get_or_add] with a default value.
@@ -20,11 +21,14 @@ extends Node
 ## ALERT: To avoid an error or crash when there is no player, access players with [method getPlayer] NOT `players.front()` or `player[0]`
 var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
 
-
 ## A dictionary of stats and values to display in the HUD UI.
 ## Changes to the dictionary should emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
 ## [StringName] is the optimal type to use for keys.
 @export var hudStats: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
+
+## A shared random number generator for gameplay-affecting randomness
+## so seeds can be reused to roll the same numbers throughout the runtime, useful for debugging, saves, and replays etc.
+var randomNumberGenerator: RandomNumberGenerator = RandomNumberGenerator.new()
 
 #endregion
 
