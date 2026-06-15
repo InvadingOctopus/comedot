@@ -413,6 +413,22 @@ static func wrapArrayIndex(array: Array, index: int, increment: int) -> int:
 	else: return 0
 
 
+## Uses the shared [member GameState.randomNumberGenerator] to return a random index from any [Array]
+## Returns -1 if the [param array] is empty.
+## NOTE: This is different from Godot's [method Array.pick_random] because this method uses a game-specific random number stream and can be used with packed arrays such as [PackedVector2Array] etc.
+## TIP: This may also be used with [method Dictionary.keys] & [method Dictionary.values] etc.
+static func pickRandomIndex(array: Array) -> int:
+	return GameState.randomNumberGenerator.randi_range(0, array.size() - 1) if not array.is_empty() else -1
+
+
+## Uses the shared [member GameState.randomNumberGenerator] to return a random item from any [Array]
+## Returns -1 if the [param array] is empty.
+## NOTE: This is different from Godot's [method Array.pick_random] because this method uses a game-specific random number stream and can be used with packed arrays such as [PackedVector2Array] etc.
+## TIP: This may also be used with [method Dictionary.keys] & [method Dictionary.values] etc.
+static func pickRandom(array: Array) -> Variant:
+	return array[GameState.randomNumberGenerator.randi_range(0, array.size() - 1)] if not array.is_empty() else -1
+
+
 ## Returns a specific number of random unique array indices.
 ## If [param numberOfIndices] is greater than [param arraySize], the returned count is clamped to [param arraySize]
 ## PERFORMANCE: Uses a "sparse partial Fisher-Yates shuffle" to only track selected/swapped slots instead of allocating an Array for every possible index.
