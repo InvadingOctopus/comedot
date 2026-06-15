@@ -73,11 +73,7 @@ func _ready() -> void:
 
 func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
 	if not isEnabled or not canAcceptMove: return
-	if validateMove(movementDirection):
-		self.queuedMovementDirection = movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
-
-		# Start the turn automatically? i.e. as in Roguelikes
-		if shouldStartTurnOnMove and canStartTurn: startTurn()
+	processInput(movementDirection)
 
 
 ## Returns `true` if the destination cell (in [member queuedMovementDirection] by default) is valid & vacant according to [method TileBasedPositionComponent.validateCoordinates]
@@ -88,6 +84,17 @@ func validateMove(requestedDirection: Vector2i = self.queuedMovementDirection) -
 	# PERFORMANCE: length_squared() is faster than length() CHECK: Does this cause any false positives?
 	return  requestedDirection.length_squared() != 0	\
 		and tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + requestedDirection)
+
+
+## Sets [member queuedMovementDirection] if [method validateMove] approves.
+## NOTE: Does NOT check [member canAcceptMove]
+func processInput(movementDirection: Vector2) -> bool:
+	if not isEnabled or not validateMove(movementDirection): return false
+
+	self.queuedMovementDirection = movementDirection # CHECK: No need to explicitly cast float Vector2 to Vector2i, right?
+	# Start the turn automatically? i.e. as in Roguelikes
+	if shouldStartTurnOnMove and canStartTurn: startTurn()
+	return true
 
 #endregion
 
@@ -131,23 +138,19 @@ func processTurnExecute() -> void:
 
 func onTurnBasedCoordinator_isReadyToStartTurn() -> void:
 	if debugMode: printDebug(str("onTurnBasedCoordinator_isReadyToStartTurn() shouldRepeatOnHeldInput: ", shouldRepeatOnHeldInput))
-	if not canAcceptMove: return
-	if self.shouldRepeatOnHeldInput: repeatMovement()
+	if self.canAcceptMove and self.shouldRepeatOnHeldInput: repeatMovement()
 
 
 func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) -> void:
 	Tools.disconnectSignal(tileBasedPositionComponent.didArriveAtNewCell, self.onTileBasedPositionComponent_didArriveAtNewCell)
-	if not canAcceptMove: return
-	if self.shouldRepeatOnHeldInput: repeatMovement()
+	if self.canAcceptMove and self.shouldRepeatOnHeldInput: repeatMovement()
 
 
 ## Reapplies [member inputComponent.movementDirection] to [member queuedMovementDirection] if [member shouldRepeatOnHeldInput],
 ## and starts a new turn if [member shouldStartTurnOnMove] and [member canStartTurn]
 ## TIP: May be used to implement "Roguelike" control.
-func repeatMovement() -> void:
-	if shouldRepeatOnHeldInput and validateMove(inputComponent.movementDirection):
-		queuedMovementDirection = inputComponent.movementDirection
-		if shouldStartTurnOnMove and canStartTurn: startTurn()
+func repeatMovement() -> bool:
+	return processInput(inputComponent.movementDirection) if shouldRepeatOnHeldInput else false
 
 #endregion
 

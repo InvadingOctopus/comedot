@@ -31,17 +31,23 @@ func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, dif
 	var currentHorizontalDirection:  int = int(signf( movementDirection.x))
 	if  currentHorizontalDirection == previousHorizontalDirection: return
 
-	if canAcceptMove: updateInput()
+	if canAcceptMove: processHorizontalInput()
 
 
-func repeatMovement() -> void:
-	if shouldRepeatOnHeldInput and canAcceptMove: updateInput()
+func repeatMovement() -> bool:
+	if shouldRepeatOnHeldInput and canAcceptMove:
+		return processHorizontalInput()
+	else:
+		return false
 
 
-func updateInput() -> void:
+func processHorizontalInput() -> bool:
 	var requestedDirection: Vector2i = Vector2i(int(signf(inputComponent.horizontalInput)), 0)
 	if  requestedDirection.x != 0 and validateMove(requestedDirection):
 		self.queuedMovementDirection = requestedDirection
 		if shouldStartTurnOnMove and canStartTurn: startTurn()
+		return true
+	else:
+		return false
 
 #endregion
