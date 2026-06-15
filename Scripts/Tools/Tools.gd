@@ -398,7 +398,7 @@ static func wrapUnitFloat(value: float) -> float:
 #endregion
 
 
-#region Array Functions
+#region Array & Dictionary Functions
 
 ## NOTE: Packed arrays such as [PackedStringArray] etc. are accepted even though [param array] is typed as [Array]
 static func validateArrayIndex(array: Array, index: int) -> bool:
@@ -460,6 +460,35 @@ static func pickRandomArrayIndices(arraySize: int, numberOfIndices: int) -> Arra
 		# 6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on...
 
 	return shuffledIndices
+
+
+## Calls [method RandomNumberGenerator.rand_weighted] to return a key from a [Dictionary] where each value is a "relative weight"
+## i.e. if there are 4 items each with a weight of 1.0, then each item has a chance of 25%
+## EXAMPLE: `{ "common": 3.0, "rare": 1.0 }` picks `"common"` about 75% of the time.
+## NOTE: Negative weights are clamped to 0 and weights <=0 are ignored.
+## Returns [param default] if there are no items or positive weights.
+## NOTE: Uses [member GameState.randomNumberGenerator] by default.
+## IMPORTANT: The [Dictionary] values should be `float` or `int`
+static func pickRandomFromWeightsDictionary(weightedItems: Dictionary, default: Variant = null, randomNumberGenerator: RandomNumberGenerator = GameState.randomNumberGenerator) -> Variant: 
+	# DUMBDOT: Cannot type `weightedItems` as `Dictionary[Variant, float]` because then Godot rejects other types such as `[StringName, float]`
+	
+	# Example ranges, excluding the lower bound:
+	# "common"	= (0.0, 3.0] = 3/4 = 75% 
+	# "rare"	= (3.0, 4.0] = 1/4 = 25%
+	# default	= 0
+
+	if weightedItems.is_empty(): return default
+
+	# Clamp negative weights to 0 because a negative weight doesn't make sense
+	# rand_weighted() ignores weights of 0
+	var weights: PackedFloat32Array	= PackedFloat32Array(weightedItems.values()) # rand_weighted() needs [PackedFloat32Array]
+	for index: int in weights.size():
+		if weights[index] < 0: weights[index] = 0
+
+	# rand_weighted() returns -1 for invalid arrays 
+	var randomIndex: int = randomNumberGenerator.rand_weighted(weights)
+	if  randomIndex >= 0 and randomIndex < weightedItems.size(): return weightedItems.keys()[randomIndex]
+	else: return default
 
 #endregion
 
