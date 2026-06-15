@@ -231,7 +231,7 @@ static func resetBodyVelocityIfZeroMotion(body: CharacterBody2D) -> Vector2:
 static func addRandomDistance(position: Vector2,    \
 minimumDistance: Vector2, maximumDistance: Vector2, \
 xScale: float = 1.0, yScale: float = 1.0) -> Vector2:
-
+	# TBD: Use GameState.randomNumberGenerator?
 	var randomizedPosition: Vector2 = position
 	randomizedPosition.x += randf_range(minimumDistance.x, maximumDistance.x) * xScale
 	randomizedPosition.y += randf_range(minimumDistance.y, maximumDistance.y) * yScale
@@ -384,10 +384,10 @@ static func replaceStrings(sourceString: String, substitutions: Dictionary[Strin
 
 ## TIP: To "truncate" the number of decimal points, use Godot's [method @GlobalScope.snappedf] function.
 
-## "Rolls" a random integer number from 1…100 (inclusive) and returns `true` if the result is less than or equal to the specified [param chancePercent].
+## Uses [member GameState.randomNumberGenerator] to "roll" a random integer number from 1…100 (inclusive) and returns `true` if the result is less than or equal to the specified [param chancePercent].
 ## i.e. If the chance is 10% then a roll of 1…10 will succeed but 11…100 (90 possibilities) will fail.
 static func rollChance(chancePercent: int) -> bool:
-	return randi_range(1, 100) <= chancePercent
+	return GameState.randomNumberGenerator.randi_range(1, 100) <= chancePercent
 
 
 ## Wraps a [float] value around if it is below 0.0 or higher than 1.0
@@ -413,7 +413,7 @@ static func wrapArrayIndex(array: Array, index: int, increment: int) -> int:
 	else: return 0
 
 
-## Uses the shared [member GameState.randomNumberGenerator] to return a random index from any [Array]
+## Uses [member GameState.randomNumberGenerator] to return a random index from any [Array]
 ## Returns -1 if the [param array] is empty.
 ## NOTE: This is different from Godot's [method Array.pick_random] because this method uses a game-specific random number stream and can be used with packed arrays such as [PackedVector2Array] etc.
 ## TIP: This may also be used with [method Dictionary.keys] & [method Dictionary.values] etc.
@@ -421,7 +421,7 @@ static func pickRandomIndex(array: Array) -> int:
 	return GameState.randomNumberGenerator.randi_range(0, array.size() - 1) if not array.is_empty() else -1
 
 
-## Uses the shared [member GameState.randomNumberGenerator] to return a random item from any [Array]
+## Uses [member GameState.randomNumberGenerator] to return a random item from any [Array]
 ## Returns -1 if the [param array] is empty.
 ## NOTE: This is different from Godot's [method Array.pick_random] because this method uses a game-specific random number stream and can be used with packed arrays such as [PackedVector2Array] etc.
 ## TIP: This may also be used with [method Dictionary.keys] & [method Dictionary.values] etc.
@@ -429,7 +429,7 @@ static func pickRandom(array: Array) -> Variant:
 	return array[GameState.randomNumberGenerator.randi_range(0, array.size() - 1)] if not array.is_empty() else -1
 
 
-## Returns a specific number of random unique array indices.
+## Uses [member GameState.randomNumberGenerator] to returns a specific number of random unique array indices.
 ## If [param numberOfIndices] is greater than [param arraySize], the returned count is clamped to [param arraySize]
 ## PERFORMANCE: Uses a "sparse partial Fisher-Yates shuffle" to only track selected/swapped slots instead of allocating an Array for every possible index.
 ## TIP: To shuffle an entire Array, use Godot's builtin [method Array.shuffle]
@@ -452,7 +452,7 @@ static func pickRandomArrayIndices(arraySize: int, numberOfIndices: int) -> Arra
 	for count in selectedIndexCount:
 		# 1: Roll one slot from the still available range.
 		# Example: [A,B,C,D]: select B
-		selectedSlot  = randi_range(0, remainingIndexCount - 1)
+		selectedSlot  = GameState.randomNumberGenerator.randi_range(0, remainingIndexCount - 1)
 
 		# 2: Resolve that slot to the actual index.
 		# Instead of using a list of every possible index, assume that every slot points to itself unless `swappedIndices` says otherwise:

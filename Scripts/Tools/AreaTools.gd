@@ -17,7 +17,7 @@ static func getRandomPositionInAreaBounds(area: Area2D) -> Vector2:
 	if not areaBounds.has_area(): return Vector2.ZERO
 
 	# Generate a random position within the area.
-	# randomize() # TBD: Do we need this?
+	# TBD: Use GameState.randomNumberGenerator?
 	var randomPosition: Vector2 = Vector2(
 		randf_range(areaBounds.position.x, areaBounds.end.x),
 		randf_range(areaBounds.position.y, areaBounds.end.y))

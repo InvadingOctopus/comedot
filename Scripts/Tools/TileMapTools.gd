@@ -322,7 +322,7 @@ static func findRandomTileMapCells(
 	randomCells.resize(cells.size()) # Set to the maximum possible size, before filtering by chance
 
 	for coordinates in cells:
-		if randf() < selectionChance:
+		if randf() < selectionChance: # TBD: Use GameState.randomNumberGenerator?
 			randomCells[randomCellCount] = coordinates
 			randomCellCount += 1
 
@@ -363,6 +363,7 @@ static func randomizeTileMapCells(
 			map.erase_cell(cellCoordinates)
 			continue
 
+		# TBD: Use GameState.randomNumberGenerator?
 		randomTile = Vector2i(
 			randi_range(atlasCoordinatesMin.x, atlasCoordinatesMax.x),
 			randi_range(atlasCoordinatesMin.y, atlasCoordinatesMax.y))

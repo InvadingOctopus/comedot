@@ -28,6 +28,9 @@ var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerE
 
 ## A shared random number generator for gameplay-affecting randomness
 ## so seeds can be reused to roll the same numbers throughout the runtime, useful for debugging, saves, and replays etc.
+## TIP: Save and restore [member RandomNumberGenerator.state] to restore the generator to a previous state.
+## WARNING: Do NOT use for purely "cosmetic" effects such as random colors etc. because that will affect the stream of random numbers for gameplay behaviors.
+## e.g. `rollDamage() → randomizeColor() → spawnLoot()` means `spawnLoot()` will get a different number if `randomizeColor()` is removed.
 var randomNumberGenerator: RandomNumberGenerator = RandomNumberGenerator.new()
 
 #endregion
