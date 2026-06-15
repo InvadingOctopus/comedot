@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b2568x3i5xsno"]
+
+[ext_resource type="Script" uid="uid://b0c1uoaylm3c8" path="res://Components/Control/RandomInputComponent.gd" id="1_wvova"]
+
+[node name="RandomInputComponent" type="Timer" unique_id=1173017774 groups=["components"]]
+autostart = true
+script = ExtResource("1_wvova")
+
+[connection signal="timeout" from="." to="." method="onTimeout"]

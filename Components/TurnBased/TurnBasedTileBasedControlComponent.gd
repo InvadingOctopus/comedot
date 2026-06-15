@@ -1,4 +1,5 @@
 ## Uses a [TileBasedPositionComponent] to move a turn-based entity when it's ready to take a turn.
+## TIP: For random monster/NPC movement use [RandomInputComponent]
 ## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]. BEFORE [InputComponent]
 
 class_name TurnBasedTileBasedControlComponent

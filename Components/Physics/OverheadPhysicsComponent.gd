@@ -1,6 +1,7 @@
 ## Processes the friction and other physics for overhead-view (i.e. "top-down") movement for the parent [Entity]'s [CharacterBodyComponent].
 ## NOTE: Does NOT handle player input. Control is provided by [InputComponent] and/or AI agents etc.
 ## This component will still process friction even if no input source is present.
+## TIP: For random monster/NPC movement use [RandomInputComponent]
 ## Requirements: BEFORE [CharacterBodyComponent] & [InputComponent], AFTER components that manipulate [member InputComponent.movementDirection] etc.
 
 class_name OverheadPhysicsComponent
