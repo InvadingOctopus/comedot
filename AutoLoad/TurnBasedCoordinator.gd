@@ -117,7 +117,7 @@ class TurnStates:
 		turnsProcessed = newValue
 		showDebugInfo()
 
-## Returns: `true` if [member stateMachine] is enabled and in [constant TurnStates.ready], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
+## Returns: `true` if the [member stateMachine] is enabled and in [constant TurnStates.ready], and not [member isProcessingEntities], and neither [member stateTimer] nor [member entityTimer] is running.
 var canStartTurn: bool:
 	get: return self.stateMachine.currentState == TurnStates.ready \
 			and stateMachine.isEnabled \

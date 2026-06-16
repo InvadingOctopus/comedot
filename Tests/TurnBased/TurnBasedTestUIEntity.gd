@@ -9,18 +9,13 @@ func _enter_tree() -> void:
 	super._enter_tree()
 
 
-func _ready() -> void:
-	TurnBasedCoordinator.entityTimer.wait_time = 3
-	TurnBasedCoordinator.stateTimer.wait_time  = 3
-
-
 func connectSignals() -> void:
 	TurnBasedCoordinator.willBeginTurn.connect(self.onTurnBasedCoordinator_willBeginTurn)
-	TurnBasedCoordinator.didEndTurn.connect(self.onTurnBasedCoordinator_didEndTurn)
+	TurnBasedCoordinator.didEndTurn.connect(   self.onTurnBasedCoordinator_didEndTurn)
 
 
 func onNextTurnButton_pressed() -> void:
-	TurnBasedCoordinator.startTurn()
+	if TurnBasedCoordinator.canStartTurn: TurnBasedCoordinator.startTurn()
 
 
 func onTurnBasedCoordinator_willBeginTurn() -> void:
@@ -28,12 +23,12 @@ func onTurnBasedCoordinator_willBeginTurn() -> void:
 
 
 func processTurnBegin() -> void:
-	%NextTurnButton.disabled = true
-	%ExecuteLabel.visible = false
-	%EndLabel.visible = false
+	%NextTurnButton.disabled= true
+	%ExecuteLabel.visible	= false
+	%EndLabel.visible		= false
 
-	%BeginLabel.text = str("TURN ", currentTurn, " START")
-	%BeginLabel.visible = true
+	%BeginLabel.text		= str("TURN ", currentTurn, " START")
+	%BeginLabel.visible		= true
 
 	%UIAnimationPlayer.play(&"showBeginLabel")
 	await %UIAnimationPlayer.animation_finished
@@ -48,7 +43,7 @@ func processTurnBegin() -> void:
 
 func processTurnExecute() -> void:
 	%BeginLabel.modulate.a = 0
-	%ExecuteLabel.visible = true
+	%ExecuteLabel.visible  = true
 	super.processTurnExecute()
 	if not is_zero_approx(TurnBasedCoordinator.entityTimer.wait_time):
 		Tools.skipTimer(TurnBasedCoordinator.entityTimer)
@@ -56,13 +51,13 @@ func processTurnExecute() -> void:
 
 func processTurnEnd() -> void:
 	%ExecuteLabel.modulate.a = 0
-	%EndLabel.visible = true
+	%EndLabel.visible		 = true
 	super.processTurnEnd()
 
 
 func onTurnBasedCoordinator_didEndTurn() -> void:
 	%UITimer.start()
 	await %UITimer.timeout
-	%ExecuteLabel.visible = false
-	%EndLabel.visible = false
+	%ExecuteLabel.visible	 = false
+	%EndLabel.visible		 = false
 	%NextTurnButton.disabled = false
