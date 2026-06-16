@@ -4,3 +4,4 @@
 
 [node name="TurnBasedTileBasedControlComponent" type="Node" unique_id=444242727 groups=["components", "turnBased"]]
 script = ExtResource("1_j3e7e")
+allowSubclassesWhenCheckingRequirements = true

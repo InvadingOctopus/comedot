@@ -49,7 +49,7 @@ var canAcceptMove:	bool:
 		and (TurnBasedCoordinator.stateMachine.currentState == TurnBasedCoordinator.TurnStates.begin or TurnBasedCoordinator.canStartTurn) \
 		and not tileBasedPositionComponent.isMovingToNewCell
 
-var canStartTurn:	bool: 
+var canStartTurn:	bool:
 	get: return self.isEnabled \
 		and TurnBasedCoordinator.canStartTurn \
 		and not tileBasedPositionComponent.isMovingToNewCell
@@ -123,7 +123,7 @@ func processTurnBegin() -> void:
 func processTurnExecute() -> void:
 	# if not isEnabled: return # Checked by TurnBasedComponent
 	tileBasedPositionComponent.inputVector = Vector2i(self.queuedMovementDirection)
-	
+
 	if tileBasedPositionComponent.processInput() and tileBasedPositionComponent.isMovingToNewCell:
 		# IMPORTANT: Wait for the move to complete so that the TurnBasedCoordinator doesn't transition to the next turn state!
 		# In case the `TileBasedPositionComponent.speed` is slow etc.
