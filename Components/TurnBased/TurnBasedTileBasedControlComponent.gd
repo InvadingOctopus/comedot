@@ -115,7 +115,7 @@ func startTurn() -> Vector2i:
 
 
 func processTurnBegin() -> void:
-	# Allow automation to inject moves at this point
+	# Allow automation to inject moves at the start of a turn
 	# EXAMPLE: Connecting `TurnBasedEntity.willBeginTurn` to RandomInputComponent.performRandomAction()
 	if isEnabled and canAcceptMove: processInput(inputComponent.movementDirection)
 
