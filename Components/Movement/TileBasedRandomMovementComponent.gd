@@ -1,4 +1,5 @@
 ## Extends [TileBasedControlComponent] to do random movement only.
+## TIP: For a lower-level way of generating random input for other components, see [RandomInputComponent]
 ## Requirements: [TileBasedPositionComponent]
 
 class_name TileBasedRandomMovementComponent
@@ -47,15 +48,18 @@ func onRandomStepTimer_timeout() -> void:
 
 
 func moveRandomly() -> void:
+	if not isEnabled \
+	or (horizontalMovesSet.is_empty() and verticalMovesSet.is_empty()):
+		return
+
 	self.recentInputVector = getRandomVector()
 
 	# Should we keep rerolling until we find a vacant tile to move to?
-
-	var tries: int = 0
-
 	if shouldKeepTryingUntilValidMove:
-		while not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + self.recentInputVector) \
-		or tries < maximumTries:
+		var tries: int = 0
+
+		while tries < maximumTries \
+		and not tileBasedPositionComponent.validateCoordinates(tileBasedPositionComponent.currentCoordinates + self.recentInputVector):
 			self.recentInputVector = getRandomVector()
 			tries += 1
 
@@ -63,7 +67,9 @@ func moveRandomly() -> void:
 
 
 func getRandomVector() -> Vector2i:
-	return Vector2i(horizontalMovesSet.pick_random(), verticalMovesSet.pick_random())
+	# TBD: Use GameState.randomNumberGenerator?
+	return Vector2i(horizontalMovesSet.pick_random() if not horizontalMovesSet.is_empty() else 0,
+					verticalMovesSet.pick_random()   if not verticalMovesSet.is_empty() else 0)
 
 #endregion
 

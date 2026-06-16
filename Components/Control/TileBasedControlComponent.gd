@@ -75,7 +75,8 @@ func _ready() -> void:
 #region Input
 
 func toggleSignals() -> void:
-	Tools.toggleSignal(inputComponent.didProcessInput,					self.onInputComponent_didProcessInput,					self.isEnabled)
+	if inputComponent: # Just in case a subclass like [TileBasedRandomMovementComponent] doesn't need [InputComponent]
+		Tools.toggleSignal(inputComponent.didProcessInput,				self.onInputComponent_didProcessInput,					self.isEnabled)
 	Tools.toggleSignal(tileBasedPositionComponent.didArriveAtNewCell,	self.onTileBasedPositionComponent_didArriveAtNewCell,	self.isEnabled and self.hasInput)
 	# TRIED: Tools.toggleSignal(inputComponent.didUpdateMovementDirection,self.onInputComponent_didUpdateMovementDirection,		self.isEnabled) # Can't use because this cannot detect press/release
 
