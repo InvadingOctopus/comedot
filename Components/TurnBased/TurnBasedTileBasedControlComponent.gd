@@ -1,5 +1,6 @@
 ## Uses a [TileBasedPositionComponent] to move a turn-based entity when it's ready to take a turn.
 ## TIP: For random monster/NPC movement use [RandomInputComponent]
+## e.g. connect [signal TurnBasedEntity.willBeginTurn] to [method RandomInputComponent.performRandomAction]
 ## Requirements: [TurnBasedEntity], [TileBasedPositionComponent]. BEFORE [InputComponent]
 
 class_name TurnBasedTileBasedControlComponent
@@ -41,9 +42,11 @@ var queuedMovementDirection: Vector2i:
 		queuedMovementDirection = newValue
 		if debugMode: showDebugInfo()
 
+# PERFORMANCE: Check `tileBasedPositionComponent.isMovingToNewCell` last because it's unlikely that a player will input a move while they can clearly see ongoing movement :')
+
 var canAcceptMove:	bool:
 	get: return self.isEnabled \
-		and TurnBasedCoordinator.canStartTurn \
+		and (TurnBasedCoordinator.stateMachine.currentState == TurnBasedCoordinator.TurnStates.begin or TurnBasedCoordinator.canStartTurn) \
 		and not tileBasedPositionComponent.isMovingToNewCell
 
 var canStartTurn:	bool: 
@@ -72,7 +75,8 @@ func _ready() -> void:
 #region Input
 
 func onInputComponent_didUpdateMovementDirection(movementDirection: Vector2, _difference: Vector2) -> void:
-	if not isEnabled or not canAcceptMove: return
+	## Process input events outside processTurnBegin() only if this component can start a new turn
+	if not isEnabled or not shouldStartTurnOnMove or not canStartTurn: return
 	processInput(movementDirection)
 
 
@@ -111,7 +115,9 @@ func startTurn() -> Vector2i:
 
 
 func processTurnBegin() -> void:
-	pass # if debugMode: showDebugInfo()
+	# Allow automation to inject moves at this point
+	# EXAMPLE: Connecting `TurnBasedEntity.willBeginTurn` to RandomInputComponent.performRandomAction()
+	if isEnabled and canAcceptMove: processInput(inputComponent.movementDirection)
 
 
 func processTurnExecute() -> void:
@@ -150,7 +156,8 @@ func onTileBasedPositionComponent_didArriveAtNewCell(_newDestination: Vector2i) 
 ## and starts a new turn if [member shouldStartTurnOnMove] and [member canStartTurn]
 ## TIP: May be used to implement "Roguelike" control.
 func repeatMovement() -> bool:
-	return processInput(inputComponent.movementDirection) if shouldRepeatOnHeldInput else false
+	if not shouldRepeatOnHeldInput or not shouldStartTurnOnMove: return false
+	else: return processInput(inputComponent.movementDirection)
 
 #endregion
 
