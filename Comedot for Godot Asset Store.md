@@ -56,7 +56,7 @@ Screenshot 6:	Charts:		https://raw.githubusercontent.com/InvadingOctopus/comedot
 
 ## Versions
 
-Version Name:	4.7.0.10.42
+Version Name:	4.7.0.30.69
 	First 3 numbers: Godot version
 	4th: Dev/Beta/RC where <10 = Beta, 10+ = RC, 100 = release
 	6th: The Comedot release during that Godot version
@@ -64,7 +64,7 @@ Version Name:	4.7.0.10.42
 
 Version changelog:
 ```
-Latest Commit: [eba42f916518c9b225db3e89e1530eac95f38a55](https://github.com/InvadingOctopus/comedot/commit/eba42f916518c9b225db3e89e1530eac95f38a55) on 2026-06-09
+Latest Commit: [f40e3917f5cc1d53717192ef6d05cccaefb0af02](https://github.com/InvadingOctopus/comedot/commit/f40e3917f5cc1d53717192ef6d05cccaefb0af02) on 2026-06-16
 
 Compare tags/branches on GitHub:
 [https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop](https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop)
@@ -77,5 +77,5 @@ Maximum compatible Godot version:	undefined
 
 ## Pricing
 
-Donation Text:	Pay for my food & rent so I can continue my decadent lifestyle of perpetually making free shit
+Donation Text:	Pay for my food & rent so I can continue a decadent lifestyle of perpetually making free shit
 Donation URL:	https://github.com/InvadingOctopus/comedot
