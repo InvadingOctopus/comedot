@@ -9,11 +9,13 @@ Asset Name: Comedot ECS Template
 
 
 Asset Summary:
-All-in-one project template & components framework: Basically nodes but for gameplay. Optimized for 2D pixel art.
+All-in-one project template & components framework. Optimized for 2D pixel art.
 
 
 Detailed Description:
 ```
+Basically nodes but for gameplay.
+
 **This is a work in constant progress!** For delicious details & the latest version, gaze upon the glorious GitHub repository: [https://github.com/InvadingOctopus/comedot/tree/develop](https://github.com/InvadingOctopus/comedot/tree/develop)
 
 * Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, turn-based logic etc.
@@ -23,7 +25,7 @@ Detailed Description:
 * Save/Load player preferences in config file with `Settings.anyName = 69`
 * Helper functions & debugging tools like realtime charts for monitoring variables.
 * Free-to-use 3rd-party assets for quick prototyping.
-* Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. \**(Comedot itself has no AI-generated code.)*
+* Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. \**(Comedot itself has no AI-generated code.)*  
 
 
 💡 *Even if you don't need the entire template, you can cherry-pick specific code to use in your own scripts.*
@@ -33,13 +35,15 @@ Detailed Description:
 Tilesets: **Kenney's 1-Bit Pack** https://kenney.nl/assets/1-bit-pack  
 Font: **Jayvee Enaguas (HarvettFox96)'s Pixel Operator** https://www.dafont.com/pixel-operator.font
 
+
 ```
 
 Tags:			ECS, Components, Template, 2D, Pixel Art
 Type:			Templates
 License:		MIT
 Source Code:	https://github.com/invadingoctopus/comedot
-AI Disclosure:	No AI generated code or assets. Codex AI used for code review only. AGENTS.md provided for AI assistance.
+
+AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews only. AGENTS.md provided for other users who want AI assistance.
 
 
 ## Media
