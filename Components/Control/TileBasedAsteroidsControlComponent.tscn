@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://kgo6pav3kden"]
+
+[ext_resource type="Script" uid="uid://dul8q8lglhvq3" path="res://Components/Control/TileBasedAsteroidsControlComponent.gd" id="1_xyx7w"]
+
+[node name="TileBasedAsteroidsControlComponent" type="Timer" unique_id=1332007708 groups=["components"]]
+wait_time = 0.1
+one_shot = true
+script = ExtResource("1_xyx7w")
+
+[connection signal="timeout" from="." to="." method="onTimeout"]
