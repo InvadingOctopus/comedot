@@ -52,7 +52,7 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 
 	# DESIGN: Held input is not resumed after unpause/re-enable & requires a new movement press, as that would be the more intuitive behavior, # TBD: right?
 	if inputComponent.movementDirection.is_zero_approx():
-		self.gridMovementVector = Vector2.ZERO
+		self.gridMovementVector = Vector2i.ZERO
 		return
 
 	# Move only on the relevant input, to avoid movement when other input like jump/fire/etc. is pressed
@@ -66,8 +66,9 @@ func onInputComponent_didProcessInput(event: InputEvent) -> void:
 		
 		var newVector: Vector2i = self.chooseDiagonalOrOrthogonal()
 
-		if newVector != Vector2i.ZERO \
-		and (shouldRepeatOnHeldInput or event == null or event.is_pressed()): # Non-repeated movement on input press only
+		if newVector == Vector2i.ZERO:
+			setMovementVector(Vector2i.ZERO) # Also resets queued movement
+		elif shouldRepeatOnHeldInput or event == null or event.is_pressed(): # Non-repeated movement on input press only
 			setMovementVector(newVector)
 
 
