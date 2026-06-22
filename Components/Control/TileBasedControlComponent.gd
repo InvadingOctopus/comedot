@@ -1,5 +1,5 @@
 ## Takes player/AI input from an [InputComponent] to modify the [Entity]'s position on a [TileMapLayer] via a [TileBasedPositionComponent]
-## TIP: For random monster/NPC movement use [RandomInputComponent]
+## TIP: For random monster/NPC movement see [TileBasedRandomMovementComponent] or [RandomInputComponent]
 ## Requirements: [TileBasedPositionComponent], [InputComponent]
 
 class_name TileBasedControlComponent

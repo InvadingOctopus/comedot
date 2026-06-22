@@ -3,6 +3,7 @@
 ## and tile-based movement cannot rely on Godot's builtin physics for checking the "vacancy" of tiles/cells etc.
 ## This component contains some of the shared logic that all tile-based movement needs, such as a delay between steps and waiting for the previous move's animation to finish etc.
 ## TIP: The component's node should be a [Timer] to handle cooldowns.
+## TIP: See subclasses such as [TileBasedControlComponent] & [TileBasedRandomMovementComponent] etc.
 ## Requirements: [TileBasedPositionComponent]
 
 @abstract class_name TileBasedControlComponentBase
