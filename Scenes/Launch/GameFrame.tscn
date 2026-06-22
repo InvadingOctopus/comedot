@@ -28,6 +28,7 @@ sources/3 = SubResource("TileSetAtlasSource_jd6d7")
 [node name="GameFrame" type="Node2D" unique_id=1155482863]
 editor_description = "The Main Menu"
 script = ExtResource("1_jd6d7")
+mainGameScenePath = "uid://dbwiosb1xulu5"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1692521394]
 environment = SubResource("Environment_ljcfk")
