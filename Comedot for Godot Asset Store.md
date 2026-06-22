@@ -68,7 +68,7 @@ Version Name:	4.7.0.100.69
 
 Version changelog:
 ```
-Latest Commit: [f40e3917f5cc1d53717192ef6d05cccaefb0af02](https://github.com/InvadingOctopus/comedot/commit/f40e3917f5cc1d53717192ef6d05cccaefb0af02) on 2026-06-16
+Latest Commit: [f163d22](https://github.com/InvadingOctopus/comedot/commit/f163d22fe4b52a9b7c663a5476b7f276e3104f43) on 2026-06-22
 
 Compare tags/branches on GitHub:
 [https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop](https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop)
@@ -76,7 +76,7 @@ Compare tags/branches on GitHub:
 ```
 
 Minimum required Godot version:		4.7
-Maximum compatible Godot version:	undefined
+Maximum compatible Godot version:	4.7
 
 
 ## Pricing
