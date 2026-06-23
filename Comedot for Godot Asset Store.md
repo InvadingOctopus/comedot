@@ -9,32 +9,33 @@ Asset Name: Comedot ECS Template
 
 
 Asset Summary:
-All-in-one project template & components framework. Optimized for 2D pixel art.
+All-in-one project template & components framework for 2D games.
 
 
 Detailed Description:
 ```
-Basically nodes but for gameplay.
+*Entities, Components & Shiz: ECS but without that "systems" jazz.*
+
+Basically standard Godot nodes but for gameplay.
+
+* Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, abilities etc.
+* Support for turn-based gameplay & components that can be combined with real-time stuff.
+* Templates for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
+* UI controls like stat counters/bars, buttons for special skills etc.
+* Save/Load player preferences in config files with `Settings.anyName = 69`
+* Handles tricky edge case issues in physics, stats, collectibles etc.
+* Helper functions & debugging tools like realtime charts for monitoring variables.
+* Meatcrafted well-documented components that can be Lego'ed together by AI to create various kinds of gameplay. \**(Comedot itself has no AI-generated code.)*
+
+----
+💡 *Even if you don't need the entire template, you can cherry-pick specific code to use in your own scripts.*
 
 **This is a work in constant progress!** For delicious details & the latest version, gaze upon the glorious GitHub repository: [https://github.com/InvadingOctopus/comedot/tree/develop](https://github.com/InvadingOctopus/comedot/tree/develop)
 
-* Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, turn-based logic etc.
-* Handles tricky edge case issues in physics, stats, collectibles, climbing etc.
-* UI controls like stat HUDs, buttons for special skills etc.
-* Scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
-* Save/Load player preferences in config file with `Settings.anyName = 69`
-* Helper functions & debugging tools like realtime charts for monitoring variables.
-* Free-to-use 3rd-party assets for quick prototyping.
-* Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. \**(Comedot itself has no AI-generated code.)*  
-
-
-💡 *Even if you don't need the entire template, you can cherry-pick specific code to use in your own scripts.*
-
 ----
-*Third-party asset packs included for quick prototyping:*  
+*Free-to-use 3rd-party asset packs included for quick prototyping:*  
 Tilesets: **Kenney's 1-Bit Pack** https://kenney.nl/assets/1-bit-pack  
 Font: **Jayvee Enaguas (HarvettFox96)'s Pixel Operator** https://www.dafont.com/pixel-operator.font
-
 
 ```
 
