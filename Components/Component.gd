@@ -264,7 +264,7 @@ func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: b
 
 		if findSubclasses: # Try subclasses
 			coComponent = entity.findFirstComponentSubclass(type)
-			if debugMode: printDebug(str("Searching for subclass of ", type, " in entity: ", entity, " — Found: ", coComponent))
+			if debugMode: printDebug(str("Searching for subclass of ", type, " in entity: ", entity, " • Found: ", coComponent))
 
 		if warnIfMissing and not coComponent: # Did we still not find any match? :(
 			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", entity.logName, " • findSubclasses: ", findSubclasses))

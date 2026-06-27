@@ -100,7 +100,7 @@ func getDamageComponent(collidingArea: Area2D) -> DamageComponent:
 
 	if not damageComponent:
 		## NOTE: This warning may help to set collision masks properly.
-		if debugMode: printWarning(str("Cannot cast area as DamageComponent: ", collidingArea, " — Check collision masks."))
+		if debugMode: printWarning(str("getDamageComponent() cannot cast area as DamageComponent: ", collidingArea, " • Check collision masks."))
 		return null
 
 	# Is it our own entity?

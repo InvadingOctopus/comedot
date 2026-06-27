@@ -122,7 +122,7 @@ func displayNavigationDestination(newDestinationPath: String) -> bool:
 	updateBackButton()
 	if debugMode:
 		showDebugInfo()
-		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " — History: ", navigationStack), self)
+		Debug.printDebug(str("1st Child: ", self.findFirstChildControl(), " • History: ", navigationStack), self)
 	return result
 
 #endregion

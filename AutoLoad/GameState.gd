@@ -117,7 +117,7 @@ func removePlayer(playerToRemove: Entity) -> bool:
 	# Therefore, compare with `-1` which is returned if [Array.find] fails.
 
 	if indexToRemove != -1:
-		Debug.printLog("removePlayer(): " + str(playerToRemove.logFullName) + " | Removing from GameState.players → size: " + str(GameState.players.size() - 1), self)
+		Debug.printLog("removePlayer(): " + str(playerToRemove.logFullName) + " • Removing from GameState.players → size: " + str(GameState.players.size() - 1), self)
 		self.players.remove_at(indexToRemove)
 		playerRemoved.emit(playerToRemove)
 		playersChanged.emit()

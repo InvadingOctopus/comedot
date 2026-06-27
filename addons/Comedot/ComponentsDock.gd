@@ -601,13 +601,13 @@ func validateNewComponentPath(folderPath: String, componentName: String) -> bool
 	# TODO: Trim whitespace
 	if folderPath.is_empty() or componentName.is_empty(): return false
 	elif not DirAccess.dir_exists_absolute(folderPath):
-		printError("folderPath does not exist: " + folderPath)
+		printError("validateNewComponentPath(): folderPath does not exist: " + folderPath)
 		return false
 	elif not folderPath.begins_with("res://"):
-		printError("folderPath must begin with \"res://\": " + folderPath)
+		printError("validateNewComponentPath(): folderPath must begin with \"res://\": " + folderPath)
 		return false
 	elif componentName.contains(".") or componentName.contains(" ") or not componentName.is_valid_filename():
-		printError("Invalid componentName — Must be alphanumeric with no space or special characters: " + componentName)
+		printError("validateNewComponentPath(): componentName invalid, must be alphanumeric with no space or special characters: " + componentName)
 		return false
 	else: return true
 

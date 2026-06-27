@@ -141,7 +141,7 @@ static func loadConfig() -> bool:
 	if error == Error.OK:
 		return true
 	else:
-		Debug.printLog(str("Error ", error, " — Cannot load settings file, creating new: ", configFilePath), "Settings.gd") # Should be a log not an error, in case it's the 1st launch or the file has been removed on purpose.
+		Debug.printLog(str("Error ", error, ": Cannot load settings file, creating new: ", configFilePath), "Settings.gd") # Should be a log not an error, in case it's the 1st launch or the file has been removed on purpose.
 		return false
 
 
@@ -172,7 +172,7 @@ func _get_property_list() -> Array[Dictionary]:
 ## Handles dynamic properties.
 func _get(propertyName: StringName) -> Variant:
 	if debugMode and not settingsDictionary.has(propertyName):
-		printLog(str("_get() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file"))
+		printLog(str("_get(): No Setting defined with propertyName: ", propertyName, " • Attempting to read from file"))
 
 	# NOTE: Try reading the setting from file even if it has not been defined as a property.
 	return self.getSetting(propertyName)
@@ -187,14 +187,14 @@ func getSetting(propertyName: StringName, defaultIfUndefined: Variant = null) ->
 	if setting:
 		return getSettingFromFile(setting.section, setting.name, setting.default)
 	else:
-		printWarning(str("getSetting() No Setting defined with propertyName: ", propertyName, " — Attempting to read from file anyway with defaultIfUndefined: ", defaultIfUndefined))
+		printWarning(str("getSetting(): No Setting defined with propertyName: ", propertyName, " • Attempting to read from file anyway with defaultIfUndefined: ", defaultIfUndefined))
 		return getSettingFromFile(SectionNames.default, propertyName, defaultIfUndefined)
 
 
 ## Handles dynamic properties.
 func _set(propertyName: StringName, value: Variant) -> bool:
 	if debugMode and not settingsDictionary.has(propertyName):
-		printLog(str("_set() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", value))
+		printLog(str("_set(): No Setting defined with propertyName: ", propertyName, " • Saving to file anyway: ", value))
 
 	# NOTE: Save the setting to file even if it has not been defined as a property.
 	self.saveSetting(propertyName, value)
@@ -213,10 +213,10 @@ func saveSetting(propertyName: StringName, newValue: Variant) -> void:
 			saveSettingToFile(setting.section, setting.name, newValue)
 			self.didChange.emit(setting.name, newValue)
 		else:
-			printLog(str("saveSetting() value already in file, not saving: ", setting.name, " == ", newValue))
+			printLog(str("saveSetting(): Value already in file, not saving: ", setting.name, " == ", newValue))
 
 	else:
-		printWarning(str("saveSetting() No Setting defined with propertyName: ", propertyName, " — Saving to file anyway: ", newValue))
+		printWarning(str("saveSetting(): No Setting defined with propertyName: ", propertyName, " • Saving to file anyway: ", newValue))
 		saveSettingToFile(SectionNames.default, propertyName, newValue)
 
 #endregion
@@ -250,7 +250,7 @@ func validateType(settingName: StringName, value: Variant) -> bool:
 
 	if not setting:
 		# NOTE: Allow undefined Settings to be implicitly loaded from file without overriding with `defaultIfUndefined`
-		printWarning(str("validateType() No Setting defined with name: " + settingName + " — Allowing all types"))
+		printWarning(str("validateType(): No Setting defined with name: " + settingName + " • Allowing all types"))
 		return true
 
 	var allowedType: Variant.Type = setting.type
