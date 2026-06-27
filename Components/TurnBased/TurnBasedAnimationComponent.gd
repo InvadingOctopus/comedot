@@ -1,7 +1,7 @@
 ## Plays different animations on an [AnimationPlayer] or [AnimatedSprite2D] in response to various turn-based signals from this [TurnBasedComponent] such as [signal TurnBasedComponent.willBeginTurn] and [signal TurnBasedComponent.didEndTurn].
 ## Leave an animation name empty to skip animation for that signal.
 ## NOTE: Animations are played in response to this COMPONENT's signals, NOT the parent [TurnBasedEntity]'s.
-## TIP: To automatically create [AnimatedSprite2D] [SpriteFrames] animations from an sprite sheet image, see `Scripts/Visual/CreateSpriteFramesFromSheet.gd`
+## TIP: Use `/Scripts/Visual/CreateSpriteFramesFromSheet.gd` to automatically create [AnimatedSprite2D] [SpriteFrames] animations from an sprite sheet image
 ## Requirements: [TurnBasedEntity], [AnimationPlayer] or [AnimatedSprite2D]
 
 class_name TurnBasedAnimationComponent

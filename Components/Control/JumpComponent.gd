@@ -3,7 +3,8 @@
 ## NOTE: Gravity and friction in air is handled by [PlatformerPhysicsComponent].
 ## TIP:  To modify the various time durations, enable "Editable Children" and edit the [Timers] nodes.
 ## TIP:  For "inverted gravity" jumps, modify [member CharacterBody2D.up_direction] on the [CharacterBodyComponent].
-## For climbing ladders/ropes/etc. use [ClimbComponent].
+## TIP:  For climbing ladders/ropes/etc. use [ClimbComponent]
+## TIP:  For animations, see [PlatformerAnimationComponent]
 ## Requirements: BEFORE [PlatformerPhysicsComponent] & [CharacterBodyComponent] & [InputComponent]
 
 class_name JumpComponent

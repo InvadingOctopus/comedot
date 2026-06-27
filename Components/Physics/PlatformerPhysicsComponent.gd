@@ -3,7 +3,8 @@
 ## NOTE: Does NOT handle player input. Control is provided by [InputComponent], [JumpComponent] and/or AI components etc.
 ## This component will still process gravity & friction even if no input source is present.
 ## WARNING: Do NOT use in conjunction with [GravityComponent] because this component ALSO processes gravity. Using both will cause excessive gravity!
-## TIP: For random monster/NPC movement use [RandomInputComponent]
+## TIP: For random monster/NPC movement, use [RandomInputComponent]
+## TIP: For animations, see [PlatformerAnimationComponent]
 ## Requirements: BEFORE [CharacterBodyComponent] & [InputComponent], AFTER other physics modifying components.
 
 class_name PlatformerPhysicsComponent

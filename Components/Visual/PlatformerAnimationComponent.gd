@@ -1,5 +1,5 @@
 ## Tells the Entity's [AnimatedSprite2D] to play different animations based on its movement and the state of the [CharacterBodyComponent] and/or an [InputComponent].
-## TIP: To automatically create [AnimatedSprite2D] [SpriteFrames] animations from an sprite sheet image, see `Scripts/Visual/CreateSpriteFramesFromSheet.gd`
+## TIP: Use `/Scripts/Visual/CreateSpriteFramesFromSheet.gd` to automatically create [AnimatedSprite2D] [SpriteFrames] animations from an sprite sheet image
 ## Requirements: [AnimatedSprite2D], AFTER [InputComponent] (optional) & [CharacterBodyComponent]
 
 class_name PlatformerAnimationComponent
