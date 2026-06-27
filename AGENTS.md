@@ -99,6 +99,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Entities, components and other nodes must be added to the relevant preset node groups such as `turnBased`, `players`, `enemies`, `collectibles` etc. as applicable.
 - Scripts that extend specific Godot builtin nodes types for a specific purpose or a simple effect do not have to be entities or components, such as `SpawnArea.gd` for `Area2D`,  or `Spin.gd` for any `Node2D`, or UI scripts such as `StatUI.gd` and `StatBar.gd` that are meant for `Control` nodes.
 - Filenames should be clear and precise. Add suffixes like `Entity` and `Component` to assist referencing and searching etc. Entities should be named like `MonsterEntity.gd` and components should be named like `MonsterAttackComponent.gd`. There may be exceptions for brevity for certain resources such as `Health.gd` instead of `HealthStat.gd` unless there is ambiguity. Standalone scripts that are not for an entity or component, such be named as a verb describing the action if applicable, like `Spin.gd` and `SnapToMouse.gd`. Filenames don't have to be short, for example `TurnBasedTileBasedPlatformerControlComponent`
+- For logging, call `Debug.gd` functions such as `printLog()` etc. Use `Debug.printWarning()` instead of `push_warning()` and `Debug.printError()` instead of `push_error()`
 - When asked to make changes to code that is not a test or experiment, also add comments to explain the logic if the code isn't simple and self-explanatory.
 
 
