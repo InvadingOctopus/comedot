@@ -1,4 +1,4 @@
-## Automatically sets up the [member sprite_frames] for an [AnimatedSprite2D] from a sprite sheet image.
+## Automatically sets up the [member sprite_frames] animations for an [AnimatedSprite2D] from a sprite sheet image.
 ## Adds a "Create Animations" button in the Godot Editor's Inspector Dock.
 ## TIP: This is a convenient alternative to the cumbersome workflow of manually clicking Add → Select File → Select Frames for each animation in the Godot Editor's SpriteFrames Dock.
 
@@ -223,9 +223,9 @@ func addFramesToAnimation(
 	var frameCoordinates:	Vector2i
 	var frameTexture:		AtlasTexture
 		
-	for frameOffset: int in frameCount:
-		frameIndex			= startFrame + frameOffset
-		frameCoordinates	= Vector2i(frameIndex % columns, floori(float(frameIndex) / columns))
+	for frameOffset: int in frameCount: # 0 to the number of frames in the animation
+		frameIndex			= startFrame + frameOffset # The "index" from among the total number of frames
+		frameCoordinates	= Vector2i(frameIndex % columns, floori(float(frameIndex) / columns)) # The column and row in the sprite sheet
 		frameTexture		= AtlasTexture.new()
 		frameTexture.atlas  = spriteSheet
 		frameTexture.region = Rect2(Vector2(frameCoordinates * frameSize), Vector2(frameSize))
