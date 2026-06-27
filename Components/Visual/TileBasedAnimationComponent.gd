@@ -1,4 +1,5 @@
 ## Animates the Entity's [AnimatedSprite2D] based on the [TileBasedPositionComponent]'s movement.
+## TIP: To automatically create [AnimatedSprite2D] [SpriteFrames] animations from an sprite sheet image, see `Scripts/Visual/CreateSpriteFramesFromSheet.gd`
 ## Requirements: [TileBasedPositionComponent], [AnimatedSprite2D]
 
 class_name TileBasedAnimationComponent
