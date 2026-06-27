@@ -17,7 +17,7 @@ extends Component
 	set(newValue):
 		if newValue != animatedSprite:
 			animatedSprite = newValue
-			self.set_process(isEnabled and is_instance_valid(animatedSprite))
+			self.set_physics_process(isEnabled and is_instance_valid(animatedSprite))
 
 @export var idleAnimation: StringName = &"idle"
 @export var walkAnimation: StringName = &"walk"
@@ -30,7 +30,7 @@ extends Component
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			self.set_process(isEnabled and is_instance_valid(animatedSprite)) # PERFORMANCE: Set once instead of every frame
+			self.set_physics_process(isEnabled and is_instance_valid(animatedSprite)) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -56,26 +56,34 @@ func _ready() -> void:
 			self.animatedSprite	= entity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
 		if not self.animatedSprite: printWarning("Missing AnimatedSprite2D!")
 
-	if inputComponent:
-		Tools.connectSignal(inputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
+	# TBD: Tools.connectSignal(characterBodyComponent.didMove, self.onCharacterBodyComponent_didMove)
 
-	self.set_process(isEnabled and is_instance_valid(animatedSprite)) # Apply setters because Godot doesn't on initialization
+	if inputComponent: Tools.connectSignal(inputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
+
+	self.set_physics_process(isEnabled and is_instance_valid(animatedSprite)) # Apply setters because Godot doesn't on initialization
 
 
 func onInputComponent_didChangeHorizontalDirection() -> void:
-	if not isEnabled: return
+	if not flipWhenWalkingLeft or not isEnabled: return
 	# Even if we don't have an AnimatedSprite2D we can flip a normal Sprite2D
 	(animatedSprite if self.animatedSprite else entity.sprite).flip_h = true if signf(inputComponent.horizontalInput) < 0 else false # NOTE: Check the CURRENT/most recent input, NOT the previous/change of `movementDirection` because that would be the opposite!
 
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# INFO: Animations are checked in order of priority: "walk" overrides "idle"
+
+	# TBD: PERFORMANCE: Polling state every frame is inefficient compared to just reacting to input/physics events.
+	# But updating every frame may be more "correct":
+	# For example, if a moving platform slides under the character, then it would count as being "on floor"
+	# even though the entity's CharacterBody2D itself did not move.
+	# NOTE: Also, `CharacterBodyComponent.didMove` is emitted every frame anyway by PlatformerPhysicsComponent etc. because of gravity/friction processing etc.,
+	# And signals that fire every frame may be slower than good ol' _physics_process()
 
 	var animationToPlay: StringName
 
-	# If there is no InputComponent, figure out the direction from the CharacterBodyComponent
+	# If there is no InputComponent, figure out the direction from the CharacterBodyComponent, without resetting it while idle
 	if not inputComponent and flipWhenWalkingLeft: # Check the rarer flag first, so we don't have to check 2
-		animatedSprite.flip_h = true if signf(characterBodyComponent.previousVelocity.x) < 0 else false
+		animatedSprite.flip_h = characterBodyComponent.previousVelocity.x < 0
 
 	# Check and set animation in order of lowest priority to highest. e.g. walk overrides idle
 
@@ -100,9 +108,11 @@ func _process(_delta: float) -> void:
 		if not jumpAnimation.is_empty() \
 		and verticalDirection < 0.0:
 			animationToPlay = jumpAnimation
+
 		elif not fallAnimation.is_empty() \
 		and verticalDirection > 0.0:
 			animationToPlay = fallAnimation
 
 	# Play the chosen animation
-	animatedSprite.play(animationToPlay)
+	if  animatedSprite.animation != animationToPlay:
+		animatedSprite.play(animationToPlay)
