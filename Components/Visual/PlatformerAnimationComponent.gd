@@ -3,7 +3,7 @@
 ## Requirements: [AnimatedSprite2D], AFTER [InputComponent] (optional) & [CharacterBodyComponent]
 
 class_name PlatformerAnimationComponent
-extends Component
+extends AnimationComponentBase
 
 # TODO: Climbing animations
 # TODO: PERFORMANCE: Update animations only on movement events
@@ -12,25 +12,12 @@ extends Component
 
 #region Parameters
 
-## If omitted, then the parent Entity's [member Entity.sprite] property is used, or the Entity ITSELF, if it is an [AnimatedSprite2D], otherwise the first matching child node of the Entity is used, if any.
-@export var animatedSprite: AnimatedSprite2D:
-	set(newValue):
-		if newValue != animatedSprite:
-			animatedSprite = newValue
-			self.set_physics_process(isEnabled and is_instance_valid(animatedSprite))
-
 @export var idleAnimation: StringName = &"idle"
 @export var walkAnimation: StringName = &"walk"
 @export var jumpAnimation: StringName = &"jump"
 @export var fallAnimation: StringName = &"fall"
 
 @export var flipWhenWalkingLeft: bool = true
-
-@export var isEnabled: bool = true:
-	set(newValue):
-		if newValue != isEnabled:
-			isEnabled = newValue
-			self.set_physics_process(isEnabled and is_instance_valid(animatedSprite)) # PERFORMANCE: Set once instead of every frame
 
 #endregion
 
@@ -47,18 +34,10 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	entity.getSprite() # Let the Entity decide its own sprite, even if it's just a Sprite2D, so we can flip it when the direction changes
-
-	if not self.animatedSprite: # If this component's property is unspecified
-		if entity.sprite is AnimatedSprite2D: # Try the Entity's sprite in case it's animated
-			self.animatedSprite	= entity.sprite
-		if not self.animatedSprite: # Find some other AnimatedSprite2D if it'the Entity's primary sprite isn't one
-			self.animatedSprite	= entity.findFirstChildOfType(AnimatedSprite2D, true) # includeEntity
-		if not self.animatedSprite: printWarning("Missing AnimatedSprite2D!")
-
-	# TBD: Tools.connectSignal(characterBodyComponent.didMove, self.onCharacterBodyComponent_didMove)
+	super._ready()
 
 	if inputComponent: Tools.connectSignal(inputComponent.didChangeHorizontalDirection, self.onInputComponent_didChangeHorizontalDirection)
+	# TBD: Tools.connectSignal(characterBodyComponent.didMove, self.onCharacterBodyComponent_didMove)
 
 	self.set_physics_process(isEnabled and is_instance_valid(animatedSprite)) # Apply setters because Godot doesn't on initialization
 
