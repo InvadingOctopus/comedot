@@ -1,4 +1,6 @@
-## An abstract base class for other components which require an [AnimatedSprite2D] such as [PlatformerAnimationComponent]
+## An abstract base class for other components which require an [AnimatedSprite2D]
+## such as [PlatformerAnimationComponent] or [OverheadAnimationComponent] etc.
+## Requirements: [AnimatedSprite2D]
 
 @abstract class_name AnimationComponentBase
 extends Component

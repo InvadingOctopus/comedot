@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://v46r0v0oer87"]
+
+[ext_resource type="Script" uid="uid://lb81jlncb3s5" path="res://Components/Visual/OverheadAnimationComponent.gd" id="1_1v6l3"]
+
+[node name="OverheadAnimationComponent" type="Node" unique_id=660967049 groups=["components"]]
+script = ExtResource("1_1v6l3")
