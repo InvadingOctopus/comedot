@@ -309,11 +309,11 @@ static func clampPositionToAnchor(nodeToClamp: Node2D, anchor: Node2D, maxDistan
 
 #region Rotation
 
-## Returns the closest [enum Tools.CompassDirection] for a [Node2D].[member Node2D.rotation_degrees]
+## Returns the nearest [enum Tools.CompassDirection] for a [Node2D].[member Node2D.rotation_degrees]
 ## NOTE: 360° == 0°
 ## TIP:  To use radians, use [method @GlobalScope.rad_to_deg]
-static func getDirectionFromRotationDegrees(rotationDegrees: float) -> Tools.CompassDirection:
-	return wrapi(int(round(rotationDegrees / 45.0)) * 45, 0, 360) as Tools.CompassDirection
+static func getCompassDirectionFromRotationDegrees(rotationDegrees: float) -> Tools.CompassDirection:
+	return wrapi(int(round(rotationDegrees / Tools.degreesPerCompassDirection)) * Tools.degreesPerCompassDirection, 0, 360) as Tools.CompassDirection
 
 #endregion
 

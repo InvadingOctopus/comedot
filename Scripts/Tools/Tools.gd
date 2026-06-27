@@ -52,6 +52,21 @@ const compassDirectionOpposites: Dictionary[CompassDirection, CompassDirection] 
 	CompassDirection.northEast:	CompassDirection.southWest,
 	}
 
+
+## Uppercase initial letters of the directions such as "N", "E" etc.
+## TIP: For the full names, use [member CompassDirection.keys]
+const compassDirectionLetters: Dictionary[CompassDirection, StringName] = {
+	CompassDirection.none:		&"",
+	CompassDirection.east:		&"E",
+	CompassDirection.southEast:	&"SE",
+	CompassDirection.south:		&"S",
+	CompassDirection.southWest:	&"SW",
+	CompassDirection.west:		&"W",
+	CompassDirection.northWest:	&"NW",
+	CompassDirection.north:		&"N",
+	CompassDirection.northEast:	&"NE",
+	}
+
 ## A list of unit vectors representing 8 compass directions.
 class CompassVectors:
 	# TBD: PERFORMANCE: Replace with `compassDirectionVectors[CompassDirection]` or are these simple `const`ants faster?
@@ -208,6 +223,12 @@ static func splitPathIntoNodeAndProperty(path: NodePath) -> Array[NodePath]:
 ## Returns a COPY of a [Vector2i] moved in the specified [enum CompassDirection]
 static func offsetVectorByCompassDirection(vector: Vector2i, direction: CompassDirection) -> Vector2i:
 	return vector + Tools.compassDirectionVectors[direction]
+
+
+## Returns the nearest [enum Tools.CompassDirection] corresponding to a [Vector2]
+static func getCompassDirectionFromVector(vector: Vector2) -> Tools.CompassDirection:
+	if vector.is_zero_approx(): return Tools.CompassDirection.none
+	else: return wrapi(int(round(rad_to_deg(vector.angle()) / degreesPerCompassDirection)) * degreesPerCompassDirection, 0, 360) as Tools.CompassDirection
 
 #endregion
 

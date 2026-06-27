@@ -27,7 +27,7 @@ const degreesPerDirection: int = Tools.degreesPerCompassDirection
 @export var direction: Tools.CompassDirection = Tools.CompassDirection.east:
 	set(newValue):
 		if  newValue == Tools.CompassDirection.none and entity: # Get the current `rotation_degrees` before comparing for change
-			newValue  = NodeTools.getDirectionFromRotationDegrees(entity.rotation_degrees) if entity else Tools.CompassDirection.east
+			newValue  = NodeTools.getCompassDirectionFromRotationDegrees(entity.rotation_degrees) if entity else Tools.CompassDirection.east
 			# TODO: PERFORMANCE: `entity.rotation_degrees` will be set to its current value again below :')
 		if  newValue != direction:
 			direction = newValue
