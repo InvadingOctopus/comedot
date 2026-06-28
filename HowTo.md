@@ -43,6 +43,8 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 🎬 Scenes in  `/Tests/` are used in the development process of various components and subsystems such as `/Tests/Upgrades/UpgradeTest.tscn` and `/Tests/TurnBased/TurnBasedTest.tscn` that you can examine to see how those features work.
 
+💡 The `/Notes/` folder contains lists such as `Components Catalog.md` to help you quickly find the suitable entities/components/scripts for your needs.
+
 
 # 👤 Make a Player Entity
 
@@ -175,5 +177,3 @@ When you need to add new functionality specific to your game, you have the follo
 
 
 ----
-
-💬 For more questions, summon @Syntaks.io on Discord on a night of a full moon.
