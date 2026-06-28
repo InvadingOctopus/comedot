@@ -36,8 +36,8 @@ metadata/_edit_group_ = true
 modulate = Color(0.8, 0.9, 1, 0.1)
 texture_filter = 2
 material = SubResource("CanvasItemMaterial_3crsp")
-clip_contents = true
 custom_minimum_size = Vector2(32, 32)
+clip_contents = true
 layout_mode = 1
 offset_left = 10.0
 offset_right = 116.19
@@ -70,20 +70,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
 
-[node name="EditableChildrenCheckBox" type="CheckBox" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=361339141]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Expose the sub-nodes of new Entities & Components?"
-focus_next = NodePath("../RefreshButton")
-text = "Editable Children"
-alignment = 2
-
 [node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=1041019712]
 layout_mode = 2
 tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components and verify."
+focus_neighbor_right = NodePath("../AddEntityMenuButton")
 focus_next = NodePath("../AddEntityMenuButton")
-focus_previous = NodePath("../EditableChildrenCheckBox")
-text = "Rescan Folders"
+text = "Rescan"
 alignment = 2
 
 [node name="AddEntityMenuButton" type="MenuButton" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=293150511]
@@ -92,6 +84,8 @@ modulate = Color(0.486275, 0.988235, 0, 1)
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 tooltip_text = "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
+focus_neighbor_left = NodePath("../RefreshButton")
+focus_neighbor_bottom = NodePath("../../../TreeSearchBox")
 focus_next = NodePath("../../../TreeSearchBox")
 focus_previous = NodePath("../RefreshButton")
 focus_mode = 2
@@ -172,7 +166,7 @@ text_overrun_behavior = 3
 
 [node name="TreeSearchBox" parent="MainGridContainer" unique_id=1677949122 node_paths=PackedStringArray("tree") instance=ExtResource("4_3crsp")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../ToolbarContainer/ButtonsContainer1/EditableChildrenCheckBox")
+focus_neighbor_top = NodePath("../ToolbarContainer/ButtonsContainer1/AddEntityMenuButton")
 focus_next = NodePath("../TreeScrollContainer/ComponentsTree")
 focus_previous = NodePath("../ToolbarContainer/ButtonsContainer1/AddEntityMenuButton")
 placeholder_text = "Filter Components"

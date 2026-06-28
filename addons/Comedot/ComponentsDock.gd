@@ -10,6 +10,8 @@ extends Panel
 # TODO: Add option to duplicate an existing Component?
 
 
+#region Constants & Enums
+
 enum EntityTypes {
 	# NOTE: MUST correspond to the ids of the Add Entity button's PopupMenu
 	# DESIGN: The order is almost alphabetical, because Node2D has to be first.
@@ -24,6 +26,9 @@ enum TreeItemButtons {
 	createNewComponent = 0,
 	editComponent = 1,
 	}
+
+#endregion
+
 
 #region Parameters
 
@@ -69,8 +74,13 @@ const editComponentTipPrefix	:= "Open the source scene of "
 ## If `true` then one of the template scenes from `/Templates/Entities/` is instantiated when a new [Entity] is created from the Comedock.
 ## If `false` then a standalone node is created and its script and properties are set directly.
 ## NOTE: PERFORMANCE: Using templates MAY be slower because extra scenes have to be loaded.
-@export var shouldUseTemplatesForNewEntities: bool = false
-@export var debugMode: bool = false
+@export var shouldUseTemplatesForNewEntities:	bool = false
+@export var debugMode:							bool = false
+
+## If a newly created [Entiy] or [Component] has child nodes which affect its behavior,
+## such as the bullet emitter in [GunComponent] or the collision shapes in [DamageComponent] etc.
+## then this option will automatically enable the "Editable Children" option for that Entity/Component in the Godot Editor.
+@export var shouldShowEditableChildren:			bool = true
 
 #endregion
 
@@ -507,7 +517,8 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
 
 	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
-	newEntity.get_parent().set_editable_instance(newEntity, %EditableChildrenCheckBox.button_pressed)
+	if shouldShowEditableChildren and newEntity.get_child_count() > 0:
+		newEntity.get_parent().set_editable_instance(newEntity, shouldShowEditableChildren)# get_parent() because this must be set on the entity's parent node. # Not hardcoding `true` hides children if that option is disabled, in case they were automatically shown somehow.
 
 
 func getSelectedComponentAndAddToSelectedNode() -> void:
@@ -562,7 +573,8 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	EditorInterface.edit_node(newComponentNode)
 
 	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
-	newComponentNode.get_parent().set_editable_instance(newComponentNode, %EditableChildrenCheckBox.button_pressed)
+	if shouldShowEditableChildren and newComponentNode.get_child_count() > 0:
+		newComponentNode.get_parent().set_editable_instance(newComponentNode, shouldShowEditableChildren) # get_parent() because this must be set on the component's parent node. # Not hardcoding `true` hides children if that option is disabled, in case they were automatically shown somehow.
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
