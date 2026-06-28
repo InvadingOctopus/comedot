@@ -45,7 +45,7 @@ Type:			Templates
 License:		MIT
 Source Code:	https://github.com/invadingoctopus/comedot
 
-AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews only. AGENTS.md provided for other users who want AI assistance.
+AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews. AGENTS.md provided for other users who want AI assistance.
 
 
 ## Media
