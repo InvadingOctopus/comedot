@@ -1,5 +1,8 @@
 ## The core of the composition framework. Represents a game character or object made up of modular and reusable behaviors provided by [Component] child nodes.
 ## Provides methods for managing components and other common tasks. The Entity is the "scaffolding" and Components do the actual work (play).
+## TIP: Use [TurnBasedEntity] for turn-based gameplay.
+## TIP: [PlayerEntity] is mostly a collection of shortcuts and helper functions suitable for player characters.
+## DESIGN: Besides a few such exceptions, the Entity class should generally not be "specialized" via subclasses: Most special behavior should be implemented as Components.
 ## NOTE: This script may be attached to ANY DESCENDANT of [Node2D].
 ## TIP: If the entity is a [CharacterBody2D] then a [CharacterBodyComponent] must be added as the last child, so other motion-manipulating components may queue their physics updates through it.
 
