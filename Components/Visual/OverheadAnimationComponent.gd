@@ -12,8 +12,10 @@ extends AnimationComponentBase
 
 
 #region Parameters
-@export var idlePrefix: StringName = &"idle" ## The prefix before the compass letters such as "N", "NE", "E" etc. for idle animation names.
-@export var walkPrefix: StringName = &"walk" ## The prefix before the compass letters such as "N", "NE", "E" etc. for walk animation names.
+const defaultIdlePrefix := &"idle"
+const defaultWalkPrefix := &"walk"
+@export var idlePrefix: StringName = defaultIdlePrefix ## The prefix before the compass letters such as "N", "NE", "E" etc. for idle animation names.
+@export var walkPrefix: StringName = defaultWalkPrefix ## The prefix before the compass letters such as "N", "NE", "E" etc. for walk animation names.
 #endregion
 
 

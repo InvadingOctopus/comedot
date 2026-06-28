@@ -7,7 +7,10 @@ extends AnimatedSprite2D
 
 # TODO: Support variable number of frames per animation?
 
-@export_tool_button("Create Animations", "SpriteFrames") var createSpriteFramesButton: Callable = createSpriteFramesInEditor
+@export_tool_button("Create Animations",	"SpriteFrames")			var createSpriteFramesButton:		Callable = createSpriteFramesInEditor
+@export_tool_button("Platformer Template",	"AnimationTrackList")	var createPlatformerTemplateButton:	Callable = createPlatformerTemplate
+@export_tool_button("Overhead Template (4)","AnimationTrackList")	var createOverheadTemplate4Button:	Callable = createOverheadTemplate.bind(4)
+@export_tool_button("Overhead Template (8)","AnimationTrackList")	var createOverheadTemplate8Button:	Callable = createOverheadTemplate.bind(8)
 
 
 #region Parameters
@@ -138,17 +141,6 @@ func calculateColumnsAndRows() -> Vector2i:
 	return Vector2i(columns, rows)
 
 
-func createSpriteFramesInEditor() -> SpriteFrames:
-	var newSpriteFrames: SpriteFrames			= createSpriteFrames(false) # not updateSelf
-	if  newSpriteFrames:
-		var undoManager: EditorUndoRedoManager  = EditorInterface.get_editor_undo_redo()
-		undoManager.create_action("Create AnimatedSprite2D Sprite Frames Animations")
-		undoManager.add_do_property(self,	&"sprite_frames", newSpriteFrames)
-		undoManager.add_undo_property(self,	&"sprite_frames", self.sprite_frames)
-		undoManager.commit_action()
-	return self.sprite_frames # TBD: Return current frames or `null` on failure?
-
-
 ## Creates and returns a new set of [SpriteFrames] built from the [member spriteSheet]
 ## and if [param updateSelf] is `true` (default), updates this sprite's own [member AnimatedSprite2D.sprite_frames] and [member AnimatedSprite2D.animation]
 func createSpriteFrames(updateSelf: bool = true) -> SpriteFrames:
@@ -234,7 +226,90 @@ func addFramesToAnimation(
 #endregion
 
 
+#region Editor Inspector Buttons
+
+func createSpriteFramesInEditor() -> SpriteFrames:
+	if not Engine.is_editor_hint(): return null
+
+	printEditorLog(str("createSpriteFramesInEditor() spriteSheet: ", spriteSheet, ", frameSize: ", frameSize, ", framesPerAnimation: ", framesPerAnimation, "\nanimationStartFrames: ", animationStartFrames))
+	var previousAnimation:		StringName		= self.animation
+	var previousSpriteFrames:	SpriteFrames	= self.sprite_frames
+	var newSpriteFrames:		SpriteFrames	= createSpriteFrames(false) # not updateSelf
+	
+	if  newSpriteFrames:
+		var newAnimation: StringName			= previousAnimation
+		if not newSpriteFrames.has_animation(newAnimation) \
+			or newSpriteFrames.get_frame_count(newAnimation) <= 0:
+			newAnimation						= animationStartFrames.keys().front() # Display a valid animation in the Godot Editor
+		
+		var undoManager: EditorUndoRedoManager	= EditorInterface.get_editor_undo_redo()
+		undoManager.create_action("Create AnimatedSprite2D SpriteFrames")
+		undoManager.add_undo_property(self,	&"sprite_frames",	previousSpriteFrames)
+		undoManager.add_undo_property(self,	&"animation",		previousAnimation)
+		undoManager.add_do_property(  self,	&"sprite_frames",	newSpriteFrames)
+		undoManager.add_do_property(  self,	&"animation",		newAnimation)
+		undoManager.commit_action()
+	return self.sprite_frames # TBD: Return current frames or `null` on failure?
+
+
+func createPlatformerTemplate() -> Dictionary[StringName, int]:
+	printEditorLog(str("createPlatformerTemplate()"))
+	var newAnimationFrames: Dictionary[StringName, int] = {
+		&"idle": framesPerAnimation * 0,
+		&"walk": framesPerAnimation * 1,
+		&"jump": framesPerAnimation * 2,
+		&"fall": framesPerAnimation * 3,
+		}
+	if  Engine.is_editor_hint():
+		var undoManager: EditorUndoRedoManager  = EditorInterface.get_editor_undo_redo()
+		undoManager.create_action("Create AnimatedSprite2D animations template for platformer gameplay")
+		undoManager.add_undo_property(self,	&"animationStartFrames",	self.animationStartFrames)
+		undoManager.add_do_property(  self,	&"animationStartFrames",	newAnimationFrames)
+		undoManager.commit_action()
+	return self.animationStartFrames
+
+
+## IMPORTANT: [param maxDirectionCount] other than 8 (default; cardinal+ordinal) or 4 (cardinal-only) is NOT supported!
+## @experimental
+func createOverheadTemplate(maxDirectionCount: int = 8) -> Dictionary[StringName, int]:
+	printEditorLog(str("createOverheadTemplate() maxDirectionCount: ", maxDirectionCount))
+	
+	const idlePrefix := OverheadAnimationComponent.defaultIdlePrefix
+	const walkPrefix := OverheadAnimationComponent.defaultWalkPrefix
+	var newAnimationFrames:	Dictionary[StringName, int]
+	var animationIndex:		int = 0
+	var directionsAdded:	int = 0
+	var compassSuffix:		StringName
+
+	for compassDirection: Tools.CompassDirection in Tools.compassDirectionLetters:
+		compassSuffix   = Tools.compassDirectionLetters[compassDirection]
+		if compassSuffix.is_empty(): continue # Skip `.none`
+		elif maxDirectionCount == 4 and compassSuffix.length() > 1: continue # Skip "NE", "SE" etc
+		# Add the compass suffix to both idle and walk animations
+		# e.g. "idleE" = 0, "walkE" = 2, "idleSE" = 4 etc if 2 `framesPerAnimation`
+		for animationPrefix: StringName in [idlePrefix, walkPrefix]:
+			newAnimationFrames[StringName(animationPrefix + compassSuffix)] = framesPerAnimation * animationIndex
+			animationIndex += 1
+		directionsAdded += 1
+		if directionsAdded >= maxDirectionCount: break
+
+	if  Engine.is_editor_hint():
+		var undoManager: EditorUndoRedoManager  = EditorInterface.get_editor_undo_redo()
+		undoManager.create_action("Create AnimatedSprite2D animations template for %d-direction overhead gameplay" % maxDirectionCount)
+		undoManager.add_undo_property(self,	&"animationStartFrames",	self.animationStartFrames)
+		undoManager.add_do_property(  self,	&"animationStartFrames",	newAnimationFrames)
+		undoManager.commit_action()
+	return self.animationStartFrames
+
+#endregion
+
+
 #region Debugging
+
+func printEditorLog(message: String) -> void:
+	if Engine.is_editor_hint():
+		print_rich(str("[color=white][b]", self, "[/b][color=lightgray]: ", message))
+
 
 func printLog(message: String) -> void:
 	if Engine.is_editor_hint(): print(str(self, ": ", message))
