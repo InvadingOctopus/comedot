@@ -16,7 +16,9 @@
 * Commented & documented code.
 * Snippets for VSCode/VSCodium.
 * Free-to-use 3rd-party assets for quick prototyping.
-* Meatcrafted components can be Lego'ed together by AI codeslaves to reliably create various gameplay. *\*(Comedot itself has no AI-generated code.)*
+* Meatcrafted components can be Lego'ed together by AI codeblins to reliably create various kinds of gameplay. *\*(Comedot itself has no AI-generated code.)*
+
+📜 To see a full list of all the 120+ components and 140+ scripts, check out the `*Catalog.md` files in the `/Notes/` folder.
 
 🌟 Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
