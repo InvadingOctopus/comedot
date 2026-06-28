@@ -19,6 +19,7 @@ mono_crash.*.json
 # AI
 .codex/
 .claude/
+Notes/AGENTS.override.md
 
 # Game-specific experiments
 /Lab/*
