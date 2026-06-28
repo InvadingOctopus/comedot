@@ -60,7 +60,7 @@ extends CooldownComponent
 			if is_instance_valid(internalBulletEmitter): bulletEmitter = internalBulletEmitter # Fallback to the default internal emitter
 			else:
 				bulletEmitter = selfAsNode2D
-				if debugMode: printWarning("No bulletEmitter parameter or internal %BulletEmitter • Using self as emitter")
+				if debugMode: printWarning("No bulletEmitter parameter or internal %BulletEmitter ・ Using self as emitter")
 		return bulletEmitter
 
 ## The adjusted position in relation to the [member bulletEmitter] (including rotation & scale) where newly spawned bullets will be placed. (0,0) is the position of the emitter.

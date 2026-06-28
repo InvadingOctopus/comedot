@@ -409,7 +409,7 @@ static func populateTileMap(
 	var totalCells: int = mapRect.size.x * mapRect.size.y
 
 	if  numberOfCopies > totalCells: # Clamp; we can't spawn more copies than there are cells!
-		Debug.printDebug(str("TileMapTools.populateTileMap(): numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells, " • Clamping"), map)
+		Debug.printDebug(str("TileMapTools.populateTileMap(): numberOfCopies: ", numberOfCopies, " > totalCells: ", totalCells, " ・ Clamping"), map)
 		numberOfCopies = totalCells
 
 	# Spawn

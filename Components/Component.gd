@@ -100,7 +100,7 @@ func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PARENTED:   onParented()   # Received when a node is set as the child of another node, not necessarily when the node enters the SceneTree.
 		NOTIFICATION_UNPARENTED: onUnparented() # Received when a parent calls remove_child() on a child node, not necessarily when the node exits the SceneTree.
-		NOTIFICATION_PREDELETE:  if isLoggingEnabled and Debug: printLog(str("[color=brown]", Debug.deleteLogSymbol, " PreDelete", (" • Entity: " + entity.logName) if entity else "")) # Make sure Debug exists to avoid crash at shutdown
+		NOTIFICATION_PREDELETE:  if isLoggingEnabled and Debug: printLog(str("[color=brown]", Debug.deleteLogSymbol, " PreDelete", (" ・ Entity: " + entity.logName) if entity else "")) # Make sure Debug exists to avoid crash at shutdown
 		# NOTIFICATION_PREDELETE may occur before OR after _exit_tree() depending on whether the node itself or a parent is being queue_free()'ed
 
 
@@ -264,10 +264,10 @@ func getCoComponent(type: Script, findSubclasses: bool = false, warnIfMissing: b
 
 		if findSubclasses: # Try subclasses
 			coComponent = entity.findFirstComponentSubclass(type)
-			if debugMode: printDebug(str("Searching for subclass of ", type, " in entity: ", entity, " • Found: ", coComponent))
+			if debugMode: printDebug(str("Searching for subclass of ", type, " in entity: ", entity, " ・ Found: ", coComponent))
 
 		if warnIfMissing and not coComponent: # Did we still not find any match? :(
-			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", entity.logName, " • findSubclasses: ", findSubclasses))
+			printWarning(str("Missing co-component: ", type.get_global_name(), " in parent Entity: ", entity.logName, " ・ findSubclasses: ", findSubclasses))
 
 	return coComponent
 

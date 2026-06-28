@@ -98,7 +98,7 @@ func validateAnimations() -> bool:
 
 	var totalFrames:int = columns * rows
 	if  totalFrames <= 0:
-		printError(str("validateAnimations(): totalFrames <= 0: ", columns, " × ", rows, " • Call calculateColumnsAndRows()"))
+		printError(str("validateAnimations(): totalFrames <= 0: ", columns, " × ", rows, " ・ Call calculateColumnsAndRows()"))
 		return false 
 		
 	var startFrame:	int
@@ -147,7 +147,7 @@ func createSpriteFrames(updateSelf: bool = true) -> SpriteFrames:
 	# Validate parameters
 
 	if columns <= 0 or rows <= 0:
-		printError(str("createSpriteFrames() columns/rows <= 0: ", columns, ",", rows, " • Call calculateColumnsAndRows()"))
+		printError(str("createSpriteFrames() columns/rows <= 0: ", columns, ",", rows, " ・ Call calculateColumnsAndRows()"))
 		return null
 
 	# Make sure the sheet can be divided evenly so that all frames are the same size

@@ -107,7 +107,7 @@ func onCostStat_changed() -> void:
 func validateStatsComponent(statsComponent: StatsComponent) -> bool:
 	if   not statsComponent: Debug.printWarning("validateStatsComponent(): null", self)
 	elif not self.costStat:
-		Debug.printError("validateStatsComponent(): No costStat • Check hasCost first!", self)
+		Debug.printError("validateStatsComponent(): No costStat ・ Check hasCost first!", self)
 		return false
 	else:
 		var offeredStat: Stat = statsComponent.getStat(self.costStat.name)
@@ -138,7 +138,7 @@ func validateOfferedStat(offeredStat: Stat, warnIfClamped: bool = false) -> bool
 	# TBD: Handle `offeredStat.min != 0`?
 	# If there is no costStat, return `false`, because there's nothing to check against
 	if not costStat:
-		Debug.printError("validateOfferedStat(): No costStat • Check hasCost first!", self)
+		Debug.printError("validateOfferedStat(): No costStat ・ Check hasCost first!", self)
 		return false
 	# If there is no Stat offered, return `false`, because there's nothing to validate
 	elif not offeredStat: return false		
@@ -186,7 +186,7 @@ func updateFlags() -> void:
 func deductCostFromStat(offeredStat: Stat, validateOffer: bool = true) -> int:
 	# TBD: Review & replace with a better interface if needed
 	if not self.costStat:
-		Debug.printError("deductCostFromStat(): No costStat • Check hasCost first!", self)
+		Debug.printError("deductCostFromStat(): No costStat ・ Check hasCost first!", self)
 		return 0
 
 	elif offeredStat and (not validateOffer or validateOfferedStat(offeredStat)): # Make sure the Stat exists even if we're free or skip validation

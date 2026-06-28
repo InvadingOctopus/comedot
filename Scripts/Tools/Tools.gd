@@ -597,7 +597,7 @@ static func resetResource(resource: Resource) -> bool:
 	# TBD: CHECK: Is there a better way?
 
 	if not resource or resource.resource_path.is_empty():
-		Debug.printWarning(str("resetResourceToDefaults() Resource: ", resource, " has no resource_path • May be inline/dynamic resource?"), resource)
+		Debug.printWarning(str("resetResourceToDefaults() Resource: ", resource, " has no resource_path ・ May be inline/dynamic resource?"), resource)
 		return false
 
 	var savedResource: Resource = ResourceLoader.load(resource.resource_path, "", ResourceLoader.CACHE_MODE_IGNORE) # TBD: Use `CACHE_MODE_REPLACE_DEEP`?

@@ -133,7 +133,7 @@ func deductSpawnCost() -> bool:
 func onWillPerformInteraction(interactorEntity: Entity) -> void:
 	# TBD: PERFORMANCE: Validate again just in case?
 	if (self.contents.value - self.spawnCost.cost) < 0:
-		printWarning(str("onWillPerformInteraction() interactorEntity: ", interactorEntity, " • contents: ", self.contents.value, " < spawnCost.cost: ", spawnCost.cost))
+		printWarning(str("onWillPerformInteraction() interactorEntity: ", interactorEntity, " ・ contents: ", self.contents.value, " < spawnCost.cost: ", spawnCost.cost))
 
 
 func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
@@ -141,7 +141,7 @@ func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
 	# in case a successful Payload may have disabled this MineableComponent for whatever reason
 	if debugMode:
 		printDebug(str("onDidPerformInteraction() interactorEntity: ", interactorEntity, ", result: ", result, ", collectibleValueToSpawn: ", collectibleValueToSpawn))
-		if not isEnabled: printWarning("not isEnabled! deductSpawnCost() will fail • Ignore if intended by Payload")
+		if not isEnabled: printWarning("not isEnabled! deductSpawnCost() will fail ・ Ignore if intended by Payload")
 
 	# NOTE: The `result` of the NodePayload will be the entity representing a collectible item, such as a gold nugget chipped off of a gold vein.
 	if not Tools.checkResult(result):
@@ -154,7 +154,7 @@ func onDidPerformInteraction(interactorEntity: Entity, result: Variant) -> void:
 
 	# Reduce our contents before "moving" them into the Collectible (e.g. gold nugget or wood logs etc.)
 	if not self.deductSpawnCost():
-		printWarning(str("onWillPerformInteraction() interactorEntity: ", interactorEntity, " • Could not deduct spawnCost.cost: ", spawnCost.cost, " from ", self.contents.logName, " (value after deduction)"))
+		printWarning(str("onWillPerformInteraction() interactorEntity: ", interactorEntity, " ・ Could not deduct spawnCost.cost: ", spawnCost.cost, " from ", self.contents.logName, " (value after deduction)"))
 		return
 
 	if result is Entity:

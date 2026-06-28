@@ -378,7 +378,7 @@ func printChange(variableName: String, previousValue: Variant, newValue: Variant
 ## Prints an array of variables in a highlighted color, along with a "stack trace" of the 3 most recent functions and their filenames before the log method was called.
 ## TIP: Helpful for quick/temporary debugging of bugs currently under attention.
 ## NOTE: NOT affected by [member shouldPrintDebugLogs] but only prints if running in a debug build.
-func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=dimgray]•[/color] ") -> void:
+func printTrace(values: Array[Variant] = [], object: Variant = null, stackPosition: int = 2, separator: String = " [color=dimgray]・[/color] ") -> void:
 	if OS.is_debug_build():
 		const textColorA1: String = "[color=FF80FF]"
 		const textColorA2: String = "[color=C060C0]"

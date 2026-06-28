@@ -210,7 +210,7 @@ func validateComponent(component: Component) -> Array[Variant]:
 
 	var className:	  StringName = component.get_script().get_global_name()
 	if  className.is_empty():
-		printWarning(str("validateComponent(): Component has no `class_name`: ", component.logFullName, " • script: ", component.get_script()))
+		printWarning(str("validateComponent(): Component has no `class_name`: ", component.logFullName, " ・ script: ", component.get_script()))
 		return [false]
 
 	var isDescendant:		bool = component.get_parent() == self # TBD: Allow components that are not immediate child nodes? # self.is_ancestor_of(component)
@@ -362,7 +362,7 @@ func notifyComponentOnEntityReady(component: Component) -> void:
 ## TIP: If [param shouldFree] is `false` the component is only removed but not freed and may be re-added to any other entity.
 ## Returns `true` if the component was found and successfully uninstalled.
 func uninstallComponent(componentToRemove: Component, shouldFree: bool = true) -> bool:
-	if isLoggingEnabled: printLog(str("[color=brown]uninstallComponent(): ", (componentToRemove.logFullName if componentToRemove else "null"), " • shouldFree: ", shouldFree))
+	if isLoggingEnabled: printLog(str("[color=brown]uninstallComponent(): ", (componentToRemove.logFullName if componentToRemove else "null"), " ・ shouldFree: ", shouldFree))
 
 	# Validate arguments & state
 
@@ -373,7 +373,7 @@ func uninstallComponent(componentToRemove: Component, shouldFree: bool = true) -
 	# DESIGN: Let a missing script cause a crash
 	var className:	  StringName = componentToRemove.get_script().get_global_name()
 	if  className.is_empty():
-		printWarning(str("uninstallComponent(): Component has no `class_name`, cannot remove from `components` Dictionary: ", componentToRemove.logFullNameWithEntity, " • script: ", componentToRemove.get_script()))
+		printWarning(str("uninstallComponent(): Component has no `class_name`, cannot remove from `components` Dictionary: ", componentToRemove.logFullNameWithEntity, " ・ script: ", componentToRemove.get_script()))
 		# If can't unregister the key, can still remove if needed
 		if not shouldFree: return false
 
@@ -545,7 +545,7 @@ func findFirstComponentSubclass(type: Script) -> Component:
 ## Removes the [param component] [Node] if it's a child of this entity, and frees (deletes) the component if [param shouldFree]
 ## Components that are only removed but not freed may be re-added to any entity.
 func removeComponent(component: Component, shouldFree: bool = true) -> void:
-	if debugMode: printDebug(str("removeComponent(): ", component, " • shouldFree: ", shouldFree))
+	if debugMode: printDebug(str("removeComponent(): ", component, " ・ shouldFree: ", shouldFree))
 	var componentParent: Node = component.get_parent()
 	if  componentParent == self:
 		self.remove_child(component) # This also eventually leads to uninstallComponent()

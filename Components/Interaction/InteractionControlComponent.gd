@@ -58,9 +58,9 @@ func _ready() -> void:
 	# Some checks to avoid bugrisks just in case the .tscn scene didn't get it right
 	if debugMode:
 		if self.inputEventName != GlobalInput.Actions.interact:
-			printWarning(str("inputEventName: ", inputEventName, " ≠ GlobalInput.Actions.interact: \"", GlobalInput.Actions.interact, "\" • Ignore if intendend"))
+			printWarning(str("inputEventName: ", inputEventName, " ≠ GlobalInput.Actions.interact: \"", GlobalInput.Actions.interact, "\" ・ Ignore if intendend"))
 		if not self.groupToInclude.is_empty() and self.groupToInclude != Global.Groups.interactions: # Ignore empty strings
-			printWarning(str("groupToInclude: ", groupToInclude, " ∉ Global.Groups.interactions: \"", Global.Groups.interactions, "\" • Ignore if intendend"))
+			printWarning(str("groupToInclude: ", groupToInclude, " ∉ Global.Groups.interactions: \"", Global.Groups.interactions, "\" ・ Ignore if intendend"))
 
 	if interactionIndicator: interactionIndicator.visible = false # Set the initial state of the indicator
 		# updateIndicator() will be called by resetContactLists()
