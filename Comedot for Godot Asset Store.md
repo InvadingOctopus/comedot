@@ -18,13 +18,14 @@ Detailed Description:
 
 Basically standard Godot nodes but for gameplay.
 
-* Includes components for platformer/overhead/tile-based movement, combat, interactions, inventory, abilities etc.
+* Includes over 120 components for platformer/overhead/tile-based movement, combat, interactions, inventory, abilities etc.
 * Support for turn-based gameplay & components that can be combined with real-time stuff.
 * Templates for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
 * UI controls like stat counters/bars, buttons for special skills etc.
 * Save/Load player preferences in config files with `Settings.anyName = 69`
 * Handles tricky edge case issues in physics, stats, collectibles etc.
-* Helper functions & debugging tools like realtime charts for monitoring variables.
+* Over 140 scripts containing helper functions & automations for common tasks like creating animation frames etc.
+# Debugging tools like pretty logs & realtime charts for monitoring variables.
 * Meatcrafted well-documented components that can be Lego'ed together by AI to create various kinds of gameplay. \**(Comedot itself has no AI-generated code.)*
 
 ----
