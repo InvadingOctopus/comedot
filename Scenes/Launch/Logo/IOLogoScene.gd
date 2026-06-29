@@ -1,7 +1,7 @@
 ## The Invading Octopus Logo~
 
 class_name LogoSceneIO
-extends Start
+extends Node2D
 
 
 #region Constants & State
@@ -32,7 +32,6 @@ var logoTween:  Tween
 
 func _ready() -> void:
 	self.set_process_unhandled_input(false) # Ignore input before the animation has started (doesn't seem to make any difference tho :')
-	super._ready()
 
 	if Debug.debugBackground: Debug.debugBackground.visible = false # Hide the debug background during the logo
 	GlobalInput.isPauseShortcutAllowed = false
@@ -95,5 +94,5 @@ func displayNextScene() -> void:
 
 
 func _exit_tree() -> void:
-	if Debug.debugBackground: Debug.debugBackground.visible = self.showDebugBackground # Hide the debug background during the logo
+	if Debug.debugBackground: Debug.debugBackground.visible = Debug.showDebugBackground # Restore the debug background after the logo
 	GlobalInput.isPauseShortcutAllowed = true

@@ -11,8 +11,8 @@ extends Node
 
 #region Project-Specific Flags
 
-## ATTENTION: This flag is set by the [Start] script which must be attached to the root node of the main scene of your game.
-static var hasStartScript:		bool = false
+## ATTENTION: This flag is set by [method Debug.performFrameworkChecks] if the `ComedotProjectSettings.tres` is present. See [ComedotProjectSettings]
+static var hasComedotProjectSettings: bool = false
 
 #endregion
 
@@ -83,7 +83,7 @@ static func printInitializationMessage() -> void:
 	print_rich("[color=white][b]" + Global.frameworkTitle)
 
 	var projectTitle: String = ProjectSettings.get_setting("application/config/name", "Comedot")
-	if projectTitle.to_upper() != Global.frameworkTitle.to_upper():
+	if  projectTitle.to_upper() != Global.frameworkTitle.to_upper():
 		print_rich("[color=white]Project: " + projectTitle)
 
 #endregion

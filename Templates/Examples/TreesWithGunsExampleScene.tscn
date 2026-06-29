@@ -1,6 +1,5 @@
 [gd_scene format=4 uid="uid://dk8auhx4xrnqp"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_sy48a"]
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="3_yqhs0"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="4_bek2q"]
@@ -18,11 +17,6 @@ size = Vector2(12, 14)
 size = Vector2(384, 400)
 
 [node name="TreesWithGunsExample" type="Node2D" unique_id=1962837040]
-script = ExtResource("1_sy48a")
-showDebugWindow = false
-shouldPrintDebugLogs = false
-showDebugLabels = false
-showDebugBackground = false
 
 [node name="DebugBackground" parent="." unique_id=450280105 instance=ExtResource("2_kxnpl")]
 modulate = Color(0.4, 0.4, 0.4, 1)

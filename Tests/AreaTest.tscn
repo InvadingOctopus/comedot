@@ -27,7 +27,6 @@ size = Vector2(32, 64)
 
 [node name="AreaTestScene" type="Node2D" unique_id=164772395]
 script = ExtResource("1_xp6u4")
-mainGameScenePath = "uid://dnloy15xnmp4u"
 
 [node name="OriginMarker" type="ReferenceRect" parent="." unique_id=400204298]
 offset_left = -8.0

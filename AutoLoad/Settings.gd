@@ -13,14 +13,16 @@ extends Node
 
 #region Comedot Project Settings
 
+var comedotProjectSettings:		ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
 ## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
 ## If not specified, then the `application/run/main_scene` Godot Project Setting is used.
 ## This is not a [PackedScene] Resource to avoid circular references or load()ing before it is needed.
-static var mainGameScenePath:	String = ProjectSettings.get_setting("application/run/main_scene")
+static var mainGameScenePath:	String		= ProjectSettings.get_setting("application/run/main_scene")
 
-static var shouldAlertOnError:	bool = OS.is_debug_build() # TODO: Add toggle in Start.gd
+static var shouldAlertOnError:	bool		= OS.is_debug_build() # TBD: Add toggle in ComedotProjectSettings?
 
-static var saveFilePath:		StringName = "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "SavedState.scn" # Include game/project name in save filename
+static var saveFilePath:		StringName	= "user://" + ProjectSettings.get_setting("application/config/name", "Comedot") + "SavedState.scn" # Include game/project name in save filename
 
 #endregion
 
@@ -147,7 +149,9 @@ static func loadConfig() -> bool:
 
 ## Loads user settings which are counterpart to the Godot [ProjectSettings] such as window size.
 func loadProjectUserSettings() -> void:
-	pass # Done by GlobalUI.gd: # GlobalUI.setWindowSize(self.windowWidth, self.windowHeight, false) # !showLabel
+	if not comedotProjectSettings.mainGameScenePath.is_empty():
+		self.mainGameScenePath = comedotProjectSettings.mainGameScenePath
+	# Done by GlobalUI.gd: # GlobalUI.setWindowSize(self.windowWidth, self.windowHeight, false) # !showLabel
 
 #endregion
 

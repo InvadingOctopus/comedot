@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://p5j61vitplf"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_3wcaw"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="2_kwxr1"]
 [ext_resource type="PackedScene" uid="uid://35rprhfbgfpb" path="res://Components/Gameplay/InventoryComponent.tscn" id="3_fdjm8"]
 [ext_resource type="PackedScene" uid="uid://bqecemgdtqhw1" path="res://Components/Objects/CollectorComponent.tscn" id="4_hcysf"]
@@ -13,7 +12,6 @@
 [ext_resource type="Resource" uid="uid://b5bjb7ftispv6" path="res://Tests/Inventory/TestBlueKey.tres" id="11_fdjm8"]
 
 [node name="InventoryTest" type="Node2D" unique_id=157306399]
-script = ExtResource("1_3wcaw")
 
 [node name="PlayerEntityTemplate-Overhead" parent="." unique_id=1079093200 instance=ExtResource("2_kwxr1")]
 

@@ -1,6 +1,5 @@
 [gd_scene format=4 uid="uid://dkm5w4ukgrpgf"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_x8hsg"]
 [ext_resource type="Script" uid="uid://ciflnc7p46rqm" path="res://Scripts/Data/TileMapLayerWithCellData.gd" id="3_blwqs"]
 [ext_resource type="Script" uid="uid://65agal3il42" path="res://Tests/TurnBased/TurnBasedTestUIEntity.gd" id="3_orv1y"]
 [ext_resource type="PackedScene" uid="uid://di0bbc075e41l" path="res://Components/TurnBased/TurnBasedTileBasedControlComponent.tscn" id="4_3bh2s"]
@@ -392,11 +391,6 @@ _data = {
 }
 
 [node name="TurnBasedTest" type="Node2D" unique_id=1918247400]
-script = ExtResource("1_x8hsg")
-isTurnBasedGame = true
-turnBasedDelayBetweenEntities = 1.0
-shouldWaitBetweenTurnStates = true
-turnBasedDelayBetweenStates = 1.0
 
 [node name="Background" type="ColorRect" parent="." unique_id=1255689112]
 modulate = Color(1, 1, 1, 0.75000006)

@@ -1,6 +1,6 @@
 # Tile-based Movement Test for [TileBasedPositionComponent]
 
-extends Start
+extends Node2D
 
 
 @onready var mapA: TileMapLayer = %TileMapA

@@ -8,8 +8,8 @@
 ##
 ## See the documentation for [TurnBasedEntity] and [TurnBasedComponent] for further details.
 ##
-## IMPORTANT: [member Start.isTurnBasedGame] MUST be enabled in your `Start.gd` script for turn-based games!
-## PERFORMANCE: To remove [TurnBasedCoordinator], disable [member Start.isTurnBasedGame].
+## IMPORTANT: [member ComedotProjectSettings.isTurnBasedGame] MUST be enabled in your `ComedotProjectSettings.tres` script for turn-based games!
+## PERFORMANCE: To remove [TurnBasedCoordinator], disable [member ComedotProjectSettings.isTurnBasedGame]
 
 #class_name TurnBasedCoordinator
 extends Node # + TurnBasedObjectBase
@@ -35,27 +35,28 @@ extends Node # + TurnBasedObjectBase
 
 
 #region Parameters
-# TBD: Since this is an Autoload, should these values be flags in Start.gd or let the game's main script decide?
+
+var projectSettings: ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
 
 ## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
 ## According to Godot documentation, it should be 0.05
-const minimumDelay: float = 0.05
+const minimumDelay: float = projectSettings.turnBasedMinimumDelay
 
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Execute/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
-@export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = 0.5:
+@export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = projectSettings.turnBasedDelayBetweenEntities:
 	set(newValue):
 		newValue = maxf(newValue, minimumDelay)
 		delayBetweenEntities = newValue
 		if entityTimer: entityTimer.wait_time = newValue
 
-@export var shouldWaitBetweenStates: bool = true ## Enables or disables [member delayBetweenStates].
+@export var shouldWaitBetweenStates: bool = projectSettings.shouldWaitBetweenTurnStates ## Enables or disables [member delayBetweenStates].
 
 ## The delay after each turn state if [member shouldWaitBetweenStates]: Begin → Execute → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE [member stateMachine] transitions to the next state.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
-@export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = 0.25:
+@export_range(minimumDelay, 10, 0.05) var delayBetweenStates: float = projectSettings.turnBasedDelayBetweenStates:
 	set(newValue):
 		newValue = maxf(newValue, minimumDelay)
 		delayBetweenStates = newValue
@@ -63,7 +64,7 @@ const minimumDelay: float = 0.05
 
 ## NOTE: Disabling this flag also disables `_process()` to avoid calling it each frame and wasting performance,
 ## because `_process()` is only used to update debug info.
-@export var debugMode: bool = false:
+@export var debugMode: bool = projectSettings.debugAutoLoads:
 	set(newValue):
 		if newValue != debugMode:
 			debugMode = newValue
@@ -212,6 +213,12 @@ func _notification(what: int) -> void: # This happens earlier than _enter_tree()
 
 
 func _ready() -> void:
+	if not projectSettings.isTurnBasedGame:
+		Debug.printAutoLoadLog("ComedotProjectSettings: not isTurnBasedGame: [color=red]Removing TurnBasedCoordinator")
+		self.process_mode = Node.PROCESS_MODE_DISABLED
+		self.queue_free()
+		return
+
 	Debug.printAutoLoadLog("_ready()")
 
 	if not stateMachine:

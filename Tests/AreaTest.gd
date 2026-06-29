@@ -1,4 +1,4 @@
-extends Start
+extends Node2D
 
 
 @onready var testArea: Area2D = %TestArea
@@ -7,7 +7,6 @@ extends Start
 @onready var areaContactComponent: AreaContactComponent = %AreaContactComponent
 
 func _ready() -> void:
-	super._ready()
 	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
 
 

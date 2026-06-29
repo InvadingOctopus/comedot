@@ -7,17 +7,31 @@ extends Node
 
 #region Parameters
 
+var projectSettings: ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
-@export var shouldPrintDebugLogs: bool = OS.is_debug_build() # TBD: Should this be a constant to improve performance?
+@export var shouldPrintDebugLogs: bool = projectSettings.shouldPrintDebugLogs # TBD: Should this be a constant to improve performance?
 
-## Sets the visibility of the debug information overlay text, as well as the [member watchList].
+## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
+@export var showDebugWindow: bool = projectSettings.showDebugWindow:
+	set(newValue):
+		showDebugWindow = newValue
+		if debugWindow: debugWindow.visible = newValue if OS.is_debug_build() else false # Always hide in release builds
+
+## Sets the visibility of the debug information overlay text, as well as the [member watchList]
 ## NOTE: Does NOT affect the visibility of the framework warning label.
-@export var showDebugLabels: bool = OS.is_debug_build():
+@export var showDebugLabels: bool = projectSettings.showDebugLabels:
 	set(newValue):
 		showDebugLabels = newValue
-		setLabelVisibility()
+		setVisibility()
 		self.set_process(showDebugLabels) # PERFORMANCE: Don't update per-frame if not needed
+
+## Displays a checkered grid parallax background, to assist with pixel-perfect alignment etc.
+@export var showDebugBackground: bool = projectSettings.showDebugBackground:
+	set(newValue):
+		showDebugBackground = newValue
+		setVisibility()
 
 ## A [Dictionary] of variables to monitor at runtime. The keys are the names of the variables or properties from other nodes.
 ## Updating the value of an existing key will update the label for that property i.e. to show its value at runtime.
@@ -86,7 +100,7 @@ func _ready() -> void:
 	initializeDebugWindow()
 	displayInitializationMessage("_ready()")
 	resetLabels()
-	setLabelVisibility()
+	setVisibility()
 	performFrameworkChecks()
 	self.set_process(showDebugLabels) # Apply setter because Godot doesn't on initialization
 
@@ -97,17 +111,19 @@ func resetLabels() -> void:
 	watchListLabel.text	= ""
 
 
-func setLabelVisibility() -> void:
+func setVisibility() -> void:
 	# NOTE: The warning label must always be visible
-	if label: label.visible = self.showDebugLabels
-	if watchListLabel: watchListLabel.visible = self.showDebugLabels
+	if label:			label.visible			= self.showDebugLabels
+	if watchListLabel:	watchListLabel.visible	= self.showDebugLabels
+	if debugBackground:	debugBackground.visible	= self.showDebugBackground
 
 
 func performFrameworkChecks() -> void:
 	var warnings: PackedStringArray
+	Global.hasComedotProjectSettings = is_instance_valid(projectSettings)
 
-	if not Global.hasStartScript:
-		warnings.append("! Start.gd script missing\nAttach to root node of main scene")
+	if not Global.hasComedotProjectSettings:
+		warnings.append("! ComedotProjectSettings.tres missing")
 
 	warningLabel.text = "\n".join(warnings)
 
@@ -190,7 +206,7 @@ func initializeLogWindow() -> void:
 
 
 func initializeDebugWindow() -> void:
-	debugWindow.visible = OS.is_debug_build()
+	debugWindow.visible = self.showDebugWindow if OS.is_debug_build() else false
 	debugWindow.content_scale_factor = DisplayServer.screen_get_scale() # For Mac/Retina/HiDPI displays
 
 	# Position the Debug Window to the right of the main window

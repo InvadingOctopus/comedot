@@ -20,7 +20,6 @@ size = Vector2(144, 144)
 [node name="PopulateTest" type="Node2D" unique_id=135133428]
 script = ExtResource("1_3l7vy")
 maximumNumberOfCopies = 10
-mainGameScenePath = "uid://b03gxqrqupyqv"
 
 [node name="BackgroundTileMap" type="TileMapLayer" parent="." unique_id=1617083573]
 modulate = Color(0, 1, 1, 0.4)

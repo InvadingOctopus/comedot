@@ -1,6 +1,5 @@
 [gd_scene format=4 uid="uid://lgm6i4l10xlf"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_16bcx"]
 [ext_resource type="Script" uid="uid://bisowd0k143yp" path="res://Entities/Characters/PlayerEntity.gd" id="2_jndpr"]
 [ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="3_6wljs"]
 [ext_resource type="PackedScene" uid="uid://bck0vjn8mg1aw" path="res://Components/Control/JumpComponent.tscn" id="6_7a8f1"]
@@ -26,8 +25,6 @@ size = Vector2(16, 160)
 size = Vector2(6, 160)
 
 [node name="ClimbTest" type="Node2D" unique_id=339251070]
-script = ExtResource("1_16bcx")
-mainGameScenePath = "uid://lgm6i4l10xlf"
 
 [node name="PlayerEntity" type="CharacterBody2D" parent="." unique_id=102116842 groups=["entities", "players"]]
 z_index = 20

@@ -1,8 +1,7 @@
-extends Start
+extends Node2D
 
 
 func _ready() -> void:
-	super._ready()
 	TileMapTools.randomizeTileMapCells($TileMapLayerWithCellData,
 		TileMapTools.findRandomTileMapCells($TileMapLayerWithCellData,
 			0.1, true, true,

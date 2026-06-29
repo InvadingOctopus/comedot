@@ -23,7 +23,6 @@ normal = Vector2(-1, 0)
 
 [node name="IOLogoScene" type="Node2D" unique_id=1721393566]
 script = ExtResource("1_hl2sk")
-mainGameScenePath = "uid://dbwiosb1xulu5"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=295158223]
 environment = SubResource("Environment_04x4y")

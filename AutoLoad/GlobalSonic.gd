@@ -9,15 +9,29 @@ extends Node
 
 
 #region Parameters
-@export var musicFolder:			String = "res://Assets/Music" ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
-@export var shouldShuffleMusic:		bool = true ## Affects [method skipMusic] and the next track that plays after the current track finishes. Supersedes [member shouldAutoPlayNext]
-@export var shouldAutoPlayNext:		bool = true ## Plays the next music track, if any, after a track finishes [method skipMusic] and the next track that plays after the current track finishes and [signal AudioStreamPlayer.finished] is emitted. Superseded by [member shouldShuffleMusic]
+var projectSettings: ComedotProjectSettings	= preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
+## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
+@export var musicFolder: String = projectSettings.musicFolder
+
+## ALERT: Overrides [member musicIndexToPlayOnStart]
+@export_file("*.mp3") var musicFileToPlayOnStart: String = projectSettings.musicFileToPlayOnStart
+
+## If [member musicFileToPlayOnStart] is unspecified, then a random song is played from the list of files found in [member musicFolder].
+@export var shouldPlayRandomMusicOnStart: bool = projectSettings.shouldPlayRandomMusicOnStart
+
+## If [member musicFileToPlayOnStart] is unspecified and [member shouldPlayRandomMusicOnStart] is `false`, then this is the index of the first song from the list of files found in [member musicFolder].
+@export var musicIndexToPlayOnStart: int	= projectSettings.musicIndexToPlayOnStart
+
+@export var shouldShuffleMusic:		bool	= true ## Affects [method skipMusic] and the next track that plays after the current track finishes. Supersedes [member shouldAutoPlayNext]
+@export var shouldAutoPlayNext:		bool	= true ## Plays the next music track, if any, after a track finishes [method skipMusic] and the next track that plays after the current track finishes and [signal AudioStreamPlayer.finished] is emitted. Superseded by [member shouldShuffleMusic]
 
 @export_range(0, 100, 1) var maximumNumberOfSounds:	int  = 10 # TBD:
 
-@export var debugMode:				bool = false
+@export var debugMode:				bool	= projectSettings.debugAutoLoads
 
-const muteVolumeThreshold:			float = -60.0 ## The minimum volume in decibels at and below which an audio bus will be muted.
+const muteVolumeThreshold:			float	= -60.0 ## The minimum volume in decibels at and below which an audio bus will be muted.
+
 #endregion
 
 
@@ -53,12 +67,13 @@ signal musicPlayerDidStop
 func _ready() -> void:
 	self.loadAudioSettings()
 	self.loadMusicFolder()
+	self.playInitialMusic.call_deferred() # Don't start too soon before the first scene is ready etc.
 
 
 func loadAudioSettings() -> void:
 	const settingSuffix: StringName = &"Volume" 
 	loadBusVolumeSetting(Global.AudioBuses.music, Global.AudioBuses.music.to_lower() + settingSuffix) # "musicVolume"
-	loadBusVolumeSetting(Global.AudioBuses.sfx,   Global.AudioBuses.sfx.to_lower() + settingSuffix)   # "sfxVolume"
+	loadBusVolumeSetting(Global.AudioBuses.sfx,   Global.AudioBuses.sfx.to_lower()   + settingSuffix)   # "sfxVolume"
 
 
 func loadBusVolumeSetting(busName: StringName, settingsKey: StringName) -> float:
@@ -182,6 +197,16 @@ func playAudioPlayerPool(
 
 
 #region Music
+
+func playInitialMusic() -> AudioStream:
+	if not musicFileToPlayOnStart.is_empty():
+		return self.playMusicFile(musicFileToPlayOnStart)
+	elif shouldPlayRandomMusicOnStart:
+		return self.playRandomMusicIndex(true) # allowRepeats to allow index 0 to be included :')
+	else:
+		currentMusicIndex = musicIndexToPlayOnStart
+		return self.playMusicIndex(musicIndexToPlayOnStart)
+
 
 ## Replaces and returns the [member musicFiles] array with the list returned by calling [method getMusicFilesFromFolder] on the [member musicFolder].
 func loadMusicFolder() -> PackedStringArray:

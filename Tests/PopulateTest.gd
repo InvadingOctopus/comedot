@@ -1,6 +1,6 @@
 # PopulateTest
 
-extends Start
+extends Node2D
 
 
 #region Parameters
@@ -18,7 +18,6 @@ const nodeGroup := &"testMap"
 
 
 func _ready() -> void:
-	super._ready()
 	populateMap()
 	$RepoulationTimer.start()
 
@@ -26,7 +25,7 @@ func _ready() -> void:
 func populateMap() -> void:
 	var sceneToSpawn := load("res://Templates/TestSprite16.tscn") # Not preload because it might get loaded at startup even if this test is never used.
 	var spawnedNodes: Dictionary[Vector2i, Node2D]
-	var randomCells: Array[Vector2i]
+	var randomCells:  Array[Vector2i]
 
 	spawnedNodes = TileMapTools.populateTileMap(%TileMap1, sceneToSpawn,
 		self.numberOfCopies,

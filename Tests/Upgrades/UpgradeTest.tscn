@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://cj6ao7ju12nhg"]
 
-[ext_resource type="Script" uid="uid://dw6w3lvrh2ggp" path="res://Scripts/Start.gd" id="1_ght07"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="3_udv4x"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="4_0trfh"]
 [ext_resource type="PackedScene" uid="uid://csfqa5yos7088" path="res://Components/Gameplay/UpgradesComponent.tscn" id="5_3wt1t"]
@@ -23,7 +22,6 @@
 [ext_resource type="Resource" uid="uid://dubsrpy44b7kw" path="res://Tests/Upgrades/TestAmmoUpgrade.tres" id="23_2aq68"]
 
 [node name="UpgradeTest" type="Node2D" unique_id=601618361]
-script = ExtResource("1_ght07")
 
 [node name="PlayerEntityTemplate-Overhead" parent="." unique_id=405863233 instance=ExtResource("3_udv4x")]
 

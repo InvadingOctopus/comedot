@@ -10,21 +10,23 @@ extends Node
 #region Game State
 # TBD: @export_storage?
 
+var projectSettings: ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
 ## A [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
 ## TIP: When accessing a key for the first time, use [method Dictionary.get_or_add] with a default value.
 ## EXAMPLE: `GameState.globalData.get_or_add(&"questItems", [])`
 ## TIP: [StringName] may be the optimal type to use for keys.
-@export var globalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
+@export var globalData:	Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] to ensure that signals are emitted and proper cleanup is performerd.
 ## ALERT: To avoid an error or crash when there is no player, access players with [method getPlayer] NOT `players.front()` or `player[0]`
-var players: Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
+var players:			Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
 
 ## A dictionary of stats and values to display in the HUD UI.
 ## Changes to the dictionary should emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
 ## [StringName] is the optimal type to use for keys.
-@export var hudStats: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
+@export var hudStats:	Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## A shared random number generator for gameplay-affecting randomness
 ## so seeds can be reused to roll the same numbers throughout the runtime, useful for debugging, saves, and replays etc.
@@ -66,6 +68,21 @@ signal gameWillRestart ## Emitted when the player chooses to restart the game or
 func _notification(what: int) -> void: # This happens earlier than _enter_tree()
 	if what != NOTIFICATION_PARENTED: return
 	Debug.printAutoLoadLog("NOTIFICATION_PARENTED")
+
+
+func _enter_tree() -> void:
+	# NOTE: This must be _enter_tree() instead of _ready() because nodes are readied from the bottom-up, children-first,
+	# so we need to prepare up the global state earlier, in case other scripts depend on it in their _ready()
+	setupGameState()
+
+
+## @experimental
+func setupGameState() -> void:
+	# TODO: Handle excessive repeated merges & duplicates
+	self.globalData.merge(projectSettings.initialGlobalData, true) # overwrite
+
+	for path: String in projectSettings.gameStateNodes:
+		self.createNode(path)
 
 
 ## Instantiates a scene and adds it as a new child node to the GameState AutoLoad, which may act as an additional game-specific global state "manager" script or UI layers etc.
