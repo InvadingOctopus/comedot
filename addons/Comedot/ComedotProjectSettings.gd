@@ -95,18 +95,18 @@ const turnBasedMinimumDelay: float = 0.05
 
 @export var debugAutoLoads:  bool = OS.is_debug_build()
 
-## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
-@export var showDebugWindow: bool = OS.is_debug_build():
-	set(newValue):
-		showDebugWindow = newValue
-		if Debug.debugWindow: Debug.debugWindow.visible = newValue
-
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
 @export var shouldPrintDebugLogs: bool = OS.is_debug_build():
 	set(newValue):
 		shouldPrintDebugLogs = newValue
 		Debug.shouldPrintDebugLogs = newValue
+
+## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
+@export var showDebugWindow: bool = OS.is_debug_build():
+	set(newValue):
+		showDebugWindow = newValue
+		if Debug.debugWindow: Debug.debugWindow.visible = newValue
 
 ## Sets the visibility of the debug information overlay text.
 ## NOTE: Does NOT affect the visibility of the framework warning label.
