@@ -22,6 +22,7 @@ const entityIcon		:= preload("res://Assets/Icons/Entity.svg")
 const componentTypeName	:= &"Comedot Component"
 const componentScript	:= preload("res://Components/Component.gd")
 const componentIcon		:= preload("res://Assets/Icons/Component.svg")
+
 #endregion
 
 
@@ -79,11 +80,17 @@ func removeCustomTypes() -> void:
 
 #region Components Dock
 
-var componentsDock: ComponentsDock
+const	componentsDockScene := preload("res://addons/Comedot/ComponentsDock.tscn")
+var		componentsDock: ComponentsDock
 
 
 func addDock() -> void:
-	componentsDock = preload("res://addons/Comedot/ComponentsDock.tscn").instantiate()
+	if is_instance_valid(componentsDock):
+		# Exit if the Comedock is already docked
+		if componentsDock.is_inside_tree() or componentsDock.get_parent(): return
+	else:
+		componentsDock = componentsDockScene.instantiate()
+
 	componentsDock.plugin = self as EditorPlugin
 	self.add_control_to_dock(DOCK_SLOT_LEFT_BR, componentsDock)
 	self.set_dock_tab_icon(componentsDock, componentIcon)

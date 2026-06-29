@@ -31,8 +31,10 @@ enum TreeItemButtons {
 
 
 #region Parameters
-
 # TBD: `load` or `preload` or just put paths here?
+
+var projectSettings: Resource	= load(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
 
 # NOTE: Convert strings `.to_lower()` before comparing strings
 const componentsRootPath		:= "res://Components"
@@ -186,9 +188,10 @@ func setupUI() -> void:
 
 	# Hook up with Inspector Gadget & the Selection
 	inspector = EditorInterface.get_inspector()
-	selection = EditorInterface.get_selection()
+	if not selection: selection = EditorInterface.get_selection()
 	onSelection_selectionChanged() # Trigger a "fake" event to update the UI for first time, to reflect the initial state 
-	selection.selection_changed.connect(self.onSelection_selectionChanged)
+	if not selection.selection_changed.is_connected(self.onSelection_selectionChanged):
+		selection.selection_changed.connect(self.onSelection_selectionChanged)
 
 	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
 
@@ -361,7 +364,6 @@ func onComponentsTree_itemActivated() -> void:
 
 
 func onSettingsButton_pressed() -> void:
-	var projectSettings: Resource = load(ComedotProjectSettings.projectSettingsResourcePathDefault)
 	if not projectSettings:
 		printError("Could not load ComedotProjectSettings Resource from " + ComedotProjectSettings.projectSettingsResourcePathDefault)
 		return
