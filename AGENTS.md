@@ -42,14 +42,14 @@ Each section contains instructions or information starting with a `-` bullet lis
 
 
 ## Build, Run, Test & Export
-- Open the Comedot template in Godot by selecting `project.godot` 
+- Open the Comedot template in Godot by selecting `project.godot`
 - `project.godot` contains the required Godot version under `config/features` and other metadata. Comedot always targets the latest version (release or beta).
 - Refer to the official documentation when needed, at `https://docs.godotengine.org/en/latest/`
 - Run locally from the editor (F5) or run individual scenes (F6) for focused testing.
 - To verify scripts and check parser errors etc. run Godot in "headless" mode by passing the following flags to the Godot executable: `--headless --check-only --path [path] --script [filename]`
 	- To run for N frames, use `--quit-after [frame count]`
 	- Godot may crash at startup in headless mode if it cannot write the default `user://logs` file: Pass an explicit writable `--log-file` argument in `/tmp` or another suitable folder.
-	- If the Godot executable is unavailable or live execution is not necessary, just read/lint GDScript manually for static analysis. 
+	- If the Godot executable is unavailable or live execution is not necessary, just read/lint GDScript manually for static analysis.
 	- For other commands and flags, see `https://docs.godotengine.org/en/latest/tutorials/editor/command_line_tutorial.html`
 - Exports are driven by Godot’s export presets (`export_presets.cfg`); use the editor’s Export dialog for builds.
 - Tests are represented as Godot scenes/scripts under `/Tests/` to be played manually. `*Test.tscn` with companion `.gd` where needed.
@@ -87,7 +87,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - See `/HowTo.md` for human guidance that may also apply to AI agents (specially the "Avoid" section)
 	- In case of conflicts, this `/AGENTS.md` has precedence.
 - This framework is primarily for 2D games; Godot's 3D features & APIs such as `Node3D` are almost never used or needed.
-- New gameplay behaviors should generally be implemented as components that can be reused in multiple games. 
+- New gameplay behaviors should generally be implemented as components that can be reused in multiple games.
 - "Components" are any node with a script that is a subclass of `/Components/Component.gd`, and "entities" are any node with the `/Entities/Entity.gd` script or its subclasses. Entities are just a container for components and multiple components can be added to an entity. Components are generally standalone and provide a single specific behavior or set of closely-related behaviors, but components may depend on each other and modify each other at runtime, such as `DamageComponent` + `DamageReceivingComponent` + `KnockbackOnHitComponent`
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
 - When creating new entities and components, prefer copying scenes and scripts from `/Templates/` to use as a starting point etc.
