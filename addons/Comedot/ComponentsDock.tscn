@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dn5qx1mv643mq"]
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
-[ext_resource type="Texture2D" uid="uid://busecy5ufg0x1" path="res://Assets/Logos/ComedotLogo-Grayscale.png" id="2_3crsp"]
+[ext_resource type="Texture2D" uid="uid://bx6g4ipu4ivg" path="res://Assets/Icons/ComedotAppIcon.svg" id="2_3crsp"]
 [ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 [ext_resource type="PackedScene" uid="uid://jt8bd2lsvtyp" path="res://UI/TreeSearchBox.tscn" id="4_3crsp"]
 
@@ -38,15 +38,15 @@ texture_filter = 2
 material = SubResource("CanvasItemMaterial_3crsp")
 custom_minimum_size = Vector2(32, 32)
 clip_contents = true
-layout_mode = 1
+layout_mode = 0
 offset_left = 10.0
 offset_right = 116.19
 offset_bottom = 80.0
 size_flags_horizontal = 8
 size_flags_stretch_ratio = 0.5
 texture = ExtResource("2_3crsp")
-expand_mode = 3
-stretch_mode = 4
+expand_mode = 5
+stretch_mode = 6
 
 [node name="MainGridContainer" type="GridContainer" parent="." unique_id=1273907423]
 layout_mode = 1
@@ -151,7 +151,6 @@ layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "Select an Entity node in the scene to add Components."
-horizontal_alignment = 2
 text_overrun_behavior = 3
 
 [node name="HelpLabel2" type="Label" parent="MainGridContainer/TextMarginContainer/LabelsContainer" unique_id=33997812]
@@ -161,7 +160,6 @@ layout_mode = 2
 theme_type_variation = &"TooltipLabel"
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "For more commands, see the Project → Tools menu."
-horizontal_alignment = 2
 text_overrun_behavior = 3
 
 [node name="TreeSearchBox" parent="MainGridContainer" unique_id=1677949122 node_paths=PackedStringArray("tree") instance=ExtResource("4_3crsp")]
