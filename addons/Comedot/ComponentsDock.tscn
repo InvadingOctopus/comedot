@@ -70,11 +70,26 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
 
+[node name="SettingsButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=1196802052]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Open the Comedot-specific Project Settings."
+focus_neighbor_right = NodePath("../RefreshButton")
+focus_next = NodePath("../RefreshButton")
+alignment = 2
+text_overrun_behavior = 2
+clip_text = true
+icon_alignment = 1
+
 [node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=1041019712]
+unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components and verify."
+focus_neighbor_left = NodePath("../SettingsButton")
 focus_neighbor_right = NodePath("../AddEntityMenuButton")
 focus_next = NodePath("../AddEntityMenuButton")
+focus_previous = NodePath("../SettingsButton")
 text = "Rescan"
 alignment = 2
 
@@ -95,8 +110,6 @@ text = "Add Entity"
 icon = ExtResource("3_fn551")
 flat = false
 alignment = 2
-icon_alignment = 2
-expand_icon = true
 item_count = 4
 popup/item_0/text = "Node2D"
 popup/item_0/id = 0
@@ -228,6 +241,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 placeholder_text = "NewComponent"
 
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/SettingsButton" to="." method="onSettingsButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/EditComponentButton" to="." method="onEditComponentButton_pressed"]

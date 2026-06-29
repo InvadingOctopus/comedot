@@ -19,13 +19,14 @@ extends Resource
 
 
 #region Framework Settings
-@export_category("Comedot")
+# DESIGN: Use `@export_category` instead of `@export_group` because these settings essentially apply to different "classes".
+# @export_category("Comedot")
 
 const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings.tres"
 
 
 #region General
-@export_group("Global Game State")
+@export_category("Global Game State")
 
 ## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
 ## If omitted, then [member Settings.mainGameScenePath] remains unmodified.
@@ -45,7 +46,7 @@ const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings
 
 
 #region Music
-@export_group("Music")
+@export_category("Music")
 
 ## The path of the folder from which to load ".mp3" music files to build a playlist.
 @export_dir var musicFolder: String = "res://Assets/Music"
@@ -63,6 +64,7 @@ const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings
 
 
 #region Turn-Based
+@export_category("Turn-Based")
 @export_group("Turn-Based Gameplay")
 
 ## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
@@ -89,7 +91,7 @@ const turnBasedMinimumDelay: float = 0.05
 
 
 #region Debugging
-@export_group("Debugging")
+@export_category("Debugging")
 
 @export var debugAutoLoads:  bool = OS.is_debug_build()
 

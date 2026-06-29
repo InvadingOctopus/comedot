@@ -58,8 +58,9 @@ const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # Edit
 # Access built-in Godot icons as per the documentation: https://docs.godotengine.org/en/stable/classes/class_editorinterface.html#class-editorinterface-method-get-editor-theme
 # > When creating custom editor UI, prefer accessing theme items directly from your GUI nodes using the get_theme_* methods.
 # Instead of: EditorInterface.get_editor_theme().get_icon()
-@onready var folderIcon: Texture2D = self.get_theme_icon(&"Folder", &"EditorIcons")
-@onready var sceneIcon:  Texture2D = self.get_theme_icon(&"InstanceOptions", &"EditorIcons")
+@onready var folderIcon: 	Texture2D = self.get_theme_icon(&"Folder",			&"EditorIcons")
+@onready var sceneIcon:  	Texture2D = self.get_theme_icon(&"InstanceOptions",	&"EditorIcons") # Clapboard 
+@onready var settingsIcon:	Texture2D = self.get_theme_icon(&"Tools",			&"EditorIcons") # Gear
 
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
@@ -133,6 +134,8 @@ var inspector:  EditorInspector
 #endregion
 
 
+#region Initialization
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# NOTE: If we are not running as the actual plugin, i.e. the Dock is being edited in the Editor, then skip the setup.
@@ -152,15 +155,23 @@ static func printError(message: String) -> void:
 
 
 func setupUI() -> void:
-	%DebugReloadButton.visible = debugMode
+	%DebugReloadButton.visible			= debugMode
+
+	%SettingsButton.icon				= self.settingsIcon
+	%HelpLabel.text						= defaultHelpLabelText
+
+	%AddEntityMenuButton.modulate		= createNewItemButtonColor
+	%AddEntityMenuButton.tooltip_text	= defaultAddEntityTip
 	
-	%AddEntityMenuButton.modulate = createNewItemButtonColor
-	%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
+	var addEntityMenu: PopupMenu = %AddEntityMenuButton.get_popup()
+	addEntityMenu.id_pressed.connect(self.onAddEntityMenu_idPressed)
+	addEntityMenu.set_item_icon(EntityTypes.node2D,			addEntityMenu.get_theme_icon(&"Node2D",			 &"EditorIcons"))
+	addEntityMenu.set_item_icon(EntityTypes.area2D,			addEntityMenu.get_theme_icon(&"Area2D",			 &"EditorIcons"))
+	addEntityMenu.set_item_icon(EntityTypes.characterBody2D,addEntityMenu.get_theme_icon(&"CharacterBody2D", &"EditorIcons"))
+	addEntityMenu.set_item_icon(EntityTypes.sprite2D,		addEntityMenu.get_theme_icon(&"Sprite2D",		 &"EditorIcons"))
 
 	$NewComponentDialog.register_text_enter(newComponentNameTextBox)
-	%AddEntityMenuButton.get_popup().id_pressed.connect(self.onAddEntityMenu_idPressed)
 
-	%HelpLabel.text = defaultHelpLabelText
 
 	componentsTree.set_column_expand(0, true)
 	componentsTree.set_column_expand(1, false) # Prevent the button column from obscuring the component names.
@@ -182,6 +193,8 @@ func setupUI() -> void:
 	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
 
 	# TODO: Display the dock if it's hidden (like behind the FileSystem)
+
+#endregion
 
 
 #region The Erdtree
@@ -345,6 +358,14 @@ func onComponentsTree_itemSelected() -> void:
 ## Called when a row is double-clicked
 func onComponentsTree_itemActivated() -> void:
 	getSelectedComponentAndAddToSelectedNode()
+
+
+func onSettingsButton_pressed() -> void:
+	var projectSettings: Resource = load(ComedotProjectSettings.projectSettingsResourcePathDefault)
+	if not projectSettings:
+		printError("Could not load ComedotProjectSettings Resource from " + ComedotProjectSettings.projectSettingsResourcePathDefault)
+		return
+	EditorInterface.edit_resource(projectSettings)
 
 
 func onRefreshButton_pressed() -> void:
