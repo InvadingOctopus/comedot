@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://bx6g4ipu4ivg" path="res://Assets/Icons/ComedotAppIcon.svg" id="2_3crsp"]
-[ext_resource type="Texture2D" uid="uid://xtlcc1rdpsyc" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
+[ext_resource type="Texture2D" uid="uid://c5t1mt48576dk" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 [ext_resource type="PackedScene" uid="uid://jt8bd2lsvtyp" path="res://UI/TreeSearchBox.tscn" id="4_3crsp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3crsp"]
