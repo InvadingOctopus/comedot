@@ -263,17 +263,17 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	var categoryName: String   = categoryFolder.get_name()
 	var categoryPath: String   = categoryFolder.get_path()
 
-	categoryRow.set_text(0, categoryName)
-	categoryRow.set_metadata(0, categoryPath)
-	categoryRow.set_tooltip_text(0, categoryPath)
+	categoryRow.set_text(0,			categoryName)
+	categoryRow.set_metadata(0,		categoryPath)
+	categoryRow.set_tooltip_text(0,	categoryPath)
 
 	# Customize the Tree row
-	categoryRow.set_icon(0, folderIcon)
+	categoryRow.set_icon(0,				folderIcon)
 	categoryRow.set_icon_modulate(0, categoryColor)
-	categoryRow.set_custom_color(0, categoryColor)
+	categoryRow.set_custom_color(0,  categoryColor)
 	categoryRow.set_custom_bg_color(0, categoryBackgroundColor)
 	categoryRow.set_expand_right(0, true)
-	categoryRow.set_selectable(0, false)
+	categoryRow.set_selectable(0,  false)
 
 	# Add a button for creating a new component
 	var buttonTooltip: String = "Create a new Component in the " + categoryName + " folder."
