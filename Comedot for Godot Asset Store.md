@@ -62,9 +62,9 @@ Screenshot 6:	Charts:		https://raw.githubusercontent.com/InvadingOctopus/comedot
 
 ## Versions
 
-Version Name:	4.7.0.100.69
+Version Name:	4.7.0.100.666
 	First 3 numbers: Godot version
-	4th: Dev/Beta/RC where <10 = Beta, 10+ = RC, 100 = release
+	4th: Godot Dev/Beta/RC where <10 = Beta, 10+ = RC, 100 = release
 	6th: The Comedot release during that Godot version
 
 
