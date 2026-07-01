@@ -10,7 +10,28 @@ extends Panel
 # TODO: Add option to duplicate an existing Component?
 
 
-#region Constants & Enums
+#region Parameters
+
+var projectSettings: Resource	= load(ComedotProjectSettings.projectSettingsResourcePathDefault)
+
+## If `true` then one of the template scenes from `/Templates/Entities/` is instantiated when a new [Entity] is created from the Comedock.
+## If `false` then a standalone node is created and its script and properties are set directly.
+## NOTE: PERFORMANCE: Using templates MAY be slower because extra scenes have to be loaded.
+@export var shouldUseTemplatesForNewEntities:	bool = false
+
+## If a newly created [Entiy] or [Component] has child nodes which affect its behavior,
+## such as the bullet emitter in [GunComponent] or the collision shapes in [DamageComponent] etc.
+## then this option will automatically enable the "Editable Children" option for that Entity/Component in the Godot Editor.
+@export var shouldShowEditableChildren:			bool = true
+
+@export var debugMode:							bool = false
+
+#endregion
+
+
+#region Constants
+
+#region Enums
 
 enum EntityTypes {
 	# NOTE: MUST correspond to the ids of the Add Entity button's PopupMenu
@@ -29,12 +50,8 @@ enum TreeItemButtons {
 
 #endregion
 
-
-#region Parameters
+#region Paths
 # TBD: `load` or `preload` or just put paths here?
-
-var projectSettings: Resource	= load(ComedotProjectSettings.projectSettingsResourcePathDefault)
-
 
 # NOTE: Convert strings `.to_lower()` before comparing strings
 const componentsRootPath		:= "res://Components"
@@ -57,6 +74,10 @@ const componentScriptTemplate	:= "res://Templates/Scripts/Component/ComponentTem
 const componentIcon				:= preload("res://Assets/Icons/Component.svg")
 const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
 
+#endregion
+
+#region Icons
+
 # Access built-in Godot icons as per the documentation: https://docs.godotengine.org/en/stable/classes/class_editorinterface.html#class-editorinterface-method-get-editor-theme
 # > When creating custom editor UI, prefer accessing theme items directly from your GUI nodes using the get_theme_* methods.
 # Instead of: EditorInterface.get_editor_theme().get_icon()
@@ -64,27 +85,32 @@ const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # Edit
 @onready var sceneIcon:  	Texture2D = self.get_theme_icon(&"InstanceOptions",	&"EditorIcons") # Clapboard 
 @onready var settingsIcon:	Texture2D = self.get_theme_icon(&"Tools",			&"EditorIcons") # Gear
 
+#endregion
+
+#region Colors
+
 const categoryColor				:= Color(0.235, 0.741, 0.878) # From Godot Editor's color for folders chosen to be "Blue"
 const categoryBackgroundColor	:= Color(0.051, 0.133, 0.184) # From Godot Editor's background color for folders chosen to be "Blue"
 const componentBackgroundColor	:= Color(0, 0, 0) # From Godot Editor's background color for folders chosen to be "Blue"
 const createNewItemButtonColor	:= Color.LAWN_GREEN
 const editComponentButtonColor	:= categoryColor
 
-const defaultHelpLabelText		:= "Select an Entity node in the scene to add Components."
-const defaultAddEntityTip		:= "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
-const editComponentTipPrefix	:= "Open the source scene of "
+#endregion
 
-## If `true` then one of the template scenes from `/Templates/Entities/` is instantiated when a new [Entity] is created from the Comedock.
-## If `false` then a standalone node is created and its script and properties are set directly.
-## NOTE: PERFORMANCE: Using templates MAY be slower because extra scenes have to be loaded.
-@export var shouldUseTemplatesForNewEntities:	bool = false
-@export var debugMode:							bool = false
+#region Strings
 
-## If a newly created [Entiy] or [Component] has child nodes which affect its behavior,
-## such as the bullet emitter in [GunComponent] or the collision shapes in [DamageComponent] etc.
-## then this option will automatically enable the "Editable Children" option for that Entity/Component in the Godot Editor.
-@export var shouldShowEditableChildren:			bool = true
+const defaultHelpLabelText			:= "Select an Entity node in the scene to add Components."
 
+const defaultAddEntityTip			:= "Add a new Entity of the chosen base type to the currently selected node in the Scene."
+const addEntityMultipleSelectionTip	:= "Cannot add an Entity to more than 1 parent Node selected in the Scene."
+const addEntityNoSceneTip			:= "Cannot add an Entity because no scene is open."
+
+const addComponentHelp				:= "Double-click a Component from the list to add it to %s"
+const defaultEditComponentTip		:= "Select a Component in the list to edit its source scene."
+const createComponentTip			:= "Create a new Component in the %s folder."
+const editComponentTipPrefix		:= "Open the source scene of "
+
+#endregion
 #endregion
 
 
@@ -280,7 +306,7 @@ func createCategoryTreeItem(categoryFolder: EditorFileSystemDirectory) -> TreeIt
 	categoryRow.set_selectable(0,  false)
 
 	# Add a button for creating a new component
-	var buttonTooltip: String = "Create a new Component in the " + categoryName + " folder."
+	var buttonTooltip: String = createComponentTip % categoryName
 	categoryRow.add_button(1, createComponentIcon, 0, false, buttonTooltip)
 	categoryRow.set_text(1, "+")
 	categoryRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -348,7 +374,7 @@ func hideSelectedComponentRow() -> bool:
 	selectedComponentRow			= null
 	selectedComponentCategory		= null
 	%EditComponentButton.disabled	= true
-	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its source scene."
+	%EditComponentButton.tooltip_text = defaultEditComponentTip
 
 	printLog("Component hidden from list: " + hiddenComponentName)
 	return true
@@ -368,10 +394,9 @@ func onComponentsTree_itemSelected() -> void:
 	selectedComponentRow = null
 	selectedComponentCategory = null
 	%EditComponentButton.disabled = true
-	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its source scene."
+	%EditComponentButton.tooltip_text = defaultEditComponentTip
 
 	# Is a component row selected?
-
 	if selectedItem.get_text(0).to_lower().ends_with("component"): # NOTE: Omits `…ComponentBase` TODO: A less crude way of checking for component rows :')
 		selectedComponentRow = selectedItem
 		selectedComponentCategory = selectedItem.get_parent()
@@ -457,26 +482,26 @@ func onComponentsTree_itemEdited() -> void:
 
 ## Called when nodes are selected/unselected in the Scene Editor.
 func onSelection_selectionChanged() -> void:
-	var selectedNodes: Array[Node] = selection.get_top_selected_nodes()
-	var firstNode: Node = selectedNodes.front() if not selectedNodes.is_empty() else null
 	# TBD: Do we need all these variables?
+	var selectedNodes:	Array[Node]	= selection.get_top_selected_nodes()
+	var firstNode:		Node		= selectedNodes.front() if not selectedNodes.is_empty() else null
 
 	# Update the entity-related UI
 	# TBD: Support adding multiple new Entities to more than 1 selected Node?	
 
-	if selectedNodes.size() > 1:
-		%AddEntityMenuButton.disabled = true
-		%AddEntityMenuButton.tooltip_text = "Cannot add an Entity to more than 1 selected Node in the Scene Editor."
+	if selectedNodes.size() > 1: # Allow selecting only 1 parent Node to add Entities to
+		%AddEntityMenuButton.disabled		= true
+		%AddEntityMenuButton.tooltip_text	= addEntityMultipleSelectionTip
 	elif EditorInterface.get_edited_scene_root() == null:
-		%AddEntityMenuButton.disabled = true
-		%AddEntityMenuButton.tooltip_text = "Cannot add an Entity because no scene is open in the Scene Editor."
+		%AddEntityMenuButton.disabled		= true
+		%AddEntityMenuButton.tooltip_text	= addEntityNoSceneTip
 	else:
-		%AddEntityMenuButton.disabled = false
-		%AddEntityMenuButton.tooltip_text = defaultAddEntityTip
+		%AddEntityMenuButton.disabled		= false
+		%AddEntityMenuButton.tooltip_text	= defaultAddEntityTip
 
 	# Update the component-related UI
 
-	if firstNode is Entity: %HelpLabel.text = str("Double-click a Component from the list to add it to ", firstNode.name)
+	if firstNode is Entity: %HelpLabel.text = addComponentHelp % firstNode.name
 	else: %HelpLabel.text = defaultHelpLabelText
 
 
