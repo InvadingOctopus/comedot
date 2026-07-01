@@ -1,16 +1,14 @@
 # Comedot for the Godot Asset Store
 
-Legacy Asset Library Submission: https://godotengine.org/asset-library/asset/3887
+https://store.godotengine.org/asset/syntaks/comedot/
 
 
 ## Settings
 
 Asset Name: Comedot ECS Template
 
-
 Asset Summary:
 All-in-one project template & components framework for 2D games.
-
 
 Detailed Description:
 ```
@@ -50,14 +48,7 @@ AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews. A
 
 ## Media
 
-Icon URL:		https://i.imgur.com/UJnNERn.png
-Preview:  		Logo:		https://i.imgur.com/aW0MHRu.png
-Screenshot 1:	Dock:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Comedock.png
-Screenshot 2:	Tree:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png
-Screenshot 3:	Main Menu:	https://i.imgur.com/7XqChTP.png
-Screenshot 4:	Input Map:	https://i.imgur.com/eiyfQ3h.png
-Screenshot 5:	Pause:		https://i.imgur.com/nWJXuiX.png
-Screenshot 6:	Charts:		https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Debug%20Charts%20%26%20Watchlists.png
+https://github.com/InvadingOctopus/comedot-media
 
 
 ## Versions
@@ -70,10 +61,10 @@ Version Name:	4.7.0.100.666
 
 Version changelog:
 ```
-Latest Commit: [f163d22](https://github.com/InvadingOctopus/comedot/commit/f163d22fe4b52a9b7c663a5476b7f276e3104f43) on 2026-06-22
+Latest Commit: [a23bc31](https://github.com/InvadingOctopus/comedot/commit/a23bc31048177740616bdbdbd7ff1e48c02f8201) on 2026-07-01
 
 Compare tags/branches on GitHub:
-[https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop](https://github.com/InvadingOctopus/comedot/compare/4.6.0.100.69...develop)
+[4.7.0.100.69 → develop](https://github.com/InvadingOctopus/comedot/compare/4.7.0.100.69...develop)
 
 ```
 
