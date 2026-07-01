@@ -174,9 +174,13 @@ func setupUI() -> void:
 
 	$NewComponentDialog.register_text_enter(newComponentNameTextBox)
 
-
 	componentsTree.set_column_expand(0, true)
 	componentsTree.set_column_expand(1, false) # Prevent the button column from obscuring the component names.
+	
+	if debugMode:
+		# Listen for debug-only shortcuts
+		if not componentsTree.gui_input.is_connected(self.onComponentsTree_guiInput):
+			componentsTree.gui_input.connect(self.onComponentsTree_guiInput)
 
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 
@@ -315,7 +319,7 @@ func createComponentRowButtons(componentRow: TreeItem) -> void:
 	# var tooltipText: String = editComponentTipPrefix + selectedComponentName
 
 	componentRow.add_button(1, sceneIcon, 1, false, %EditComponentButton.tooltip_text)
-	componentRow.set_text(1, "Edit")
+	componentRow.set_text(1,  "Edit")
 	componentRow.set_text_alignment(1, HORIZONTAL_ALIGNMENT_RIGHT)
 	componentRow.set_text_overrun_behavior(1, TextServer.OVERRUN_NO_TRIMMING)
 	componentRow.set_expand_right(1, false)
@@ -330,6 +334,24 @@ func removeComponentRowButtons(componentRow: TreeItem) -> void:
 	componentRow.erase_button(1, 0)
 	componentRow.set_text(1, "")
 	componentRow.set_tooltip_text(1, "")
+
+
+## Temporarily hides the row from the Comedock list; a rescan will show the Component again.
+## Does NOT delete the component
+## DEBUG: ONLY available if [member debugMode]
+## WHY: For trimming the list before taking screenshots :)
+func hideSelectedComponentRow() -> bool:
+	if not debugMode or not selectedComponentRow: return false
+
+	var hiddenComponentName: String	= selectedComponentName
+	selectedComponentRow.free()
+	selectedComponentRow			= null
+	selectedComponentCategory		= null
+	%EditComponentButton.disabled	= true
+	%EditComponentButton.tooltip_text = "Select a Component in the list to edit its source scene."
+
+	printLog("Component hidden from list: " + hiddenComponentName)
+	return true
 
 #endregion
 
@@ -460,6 +482,17 @@ func onSelection_selectionChanged() -> void:
 
 func onDebugReloadButton_pressed() -> void:
 	reloadPlugin.call_deferred() # Let it chill before reloading?
+
+
+## DEBUG: Debugging Shortcuts only
+func onComponentsTree_guiInput(event: InputEvent) -> void:
+	if not debugMode or event is not InputEventKey \
+	or not event.is_pressed() or event.is_echo(): return
+
+	match event.keycode:
+		KEY_BACKSPACE, KEY_DELETE:
+			if hideSelectedComponentRow():
+				get_viewport().set_input_as_handled()
 
 
 func reloadPlugin() -> void:
