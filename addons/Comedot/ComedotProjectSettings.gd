@@ -78,14 +78,27 @@ const turnBasedMinimumDelay: float = 0.05
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Execute/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
-@export_range(turnBasedMinimumDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = 0.5
+@export_range(turnBasedMinimumDelay, 10, 0.05) var turnBasedDelayBetweenEntities: float = 0.5:
+	set(newValue):
+		if newValue != turnBasedDelayBetweenEntities:
+			turnBasedDelayBetweenEntities = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.delayBetweenEntities = newValue
 
-@export var shouldWaitBetweenTurnStates:  bool = true ## Enables or disables [member turnBasedDelayBetweenStates].
+## Enables or disables [member turnBasedDelayBetweenStates]
+@export var shouldWaitBetweenTurnStates:  bool = true:
+	set(newValue):
+		if newValue != shouldWaitBetweenTurnStates:
+			shouldWaitBetweenTurnStates = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitBetweenStates = newValue
 
 ## The delay after each turn state if [member shouldWaitBetweenTurnStates]: Begin → Execute → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE [member TurnBasedCoordinator.stateMachine] transitions to the next state.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
-@export_range(turnBasedMinimumDelay, 10, 0.05) var turnBasedDelayBetweenStates: float = 0.25
+@export_range(turnBasedMinimumDelay, 10, 0.05) var turnBasedDelayBetweenStates: float = 0.25:
+	set(newValue):
+		if newValue != turnBasedDelayBetweenStates:
+			turnBasedDelayBetweenStates = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.delayBetweenStates = newValue
 
 #endregion
 
@@ -100,26 +113,26 @@ const turnBasedMinimumDelay: float = 0.05
 @export var shouldPrintDebugLogs:	bool = OS.is_debug_build():
 	set(newValue):
 		shouldPrintDebugLogs = newValue
-		Debug.shouldPrintDebugLogs = newValue
+		if Debug: Debug.shouldPrintDebugLogs = newValue
 
 ## NOTE: Only applicable in debug builds (i.e. running from the Godot Editor)
 @export var showDebugWindow:		bool = OS.is_debug_build():
 	set(newValue):
 		showDebugWindow = newValue
-		if Debug.debugWindow: Debug.debugWindow.visible = newValue
+		if Debug and Debug.debugWindow: Debug.debugWindow.visible = newValue
 
 ## Sets the visibility of the debug information overlay text.
 ## NOTE: Does NOT affect the visibility of the framework warning label.
 @export var showDebugLabels:		bool = OS.is_debug_build():
 	set(newValue):
 		showDebugLabels = newValue
-		Debug.showDebugLabels = newValue
+		if Debug: Debug.showDebugLabels = newValue
 
 ## Displays a checkered grid parallax background, to assist with pixel-perfect alignment etc.
 @export var showDebugBackground:	bool = true:
 	set(newValue):
 		showDebugBackground = newValue
-		if Debug.debugBackground: Debug.debugBackground.visible = newValue
+		if Debug and Debug.debugBackground: Debug.debugBackground.visible = newValue
 
 #endregion
 
