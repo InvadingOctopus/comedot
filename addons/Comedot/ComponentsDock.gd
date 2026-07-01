@@ -12,8 +12,6 @@ extends Panel
 
 #region Parameters
 
-var projectSettings: Resource	= load(ComedotProjectSettings.projectSettingsResourcePathDefault)
-
 ## If `true` then one of the template scenes from `/Templates/Entities/` is instantiated when a new [Entity] is created from the Comedock.
 ## If `false` then a standalone node is created and its script and properties are set directly.
 ## NOTE: PERFORMANCE: Using templates MAY be slower because extra scenes have to be loaded.
@@ -410,9 +408,17 @@ func onComponentsTree_itemActivated() -> void:
 	getSelectedComponentAndAddToSelectedNode()
 
 
+## Loads and displays the [ComedotProjectSettings]
 func onSettingsButton_pressed() -> void:
-	if not projectSettings:
-		printError("Could not load ComedotProjectSettings Resource from " + ComedotProjectSettings.projectSettingsResourcePathDefault)
+	var projectSettings:			 Resource
+	var projectSettingsResourcePath: String
+	# See if there's a path defined in `project.godot` or `override.cfg`
+	# otherwise use the the project root as default.
+	projectSettingsResourcePath	= ProjectSettings.get_setting(ComedotProjectSettings.godotProjectSettingsComedotPath, ComedotProjectSettings.projectSettingsResourcePathDefault)
+	projectSettings				= load(projectSettingsResourcePath)
+
+	if not projectSettings or projectSettings is not ComedotProjectSettings:
+		printError("Could not load ComedotProjectSettings Resource from " + projectSettingsResourcePath)
 		return
 	EditorInterface.edit_resource(projectSettings)
 

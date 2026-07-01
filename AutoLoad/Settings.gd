@@ -13,7 +13,7 @@ extends Node
 
 #region Comedot Project Settings
 
-var comedotProjectSettings:		ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+var comedotProjectSettings:		ComedotProjectSettings = ComedotProjectSettings.loaded
 
 ## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
 ## If not specified, then the `application/run/main_scene` Godot Project Setting is used.

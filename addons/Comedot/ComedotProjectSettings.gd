@@ -6,7 +6,6 @@
 ## TIP: Also optionally adds nodes and data to the [GameState].gd AutoLoad, to quickly add custom game-specific global state.
 ## NOTE: Most debugging flags default to `true` when running in a debug build.
 
-
 class_name ComedotProjectSettings
 extends Resource
 
@@ -22,6 +21,7 @@ extends Resource
 # DESIGN: Use `@export_category` instead of `@export_group` because these settings essentially apply to different "classes".
 # @export_category("Comedot")
 
+const godotProjectSettingsComedotPath:	  String = "comedot/settings/comedotProjectSettingsPath"
 const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings.tres"
 
 
@@ -122,5 +122,21 @@ const turnBasedMinimumDelay: float = 0.05
 		if Debug.debugBackground: Debug.debugBackground.visible = newValue
 
 #endregion
+
+#endregion
+
+
+#region Shared State
+
+static var loaded: ComedotProjectSettings:
+	get:
+		if not loaded:
+			var projectSettingsResourcePath: String = ProjectSettings.get_setting(godotProjectSettingsComedotPath, projectSettingsResourcePathDefault)
+			loaded = load(projectSettingsResourcePath) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+			# Still missing? Just create a new one
+			if not loaded:
+				print("ComedotProjectSettings.tres missing at: " + projectSettingsResourcePath + " ・ Creating new in memory as fallback.")
+				loaded = ComedotProjectSettings.new()
+		return  loaded
 
 #endregion

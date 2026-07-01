@@ -9,7 +9,7 @@ extends Node
 
 
 #region Parameters
-var projectSettings: ComedotProjectSettings	= preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+var projectSettings: ComedotProjectSettings	= ComedotProjectSettings.loaded
 
 ## The folder from which to load all ".mp3" files on [method _ready] and list them in the [member musicFiles] list.
 @export var musicFolder: String = projectSettings.musicFolder

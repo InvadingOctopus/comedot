@@ -7,7 +7,7 @@ extends Node
 
 #region Parameters
 
-var projectSettings: ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+var projectSettings: ComedotProjectSettings = ComedotProjectSettings.loaded
 
 ## Sets the visibility of "debug"-level messages in the log.
 ## NOTE: Does NOT affect normal logging.
@@ -120,7 +120,13 @@ func setVisibility() -> void:
 
 func performFrameworkChecks() -> void:
 	var warnings: PackedStringArray
-	Global.hasComedotProjectSettings = is_instance_valid(projectSettings)
+
+	# Verify both the shared Resource provided by ComedotProjectSettings
+	# as well as the actual Resource file at the expected path
+	# because ComedotProjectSettings creates a new Resource as a fallback.
+	var projectSettingsResourcePath: String = ProjectSettings.get_setting(ComedotProjectSettings.godotProjectSettingsComedotPath, ComedotProjectSettings.projectSettingsResourcePathDefault)
+	var projectSettingsCheck: ComedotProjectSettings = load(projectSettingsResourcePath) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+	Global.hasComedotProjectSettings = is_instance_valid(self.projectSettings) and is_instance_valid(projectSettingsCheck)
 
 	if not Global.hasComedotProjectSettings:
 		warnings.append("! ComedotProjectSettings.tres missing")

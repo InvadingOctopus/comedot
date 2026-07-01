@@ -44,6 +44,10 @@ GlobalUI="*res://AutoLoad/GlobalUI.tscn"
 GlobalSonic="*res://AutoLoad/GlobalSonic.tscn"
 TurnBasedCoordinator="*res://AutoLoad/TurnBasedCoordinator.tscn"
 
+[comedot]
+
+settings/comedotProjectSettingsPath="res://ComedotProjectSettings.tres"
+
 [debug]
 
 settings/crash_handler/message="Please include this when reporting the bug."

@@ -36,7 +36,7 @@ extends Node # + TurnBasedObjectBase
 
 #region Parameters
 
-var projectSettings: ComedotProjectSettings = preload(ComedotProjectSettings.projectSettingsResourcePathDefault)
+var projectSettings: ComedotProjectSettings = ComedotProjectSettings.loaded
 
 ## To avoid the [Timer] error: "Time should be greater than zero" and other jank from being TOO fast.
 ## According to Godot documentation, it should be 0.05
