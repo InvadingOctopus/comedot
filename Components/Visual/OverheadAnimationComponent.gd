@@ -21,7 +21,8 @@ const defaultWalkPrefix := &"walk"
 
 ## If `true`, only the "idleE" & "walkE" animations are usedm and the [AnimatedSprite2D] is rotated to face other compass directions, with East = 0°
 ## The entity root node is NOT rotated.
-## TIP: This option requires fewer animation assets.
+## TIP: This option requires fewer animation assets and may be useful for quick prototyping etc.
+## WARNING: Pixel art generally looks ugly when rotated diagonally.
 @export var shouldReuseAndRotateEast: bool = false # TODO: Add option for orthogonal-only because diagonal rotation in pixel art is ugly
 
 #endregion
