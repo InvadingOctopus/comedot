@@ -458,17 +458,25 @@ static func populateTileMap(
 
 			# 1.5: Convert the flat cell index back into x/y offset inside the TileMap Rect.
 			# Then convert the offset inside the used rectangle to actual TileMap coordinates.
+
+			# NOTE: The integer division is intentional and correct, because `cellIndex` and `count` are always non-negative flat indexes, so truncation gives the row offset.
+			# Example: For a map width of 10, index 23 becomes:
+			# x = 23 % 10 = 3
+			# y = 23 / 10 = 2
+			# So (3,2) is correct.
+			@warning_ignore("integer_division")
 			coordinates = mapRect.position + Vector2i(
 				cellIndex % mapRect.size.x,
-				cellIndex / mapRect.size.x) # CHECK: Should we use `floori(float(cellIndex) / mapRect.size.x)`? Is floori() the same as integer trunctation anyway? e.g. 5 / 2 == 2 instead of 2.5
+				cellIndex / mapRect.size.x)
 			
 			# 1.6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on...
 
 		# If the number of copies is the same as the total number of cells, just choose all cells sequentially
 		else:
+			@warning_ignore("integer_division") # See comment above previous ignore
 			coordinates = mapRect.position + Vector2i(
 				count % mapRect.size.x,
-				count / mapRect.size.x) # TBD: Use floori() with `float` cast?
+				count / mapRect.size.x)
 
 		# 2: Position the new node
 		if parent == map:
