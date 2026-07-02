@@ -123,9 +123,8 @@ func performFrameworkChecks() -> void:
 
 	# Verify both the shared Resource provided by ComedotProjectSettings
 	# as well as the actual Resource file at the expected path
-	# because ComedotProjectSettings creates a new Resource as a fallback.
-	var projectSettingsResourcePath: String = ProjectSettings.get_setting(ComedotProjectSettings.godotProjectSettingsComedotPath, ComedotProjectSettings.projectSettingsResourcePathDefault)
-	var projectSettingsCheck: ComedotProjectSettings = load(projectSettingsResourcePath) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+	# because ComedotProjectSettings may have created a new Resource as a fallback.
+	var projectSettingsCheck: ComedotProjectSettings = ComedotProjectSettings.loadSettingsResource()
 	Global.hasComedotProjectSettings = is_instance_valid(self.projectSettings) and is_instance_valid(projectSettingsCheck)
 
 	if not Global.hasComedotProjectSettings:

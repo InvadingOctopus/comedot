@@ -410,15 +410,9 @@ func onComponentsTree_itemActivated() -> void:
 
 ## Loads and displays the [ComedotProjectSettings]
 func onSettingsButton_pressed() -> void:
-	var projectSettings:			 Resource
-	var projectSettingsResourcePath: String
-	# See if there's a path defined in `project.godot` or `override.cfg`
-	# otherwise use the the project root as default.
-	projectSettingsResourcePath	= ProjectSettings.get_setting(ComedotProjectSettings.godotProjectSettingsComedotPath, ComedotProjectSettings.projectSettingsResourcePathDefault)
-	projectSettings				= load(projectSettingsResourcePath)
-
+	var projectSettings: Resource = ComedotProjectSettings.loadSettingsResource()
 	if not projectSettings or projectSettings is not ComedotProjectSettings:
-		printError("Could not load ComedotProjectSettings Resource from " + projectSettingsResourcePath)
+		printError("Could not load the ComedotProjectSettings Resource from the custom or default path: " + ComedotProjectSettings.projectSettingsResourcePathDefault)
 		return
 	EditorInterface.edit_resource(projectSettings)
 

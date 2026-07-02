@@ -21,7 +21,7 @@ extends Resource
 # DESIGN: Use `@export_category` instead of `@export_group` because these settings essentially apply to different "classes".
 # @export_category("Comedot")
 
-const godotProjectSettingsComedotPath:	  String = "comedot/settings/comedotProjectSettingsPath"
+const comedotSettingsResourcePathInGodotProjectSettings:	  String = "comedot/settings/comedotProjectSettingsPath"
 const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings.tres"
 
 
@@ -141,15 +141,42 @@ const turnBasedMinimumDelay: float = 0.05
 
 #region Shared State
 
+## Returns the shared [ComedotProjectSettings]
+## NOTE: If [method load] fails, a new [ComedotProjectSettings] is created for internal use; changes to that fallback instance are NOT saved to disk.
+## TIP: If an automatically-created fallback is not required, use [method load]
 static var loaded: ComedotProjectSettings:
 	get:
 		if not loaded:
-			var projectSettingsResourcePath: String = ProjectSettings.get_setting(godotProjectSettingsComedotPath, projectSettingsResourcePathDefault)
-			loaded = load(projectSettingsResourcePath) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+			loaded = loadSettingsResource()
 			# Still missing? Just create a new one
 			if not loaded:
-				print("ComedotProjectSettings.tres missing at: " + projectSettingsResourcePath + " ・ Creating new in memory as fallback.")
+				print("Creating new ComedotProjectSettings instance in memory as fallback. Changes will NOT be saved!")
 				loaded = ComedotProjectSettings.new()
-		return  loaded
+
+		return loaded
+
+
+## Attempts to load and return the [ComedotProjectSettings] from [member projectSettingsResourcePathDefault] or [member comedotSettingsResourcePathInGodotProjectSettings]
+static func loadSettingsResource() -> ComedotProjectSettings:
+	var loadedSettings: ComedotProjectSettings
+	var pathToLoadFrom: String
+
+	# If the Godot `project.godot` settings have a custom path use that
+	if ProjectSettings.has_setting(comedotSettingsResourcePathInGodotProjectSettings):
+		pathToLoadFrom = ProjectSettings.get_setting(comedotSettingsResourcePathInGodotProjectSettings)
+		loadedSettings = load(pathToLoadFrom) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+		if not loadedSettings: print("ComedotProjectSettings.tres not found at: " + pathToLoadFrom)
+
+	# If missing at the custom path, try loading from the default path
+	if not loadedSettings:
+		# NOTE: Don't log a warning here, because this may be the first attempt if there is no `comedotSettingsResourcePathInGodotProjectSettings`
+		pathToLoadFrom = projectSettingsResourcePathDefault
+		loadedSettings = load(pathToLoadFrom) as ComedotProjectSettings # Cast `as` to avoid errors if loading a different type
+
+	# Still missing? Just give up
+	if not loadedSettings:
+		print("ComedotProjectSettings.tres not found at: " + pathToLoadFrom)
+
+	return loadedSettings
 
 #endregion
