@@ -23,7 +23,7 @@ Basically standard Godot nodes but for gameplay.
 * Save/Load player preferences in config files with `Settings.anyName = 69`
 * Handles tricky edge case issues in physics, stats, collectibles etc.
 * Over 140 scripts containing helper functions & automations for common tasks like creating animation frames etc.
-# Debugging tools like pretty logs & realtime charts for monitoring variables.
+* Debugging tools like pretty logs & realtime charts for monitoring variables.
 * Meatcrafted well-documented components that can be Lego'ed together by AI to create various kinds of gameplay. \**(Comedot itself has no AI-generated code.)*
 
 ----
@@ -53,7 +53,7 @@ https://github.com/InvadingOctopus/comedot-media
 
 ## Versions
 
-Version Name:	4.7.0.100.666
+Version Name:	4.7.0.100.777
 	First 3 numbers: Godot version
 	4th: Godot Dev/Beta/RC where <10 = Beta, 10+ = RC, 100 = release
 	6th: The Comedot release during that Godot version
@@ -61,7 +61,7 @@ Version Name:	4.7.0.100.666
 
 Version changelog:
 ```
-Latest Commit: [a23bc31](https://github.com/InvadingOctopus/comedot/commit/a23bc31048177740616bdbdbd7ff1e48c02f8201) on 2026-07-01
+Latest Commit: [8453bf3](https://github.com/InvadingOctopus/comedot/commit/8453bf3798a2e9367e2e2d193fe7c92a45e31c68) on 2026-07-02
 
 Compare tags/branches on GitHub:
 [4.7.0.100.69 → develop](https://github.com/InvadingOctopus/comedot/compare/4.7.0.100.69...develop)
