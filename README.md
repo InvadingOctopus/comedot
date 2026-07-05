@@ -2,7 +2,9 @@
 
 ![Godot+Comedot Logo][logo]
 
-**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters. _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
+**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters.
+
+_"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
 
 <br/>
 
@@ -18,20 +20,20 @@
 * Free-to-use 3rd-party assets for quick prototyping.
 * Meatcrafted components can be Lego'ed together by AI codeblins to reliably create various kinds of gameplay. *\*(Comedot itself has no AI-generated code.)*
 
-📜 To see a full list of all the 120+ components and 140+ scripts, check out the `*Catalog.md` files in the `/Notes/` folder.
-
 🌟 Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-> [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
-
 > [!TIP]
-> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
+> 📜 To see a full list of all the 120+ components and 140+ scripts, check out the `*Catalog.md` files in the `/Notes/` folder.
 >
 > 🛠️ If you don't need the entire template, you can just yoink specific code to use in your own scripts, like [*Tools.gd][tools]
+>
+> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
+
+> [!WARNING]
+> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
 <br/>
 
@@ -69,7 +71,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 ![Custom Dock Plugin][comedock]
 
-🎳 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive items or collectible powerups:
+🎳 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive props or collectible powerups:
 
 * _Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
 1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
