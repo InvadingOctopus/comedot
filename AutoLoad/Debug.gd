@@ -96,8 +96,9 @@ func _notification(what: int) -> void: # This happens earlier than _enter_tree()
 
 func _ready() -> void:
 	# Debug.printLog("_ready()", self.get_script().resource_path.get_file(), "", "WHITE")
-	initializeLogWindow()
-	initializeDebugWindow()
+	# .call_deferred() to allow the main window to be positioned and displayed first etc.
+	initializeLogWindow.call_deferred()
+	initializeDebugWindow.call_deferred()
 	displayInitializationMessage("_ready()")
 	resetLabels()
 	setVisibility()
@@ -211,14 +212,15 @@ func initializeLogWindow() -> void:
 
 
 func initializeDebugWindow() -> void:
-	debugWindow.visible = self.showDebugWindow if OS.is_debug_build() else false
-	debugWindow.content_scale_factor = DisplayServer.screen_get_scale() # For Mac/Retina/HiDPI displays
+	var mainWindow: Window			 = self.get_window()
+	debugWindow.current_screen		 = mainWindow.current_screen
+	debugWindow.content_scale_factor = DisplayServer.screen_get_scale(mainWindow.current_screen) # For Mac/Retina/HiDPI displays
 
 	# Position the Debug Window to the right of the main window
 	# TBD: Support for Right-To-Left locales? :')
-	var mainWindow: Window	= self.get_window()
 	debugWindow.position	= mainWindow.position
 	debugWindow.position.x += mainWindow.size.x + debugWindowSpacing
+	debugWindow.visible		= self.showDebugWindow if OS.is_debug_build() else false # Display after positioning
 	nextChartWindowPosition = mainWindow.position + Vector2i(0, mainWindow.size.y + debugWindowSpacing)
 
 
