@@ -25,15 +25,7 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-> [!TIP]
-> 📜 To see a full list of all the 120+ components and 140+ scripts, check out the `*Catalog.md` files in the `/Notes/` folder.
->
-> 🛠️ If you don't need the entire template, you can just yoink specific code to use in your own scripts, like [*Tools.gd][tools]
->
-> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
-
-> [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
+📜 *To see a full list of all the 120+ components and 140+ scripts, check* `/Notes/*Catalog.md`
 
 <br/>
 
@@ -43,11 +35,15 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 
 https://github.com/user-attachments/assets/43853546-159f-4184-a7a4-da857ba5e75c
 
+<br/>
+
 ⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying movement: [(imgur)][swapping-components]  
 
 https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
-⬆️ _These scenes are included in_ `/Templates/Examples/`
+<sub>_These scenes are included in_ `/Templates/Examples/`</sub>
+
+<br/>
 
 📈 There's even kawaii charts for monitoring variables in real-time!  
 
@@ -58,31 +54,42 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 ## How To Use
 
 > [!IMPORTANT]  
-> _Requires **Godot 4.7**
+> _Requires **Godot 4.7**_
 
-🚀 **Quickstart:** To try right away, run `/Templates/Scenes/PlatformerSceneTemplate.tscn`
+> [!TIP]
+> 🚀 **Quickstart:** To try right away, run `/Templates/Scenes/PlatformerSceneTemplate.tscn`
+>
+> 🍒 If you don't need the entire template, you can just yoink specific code to use in your own scripts, like [*Tools.gd][tools]
 
 1. Clone this repository; this is a Godot template so you should make a local copy of this entire project for each of your games.
-	* or you can cherry-pick files from Comedot to use in other templates.
-2. Drag-&-drop nodes from the `/Entities/` and `/Components/` folders into your scene tree.
-	* `/Templates/` contains scenes and Entities with preset Components as a quick starting point for various gameplay.
-	* `/Scripts/` contains code for non-Entity nodes.
-	* `/UI/` contains customizable UI elements for health, ammo, abilities, upgrades etc.
+
+2. Use the included custom dock plugin (the Comedock :)
 
 ![Custom Dock Plugin][comedock]
 
-🎳 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive props or collectible powerups:
+3. or you can drag-&-drop files from the `/Entities/` and `/Components/` folders into your scene tree.  
+	* `/Templates/` contains scenes and Entities with preset Components as a quick starting point for basic gameplay.  
+	* `/Scripts/` contains code for non-Entity nodes.  
+	* `/UI/` contains customizable UI elements for health, ammo, abilities, upgrades etc.  
 
-* _Use the included custom dock plugin (the Comedock :) or perform these steps manually:_
-1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
-2. Add **Component** child nodes to the entity. A component is also any `Node/Area2D` etc. with a script that `extends Component`
-3. Modify component parameters in the Inspector sidebar.
-4. Save that entity+components subtree as a standalone scene file, to organize it separately from the main "world scene" and quickly create copies of it anywhere.
+4. _or you can do everything manually:_
+
+	🎭 Whenever your game needs an "actor" like the player character or a monster, or an object with "behaviors" that could be reused for other objects, like interactive props or collectible powerups:
+
+	1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
+	2. Add **Component** child nodes to the entity. A component is also any `Node/Area2D` etc. with a script that `extends Component`
+	3. Modify component parameters in the Inspector sidebar.
+	4. Save that entity+components subtree as a standalone scene file, to organize it separately from the main "world scene" and quickly create copies of it anywhere.
+
+> [!WARNING]
+> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**  
 > See [Conventions.md][conventions] for the style guide and design rules this project tries to follow.  
 > [Agents.md][agents] contains instructions for AI assistants that may also be helpful for meat-based coders.  
+>
+> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
 
 <br/>
 
