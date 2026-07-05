@@ -2,7 +2,7 @@
 
 ![Godot+Comedot Logo][logo]
 
-**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters. _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your regular Godot workflow or any other addons or architecture or fetish.
+**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters. _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
 
 <br/>
 
@@ -56,9 +56,9 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 ## How To Use
 
 > [!IMPORTANT]  
-> _Requires **Godot 4.7** 〜embrace the future_ ✨
+> _Requires **Godot 4.7**
 
-🚀 **Quickstart:** To try right away, open `project.godot` and run `PlatformerSceneTemplate.tscn` in `/Templates/Scenes/`
+🚀 **Quickstart:** To try right away, run `/Templates/Scenes/PlatformerSceneTemplate.tscn`
 
 1. Clone this repository; this is a Godot template so you should make a local copy of this entire project for each of your games.
 	* or you can cherry-pick files from Comedot to use in other templates.
