@@ -2,14 +2,14 @@
 
 ![Godot+Comedot Logo][logo]
 
-**The goal is to be an all-in-one project template for 2D games** (platformers, shoot-em-ups, RPGs, turn-based, tile-based, strategy, puzzle) where you build scenes by adding components to entities and tweaking their parameters in the UI. _"Entities"_ and _"Components"_ are like regular Godot Nodes but for gameplay, so you can combine this framework with any other addons or architecture or fetish.
+**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters. _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your regular Godot workflow or any other addons or architecture or fetish.
 
 <br/>
 
 ![components-tree]
 
 * Megatons of components for player movement, combat, collectibles, interactions, upgrades etc.
-* UI controls like a stats HUD and dynamic buttons for special skills, inventory etc.
+* UI controls including stats HUDs and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.anyName = 69`
 * A neutron star spoonful of helper functions & debugging tools.
@@ -41,7 +41,7 @@
 
 https://github.com/user-attachments/assets/43853546-159f-4184-a7a4-da857ba5e75c
 
-⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying/overhead movement: [(imgur)][swapping-components]  
+⭐️ Implement dynamic gameplay and easily change abilities/buffs at runtime; just add/remove components in simple event handlers, like this example of swapping between platformer physics and flying movement: [(imgur)][swapping-components]  
 
 https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
