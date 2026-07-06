@@ -1,6 +1,7 @@
 ## Keeps a list of all the [Area2D]s, [PhysicsBody2D]s or [TileMapLayer]s that are currently in collision contact with this component's area.
 ## Only nodes with a [CollisionObject2D.collision_layer] matching the [CollisionObject2D.collision_mask] of this component are added.
 ## TIP: PERFORMANCE: For a component that only emits signals but does not maintain an array of contacts, use [AreaCollisionComponent] to improve performance.
+## TIP: For a basic non-component script that can be attached to any [Area2D], see [CollisionsArrayArea]
 
 class_name AreaContactComponent
 extends AreaCollisionComponent

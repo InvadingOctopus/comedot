@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bifi5b0gcmh1v" path="res://Components/DebugComponent.tscn" id="4_a6r0q"]
 [ext_resource type="PackedScene" uid="uid://h3pbo0mlj4je" path="res://Templates/Entities/MonsterEntityTemplate-Platformer.tscn" id="5_l6t3l"]
 [ext_resource type="PackedScene" uid="uid://cpklu2uieedw7" path="res://Components/Combat/DamageComponent.tscn" id="5_mq5ic"]
-[ext_resource type="PackedScene" uid="uid://dnj2tewb1jq0n" path="res://Scenes/Areas/SpawnArea.tscn" id="7_q70sy"]
+[ext_resource type="PackedScene" uid="uid://dnj2tewb1jq0n" path="res://Scenes/Gameplay/SpawnArea.tscn" id="7_q70sy"]
 [ext_resource type="PackedScene" uid="uid://c8l4oj33xh2qa" path="res://Entities/Entity.tscn" id="7_s6bpi"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="9_lvn5x"]
 [ext_resource type="PackedScene" uid="uid://qskvvxdkwgod" path="res://Components/Combat/DamageRepeatingComponent.tscn" id="10_lvn5x"]

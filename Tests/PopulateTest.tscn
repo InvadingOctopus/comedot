@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bliuc5mmhfcq2" path="res://Tests/PopulateTest.gd" id="1_3l7vy"]
 [ext_resource type="Texture2D" uid="uid://cygvb20buqi2q" path="res://Assets/Images/DebugCheckerboard16.png" id="2_ymdxh"]
-[ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Areas/PopulateArea.gd" id="3_a2qwm"]
+[ext_resource type="Script" uid="uid://br37648ci406b" path="res://Scenes/Gameplay/PopulateArea.gd" id="3_a2qwm"]
 [ext_resource type="PackedScene" uid="uid://blorm4u04h1lk" path="res://Templates/TestSprite16.tscn" id="4_jowi7"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="5_higjy"]
 
