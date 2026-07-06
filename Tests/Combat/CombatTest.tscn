@@ -26,17 +26,7 @@ size = Vector2(48, 144)
 resource_local_to_scene = true
 size = Vector2(16, 48)
 
-[sub_resource type="Resource" id="Resource_nk0q8"]
-resource_local_to_scene = true
-resource_name = "health"
-script = ExtResource("3_a6r0q")
-max = 20
-value = 20
-name = &"health"
-displayName = "Health"
-metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
-
-[sub_resource type="Resource" id="Resource_tew8x"]
+[sub_resource type="Resource" id="Resource_715uv"]
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
@@ -49,6 +39,15 @@ metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 [sub_resource type="AtlasTexture" id="AtlasTexture_y8ehy"]
 atlas = ExtResource("13_jt7ij")
 region = Rect2(400, 112, 16, 16)
+
+[sub_resource type="Resource" id="Resource_446ob"]
+resource_local_to_scene = true
+script = ExtResource("3_a6r0q")
+max = 10000
+value = 3000
+name = &"gunCooldown"
+displayName = "Gun Cooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_446ob"]
 size = Vector2(322, 178)
@@ -103,9 +102,6 @@ wall_min_slide_angle = 0.261799
 shouldClampToBoundary = true
 boundary = NodePath("../../CameraBounds")
 
-[node name="HealthComponent" parent="PlayerEntityTemplate-OverheadCombat" index="6" unique_id=2138955234]
-health = SubResource("Resource_nk0q8")
-
 [node name="DebugComponent" parent="PlayerEntityTemplate-OverheadCombat" unique_id=607041037 instance=ExtResource("4_a6r0q")]
 
 [node name="MonsterEntity" parent="." unique_id=374546587 instance=ExtResource("5_l6t3l")]
@@ -115,7 +111,7 @@ position = Vector2(32, 48)
 texture = ExtResource("11_s8cv2")
 
 [node name="HealthComponent" parent="MonsterEntity" index="2" unique_id=1983200482]
-health = SubResource("Resource_tew8x")
+health = SubResource("Resource_715uv")
 
 [node name="DebugComponent" parent="MonsterEntity" unique_id=1505013645 instance=ExtResource("4_a6r0q")]
 
@@ -132,7 +128,9 @@ factions = 8
 [node name="GunComponent" parent="ArmedMonsterEntity" unique_id=1801695731 instance=ExtResource("15_jt7ij")]
 autoFire = true
 bulletTemplate = ExtResource("15_lbdmr")
-cooldown = 3.0
+
+[node name="CooldownTimer" parent="ArmedMonsterEntity/GunComponent" index="1" unique_id=57790064]
+cooldownMilliseconds = SubResource("Resource_446ob")
 
 [node name="InputComponent" parent="ArmedMonsterEntity" unique_id=1081696626 instance=ExtResource("17_446ob")]
 isPlayerControlled = false
@@ -151,5 +149,4 @@ shape = SubResource("RectangleShape2D_446ob")
 [editable path="PlayerEntityTemplate-OverheadCombat"]
 [editable path="PlayerEntityTemplate-OverheadCombat/GunComponent"]
 [editable path="MonsterEntity"]
-[editable path="MonsterEntity/DamageComponent"]
 [editable path="ArmedMonsterEntity/GunComponent"]
