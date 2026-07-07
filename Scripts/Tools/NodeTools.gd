@@ -262,6 +262,13 @@ static func getCenteredPositionOnViewport(node: Node2D, designWidth: float, desi
 	return center - (designSize / 2.0) # Center the size on the viewport
 
 
+## Converts a position from the local space of a [CanvasItem] (any [Node2D]) to another [CanvasItem]'s local space.
+## TIP: Works across different [CanvasLayer]s and camera/world canvas transforms.
+## NOTE: This is NOT the same as [method Node2D.to_global] / [method Node2D.to_local] as those methods only work correctly when both nodes are in the same canvas coordinate space.
+static func convertPosition(position: Vector2, source: CanvasItem, target: CanvasItem) -> Vector2:
+	return target.make_canvas_position_local(source.get_global_transform_with_canvas() * position)
+
+
 ## Searches a group of nodes and returns the node nearest to the specified reference position.
 ## Compares the [member Node2D.global_position]s.
 ## TIP: May be used to find the closest player for monsters to chase, or the nearest mosnter for a homing missile weapon to attack, etc.
