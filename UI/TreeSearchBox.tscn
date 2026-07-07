@@ -22,5 +22,6 @@ wait_time = 0.3
 one_shot = true
 ignore_time_scale = true
 
+[connection signal="gui_input" from="." to="." method="onGuiInput"]
 [connection signal="text_changed" from="." to="." method="onTextChanged"]
 [connection signal="timeout" from="UpdateDelayTimer" to="." method="onUpdateDelayTimer_timeout"]

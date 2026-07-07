@@ -1,4 +1,4 @@
-## A single-line text box that filters the items of a [Tree] control based on a search query.
+## A single-line text box that filters the items of a [Tree] control based on a fuzzy search query.
 ## Uses a [Timer] to delay updates for better performance.
 
 @tool
@@ -14,10 +14,14 @@ extends LineEdit
 
 
 #region State
+
+@onready var fuzzySearch: FuzzySearch = FuzzySearch.new()
+
 var treeRoot: TreeItem:
 	get:
-		if not treeRoot: treeRoot = tree.get_root()
+		if not is_instance_valid(treeRoot): treeRoot = tree.get_root()
 		return treeRoot
+
 #endregion
 
 
@@ -25,22 +29,26 @@ var treeRoot: TreeItem:
 
 func _ready() -> void:
 	self.right_icon = self.get_theme_icon(&"Search", &"EditorIcons")
+	# TBD: These values are @experimental
+	fuzzySearch.case_sensitive	= false
+	fuzzySearch.max_misses		= 0
+	fuzzySearch.max_results		= 200
+	fuzzySearch.filter_low_scores = true
 
 
-func _unhandled_key_input(event: InputEvent) -> void:
-	if not self.has_focus(): return
-	
-	if event is InputEventKey:
-		if event.pressed and event.keycode == KEY_ESCAPE:
-			if not self.text.is_empty():
-				self.text = ""
-				setVisibilityOfAll(true)
-				accept_event()
-				self.get_viewport().set_input_as_handled()
+func onGuiInput(event: InputEvent) -> void:
+	if not self.has_focus() or not event is InputEventKey or event.is_echo(): return
+
+	if event.is_action_pressed(&"ui_cancel"):
+		if not self.text.is_empty():
+			self.text = ""
+			setVisibilityOfAll(true)
+			accept_event() # [Control]'s wrapper for set_input_as_handled()
 
 
 func onTextChanged(_new_text:String) -> void:
-	# NOTE: PERFORMANCE: Update the filter after a short delay, to reduce performance impact if a user types fast.
+	# NOTE: PERFORMANCE: Don't update the list immediately after every keystroke;
+	# Update the filter after a short delay, to reduce performance impact if a user types fast.
 	if $UpdateDelayTimer.is_stopped(): $UpdateDelayTimer.start()
 
 
@@ -58,15 +66,22 @@ func updateFilter() -> void:
 
 
 func filter(searchQuery: String) -> void:
+	var childCount:	int
+	searchQuery = searchQuery.replace(" ", "") # Compact to assist fuzzy search
+
+	# TBD: Allow less exact matches when the string is long?
+	# if   searchQuery.length() <= 4:	fuzzySearch.max_misses = 0
+	# elif searchQuery.length() <= 8:	fuzzySearch.max_misses = 1
+	# else:								fuzzySearch.max_misses = 2
+
 	# Sift through all categories
-	for category in treeRoot.get_children():
-		var childCount: int = category.get_child_count()
+	for category: TreeItem in treeRoot.get_children():
+		childCount = category.get_child_count()
 
 		if childCount > 0: # Skip iterating over empty categories
-			for item in category.get_children():
-				var itemName: String = item.get_text(0)
-				
-				if itemName.containsn(searchQuery):
+			# Sift through all the items in a category
+			for item: TreeItem in category.get_children():
+				if fuzzySearch.search(searchQuery, item.get_text(0)):
 					item.visible = true
 				else:
 					item.visible = false
@@ -81,5 +96,22 @@ func setVisibilityOfAll(visibility: bool) -> void:
 		category.visible = visibility
 		for item in category.get_children():
 			item.visible = visibility
+
+#endregion
+
+
+#region Experimental
+
+var treeItemsCache:		PackedStringArray ## @experimental
+var shouldUpdateCache:	bool = false ## @experimental
+
+## @experimental
+func buildCache() -> void:
+	var childCount:	int
+	for category: TreeItem in treeRoot.get_children(): # Categories
+		childCount = category.get_child_count()
+		if childCount < 1: continue
+		for item: TreeItem in category.get_children(): # Components
+			treeItemsCache.append(item.get_text(0)) # Can't use a Dictionary because duplicate component names in different categories will overwrite each other
 
 #endregion

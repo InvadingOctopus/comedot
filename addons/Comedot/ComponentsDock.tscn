@@ -176,11 +176,13 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "For more commands, see the Project → Tools menu."
 text_overrun_behavior = 3
 
-[node name="TreeSearchBox" parent="MainGridContainer" unique_id=1677949122 node_paths=PackedStringArray("tree") instance=ExtResource("4_3crsp")]
+[node name="TreeSearchBox" parent="MainGridContainer" unique_id=1677949122 node_paths=PackedStringArray("shortcut_context", "tree") instance=ExtResource("4_3crsp")]
+unique_name_in_owner = true
 layout_mode = 2
 focus_neighbor_top = NodePath("../ToolbarContainer/ButtonsContainer1/AddEntityMenuButton")
 focus_next = NodePath("../TreeScrollContainer/ComponentsTree")
 focus_previous = NodePath("../ToolbarContainer/ButtonsContainer1/AddEntityMenuButton")
+shortcut_context = NodePath("../..")
 placeholder_text = "Filter Components"
 tree = NodePath("../TreeScrollContainer/ComponentsTree")
 

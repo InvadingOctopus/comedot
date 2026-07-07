@@ -200,11 +200,6 @@ func setupUI() -> void:
 
 	componentsTree.set_column_expand(0, true)
 	componentsTree.set_column_expand(1, false) # Prevent the button column from obscuring the component names.
-	
-	if debugMode:
-		# Listen for debug-only shortcuts
-		if not componentsTree.gui_input.is_connected(self.onComponentsTree_guiInput):
-			componentsTree.gui_input.connect(self.onComponentsTree_guiInput)
 
 	# RenderingServer.canvas_item_set_clip(get_canvas_item(), true) # TBD: Why? Copied from Godot Plugin Demo sample code.
 
@@ -220,6 +215,10 @@ func setupUI() -> void:
 	onSelection_selectionChanged() # Trigger a "fake" event to update the UI for first time, to reflect the initial state 
 	if not selection.selection_changed.is_connected(self.onSelection_selectionChanged):
 		selection.selection_changed.connect(self.onSelection_selectionChanged)
+
+	# Start listening for keyboard shortcuts after everything is ready
+	if not componentsTree.gui_input.is_connected(self.onComponentsTree_guiInput):
+		componentsTree.gui_input.connect(self.onComponentsTree_guiInput)
 
 	# Handled in Comedot.gd: plugin.add_tool_menu_item("New Component in Selected Folder", self.createNewComponentInSelectedFolder)
 
@@ -273,6 +272,8 @@ func buildComponentsTree() -> void:
 
 	#if debugMode:
 	printLog(str(componentsCount, " Components found & added to list"))
+	if  %TreeSearchBox and %TreeSearchBox.is_node_ready():
+		%TreeSearchBox.fuzzySearch.max_results = componentsCount + 10 # TBD: Leave room for any components created later
 
 	if componentsCount <= 0:
 		printLog("If the list is empty, try the \"Rescan Folders\" button or check the \"\\Components\\\" subfolder of this Godot project.")
@@ -509,14 +510,24 @@ func onDebugReloadButton_pressed() -> void:
 	reloadPlugin.call_deferred() # Let it chill before reloading?
 
 
-## DEBUG: Debugging Shortcuts only
 func onComponentsTree_guiInput(event: InputEvent) -> void:
-	if not debugMode or event is not InputEventKey \
-	or not event.is_pressed() or event.is_echo(): return
+	if event is not InputEventKey or not event.is_pressed() or event.is_echo(): return
+
+	# NOTE: accept_event() suppresses propogation even to _unhandled_input()
+
+	if EditorInterface.get_editor_settings().is_shortcut("editor/open_search", event):
+		%TreeSearchBox.grab_focus()
+		%TreeSearchBox.select_all()
+		accept_event() # A wrapper in [Control] for set_input_as_handled()
+		return
+
+	# Only debugging shortcuts ahead
+	if not debugMode: return
 
 	match event.keycode:
 		KEY_BACKSPACE, KEY_DELETE:
 			if hideSelectedComponentRow():
+				accept_event()
 				get_viewport().set_input_as_handled()
 
 
