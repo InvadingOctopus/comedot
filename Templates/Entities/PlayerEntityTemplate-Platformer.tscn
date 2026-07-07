@@ -54,7 +54,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ipbe0")
 }],
-"loop": true,
+"loop": 1,
 "name": &"fall",
 "speed": 5.0
 }, {
@@ -62,7 +62,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_yh00g")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 5.0
 }, {
@@ -70,7 +70,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_88gu6")
 }],
-"loop": true,
+"loop": 1,
 "name": &"jump",
 "speed": 5.0
 }, {
@@ -84,7 +84,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h6emq")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walk",
 "speed": 12.0
 }]
@@ -226,7 +226,6 @@ animationPlayer = NodePath("../AnimatedSprite2D/AnimationPlayer")
 [node name="GunComponent" parent="." unique_id=2053531727 instance=ExtResource("10_7jquu")]
 ammo = SubResource("Resource_puhqw")
 ammoCost = 1
-cooldown = 1.0
 
 [node name="GunSprite" parent="GunComponent" index="0" unique_id=750546687]
 visible = false

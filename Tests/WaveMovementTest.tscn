@@ -26,8 +26,6 @@ debugMode = true
 
 [node name="DebugComponent" parent="SpriteEntity1" unique_id=1271906617 instance=ExtResource("4_n5ct3")]
 propertiesToChart = Array[NodePath]([NodePath("..:position:x"), NodePath("../WaveMotionComponent:wavePosition:x"), NodePath("..:position:y"), NodePath("../WaveMotionComponent:wavePosition:y../WaveMotionComponent")])
-chartVerticalHeight = 200.0
-chartValueScale = 1.0
 
 [node name="EntityLabel" parent="SpriteEntity1/DebugComponent/Labels" parent_id_path=PackedInt32Array(1271906617, 2121881212) index="0" unique_id=1219470630]
 visible = false

@@ -11,7 +11,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p3cj8"]
 size = Vector2(14, 14)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_adevi"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t8ro4"]
 resource_local_to_scene = true
 size = Vector2(14, 14)
 
@@ -40,7 +40,7 @@ motion_mode = 1
 wall_min_slide_angle = 0.0
 
 [node name="CollisionShape2D" parent="MonsterEntity" index="0" unique_id=378729803]
-shape = SubResource("RectangleShape2D_adevi")
+shape = SubResource("RectangleShape2D_t8ro4")
 
 [node name="Sprite2D" parent="MonsterEntity" index="1" unique_id=994277676]
 modulate = Color(1, 0.5, 0, 1)

@@ -42,7 +42,6 @@ visible = false
 isEnabled = false
 ammo = ExtResource("10_fcijy")
 ammoCost = 1
-cooldown = 2.0
 
 [node name="MouseRotationComponent" parent="PlayerEntityTemplate-Overhead" unique_id=1255033792 node_paths=PackedStringArray("nodeToRotate") instance=ExtResource("14_8d8lk")]
 nodeToRotate = NodePath("../GunComponent")

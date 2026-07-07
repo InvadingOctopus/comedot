@@ -102,8 +102,6 @@ position = Vector2(96, 0)
 stats = Array[ExtResource("5_bslwp")]([ExtResource("6_u3x77"), ExtResource("7_c0i8c")])
 
 [node name="InteractionMouseControlComponent" parent="PlayerEntityTemplate-Overhead" unique_id=628595486 node_paths=PackedStringArray("interactionIndicator") instance=ExtResource("7_n8u5t")]
-mouseButton = 1
-shouldUpdateCursor = true
 interactionIndicator = NodePath("CanvasLayer/MarginContainer/Label")
 debugMode = true
 

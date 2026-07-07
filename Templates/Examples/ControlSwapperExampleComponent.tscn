@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bk04ni7nsr7w6" path="res://Templates/Examples/ControlSwapperExampleComponent.gd" id="2_1k7qh"]
 [ext_resource type="Script" uid="uid://ro5dtmodb4v0" path="res://Resources/ComponentSet.gd" id="3_jddh1"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1f82o"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jddh1"]
 resource_local_to_scene = true
 size = Vector2(12, 14)
 
@@ -16,4 +16,4 @@ shouldFree = true
 currentSetName = &""
 
 [node name="AreaDetectorShape" parent="." index="0" unique_id=2019209105]
-shape = SubResource("RectangleShape2D_1f82o")
+shape = SubResource("RectangleShape2D_jddh1")
