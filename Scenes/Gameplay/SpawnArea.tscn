@@ -23,6 +23,6 @@ shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
 [node name="SpawnTimer" parent="." unique_id=1938618345 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_8imah")]
-parentOverride = NodePath("..")
+parentOverride = NodePath("../..")
 
 [connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]

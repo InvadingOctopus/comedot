@@ -9,6 +9,6 @@ editor_description = "A Marker2D point to spawn copies of a scene at. Enable \"E
 script = ExtResource("1_ophw8")
 
 [node name="SpawnTimer" parent="." unique_id=333348527 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_bxqa7")]
-parentOverride = NodePath("..")
+parentOverride = NodePath("../..")
 
 [connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]
