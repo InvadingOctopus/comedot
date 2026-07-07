@@ -19,7 +19,7 @@ extends Resource
 @export_group("Horizontal Movement")
 
 @export_range(0,     1000, 4) var horizontalSpeed:				float = 320  ## The speed applied when the player presses the left or right controls.
-@export_range(-1000, 1000, 4) var horizontalVelocityDefault:	float = 96  ## Apply a constant horizontal thrust when is no player input. Positive = Right, Negative = Left
+@export_range(-1000, 1000, 4) var horizontalVelocityDefault:	float = 96   ## Apply a constant horizontal thrust when is no player input. Positive = Right, Negative = Left
 
 @export_range(-1000, 1000, 4) var horizontalVelocityMin:		float = 48   ## Keeps the horizontal velocity above or at this value. A positive value will maintain a rightwards movement.
 @export_range(-1000, 1000, 4) var horizontalVelocityMax:		float = 300  ## Keeps the horizontal velocity under or at this value. A negative value will maintain a leftwards movement.

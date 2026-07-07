@@ -14,13 +14,13 @@ extends Node
 @export_file("*.tscn") var sceneToSpawn: String # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
 
 ## The parent node to add the new spawns to. If `null`, the spawns will be added as children of this [Spawner] node itself.
-@export var parentOverride:	Node
+@export var parentOverride:		Node
 
 ## Suppresses [member parentOverride] and adds new spawned nodes as children of the current Scene's root node.
-@export var spawnInSceneRoot: bool = false
+@export var spawnInSceneRoot:	bool = false
 
 ## An optional group to add the spawned nodes to.
-@export var groupToAddTo: StringName
+@export var groupToAddTo:		StringName
 
 ## Maintains a counter and stops spawning nodes when the maximum number is reached.
 ## NOTE: Does NOT monitor the deletion of previous nodes; so the counter never decreases. Use [member maximumLimitInGroup] to maintain a specific amount of nodes currently in the scene.
@@ -77,7 +77,7 @@ func spawn() -> Node2D:
 
 	# NOTE: <0 is ignored
 	if maximumTotalToSpawn >= 0 \
-	and totalNodesSpawned >= maximumTotalToSpawn:
+	and totalNodesSpawned  >= maximumTotalToSpawn:
 		if debugMode: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maximumTotalToSpawn: ", maximumTotalToSpawn), self)
 		return null
 
@@ -85,7 +85,7 @@ func spawn() -> Node2D:
 	if maximumLimitInGroup >= 0 \
 	and not groupToAddTo.is_empty():
 		var groupCount: int = self.get_tree().get_node_count_in_group(groupToAddTo)
-		if groupCount >= maximumLimitInGroup:
+		if  groupCount >= maximumLimitInGroup:
 			if debugMode: Debug.printDebug(str("maximumLimitInGroup: ", maximumLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
 			return null
 
@@ -135,7 +135,7 @@ func spawn() -> Node2D:
 		willAddSpawn.emit(newSpawn, parent) # TBD: Should this be emitted before adding to a group?
 		parent.add_child(newSpawn,  false) # PERFORMANCE: not force_readable_name
 
-		if newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
+		if  newSpawn.get_parent() == parent: # NOTE: Make sure the new node has not been reparented during its `_ready()`
 			newSpawn.owner = parent # INFO: Necessary for persistence to a [PackedScene] for save/load.
 
 		totalNodesSpawned += 1
