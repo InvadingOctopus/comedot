@@ -23,15 +23,15 @@ extends Node
 @export var groupToAddTo:		StringName
 
 ## Maintains a counter and stops spawning nodes when the maximum number is reached.
-## NOTE: Does NOT monitor the deletion of previous nodes; so the counter never decreases. Use [member maximumLimitInGroup] to maintain a specific amount of nodes currently in the scene.
+## NOTE: Does NOT monitor the deletion of previous nodes; so the counter never decreases. Use [member maxLimitInGroup] to maintain a specific amount of nodes currently in the scene.
 ## If this value is -1 or any other negative number, then it is ignored. CAUTION: Spawning nodes infinitely will eventually cause system slowdown and a crash.
-## Supersedes [member maximumLimitInGroup]
-@export var maximumTotalToSpawn: int = -1
+## Supersedes [member maxLimitInGroup]
+@export var maxTotalToSpawn:	int = -1
 
 ## Stops spawning nodes if [member groupToAddTo] has the specified amount of members.
 ## If this value is -1 or any other negative number, then it is ignored. CAUTION: Spawning nodes infinitely will eventually cause system slowdown and a crash.
-## NOTE: [member maximumTotalToSpawn] supersedes this value and is checked first.
-@export var maximumLimitInGroup: int = -1
+## NOTE: [member maxTotalToSpawn] supersedes this value and is checked first.
+@export var maxLimitInGroup:	int = -1
 
 ## If [member sceneToSpawn] is an [Entity] and this flag is `true` then [member Entity.isLoggingEnabled] is set to `false`, in order to reduce log clutter.
 ## NOTE: Does NOT disable [member Entity.debugMode]
@@ -76,17 +76,17 @@ func spawn() -> Node2D:
 		return null
 
 	# NOTE: <0 is ignored
-	if maximumTotalToSpawn >= 0 \
-	and totalNodesSpawned  >= maximumTotalToSpawn:
-		if debugMode: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maximumTotalToSpawn: ", maximumTotalToSpawn), self)
+	if maxTotalToSpawn >= 0 \
+	and totalNodesSpawned >= maxTotalToSpawn:
+		if debugMode: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maxTotalToSpawn: ", maxTotalToSpawn), self)
 		return null
 
 	# NOTE: <0 is ignored
-	if maximumLimitInGroup >= 0 \
+	if maxLimitInGroup >= 0 \
 	and not groupToAddTo.is_empty():
 		var groupCount: int = self.get_tree().get_node_count_in_group(groupToAddTo)
-		if  groupCount >= maximumLimitInGroup:
-			if debugMode: Debug.printDebug(str("maximumLimitInGroup: ", maximumLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
+		if  groupCount >= maxLimitInGroup:
+			if debugMode: Debug.printDebug(str("maxLimitInGroup: ", maxLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
 			return null
 
 	# NOTE: Emit the `will` signal before loading the scene path,
