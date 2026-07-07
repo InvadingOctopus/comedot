@@ -12,10 +12,16 @@ extends Marker2D
 
 func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
 	# If we're the parent, just spawn at wherever this SpawnPoint is
-	if parent == self: newSpawn.position = Vector2.ZERO
+	if parent == self:
+		newSpawn.position = Vector2.ZERO
 
 	# If the parent is a different Node2D, convert our position to that node's space
-	elif is_instance_of(parent, Node2D): newSpawn.position = parent.to_local(self.global_position)
+	elif is_instance_of(parent, Node2D):
+		# NOTE: Node2D.to_global() / .to_local() will not work if nodes are in different canvas coordinate spaces,
+		# so we use other methods to allow using [CanvasLayer] to keep a [SpawnPoint] fixed at an edge of the screen etc.
+		# PERFORMANCE: Inlining NodeTools.convertPosition() to avoid an extra call
+		newSpawn.position = parent.make_canvas_position_local(self.get_global_transform_with_canvas() * Vector2.ZERO)
 
 	# If the parent is a plain Node (e.g. for grouping) or Control, just place the spawn at whatever this SpawnPoint's position is (and hope for the best?)
-	else: newSpawn.position = self.global_position
+	else:
+		newSpawn.position = self.global_position
