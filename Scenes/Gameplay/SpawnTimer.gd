@@ -1,4 +1,6 @@
 ## A [Timer] that creates copies of a specified Scene at regular intervals.
+## TIP: Use [RandomSpawnTimer] to spawn random scenes from a list.
+## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
 
 class_name SpawnTimer
 extends Spawner

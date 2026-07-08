@@ -5,7 +5,7 @@
 ## TIP: If this script is attached to a [CanvasLayer], the Spawners will stay fixed at the edges even as the player/camera moves and the map scrolls.
 ## TIP: Ideal for spawning enemies just outside the view in scrolling shoot-em-ups etc.
 
-class_name SpawnersAtScreenEdge
+class_name SpawnEdge
 extends Node
 
 
@@ -102,7 +102,7 @@ func setAreaBounds(spawnArea: SpawnArea, viewportPosition: Vector2, size: Vector
 	spawnArea.position = areasContainer.make_canvas_position_local(viewportPosition)
 
 	if not spawnArea.spawnAreaShape.shape is RectangleShape2D:
-		Debug.printWarning(str("SpawnersAtScreenEdge.setAreaBounds() requires a RectangleShape2D: ", spawnArea.spawnAreaShape.shape), spawnArea)
+		Debug.printWarning(str("SpawnEdge.setAreaBounds() requires a RectangleShape2D: ", spawnArea.spawnAreaShape.shape), spawnArea)
 		return
 
 	var rectangleShape: RectangleShape2D = spawnArea.spawnAreaShape.shape

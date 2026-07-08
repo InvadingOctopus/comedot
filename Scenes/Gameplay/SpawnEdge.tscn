@@ -1,27 +1,27 @@
 [gd_scene format=3 uid="uid://q1ap2autdkcp"]
 
-[ext_resource type="Script" uid="uid://ygq1sw4hvqy4" path="res://Scenes/Gameplay/SpawnersAtScreenEdge.gd" id="1_t8kyh"]
+[ext_resource type="Script" uid="uid://ygq1sw4hvqy4" path="res://Scenes/Gameplay/SpawnEdge.gd" id="1_t8kyh"]
 [ext_resource type="PackedScene" uid="uid://dple40u81ef8t" path="res://Scenes/Gameplay/SpawnPoint.tscn" id="2_ke8bt"]
 [ext_resource type="PackedScene" uid="uid://dnj2tewb1jq0n" path="res://Scenes/Gameplay/SpawnArea.tscn" id="3_ke8bt"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dej44"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_opxs8"]
 resource_local_to_scene = true
 size = Vector2(64, 32)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hn2xi"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_18vl1"]
 resource_local_to_scene = true
 size = Vector2(32, 64)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_n7de7"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yplbx"]
 resource_local_to_scene = true
 size = Vector2(64, 32)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wnho5"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_idvps"]
 resource_local_to_scene = true
 size = Vector2(32, 64)
 
-[node name="SpawnersAtScreenEdge" type="CanvasLayer" unique_id=1076406248]
-editor_description = "Adds Spawners around and outside the screen edges."
+[node name="SpawnEdge" type="CanvasLayer" unique_id=1076406248]
+editor_description = "Adds SpawnPoints & SpawnAreas around the screen edges."
 script = ExtResource("1_t8kyh")
 
 [node name="Points" type="Node2D" parent="." unique_id=401455543]
@@ -65,7 +65,7 @@ position = Vector2(0, -32)
 
 [node name="SpawnAreaShape" parent="Areas/NArea" index="0" unique_id=1648716433]
 position = Vector2(32, 16)
-shape = SubResource("RectangleShape2D_dej44")
+shape = SubResource("RectangleShape2D_opxs8")
 
 [node name="EArea" parent="Areas" unique_id=362816301 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
@@ -73,7 +73,7 @@ position = Vector2(64, 0)
 
 [node name="SpawnAreaShape" parent="Areas/EArea" index="0" unique_id=1648716433]
 position = Vector2(16, 32)
-shape = SubResource("RectangleShape2D_hn2xi")
+shape = SubResource("RectangleShape2D_18vl1")
 
 [node name="SArea" parent="Areas" unique_id=2111042598 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
@@ -81,7 +81,7 @@ position = Vector2(0, 64)
 
 [node name="SpawnAreaShape" parent="Areas/SArea" index="0" unique_id=1648716433]
 position = Vector2(32, 16)
-shape = SubResource("RectangleShape2D_n7de7")
+shape = SubResource("RectangleShape2D_yplbx")
 
 [node name="WArea" parent="Areas" unique_id=994271948 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
@@ -89,7 +89,7 @@ position = Vector2(-32, 0)
 
 [node name="SpawnAreaShape" parent="Areas/WArea" index="0" unique_id=1648716433]
 position = Vector2(16, 32)
-shape = SubResource("RectangleShape2D_wnho5")
+shape = SubResource("RectangleShape2D_idvps")
 
 [editable path="Points/NW"]
 [editable path="Points/N"]

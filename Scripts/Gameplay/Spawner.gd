@@ -1,6 +1,7 @@
 ## A [Node] that creates copies of a specified Scene as new children of itself or another node as their parent.
 ## NOTE: To actually spawn anything, some other script or Signal must call [member spawn]
 ## TIP: Use subclasses such as [SpawnTimer] or [RandomSpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
+## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
 
 class_name Spawner
 extends Node

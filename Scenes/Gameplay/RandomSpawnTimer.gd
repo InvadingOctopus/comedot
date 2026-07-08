@@ -1,5 +1,6 @@
 ## A variant of [SpawnTimer] that has a specific chance to spawn any scene from a list of scenes on each [Timer] timeout.
-## NOTE: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [SpawnTimer] script with this script.
+## TIP: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [SpawnTimer] script with this script.
+## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
 
 class_name RandomSpawnTimer
 extends SpawnTimer
