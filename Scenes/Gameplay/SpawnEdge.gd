@@ -15,7 +15,7 @@ extends Node
 @export var padding: int
 
 ## The size of each [SpawnArea]'s shorter axis; the height of the N/S areas and the width of the E/W areas.
-## TIP: This distance effectively adds a delay to each spawn before it moves into view onscreen.
+## TIP: This distance effectively adds a delay to each spawn before it moves into the view onscreen.
 @export_range(2, 1024, 2, "or_greater") var areaThickness: int = 32
 
 ## The parent node to add the spawned nodes to.
@@ -31,7 +31,9 @@ extends Node
 @onready var pointsContainer: Node2D = $Points
 @onready var areasContainer:  Node2D = $Areas
 
-var spawnTimers: Array[SpawnTimer] ## A list of all the [SpawnTimer] under all the [SpawnPoint]s & [SpawnArea]s
+## A list of all the [SpawnTimer] under all the [SpawnPoint]s & [SpawnArea]s
+## with the points in clockwise order from NW (0,0) then the areas.
+var spawnTimers: Array[SpawnTimer]
 
 #endregion
 
@@ -47,13 +49,23 @@ func _ready() -> void:
 	setSpawnerPlacements()
 
 
+## Rebuilds the [member spawnTimers] list.
 func enumerateSpawnTimers() -> Array[SpawnTimer]:
-	self.spawnTimers.clear()
-	for node: Node in NodeTools.flatMapNodeTree(self): # TBD: PERFORMANCE: Find a better way?
-		if is_instance_of(node, SpawnTimer):
-			self.spawnTimers.append(node as SpawnTimer)
-	Debug.printHighlight()
-	return  self.spawnTimers
+	self.spawnTimers = [
+		%NW/SpawnTimer, # Start in order from 0,0 clockwise
+		%N/SpawnTimer,
+		%NE/SpawnTimer,
+		%E/SpawnTimer,
+		%SE/SpawnTimer,
+		%S/SpawnTimer,
+		%SW/SpawnTimer,
+		%W/SpawnTimer,
+		%NArea/SpawnTimer,
+		%EArea/SpawnTimer,
+		%SArea/SpawnTimer,
+		%WArea/SpawnTimer,
+	]
+	return self.spawnTimers
 
 
 func setSpawnerParents() -> void:
@@ -68,6 +80,9 @@ func setSpawnerParents() -> void:
 		spawnTimer.parentOverride = spawnParent
 
 
+## Sets the positions of all the [SpawnPoint]s and [SpawnArea]s,
+## as well as the sizes of all [SpawnArea]s,
+## in relation to the screen/viewport size/resolution.
 func setSpawnerPlacements() -> void:
 	# Screen dimensions
 	var viewportRect:	Rect2	= self.get_viewport().get_visible_rect()
