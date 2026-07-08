@@ -31,7 +31,7 @@ extends Node
 @onready var pointsContainer: Node2D = $Points
 @onready var areasContainer:  Node2D = $Areas
 
-## A list of all the [SpawnTimer] under all the [SpawnPoint]s & [SpawnArea]s
+## A list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
 ## with the points in clockwise order from NW (0,0) then the areas.
 var spawnTimers: Array[SpawnTimer]
 
@@ -41,7 +41,7 @@ var spawnTimers: Array[SpawnTimer]
 #region Setup
 
 func _enter_tree() -> void:
-	enumerateSpawnTimers()
+	spawnTimers = getAllSpawnTimers()
 	setSpawnerParents() # Apply our `parentOverride` before the Spawners' _ready()
 
 
@@ -49,9 +49,11 @@ func _ready() -> void:
 	setSpawnerPlacements()
 
 
-## Rebuilds the [member spawnTimers] list.
-func enumerateSpawnTimers() -> Array[SpawnTimer]:
-	self.spawnTimers = [
+## Returns a list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
+## with the points in clockwise order from NW (0,0) then the areas.
+## NOTE: Does NOT rebuild [member spawnTimers] in case a script wants to modify either list separately.
+func getAllSpawnTimers() -> Array[SpawnTimer]:
+	return [
 		%NW/SpawnTimer, # Start in order from 0,0 clockwise
 		%N/SpawnTimer,
 		%NE/SpawnTimer,
@@ -64,8 +66,7 @@ func enumerateSpawnTimers() -> Array[SpawnTimer]:
 		%EArea/SpawnTimer,
 		%SArea/SpawnTimer,
 		%WArea/SpawnTimer,
-	]
-	return self.spawnTimers
+		]
 
 
 func setSpawnerParents() -> void:
