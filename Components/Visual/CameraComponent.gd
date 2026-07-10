@@ -1,200 +1,109 @@
-## A component which is a [Camera2D] node with various options,
-## such as attaching to a grandparent Node when the parent [Entity] is destroyed, to preserve the on screen viewing position.
-## TIP: For standalone non-component scripts for any [Camera2D] node, see the `/Scripts/Visual/` folder and CameraMouseTracking.gd, ClampCameraToArea.gd etc.
-## ALERT: BUG: There may be an initial delay or undesiring panning as the start of scene as the [Camera2D] moves to the parent node's position, specially if [member Camera2D.position_smoothing_enabled] is `true`.
-## BUGFIX: To workaround the initial lag, add a standalone [Camera2D] outside the player Entity, at the same position as this [CameraComponent], and add a [RemoteTransform2D] as a child of this component, then link the [RemoteTransform2D] with the external [Camera2D].
+## Wraps a [Camera2D] node with the `/Scripts/Visual/Camera.gd` script to support clamping within an [Area2D], look ahead, etc.
+## Also reattaches the camera to another parent node when this component's [Entity] is destroyed,
+## e.g. to prevent the on-screen view from resetting when the player dies.
+## TIP: To access the underlying [Camera2D], enable "Editable Children" in the Godot Editor.
+## TIP: For non-component scripts for standalone [Camera2D] nodes, use `/Scripts/Visual/Camera.gd` directly.
+## ALERT: BUG: There may be an initial lag or unintended pan at the start of a scene as the [Camera2D] moves to its parent node's position, especially when [member Camera2D.position_smoothing_enabled] is `true`
+## WORKAROUND: To avoid this initial lag, add a standalone [Camera2D] outside the player [Entity], at the same position as this [CameraComponent],
+## and add a [RemoteTransform2D] as a child of this component, then link the [RemoteTransform2D] to the external [Camera2D]
 
 class_name CameraComponent
 extends Component
 
-# TODO: FIXME: There is still a slight jitter when reattaching to a new parent.
-# TODO: Gamepad joystick look-ahead
-
 
 #region Parameters
 
-## If `true`, the camera is detached from the parent [Entity] and reattached to the Entity's parent, if any, or the root Node of the current Scene.
-## This may be used to prevent the scene view from jumping to another position to the when the player dies.
-## NOTE: [member Component.allowNonEntityParent] should be set to `true`
-@export var shouldAttachToGrandparentOnEntityRemoval: bool = true # TBD: A shorter name? Yikes!
-
-## Confines the camera to the rectangular bounds of the [member boundary]
-@export var shouldClampToBoundary:	bool = false
-
-## The [Area2D] to clamp the camera's position within its rectangular bounds, if [member shouldClampToBoundary]
-@export var boundary: Area2D:
+## If `true`, this component detaches its child [Camera2D] when the [Entity] is being removed,
+## then the camera is reattached to [member reparentPath] if specified, otherwise to the Entity's parent node (this component's grandparent)
+## or the scene's root node.
+## TIP: This may prevent the view from jumping to another position when the player dies etc.
+@export var shouldReparentCameraOnEntityRemoval: bool = true: # TBD: A shorter name? :')
 	set(newValue):
-		if boundary != newValue:
-			boundary = newValue
-			if self.is_node_ready(): clampToBoundary()
+		if newValue != shouldReparentCameraOnEntityRemoval:
+			shouldReparentCameraOnEntityRemoval = newValue
+			if entity: Tools.toggleSignal(entity.preDelete, self.onEntity_preDelete, self.shouldReparentCameraOnEntityRemoval)
 
-## Moves the camera to the mouse position on every frame.
-## NOTE: Overridden by [member shouldLookAhead]
-## @experimental
-@export var shouldTrackMouse:		bool = false:
-	set(newValue):
-		if newValue != shouldTrackMouse:
-			shouldTrackMouse = newValue
-			self.set_process(shouldTrackMouse or shouldBounceZoom)
-
-## Moves the camera further to the edge of the screen towards the mouse pointer.
-## NOTE: Overrides [member shouldTrackMouse]
-## @experimental
-@export var shouldLookAhead:		bool = false: # TBD: Should this be mouse only?
-	set(newValue):
-		if newValue != shouldLookAhead:
-			shouldLookAhead = newValue
-			self.set_process_input(shouldLookAhead)
-
-## How far the [member shouldLookAhead] target (mouse pointer) should be from the center of the screen for the camera offset to start moving towards the edge of the screen.
-## @experimental
-@export var lookAheadDeadZone:	   float = 64
-
-## "Bounces" or "headbangs" the camera zoom back and forth in and out of the screen. Useful for inducing dizziness.
-## @experimental
-@export var shouldBounceZoom:		bool = false:
-	set(newValue):
-		if newValue != shouldBounceZoom:
-			shouldBounceZoom = newValue
-			self.set_process(shouldTrackMouse or shouldBounceZoom)
-
-@export_range(0.0, 10.0, 0.05) var zoomTimerMax:  float = 0.2 ## The number/fraction of seconds for the zoom direction to flip between "in" and "out".
-@export_range(0.0, 10.0, 0.05) var zoomDirection: float = 0.2 ## The distance/intensity of the zoom. Swaps sign/"direction" during runtime.
+## Optional: The relative path to the parent node that the [Camera2D] should be reparented to when the [Entity] is removed.
+## If empty, the camera reattaches to this component's grandparent node (the entity's parent)
+## or the scene's root node.
+## IMPORTANT: The path must resolve to a [Node2D] or one of its subclasses.
+@export_node_path("Node2D") var reparentPath: NodePath = "../.." # Default: Relative from Component → Entity → Entity's Parent
 
 #endregion
 
 
 #region State
-var selfAsCamera:	Camera2D # Necessary because `Component` is a `Node` not `Node2D` :')
-var camera:			Camera2D # The actual camera in use. TODO: Expose as @export for using external [Camera2D] nodes.
-var zoomFlipTimer:	float
+# TBD: Allow management of an external [Camera2D]?
+@onready var camera: Camera = $Camera2D
 #endregion
 
 
 func _ready() -> void:
-	selfAsCamera = self.get_node(^".") as Camera2D
-	if not camera: camera = selfAsCamera
-
-	if camera:
-		if boundary: clampToBoundary()
-		if shouldTrackMouse: self.position = camera.get_local_mouse_position()
-
-		self.set_process(shouldTrackMouse or shouldBounceZoom) # Update per-frame only if needed
-		self.set_process_input(shouldLookAhead)
-
+	if  camera:
+		camera.debugMode = self.debugMode
 	else:
-		printWarning("CameraComponent is not a Camera2D node!")
-	
-	camera.align()
-	camera.force_update_scroll()
+		printWarning("CameraComponent does not have a Camera2D node!")
 
 
-#region Detachment & Reattachment
+#region Camera Reparenting
 
 func onDidInstall() -> void:
-	Tools.connectSignal(entity.preDelete, self.onEntity_preDelete)
+	Tools.toggleSignal(entity.preDelete, self.onEntity_preDelete, self.shouldReparentCameraOnEntityRemoval)
 
 
 func onWillUninstall() -> void:
-	Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete)
+	if entity: Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete)
 
 
 func onEntity_preDelete() -> void:
-	if entity: Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete) # Prevent multiple calls!
-	if shouldAttachToGrandparentOnEntityRemoval:
-		self.cancel_free() # We still want to live!
-		attachToGrandparent()
+	if entity: Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete) # Prevent multiple calls
+	# `Entity.preDelete` may be emitted after this component has already exited the scene during shutdown,
+	# so make sure we're still around
+	if not shouldReparentCameraOnEntityRemoval or not self.is_inside_tree(): return
+	reattachCamera()
 
 
-## Detaches the camera from the [Entity] and reattaches to the Entity's parent, if any, or the root Node of the current Scene.
-## This may prevent the scene view from jumping to another position to the when a player dies etc.
-## NOTE: Does NOT check for [member shouldAttachToGrandparentOnParentRemoval] as it must done by other event-handling methods.
-func attachToGrandparent() -> void:
-	# TBD: Should we still detach from any parent, not just an Entity?
-	if not is_instance_valid(entity): return
-	if debugMode: printDebug(str("attachToGrandparent(): Detaching from parent entity: ", entity))
+## Detaches the [Camera2D] and reattaches it to another node at the relative [member reparentPath]
+## If no path is specified, then the camera is attached to the entity's parent node (this component's grandparent)
+## or the scene's root node.
+func reattachCamera() -> bool:
+	if not is_instance_valid(camera):
+		printWarning("reattachCamera(): Camera missing")
+		return false
 
-	# See if the Entity has a parent
-	var newParent: Node
-	newParent = entity.get_parent()
+	if debugMode:  printDebug(str("reattachCamera() reparentPath: ", reparentPath))
 
-	# If not, just put this camera on the scene tree
+	var newParent: Node2D
+
+	# First, have we manually chosen a stepparent?
+	# NOTE: Do NOT automatically fallback if there is a path specified, that could cause unexpected behavior at runtime:
+	# DESIGN: If a path is specified but invalid, log a warning but don't silently choose a different parent.
+	if not reparentPath.is_empty():
+		newParent = self.get_node_or_null(reparentPath)
+
+	# Otherwise, look for other nodes to adopt the camera
+	else:
+		# Does this component have a valid parent? i.e. the entity
+		var currentParent: Node2D = self.get_parent()
+		# Then use the entity's parent as the new parent for the camera
+		if currentParent: newParent = currentParent.get_parent()
+		# Otherwise just yeet the camera to the scene root
+		if not newParent: newParent = self.get_tree().current_scene if self.is_inside_tree() else null
+
+	# Still no valid prospective parent?
 	if not is_instance_valid(newParent):
-		newParent = SceneManager.get_tree().current_scene # FINDBETTERWAY: How else to get the damn SceneTree from a Node that's not in the SceneTree???
+		printWarning(str("reattachCamera() cannot resolve reparentPath or fallback to Entity's parent or Scene root: ", reparentPath))
+		return false
 
-	if debugMode: printDebug(str("Reattaching to new parent: ", newParent, " @ global position: ", camera.global_position))
+	# Make sure the new parent isn't a descendant of the dying Entity, which would be pointless :')
+	if entity and (newParent == entity or entity.is_ancestor_of(newParent)):
+		printWarning(str("reattachCamera() reparentPath: ", reparentPath, " must not be inside the Entity being removed: ", entity))
+		return false
 
-	camera.position_smoothing_enabled = false # TODO: FIXME: HACK: Fix jump/hitter :(
-	self.owner = null
-	self.reparent(newParent, true) # keep_global_transform
-	self.set_owner(newParent)
-	camera.reset_smoothing()
+	if not camera.reattach(newParent):
+		printWarning(str("reattachCamera() could not reattach Camera to: ", newParent))
+		return false
 
-	if debugMode: printDebug(str("New position: ", camera.position, ", global: ", camera.global_position))
-
-#endregion
-
-
-#region Boundary
-
-func clampToBoundary() -> void:
-	if not boundary: return
-
-	var areaRectangle: Rect2 = CollisionTools.getAllShapeGlobalBounds(boundary)
-
-	if not areaRectangle:
-		Debug.printWarning(str("Cannot get a Rect2 from Area2D: ", boundary), self)
-
-	camera.limit_left   = int(areaRectangle.position.x)
-	camera.limit_right  = int(areaRectangle.end.x)
-	camera.limit_top	  = int(areaRectangle.position.y)
-	camera.limit_bottom = int(areaRectangle.end.y)
-	
-	camera.reset_smoothing()
+	return true
 
 #endregion
-
-
-#region Per-Frame
-
-func _process(delta: float) -> void:
-	# NOTE: Cannot use `_input()` for updating position only on mouse events, because it causes erratic behavior.
-	if shouldTrackMouse:
-		camera.position = camera.get_global_mouse_position() * (0.5) # CHECK: WEIRD: Using the global position and halving it smoothes movement and fixes erratic behavior.
-
-	# Woop Zoop
-	if shouldBounceZoom:
-		camera.zoom += Vector2(zoomDirection * delta, zoomDirection * delta) # Camera2D.zoom
-		zoomFlipTimer += delta
-		if zoomFlipTimer >= zoomTimerMax:
-			zoomDirection = -zoomDirection
-			zoomFlipTimer = 0
-
-
-## @experimental
-func _input(event: InputEvent) -> void:
-	# Look Ahead
-	# THANKS: Inspired by optionaldev2876@YouTube https://www.youtube.com/watch?v=Wzrw6_KDMl4
-	if shouldLookAhead and event is InputEventMouseMotion:
-		var viewport: Rect2 = camera.get_viewport_rect() # Get the unscaled Viewport dimensions
-		var target: Vector2 = event.position - (viewport.size * 0.5) # Get the mouse position from the center of the screen
-
-		if target.length() < lookAheadDeadZone: # Move the camera offset only when the target is far enough from the center.
-			camera.offset = Vector2.ZERO
-		else:
-			camera.offset = target.normalized() * (target.length() - lookAheadDeadZone) * 0.5
-
-		if debugMode: printDebug(str("event.position: ", event.position, ", viewport.half: ", viewport.size * 0.5, ", target: ", target, ", target.normalized: ", target.normalized(), ", target.length: ", target.length(), ", Camera2D.offset: ", camera.offset))
-
-#endregion
-
-
-func showDebugInfo() -> void:
-	if not debugMode: return
-	Debug.addComponentWatchList(self, {
-		boundary		= self.boundary.position,
-		limit_left  	= camera.limit_left,
-		limit_right 	= camera.limit_right,
-		limit_top		= camera.limit_top,
-		limit_bottom	= camera.limit_bottom,
-		})
