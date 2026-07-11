@@ -31,6 +31,9 @@ collision_mask = 3632
 [node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="0" unique_id=303169715]
 shape = SubResource("RectangleShape2D_1r2ol")
 
+[node name="AnimatedSprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="1" unique_id=30334644]
+modulate = Color(0, 1, 1, 1)
+
 [node name="Camera2D" parent="PlayerEntityTemplate-OverheadBasic/CameraComponent" parent_id_path=PackedInt32Array(859962267, 1618703562) index="0" unique_id=1997418455 node_paths=PackedStringArray("boundary")]
 boundary = NodePath("../../../CameraBounds")
 
