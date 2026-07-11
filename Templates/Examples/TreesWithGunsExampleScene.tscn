@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="2_kxnpl"]
 [ext_resource type="TileSet" uid="uid://bsngxcc7r2xu5" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Physics.tres" id="3_yqhs0"]
 [ext_resource type="PackedScene" uid="uid://b6c5d68ty35va" path="res://Templates/Entities/PlayerEntityTemplate-Overhead.tscn" id="4_bek2q"]
-[ext_resource type="Texture2D" uid="uid://clox863hbl6dx" path="res://Assets/Tiles/Kenney1Bit-Monochrome-Transparent.png" id="5_351p7"]
 [ext_resource type="PackedScene" uid="uid://5tvqunkoa4l7" path="res://Components/Combat/FactionComponent.tscn" id="6_kpabc"]
 [ext_resource type="PackedScene" uid="uid://dyxwb73c1uv7v" path="res://Components/Physics/PushRigidBodyComponent.tscn" id="7_nnv3x"]
 [ext_resource type="PackedScene" uid="uid://ge0omhunt1go" path="res://Components/Control/AimingCursorComponent.tscn" id="8_bek2q"]
@@ -32,15 +31,8 @@ collision_mask = 3632
 [node name="CollisionShape2D" parent="PlayerEntityTemplate-OverheadBasic" index="0" unique_id=303169715]
 shape = SubResource("RectangleShape2D_1r2ol")
 
-[node name="Sprite2D" parent="PlayerEntityTemplate-OverheadBasic" index="1" unique_id=514791681]
-modulate = Color(0, 1, 1, 1)
-texture = ExtResource("5_351p7")
-region_enabled = true
-region_rect = Rect2(384, 64, 16, 16)
-
-[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadBasic" index="2" unique_id=1618703562 node_paths=PackedStringArray("boundary")]
-shouldClampToBoundary = true
-boundary = NodePath("../../CameraBounds")
+[node name="Camera2D" parent="PlayerEntityTemplate-OverheadBasic/CameraComponent" parent_id_path=PackedInt32Array(859962267, 1618703562) index="0" unique_id=1997418455 node_paths=PackedStringArray("boundary")]
+boundary = NodePath("../../../CameraBounds")
 
 [node name="FactionComponent" parent="PlayerEntityTemplate-OverheadBasic" unique_id=1980926030 instance=ExtResource("6_kpabc")]
 factions = 2
@@ -54,25 +46,25 @@ factions = 2
 [node name="TreeEntity1" parent="Trees" unique_id=234012061 instance=ExtResource("10_xxxig")]
 position = Vector2(0, -64)
 
-[node name="NodeFacingComponent" parent="Trees/TreeEntity1" index="4" node_paths=PackedStringArray("targetToFace")]
+[node name="NodeFacingComponent" parent="Trees/TreeEntity1" index="4" unique_id=1728329491 node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="TreeEntity2" parent="Trees" unique_id=1718656649 instance=ExtResource("10_xxxig")]
 position = Vector2(64, 0)
 
-[node name="NodeFacingComponent" parent="Trees/TreeEntity2" index="4" node_paths=PackedStringArray("targetToFace")]
+[node name="NodeFacingComponent" parent="Trees/TreeEntity2" index="4" unique_id=1728329491 node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="TreeEntity3" parent="Trees" unique_id=1092403872 instance=ExtResource("10_xxxig")]
 position = Vector2(-64, 0)
 
-[node name="NodeFacingComponent" parent="Trees/TreeEntity3" index="4" node_paths=PackedStringArray("targetToFace")]
+[node name="NodeFacingComponent" parent="Trees/TreeEntity3" index="4" unique_id=1728329491 node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="TreeEntity4" parent="Trees" unique_id=899578031 instance=ExtResource("10_xxxig")]
 position = Vector2(0, 64)
 
-[node name="NodeFacingComponent" parent="Trees/TreeEntity4" index="4" node_paths=PackedStringArray("targetToFace")]
+[node name="NodeFacingComponent" parent="Trees/TreeEntity4" index="4" unique_id=1728329491 node_paths=PackedStringArray("targetToFace")]
 targetToFace = NodePath("../../../PlayerEntityTemplate-OverheadBasic/AimingCursorComponent")
 
 [node name="Monsters" type="Node" parent="." unique_id=502487911]
@@ -90,6 +82,7 @@ shape = SubResource("RectangleShape2D_sy48a")
 debug_color = Color(0, 0.6, 0.7, 0.1)
 
 [editable path="PlayerEntityTemplate-OverheadBasic"]
+[editable path="PlayerEntityTemplate-OverheadBasic/CameraComponent"]
 [editable path="Trees/TreeEntity1"]
 [editable path="Trees/TreeEntity1/GunComponent"]
 [editable path="Trees/TreeEntity2"]

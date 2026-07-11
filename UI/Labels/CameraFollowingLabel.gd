@@ -19,8 +19,7 @@ extends TextCyclingLabel
 
 func _ready() -> void:
 	super._ready()
-	if not camera:
-		camera = GameState.players.front().findFirstChildOfType(Camera2D)
+	if not camera: camera = GameState.players.front().getCamera()
 	self.didDisplayFinalString.connect(onDidDisplayFinalString)
 
 

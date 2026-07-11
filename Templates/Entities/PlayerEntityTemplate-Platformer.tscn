@@ -172,11 +172,11 @@ max = 10000000
 value = 1337
 name = &"playerScore"
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b23pp"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_swcld"]
 resource_local_to_scene = true
 size = Vector2(14, 14)
 
-[node name="Player-Platformer" type="CharacterBody2D" unique_id=1971183666 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+[node name="Player-Platformer" type="CharacterBody2D" unique_id=1971183666 node_paths=PackedStringArray("body", "sprite") groups=["entities", "players"]]
 editor_description = "A template for the player character in a platformer game."
 z_index = 10
 collision_layer = 6
@@ -184,8 +184,8 @@ collision_mask = 126
 floor_constant_speed = true
 platform_on_leave = 2
 script = ExtResource("1_sfh8g")
-sprite = NodePath("AnimatedSprite2D")
 body = NodePath(".")
+sprite = NodePath("AnimatedSprite2D")
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1903598439]
@@ -204,6 +204,8 @@ libraries/ = SubResource("AnimationLibrary_2co05")
 autoplay = &"RESET"
 
 [node name="CameraComponent" parent="." unique_id=1479131319 instance=ExtResource("3_b23pp")]
+
+[node name="Camera2D" parent="CameraComponent" index="0" unique_id=1997418455]
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 rotation_smoothing_enabled = true
@@ -250,7 +252,7 @@ collision_mask = 40
 
 [node name="ReceivingCollisionShape" parent="DamageReceivingComponent" index="0" unique_id=212184690]
 position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_b23pp")
+shape = SubResource("RectangleShape2D_swcld")
 
 [node name="CharacterBodyComponent" parent="." unique_id=709892523 node_paths=PackedStringArray("body") instance=ExtResource("16_1q6vm")]
 body = NodePath("..")
@@ -259,5 +261,6 @@ body = NodePath("..")
 
 [node name="InputComponent" parent="." unique_id=1492055703 instance=ExtResource("18_swcld")]
 
+[editable path="CameraComponent"]
 [editable path="GunComponent"]
 [editable path="DamageReceivingComponent"]

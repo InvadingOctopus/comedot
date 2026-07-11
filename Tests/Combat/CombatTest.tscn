@@ -26,7 +26,7 @@ size = Vector2(48, 144)
 resource_local_to_scene = true
 size = Vector2(16, 48)
 
-[sub_resource type="Resource" id="Resource_715uv"]
+[sub_resource type="Resource" id="Resource_tew8x"]
 resource_local_to_scene = true
 resource_name = "health"
 script = ExtResource("3_a6r0q")
@@ -40,7 +40,7 @@ metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 atlas = ExtResource("13_jt7ij")
 region = Rect2(400, 112, 16, 16)
 
-[sub_resource type="Resource" id="Resource_446ob"]
+[sub_resource type="Resource" id="Resource_yw4eo"]
 resource_local_to_scene = true
 script = ExtResource("3_a6r0q")
 max = 10000
@@ -90,7 +90,7 @@ shape = SubResource("RectangleShape2D_b0rrs")
 wait_time = 10.0
 sceneToSpawn = "uid://ks8fhlam1j34"
 groupToAddTo = &"ghosts"
-maximumLimitInGroup = 2
+maxLimitInGroup = 2
 
 [node name="PlayerEntityTemplate-OverheadCombat" parent="." unique_id=1969933871 instance=ExtResource("2_f2vu7")]
 position = Vector2(160, 88)
@@ -98,9 +98,8 @@ collision_mask = 3640
 motion_mode = 0
 wall_min_slide_angle = 0.261799
 
-[node name="CameraComponent" parent="PlayerEntityTemplate-OverheadCombat" index="2" unique_id=1618703562 node_paths=PackedStringArray("boundary")]
-shouldClampToBoundary = true
-boundary = NodePath("../../CameraBounds")
+[node name="Camera2D" parent="PlayerEntityTemplate-OverheadCombat/CameraComponent" parent_id_path=PackedInt32Array(1969933871, 1618703562) index="0" unique_id=1997418455 node_paths=PackedStringArray("boundary")]
+boundary = NodePath("../../../CameraBounds")
 
 [node name="DebugComponent" parent="PlayerEntityTemplate-OverheadCombat" unique_id=607041037 instance=ExtResource("4_a6r0q")]
 
@@ -111,7 +110,7 @@ position = Vector2(32, 48)
 texture = ExtResource("11_s8cv2")
 
 [node name="HealthComponent" parent="MonsterEntity" index="2" unique_id=1983200482]
-health = SubResource("Resource_715uv")
+health = SubResource("Resource_tew8x")
 
 [node name="DebugComponent" parent="MonsterEntity" unique_id=1505013645 instance=ExtResource("4_a6r0q")]
 
@@ -130,7 +129,7 @@ autoFire = true
 bulletTemplate = ExtResource("15_lbdmr")
 
 [node name="CooldownTimer" parent="ArmedMonsterEntity/GunComponent" index="1" unique_id=57790064]
-cooldownMilliseconds = SubResource("Resource_446ob")
+cooldownMilliseconds = SubResource("Resource_yw4eo")
 
 [node name="InputComponent" parent="ArmedMonsterEntity" unique_id=1081696626 instance=ExtResource("17_446ob")]
 isPlayerControlled = false
@@ -147,6 +146,9 @@ shape = SubResource("RectangleShape2D_446ob")
 [editable path="RadiationZoneEntity/DamageRepeatingComponent"]
 [editable path="SpawnArea"]
 [editable path="PlayerEntityTemplate-OverheadCombat"]
+[editable path="PlayerEntityTemplate-OverheadCombat/CameraComponent"]
 [editable path="PlayerEntityTemplate-OverheadCombat/GunComponent"]
 [editable path="MonsterEntity"]
+[editable path="MonsterEntity/DamageComponent"]
+[editable path="MonsterEntity/DamageReceivingComponent"]
 [editable path="ArmedMonsterEntity/GunComponent"]

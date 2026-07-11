@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://2r67te40csdi" path="res://Scenes/Debug/DebugBackground.tscn" id="1_uhj4x"]
 [ext_resource type="Texture2D" uid="uid://bkhxlpbb5fmqx" path="res://Assets/Images/Checkerboard32.png" id="2_mabn4"]
 [ext_resource type="Script" uid="uid://dlj44gyo6xh11" path="res://UI/UINavigationContainer.gd" id="2_y2sis"]
+[ext_resource type="Script" uid="uid://dyrw58y46jby7" path="res://Scripts/Visual/Camera.gd" id="3_jd6d7"]
 [ext_resource type="Texture2D" uid="uid://bm41kfvwe7uby" path="res://Assets/Images/NeutralPointLight.webp" id="3_r7qai"]
-[ext_resource type="Script" uid="uid://brhfkmfe0g806" path="res://Scripts/Visual/CameraMouseTracking.gd" id="4_uf5dw"]
 [ext_resource type="Texture2D" uid="uid://cej643k1obcve" path="res://Assets/Logos/ComedotLogo.png" id="6_jd6d7"]
 [ext_resource type="PackedScene" uid="uid://mwsrn6l4gw51" path="res://UI/Menus/MainMenuButtons.tscn" id="7_wy4rx"]
 [ext_resource type="Shortcut" uid="uid://c4er757mljhl4" path="res://Resources/Shortcuts/BackShortcut.tres" id="9_t25e2"]
@@ -46,7 +46,8 @@ process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 editor_draw_limits = true
-script = ExtResource("4_uf5dw")
+script = ExtResource("3_jd6d7")
+shouldTrackMouse = true
 
 [node name="PointLight2D" type="PointLight2D" parent="Camera2D" unique_id=1468781960]
 shadow_filter = 1

@@ -54,6 +54,11 @@ var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
 ## Call [method getSprite] to set.
 @export var sprite:	Node2D
 
+## The [Camera2D] node attached to this [Entity].
+## This may be a [CameraComponent]'s [Camera] child node, which is an enhanced camera subclass with the `/Scripts/Visual/Camera.gd` script.
+## Call [method getCamera] to set.
+@export var camera: Camera2D
+
 #endregion
 
 
@@ -61,7 +66,7 @@ var functionsAlreadyCalledOnceThisFrame: Dictionary[StringName, Callable]
 
 ## Emitted after the [Entity] Node receives the [constant NOTIFICATION_PREDELETE] in [method _notification]
 ## Used by components and other scripts that must react to the imminent removal of the entity itself,
-## e.g. when a [CameraComponent] wants to detach itself if [member CameraComponent.shouldAttachToGrandparentOnEntityRemoval] to preserve the current viewing location on screen.
+## e.g. when a [CameraComponent] wants to detach the camera if [member CameraComponent.shouldReparentCameraOnEntityRemoval] to preserve the current viewing location on screen.
 ## NOTE: This does NOT always mean that the node has exited the [SceneTree] (yet). Godot may send it on [method queue_free] which may happen BEFORE [constant NOTIFICATION_UNPARENTED] and the [signal Node.tree_exiting] signal etc.
 signal preDelete # DESIGN: Named in camelCase to match the `willDo`/`didDo` etc. convention
 
@@ -687,23 +692,7 @@ func removeChildrenOfType(type: Variant, shouldFree: bool = true) -> int: # TBD:
 #endregion
 
 
-#region Lazy Property Initialization
-
-## Returns the [member sprite] property or searches for an [AnimatedSprite2D] (searched first) or [Sprite2D].
-## The sprite may be this [Entity] node itself, or the first matching child node.
-func getSprite() -> Node2D:
-	if self.sprite == null:
-		if is_instance_of(self, AnimatedSprite2D) or is_instance_of(self, Sprite2D): # Check ourselves first
-			self.sprite = self
-		else:
-			self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D], false) # not returnEntityIfNoMatches
-
-		if self.sprite == self: printLog("getSprite(): self")
-		else: printLog(str("getSprite(): ", sprite))
-
-	if self.sprite == null: printWarning("getSprite(): No AnimatedSprite2D or Sprite2D found!")
-	return self.sprite
-
+#region Child Node Shortcuts
 
 ## Returns the [member area] property or searches for an [Area2D].
 ## The area may be this [Entity] node itself, or the first matching child node.
@@ -744,6 +733,42 @@ func getBody() -> CharacterBody2D:
 	if self.body == null: printWarning("getBody(): No CharacterBody2D found!")
 	return self.body
 
+
+## Returns the [member sprite] property or searches for an [AnimatedSprite2D] (searched first) or [Sprite2D].
+## The sprite may be this [Entity] node itself, or the first matching child node.
+func getSprite() -> Node2D:
+	if self.sprite == null:
+		if is_instance_of(self, AnimatedSprite2D) or is_instance_of(self, Sprite2D): # Check ourselves first
+			self.sprite = self
+		else:
+			self.sprite = self.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D], false) # not returnEntityIfNoMatches
+
+		if self.sprite == self: printLog("getSprite(): self")
+		else: printLog(str("getSprite(): ", sprite))
+
+	if self.sprite == null: printWarning("getSprite(): No AnimatedSprite2D or Sprite2D found!")
+	return self.sprite
+
+
+## Returns the [Camera2D] node attached to this [Entity]
+## Checks for a [CameraComponent] first and its enhanced [Camera] child node that has the `/Scripts/Visual/Camera.gd` script.
+func getCamera() -> Camera2D:
+	if  self.camera == null:
+		# Check for a CameraComponent first
+		if  self.components.has(&"CameraComponent"):
+			self.camera = self.components.CameraComponent.camera
+			# If the component hasn't been _ready() yet then its `@onready camera` will be null
+			if not self.camera: self.camera = self.components.CameraComponent.get_node_or_null(^"Camera2D")
+		# Otherwise just find the first child Camera2D, which also includes its subclasses such as `/Scripts/Visual/Camera.gd`
+		else:
+			self.camera = self.findFirstChildOfType(Camera2D, true) # includeEntity because why not, it might be a camera :)
+
+		if  self.camera == self: printLog("getCamera(): self")
+		else: printLog(str("getCamera(): ", camera))
+
+	if self.camera == null: printWarning("getCamera(): No Camera2D or CameraComponent/Camera found!")
+	return self.camera
+
 #endregion
 
 
@@ -762,6 +787,10 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 		function.callv(arguments)
 		self.set_physics_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
+#endregion
+
+#region Spawn Functions
+# TBD: Move to [NodeTools].gd?
 
 ## Loads and instantiates a Scene and adds it to this Entity's parent node at the specified offset from this Entity's position.
 ## Returns the new instance (Node).
@@ -788,7 +817,7 @@ func spawnNode(node: Node, positionOffset: Vector2 = Vector2.ZERO, copyZIndex: b
 
 	# Kidnap it from any other parent
 	var otherParent: Node = node.get_parent()
-	if otherParent != entityParent:
+	if  otherParent != entityParent:
 		if is_instance_valid(otherParent):
 			if debugMode: printDebug(str("Removing from other parent: ", otherParent))
 			otherParent.remove_child(node)

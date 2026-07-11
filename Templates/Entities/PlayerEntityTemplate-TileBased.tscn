@@ -10,7 +10,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_8uggr"]
 radius = 8.0
 
-[node name="Player-TileBased" type="CharacterBody2D" unique_id=379998366 node_paths=PackedStringArray("sprite", "body") groups=["entities", "players"]]
+[node name="Player-TileBased" type="CharacterBody2D" unique_id=379998366 node_paths=PackedStringArray("body", "sprite") groups=["entities", "players"]]
 editor_description = "A template for the player character in a TileMap-based game."
 collision_layer = 6
 collision_mask = 126
@@ -18,8 +18,8 @@ motion_mode = 1
 wall_min_slide_angle = 0.0
 platform_on_leave = 2
 script = ExtResource("1_boo6r")
-sprite = NodePath("Sprite2D")
 body = NodePath(".")
+sprite = NodePath("Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=26736999]
 shape = SubResource("CircleShape2D_8uggr")
@@ -31,6 +31,8 @@ region_enabled = true
 region_rect = Rect2(432, 128, 16, 16)
 
 [node name="CameraComponent" parent="." unique_id=1862470103 instance=ExtResource("2_u1hgs")]
+
+[node name="Camera2D" parent="CameraComponent" index="0" unique_id=1997418455]
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
 
@@ -40,4 +42,5 @@ rotation_smoothing_enabled = true
 
 [node name="InputComponent" parent="." unique_id=1143964556 instance=ExtResource("6_8uggr")]
 
+[editable path="CameraComponent"]
 [editable path="TileBasedPositionComponent"]

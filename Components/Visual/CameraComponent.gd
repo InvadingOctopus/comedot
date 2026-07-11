@@ -41,6 +41,7 @@ extends Component
 func _ready() -> void:
 	if  camera:
 		camera.debugMode = self.debugMode
+		entity.camera	 = self.camera # Repeat incase it wasn't ready during onDidInstall() TBD: Check before overwriting an existing camera?
 	else:
 		printWarning("CameraComponent does not have a Camera2D node!")
 
@@ -48,10 +49,13 @@ func _ready() -> void:
 #region Camera Reparenting
 
 func onDidInstall() -> void:
+	if self.camera: entity.camera = self.camera # TBD: Check before overwriting an existing camera?
 	Tools.toggleSignal(entity.preDelete, self.onEntity_preDelete, self.shouldReparentCameraOnEntityRemoval)
 
 
 func onWillUninstall() -> void:
+	# Unregister the camera if it's still attached to the entity
+	if self.camera and entity.camera == self.camera and self.entity.is_ancestor_of(self.camera): entity.camera = null
 	if entity: Tools.disconnectSignal(entity.preDelete, self.onEntity_preDelete)
 
 

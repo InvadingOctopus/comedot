@@ -73,8 +73,10 @@ animation = &"walk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerEntity" unique_id=1331692314]
 shape = SubResource("RectangleShape2D_sdyhs")
 
-[node name="CameraComponent" parent="PlayerEntity" unique_id=304628622 node_paths=PackedStringArray("boundary") instance=ExtResource("6_4lwh0")]
-boundary = NodePath("../../CameraBounds")
+[node name="CameraComponent" parent="PlayerEntity" unique_id=304628622 instance=ExtResource("6_4lwh0")]
+
+[node name="Camera2D" parent="PlayerEntity/CameraComponent" index="0" unique_id=1997418455 node_paths=PackedStringArray("boundary")]
+boundary = NodePath("../../../CameraBounds")
 
 [node name="AreaContactComponent" parent="PlayerEntity" unique_id=2091627273 instance=ExtResource("11_qn520")]
 groupToInclude = &"zones"
@@ -107,3 +109,5 @@ collision_mask = 0
 position = Vector2(-32, 40)
 shape = SubResource("RectangleShape2D_057rm")
 debug_color = Color(0, 0.6, 0.7, 0.1)
+
+[editable path="PlayerEntity/CameraComponent"]

@@ -70,9 +70,9 @@ func setPlayerPosition() -> void:
 ## Creates a [CameraComponent] if the player entity does not already have a camera, or just returns the existing camera.
 ## This avoids any jumps between different initial positions. See the [member shouldCreateCamera] flag.
 func setCamera() -> Camera2D:
-		var camera: Node = player.findFirstChildOfAnyTypes([Camera2D, CameraComponent], false) # !returnEntityIfNoMatches
-		if shouldCreateCamera and camera == null:
-			camera = player.createNewComponent(CameraComponent)
+		var camera: Node = player.getCamera()
+		if  shouldCreateCamera and camera == null:
+			player.createNewComponent(CameraComponent)
+			camera = player.getCamera() # Assign in a separate statement to make sure CameraComponent is ready
 			if debugMode: Debug.printDebug(str("setCamera() new: ", camera), self)
-		
 		return camera

@@ -31,7 +31,7 @@ extends Camera2D
 @export var shouldClampToBoundaryOnReady: bool = true
 
 ## The [Area2D] to clamp the camera's position within its rectangular bounds.
-## Setting this to `null` resets all sides to 10,000,000
+## Setting this to `null` resets all distances to 10,000,000
 @export var boundary: Area2D:
 	set(newValue):
 		if boundary != newValue:
@@ -77,7 +77,7 @@ extends Camera2D
 
 
 #region State
-var parent:			Node2D
+var parent:			Node2D # TBD: Support non-Node2D parents?
 var zoomFlipTimer:	float
 #endregion
 
@@ -185,7 +185,7 @@ func reattach(newParent: Node2D) -> bool: # Can't name it "reparent()" because G
 		Debug.printWarning(str("reattach(): Cannot reparent the camera to itself or a descendant: ", newParent), self)
 		return false
 
-	self.parent = self.get_parent()
+	self.parent = self.get_parent() # TBD: Support non-Node2D parents?
 	if parent == newParent: return true
 	if debugMode: Debug.printDebug(str("reattach(): ", parent, " → ", newParent, " @ camera global position: ", self.global_position), self)
 

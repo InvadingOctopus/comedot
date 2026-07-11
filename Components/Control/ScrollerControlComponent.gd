@@ -43,7 +43,8 @@ func _ready() -> void:
 	else:
 		printWarning("Missing entity.body: " + entity.logName)
 
-	if not self.camera: self.camera = entity.findFirstChildOfType(Camera2D)
+	if not self.camera:
+		self.camera = entity.getCamera()
 
 	self.set_physics_process(isEnabled) # Apply setter because Godot doesn't on initialization
 	Tools.connectSignal(characterBodyComponent.didMove, self.onCharacterBodyComponent_didMove)
