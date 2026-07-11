@@ -766,7 +766,8 @@ func getCamera() -> Camera2D:
 		if  self.camera == self: printLog("getCamera(): self")
 		else: printLog(str("getCamera(): ", camera))
 
-	if self.camera == null: printWarning("getCamera(): No Camera2D or CameraComponent/Camera found!")
+	if self.camera == null and debugMode: # Warning should be optional because the camera is sometimes optional, in cases like ScrollerControlComponent & PlayerSpawnPosition etc.
+		printWarning("getCamera(): No Camera2D or CameraComponent/Camera found!")
 	return self.camera
 
 #endregion
@@ -788,6 +789,7 @@ func callOnceThisFrame(function: Callable, arguments: Array = []) -> void:
 		self.set_physics_process(true) # PERFORMANCE: Clear the dictionary on the next frame, only once.
 
 #endregion
+
 
 #region Spawn Functions
 # TBD: Move to [NodeTools].gd?

@@ -39,11 +39,6 @@ var player: Entity: # PlayerEntity or TurnBasedPlayerEntity
 #endregion
 
 
-#region Dependencies
-const cameraComponentPath: String = "res://Components/Visual/CameraComponent.tscn"
-#endregion
-
-
 func _ready() -> void:
 	if player: setPlayerPosition()
 	else: GameState.playerReady.connect(self.onGameState_playerReady) # If there is no player yet, wait for one to be ready
@@ -67,12 +62,11 @@ func setPlayerPosition() -> void:
 		if shouldCreateCamera: setCamera()
 
 
-## Creates a [CameraComponent] if the player entity does not already have a camera, or just returns the existing camera.
+## Creates a [CameraComponent] if [member shouldCreateCamera] and the player entity does not already have a camera, or just returns the existing camera.
 ## This avoids any jumps between different initial positions. See the [member shouldCreateCamera] flag.
 func setCamera() -> Camera2D:
-		var camera: Node = player.getCamera()
-		if  shouldCreateCamera and camera == null:
-			player.createNewComponent(CameraComponent)
-			camera = player.getCamera() # Assign in a separate statement to make sure CameraComponent is ready
-			if debugMode: Debug.printDebug(str("setCamera() new: ", camera), self)
-		return camera
+	var camera: Camera2D = player.getCamera()
+	if  shouldCreateCamera and camera == null:
+		camera = player.createNewComponent(CameraComponent).camera
+		if debugMode: Debug.printDebug(str("setCamera() new: ", camera), self)
+	return camera

@@ -6,11 +6,6 @@
 [node name="CameraComponent" type="Node2D" unique_id=2098662827 groups=["components"]]
 editor_description = "Wraps an enhanced Camera2D with the Camera.gd script. Enable \"Editable Children\" to access the Camera2D."
 script = ExtResource("1_a757b")
-shouldNotifyOnEntityReady = null
-allowSubclassesWhenCheckingRequirements = null
-allowNonEntityParent = true
-debugMode = null
-debugModeTrace = null
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1997418455]
 process_callback = 0

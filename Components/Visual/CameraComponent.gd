@@ -26,8 +26,7 @@ extends Component
 ## Optional: The relative path to the parent node that the [Camera2D] should be reparented to when the [Entity] is removed.
 ## If empty, the camera reattaches to this component's grandparent node (the entity's parent)
 ## or the scene's root node.
-## IMPORTANT: The path must resolve to a [Node2D] or one of its subclasses.
-@export_node_path("Node2D") var reparentPath: NodePath = "../.." # Default: Relative from Component → Entity → Entity's Parent
+@export_node_path("Node") var reparentPath: NodePath = "../.." # Default: Relative from Component → Entity → Entity's Parent
 
 #endregion
 
@@ -77,7 +76,7 @@ func reattachCamera() -> bool:
 
 	if debugMode:  printDebug(str("reattachCamera() reparentPath: ", reparentPath))
 
-	var newParent: Node2D
+	var newParent: Node
 
 	# First, have we manually chosen a stepparent?
 	# NOTE: Do NOT automatically fallback if there is a path specified, that could cause unexpected behavior at runtime:
@@ -88,7 +87,7 @@ func reattachCamera() -> bool:
 	# Otherwise, look for other nodes to adopt the camera
 	else:
 		# Does this component have a valid parent? i.e. the entity
-		var currentParent: Node2D = self.get_parent()
+		var currentParent: Node = self.get_parent()
 		# Then use the entity's parent as the new parent for the camera
 		if currentParent: newParent = currentParent.get_parent()
 		# Otherwise just yeet the camera to the scene root

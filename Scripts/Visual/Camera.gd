@@ -12,6 +12,7 @@ extends Camera2D
 #region Parameters
 
 ## Shifts the camera's [member Node2D.position] in relation to the mouse position on every frame.
+## IMPORTANT: The camera's parent must be  a [Node2D]
 ## TIP: This effectively puts the entity on the opposite side of the screen when the mouse pointer is at the screen's edge.
 ## TIP: The caller should reset [member Camera2D.offset] when enabling and reset [member Node2D.position] when disabling.
 ## NOTE: Suppressed by [member shouldLookAhead]
@@ -77,13 +78,13 @@ extends Camera2D
 
 
 #region State
-var parent:			Node2D # TBD: Support non-Node2D parents?
+var parent:			Node
 var zoomFlipTimer:	float
 #endregion
 
 
 func _ready() -> void:
-	parent = self.get_parent() as Node2D
+	parent = self.get_parent()
 	if shouldClampToBoundaryOnReady and boundary: clampToBoundary()
 
 	var shouldUpdateEveryFrame: bool = (shouldTrackMouse and not shouldLookAhead) or shouldBounceZoom
@@ -131,10 +132,10 @@ func unclampFromBoundary() -> void:
 
 func _process(delta: float) -> void:
 	# NOTE: Cannot use `_input()` for updating position only on mouse events, because it causes erratic behavior.
-	if shouldTrackMouse and not shouldLookAhead:
+	if shouldTrackMouse and not shouldLookAhead and parent is Node2D:
 		# Position the camera halfway between the entity/parent node's origin and the mouse.
 		# NOTE: This effectively puts the entity/parent on the opposite side of the screen when the mouse pointer is at the screen's edge.
-		self.position = parent.to_local(self.get_global_mouse_position()) * 0.5 # DESIGN: Missing `parent` should crash
+		self.position = parent.to_local(self.get_global_mouse_position()) * 0.5
 
 	# Woop Zoop
 	if shouldBounceZoom and not is_zero_approx(delta):
@@ -168,7 +169,7 @@ func _input(event: InputEvent) -> void:
 ## Detaches this camera from its current parent and reattaches it to [param newParent] while maintaining the current view position & rotation.
 ## TIP: Useful for preventing the camera from resetting/jumping when the player dies etc.
 ## Returns `true` if the camera is successfully moved to or is already attached to [param newParent]
-func reattach(newParent: Node2D) -> bool: # Can't name it "reparent()" because Godot already has a function with that name
+func reattach(newParent: Node) -> bool: # Can't name it "reparent()" because Godot already has a function with that name
 	if not self.is_inside_tree():
 		Debug.printWarning("reattach(): Camera is not inside the SceneTree", self)
 		return false
@@ -185,7 +186,7 @@ func reattach(newParent: Node2D) -> bool: # Can't name it "reparent()" because G
 		Debug.printWarning(str("reattach(): Cannot reparent the camera to itself or a descendant: ", newParent), self)
 		return false
 
-	self.parent = self.get_parent() # TBD: Support non-Node2D parents?
+	self.parent = self.get_parent()
 	if parent == newParent: return true
 	if debugMode: Debug.printDebug(str("reattach(): ", parent, " → ", newParent, " @ camera global position: ", self.global_position), self)
 
@@ -206,7 +207,7 @@ func reattach(newParent: Node2D) -> bool: # Can't name it "reparent()" because G
 	self.reset_physics_interpolation()
 	self.force_update_scroll()
 
-	parent = self.get_parent() as Node2D
+	parent = self.get_parent()
 	if debugMode: Debug.printDebug(str("New camera position: ", self.position, ", global: ", self.global_position), self)
 	return true
 
