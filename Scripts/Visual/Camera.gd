@@ -1,6 +1,6 @@
 ## Adds extra features and conveniences to [Camera2D] such as clamping within an [Area2D], look ahead,
 ## and attaching to a different parent node while retaining the view position, e.g. for when the player dies etc.
-## TIP: Use [CameraComponent] for [Entity]s such as the player character.
+## TIP: Use [CameraComponent] for [Entity] nodes such as the player character.
 
 class_name Camera
 extends Camera2D
@@ -12,7 +12,7 @@ extends Camera2D
 #region Parameters
 
 ## Shifts the camera's [member Node2D.position] in relation to the mouse position on every frame.
-## IMPORTANT: The camera's parent must be  a [Node2D]
+## IMPORTANT: The camera's parent must be a [Node2D]
 ## TIP: This effectively puts the entity on the opposite side of the screen when the mouse pointer is at the screen's edge.
 ## TIP: The caller should reset [member Camera2D.offset] when enabling and reset [member Node2D.position] when disabling.
 ## NOTE: Suppressed by [member shouldLookAhead]
@@ -32,7 +32,7 @@ extends Camera2D
 @export var shouldClampToBoundaryOnReady: bool = true
 
 ## The [Area2D] to clamp the camera's position within its rectangular bounds.
-## Setting this to `null` resets all distances to 10,000,000
+## Setting this to `null` resets all limits to ±10,000,000
 @export var boundary: Area2D:
 	set(newValue):
 		if boundary != newValue:
@@ -55,14 +55,14 @@ extends Camera2D
 			self.set_process_input(shouldLookAhead)
 			self.set_process((shouldTrackMouse and not shouldLookAhead) or shouldBounceZoom)
 
-## How far the [member shouldLookAhead] target (mouse pointer) should be from the center of the screen
-## for the camera offset to start moving towards the edge of the screen.
+## How far the [member shouldLookAhead] target (mouse pointer) must be from the center of the screen
+## for the camera offset to start moving toward the edge of the screen.
 ## @experimental
-@export var lookAheadDeadZone: float = 64
+@export_range(0, 1024, 2) var lookAheadDeadZone: float = 64
 
 @export_group("Zoom Bounce")
 
-## "Bounces" or "headbangs" the camera zoom back and forth in and out of the screen.
+## "Bounces" or "headbangs" the camera's zoom back and forth in and out of the screen.
 ## TIP: Useful for inducing dizziness.
 ## @experimental
 @export var shouldBounceZoom: bool = false:
@@ -71,8 +71,8 @@ extends Camera2D
 			shouldBounceZoom = newValue
 			self.set_process((shouldTrackMouse and not shouldLookAhead) or shouldBounceZoom)
 
-@export_range(0.0, 10.0, 0.05) var zoomTimerMax:  float = 0.2 ## The number/fraction of seconds for the zoom direction to flip between "in" and "out".
-@export_range(0.0, 10.0, 0.05) var zoomDirection: float = 0.2 ## The distance/intensity of the zoom. Swaps sign/"direction" during runtime.
+@export_range(0.0, 10.0, 0.05) var zoomTimerMax:  float = 0.2 ## The duration, in seconds, before the zoom direction reverses.
+@export_range(0.0, 10.0, 0.05) var zoomDirection: float = 0.2 ## The zoom change per second. Its sign reverses whenever [member zoomTimerMax] elapses.
 
 #endregion
 
@@ -101,7 +101,7 @@ func _ready() -> void:
 func clampToBoundary() -> void:
 	if not boundary: return
 
-	# DESIGN: Do NOT attempt to fix or undo invalid boundaries; an Area2D may change later and the caller can repeat clampToBoundary at any time.
+	# DESIGN: Do NOT attempt to fix or undo invalid boundaries; an Area2D may change later, and the caller can repeat clampToBoundary() at any time.
 	# DESIGN: Do NOT automatically unclamp: Silently allowing the player to access a wider area may lead to more bugs!
 
 	var areaRectangle: Rect2 = CollisionTools.getAllShapeGlobalBounds(boundary)
@@ -109,10 +109,13 @@ func clampToBoundary() -> void:
 		Debug.printWarning(str("clampToBoundary(): Cannot get a Rect2 from Area2D: ", boundary), self)
 		return
 
-	self.limit_left		= int(areaRectangle.position.x)
-	self.limit_top		= int(areaRectangle.position.y)
-	self.limit_right	= int(areaRectangle.end.x)
-	self.limit_bottom	= int(areaRectangle.end.y)
+	# NOTE: Don't use int(): Round each edge inward to keep the camera within fractional boundaries
+	# Minimum edges round upward: 200.5 → 201
+	self.limit_left		= ceili(areaRectangle.position.x)
+	self.limit_top		= ceili(areaRectangle.position.y)
+	# Maximum edges round downward: 400.5 → 400
+	self.limit_right	= floori(areaRectangle.end.x)
+	self.limit_bottom	= floori(areaRectangle.end.y)
 
 	self.reset_smoothing() # Snap immediately
 
@@ -169,7 +172,7 @@ func _input(event: InputEvent) -> void:
 ## Detaches this camera from its current parent and reattaches it to [param newParent] while maintaining the current view position & rotation.
 ## TIP: Useful for preventing the camera from resetting/jumping when the player dies etc.
 ## Returns `true` if the camera is successfully moved to or is already attached to [param newParent]
-func reattach(newParent: Node) -> bool: # Can't name it "reparent()" because Godot already has a function with that name
+func reattach(newParent: Node) -> bool: # Can't name it "reparent()" because Godot already has a method with that name
 	if not self.is_inside_tree():
 		Debug.printWarning("reattach(): Camera is not inside the SceneTree", self)
 		return false
@@ -190,22 +193,52 @@ func reattach(newParent: Node) -> bool: # Can't name it "reparent()" because God
 	if parent == newParent: return true
 	if debugMode: Debug.printDebug(str("reattach(): ", parent, " → ", newParent, " @ camera global position: ", self.global_position), self)
 
+	# Save the rendered view first, because align() changes Camera2D's internal target
+	var previousScreenCenter:		Vector2	= self.get_screen_center_position()
+	var previousScreenRotation:		float	= self.get_screen_rotation()
+	var previousRotationSmoothing:	bool	= self.rotation_smoothing_enabled
+
+	self.align()
+
 	# Meet the new parent
 	self.owner = null
-	if self.parent: super.reparent(newParent) # reparent() requires a current parent
-	else: newParent.add_child(self)
+	super.reparent(newParent) # reparent() requires a current parent, which's already guarded by is_inside_tree()
 	self.set_owner(newParent)
 
 	if self.get_parent() != newParent:
 		Debug.printWarning(str("reattach() failed to reparent camera to: ", newParent), self)
 		return false
 
-	# TODO: Save & restore the position, rotation etc. to avoid a "jump"
+	# Make the rendered rotation the new target rotation
+	if not self.ignore_rotation:
+		self.rotation_smoothing_enabled = false # Update immediately
+		self.global_rotation = previousScreenRotation
+
+	# Restore the camera's target under the new parent
 
 	self.align()
-	self.reset_smoothing()
+	var cameraTargetOffset:		Vector2 = self.get_target_position() - self.global_position # The difference between the camera node's origin and its target, caused by drag margins etc.
+	var restoredTargetPosition:	Vector2 = previousScreenCenter - self.offset # Remove the offset because it'll be reapplied later
+
+	# If the anchor mode is top-left, convert our saved screen center into a top-left target position
+	if self.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT:
+		# by subtracting half of the transformed viewport
+		var halfScreenSize: Vector2 = self.get_viewport_rect().size * 0.5 / self.zoom
+		if not self.ignore_rotation: # Account for rotation
+			halfScreenSize = halfScreenSize.rotated(previousScreenRotation)
+		restoredTargetPosition -= halfScreenSize
+
+	self.global_position = restoredTargetPosition - cameraTargetOffset
+
+	# Update the internal target, smoothing, and interpolation state
+	self.align()
+	self.reset_smoothing() # NOTE: Only works if `position_smoothing_enabled`
 	self.reset_physics_interpolation()
-	self.force_update_scroll()
+	self.force_update_scroll() # Apply the reset smoothing state immediately
+
+	# Restore the previous settings
+	if not self.ignore_rotation:
+		self.rotation_smoothing_enabled = previousRotationSmoothing
 
 	parent = self.get_parent()
 	if debugMode: Debug.printDebug(str("New camera position: ", self.position, ", global: ", self.global_position), self)
