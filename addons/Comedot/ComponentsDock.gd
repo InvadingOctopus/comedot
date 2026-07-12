@@ -72,6 +72,8 @@ const componentScriptTemplate	:= "res://Templates/Scripts/Component/ComponentTem
 const componentIcon				:= preload("res://Assets/Icons/Component.svg")
 const createComponentIcon		:= preload("res://Assets/Icons/Component.svg") # EditorInterface.get_editor_theme().get_icon("Add", "EditorIcons")
 
+const searchComponentsShortcut	:= preload("res://addons/Comedot/SearchComponentsShortcut.tres")
+
 #endregion
 
 #region Icons
@@ -513,14 +515,23 @@ func onDebugReloadButton_pressed() -> void:
 	reloadPlugin.call_deferred() # Let it chill before reloading?
 
 
+func reloadPlugin() -> void:
+	printLog("reloadPlugin")
+	EditorInterface.set_plugin_enabled(Global.frameworkTitle, false)
+	EditorInterface.set_plugin_enabled(Global.frameworkTitle, true)
+
+#endregion
+
+
+#region Input Events
+
 func onComponentsTree_guiInput(event: InputEvent) -> void:
 	if event is not InputEventKey or not event.is_pressed() or event.is_echo(): return
 
 	# NOTE: accept_event() suppresses propogation even to _unhandled_input()
 
 	if EditorInterface.get_editor_settings().is_shortcut("editor/open_search", event):
-		%TreeSearchBox.grab_focus()
-		%TreeSearchBox.select_all()
+		focusSearchBox()
 		accept_event() # A wrapper in [Control] for set_input_as_handled()
 		return
 
@@ -531,13 +542,23 @@ func onComponentsTree_guiInput(event: InputEvent) -> void:
 		KEY_BACKSPACE, KEY_DELETE:
 			if hideSelectedComponentRow():
 				accept_event()
-				get_viewport().set_input_as_handled()
 
 
-func reloadPlugin() -> void:
-	printLog("reloadPlugin")
-	EditorInterface.set_plugin_enabled(Global.frameworkTitle, false)
-	EditorInterface.set_plugin_enabled(Global.frameworkTitle, true)
+func _shortcut_input(event: InputEvent) -> void:
+	if not self.is_visible_in_tree() \
+	or not searchComponentsShortcut \
+	or not event.is_pressed() \
+	or event.is_echo():
+		return
+
+	if searchComponentsShortcut is Shortcut and searchComponentsShortcut.matches_event(event):
+		focusSearchBox()
+		accept_event()
+
+
+func focusSearchBox() -> void:
+	%TreeSearchBox.grab_focus()
+	%TreeSearchBox.select_all()
 
 #endregion
 
