@@ -151,7 +151,8 @@ var fileSystem:	EditorFileSystem:
 
 var selection:	EditorSelection
 var inspector:  EditorInspector
-
+var undoManager:EditorUndoRedoManager
+	
 @onready var componentsTree:			Tree		= %ComponentsTree
 @onready var newComponentDialog: ConfirmationDialog = $NewComponentDialog
 @onready var newComponentNameTextBox:	LineEdit	= %NewComponentNameTextBox
@@ -215,6 +216,8 @@ func setupUI() -> void:
 	onSelection_selectionChanged() # Trigger a "fake" event to update the UI for first time, to reflect the initial state 
 	if not selection.selection_changed.is_connected(self.onSelection_selectionChanged):
 		selection.selection_changed.connect(self.onSelection_selectionChanged)
+
+	undoManager = plugin.get_undo_redo()
 
 	# Start listening for keyboard shortcuts after everything is ready
 	if not componentsTree.gui_input.is_connected(self.onComponentsTree_guiInput):
@@ -595,22 +598,11 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if debugMode: printLog(str("addNewEntity(): ", newEntity))
 
 	# Add the new Entity to the selected parent node
-	EditorInterface.edit_node(parentNode)
-	parentNode.add_child(newEntity, true) # force_readable_name
-	newEntity.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Entity is added to the SCENE but not to the scene TREE dock.
-
-	# Select the new Entity in the Editor, so the user can quickly modify it and add Components to it.
-	selection.clear()
-	selection.add_node(newEntity)
-	EditorInterface.edit_node(newEntity)
+	# via the EditorUndoRedoManager
+	undoableAddNode(parentNode, newEntity, "Add Entity: " + newEntity.name)
 	# EditorInterface.set_script(preload(entityBaseScript)) # TBD: Needed?
-	# TODO: Set the focus to the Scene Tree Dock
 
 	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
-
-	# Expose the sub-nodes of the new Entity to make it easier to modify any, if needed.
-	if shouldShowEditableChildren and newEntity.get_child_count() > 0:
-		newEntity.get_parent().set_editable_instance(newEntity, shouldShowEditableChildren)# get_parent() because this must be set on the entity's parent node. # Not hardcoding `true` hides children if that option is disabled, in case they were automatically shown somehow.
 
 
 func getSelectedComponentAndAddToSelectedNode() -> void:
@@ -655,18 +647,8 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 	if debugMode: printLog(str(newComponentNode))
 
 	# Add the Component to the selected Entity
-	EditorInterface.edit_node(parentNode)
-	parentNode.add_child(newComponentNode, true) # force_readable_name
-	newComponentNode.owner = EditorInterface.get_edited_scene_root() # NOTE: For some reason, using `parentNode` directly does not work; the Component is added to the SCENE but not to the Scene Dock TREE.
-
-	# Select the new Component in the Editor, so the user can quickly modify it in the Inspector.
-	selection.clear()
-	selection.add_node(newComponentNode)
-	EditorInterface.edit_node(newComponentNode)
-
-	# Expose the sub-nodes of the new Component to make it easier to modify any, if needed.
-	if shouldShowEditableChildren and newComponentNode.get_child_count() > 0:
-		newComponentNode.get_parent().set_editable_instance(newComponentNode, shouldShowEditableChildren) # get_parent() because this must be set on the component's parent node. # Not hardcoding `true` hides children if that option is disabled, in case they were automatically shown somehow.
+	# via the EditorUndoRedoManager
+	undoableAddNode(parentNode, newComponentNode, "Add " + newComponentNode.name)
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
@@ -717,6 +699,7 @@ func validateNewComponentPath(folderPath: String, componentName: String) -> bool
 
 
 ## Returns the path of the new component's ".tscn" scene file if successful.
+## WARNING: This is NOT undo'able.
 func createNewComponentOnDisk(destinationFolderPath: String, newComponentName: String = "NewComponent") -> String:
 	# TODO: More reliable file/path naming and operations with no room for errors. File system work is nasty business!
 	# TBD:  Enforce valid & unique name
@@ -818,6 +801,43 @@ func editSelectedComponent() -> void:
 	EditorInterface.open_scene_from_path(scenePath)
 
 	# TBD: EditorInterface.edit_script(load(scriptPath)) # NOTE: Causes lag # TBD: CHECK: Is this the best way to tell the Script Editor to open a script?
+
+#endregion
+
+
+#region Undo/Redo
+
+func undoableAddNode(parentNode: Node, newNode: Node, actionName: String) -> void:
+	var sceneRoot: Node = EditorInterface.get_edited_scene_root()
+
+	undoManager.create_action(actionName)
+
+	# Add the new Entity or Component to the selected parent node
+	undoManager.add_do_method(parentNode, &"add_child", newNode, true) # force_readable_name
+	undoManager.add_do_method(newNode,    &"set_owner", sceneRoot) # The owner of the new Entity or Component must be the currently edited "scene root"
+
+	# Expose the sub-nodes of the new Entity or Component to make it easier to modify any if needed
+	if shouldShowEditableChildren and newNode.get_child_count() > 0:
+		# NOTE: set_editable_instance() must be called on the PARENT or ancestor node of the Entity or Component
+		# NOTE: Use `shouldShowEditableChildren` instead of `true` or `false` so that children are hidden when that option is disabled, in case the child nodes were already automatically shown somehow.
+		undoManager.add_do_method(parentNode,	&"set_editable_instance", newNode, shouldShowEditableChildren)
+		undoManager.add_undo_method(parentNode,	&"set_editable_instance", newNode, not shouldShowEditableChildren)
+
+	# DESIGN: Do not save/restore the list of selected nodes:
+	# The Godot Editor's own built-in Create New Node etc. actions also don't preserve the previous selection.
+	
+	# On undo, remove the newly-added Entity or Component
+	undoManager.add_undo_method(newNode,	&"set_owner",	null)
+	undoManager.add_undo_method(parentNode,	&"remove_child",newNode)
+	
+	undoManager.add_do_reference(newNode) # Make sure the newly created node CANNOT be freed while the undo history still needs it for redo
+	undoManager.commit_action() # Calls all `do` methods such as add_child() etc.
+	
+	# Select the new Entity or Component in the Editor, so the user can quickly modify it and add other nodes to it
+	selection.clear()
+	selection.add_node(newNode)
+	EditorInterface.edit_node(newNode)
+	# DESIGN: No need to focus the Scene Dock etc; just keep the current focus wherever it is, e.g. to let the user quickly move new Entities with the arrow keys etc.
 
 #endregion
 
