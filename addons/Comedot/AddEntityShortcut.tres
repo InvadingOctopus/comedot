@@ -1,0 +1,10 @@
+[gd_resource type="Shortcut" format=3 uid="uid://ttjxyy2n2yah"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_fw2ft"]
+device = -1
+command_or_control_autoremap = true
+shift_pressed = true
+keycode = 69
+
+[resource]
+events = [SubResource("InputEventKey_fw2ft")]

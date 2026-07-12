@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cbrbbrhqvd8i5" path="res://addons/Comedot/ComponentsDock.gd" id="1_otxly"]
 [ext_resource type="Texture2D" uid="uid://mq7hmubsa660" path="res://Assets/Icons/ComedotChibiIcon.svg" id="2_3crsp"]
+[ext_resource type="Shortcut" uid="uid://ttjxyy2n2yah" path="res://addons/Comedot/AddEntityShortcut.tres" id="3_6vyr6"]
 [ext_resource type="Texture2D" uid="uid://c5t1mt48576dk" path="res://Assets/Icons/Entity.svg" id="3_fn551"]
 [ext_resource type="PackedScene" uid="uid://jt8bd2lsvtyp" path="res://UI/TreeSearchBox.tscn" id="4_3crsp"]
 
@@ -9,15 +10,6 @@
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_3crsp"]
 blend_mode = 1
-
-[sub_resource type="InputEventKey" id="InputEventKey_x0w7g"]
-device = -1
-command_or_control_autoremap = true
-shift_pressed = true
-keycode = 69
-
-[sub_resource type="Shortcut" id="Shortcut_3crsp"]
-events = [SubResource("InputEventKey_x0w7g")]
 
 [node name="Comedot" type="Panel" unique_id=955267145]
 clip_contents = true
@@ -106,7 +98,7 @@ focus_next = NodePath("../../../TreeSearchBox")
 focus_previous = NodePath("../RefreshButton")
 focus_mode = 2
 toggle_mode = false
-shortcut = SubResource("Shortcut_3crsp")
+shortcut = ExtResource("3_6vyr6")
 text = "Add Entity"
 icon = ExtResource("3_fn551")
 flat = false
