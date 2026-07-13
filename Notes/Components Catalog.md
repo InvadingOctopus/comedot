@@ -101,7 +101,7 @@ An index of reusable Components in Comedot's shared library, to help humans and 
 * AttachmentComponent: Keeps another Node2D or Entity positioned at this component every frame. For mount/rider gameplay, use RideableComponent.
 * ChaseComponent: Drives movement toward another Node2D by setting InputComponent.movementDirection. Use NavigationComponent when pathfinding around obstacles is needed.
 * IndependentPathFollowComponent: Moves an Entity along a Path2D without PathFollow2D so multiple Entities can have independent progress on the same path.
-* LinearMotionComponent: Moves an Entity in a straight line using the Entity rotation and direct position updates. Good for simple high-count projectiles.
+* LinearMotionComponent: Directly moves an Entity using its rotation or an override direction. Good for simple high-count projectiles.
 * NavigationComponent: NavigationAgent2D component for pathfinding toward a target while avoiding obstacles. Falls back to direct movement when no InputComponent is available.
 * PathFollowComponent: Moves an Entity by advancing a PathFollow2D parent along a Path2D. Use IndependentPathFollowComponent when multiple Entities need independent positions on one path.
 * PlatformerPatrolComponent: Writes horizontal patrol input for platformer enemies that walk back and forth on floors. Requires CornerCollisionComponent for edge/wall awareness.
