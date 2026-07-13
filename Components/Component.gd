@@ -391,7 +391,8 @@ static func castOrFindComponent(node: Node, componentType: GDScript, findInEntit
 
 ## If `true`, all calls to [method Component.printDebug] are forwarded to [method Debug.printTrace] which includes a list of the recent function calls and a highlighted color.
 ## This may help with quickly tracking a specific issue in specific components.
-## NOTE: Ignores `debugMode = false` i.e. [method printDebug] calls are always printed.
+## NOTE: By default, this ignores `debugMode = false` i.e. [method printDebug] calls are always printed.
+## NOTE: PERFORMANCE: Component subclasses may still check `if debugMode` before each `print…()` to avoid extra calls.
 @export var debugModeTrace:	bool
 
 ## Defaults to the entity's [member Entity.isLoggingEnabled] if initially `false`.
