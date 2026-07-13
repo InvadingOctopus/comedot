@@ -2,6 +2,7 @@
 ## Also reattaches the camera to another parent node when this component's [Entity] is destroyed,
 ## e.g. to prevent the on-screen view from resetting when the player dies.
 ## TIP: To access the underlying [Camera2D], enable "Editable Children" in the Godot Editor.
+## TIP: To shift the camera's focus by a fixed amount without modifying any [Camera2D] properties, move this component's node itself.
 ## TIP: For non-component scripts for standalone [Camera2D] nodes, use `/Scripts/Visual/Camera.gd` directly.
 ## ALERT: BUG: There may be an initial lag or unintended pan at the start of a scene as the [Camera2D] moves to its parent node's position, especially when [member Camera2D.position_smoothing_enabled] is `true`
 ## WORKAROUND: To avoid this initial lag, add a standalone [Camera2D] outside the player [Entity], at the same position as this [CameraComponent],
