@@ -40,7 +40,7 @@ metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
 atlas = ExtResource("13_jt7ij")
 region = Rect2(400, 112, 16, 16)
 
-[sub_resource type="Resource" id="Resource_yw4eo"]
+[sub_resource type="Resource" id="Resource_446ob"]
 resource_local_to_scene = true
 script = ExtResource("3_a6r0q")
 max = 10000
@@ -88,7 +88,10 @@ shape = SubResource("RectangleShape2D_b0rrs")
 
 [node name="SpawnTimer" parent="SpawnArea" index="1" unique_id=1938618345]
 wait_time = 10.0
+
+[node name="Spawner" parent="SpawnArea/SpawnTimer" index="0" unique_id=294035238]
 sceneToSpawn = "uid://ks8fhlam1j34"
+spawnInSceneRoot = true
 groupToAddTo = &"ghosts"
 maxLimitInGroup = 2
 
@@ -128,8 +131,11 @@ factions = 8
 autoFire = true
 bulletTemplate = ExtResource("15_lbdmr")
 
+[node name="GunSprite" parent="ArmedMonsterEntity/GunComponent" index="0" unique_id=750546687]
+position = Vector2(16, 0)
+
 [node name="CooldownTimer" parent="ArmedMonsterEntity/GunComponent" index="1" unique_id=57790064]
-cooldownMilliseconds = SubResource("Resource_yw4eo")
+cooldownMilliseconds = SubResource("Resource_446ob")
 
 [node name="InputComponent" parent="ArmedMonsterEntity" unique_id=1081696626 instance=ExtResource("17_446ob")]
 isPlayerControlled = false
@@ -145,6 +151,7 @@ shape = SubResource("RectangleShape2D_446ob")
 [editable path="RadiationZoneEntity/DamageComponent"]
 [editable path="RadiationZoneEntity/DamageRepeatingComponent"]
 [editable path="SpawnArea"]
+[editable path="SpawnArea/SpawnTimer"]
 [editable path="PlayerEntityTemplate-OverheadCombat"]
 [editable path="PlayerEntityTemplate-OverheadCombat/CameraComponent"]
 [editable path="PlayerEntityTemplate-OverheadCombat/GunComponent"]
