@@ -16,6 +16,8 @@ Detailed Description:
 
 Basically standard Godot nodes but for gameplay.
 
+[![Godot v4.7+](https://img.shields.io/badge/Godot-v4.7%2B-478CBF)](https://godotengine.org/download/archive/ "Requires Godot 4.7+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
+
 * Includes over 120 components for platformer/overhead/tile-based movement, combat, interactions, inventory, abilities etc.
 * Support for turn-based gameplay & components that can be combined with real-time stuff.
 * Templates for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
@@ -25,6 +27,8 @@ Basically standard Godot nodes but for gameplay.
 * Over 140 scripts containing helper functions & automations for common tasks like creating animation frames etc.
 * Debugging tools like pretty logs & realtime charts for monitoring variables.
 * Meatcrafted well-documented components that can be Lego'ed together by AI to create various kinds of gameplay. \**(Comedot itself has no AI-generated code.)*
+
+<br/>
 
 ----
 💡 *Even if you don't need the entire template, you can cherry-pick specific code to use in your own scripts.*
@@ -38,12 +42,12 @@ Font: **Jayvee Enaguas (HarvettFox96)'s Pixel Operator** https://www.dafont.com/
 
 ```
 
-Tags:			ECS, Components, Template, 2D, Pixel Art
+Tags:			ECS, Components, Template, Framework, 2D
 Type:			Templates
 License:		MIT
 Source Code:	https://github.com/invadingoctopus/comedot
 
-AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews. AGENTS.md provided for other users who want AI assistance.
+AI Disclosure:	No AI generated code or assets! Codex AI used for code reviews. AGENTS.md provided for users who want AI assistance.
 
 
 ## Media

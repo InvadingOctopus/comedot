@@ -2,6 +2,8 @@
 
 ![Godot+Comedot Logo][logo]
 
+[![Godot v4.8+][godot-badge]][godot-download] [![Comedot][release-badge]][comedot-releases]
+
 **The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters.
 
 _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
@@ -81,8 +83,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 	3. Modify component parameters in the Inspector sidebar.
 	4. Save that entity+components subtree as a standalone scene file, to organize it separately from the main "world scene" and quickly create copies of it anywhere.
 
-> [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
+<br/>
 
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**  
@@ -90,6 +91,9 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 > [Agents.md][agents] contains instructions for AI assistants that may also be helpful for meat-based coders.  
 >
 > 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
+
+> [!WARNING]
+> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
 <br/>
 
@@ -118,9 +122,14 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [todo]:			ToDo.md
 [tools]:		Scripts/Tools/Tools.gd
 
-[godot]: https://github.com/godotengine/godot "Godot Game Engine"
+[godot]: https://godotengine.org "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
+
+[godot-badge]:		https://img.shields.io/badge/Godot-v4.8%2B-478CBF
+[godot-download]:	https://godotengine.org/download/archive/ "Requires Godot 4.8+"
+[release-badge]:	https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000
+[comedot-releases]:	https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release"
 
 [logo]: Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png "🌳 Example Components Tree for a Player Entity"
