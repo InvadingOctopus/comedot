@@ -1,5 +1,5 @@
 ## Uses a [SpawnTimer] to creates copies of the specified Scene at a specific position on regular intervals.
-## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer] child node to choose which scene to copy and modify spawn parameters.
+## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer]'s [Spawner] child node to choose which scene to copy and modify spawn parameters.
 ## TIP: See [SpawnArea] or [SpawnEdge] to spawn at random positions inside broad regions.
 
 class_name SpawnPoint
@@ -7,11 +7,12 @@ extends Marker2D
 
 
 #region State
+@onready var spawner:	 Spawner	= $SpawnTimer/Spawner
 @onready var spawnTimer: SpawnTimer = $SpawnTimer
 #region
 
 
-func onSpawnTimer_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
+func onSpawner_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
 	# If we're the parent, just spawn at wherever this SpawnPoint is
 	if parent == self:
 		newSpawn.position = Vector2.ZERO

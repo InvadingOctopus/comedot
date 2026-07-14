@@ -1,6 +1,6 @@
 ## Adds [SpawnPoint]s at the 8 cardinal+ordinal directions on the screen's edge,
 ## and [SpawnArea]s just outside the 4 screen edges.
-## NOTE: To set the scenes to spawn and other parameters, enable "Editable Children" to access all the underlying [SpawnTimer]s,
+## NOTE: To set the scenes to spawn and other parameters, enable "Editable Children" to access all the underlying [SpawnTimer]s & their [Spawner] child nodes which do the core work,
 ## or subclass this script or use another script to access the [member spawnTimers] list, or control each `%N`, `%NArea` etc. node individually.
 ## TIP: If this script is attached to a [CanvasLayer], the Spawners will stay fixed at the edges even as the player/camera moves and the map scrolls.
 ## TIP: Ideal for spawning enemies just outside the view in scrolling shoot-em-ups etc.
@@ -33,6 +33,7 @@ extends Node
 
 ## A list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
 ## with the points in clockwise order from NW (0,0) then the areas.
+## Each [SpawnTimer] contains a [Spawner] child node.
 var spawnTimers: Array[SpawnTimer]
 
 #endregion
@@ -42,6 +43,7 @@ var spawnTimers: Array[SpawnTimer]
 
 func _enter_tree() -> void:
 	spawnTimers = getAllSpawnTimers()
+	validateSpawners()
 	setSpawnerParents() # Apply our `parentOverride` before the Spawners' _ready()
 
 
@@ -51,6 +53,7 @@ func _ready() -> void:
 
 ## Returns a list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
 ## with the points in clockwise order from NW (0,0) then the areas.
+## This is a separate method so it can be called when this script is ready.
 ## NOTE: Does NOT rebuild [member spawnTimers] in case a script wants to modify either list separately.
 func getAllSpawnTimers() -> Array[SpawnTimer]:
 	return [
@@ -69,6 +72,12 @@ func getAllSpawnTimers() -> Array[SpawnTimer]:
 		]
 
 
+## Enables or disables all [SpawnTimer]s based on whether they have a valid [member Spawner.sceneToSpawn] or not.
+func validateSpawners() -> void:
+	for spawnTimer: SpawnTimer in spawnTimers:
+		spawnTimer.isEnabled = spawnTimer.spawner.validateSceneToSpawn()
+
+
 func setSpawnerParents() -> void:
 	var spawnParent: Node = self.parentOverride
 	# If no `parentOverride` is provided and we're a CanvasLayer, use our parent
@@ -78,7 +87,7 @@ func setSpawnerParents() -> void:
 	if not spawnParent: return
 
 	for spawnTimer: SpawnTimer in self.spawnTimers:
-		spawnTimer.parentOverride = spawnParent
+		spawnTimer.spawner.parentOverride = spawnTimer.spawner.get_path_to(spawnParent)
 
 
 ## Sets the positions of all the [SpawnPoint]s and [SpawnArea]s,

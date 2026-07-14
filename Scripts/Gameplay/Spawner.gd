@@ -1,7 +1,8 @@
 ## A [Node] that creates copies of a specified Scene as new children of itself or another node as their parent.
 ## NOTE: To actually spawn anything, some other script or Signal must call [member spawn]
-## TIP: Use subclasses such as [SpawnTimer] or [RandomSpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
+## TIP: This script may be replaced with subclasses such as [RandomSpawner] to pick from a list of possible spawns etc.
 ## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
+## TIP: Use [SpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
 
 class_name Spawner
 extends Node
@@ -14,8 +15,9 @@ extends Node
 ## The path of the Scene to spawn copies of.
 @export_file("*.tscn") var sceneToSpawn: String # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
 
-## The parent node to add the new spawns to. If `null`, the spawns will be added as children of this [Spawner] node itself.
-@export var parentOverride:		Node
+## The path to the node that will be the parent of new spawns.
+## If empty or invalid, spawns will be added to the parent of this [Spawner] node.
+@export var parentOverride:		NodePath = ^".."
 
 ## Suppresses [member parentOverride] and adds new spawned nodes as children of the current Scene's root node.
 @export var spawnInSceneRoot:	bool = false
@@ -68,13 +70,11 @@ signal didSpawn(newSpawn: Node2D, parent: Node)
 #endregion
 
 
+#region It's Alive!!
+
 ## Creates and returns a new instance of [member sceneToSpawn]
 func spawn() -> Node2D:
-	# Validate first...
-
-	if sceneToSpawn.is_empty():
-		Debug.printWarning("No sceneToSpawn", self)
-		return null
+	if not isEnabled or not validateSceneToSpawn(true): return null # printWarnings
 
 	# NOTE: <0 is ignored
 	if maxTotalToSpawn >= 0 \
@@ -117,13 +117,21 @@ func spawn() -> Node2D:
 			newSpawn.isLoggingEnabled = true
 			newSpawn.debugMode = true
 
-	# Add the new node to the parent
+	# Choose a parent
 
 	var parent: Node
 
-	if   spawnInSceneRoot: parent = self.get_tree().current_scene
-	elif parentOverride:   parent = parentOverride
-	else:				   parent = self
+	if spawnInSceneRoot:				parent = self.get_tree().current_scene
+	elif not parentOverride.is_empty():	parent = self.get_node_or_null(parentOverride)
+
+	# If neither the scene root or `parentOverride` are available, fall back to our parent
+	if not parent: 						parent = self.get_parent()
+
+	# Still an orphan? :(
+	if not parent:
+		Debug.printWarning(str("spawn() cannot find valid parent node for: ", newSpawn), self)
+		newSpawn.queue_free()
+		return null
 
 	# Let the game-specific subclasses, if any, verify & customize the new copies.
 
@@ -150,9 +158,26 @@ func spawn() -> Node2D:
 		newSpawn.queue_free()
 		return null
 
+#endregion
+
+
+#region Validation
+
+## Validates [member sceneToSpawn]
+## May be overridden by subclasses to add different checks.
+func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
+	# Log warnings only on `debugMode` to avoid noise if a caller is just checking
+	if sceneToSpawn.is_empty():
+		if printWarnings: Debug.printWarning("validateSceneToSpawn(): sceneToSpawn is empty", self)
+		return false
+
+	return true
+
 
 ## A method for subclasses to override. Prepares newly spawned node with further game-specific logic.
 ## May suppress the creation of a newly spawned node by checking additional conditions and returning `false`.
 @warning_ignore("unused_parameter")
 func validateNewNode(newSpawn: Node2D, parent: Node) -> bool:
 	return isEnabled
+
+#endregion

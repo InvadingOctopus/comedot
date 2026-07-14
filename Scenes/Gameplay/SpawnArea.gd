@@ -1,6 +1,6 @@
 ## Uses a [SpawnTimer] to creates copies of the specified Scene at a random position within an [Area2D] on regular intervals.
 ## Currently only optimized for rectangular area shapes.
-## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer] child node to choose which scene to copy and modify spawn parameters.
+## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer]'s [Spawner] child node to choose which scene to copy and modify spawn parameters.
 ## TIP: Use [SpawnEdge] to always spawn from the edges of the screen, even if the player/camera/map moves.
 
 class_name SpawnArea
@@ -16,12 +16,13 @@ extends Area2D
 
 
 #region State
+@onready var spawner:		 Spawner		  = $SpawnTimer/Spawner
 @onready var spawnTimer:	 SpawnTimer		  = $SpawnTimer
 @onready var spawnAreaShape: CollisionShape2D = $SpawnAreaShape
 #region
 
 
-func onSpawnTimer_willAddSpawn(newSpawn: Node, parent: Node) -> void:
+func onSpawner_willAddSpawn(newSpawn: Node, parent: Node) -> void:
 	# If spawning directly inside this Area2D just get a random position in local coordinates
 	if parent == self:
 		newSpawn.position = AreaTools.getRandomPositionInAreaBounds(self)

@@ -4,11 +4,15 @@
 [ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/Gameplay/SpawnTimer.tscn" id="2_bxqa7"]
 
 [node name="SpawnPoint" type="Marker2D" unique_id=232401123 groups=["spawners"]]
-editor_description = "A Marker2D point to spawn copies of a scene at. Enable \"Editable Children\" and edit SpawnTimer to choose scene.
+editor_description = "A Marker2D that wraps a SpawnTimer & Spawner to generate copies of other scenes at a specific position. Enable \"Editable Children\" to access Spawner settings.
 "
 script = ExtResource("1_ophw8")
 
-[node name="SpawnTimer" parent="." unique_id=333348527 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_bxqa7")]
-parentOverride = NodePath("../..")
+[node name="SpawnTimer" parent="." unique_id=333348527 instance=ExtResource("2_bxqa7")]
 
-[connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]
+[node name="Spawner" parent="SpawnTimer" index="0" unique_id=294035238]
+parentOverride = NodePath("../../..")
+
+[connection signal="willAddSpawn" from="SpawnTimer/Spawner" to="." method="onSpawner_willAddSpawn"]
+
+[editable path="SpawnTimer"]

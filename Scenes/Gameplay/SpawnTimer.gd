@@ -1,50 +1,56 @@
-## A [Timer] that creates copies of a specified Scene at regular intervals.
-## TIP: Use [RandomSpawnTimer] to spawn random scenes from a list.
+## A [Timer] with a [Spawner] child node that creates copies of a specified Scene at regular intervals.
 ## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
+## TIP: The [Spawner] script may be replaced with subclasses such as [RandomSpawner] etc.
 
 class_name SpawnTimer
-extends Spawner
+extends Timer
 
 
 #region Parameters
 
-## If `true` then a copy of [member sceneToSpawn] is spawned as soon as this spawner node os [method Node._ready] and then the [Timer] is started.
+@export var spawner: Spawner
+
+## If `true` then a copy of [member Spawner.sceneToSpawn] is spawned as soon as the [Spawner] is [method Node._ready] and then this [Timer] is started.
 @export var shouldSpawnOnReady: bool = false
 
-## Stops the [Timer] when set to `false`
-# @export var isEnabled: bool = true: # UNUSED: sigh GDScript can't override setters/getters :(
-# 	set(newValue):
-# 		if newValue != isEnabled:
-# 			isEnabled = newValue
-# 			self.paused = not isEnabled
-# 			if self.is_node_ready():
-# 				if isEnabled: selfAsTimer.start()
-# 				else: selfAsTimer.stop()
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			if spawner: spawner.isEnabled = self.isEnabled
+			if self.is_node_ready():
+				if isEnabled: self.start()
+				else: self.stop()
 
 #endregion
 
 
-#region State
-@onready var selfAsTimer: Timer = self.get_node(^".") as Timer
-#region
-
-
 func _ready() -> void:
-	if not spawnInSceneRoot and not parentOverride:
-		Debug.printWarning("No parentOverride; spawned children will be added to the Timer node itself. Set parentOverride to \"..\" or another parent.", self)
+	if not is_instance_valid(spawner):
+		Debug.printWarning("No spawner assigned!", self)
+		self.autostart = false
+		self.stop()
+		return
+
+	if  not spawner.spawnInSceneRoot \
+	and not spawner.parentOverride.is_empty() \
+	and not spawner.get_node_or_null(spawner.parentOverride):
+		Debug.printWarning("Spawner.parentOverride invalid; set `Spawner.parentOverride` to \"../..\" or another parent.", self)
+	elif spawner.get_node_or_null(spawner.parentOverride) == self:
+		# DESIGN: A Timer shouldn't have visible kids! Fix it even if `spawnInSceneRoot`
+		spawner.parentOverride = ^"../.."
+		if spawner.debugMode: Debug.printWarning(str("Spawner.parentOverride was set to this Timer node; changed to the parent of this Timer: ", self.get_parent()), self)
+
+	if not self.isEnabled or not spawner.isEnabled:
+		self.stop()
+		return
 
 	if shouldSpawnOnReady:
-		selfAsTimer.stop() # Stop the Timer
-		spawn.call_deferred() # Defer to avoid the error: "Parent node is busy setting up children, `add_child()` failed."
+		self.stop() # Stop the Timer just in case to prevent a double spawn etc.
+		spawner.spawn.call_deferred() # Defer to avoid the error: "Parent node is busy setting up children, `add_child()` failed."
 
-	Tools.connectSignal(selfAsTimer.timeout, self.onTimeout)
-	selfAsTimer.start() # Start the Timer after the initial spawn
+	self.start() # Start the Timer after the initial spawn
 
 
 func onTimeout() -> void:
-	spawn()
-
-
-func spawn() -> Node2D:
-	if not isEnabled: return null
-	return super.spawn()
+	if isEnabled: spawner.spawn()

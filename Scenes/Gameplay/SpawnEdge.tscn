@@ -21,7 +21,7 @@ resource_local_to_scene = true
 size = Vector2(32, 64)
 
 [node name="SpawnEdge" type="CanvasLayer" unique_id=1076406248]
-editor_description = "Adds SpawnPoints & SpawnAreas around the screen edges."
+editor_description = "Adds SpawnPoints & SpawnAreas fixed around the screen edges. Enable \"Editable Children\" to access Spawner settings."
 script = ExtResource("1_t8kyh")
 
 [node name="Points" type="Node2D" parent="." unique_id=401455543]
@@ -92,14 +92,26 @@ position = Vector2(16, 32)
 shape = SubResource("RectangleShape2D_idvps")
 
 [editable path="Points/NW"]
+[editable path="Points/NW/SpawnTimer"]
 [editable path="Points/N"]
+[editable path="Points/N/SpawnTimer"]
 [editable path="Points/NE"]
+[editable path="Points/NE/SpawnTimer"]
 [editable path="Points/E"]
+[editable path="Points/E/SpawnTimer"]
 [editable path="Points/SE"]
+[editable path="Points/SE/SpawnTimer"]
 [editable path="Points/S"]
+[editable path="Points/S/SpawnTimer"]
 [editable path="Points/SW"]
+[editable path="Points/SW/SpawnTimer"]
 [editable path="Points/W"]
+[editable path="Points/W/SpawnTimer"]
 [editable path="Areas/NArea"]
+[editable path="Areas/NArea/SpawnTimer"]
 [editable path="Areas/EArea"]
+[editable path="Areas/EArea/SpawnTimer"]
 [editable path="Areas/SArea"]
+[editable path="Areas/SArea/SpawnTimer"]
 [editable path="Areas/WArea"]
+[editable path="Areas/WArea/SpawnTimer"]

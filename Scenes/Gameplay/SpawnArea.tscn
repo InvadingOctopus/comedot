@@ -8,8 +8,7 @@ resource_local_to_scene = true
 size = Vector2(64, 64)
 
 [node name="SpawnArea" type="Area2D" unique_id=1390599236 groups=["spawners"]]
-editor_description = "An Area2D region to randomly spawn copies of a scene in. Enable \"Editable Children\" and edit SpawnTimer to choose scene.
-"
+editor_description = "An Area2D that wraps a SpawnTimer & Spawner to generate copies of other scenes at a random position within an Area2D. Enable \"Editable Children\" to access Spawner settings."
 collision_layer = 512
 collision_mask = 0
 monitoring = false
@@ -22,7 +21,11 @@ position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
-[node name="SpawnTimer" parent="." unique_id=1938618345 node_paths=PackedStringArray("parentOverride") instance=ExtResource("2_8imah")]
-parentOverride = NodePath("../..")
+[node name="SpawnTimer" parent="." unique_id=1938618345 instance=ExtResource("2_8imah")]
 
-[connection signal="willAddSpawn" from="SpawnTimer" to="." method="onSpawnTimer_willAddSpawn"]
+[node name="Spawner" parent="SpawnTimer" index="0" unique_id=294035238]
+parentOverride = NodePath("../../..")
+
+[connection signal="willAddSpawn" from="SpawnTimer/Spawner" to="." method="onSpawner_willAddSpawn"]
+
+[editable path="SpawnTimer"]
