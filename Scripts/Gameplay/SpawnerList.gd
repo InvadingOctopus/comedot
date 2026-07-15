@@ -16,6 +16,7 @@ extends Spawner
 
 #region State
 ## The index in [member scenesList] that will be used by the next [method spawn] call.
+## Wraps around to 0 after fetching the last index.
 @export_storage var currentSceneIndex: int:
 	set(newValue):
 		if newValue != currentSceneIndex:
