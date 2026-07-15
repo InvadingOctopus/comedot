@@ -27,7 +27,7 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-📜 *To see a full list of all the 120+ components and 140+ scripts, check* `/Notes/*Catalog.md`
+📜 *To see a full list of all the [120+][allComponents] components and [140+][allScripts] scripts, check* `/Notes/*Catalog.md`
 
 <br/>
 
@@ -80,7 +80,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 	1. Create a new **Entity** node: a `Node2D/Sprite2D/CharacterBody2D` etc. with the `Entity.gd` script attached.
 	2. Add **Component** child nodes to the entity. A component is also any `Node/Area2D` etc. with a script that `extends Component`
-	3. Modify component parameters in the Inspector sidebar.
+	3. Modify component parameters in the Inspector Dock.
 	4. Save that entity+components subtree as a standalone scene file, to organize it separately from the main "world scene" and quickly create copies of it anywhere.
 
 <br/>
@@ -121,6 +121,8 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [thanks]:		Thanks.md
 [todo]:			ToDo.md
 [tools]:		Scripts/Tools/Tools.gd
+[allComponents]:Notes/Components%20Catalog.md
+[allScripts]:	Notes/Scripts%20Catalog.md
 
 [godot]: https://godotengine.org "Godot Game Engine"
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
