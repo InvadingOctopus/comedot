@@ -13,7 +13,11 @@ extends Node
 #region Parameters
 
 ## The path of the Scene to spawn copies of.
-@export_file("*.tscn") var sceneToSpawn: String # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
+@export_file("*.tscn") var sceneToSpawn: String: # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
+	set(newValue):
+		if newValue != sceneToSpawn:
+			if debugMode: Debug.printChange("sceneToSpawn", sceneToSpawn, newValue, true) # logAsTrace
+			sceneToSpawn = newValue
 
 ## The path to the node that will be the parent of new spawns.
 ## If empty or invalid, spawns will be added to the parent of this [Spawner] node.
@@ -49,7 +53,7 @@ extends Node
 
 
 #region State
-var totalNodesSpawned: int
+@export_storage var totalNodesSpawned: int
 #region
 
 
