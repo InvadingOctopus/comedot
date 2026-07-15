@@ -1,7 +1,7 @@
 ## A subclass of [Spawner] that spawns copies of different scenes in succession from a given list,
 ## to generate enemy waves etc.
 ## TIP: To spawn from a "stack" where each scene is removed on spawn, use [SpawnerStack]
-## TIP: To choose a random scene from a set of "weighted" options, use [RandomSpawner]
+## TIP: To choose a random scene from a set of "weighted" options, use [SpawnerRandom]
 ## TIP: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [Spawner] script with this script.
 
 class_name SpawnerList

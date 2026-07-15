@@ -1,6 +1,6 @@
 ## A [Timer] with a [Spawner] child node that creates copies of a specified Scene at regular intervals.
 ## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
-## TIP: The [Spawner] script may be replaced with subclasses such as [RandomSpawner] etc.
+## TIP: The [Spawner] script may be replaced with subclasses such as [SpawnerRandom] etc.
 
 class_name SpawnTimer
 extends Timer

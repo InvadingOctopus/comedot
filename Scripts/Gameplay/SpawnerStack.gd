@@ -2,7 +2,7 @@
 ## Each scene is REMOVED on each [method spawn] call, and this Spawner stops after the list is empty.
 ## This may be ideal for generating enemy waves etc.
 ## TIP: To spawn from a sequential list without popping, use [SpawnerList]
-## TIP: To choose a random scene from a set of "weighted" options, use [RandomSpawner]
+## TIP: To choose a random scene from a set of "weighted" options, use [SpawnerRandom]
 ## TIP: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [Spawner] script with this script.
 
 class_name SpawnerStack

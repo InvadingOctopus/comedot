@@ -1,6 +1,6 @@
 ## A [Node] that creates copies of a specified Scene as new children of itself or another node as their parent.
 ## NOTE: To actually spawn anything, [method spawn] must be manually called from other scripts such as [SpawnTimer] or Signals etc.
-## TIP: This script may be replaced with subclasses such as [SpawnerList] or [RandomSpawner] etc. to use a list of different spawns etc.
+## TIP: This script may be replaced with subclasses such as [SpawnerList] or [SpawnerRandom] etc. to use a list of different spawns etc.
 ## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
 ## TIP: Use [SpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
 

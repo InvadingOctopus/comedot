@@ -2,7 +2,7 @@
 ## TIP: To use a non-random sequential list of scenes, use [SpawnerList]
 ## TIP: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [Spawner] script with this script.
 
-class_name RandomSpawner
+class_name SpawnerRandom
 extends Spawner
 
 
