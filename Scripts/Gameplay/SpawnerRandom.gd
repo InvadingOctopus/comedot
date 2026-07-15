@@ -12,21 +12,21 @@ extends Spawner
 ## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
 ## NOTE: Entries with weights <= 0 are ignored.
 ## IMPORTANT: [member spawnChance] is rolled BEFORE this list is used; if the roll doesn't succeed, then NO scene is spawned.
-@export var randomScenes: Dictionary[String, float]
+@export var scenes: Dictionary[String, float]
 
-## The chance percent rolled on every [method spawn] call BEFORE a scene is randomly chosen from [member randomScenes]
+## The chance percent rolled on every [method spawn] call BEFORE a scene is randomly chosen from [member scenes]
 @export_range(0, 100, 1, "suffix:%") var spawnChance: int = 100 # TBD: Should this be a float 0.0 to 1.0? or will that cause float comparison effery?
 
 #endregion
 
 
-## Overrides [method Spawner.spawn] to check [member spawnChance] then pick a random scene from [member randomScenes]
+## Overrides [method Spawner.spawn] to check [member spawnChance] then pick a random scene from [member scenes]
 ## The random scene path is "injected" into [member sceneToSpawn] before calling `super.spawn()`
 func spawn() -> Node2D:
 	if not isEnabled: return null # validateSceneToSpawn() will be checked by `super.spawn()`
 
-	if randomScenes.is_empty():
-		Debug.printWarning("spawn(): randomScenes is empty", self)
+	if scenes.is_empty():
+		Debug.printWarning("spawn(): `scenes` is empty", self)
 		return null
 
 	# Before choosing a random scene, roll to see if we should spawn anything at all or not
@@ -38,9 +38,9 @@ func spawn() -> Node2D:
 		return null
 
 	# Choose a random scene
-	var randomScenePath: String = Tools.pickRandomFromWeightsDictionary(randomScenes, "") as String
+	var randomScenePath: String = Tools.pickRandomFromWeightsDictionary(scenes, "") as String
 	if  randomScenePath.is_empty(): # Validate `randomScenePath` here because validateSceneToSpawn() doesn't
-		if debugMode: Debug.printWarning("spawn(): Tools.pickRandomFromWeightsDictionary() did not return a non-empty path from `randomScenes`", self)
+		if debugMode: Debug.printWarning("spawn(): Tools.pickRandomFromWeightsDictionary() did not return a non-empty path from `scenes`", self)
 		return null
 
 	self.sceneToSpawn = randomScenePath
@@ -50,8 +50,8 @@ func spawn() -> Node2D:
 func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
 	# Don't call `super` because it's okay if `sceneToSpawn` is empty.
 	# Log warnings only on `debugMode` to avoid noise if a caller is just checking
-	if randomScenes.is_empty():
-		if printWarnings: Debug.printWarning("validateSceneToSpawn(): randomScenes is empty", self)
+	if scenes.is_empty():
+		if printWarnings: Debug.printWarning("validateSceneToSpawn(): `scenes` is empty", self)
 		return false
 	# TBD: PERFORMANCE: Check for a non-empty Dictionary with all empty paths or 0 weights? To avoid consuming GameState.randomNumberGenerator rolls..
 	return true
