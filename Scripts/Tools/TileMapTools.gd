@@ -376,7 +376,8 @@ static func randomizeTileMapCells(
 
 ## Creates instances of a specified Scene and positions them over a [TileMapLayer]'s cells, each at a unique coordinate on the grid.
 ## Includes empty "unpainted" cells: e.g. if a TileMap has 1 painted cell at (0,0) and 1 at (99,99), the total area used for spawning is 100x100 cells.
-## NOTE: If [param numberOfCopies] will be clamped if it's greater than the total number of cells in the [param map]
+## NOTE: [param numberOfCopies] will be clamped if it's greater than the total number of cells in the [param map]
+## NOTE: Random cell selection calls [method Tools.pickRandomArrayIndices] and uses [member GameState.randomNumberGenerator] 
 ## RETURNS: A [Dictionary] of the nodes that were created, with their cell coordinates as the keys.
 ## TIP: To spawn scenes at a predetermined array of cell coordinates, call [method TileMapTools.populateTileMapCells]
 static func populateTileMap(
@@ -417,68 +418,33 @@ static func populateTileMap(
 	var parent:				Node2D = parentOverride if parentOverride else map
 	var newNode:			Node2D
 	var nodesSpawned:		Dictionary[Vector2i, Node2D]
-
-	# Store indexes or "slots" for the Fisher-Yates algorithm (each step explained in the loop below)
-	# Key:   Logical slot still available to roll
-	# Value: Actual cell index represented by that slot
-	var swappedCellIndices:	Dictionary[int, int]
-	var selectedCellIndex:	int
+	var randomCellIndices:	Array[int]
 	var cellIndex:			int
 	var coordinates:		Vector2i
-	var remainingCellCount:	int = totalCells
+
+
+	# PERFORMANCE: Use `Tools.pickRandomArrayIndices()` to pick unique "flat" cell indices without allocating an Array for every cell.
+	# If every cell will be populated, preserve the existing sequential order and avoid unnecessary calls to `GameState.randomNumberGenerator`
+	var shouldPickRandomCells: bool = numberOfCopies < totalCells
+	if  shouldPickRandomCells:
+		randomCellIndices = Tools.pickRandomArrayIndices(totalCells, numberOfCopies)
 
 	for count in numberOfCopies:
 		newNode = sceneToCopy.instantiate()
 
-		# If the number of copies to spawn is less than the total number of cells, we need to choose random cells
-		if numberOfCopies < totalCells:
-			# 1: Find an unused cell.
-			# PERFORMANCE: Use a "sparse" Fisher-Yates algorithm to pick unique random cells without retrying already selected cells.
-			# and without allocating an Array containing every cell; which would reduce performance when used on large TileMaps.
+		# 1: Choose a unique flat cell index.
+		cellIndex = randomCellIndices[count] if shouldPickRandomCells else count
 
-			# 1.1: Roll one slot from the still available range.
-			# Example: [A,B,C,D]: select B
-			selectedCellIndex = randi_range(0, remainingCellCount - 1)
+		# 2: Convert the flat cell index into an x/y offset inside the TileMap Rect,
+		# then convert the offset inside the used rectangle to actual TileMap coordinates.
+		# NOTE: The integer division is intentional because `cellIndex` is always a non-negative flat index, so truncation gives the row offset.
+		# Example: For a map width of 10, index 23 becomes (3,2): x = 23 % 10 = 3, y = 23 / 10 = 2.
+		@warning_ignore("integer_division")
+		coordinates = mapRect.position + Vector2i(
+			cellIndex % mapRect.size.x,
+			cellIndex / mapRect.size.x)
 
-			# 1.2: Resolve that slot to the actual cell index.
-			# Instead of using an Array of all coordinates or indices, assume that every slot points to itself unless `swappedCellIndices` says otherwise:
-			# If the slot was never swapped (i.e. the key doesn't exist) then it represents itself.
-			cellIndex = swappedCellIndices.get(selectedCellIndex, selectedCellIndex)
-
-			# 1.3: Remove the selected slot by replacing it with the last available slot.
-			# This is the same idea as swapping `selectedIndex` with the end of an array, then shrinking the array by 1.
-			# Example: [A,D,C | B]: B selected & "removed" from the "pool" because the `remainingCellCount` is decreased
-			# The Dictionary becomes: swappedCellIndices[1] = D
-			remainingCellCount -= 1
-			swappedCellIndices[selectedCellIndex] = swappedCellIndices.get(remainingCellCount, remainingCellCount)
-
-			# 1.4: The old last slot is now outside the available range, so it can be forgotten.
-			# Example: [A,D,C]
-			swappedCellIndices.erase(remainingCellCount)
-
-			# 1.5: Convert the flat cell index back into x/y offset inside the TileMap Rect.
-			# Then convert the offset inside the used rectangle to actual TileMap coordinates.
-
-			# NOTE: The integer division is intentional and correct, because `cellIndex` and `count` are always non-negative flat indexes, so truncation gives the row offset.
-			# Example: For a map width of 10, index 23 becomes:
-			# x = 23 % 10 = 3
-			# y = 23 / 10 = 2
-			# So (3,2) is correct.
-			@warning_ignore("integer_division")
-			coordinates = mapRect.position + Vector2i(
-				cellIndex % mapRect.size.x,
-				cellIndex / mapRect.size.x)
-			
-			# 1.6: On the next pass, [A,D,C] → Select A, swap with C → [C,D | A,B] and so on...
-
-		# If the number of copies is the same as the total number of cells, just choose all cells sequentially
-		else:
-			@warning_ignore("integer_division") # See comment above previous ignore
-			coordinates = mapRect.position + Vector2i(
-				count % mapRect.size.x,
-				count / mapRect.size.x)
-
-		# 2: Position the new node
+		# 3: Position the new node
 		if parent == map:
 			newNode.position = map.map_to_local(coordinates)
 		else:
@@ -489,7 +455,7 @@ static func populateTileMap(
 		if newNode is Entity and newNode.getComponent(TileBasedPositionComponent):
 			newNode.components.TileBasedPositionComponent.currentCoordinates = coordinates
 
-		# 3: Add
+		# 4: Add
 		NodeTools.addChildAndSetOwner(newNode, parent)
 		if not groupToAddTo.is_empty(): newNode.add_to_group(groupToAddTo, true) # persistent
 		nodesSpawned[coordinates] = newNode

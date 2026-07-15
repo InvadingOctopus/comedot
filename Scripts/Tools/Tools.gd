@@ -450,7 +450,7 @@ static func pickRandom(array: Array) -> Variant:
 	return array[GameState.randomNumberGenerator.randi_range(0, array.size() - 1)] if not array.is_empty() else -1
 
 
-## Uses [member GameState.randomNumberGenerator] to returns a specific number of random unique array indices.
+## Uses [member GameState.randomNumberGenerator] to return a specific number of random unique array indices.
 ## If [param numberOfIndices] is greater than [param arraySize], the returned count is clamped to [param arraySize]
 ## PERFORMANCE: Uses a "sparse partial Fisher-Yates shuffle" to only track selected/swapped slots instead of allocating an Array for every possible index.
 ## TIP: To shuffle an entire Array, use Godot's builtin [method Array.shuffle]
@@ -487,7 +487,7 @@ static func pickRandomArrayIndices(arraySize: int, numberOfIndices: int) -> Arra
 		remainingIndexCount -= 1
 		swappedIndices[selectedSlot] = swappedIndices.get(remainingIndexCount, remainingIndexCount)
 
-		# 4: The old last slot is now outside the available range, so it can be forgotten.
+		# 4: The old last slot is now outside the available range, so its mapping can be erased.
 		# Example: [A,D,C]
 		swappedIndices.erase(remainingIndexCount)
 
