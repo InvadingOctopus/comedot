@@ -32,7 +32,7 @@ An index of reusable Comedot scripts that are not Components or Entities. Includ
 
 * GameOver: Node script that displays game-over UI and pauses gameplay when GameState.gameDidOver is emitted.
 * RandomPlaceholder: InstancePlaceholder subclass that loads or skips a placeholder at runtime based on chance.
-* ReplaceWithRandomScene: Node2D script that replaces itself with one randomly selected scene during enter-tree.
+* ReplaceWithRandomScene: Node2D script that defers replacing itself with a scene chosen from a weighted path Dictionary, with fallback-path and completion-signal support.
 * Spawner: Base spawning Node that validates and instantiates a configured scene under a resolved parent, with total/group limits, signals, and hooks for specialized subclasses.
 * SpawnerList: Spawner subclass that cycles through scene paths in sequential order, wrapping after the final entry and advancing after every spawn attempt.
 * SpawnerRandom: Spawner subclass that rolls an overall spawn chance, then chooses a scene path from a weighted Dictionary.

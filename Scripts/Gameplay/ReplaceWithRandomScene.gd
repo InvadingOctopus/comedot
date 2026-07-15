@@ -1,8 +1,9 @@
-## Replaces a node with 1 other node randomly chosen from the provided list.
+## Replaces a node with 1 other node randomly chosen from the provided [Dictionary].
 ## May be used for loading different variations for monsters, maps, etc.
 ## TIP: For lazily-loaded [InstancePlaceholder]s, see [RandomPlaceholder].gd
-## NOTE: The replacement occurs during [method Node._enter_tree] BEFORE [method Node._ready]
-## so that the replacement can be available for any other nodes/scripts which may depend on it.
+## NOTE: [method replaceWithRandomScene] is called from [method Node._enter_tree]
+## but is called with [method Object.call_deferred] so the replacement may NOT be available before other nodes/scripts are `_ready()`
+## TIP: so dependent scripts must use [signal didReplaceWithScene]
 
 class_name ReplaceWithRandomScene
 extends Node2D
@@ -11,14 +12,17 @@ extends Node2D
 
 
 #region Parameters
-## A [Dictionary] of Scene paths associated with a percent chance.
-## Each entry is "rolled" in order. If the chance succeeds, the node this script is attached to will be replaced by an instance of that random scene.
-@export var scenes: Dictionary[String, int]
 
-## The scene to load if none of the [member scenes] were chosen by random chance.
+## A [Dictionary] of scene paths and their relative "weights".
+## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
+## NOTE: Entries with weights <= 0 are ignored.
+@export var scenes: Dictionary[String, float]
+
+## The scene to load if [member scenes] is empty or has no positive weights.
 @export var fallbackScenePath: String
 
-@export var debugMode: bool = false
+@export var debugMode: bool
+
 #endregion
 
 
@@ -27,35 +31,47 @@ signal didReplaceWithScene(path: String, instance: CanvasItem)
 #endregion
 
 
-
-# NOTE: Replace during `_enter_tree()` BEFORE `_ready()` so that the replacement can be available for any other nodes/scripts which may depend on it.
+# NOTE: Replace during `_enter_tree()` so that the replacement can be available as soon as possible.
 func _enter_tree() -> void:
-	replaceWithRandomScene()
+	# NOTE: call_deferred() to avoid the Godot error about replacing a child while its parent is still setting up the scene tree.
+	replaceWithRandomScene.call_deferred()
 
 
 #region Interface
 
+## Calls [method Tools.pickRandomFromWeightsDictionary] to return a random scene from [member scenes]
+## NOTE: Perform necessary validation before "consuming"  the [member GameState.randomNumberGenerator] roll.
 func getRandomPath() -> String:
-	if scenes.is_empty(): 
-		if debugMode: Debug.printDebug("getRandomPath(): No scenes, returning: " + fallbackScenePath, self)
+	if scenes.is_empty():
+		if debugMode: Debug.printDebug("getRandomPath(): scenes empty, returning fallbackScenePath: " + fallbackScenePath, self)
 		return fallbackScenePath if not fallbackScenePath.is_empty() else ""
 
-	var chance: int # Create once outside loop
-	for path in scenes:
-		chance = scenes[path]
-		if chance == 100 or (chance != 0 and randi_range(1, 100) <= chance): # i.e. if the chance is 10%, then any number from 1-10 should succeed.
-			if debugMode: Debug.printDebug(str("getRandomPath(): ", chance, "%% ", path), self)
-			return path
-
-	# If no scene was rolled, use the fallback
-	if debugMode: Debug.printDebug("getRandomPath(): No scenes succeeded their chance, returning: " + fallbackScenePath, self)
-	return fallbackScenePath if not fallbackScenePath.is_empty() else ""
+	var path: String = Tools.pickRandomFromWeightsDictionary(scenes, fallbackScenePath) as String
+	if debugMode: Debug.printDebug(str("getRandomPath(): ", path), self)
+	return path
 
 
 func replaceWithRandomScene(pathOverride: String = "") -> CanvasItem:
+
+	# Parent check
+	var parent: Node = self.get_parent()
+
+	if not is_instance_valid(parent) or parent.is_queued_for_deletion() \
+	or self.is_queued_for_deletion():
+		if debugMode: Debug.printDebug("replaceWithRandomScene(): Placeholder parent is invalid or queued for deletion", self)
+		return null
+
+	# Path check
+	# NOTE: "Consume" the `GameState.randomNumberGenerator` roll after performing other checks
 	var path: String = pathOverride if not pathOverride.is_empty() else self.getRandomPath()
-	if debugMode: Debug.printDebug("replaceWithRandomScene(): " + path, self)
 	
+	if  path.is_empty():
+		Debug.printWarning("replaceWithRandomScene(): path empty", self)
+		return null
+
+	if debugMode: Debug.printDebug("replaceWithRandomScene(): " + path, self)
+
+	# Scene check
 	var scene: PackedScene = load(path)
 	if not scene:
 		Debug.printWarning("replaceWithRandomScene() cannot load: " + path, self)
@@ -66,10 +82,19 @@ func replaceWithRandomScene(pathOverride: String = "") -> CanvasItem:
 		Debug.printWarning("replaceWithRandomScene() cannot instantiate: " + path, self)
 		return null
 	
-	NodeTools.replaceChild.call_deferred(self.get_parent(), self, sceneInstance, true, true, true, true, true) # copyPosition, copyRotation, copyScale, copyTransform, freeReplacedChild
-	# DEBUG: else: Debug.printWarning(str("replaceWithRandomScene() could not replace: " , self, " with ", sceneInstance))
+	if sceneInstance is not CanvasItem:
+		Debug.printWarning(str("replaceWithRandomScene() sceneInstance is not a CanvasItem: ", sceneInstance), self)
+		sceneInstance.queue_free()
+		return null
 
-	self.didReplaceWithScene.emit(path, sceneInstance)
-	return sceneInstance
+	# Replace
+	var didReplace: bool = NodeTools.replaceChild(parent, self, sceneInstance, true, true, true, true, true) # copyPosition, copyRotation, copyScale, copyTransform, freeReplacedChild
+	if  didReplace:
+		self.didReplaceWithScene.emit(path, sceneInstance)
+		return sceneInstance
+	else:
+		Debug.printWarning(str("replaceWithRandomScene() → replaceChild() could not replace: " , self, " with ", sceneInstance))
+		sceneInstance.queue_free()
+		return null
 
 #endregion
