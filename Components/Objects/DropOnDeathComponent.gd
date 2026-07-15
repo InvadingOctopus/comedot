@@ -1,5 +1,5 @@
-## Creates a node when the parent entity "dies", by monitoring a [HealthComponent].
-## The spawned node may be a collectible object such as a gold coin, or a cosmetic node such as a gravestone sprite.
+## Creates a randomly chosen scene instance when the entity "dies", by monitoring a [HealthComponent]
+## The spawned node may be a [CollectibleComponent] [Entity] representing objects such as a gold coin, or a basic cosmetic [Sprite2D] such as a gravestone sprite, or even spawn new ghost monsters etc!
 
 class_name DropOnDeathComponent
 extends Component
@@ -7,13 +7,16 @@ extends Component
 
 #region Parameters
 
-@export var sceneToSpawnOnDeath: PackedScene
+## A [Dictionary] of scene paths and their relative "weights" used to randomly pick which scene to spawn on the "death" of this component's [Entity].
+## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
+## NOTE: Entries with weights <= 0 are ignored.
+@export var scenesToSpawnOnDeath: Dictionary[String, float]
 
 ## Offsets the spawned node's position in relation to the [Entity]'s position in the entity's parent.
 @export var positionOffset: Vector2 = Vector2.ZERO
 
 ## The node to add the spawned node as a child of.
-## If `null`, the parent node of the parent [Entity] will be used]
+## If `null`, the parent node of the parent [Entity] will be used.
 @export var parentOverrideForSpawnedNode: Node2D
 
 @export var isEnabled: bool = true
@@ -22,13 +25,13 @@ extends Component
 
 
 #region Signals
-signal didDrop(node: Node2D)
+signal didDrop(node: Node)
 #endregion
 
 
 #region State
 
-@onready var healthComponent: HealthComponent = coComponents.HealthComponent # TBD: Static or dynamic?
+@onready var healthComponent: HealthComponent = getCoComponent(HealthComponent, true) # findSubclasses
 
 var parentForSpawnedNode: Node2D:
 	get:
@@ -52,19 +55,23 @@ func onHealthComponent_healthDidZero() -> void:
 	drop()
 
 
-## Creates and returns the [sceneToSpawnOnDeath] ands it as a child of the specified parent.
-## This is a separate method so that custom death handling components may call it without depending on [HealthComponent] signals.
+## Randomly chooses a scene path from [member scenesToSpawnOnDeath], instantiates a copy of it, and adds it as a child of the specified parent.
+## This is a separate method so that custom death-handling components may call it directly without depending on [HealthComponent] signals.
 func drop() -> Node:
+	var scenePath: String = Tools.pickRandomFromWeightsDictionary(scenesToSpawnOnDeath, "") as String
+	if  scenePath.is_empty():
+		printWarning("drop(): scenesToSpawnOnDeath is empty, has no positive weights, or returned an empty path")
+		return null
+
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
 	# and add the offset.
 	var position: Vector2 = parentForSpawnedNode.to_local(entity.global_position) + positionOffset
 
-	var spawnedNode := SceneManager.addSceneInstance(sceneToSpawnOnDeath, parentForSpawnedNode, position)
+	var spawnedNode := SceneManager.loadSceneAndAddInstance(scenePath, parentForSpawnedNode, position)
 	
 	if spawnedNode != null:
 		didDrop.emit(spawnedNode)
 		return spawnedNode
 	else:
-		printWarning(str("Cannot instantiate sceneToSpawnOnDeath: ", sceneToSpawnOnDeath))
+		printWarning(str("drop() cannot instantiate scene from scenesToSpawnOnDeath path: ", scenePath))
 		return null
-
