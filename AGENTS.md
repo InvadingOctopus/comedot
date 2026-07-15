@@ -24,7 +24,7 @@ Each section contains instructions or information starting with a `-` bullet lis
 - `/Tests/`: Playable scenes and supporting scripts for manually testing subsystems and mechanics such as combat or tile-based/turn-based components. Name format: `*Test.tscn` + `*Test.gd`
 - `/addons/`: Godot Editor plugins.
 - `/Notes/`: Design documents, indexes/catalogs of entities/components/scripts, and other development notes. When looking for a component or script to use for a task, search these `*Catalog.md` files.
-- `/Temporary/`, `/Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If an untracked file in these folders prevents compilation/parsing/export, consider removing that file.
+- `/Temporary/`, `/Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If an untracked file in these folders prevents compilation/parsing/export, exclude that file or consider temporarily removing it.
 - `/Scripts/Tools/Tools.gd`, `*Tools.gd`: Files containing global static standalone helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
 - `/Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. Everything outside the `/Game/` subtree is part of the framework that is shared between multiple games. When generating code for a game, only the files in the `/Game/` subtree should be modified. `/Game/AGENTS.override.md` takes precedence for any activity inside the `/Game/` subtree.
 
@@ -43,7 +43,7 @@ Each section contains instructions or information starting with a `-` bullet lis
 
 ## Build, Run, Test & Export
 - Open the Comedot template in Godot by selecting `project.godot`
-- `project.godot` contains the required Godot version under `config/features` and other metadata. Comedot always targets the latest version (release or beta).
+- `project.godot` contains the required Godot version under `config/features` and other metadata. Comedot generally targets the latest version (release or beta).
 - Refer to the official documentation when needed, at `https://docs.godotengine.org/en/latest/`
 - Run locally from the editor (F5) or run individual scenes (F6) for focused testing.
 - To verify scripts and check parser errors etc. run Godot in "headless" mode by passing the following flags to the Godot executable: `--headless --check-only --path [path] --script [filename]`
@@ -82,14 +82,15 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 
 ## Generating Code, Scripts, Scenes & Files
 - DO NOT EDIT ANY FILES UNLESS EXPLICITLY ASKED.
-	- Files in `/Temporary/` & `/.codex/` & `/.claude/` may be created/modified/deleted without requiring approval.
-	- Use `/Lab/Tests/` for creating temporary tests to verify logic/behavior etc.
-- See `/HowTo.md` for human guidance that may also apply to AI agents (specially the "Avoid" section)
+	- Files in `/Temporary/` & `/.codex/` & `/.claude/` may be created/modified/deleted without requiring approval if necessary.
+	- Use `/Temporary/Test/` for creating and running temporary tests for verifying logic/behavior etc.
+- See `/HowTo.md` for human guidance that may also apply to AI agents (specially the "Avoid" section).
 	- In case of conflicts, this `/AGENTS.md` has precedence.
 - This framework is primarily for 2D games; Godot's 3D features & APIs such as `Node3D` are almost never used or needed.
 - New gameplay behaviors should generally be implemented as components that can be reused in multiple games.
 - "Components" are any node with a script that is a subclass of `/Components/Component.gd`, and "entities" are any node with the `/Entities/Entity.gd` script or its subclasses. Entities are just a container for components and multiple components can be added to an entity. Components are generally standalone and provide a single specific behavior or set of closely-related behaviors, but components may depend on each other and modify each other at runtime, such as `DamageComponent` + `DamageReceivingComponent` + `KnockbackOnHitComponent`
 - Components are always a pair of a `.tscn` Godot scene file + a `.gd` GDScript file, even if the scene is empty, so they can be easily added to entity nodes. Component scripts must ultimately inherit from `Component.gd` or a subclass. Component root nodes must be added to the `components` node group.
+	- Abstract base classes ending in names like `*ComponentBase.gd` are an exception and may not have associated scenes.
 - When creating new entities and components, prefer copying scenes and scripts from `/Templates/` to use as a starting point etc.
 - A `class_name` must be used for all components and entities, and also for other types that are expected to be referenced from code or instantiated at runtime. Exceptions are short specific scripts such as `Spin.gd`
 - The root node of component scenes must be the closest relevant Godot builtin node type that matches the component's core purpose: For example, if the component uses a `Timer` and no other nodes, then the root node must be a `Timer` instead of `Node` with a `Timer` child.
