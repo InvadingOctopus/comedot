@@ -43,7 +43,7 @@ func _enter_tree() -> void:
 ## NOTE: Perform necessary validation before "consuming"  the [member GameState.randomNumberGenerator] roll.
 func getRandomPath() -> String:
 	if scenes.is_empty():
-		if debugMode: Debug.printDebug("getRandomPath(): scenes empty, returning fallbackScenePath: " + fallbackScenePath, self)
+		if debugMode: Debug.printDebug("getRandomPath(): `scenes` empty, returning fallbackScenePath: " + fallbackScenePath, self)
 		return fallbackScenePath if not fallbackScenePath.is_empty() else ""
 
 	var path: String = Tools.pickRandomFromWeightsDictionary(scenes, fallbackScenePath) as String

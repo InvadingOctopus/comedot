@@ -60,7 +60,7 @@ func onHealthComponent_healthDidZero() -> void:
 func drop() -> Node:
 	var scenePath: String = Tools.pickRandomFromWeightsDictionary(scenesToSpawnOnDeath, "") as String
 	if  scenePath.is_empty():
-		printWarning("drop(): scenesToSpawnOnDeath is empty, has no positive weights, or returned an empty path")
+		printWarning("drop(): `scenesToSpawnOnDeath` is empty, has no positive weights, or returned an empty path")
 		return null
 
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
@@ -73,5 +73,5 @@ func drop() -> Node:
 		didDrop.emit(spawnedNode)
 		return spawnedNode
 	else:
-		printWarning(str("drop() cannot instantiate scene from scenesToSpawnOnDeath path: ", scenePath))
+		printWarning(str("drop() cannot instantiate scene from `scenesToSpawnOnDeath` path: ", scenePath))
 		return null
