@@ -8,8 +8,9 @@ extends Spawner
 
 #region Parameters
 
-## A [Dictionary] of scene paths and their relative "weights" used to randomly pick which scene to spawn.
+## A [Dictionary] of scene paths and their "relative weights" used to randomly pick which scene to spawn.
 ## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
+## NOTE: Entries with weights <= 0 are ignored.
 ## IMPORTANT: [member spawnChance] is rolled BEFORE this list is used; if the roll doesn't succeed, then NO scene is spawned.
 @export var randomScenes: Dictionary[String, float]
 

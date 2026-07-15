@@ -7,7 +7,7 @@ extends Component
 
 #region Parameters
 
-## A [Dictionary] of scene paths and their relative "weights" used to randomly pick which scene to spawn on the "death" of this component's [Entity].
+## A [Dictionary] of scene paths and their "relative weights" used for randomly choosing which scene to spawn.
 ## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
 ## NOTE: Entries with weights <= 0 are ignored.
 @export var scenesToSpawnOnDeath: Dictionary[String, float]

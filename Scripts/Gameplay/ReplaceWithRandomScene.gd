@@ -1,8 +1,8 @@
-## Replaces a node with 1 other node randomly chosen from the provided [Dictionary].
-## May be used for loading different variations for monsters, maps, etc.
+## Replaces a node with another scene randomly chosen from a provided [Dictionary]
+## May be used for loading different variations for monsters, maps, etc. each time a game/level is loaded.
 ## TIP: For lazily-loaded [InstancePlaceholder]s, see [RandomPlaceholder].gd
 ## NOTE: [method replaceWithRandomScene] is called from [method Node._enter_tree]
-## but is called with [method Object.call_deferred] so the replacement may NOT be available before other nodes/scripts are `_ready()`
+## BUT it's called via [method Object.call_deferred] so the replacement may NOT be available before other nodes/scripts are `_ready()`
 ## TIP: so dependent scripts must use [signal didReplaceWithScene]
 
 class_name ReplaceWithRandomScene
@@ -13,7 +13,7 @@ extends Node2D
 
 #region Parameters
 
-## A [Dictionary] of scene paths and their relative "weights".
+## A [Dictionary] of scene paths and their "relative weights" used for randomly choosing which scene to spawn.
 ## EXAMPLE: `{ "res://Common.tscn": 3.0, "res://Rare.tscn": 1.0 }` = 75% chance for Common, 25% for Rare
 ## NOTE: Entries with weights <= 0 are ignored.
 @export var scenes: Dictionary[String, float]
@@ -52,7 +52,6 @@ func getRandomPath() -> String:
 
 
 func replaceWithRandomScene(pathOverride: String = "") -> CanvasItem:
-
 	# Parent check
 	var parent: Node = self.get_parent()
 
