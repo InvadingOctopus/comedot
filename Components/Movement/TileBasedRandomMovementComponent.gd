@@ -7,6 +7,7 @@ extends TileBasedControlComponentBase
 
 
 #region Parameters
+# TODO: Use "weighted" [Dictionary]s & Tools.pickRandomArrayIndices()
 
 ## A list of horizontal steps to choose from randomly on every [signal Timer.timeout] of the [member randomStepTimer].
 @export var horizontalMovesSet:	Array[int] = [-1, 0, 1]

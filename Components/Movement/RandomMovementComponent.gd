@@ -5,6 +5,7 @@ extends Component
 
 
 #region Parameters
+# TODO: Use "weighted" [Dictionary]s & Tools.pickRandomArrayIndices()
 
 @export var horizontalMovementOptions:	Array[float] = [-1.0, 0.0, +1.0] ## The range to [method Array.pick_random] from for [member nextDirection]'s `x` value.
 @export var verticalMovementOptions:	Array[float] = [-1.0, 0.0, +1.0] ## The range to [method Array.pick_random] from for [member nextDirection]'s `y` value.
