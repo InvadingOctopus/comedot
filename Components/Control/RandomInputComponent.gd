@@ -13,6 +13,7 @@ const movementDirectionKey	:= &"randomMovementDirections"
 const aimDirectionKey		:= &"randomAimDirections"
 
 ## A [Dictionary] of possible [InputEventAction] [StringName]s (see [class GlobalInput.Actions]) and their "weights" that will be randomly generated from [method performRandomAction]
+## EXAMPLE: `{ &"fire": 3.0, &"jump": 1.0 } = 75% chance to Fire, 25% for Jump
 ## NOTE: A key named `&"randomMovementDirections"` will choose from [member randomMovementDirections]
 ## NOTE: A key named `&"randomAimDirections"` will choose from [member randomAimDirections]
 ## NOTE: Add an empty `&""` key to include an "idle" or "do nothing" or "skip" option.
