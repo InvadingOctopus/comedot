@@ -58,18 +58,23 @@ func onHealthComponent_healthDidZero() -> void:
 ## Randomly chooses a scene path from [member scenesToSpawnOnDeath], instantiates a copy of it, and adds it as a child of the specified parent.
 ## This is a separate method so that custom death-handling components may call it directly without depending on [HealthComponent] signals.
 func drop() -> Node:
+	# NOTE: Print warnings only in debug mode, because `scenesToSpawnOnDeath` may be empty on purpose during certain gameplay conditions etc.
+
+	if scenesToSpawnOnDeath.is_empty():
+		if debugMode: printWarning("drop(): `scenesToSpawnOnDeath` is empty")
+		return null
+
 	var scenePath: String = Tools.pickRandomFromWeightsDictionary(scenesToSpawnOnDeath, "") as String
 	if  scenePath.is_empty():
-		printWarning("drop(): `scenesToSpawnOnDeath` is empty, has no positive weights, or returned an empty path")
+		if debugMode: printWarning("drop(): `scenesToSpawnOnDeath` has no positive weights or returned an empty path")
 		return null
 
 	# Translate the parent entity's position to the coordinate space of parent of the spawned node,
-	# and add the offset.
+	# then add the offset.
 	var position: Vector2 = parentForSpawnedNode.to_local(entity.global_position) + positionOffset
-
 	var spawnedNode := SceneManager.loadSceneAndAddInstance(scenePath, parentForSpawnedNode, position)
 	
-	if spawnedNode != null:
+	if is_instance_valid(spawnedNode):
 		didDrop.emit(spawnedNode)
 		return spawnedNode
 	else:
