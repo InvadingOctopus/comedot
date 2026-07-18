@@ -3,6 +3,7 @@
 ## TIP: This script may be replaced with subclasses such as [SpawnerList] or [SpawnerRandom] etc. to use a list of different spawns etc.
 ## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
 ## TIP: Use [SpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
+## TIP: Connect to [signal VisibleOnScreenNotifier2D.screen_entered] to spawn when the player reaches specific locations on a level map etc. Also see [OnScreenTrigger]
 
 class_name Spawner
 extends Node

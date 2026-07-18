@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://d01ik18n2pd1k"]
+
+[ext_resource type="Script" uid="uid://dmwvoblclj618" path="res://Scenes/Gameplay/OnScreenTrigger.gd" id="1_lbkqm"]
+
+[node name="OnScreenTrigger" type="VisibleOnScreenNotifier2D" unique_id=2116685941]
+editor_description = "A VisibleOnScreenNotifier2D with extra features."
+rect = Rect2(-8, -8, 16, 16)
+script = ExtResource("1_lbkqm")
+
+[connection signal="screen_entered" from="." to="." method="onScreenEntered"]
