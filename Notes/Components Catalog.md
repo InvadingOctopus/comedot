@@ -106,7 +106,7 @@ An index of reusable Components in Comedot's shared library, to help humans and 
 * PathFollowComponent: Moves an Entity by advancing a PathFollow2D parent along a Path2D. Use IndependentPathFollowComponent when multiple Entities need independent positions on one path.
 * PlatformerPatrolComponent: Writes horizontal patrol input for platformer enemies that walk back and forth on floors. Requires CornerCollisionComponent for edge/wall awareness.
 * PositionClampComponent: Restricts the entity's global position every frame.
-* RandomMovementComponent: Moves an Entity randomly by manipulating InputComponent or by directly setting position.
+* RandomMovementComponent: Moves an Entity randomly by directly setting its position. Useful for quick prototypes where physics and collisions are unnecessary.
 * RelativePathMovementComponent: Applies a finite list of relative movement vectors to a node or Entity over time. Use carefully with other movement-manipulating components.
 * RideableComponent: Lets another Entity mount and ride this Entity through a RemoteTransform2D child offset. Use AttachmentComponent for simpler node attachment.
 * SpinComponent: Rotates the entity or another Node2D every physics frame.

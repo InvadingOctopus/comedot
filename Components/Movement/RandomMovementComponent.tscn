@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://djk8nrj1kq3qc" path="res://Components/Movement/RandomMovementComponent.gd" id="1_xyn6o"]
 
 [node name="RandomMovementComponent" type="Node" unique_id=2031980591 groups=["components"]]
+editor_description = "Moves the Entity's position in a random direction every frame. A simple alternative to RandomInputComponent."
 script = ExtResource("1_xyn6o")

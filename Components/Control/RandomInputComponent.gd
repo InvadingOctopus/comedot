@@ -1,5 +1,6 @@
 ## A subclass of [InputComponent] that generates random input events on a [Timer] interval or other signals.
 ## TIP: EXAMPLE USAGE: A demo/"attract mode", random monster/NPC movement etc.
+## TIP: For a more basic component for quick prototyping etc., see [RandomMovementComponent]
 ## TIP: The [method performRandomAction] may be connected to signals such as [signal TurnBasedCoordinator.isReadyToStartTurn] etc.
 ## NOTE: If random input should be generated on external signals only, this component's [Timer] should be disabled.
 
