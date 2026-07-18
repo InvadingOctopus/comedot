@@ -7,7 +7,7 @@ extends TileBasedControlComponentBase
 
 
 #region Parameters
-# TRIED: PERFORMANCE: Using "weighted" [Dictionary]s & Tools.pickRandomArrayIndices() is slower than Array.pick_random()
+# TRIED: PERFORMANCE: Using "weighted" [Dictionary]s & Tools.pickRandomFromWeightsDictionary() is slower than Array.pick_random()
 
 ## A list of horizontal steps to choose randomly from.
 ## Sampled independently from [member verticalMovesSet]. If both produce 0, the entity "pauses" or "rests" for a "tick".
@@ -67,7 +67,7 @@ func moveRandomly() -> void:
 ## Returns a [Vector2i] constructed with a random value each from [member horizontalMovesSet] & [member verticalMovesSet]
 func getRandomVector() -> Vector2i:
 	# TBD: Use GameState.randomNumberGenerator?
-	# DESIGN: Maybe random movement should be allowed to be different after each Load of a Saved state...
+	# TBD: Maybe random movement should be allowed to be different after each Load of a Saved state...
 	return Vector2i(horizontalMovesSet.pick_random() if not horizontalMovesSet.is_empty() else 0,
 					verticalMovesSet.pick_random()   if not verticalMovesSet.is_empty() else 0)
 
