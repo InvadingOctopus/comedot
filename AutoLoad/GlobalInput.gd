@@ -78,9 +78,11 @@ class Actions:
 			return allActions
 
 
-## TIP: For "compass" mappings, see [const Tools.compassDirectionVectors] etc.
-const directions: PackedVector2Array = [
-	Vector2.ZERO, # TBD: Should (0,0) be included?
+## A list of 8 [Vector2]s going clockwise from "East" @ (1,0)
+## NOTE: Does NOT include (0,0)
+## TIP: For literal "compass" mappings, see [const Tools.compassDirectionVectors] etc.
+const directions: PackedVector2Array = [ # TBD: Less ambiguous name? "directionVectors"? "allDirections"?
+	# DESIGN: Don't include [0,0] because it's easier for use-cases to add an array element if they need it, than to remove it.
 	Vector2.RIGHT,
 	Vector2(+1, +1),
 	Vector2.DOWN,
