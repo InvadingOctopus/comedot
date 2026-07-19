@@ -12,11 +12,11 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 
 ![components-tree]
 
-* Megatons of components for player movement, combat, collectibles, interactions, upgrades etc.
+* [Megatons](allComponents) of components for player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls including stats HUDs and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
 * Save/Load player preferences via a config file with just `Settings.anyName = 69`
-* A neutron star spoonful of helper functions & debugging tools.
+* [A neutron star](allScripts) spoonful of helper functions & debugging tools.
 * Commented & documented code.
 * Snippets for VSCode/VSCodium.
 * Free-to-use 3rd-party assets for quick prototyping.
@@ -26,8 +26,6 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
-
-📜 *To see a full list of all the [120+][allComponents] components and [140+][allScripts] scripts, check* `/Notes/*Catalog.md`
 
 <br/>
 
