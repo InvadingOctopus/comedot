@@ -8,13 +8,13 @@ https://store.godotengine.org/asset/syntaks/comedot/
 Asset Name: Comedot ECS Template
 
 Asset Summary:
-Entities, Components & Shit: ECS but without that "systems" jazz. All-in-one project template & components framework for 2D games.
+Entities, Components & Shit: ECS but without that "systems" crap. All-in-one project template & components framework for 2D games.
 
 Detailed Description:
 ```
 [![Godot v4.7+](https://img.shields.io/badge/Godot-v4.7%2B-478CBF)](https://godotengine.org/download/archive/ "Requires Godot 4.7+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
 
-**The goal of this project is to be an all-in-one framework for 2D games of any genre:** Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc.
+**Comedot is an opinionated attempt to make an all-in-one framework for 2D games of any genre:** Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc.
 
 Build scenes by smacking components into entities and tweaking their exports. *"Entities"* and *"Components"* are just regular Godot Nodes but for gameplay mechanics, and you can edit the component scripts in any way, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
 
