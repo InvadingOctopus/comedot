@@ -79,6 +79,7 @@ signal didSpawn(newSpawn: Node2D, parent: Node)
 
 ## Creates and returns a new instance of [member sceneToSpawn]
 func spawn() -> Node2D:
+	# TBD: Add an `isSpawning` flag to avoid "re-entrancy" or let signal handlers spawn multiple times etc?
 	if not isEnabled or not validateSceneToSpawn(true): return null # printWarnings
 
 	# NOTE: <0 is ignored
