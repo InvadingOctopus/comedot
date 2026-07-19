@@ -25,6 +25,19 @@ extends Spawner
 #endregion
 
 
+## Validates [member scenesList] and [member currentSceneIndex] before a scene is selected.
+func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
+	if scenesList.is_empty():
+		if printWarnings: Debug.printWarning("validateSceneToSpawn(): scenesList is empty", self)
+		return false
+
+	if currentSceneIndex < 0 or currentSceneIndex >= scenesList.size(): # Last valid index is size-1
+		if printWarnings: Debug.printWarning(str("validateSceneToSpawn(): currentSceneIndex is out of bounds: ", currentSceneIndex, " in list size: ", scenesList.size()), self)
+		return false
+
+	return true
+
+
 ## Overrides [method Spawner.spawn] to "inject" the scene at [member currentSceneIndex] into [member sceneToSpawn]
 ## then calls `super.spawn()` and increments the index if successful.
 func spawn() -> Node2D:
@@ -46,18 +59,25 @@ func spawn() -> Node2D:
 	# DESIGN: This ensures that waves like "normal monster → normal → normal → super monster" are preserved and spawned in order.
 	if newSpawn != null:
 		self.currentSceneIndex = wrapi(sceneIndexToSpawn + 1, 0, scenesList.size()) # Calculate from `sceneIndexToSpawn` because `currentSceneIndex` may be mutated
- 
+
 	return newSpawn
 
 
-## Validates [member scenesList] and [member currentSceneIndex] before a scene is selected.
-func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
-	if scenesList.is_empty():
-		if printWarnings: Debug.printWarning("validateSceneToSpawn(): scenesList is empty", self)
-		return false
+## Calls [method spawn] repeatedly until all the scenes in [member scenesList] have been spawned once,
+## or until [param maxSpawnsForThisCall] or until a spawn fails.
+## TIP: Useful for spawning an entire wave of enemies in a single "tick".
+## TIP: To start from a different entry, change [member currentSceneIndex] manually before calling.
+## PERFORMANCE: [param returnSpawns] is disabled by default to avoid wasting memory on an [Array] unless the caller needs to access the spawned nodes.
+func spawnBatch(maxSpawnsForThisCall: int = 100, returnSpawns: bool = false) -> Array[Node2D]:
+	if not isEnabled or scenesList.is_empty() or maxSpawnsForThisCall < 1: return []
 
-	if currentSceneIndex < 0 or currentSceneIndex >= scenesList.size(): # Last valid index is size-1
-		if printWarnings: Debug.printWarning(str("validateSceneToSpawn(): currentSceneIndex is out of bounds: ", currentSceneIndex, " in list size: ", scenesList.size()), self)
-		return false
+	var spawns:	  Array[Node2D]
+	var newSpawn: Node2D
 
-	return true
+	maxSpawnsForThisCall = mini(maxSpawnsForThisCall, scenesList.size())
+	for _count in maxSpawnsForThisCall:
+		newSpawn = self.spawn()
+		if newSpawn == null: break # The index does not advance on a failed spawn, so don't retry
+		if returnSpawns: spawns.append(newSpawn) # PERFORMANCE: Don't waste memory if a list of spawns isn't needed
+		if not isEnabled or scenesList.is_empty(): break # Recheck conditions in case the state was mutated by a signal handler etc.
+	return spawns # == [] if not returnSpawns
