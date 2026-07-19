@@ -18,9 +18,11 @@ extends Timer
 		if newValue != isEnabled:
 			isEnabled = newValue
 			if spawner: spawner.isEnabled = self.isEnabled
-			if self.is_node_ready():
-				if isEnabled: self.start()
-				else: self.stop()
+			if  self.is_node_ready() and not isEnabled:
+				# DESIGN: Do NOT start() the Timer automatically when re-enabled; it should be a manual command.
+				# Because some scripts like [SpawnEdge] may enable/disable [SpawnTimer]s for various reasons,
+				# while other scripts like [OnScreenTrigger] want to manually call Spawner.spawn()
+				self.stop()
 
 #endregion
 
@@ -49,7 +51,7 @@ func _ready() -> void:
 		self.stop() # Stop the Timer just in case to prevent a double spawn etc.
 		spawner.spawn.call_deferred() # Defer to avoid the error: "Parent node is busy setting up children, `add_child()` failed."
 
-	self.start() # Start the Timer after the initial spawn
+	# Timer.autostart will call Timer.start()
 
 
 func onTimeout() -> void:
