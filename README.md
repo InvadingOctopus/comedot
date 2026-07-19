@@ -15,11 +15,11 @@ _"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay me
 * [120+ megatons](allComponents) of components for player movement, combat, collectibles, interactions, upgrades etc.
 * UI controls including stats HUDs and dynamic buttons for special skills, inventory etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
-* Save/Load player preferences via a config file with just `Settings.anyName = 69`
 * [140+ neutron star spoonfuls](allScripts) of helper functions & debugging tools.
+* Free-to-use tilesets, fonts, shaders & other assets for quick prototyping.
+* Save/Load player preferences via a config file with just `Settings.anyName = 69`
 * Commented & documented code.
 * Snippets for VSCode/VSCodium.
-* Free-to-use tilesets, fonts, shaders & other assets for quick prototyping.
 * Optimized for balancing ease of use + performance as much as GDScript will allow.
 * Meatcrafted components can be Lego'ed together by AI codeblins to reliably create various kinds of gameplay. *\*(Comedot itself has no AI-generated code.)*
 

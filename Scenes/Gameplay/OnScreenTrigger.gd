@@ -1,7 +1,7 @@
 ## A convenience subclass of [VisibleOnScreenNotifier2D] with features such as a limited number of uses & a [Timer] delay etc.
 ## TIP: EXAMPLE USAGE:
 ## Triggering cutscenes.
-## Spawning preset enemy waves via [SpawnerStack] at specific locations on a map e.g. in an scrolling shoot-em-up.
+## Spawning preset enemy waves via [SpawnPoint] & [SpawnerList] at specific locations on a map e.g. in an scrolling shoot-em-up.
 
 class_name OnScreenTrigger # TBD: Better name? ScreenEntryTrigger?
 extends VisibleOnScreenNotifier2D
@@ -45,16 +45,20 @@ extends VisibleOnScreenNotifier2D
 
 
 #region Signals
-signal didTrigger(triggerCount: int) ## Emitted from [method trigger] if [member isEnabled] and if [member triggerCount] is valid or irrelevant.
-signal didReachMaxTriggers ## Emitted after [method trigger] sets [member triggerCount] >= [member maxTriggers]
+## Emitted from [method trigger] if [member isEnabled] and if [member triggerCount] is valid or irrelevant.
+## TIP: If connecting to methods like [method SpawnerList.spawnBatch] remember to "unbind" 1 signal argument to avoid sending the [param triggerCount]
+signal didTrigger(triggerCount: int)
+
+## Emitted after [method trigger] sets [member triggerCount] >= [member maxTriggers]
+signal didReachMaxTriggers
 #endregion
 
 
 func _ready() -> void:
-	if shouldLimitTriggers and triggerCount >= maxTriggers:
+	if  shouldLimitTriggers and triggerCount >= maxTriggers:
 		handleMaxTriggers(false) # not emitSignals becuase a `triggerCount` loaded from @export_storage may have happeend a long time ago
 
-	if timer:
+	if  timer:
 		timer.one_shot = true
 		Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.isEnabled)
 
