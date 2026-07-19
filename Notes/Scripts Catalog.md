@@ -34,9 +34,9 @@ An index of reusable Comedot scripts that are not Components or Entities. Includ
 * RandomPlaceholder: InstancePlaceholder subclass that loads or skips a placeholder at runtime based on chance.
 * ReplaceWithRandomScene: Node2D script that defers replacing itself with a scene chosen from a weighted path Dictionary, with fallback-path and completion-signal support.
 * Spawner: Base spawning Node that validates and instantiates a configured scene under a resolved parent, with total/group limits, signals, and hooks for specialized subclasses.
-* SpawnerList: Spawner subclass that cycles through scene paths in sequential order, wrapping after the final entry and advancing after every spawn attempt.
+* SpawnerList: Spawner subclass that cycles through scene paths in sequential order, advancing and wrapping only after a successful spawn.
 * SpawnerRandom: Spawner subclass that rolls an overall spawn chance, then chooses a scene path from a weighted Dictionary.
-* SpawnerStack: Single-use Spawner subclass that pops scene paths from the end of a stack before each attempt and disables itself when emptied.
+* SpawnerStack: Single-use Spawner subclass that pops scene paths from the end of a stack only after successful spawns and disables itself when emptied.
 
 
 ## Payload Scripts
