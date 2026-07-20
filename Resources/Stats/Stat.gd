@@ -7,8 +7,7 @@
 
 #@tool # To clamp values when editing stats in the editor. # WARNING: UNUSED: This is causing errors on editor launch because of the GameState signal access. It doesn't seem to provide much usage benefit, so it's disabled instead of using a potentially expensive `Engine.is_editor_hint()` check during each change.
 @warning_ignore("missing_tool")
-class_name Stat
-extends GameplayResourceBase
+class_name Stat extends GameplayResourceBase
 
 # TODO: Support float?
 

@@ -7,8 +7,7 @@
 ## NOTE: Even though this class is named "upgrade" it may also be used for downgrades/debuffs.
 
 @warning_ignore("missing_tool") # @tool is useless here
-class_name Upgrade
-extends GameplayResourceBase
+class_name Upgrade extends GameplayResourceBase
 
 # NOTE: Does not `extend StatDependentResourceBase` because instead of a single `cost`, there is an Array of `costs`, different for each `level`.
 

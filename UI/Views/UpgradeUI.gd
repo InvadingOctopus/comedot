@@ -1,8 +1,7 @@
 ## A label & icon linked to an [Upgrade] which automatically updates its text when the Upgrade changes.
 
 @warning_ignore("missing_tool")
-class_name UpgradeUI
-extends GameplayResourceUI
+class_name UpgradeUI extends GameplayResourceUI
 
 
 #region Parameters

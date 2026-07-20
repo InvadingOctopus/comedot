@@ -2,8 +2,7 @@
 ## @experimental
 
 @warning_ignore("missing_tool")
-class_name StatWithModifiers
-extends Stat
+class_name StatWithModifiers extends Stat
 
 # TODO: Support float?
 # TODO: A specialized type for Modifiers, to include the source of the buff/debuff + a description.

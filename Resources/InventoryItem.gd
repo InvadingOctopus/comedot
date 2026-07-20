@@ -1,8 +1,7 @@
 ## Represents an object carried in a character's inventory.
 
 @warning_ignore("missing_tool")
-class_name InventoryItem
-extends GameplayResourceBase
+class_name InventoryItem extends GameplayResourceBase
 
 
 #region Parameters
