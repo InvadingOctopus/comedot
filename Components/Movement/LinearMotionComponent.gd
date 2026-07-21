@@ -17,7 +17,7 @@ extends Component
 @export_group("Speed")
 @export_range(-2400, 2400) var initialSpeed:	float = 160		## The initial value for [member speed]
 @export_range(-2400, 2400) var maxSpeed:		float = 800		## The maximum limit for [member speed]
-@export_range(-2400, 2400) var minSpeed:		float = 8		## The minimum limit to maintain [member speed] at.
+@export_range(-2400, 2400) var minSpeed:		float = 0		## The minimum limit to maintain [member speed] at.
 
 @export var shouldApplyModifier:				 bool = false	## If `true` then the acceleration/friction [member modifier] is applied to [member speed] every frame.
 @export_range(-4800, 4800) var modifier:		float = 800		## The acceleration (if positive) or friction (if negative) applied to [member speed] (scaled by the delta) every frame if [member shouldApplyModifier] # ALERT: Reversed if [member speed] is negative!
@@ -146,3 +146,16 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 		self.isMoving = false
 		self.didCrossMaxDistance.emit() # Emit the signal after updating the flag and before we delete the entity!
 		if shouldDeleteParentAtMaxDistance: parent.queue_free()
+
+	if debugMode: showDebugInfo()
+
+
+func showDebugInfo() -> void:
+	var  direction: Vector2
+	if   shouldOverrideDirection: direction = directionOverride
+	elif parent: direction = Vector2.from_angle(parent.rotation)
+	Debug.addCombinedWatchList(str(parent.name, ".", self.name), { # Support non-Entity parents
+		direction	= directionOverride if shouldOverrideDirection else Vector2.from_angle(parent.rotation),
+		speed		= speed,
+		distance	= distanceTraveled,
+		})
