@@ -1,6 +1,8 @@
-## Uses a [SpawnTimer] to creates copies of the specified Scene at a random position within an [Area2D] on regular intervals.
+## Wraps a [Spawner] to create copies of specified Scenes at random positions within an [Area2D]
 ## Currently only optimized for rectangular area shapes.
-## IMPORTANT: Enable "Editable Children" and edit the [SpawnTimer]'s [Spawner] child node to choose which scene to copy and modify spawn parameters.
+## IMPORTANT: Enable "Editable Children" and edit the [Spawner] child node to choose the scene to instantiate and modify spawn parameters.
+## TIP: The [Spawner] script may be replaced with [SpawnerRandom] or [SpawnerList] etc.
+## TIP: Add a [Timer] & connect [signal Timer.timeout] → [method Spawner.spawn] to create repeated spawns at regular intervals.
 ## TIP: Use [SpawnEdge] to always spawn from the edges of the screen, even if the player/camera/map moves.
 
 class_name SpawnArea
@@ -16,8 +18,7 @@ extends Area2D
 
 
 #region State
-@onready var spawner:		 Spawner		  = $SpawnTimer/Spawner
-@onready var spawnTimer:	 SpawnTimer		  = $SpawnTimer
+@onready var spawner:		 Spawner		  = $Spawner
 @onready var spawnAreaShape: CollisionShape2D = $SpawnAreaShape
 #region
 

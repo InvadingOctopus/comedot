@@ -1,9 +1,10 @@
-## Adds [SpawnPoint]s at the 8 cardinal+ordinal directions on the screen's edge,
-## and [SpawnArea]s just outside the 4 screen edges.
-## NOTE: To set the scenes to spawn and other parameters, enable "Editable Children" to access all the underlying [SpawnTimer]s & their [Spawner] child nodes which do the core work,
-## or subclass this script or use another script to access the [member spawnTimers] list, or control each `%N`, `%NArea` etc. node individually.
+## Wraps [Spawner]s placed around the screen border.
+## Includes a [SpawnPoint] at each of the 8 cardinal+ordinal directions,
+## and a [SpawnArea] at each of the 4 screen edges.
 ## TIP: If this script is attached to a [CanvasLayer], the Spawners will stay fixed at the edges even as the player/camera moves and the map scrolls.
 ## TIP: Ideal for spawning enemies just outside the view in scrolling shoot-em-ups etc.
+## IMPORTANT: To choose scenes to spawn and set other parameters, enable "Editable Children" to access all the underlying [Spawner] child nodes,
+## or use a subclass or other script to access the [member SpawnEdge.spawners] list, or control each `%N`, `%NArea` etc. node individually.
 
 class_name SpawnEdge
 extends Node
@@ -31,10 +32,10 @@ extends Node
 @onready var pointsContainer: Node2D = $Points
 @onready var areasContainer:  Node2D = $Areas
 
-## A list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
+## A list of all the [Spawner]s under all the [SpawnPoint]s & [SpawnArea]s
 ## with the points in clockwise order from NW (0,0) then the areas.
-## Each [SpawnTimer] contains a [Spawner] child node.
-var spawnTimers: Array[SpawnTimer]
+## TIP: The default [Spawner] scripts may be replaced by subclasses such as [SpawnerList] or [SpawnerStack]
+var spawners: Array[Spawner]
 
 #endregion
 
@@ -42,8 +43,7 @@ var spawnTimers: Array[SpawnTimer]
 #region Setup
 
 func _enter_tree() -> void:
-	spawnTimers = getAllSpawnTimers()
-	validateSpawners()
+	spawners = getAllSpawners()
 	setSpawnerParents() # Apply our `parentOverride` before the Spawners' _ready()
 
 
@@ -51,31 +51,26 @@ func _ready() -> void:
 	setSpawnerPlacements()
 
 
-## Returns a list of all the [SpawnTimer]s under all the [SpawnPoint]s & [SpawnArea]s
+## Returns a list of all the [Spawner]s under all the [SpawnPoint]s & [SpawnArea]s
 ## with the points in clockwise order from NW (0,0) then the areas.
+## TIP: The default [Spawner] scripts may be replaced by subclasses such as [SpawnerList] or [SpawnerStack]
 ## This is a separate method so it can be called when this script is ready.
-## NOTE: Does NOT rebuild [member spawnTimers] in case a script wants to modify either list separately.
-func getAllSpawnTimers() -> Array[SpawnTimer]:
+## NOTE: Does NOT rebuild [member spawners] in case a script wants to modify either list separately.
+func getAllSpawners() -> Array[Spawner]:
 	return [
-		%NW/SpawnTimer, # Start in order from 0,0 clockwise
-		%N/SpawnTimer,
-		%NE/SpawnTimer,
-		%E/SpawnTimer,
-		%SE/SpawnTimer,
-		%S/SpawnTimer,
-		%SW/SpawnTimer,
-		%W/SpawnTimer,
-		%NArea/SpawnTimer,
-		%EArea/SpawnTimer,
-		%SArea/SpawnTimer,
-		%WArea/SpawnTimer,
+		%NW/Spawner, # Start in order from 0,0 clockwise
+		%N/Spawner,
+		%NE/Spawner,
+		%E/Spawner,
+		%SE/Spawner,
+		%S/Spawner,
+		%SW/Spawner,
+		%W/Spawner,
+		%NArea/Spawner,
+		%EArea/Spawner,
+		%SArea/Spawner,
+		%WArea/Spawner,
 		]
-
-
-## Enables or disables all [SpawnTimer]s based on whether they have a valid [member Spawner.sceneToSpawn] or not.
-func validateSpawners() -> void:
-	for spawnTimer: SpawnTimer in spawnTimers:
-		spawnTimer.isEnabled = spawnTimer.spawner.validateSceneToSpawn()
 
 
 func setSpawnerParents() -> void:
@@ -86,8 +81,8 @@ func setSpawnerParents() -> void:
 
 	if not spawnParent: return
 
-	for spawnTimer: SpawnTimer in self.spawnTimers:
-		spawnTimer.spawner.parentOverride = spawnTimer.spawner.get_path_to(spawnParent)
+	for spawner: Spawner in self.spawners:
+		spawner.parentOverride = spawner.get_path_to(spawnParent)
 
 
 ## Sets the positions of all the [SpawnPoint]s and [SpawnArea]s,

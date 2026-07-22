@@ -1,17 +1,11 @@
 [gd_scene format=3 uid="uid://dnrmhhkpx5fxj"]
 
-[ext_resource type="Script" uid="uid://d2ejkdin0pik2" path="res://Scenes/Gameplay/SpawnTimer.gd" id="1_jie15"]
 [ext_resource type="Script" uid="uid://dqqp8sc6eopxn" path="res://Scripts/Gameplay/Spawner.gd" id="2_43jxe"]
 
-[node name="SpawnTimer" type="Timer" unique_id=1076593618 node_paths=PackedStringArray("spawner") groups=["spawners"]]
-editor_description = "A Timer that wraps a Spawner to generate copies of scenes at regular intervals. Enable \"Editable Children\" to access Spawner settings."
+[node name="SpawnTimer" type="Timer" unique_id=953473272 groups=["spawners"]]
+editor_description = "A Timer Node with the Spawner script to spawn copies of a scene at regular intervals. May be replaced with SpawnerRandom, SpawnerList etc."
 wait_time = 3.0
 autostart = true
-script = ExtResource("1_jie15")
-spawner = NodePath("Spawner")
-
-[node name="Spawner" type="Node" parent="." unique_id=294035238]
 script = ExtResource("2_43jxe")
-parentOverride = NodePath("../..")
 
-[connection signal="timeout" from="." to="." method="onTimeout"]
+[connection signal="timeout" from="." to="." method="spawn"]

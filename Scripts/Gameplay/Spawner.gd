@@ -1,9 +1,9 @@
-## A [Node] that creates copies of a specified Scene as new children of itself or another node as their parent.
-## NOTE: To actually spawn anything, [method spawn] must be manually called from other scripts such as [SpawnTimer] or Signals etc.
-## TIP: This script may be replaced with subclasses such as [SpawnerList] or [SpawnerRandom] etc. to use a list of different spawns etc.
-## TIP: See [SpawnPoint], [SpawnArea] and [SpawnEdge] to spawn at specific positions or regions.
-## TIP: Use [SpawnTimer] to spawn monsters or collectibles etc. at regular intervals.
-## TIP: Connect to [signal VisibleOnScreenNotifier2D.screen_entered] to spawn when the player reaches specific locations on a level map etc. Also see [OnScreenTrigger]
+## A [Node] that creates copies of a specified Scene, such as monsters or collectibles etc.
+## and adds new instances as children of the specified parent node.
+## NOTE: To actually spawn anything, [method spawn] must be called via [member shouldSpawnOnReady] or manually from other scripts or signals such as [signal Timer.timeout] etc.
+## TIP: This script may be replaced with subclasses such as [SpawnerList] or [SpawnerRandom] to use lists of different spawns etc.
+## TIP: See [SpawnPoint], [SpawnArea] & [SpawnEdge] etc. to spawn at specific positions or regions.
+## TIP: See [OnScreenTrigger] or connect to [signal VisibleOnScreenNotifier2D.screen_entered] to spawn when the player reaches specific locations on a level map etc.
 
 class_name Spawner
 extends Node
@@ -13,6 +13,14 @@ extends Node
 
 #region Parameters
 
+@export var isEnabled: bool = true
+
+## If [member sceneToSpawn] is an [Entity] and this flag is `true` AND [member shouldSuppressEntityLogs] is `false` then [member Entity.debugMode] is also set to `true`
+@export var debugMode: bool = false
+
+
+@export_group("Spawns")
+
 ## The path of the Scene to spawn copies of.
 @export_file("*.tscn") var sceneToSpawn: String: # DESIGN: A String instead of PackedScene to avoid loading until needed, right?
 	set(newValue):
@@ -20,15 +28,27 @@ extends Node
 			if debugMode: Debug.printChange("sceneToSpawn", sceneToSpawn, newValue, true) # logAsTrace
 			sceneToSpawn = newValue
 
-## The path to the node that will be the parent of new spawns.
+## If `true`, newly spawned nodes are added as children of the current scene's root node.
+## NOTE: Suppresses [member parentOverride]
+@export var shouldSpawnInSceneRoot:	bool = false
+
+## The path to the node to set as the parent of new spawns.
 ## If empty or invalid, spawns will be added to the parent of this [Spawner] node.
+## NOTE: Ignored if [member shouldSpawnInSceneRoot] is `true`
 @export var parentOverride:		NodePath = ^".."
 
-## Suppresses [member parentOverride] and adds new spawned nodes as children of the current Scene's root node.
-@export var spawnInSceneRoot:	bool = false
-
-## An optional group to add the spawned nodes to.
+## An optional group to add the spawned nodes to, such as `&"enemies"` etc.
 @export var groupToAddTo:		StringName
+
+## If `true` then [method spawn] is deferred-called on [method _ready]
+@export var shouldSpawnOnReady:	bool = false
+
+## If [member sceneToSpawn] is an [Entity] and this flag is `true` then [member Entity.isLoggingEnabled] is set to `false`, in order to reduce log clutter.
+## NOTE: Does NOT disable [member Entity.debugMode]
+@export var shouldSuppressEntityLogs: bool = true
+
+
+@export_group("Limits")
 
 ## Maintains a counter and stops spawning nodes when the maximum number is reached.
 ## NOTE: Does NOT monitor the deletion of previous nodes; so the counter never decreases. Use [member maxLimitInGroup] to maintain a specific amount of nodes currently in the scene.
@@ -40,15 +60,6 @@ extends Node
 ## If this value is -1 or any other negative number, then it is ignored. CAUTION: Spawning nodes infinitely will eventually cause system slowdown and a crash.
 ## NOTE: [member maxTotalToSpawn] supersedes this value and is checked first.
 @export var maxLimitInGroup:	int = -1
-
-## If [member sceneToSpawn] is an [Entity] and this flag is `true` then [member Entity.isLoggingEnabled] is set to `false`, in order to reduce log clutter.
-## NOTE: Does NOT disable [member Entity.debugMode]
-@export var suppressEntityLogs: bool = true
-
-## If [member sceneToSpawn] is an [Entity] and this flag is `true` AND [member suppressEntityLogs] is `false` then [member Entity.debugMode] is also set to `true`
-@export var debugMode: bool = false
-
-@export var isEnabled: bool = true
 
 #endregion
 
@@ -73,6 +84,11 @@ signal willAddSpawn(newSpawn: Node2D, parent: Node)
 signal didSpawn(newSpawn: Node2D, parent: Node)
 
 #endregion
+
+
+func _ready() -> void:
+	if shouldSpawnOnReady: # Other checks may be performed by subclasses
+		spawn.call_deferred()
 
 
 #region It's Alive!!
@@ -115,7 +131,7 @@ func spawn() -> Node2D:
 	# Prep the newborn
 
 	if newSpawn is Entity:
-		if self.suppressEntityLogs:
+		if self.shouldSuppressEntityLogs:
 			newSpawn.isLoggingEnabled = false
 			# NOTE: Do NOT suppress `Entity.debugMode` because that is an explicit decision when debugging so it should be left as is.
 		elif self.debugMode:
@@ -127,7 +143,7 @@ func spawn() -> Node2D:
 
 	var parent: Node
 
-	if spawnInSceneRoot:				parent = self.get_tree().current_scene
+	if shouldSpawnInSceneRoot:			parent = self.get_tree().current_scene # DUMBDOT: Can't use `^"/"` to spawn at root because `get_node_or_null(^"/")` returns `null` and `^"/root"` resolves to the [Window] wtf
 	elif not parentOverride.is_empty():	parent = self.get_node_or_null(parentOverride)
 
 	# If neither the scene root or `parentOverride` are available, fall back to our parent

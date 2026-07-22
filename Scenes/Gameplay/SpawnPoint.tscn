@@ -1,18 +1,15 @@
 [gd_scene format=3 uid="uid://dple40u81ef8t"]
 
 [ext_resource type="Script" uid="uid://dtilqo4k5k3gj" path="res://Scenes/Gameplay/SpawnPoint.gd" id="1_ophw8"]
-[ext_resource type="PackedScene" uid="uid://dnrmhhkpx5fxj" path="res://Scenes/Gameplay/SpawnTimer.tscn" id="2_bxqa7"]
+[ext_resource type="Script" uid="uid://dqqp8sc6eopxn" path="res://Scripts/Gameplay/Spawner.gd" id="3_bxqa7"]
 
 [node name="SpawnPoint" type="Marker2D" unique_id=232401123 groups=["spawners"]]
-editor_description = "A Marker2D that wraps a SpawnTimer & Spawner to generate copies of other scenes at a specific position. Enable \"Editable Children\" to access Spawner settings.
-"
+editor_description = "A Marker2D that wraps a Spawner to generate copies of other scenes at a specific position. Enable \"Editable Children\" to access Spawner settings."
 script = ExtResource("1_ophw8")
 
-[node name="SpawnTimer" parent="." unique_id=333348527 instance=ExtResource("2_bxqa7")]
+[node name="Spawner" type="Node" parent="." unique_id=1721246370]
+editor_description = "Script may be replaced with SpawnerRandom or SpawnerList etc. Connect a Timer for regular spawns."
+script = ExtResource("3_bxqa7")
+parentOverride = NodePath("../..")
 
-[node name="Spawner" parent="SpawnTimer" index="0" unique_id=294035238]
-parentOverride = NodePath("../../..")
-
-[connection signal="willAddSpawn" from="SpawnTimer/Spawner" to="." method="onSpawner_willAddSpawn"]
-
-[editable path="SpawnTimer"]
+[connection signal="willAddSpawn" from="Spawner" to="." method="onSpawner_willAddSpawn"]
