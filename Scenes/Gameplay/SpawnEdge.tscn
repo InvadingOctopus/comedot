@@ -20,7 +20,7 @@ size = Vector2(64, 32)
 resource_local_to_scene = true
 size = Vector2(32, 64)
 
-[node name="SpawnEdge" type="CanvasLayer" unique_id=1076406248]
+[node name="SpawnEdge" type="CanvasLayer" unique_id=1076406248 groups=["spawners"]]
 editor_description = "Adds SpawnPoints & SpawnAreas around the screen edges. CanvasLayer keeps positions fixed even if the player/camera/map moves. Enable \"Editable Children\" to access Spawner settings."
 script = ExtResource("1_t8kyh")
 

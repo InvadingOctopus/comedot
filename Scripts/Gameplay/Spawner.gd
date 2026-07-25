@@ -87,6 +87,7 @@ signal didSpawn(newSpawn: Node2D, parent: Node)
 
 
 func _ready() -> void:
+	self.add_to_group(Global.Groups.spawners, true) # persistent
 	if shouldSpawnOnReady: # Other checks may be performed by subclasses
 		spawn.call_deferred()
 

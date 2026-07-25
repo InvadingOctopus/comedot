@@ -7,7 +7,7 @@
 editor_description = "A Marker2D that wraps a Spawner to generate copies of other scenes at a specific position. Enable \"Editable Children\" to access Spawner settings."
 script = ExtResource("1_ophw8")
 
-[node name="Spawner" type="Node" parent="." unique_id=1721246370]
+[node name="Spawner" type="Node" parent="." unique_id=1721246370 groups=["spawners"]]
 editor_description = "Script may be replaced with SpawnerRandom or SpawnerList etc. Connect a Timer for regular spawns."
 script = ExtResource("3_bxqa7")
 parentOverride = NodePath("../..")

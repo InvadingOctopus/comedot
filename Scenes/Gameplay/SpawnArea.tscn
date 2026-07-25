@@ -21,7 +21,7 @@ position = Vector2(32, 32)
 shape = SubResource("RectangleShape2D_phir2")
 debug_color = Color(0.8, 0.2, 6, 0.42)
 
-[node name="Spawner" type="Node" parent="." unique_id=1827697740]
+[node name="Spawner" type="Node" parent="." unique_id=1827697740 groups=["spawners"]]
 editor_description = "Script may be replaced with SpawnerRandom or SpawnerList etc. Connect a Timer for regular spawns."
 script = ExtResource("2_38vop")
 parentOverride = NodePath("../..")

@@ -29,16 +29,17 @@ class Groups:
 
 	const players		:= &"players"
 	const enemies		:= &"enemies"
-	const hazards		:= &"hazards" ## Areas & objects such as spikes or pools of lava etc.
-	const collectibles	:= &"collectibles" ## Loot, powerups, inventory items etc. See [CollectibleComponent]
-	const interactions	:= &"interactions" ## Objects such as switches, doors, chests etc. See [InteractionComponent]
-	const targetables	:= &"targetables"  ## Objects that can be the target of an explicit/special [Ability]. See [AbilityTargetableComponent]
-	const climbable		:= &"climbable" ## Areas & objects representing ladders, ropes or cliffs etc. See [ClimbComponent]
-	const props			:= &"props" ## Miscellaneous objects & superfluous decorations etc.
-	const zones			:= &"zones" ## Special game-specific areas representing different maps, regions or sections of the gameplay.
+	const hazards		:= &"hazards"		## Areas & objects such as spikes or pools of lava etc.
+	const collectibles	:= &"collectibles"	## Loot, powerups, inventory items etc. See [CollectibleComponent]
+	const interactions	:= &"interactions"	## Objects such as switches, doors, chests etc. See [InteractionComponent]
+	const targetables	:= &"targetables"	## Objects that can be the target of an explicit/special [Ability]. See [AbilityTargetableComponent]
+	const climbable		:= &"climbable"		## Areas & objects representing ladders, ropes or cliffs etc. See [ClimbComponent]
+	const props			:= &"props"			## Miscellaneous objects & superfluous decorations etc.
+	const spawners		:= &"spawners"		## Nodes that spawn other nodes: [Spawner], [SpawnPoint] etc.
+	const zones			:= &"zones"			## Special game-specific areas representing different maps, regions or sections of the gameplay.
 	
 	const turnBased		:= &"turnBased"
-	const audio			:= &"audio" ## Temporary sound effects
+	const audio			:= &"audio"			## Temporary sound effects
 
 
 class AudioBuses:
