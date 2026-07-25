@@ -29,7 +29,7 @@ An index of reusable Godot `.tscn` and `.tres` files where the scene or resource
 ## Scenes/Areas
 
 * PopulateArea: Area2D scene that fills its rectangular region with random copies of a configured scene.
-* SpawnArea: Area2D spawn volume containing a SpawnTimer and Spawner for periodically placing spawned scenes at random positions inside the area.
+* SpawnArea: Area2D spawn volume with a direct Spawner child that places spawned scenes at random positions inside the area.
 
 
 ## Scenes/Debug
@@ -49,9 +49,9 @@ An index of reusable Godot `.tscn` and `.tres` files where the scene or resource
 
 * CooldownTimer: Timer scene configured for cooldown behavior and reusable cooldown state.
 * PlayerSpawnPosition: Marker2D scene that moves the current player Entity to the marker position on ready and can add a CameraComponent when the player has no camera.
-* SpawnEdge: CanvasLayer scene with eight edge and corner SpawnPoints plus four offscreen SpawnAreas, coordinating their nested SpawnTimers and Spawners around the current viewport.
-* SpawnPoint: Marker2D spawn scene containing a SpawnTimer and Spawner for periodic fixed-position spawning.
-* SpawnTimer: Timer scene with an assigned Spawner child that handles periodic spawn requests.
+* SpawnEdge: CanvasLayer scene with eight edge and corner SpawnPoints plus four offscreen SpawnAreas, coordinating their direct Spawner children around the current viewport with shared spawn-parent overrides.
+* SpawnPoint: Marker2D spawn scene with a direct Spawner child that places spawned scenes at a fixed position.
+* SpawnTimer: Autostarting Timer scene with the Spawner script attached directly to its root and its timeout signal connected for periodic spawn requests.
 
 
 ## Scenes/Launch

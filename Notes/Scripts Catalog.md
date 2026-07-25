@@ -33,7 +33,7 @@ An index of reusable Comedot scripts that are not Components or Entities. Includ
 * GameOver: Node script that displays game-over UI and pauses gameplay when GameState.gameDidOver is emitted.
 * RandomPlaceholder: InstancePlaceholder subclass that loads or skips a placeholder at runtime based on chance.
 * ReplaceWithRandomScene: Node2D script that defers replacing itself with a scene chosen from a weighted path Dictionary, with fallback-path and completion-signal support.
-* Spawner: Base spawning Node that validates and instantiates a configured scene under a resolved parent, with total/group limits, signals, and hooks for specialized subclasses.
+* Spawner: Reusable Node script that validates and instantiates a configured scene under a resolved parent, with optional spawning on ready, total/group limits, signals, and hooks for specialized subclasses. May also be attached to specialized Node types such as Timer.
 * SpawnerList: Spawner subclass that cycles through scene paths in sequential order, advancing and wrapping only after a successful spawn.
 * SpawnerRandom: Spawner subclass that rolls an overall spawn chance, then chooses a scene path from a weighted Dictionary.
 * SpawnerStack: Single-use Spawner subclass that pops scene paths from the end of a stack only after successful spawns and disables itself when emptied.
@@ -88,10 +88,9 @@ An index of reusable Comedot scripts that are not Components or Entities. Includ
 * MouseHoverArea: Area2D that shows highlight or hover effects when the mouse enters it.
 * PlayerSpawnPosition: Marker2D that moves the configured player Entity to the marker on ready and can create a CameraComponent when missing to avoid an initial view jump.
 * PopulateArea: Experimental Area2D that fills a rectangular area with random copies of a scene.
-* SpawnArea: Area2D that positions spawns from its nested SpawnTimer and Spawner at random points inside the area.
-* SpawnEdge: Positions eight SpawnPoints and four SpawnAreas around the viewport edges, coordinating their nested SpawnTimers and Spawners with CanvasLayer support and shared spawn-parent overrides.
-* SpawnPoint: Marker2D that positions spawns from its nested SpawnTimer and Spawner at a fixed point.
-* SpawnTimer: Timer that periodically delegates spawning to an assigned Spawner child, allowing different Spawner subclasses to provide the spawn source.
+* SpawnArea: Area2D that positions spawns from its direct Spawner child at random points inside the area.
+* SpawnEdge: Positions eight SpawnPoints and four SpawnAreas around the viewport edges, coordinating their direct Spawner children with CanvasLayer support and shared spawn-parent overrides.
+* SpawnPoint: Marker2D that positions spawns from its direct Spawner child at a fixed point.
 * TestMode: Development helper node that toggles selected nodes, debug flags, and test-only changes for a scene.
 * TextBubble: Floating text label effect with a static create helper for damage numbers, alerts, and short messages.
 
