@@ -13,19 +13,19 @@ extends VisibleOnScreenNotifier2D
 	set(newValue):
 		if newValue != isEnabled:
 			isEnabled = newValue
-			if timer: Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.isEnabled)
+			if delayTimer: Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
 
 ## An optional [Timer] that will be started on a [signal screen_entered] to add a delay before calling [member trigger]
 ## NOTE: [Timer.one_shot] is enforced.
-@export var timer:		Timer:
+@export var delayTimer:		Timer:
 	set(newValue):
-		if newValue != timer:
+		if newValue != delayTimer:
 			# Disconnect any previous Timers
-			if  timer: Tools.disconnectSignal(timer.timeout, self.onTimer_timeout)
-			timer = newValue
-			if  timer:
-				timer.one_shot = true
-				Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.isEnabled)
+			if  delayTimer: Tools.disconnectSignal(delayTimer.timeout, self.onTimer_timeout)
+			delayTimer = newValue
+			if  delayTimer:
+				delayTimer.one_shot = true
+				Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
 
 @export var debugMode:	bool
 
@@ -58,23 +58,23 @@ func _ready() -> void:
 	if  shouldLimitTriggers and triggerCount >= maxTriggers:
 		handleMaxTriggers(false) # not emitSignals becuase a `triggerCount` loaded from @export_storage may have happeend a long time ago
 
-	if  timer:
-		timer.one_shot = true
-		Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.isEnabled)
+	if  delayTimer:
+		delayTimer.one_shot = true
+		Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
 
 
 func onScreenEntered() -> void:
 	if not isEnabled: return
 
-	if not timer:
+	if not delayTimer:
 		trigger()
-	elif timer and (timer.time_left < 0 or is_zero_approx(timer.time_left)):
-		timer.one_shot = true # Just in case
-		timer.start()
+	elif delayTimer and (delayTimer.time_left < 0 or is_zero_approx(delayTimer.time_left)):
+		delayTimer.one_shot = true # Just in case
+		delayTimer.start()
 
 
 func onTimer_timeout() -> void:
-	timer.stop()
+	delayTimer.stop()
 	if isEnabled: trigger()
 
 
