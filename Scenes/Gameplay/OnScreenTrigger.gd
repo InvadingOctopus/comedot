@@ -1,7 +1,7 @@
 ## A convenience subclass of [VisibleOnScreenNotifier2D] with features such as a limited number of uses & a [Timer] delay etc.
 ## TIP: EXAMPLE USAGE:
 ## Triggering cutscenes.
-## Spawning preset enemy waves via [SpawnPoint] & [SpawnerList] at specific locations on a map e.g. in an scrolling shoot-em-up.
+## Spawning preset enemy waves via [SpawnPoint] & [SpawnerList] at specific locations on a map e.g. in a scrolling shoot-em-up.
 
 class_name OnScreenTrigger # TBD: Better name? ScreenEntryTrigger?
 extends VisibleOnScreenNotifier2D
@@ -56,7 +56,7 @@ signal didReachMaxTriggers
 
 func _ready() -> void:
 	if  shouldLimitTriggers and triggerCount >= maxTriggers:
-		handleMaxTriggers(false) # not emitSignals becuase a `triggerCount` loaded from @export_storage may have happeend a long time ago
+		handleMaxTriggers(false) # not emitSignals because a `triggerCount` loaded from @export_storage may have happened a long time ago
 
 	if  delayTimer:
 		delayTimer.one_shot = true
@@ -96,11 +96,13 @@ func handleMaxTriggers(emitSignals: bool = true) -> void:
 	if triggerCount < maxTriggers: return
 	if debugMode: Debug.printDebug(str("onScreenEntered() shouldLimitTriggers: triggerCount: ", triggerCount, " >= maxTriggers: ", maxTriggers, " ・ Disabling…"), self)
 	
-	self.isEnabled = false # Let signal handlers see that we're disabled now after the last trigger
+	if emitSignals: didTrigger.emit(triggerCount)
 
-	if emitSignals: 
-		didTrigger.emit(triggerCount)
-		didReachMaxTriggers.emit()
+	# Let signal handlers see that we're disabled now after the last trigger
+	# DESIGN: Disable AFTER `didTrigger` so subclasses such as SpawnLocationTrigger can do their work properly, as in onSpawner_willAddSpawn() etc.
+	self.isEnabled = false
+
+	if emitSignals: didReachMaxTriggers.emit()
 
 	if shouldDeleteAfterMaxTriggers:
 		if debugMode: Debug.printLog("onScreenEntered() shouldDeleteAfterMaxTriggers: Deleting…", self)
