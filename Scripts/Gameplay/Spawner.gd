@@ -5,6 +5,7 @@
 ## TIP: See [SpawnPoint], [SpawnArea] & [SpawnEdge] etc. to spawn at specific positions or regions.
 ## TIP: See [OnScreenTrigger] or connect to [signal VisibleOnScreenNotifier2D.screen_entered] to spawn when the player reaches specific locations on a level map etc.
 
+@tool
 class_name Spawner
 extends Node
 
@@ -47,6 +48,10 @@ extends Node
 ## NOTE: Does NOT disable [member Entity.debugMode]
 @export var shouldSuppressEntityLogs: bool = true
 
+## Adds a [Timer] as a child of this [Spawner] and connects its [signal Timer.timeout] → [method Spawner.spawn]
+## If there's already a [Timer] child node, it is reused.
+@export_tool_button("Add Timer", "Timer") var addTimerButton: Callable = addTimerInEditor
+
 
 @export_group("Limits")
 
@@ -87,6 +92,8 @@ signal didSpawn(newSpawn: Node2D, parent: Node)
 
 
 func _ready() -> void:
+	if Engine.is_editor_hint(): return
+
 	self.add_to_group(Global.Groups.spawners, true) # persistent
 	if shouldSpawnOnReady: # Other checks may be performed by subclasses
 		spawn.call_deferred()
@@ -96,6 +103,8 @@ func _ready() -> void:
 
 ## Creates and returns a new instance of [member sceneToSpawn]
 func spawn() -> Node2D:
+	if Engine.is_editor_hint(): return null
+
 	# TBD: Add an `isSpawning` flag to avoid "re-entrancy" or let signal handlers spawn multiple times etc?
 	if not isEnabled or not validateSceneToSpawn(true): return null # printWarnings
 
@@ -202,5 +211,49 @@ func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
 @warning_ignore("unused_parameter")
 func validateNewNode(newSpawn: Node2D, parent: Node) -> bool:
 	return isEnabled
+
+#endregion
+
+
+#region Editor Convenience
+
+func addTimerInEditor() -> void:
+	if not Engine.is_editor_hint(): return
+
+	var spawnMethod: Callable = Callable(self, &"spawn")
+
+	# A naive check to see if there's already any other Timer
+	var existingTimer: Timer = NodeTools.findFirstChildOfType(self, Timer)
+	if  existingTimer:
+		if not existingTimer.timeout.is_connected(spawnMethod):
+			# Connect signals with an existing Timer
+			var undoManager: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
+			undoManager.create_action("Connect " + existingTimer.name + ".timeout → " + self.name + ".spawn()")
+			undoManager.add_do_method(existingTimer,	&"connect",		&"timeout",	spawnMethod, Object.CONNECT_PERSIST)
+			undoManager.add_undo_method(existingTimer,	&"disconnect",	&"timeout",	spawnMethod)
+			undoManager.commit_action()
+		EditorTools.selectNode.call_deferred(existingTimer)
+		return
+
+	# Create a new Timer
+
+	var sceneRoot: Node = EditorInterface.get_edited_scene_root()
+	if not sceneRoot: return
+
+	var newTimer: Timer	= Timer.new()
+	newTimer.name		= self.name + "Timer"
+	newTimer.autostart	= true
+
+	var connectTimer:	Callable = Callable(newTimer, &"connect").bind(&"timeout", spawnMethod, Object.CONNECT_PERSIST)
+	var disconnectTimer:Callable = Callable(newTimer, &"disconnect").bind(&"timeout", spawnMethod)
+
+	var didAddTimer: bool = EditorTools.addNodeWithUndo(
+		newTimer, self,
+		"Add Timer for " + self.name,
+		false, # showEditableChildren
+		[connectTimer], [disconnectTimer])
+
+	if didAddTimer: EditorTools.selectNode.call_deferred(newTimer)
+	else: newTimer.free()
 
 #endregion
