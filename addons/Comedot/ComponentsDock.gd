@@ -569,17 +569,17 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 	if debugMode: printLog("addNewEntity()")
 	
 	var selectedNodes:	Array[Node] = selection.get_top_selected_nodes()
-	var parentNode:		Node
+	var parent:		Node
 
 	if selectedNodes.is_empty():
-		parentNode = EditorInterface.get_edited_scene_root() # Just add to the Scene Root if no parent Node is selected
+		parent = EditorInterface.get_edited_scene_root() # Just add to the Scene Root if no parent Node is selected
 	elif selectedNodes.size() > 1: # TBD: Support adding multiple new Entities to more than 1 selected Node?
 		printLog("Cannot add Entity to more than 1 selected Node")
 		return
 	else: # If there's just 1 selection,
-		parentNode = selectedNodes.front() # Get the first selected Node
+		parent = selectedNodes.front() # Get the first selected Node
 
-	if parentNode == null:
+	if parent == null:
 		printError("addNewEntity(): Cannot create new Entity because no scene is open!")
 		return
 
@@ -620,7 +620,7 @@ func addNewEntity(entityType: EntityTypes = EntityTypes.node2D) -> void:
 
 	# Add the new Entity to the selected parent node
 	# via the EditorUndoRedoManager
-	undoableAddNode(parentNode, newEntity, "Add Entity: " + newEntity.name)
+	addNodeWithUndo(newEntity, parent, "Add Entity: " + newEntity.name)
 	# EditorInterface.set_script(preload(entityBaseScript)) # TBD: Needed?
 
 	printLog(str("Added Entity: ", newEntity, " → ", newEntity.get_parent()))
@@ -649,12 +649,12 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 		printLog("Cannot add Components: Select 1 (and only 1) parent Node")
 		return
 
-	var parentNode: Node = selectedNodes.front()
+	var parent: Node = selectedNodes.front()
 
-	if not parentNode is Entity:
+	if not parent is Entity:
 		# If the selection is a Component, try to select its parent Entity
-		if parentNode is Component:
-			parentNode = parentNode.get_parent()
+		if parent is Component:
+			parent = parent.get_parent()
 		else:
 			#if debugMode:
 			printLog("Cannot add Component to a non-Entity Node")
@@ -669,7 +669,7 @@ func addComponentToSelectedNode(componentPath: String) -> void:
 
 	# Add the Component to the selected Entity
 	# via the EditorUndoRedoManager
-	undoableAddNode(parentNode, newComponentNode, "Add " + newComponentNode.name)
+	addNodeWithUndo(newComponentNode, parent, "Add " + newComponentNode.name)
 
 	# Log
 	printLog(str("Added Component: ", newComponentNode, " → ", newComponentNode.get_parent()))
@@ -828,28 +828,29 @@ func editSelectedComponent() -> void:
 
 #region Undo/Redo
 
-func undoableAddNode(parentNode: Node, newNode: Node, actionName: String) -> void:
+func addNodeWithUndo(newNode: Node, parent: Node, actionName: String) -> void:
+	# PERFORMANCE: Don't call EditorTools.addNodeWithUndo() to avoid dependence on an external non-Addon script
 	var sceneRoot: Node = EditorInterface.get_edited_scene_root()
 
 	undoManager.create_action(actionName)
 
 	# Add the new Entity or Component to the selected parent node
-	undoManager.add_do_method(parentNode, &"add_child", newNode, true) # force_readable_name
-	undoManager.add_do_method(newNode,    &"set_owner", sceneRoot) # The owner of the new Entity or Component must be the currently edited "scene root"
+	undoManager.add_do_method(parent,  &"add_child", newNode, true) # force_readable_name
+	undoManager.add_do_method(newNode, &"set_owner", sceneRoot) # The owner of the new Entity or Component must be the currently edited "scene root"
 
 	# Expose the sub-nodes of the new Entity or Component to make it easier to modify any if needed
 	if shouldShowEditableChildren and newNode.get_child_count() > 0:
 		# NOTE: set_editable_instance() must be called on the PARENT or ancestor node of the Entity or Component
 		# NOTE: Use `shouldShowEditableChildren` instead of `true` or `false` so that children are hidden when that option is disabled, in case the child nodes were already automatically shown somehow.
-		undoManager.add_do_method(parentNode,	&"set_editable_instance", newNode, shouldShowEditableChildren)
-		undoManager.add_undo_method(parentNode,	&"set_editable_instance", newNode, not shouldShowEditableChildren)
+		undoManager.add_do_method(parent,	&"set_editable_instance", newNode, shouldShowEditableChildren)
+		undoManager.add_undo_method(parent,	&"set_editable_instance", newNode, not shouldShowEditableChildren)
 
 	# DESIGN: Do not save/restore the list of selected nodes:
 	# The Godot Editor's own built-in Create New Node etc. actions also don't preserve the previous selection.
 	
 	# On undo, remove the newly-added Entity or Component
-	undoManager.add_undo_method(newNode,	&"set_owner",	null)
-	undoManager.add_undo_method(parentNode,	&"remove_child",newNode)
+	undoManager.add_undo_method(newNode, &"set_owner",	  null)
+	undoManager.add_undo_method(parent,  &"remove_child", newNode)
 	
 	undoManager.add_do_reference(newNode) # Make sure the newly created node CANNOT be freed while the undo history still needs it for redo
 	undoManager.commit_action() # Calls all `do` methods such as add_child() etc.
