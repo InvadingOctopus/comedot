@@ -16,6 +16,7 @@ extends VisibleOnScreenNotifier2D
 			if delayTimer: Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
 
 ## An optional [Timer] that will be started on a [signal screen_entered] to add a delay before calling [member trigger]
+## Stopped without triggering when this [VisibleOnScreenNotifier2D] goes off screen.
 ## NOTE: [Timer.one_shot] is enforced.
 @export var delayTimer:		Timer:
 	set(newValue):
@@ -65,7 +66,7 @@ func _ready() -> void:
 
 func onScreenEntered() -> void:
 	if not isEnabled: return
-
+	if debugMode: Debug.printDebug("onScreenEntered()", self)
 	if not delayTimer:
 		trigger()
 	elif delayTimer and (delayTimer.time_left < 0 or is_zero_approx(delayTimer.time_left)):
@@ -73,14 +74,19 @@ func onScreenEntered() -> void:
 		delayTimer.start()
 
 
+func onScreenExited() -> void:
+	if debugMode:  Debug.printDebug("onScreenExited()", self)
+	if delayTimer: delayTimer.stop() # NOTE: Does not emit `timeout`
+
+
 func onTimer_timeout() -> void:
 	delayTimer.stop()
 	if isEnabled: trigger()
 
 
-func trigger() -> void:
+func trigger() -> bool:
 	if not isEnabled \
-	or (shouldLimitTriggers and triggerCount >= maxTriggers): return
+	or (shouldLimitTriggers and triggerCount >= maxTriggers): return false
 
 	# Keep track of how many times we were triggered
 	triggerCount += 1
@@ -90,6 +96,7 @@ func trigger() -> void:
 	else:
 		if debugMode: Debug.printDebug(str("onScreenEntered() triggerCount: ", triggerCount), self)
 		didTrigger.emit(triggerCount)
+	return true
 
 
 func handleMaxTriggers(emitSignals: bool = true) -> void:

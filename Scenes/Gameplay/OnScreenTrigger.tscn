@@ -8,3 +8,4 @@ rect = Rect2(-8, -8, 16, 16)
 script = ExtResource("1_lbkqm")
 
 [connection signal="screen_entered" from="." to="." method="onScreenEntered"]
+[connection signal="screen_exited" from="." to="." method="onScreenExited"]
