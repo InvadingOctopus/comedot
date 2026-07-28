@@ -1,11 +1,11 @@
-[gd_scene format=3 uid="uid://xhjx5rgqn01r"]
+[gd_scene format=3 uid="uid://bj4f34jb0kl5t"]
 
-[ext_resource type="Script" uid="uid://bxxoy6thw8fl8" path="res://Scenes/Gameplay/SpawnLocationTrigger.gd" id="1_40wem"]
+[ext_resource type="PackedScene" uid="uid://d01ik18n2pd1k" path="res://Scenes/Gameplay/OnScreenTrigger.tscn" id="1_40wem"]
+[ext_resource type="Script" uid="uid://bxxoy6thw8fl8" path="res://Scenes/Gameplay/SpawnLocationTrigger.gd" id="2_sh8nn"]
 
-[node name="SpawnLocationTrigger" type="VisibleOnScreenNotifier2D" unique_id=273553184]
-editor_description = "A subclass of VisibleOnScreenNotifier2D to trigger a Spawner and align spawn positions. Connect with Spawner.willAddSpawn and Timer.start() etc."
-rect = Rect2(-8, -8, 16, 16)
-script = ExtResource("1_40wem")
-
-[connection signal="didTrigger" from="." to="." method="onDidTrigger"]
-[connection signal="screen_entered" from="." to="." method="onScreenEntered"]
+[node name="SpawnLocationTrigger" unique_id=2116685941 instance=ExtResource("1_40wem")]
+editor_description = "A VisibleOnScreenNotifier2D to trigger a Spawner and align spawn positions. Connect with Spawner.willAddSpawn and Timer.start() etc."
+script = ExtResource("2_sh8nn")
+shouldMatchThisNodeX = false
+shouldMatchThisNodeY = false
+offset = Vector2(0, 0)

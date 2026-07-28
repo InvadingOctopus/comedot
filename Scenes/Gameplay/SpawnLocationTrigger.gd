@@ -1,5 +1,5 @@
 ## A subclass of [VisibleOnScreenNotifier2D] & [OnScreenTrigger] that triggers a [Spawner] when this node enters the screen view,
-## and aligns the X/Y position of new spawns with the X/Y position of this node.
+## and aligns the X/Y position of new spawns with this node.
 ## TIP: This may be used with the [SpawnPoint]s in [SpawnEdge] to keep spawns at one side of the screen but "slide" them along the edge.
 ## IMPORTANT: To use, connect [signal Spawner.willAddSpawn] → [method SpawnLocationTrigger.onSpawner_willAddSpawn]
 ## and/or [signal SpawnLocationTrigger.didTrigger] (unbind 1 argument) → [method Spawner.spawn] or [method SpawnerList.spawnBatch] or [method Timer.start] etc.
@@ -18,9 +18,7 @@ extends OnScreenTrigger
 #endregion
 
 
-## Optional; may be implemented in subclasses.
-func onDidTrigger(_triggerCount: int) -> void:
-	pass
+#region Trigger
 
 ## Aligns the [param newSpawn]'s [member Node2D.position] with this trigger node before the spawn is added to [param parent]
 ## NOTE: Accurate alignment across different [CanvasLayer]s requires this [SpawnLocationTrigger] and [param parent] to use the same [Viewport]
@@ -28,6 +26,7 @@ func onDidTrigger(_triggerCount: int) -> void:
 func onSpawner_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
 	if  not isEnabled \
 	or (not shouldMatchThisNodeX and not shouldMatchThisNodeY): return
+	if debugMode: Debug.printDebug(str("onSpawner_willAddSpawn(): ", newSpawn), self)
 
 	# Convert positions
 
@@ -49,3 +48,5 @@ func onSpawner_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
 	# Convert the aligned viewport position back to `parent`'s local coordinates.
 	# If `parent` is a [Node] it will have no [CanvasItem] transform, so use the aligned position directly.
 	newSpawn.position = parent.make_canvas_position_local(spawnPosition) if isParentCanvasItem else spawnPosition
+
+#endregion
