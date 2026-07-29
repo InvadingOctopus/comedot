@@ -79,6 +79,10 @@ var isSpawning: bool ## Set to `true` during an active [method spawn] call.
 
 #region Signals
 
+## Emitted at the start of [method setupSpawn] before a [member sceneToSpawn] is chosen.
+## TIP: This allows a signal handler to modify the [Spawner] state.
+signal willSetupSpawn
+
 ## Emitted before [member sceneToSpawn] is validated, loaded and a copy is instantiated.
 ## TIP: This allows a signal handler to conditionally choose a different scene if needed.
 signal willSpawn(scenePathToSpawn: String)
@@ -94,12 +98,42 @@ signal didSpawn(newSpawn: Node2D, parent: Node)
 #endregion
 
 
+#region Setup & Validation
+
 func _ready() -> void:
 	if Engine.is_editor_hint(): return
 
 	self.add_to_group(Global.Groups.spawners, true) # persistent
 	if shouldSpawnOnReady: # Other checks may be performed by subclasses
 		spawn.call_deferred()
+
+
+## An abstract hook for subclasses to prepare and/or pick a scene to spawn, such as in [SpawnerList] & [SpawnerStack]
+func setupSpawn() -> bool:
+	return true
+
+
+## Validates [member sceneToSpawn]
+## May be overridden by subclasses to add different checks.
+func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
+	# Log warnings only on `debugMode` to avoid noise if a caller is just checking
+	if sceneToSpawn.is_empty():
+		if printWarnings: Debug.printWarning("validateSceneToSpawn(): sceneToSpawn is empty", self)
+		return false
+	elif not ResourceLoader.exists(sceneToSpawn, "PackedScene"):
+		if printWarnings: Debug.printWarning("validateSceneToSpawn(): sceneToSpawn does not exist or is not a PackedScene: " + sceneToSpawn, self)
+		return false
+	else:
+		return true
+
+
+## A method for subclasses to override. Prepares newly spawned node with further game-specific logic.
+## May suppress the creation of a newly spawned node by checking additional conditions and returning `false`.
+@warning_ignore("unused_parameter")
+func validateSpawnedNode(newSpawn: Node2D, parent: Node) -> bool:
+	return isEnabled # NOTE: Let `isEnabled` be used by handlers/hooks to abort a spawn
+
+#endregion
 
 
 #region It's Alive!!
@@ -112,6 +146,13 @@ func spawn() -> Node2D:
 
 	# Guard against nested spawns & "re-entrancy"
 	isSpawning = true
+
+	# Allow subclasses to pick a scene
+	willSetupSpawn.emit() # NOTE: Handlers may disable `isEnabled` to abort a spawn…
+	# …so we check `isEnabled` again
+	if not isEnabled or not setupSpawn():
+		isSpawning = false
+		return null
 
 	# NOTE: Emit the `will` signal before loading the scene path,
 	# in case a signal handler wants to modify `sceneToSpawn`
@@ -184,7 +225,7 @@ func spawn() -> Node2D:
 
 	# Let the game-specific subclasses, if any, verify & customize the new copies.
 
-	if validateNewNode(newSpawn, parent):
+	if validateSpawnedNode(newSpawn, parent):
 
 		if not groupToAddTo.is_empty():
 			newSpawn.add_to_group(groupToAddTo, true) # persistent
@@ -211,31 +252,6 @@ func spawn() -> Node2D:
 		newSpawn.queue_free()
 		isSpawning = false
 		return null
-
-#endregion
-
-
-#region Validation
-
-## Validates [member sceneToSpawn]
-## May be overridden by subclasses to add different checks.
-func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
-	# Log warnings only on `debugMode` to avoid noise if a caller is just checking
-	if sceneToSpawn.is_empty():
-		if printWarnings: Debug.printWarning("validateSceneToSpawn(): sceneToSpawn is empty", self)
-		return false
-	elif not ResourceLoader.exists(sceneToSpawn, "PackedScene"):
-		if printWarnings: Debug.printWarning("validateSceneToSpawn(): sceneToSpawn does not exist or is not a PackedScene: " + sceneToSpawn, self)
-		return false
-	else:
-		return true
-
-
-## A method for subclasses to override. Prepares newly spawned node with further game-specific logic.
-## May suppress the creation of a newly spawned node by checking additional conditions and returning `false`.
-@warning_ignore("unused_parameter")
-func validateNewNode(newSpawn: Node2D, parent: Node) -> bool:
-	return isEnabled
 
 #endregion
 

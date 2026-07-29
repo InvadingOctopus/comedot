@@ -20,16 +20,14 @@ class_name SpawnerRandom extends Spawner
 #endregion
 
 
-## Overrides [method Spawner.spawn] to check [member spawnChance] then pick a random scene from [member scenes]
-## The random scene path is "injected" into [member sceneToSpawn] before calling `super.spawn()`
-func spawn() -> Node2D:
-	# TBD: Clear `sceneToSpawn` on failed validation?
-
-	if not isEnabled or isSpawning: return null # validateSceneToSpawn() will be checked by `super.spawn()`  # TBD: Log warning if `isSpawning`?
+## Checks [member spawnChance] then picks a random scene from [member scenes] to "inject" into [member sceneToSpawn]
+func setupSpawn() -> bool:
+	# `isEnabled` checked by spawn()
+	# sceneToSpawn = "" # TBD: Clear `sceneToSpawn` by default or on failed validation?
 
 	if scenes.is_empty():
 		Debug.printWarning("spawn(): `scenes` is empty", self)
-		return null
+		return false
 
 	# Before choosing a random scene, roll to see if we should spawn anything at all or not
 	if spawnChance >= 100 \
@@ -37,13 +35,13 @@ func spawn() -> Node2D:
 		# Success
 		if debugMode: Debug.printDebug(str("spawn(): roll <= spawnChance: ", spawnChance), self)
 	else:
-		return null
+		return false
 
 	# Choose a random scene
 	var randomScenePath: String = Tools.pickRandomFromWeightsDictionary(scenes, "") as String
 	if  randomScenePath.is_empty(): # Avoid a call to super.spawn() → validateSceneToSpawn()
 		if debugMode: Debug.printWarning("spawn(): Tools.pickRandomFromWeightsDictionary() did not return a non-empty path from `scenes`", self)
-		return null
+		return false
 
 	sceneToSpawn = randomScenePath
-	return super.spawn()
+	return true
