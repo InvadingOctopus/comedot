@@ -16,8 +16,9 @@ extends VisibleOnScreenNotifier2D
 			if delayTimer: Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
 
 ## An optional [Timer] that will be started on a [signal screen_entered] to add a delay before calling [member trigger]
-## Stopped without triggering when this [VisibleOnScreenNotifier2D] goes off screen.
+## If [member shouldStopDelayTimerOnExit], stopped without triggering when this [VisibleOnScreenNotifier2D] goes off screen.
 ## NOTE: [Timer.one_shot] is enforced.
+## NOTE: Calling [method Timer.stop] will NOT invoke [method trigger]
 @export var delayTimer:		Timer:
 	set(newValue):
 		if newValue != delayTimer:
@@ -27,6 +28,9 @@ extends VisibleOnScreenNotifier2D
 			if  delayTimer:
 				delayTimer.one_shot = true
 				Tools.toggleSignal(delayTimer.timeout, self.onTimer_timeout, self.isEnabled)
+
+## If `true` (default) then [member delayTimer] is stopped without calling [method trigger] when this node goes offscreen.
+@export var shouldStopDelayTimerOnExit: bool = true
 
 @export var debugMode:	bool
 
@@ -55,6 +59,8 @@ signal didReachMaxTriggers
 #endregion
 
 
+#region Events
+
 func _ready() -> void:
 	if  shouldLimitTriggers and triggerCount >= maxTriggers:
 		handleMaxTriggers(false) # not emitSignals because a `triggerCount` loaded from @export_storage may have happened a long time ago
@@ -74,15 +80,20 @@ func onScreenEntered() -> void:
 		delayTimer.start()
 
 
-func onScreenExited() -> void:
-	if debugMode:  Debug.printDebug("onScreenExited()", self)
-	if delayTimer: delayTimer.stop() # NOTE: Does not emit `timeout`
-
-
 func onTimer_timeout() -> void:
 	delayTimer.stop()
 	if isEnabled: trigger()
 
+
+## May be overridden by subclasses to add extra "cleanup"
+func onScreenExited() -> void:
+	if debugMode:  Debug.printDebug("onScreenExited()", self)
+	if shouldStopDelayTimerOnExit and delayTimer: delayTimer.stop() # NOTE: Does not emit `timeout`
+
+#endregion
+
+
+#region Trigger
 
 func trigger() -> bool:
 	if not isEnabled \
@@ -114,3 +125,5 @@ func handleMaxTriggers(emitSignals: bool = true) -> void:
 	if shouldDeleteAfterMaxTriggers:
 		if debugMode: Debug.printLog("onScreenEntered() shouldDeleteAfterMaxTriggers: Deleting…", self)
 		self.queue_free()
+
+#endregion
