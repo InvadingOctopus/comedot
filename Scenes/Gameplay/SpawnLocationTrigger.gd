@@ -1,5 +1,5 @@
 ## A subclass of [VisibleOnScreenNotifier2D] & [OnScreenTrigger] that triggers a [Spawner] when this node enters the screen view,
-## and aligns the X/Y position of new spawns with this node.
+## and aligns the X/Y position of new spawns with this node, similar to [RemoteTransform2D] except only once on optional axes.
 ## TIP: This may be used with the [SpawnPoint]s in [SpawnEdge] to keep spawns at one side of the screen but "slide" them along the edge.
 ## IMPORTANT: To use, connect [signal Spawner.willAddSpawn] → [method SpawnLocationTrigger.onSpawner_willAddSpawn]
 ## and/or [signal SpawnLocationTrigger.didTrigger] (unbind 1 argument) → [method Spawner.spawn] or [method SpawnerList.spawnBatch] or [method Timer.start] etc.
@@ -18,7 +18,7 @@ extends OnScreenTrigger
 #endregion
 
 
-#region Trigger
+#region Spawn
 
 ## Aligns the [param newSpawn]'s [member Node2D.position] with this trigger node before the spawn is added to [param parent]
 ## NOTE: Accurate alignment across different [CanvasLayer]s requires this [SpawnLocationTrigger] and [param parent] to use the same [Viewport]
