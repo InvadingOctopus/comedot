@@ -4,13 +4,13 @@
 ## TIP: To choose a random scene from a set of "weighted" options, use [SpawnerRandom]
 ## TIP: To use with a [SpawnPoint] or [SpawnArea] etc., enable "Editable Children" and replace the [Spawner] script with this script.
 
-class_name SpawnerList
-extends Spawner
+@warning_ignore("missing_tool")
+class_name SpawnerList extends SpawnerSequenceBase
 
 
 #region Parameters
 ## A list of scene paths to spawn copies of, in sequential order.
-@export_file("*.tscn") var scenesList: Array[String]
+# in SpawnerSequenceBase: @export_file("*.tscn") var scenesList: Array[String]
 #endregion
 
 
@@ -26,58 +26,42 @@ extends Spawner
 
 
 ## Validates [member scenesList] and [member currentSceneIndex] before a scene is selected.
-func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
-	if scenesList.is_empty():
-		if printWarnings: Debug.printWarning("validateSceneToSpawn(): scenesList is empty", self)
-		return false
+func validateList(printWarnings: bool = self.debugMode) -> bool:
+	if not super.validateList(printWarnings): return false
 
 	if currentSceneIndex < 0 or currentSceneIndex >= scenesList.size(): # Last valid index is size-1
-		if printWarnings: Debug.printWarning(str("validateSceneToSpawn(): currentSceneIndex is out of bounds: ", currentSceneIndex, " in list size: ", scenesList.size()), self)
+		if printWarnings: Debug.printWarning(str("validateList(): currentSceneIndex is out of bounds: ", currentSceneIndex, " in list size: ", scenesList.size()), self)
 		return false
 
 	return true
 
 
-## Overrides [method Spawner.spawn] to "inject" the scene at [member currentSceneIndex] into [member sceneToSpawn]
-## then calls `super.spawn()` and increments the index if successful.
-func spawn() -> Node2D:
-	if not isEnabled or not validateSceneToSpawn(true): return null # printWarnings
+## "Injects" the scene at [member currentSceneIndex] into [member sceneToSpawn]
+func setupSpawn() -> bool:
+	# `isEnabled` checked by Spawner.spawn()
+	if not validateList(true): return false # printWarnings
 
 	# Pluck the next scene from the list
-	var sceneIndexToSpawn: int = currentSceneIndex
-	self.sceneToSpawn = self.scenesList[currentSceneIndex]
+	sceneToSpawn = scenesList[currentSceneIndex]
+	if debugMode: Debug.printDebug(str("setupSpawn() currentSceneIndex ", currentSceneIndex, ": ", sceneToSpawn), self)
 
-	if sceneToSpawn.is_empty():
-		Debug.printWarning(str("spawn(): Empty path at index ", sceneIndexToSpawn), self)
-		return null
+	# NOTE: Do NOT increment the index if the spawn wasn't successful, to prevent indexes from being "eaten up"
+	# Increment in onDidSpawn()
+	
+	return true
 
-	# Ask the Spawner superclass to spawn
-	var newSpawn: Node2D = super.spawn()
 
-	# Advance the index
-	# NOTE: Do NOT advance the index if the spawn wasn't successful, to prevent indexes from being "eaten up" .
+func onDidSpawn(newSpawn: Node2D, _parent: Node) -> void:
+	# Increment the index only if the spawn was successful
 	# DESIGN: This ensures that waves like "normal monster → normal → normal → super monster" are preserved and spawned in order.
-	if newSpawn != null:
-		self.currentSceneIndex = wrapi(sceneIndexToSpawn + 1, 0, scenesList.size()) # Calculate from `sceneIndexToSpawn` because `currentSceneIndex` may be mutated
+	if not is_instance_valid(newSpawn): return
+	# DESIGN: `currentSceneIndex` may have been modified by signal handlers or other hooks,
+	# but that's fine and allows for complex game-specific "hacks"
 
-	return newSpawn
+	# Are we already empty?
+	if scenesList.is_empty():
+		sceneToSpawn = "" # Avoid stale paths from confusing later validation
+		return
 
+	currentSceneIndex = wrapi(currentSceneIndex + 1, 0, scenesList.size())
 
-## Calls [method spawn] repeatedly until all the scenes in [member scenesList] have been spawned once,
-## or until [param maxSpawnsForThisCall] or until a spawn fails.
-## TIP: Useful for spawning an entire wave of enemies in a single "tick".
-## TIP: To start from a different entry, change [member currentSceneIndex] manually before calling.
-## PERFORMANCE: [param returnSpawns] is disabled by default to avoid wasting memory on an [Array] unless the caller needs to access the spawned nodes.
-func spawnBatch(maxSpawnsForThisCall: int = 100, returnSpawns: bool = false) -> Array[Node2D]:
-	if not isEnabled or scenesList.is_empty() or maxSpawnsForThisCall < 1: return []
-
-	var spawns:	  Array[Node2D]
-	var newSpawn: Node2D
-
-	maxSpawnsForThisCall = mini(maxSpawnsForThisCall, scenesList.size())
-	for _count in maxSpawnsForThisCall:
-		newSpawn = self.spawn()
-		if newSpawn == null: break # The index does not advance on a failed spawn, so don't retry
-		if returnSpawns: spawns.append(newSpawn) # PERFORMANCE: Don't waste memory if a list of spawns isn't needed
-		if not isEnabled or scenesList.is_empty(): break # Recheck conditions in case the state was mutated by a signal handler etc.
-	return spawns # == [] if not returnSpawns
