@@ -122,6 +122,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 	! An exclamation sign for high impact fixes or the most important changes in the commit.
 	? A question mark for some comments such as possible bugs, uncertain behavior, "TBD" (To Be Decided) remarks, etc.
 	! TODO: An exclamation sign + `TODO:` etc. for updating dependents etc. affected by this commit, to be included in the following next commits, especially if this commit leaves the project in a broken state.
+	& An ampersand for additional "side effects" related to the main commit topic, such as updating dependents etc.
 
 For PRs:
 - The submitter should describe the gameplay impact and affected components/scenes.
