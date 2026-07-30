@@ -19,7 +19,9 @@ class_name SpawnerStack extends SpawnerSequenceBase
 
 
 #region Signals
-signal didPopFinalItem ## Emitted after the last item in the [member scenesList] stack has been popped.
+## Emitted after the last item in the [member scenesList] stack has been popped.
+## TIP: Connect this signal (unbind 1 argument) to [signal Timer.stop] to stop retrying spawns after the stack is empty.
+signal didPopFinalPath(path: String)
 #endregion
 
 
@@ -51,11 +53,11 @@ func onDidSpawn(newSpawn: Node2D, _parent: Node) -> void:
 
 	# DESIGN: `scenesList` may have been modified by signal handlers or other hooks,
 	# but that's fine and allows for complex game-specific "hacks"
-	if debugMode: Debug.printDebug(str("spawn() successful: ", newSpawn, " ・ Popping index ", scenesList.size() - 1, ": ", scenesList.back()), self)
-	scenesList.pop_back() # TBD: Pop the entry that actually spawned? Because signal handlers etc may have mutated the `scenesList` ..or should we allow that?
+	if debugMode:  Debug.printDebug(str("spawn() successful: ", newSpawn, " ・ Popping index ", scenesList.size() - 1, ": ", scenesList.back()), self)
+	var finalPath: String = scenesList.pop_back() # TBD: Pop the entry that actually spawned? Because signal handlers etc may have mutated the `scenesList` ..or should we allow that?
 
 	# Did we deplete ourselves?
 	if scenesList.is_empty():
 		if debugMode: Debug.printDebug("spawn(): scenesList emptied", self)
 		sceneToSpawn = "" # Avoid stale paths from confusing later validation
-		didPopFinalItem.emit()
+		didPopFinalPath.emit(finalPath)
