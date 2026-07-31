@@ -37,7 +37,7 @@ extends Node
 ## The path to the node to set as the parent of new spawns.
 ## If empty or invalid, spawns will be added to the parent of this [Spawner] node.
 ## NOTE: Ignored if [member shouldSpawnInSceneRoot] is `true`
-@export var parentOverride:		NodePath = ^".."
+@export_node_path("Node") var parentOverride: NodePath = ^".."
 
 ## An optional group to add the spawned nodes to, such as `&"enemies"` etc.
 @export var groupToAddTo:		StringName

@@ -20,7 +20,7 @@ extends OnScreenTrigger
 
 #region Spawn
 
-## Aligns the [param newSpawn]'s [member Node2D.position] with this trigger node before the spawn is added to [param parent]
+## Aligns the [param newSpawn]'s [member Node2D.position] with this [SpawnLocationTrigger] node before the spawn is added to [param parent]
 ## NOTE: Accurate alignment across different [CanvasLayer]s requires this [SpawnLocationTrigger] and [param parent] to use the same [Viewport]
 ## If [param parent] is a [Node] then the alignment may not be accurate.
 func onSpawner_willAddSpawn(newSpawn: Node2D, parent: Node) -> void:
