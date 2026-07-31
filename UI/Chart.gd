@@ -11,7 +11,7 @@ extends Node2D
 
 #region Parameters
 
-@export var nodeToMonitor:		NodePath: ## See [NodePath] documentation for examples of paths.
+@export_node_path("Node") var nodeToMonitor: NodePath: ## See [NodePath] documentation for examples of paths.
 	set(newValue):
 		nodeToMonitor = newValue
 		self.set_process(isEnabled and not nodeToMonitor.is_empty() and not propertyToMonitor.is_empty())
