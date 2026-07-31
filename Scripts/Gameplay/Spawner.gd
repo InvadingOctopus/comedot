@@ -89,11 +89,16 @@ signal willSpawn(scenePathToSpawn: String)
 
 ## Emitted before the newly-instantiated scene copy is added to the parent node.
 ## TIP: This allows the position etc. to be modified before the child node is made visible.
-signal willAddSpawn(newSpawn: Node2D, parent: Node)
+signal willAddSpawn(newSpawn:	Node2D, parent: Node)
 
 ## Emitted after [signal willAddSpawn]
 ## TIP: To modify positioning, use the earlier signal to prevent visually-jarring jumps etc.
-signal didSpawn(newSpawn: Node2D, parent: Node)
+signal didSpawn(newSpawn:		Node2D, parent: Node)
+
+## Emitted if [method spawn] or [method validateSpawnedNode] fails.
+## NOTE: The [param parent] argument may be `null` if the spawn fails before a parent can be chosen.
+## TIP: Connect to [method Timer.stop] to stop retrying invalid spawns/waves etc.
+signal didFailSpawn(scenePath:	String, parent: Node)
 
 #endregion
 
@@ -133,6 +138,14 @@ func validateSceneToSpawn(printWarnings: bool = self.debugMode) -> bool:
 func validateSpawnedNode(newSpawn: Node2D, parent: Node) -> bool:
 	return isEnabled # NOTE: Let `isEnabled` be used by handlers/hooks to abort a spawn
 
+
+## Called by [method spawn] on failure.
+func abortSpawn(scenePath: String, parent: Node, debugMessage: String = "") -> void:
+	if debugMode and not debugMessage.is_empty(): Debug.printDebug(debugMessage, self)
+	didFailSpawn.emit(scenePath, parent)
+	# NOTE: Clear `isSpawning` AFTER `didFailSpawn` to prevent handlers from calling spawn() recursively
+	isSpawning = false
+
 #endregion
 
 
@@ -151,7 +164,7 @@ func spawn() -> Node2D:
 	willSetupSpawn.emit() # NOTE: Handlers may disable `isEnabled` to abort a spawn…
 	# …so we check `isEnabled` again
 	if not isEnabled or not setupSpawn():
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null)
 		return null
 
 	# NOTE: Emit the `will` signal before loading the scene path,
@@ -160,14 +173,13 @@ func spawn() -> Node2D:
 	willSpawn.emit(sceneToSpawn)
 
 	if not validateSceneToSpawn(true): # printWarnings
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null)
 		return null	
 
 	# NOTE: <0 is ignored
 	if  maxTotalToSpawn >= 0 \
 	and totalNodesSpawned >= maxTotalToSpawn:
-		if debugMode: Debug.printDebug(str("totalNodesSpawned: ", totalNodesSpawned, " >= maxTotalToSpawn: ", maxTotalToSpawn), self)
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null, str("totalNodesSpawned: ", totalNodesSpawned, " >= maxTotalToSpawn: ", maxTotalToSpawn))
 		return null
 
 	# NOTE: <0 is ignored
@@ -175,8 +187,7 @@ func spawn() -> Node2D:
 	and not groupToAddTo.is_empty():
 		var groupCount: int = self.get_tree().get_node_count_in_group(groupToAddTo)
 		if  groupCount >= maxLimitInGroup:
-			if debugMode: Debug.printDebug(str("maxLimitInGroup: ", maxLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount), self)
-			isSpawning = false
+			abortSpawn(sceneToSpawn, null, str("maxLimitInGroup: ", maxLimitInGroup, " >= nodes in ", groupToAddTo, ": ", groupCount))
 			return null
 
 	# Load
@@ -184,7 +195,7 @@ func spawn() -> Node2D:
 	var sceneResource: PackedScene = load(sceneToSpawn)
 	if not sceneResource:
 		Debug.printError("spawn() cannot load sceneToSpawn: " + sceneToSpawn, self)
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null)
 		return null
 
 	var instance := sceneResource.instantiate() # Do NOT cast `as Node2D` so we can free it; casting would give `null` if the scene is a [Node] etc. # TBD: PERFORMANCE: Crash if not [Node2D] instead of creating another `var`?
@@ -192,7 +203,7 @@ func spawn() -> Node2D:
 	if not newSpawn:
 		Debug.printError("spawn() unable to instantiate scene or not a Node2D subclass: " + sceneToSpawn, self)
 		if instance: instance.queue_free()
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null)
 		return null
 
 	# Prep the newborn
@@ -220,7 +231,7 @@ func spawn() -> Node2D:
 	if not parent:
 		Debug.printWarning(str("spawn() cannot find valid parent node for: ", newSpawn), self)
 		newSpawn.queue_free()
-		isSpawning = false
+		abortSpawn(sceneToSpawn, null)
 		return null
 
 	# Let the game-specific subclasses, if any, verify & customize the new copies.
@@ -250,7 +261,7 @@ func spawn() -> Node2D:
 	else:
 		newSpawn.visible = false # Just in case
 		newSpawn.queue_free()
-		isSpawning = false
+		abortSpawn(sceneToSpawn, parent)
 		return null
 
 #endregion
