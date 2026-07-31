@@ -5,6 +5,7 @@
 
 [node name="SpawnPoint" type="Marker2D" unique_id=232401123 groups=["spawners"]]
 editor_description = "A Marker2D that wraps a Spawner to generate copies of other scenes at a specific position. Enable \"Editable Children\" to access Spawner settings."
+gizmo_extents = 16.0
 script = ExtResource("1_ophw8")
 
 [node name="Spawner" type="Node" parent="." unique_id=1721246370 groups=["spawners"]]

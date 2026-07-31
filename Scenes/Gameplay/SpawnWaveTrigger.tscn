@@ -12,7 +12,8 @@ shouldClearListOnFailure = true
 shouldSpawnImmediatelyOnTrigger = true
 initialPositionPlaceholder = NodePath("")
 
-[node name="SpawnerStack" type="Node" parent="." index="0" unique_id=1311310935]
+[node name="SpawnerStack" type="Marker2D" parent="." index="0" unique_id=1777620057]
+gizmo_extents = 16.0
 script = ExtResource("4_t6d46")
 parentOverride = NodePath("../..")
 
