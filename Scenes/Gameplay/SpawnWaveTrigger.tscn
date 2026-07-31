@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cnp18riohcwhy"]
+
+[ext_resource type="PackedScene" uid="uid://bj4f34jb0kl5t" path="res://Scenes/Gameplay/SpawnLocationTrigger.tscn" id="1_44lsj"]
+[ext_resource type="Script" uid="uid://cnwncvtujwxp8" path="res://Scenes/Gameplay/SpawnWaveTrigger.gd" id="2_g0do3"]
+[ext_resource type="Script" uid="uid://chp0c1egbb5y2" path="res://Scripts/Gameplay/SpawnerStack.gd" id="4_t6d46"]
+
+[node name="SpawnWaveTrigger" unique_id=2116685941 instance=ExtResource("1_44lsj")]
+script = ExtResource("2_g0do3")
+replaceScenesList = Array[String]([])
+appendScenesList = Array[String]([])
+shouldClearListOnFailure = true
+shouldSpawnImmediatelyOnTrigger = true
+initialPositionPlaceholder = NodePath("")
+
+[node name="SpawnerStack" type="Node" parent="." index="0" unique_id=1311310935]
+script = ExtResource("4_t6d46")
+parentOverride = NodePath("../..")
+
+[node name="SpawnTimer" type="Timer" parent="SpawnerStack" index="0" unique_id=159485658]
+
+[connection signal="didTrigger" from="." to="." method="spawnWave" unbinds=1]
+[connection signal="didFailSpawn" from="SpawnerStack" to="." method="onSpawnerStack_didFailSpawn"]
+[connection signal="didFailSpawn" from="SpawnerStack" to="SpawnerStack/SpawnTimer" method="stop" unbinds=2]
+[connection signal="didPopFinalPath" from="SpawnerStack" to="SpawnerStack/SpawnTimer" method="stop" unbinds=1]
+[connection signal="willAddSpawn" from="SpawnerStack" to="." method="onSpawner_willAddSpawn"]
+[connection signal="timeout" from="SpawnerStack/SpawnTimer" to="SpawnerStack" method="spawn"]
