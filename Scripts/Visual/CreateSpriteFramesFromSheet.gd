@@ -191,8 +191,9 @@ func createSpriteFrames(updateSelf: bool = true) -> SpriteFrames:
 
 ## Builds an animation from the [member spriteSheet] according to [member frameSize] etc.
 ## WARNING: Overwrites any existing animation/frames with the same name!
+## Sets the animation's FPS to 60 ÷ number of frames in the animation.
 ## TIP: If [param preserveExistingProperties] is `true` (default) then [method SpriteFrames.clear] is used instead of [method SpriteFrames.remove_animation] in case of a conflict.
-## [method SpriteFrames.clear] only removes an existing animation's frames while preserving other properties such as framerate etc.
+## [method SpriteFrames.clear] only removes an existing animation's frames while preserving other properties such as looping etc.
 func addFramesToAnimation(
 	newSpriteFrames: SpriteFrames,
 	animationName:	 StringName,
@@ -204,7 +205,7 @@ func addFramesToAnimation(
 	if  newSpriteFrames.has_animation(animationName):
 		printLog(str("addFramesToAnimation() replacing existing animation: ", animationName))
 		if preserveExistingProperties:
-			newSpriteFrames.clear(animationName) # Keeps FPS etc.
+			newSpriteFrames.clear(animationName) # Keeps looping etc.
 		else:
 			newSpriteFrames.remove_animation(animationName)
 			newSpriteFrames.add_animation(animationName)
@@ -222,6 +223,11 @@ func addFramesToAnimation(
 		frameTexture.atlas  = spriteSheet
 		frameTexture.region = Rect2(Vector2(frameCoordinates * frameSize), Vector2(frameSize))
 		newSpriteFrames.add_frame(animationName, frameTexture)
+
+	# Set the FPS to 60 ÷ framecount, for convenience
+	var animationFrameCount: int = newSpriteFrames.get_frame_count(animationName)
+	if  animationFrameCount > 0:
+		newSpriteFrames.set_animation_speed(animationName, 60.0 / animationFrameCount)
 
 #endregion
 
