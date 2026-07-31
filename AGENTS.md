@@ -116,7 +116,8 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Commit messages should have a title that is short and imperative like `Add TurnBasedLab` or `Fix TurnBasedStateUIComponent`, referencing the file/class/type/issue.
 - Do not mix parent framework and `/Game/` commits.
 
-- The commit message content should be a bullet list, using this notation for the bullet symbols:
+- A commit message is optional when the commit title alone is insufficient.
+- Commit messagecontent should be a bullet list using this notation:
 	* Asterisk for changes that are not explicit additions of new features or removals of previous features, such as renames.
 	+ A plus sign for additions of new properties/methods added to a class/type/file.
 	- A minus sign for removal of properties/methods deleted from a class/type/file.
