@@ -27,7 +27,7 @@ extends SpawnLocationTrigger
 ## Optional. If specified, new spawns will be placed at the node specified by this path,
 ## THEN the spawns will be aligned to this [SpawnWaveTrigger] if [member shouldMatchThisNodeX] / [member shouldMatchThisNodeY]
 ## TIP: Set this path to one of the [SpawnPoint]s in [SpawnEdge] to spawn enemy waves from a specific side of the screen, but at different lateral positions along that side
-## EXAMPLE: `%SpawnEdge/Points/SpawnPointN` in a vertically-scrolling shoot-em-up etc.
+## EXAMPLE: `%SpawnEdge/Points/PointN` in a vertically-scrolling shoot-em-up etc.
 @export_node_path("Node2D") var initialPositionPlaceholder: NodePath
 
 #endregion
