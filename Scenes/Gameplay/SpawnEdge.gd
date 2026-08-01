@@ -4,7 +4,7 @@
 ## TIP: If this script is attached to a [CanvasLayer], the Spawners will stay fixed at the edges even as the player/camera moves and the map scrolls.
 ## TIP: Ideal for spawning enemies just outside the view in scrolling shoot-em-ups etc.
 ## IMPORTANT: To choose scenes to spawn and set other parameters, enable "Editable Children" to access all the underlying [Spawner] child nodes,
-## or use a subclass or other script to access the [member SpawnEdge.spawners] list, or control each `%N`, `%NArea` etc. node individually.
+## or use a subclass or other script to access the [member SpawnEdge.spawners] list, or control each `%SpawnPointN`, `%SpawnAreaN` etc. node individually.
 
 class_name SpawnEdge
 extends Node
@@ -58,18 +58,18 @@ func _ready() -> void:
 ## NOTE: Does NOT rebuild [member spawners] in case a script wants to modify either list separately.
 func getAllSpawners() -> Array[Spawner]:
 	return [
-		%NW/Spawner, # Start in order from 0,0 clockwise
-		%N/Spawner,
-		%NE/Spawner,
-		%E/Spawner,
-		%SE/Spawner,
-		%S/Spawner,
-		%SW/Spawner,
-		%W/Spawner,
-		%NArea/Spawner,
-		%EArea/Spawner,
-		%SArea/Spawner,
-		%WArea/Spawner,
+		%SpawnPointNW/Spawner, # Start in order from 0,0 clockwise
+		%SpawnPointN/Spawner,
+		%SpawnPointNE/Spawner,
+		%SpawnPointE/Spawner,
+		%SpawnPointSE/Spawner,
+		%SpawnPointS/Spawner,
+		%SpawnPointSW/Spawner,
+		%SpawnPointW/Spawner,
+		%SpawnAreaN/Spawner,
+		%SpawnAreaE/Spawner,
+		%SpawnAreaS/Spawner,
+		%SpawnAreaW/Spawner,
 		]
 
 
@@ -97,14 +97,14 @@ func setSpawnerPlacements() -> void:
 	var screenMid:		Vector2	= viewportRect.position	+ (viewportRect.size / 2.0)
 
 	# Spawn Points
-	%NW.position = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMin.y))
-	%N.position  = pointsContainer.make_canvas_position_local(Vector2(screenMid.x, screenMin.y))
-	%NE.position = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMin.y))
-	%E.position  = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMid.y))
-	%SE.position = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMax.y))
-	%S.position  = pointsContainer.make_canvas_position_local(Vector2(screenMid.x, screenMax.y))
-	%SW.position = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMax.y))
-	%W.position  = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMid.y))
+	%SpawnPointNW.position = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMin.y))
+	%SpawnPointN.position  = pointsContainer.make_canvas_position_local(Vector2(screenMid.x, screenMin.y))
+	%SpawnPointNE.position = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMin.y))
+	%SpawnPointE.position  = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMid.y))
+	%SpawnPointSE.position = pointsContainer.make_canvas_position_local(Vector2(screenMax.x, screenMax.y))
+	%SpawnPointS.position  = pointsContainer.make_canvas_position_local(Vector2(screenMid.x, screenMax.y))
+	%SpawnPointSW.position = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMax.y))
+	%SpawnPointW.position  = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMid.y))
 
 	# Spawn Areas
 	var northAreaSize:	Vector2	= Vector2(viewportRect.size.x + screenPadding.x * 2.0, self.areaThickness)
@@ -112,10 +112,10 @@ func setSpawnerPlacements() -> void:
 	var southAreaSize:	Vector2	= Vector2(viewportRect.size.x + screenPadding.x * 2.0, self.areaThickness)
 	var westAreaSize:	Vector2	= Vector2(self.areaThickness, viewportRect.size.y + screenPadding.y * 2.0)
 
-	setAreaBounds(%NArea, Vector2(screenMin.x, screenMin.y - northAreaSize.y), northAreaSize)
-	setAreaBounds(%EArea, Vector2(screenMax.x, screenMin.y), eastAreaSize)
-	setAreaBounds(%SArea, Vector2(screenMin.x, screenMax.y), southAreaSize)
-	setAreaBounds(%WArea, Vector2(screenMin.x - westAreaSize.x, screenMin.y),  westAreaSize)
+	setAreaBounds(%SpawnAreaN, Vector2(screenMin.x, screenMin.y - northAreaSize.y), northAreaSize)
+	setAreaBounds(%SpawnAreaE, Vector2(screenMax.x, screenMin.y), eastAreaSize)
+	setAreaBounds(%SpawnAreaS, Vector2(screenMin.x, screenMax.y), southAreaSize)
+	setAreaBounds(%SpawnAreaW, Vector2(screenMin.x - westAreaSize.x, screenMin.y),  westAreaSize)
 
 
 func setAreaBounds(spawnArea: SpawnArea, viewportPosition: Vector2, size: Vector2) -> void:

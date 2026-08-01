@@ -26,80 +26,80 @@ script = ExtResource("1_t8kyh")
 
 [node name="Points" type="Node2D" parent="." unique_id=401455543]
 
-[node name="NW" parent="Points" unique_id=232401123 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointNW" parent="Points" unique_id=232401123 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 
-[node name="N" parent="Points" unique_id=1740476824 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointN" parent="Points" unique_id=1740476824 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(32, 0)
 
-[node name="NE" parent="Points" unique_id=308343303 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointNE" parent="Points" unique_id=308343303 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(64, 0)
 
-[node name="E" parent="Points" unique_id=322093380 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointE" parent="Points" unique_id=322093380 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(64, 32)
 
-[node name="SE" parent="Points" unique_id=1374857524 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointSE" parent="Points" unique_id=1374857524 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(64, 64)
 
-[node name="S" parent="Points" unique_id=847566681 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointS" parent="Points" unique_id=847566681 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(32, 64)
 
-[node name="SW" parent="Points" unique_id=1383308697 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointSW" parent="Points" unique_id=1383308697 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(0, 64)
 
-[node name="W" parent="Points" unique_id=574863903 instance=ExtResource("2_ke8bt")]
+[node name="SpawnPointW" parent="Points" unique_id=574863903 instance=ExtResource("2_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(0, 32)
 
 [node name="Areas" type="Node2D" parent="." unique_id=1452137152]
 
-[node name="NArea" parent="Areas" unique_id=1390599236 instance=ExtResource("3_ke8bt")]
+[node name="SpawnAreaN" parent="Areas" unique_id=1390599236 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(0, -32)
 
-[node name="SpawnAreaShape" parent="Areas/NArea" index="0" unique_id=1648716433]
+[node name="SpawnAreaShape" parent="Areas/SpawnAreaN" index="0" unique_id=1648716433]
 position = Vector2(32, 16)
 shape = SubResource("RectangleShape2D_opxs8")
 
-[node name="EArea" parent="Areas" unique_id=362816301 instance=ExtResource("3_ke8bt")]
+[node name="SpawnAreaE" parent="Areas" unique_id=362816301 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(64, 0)
 
-[node name="SpawnAreaShape" parent="Areas/EArea" index="0" unique_id=1648716433]
+[node name="SpawnAreaShape" parent="Areas/SpawnAreaE" index="0" unique_id=1648716433]
 position = Vector2(16, 32)
 shape = SubResource("RectangleShape2D_18vl1")
 
-[node name="SArea" parent="Areas" unique_id=2111042598 instance=ExtResource("3_ke8bt")]
+[node name="SpawnAreaS" parent="Areas" unique_id=2111042598 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(0, 64)
 
-[node name="SpawnAreaShape" parent="Areas/SArea" index="0" unique_id=1648716433]
+[node name="SpawnAreaShape" parent="Areas/SpawnAreaS" index="0" unique_id=1648716433]
 position = Vector2(32, 16)
 shape = SubResource("RectangleShape2D_yplbx")
 
-[node name="WArea" parent="Areas" unique_id=994271948 instance=ExtResource("3_ke8bt")]
+[node name="SpawnAreaW" parent="Areas" unique_id=994271948 instance=ExtResource("3_ke8bt")]
 unique_name_in_owner = true
 position = Vector2(-32, 0)
 
-[node name="SpawnAreaShape" parent="Areas/WArea" index="0" unique_id=1648716433]
+[node name="SpawnAreaShape" parent="Areas/SpawnAreaW" index="0" unique_id=1648716433]
 position = Vector2(16, 32)
 shape = SubResource("RectangleShape2D_idvps")
 
-[editable path="Points/NW"]
-[editable path="Points/N"]
-[editable path="Points/NE"]
-[editable path="Points/E"]
-[editable path="Points/SE"]
-[editable path="Points/S"]
-[editable path="Points/SW"]
-[editable path="Points/W"]
-[editable path="Areas/NArea"]
-[editable path="Areas/EArea"]
-[editable path="Areas/SArea"]
-[editable path="Areas/WArea"]
+[editable path="Points/SpawnPointNW"]
+[editable path="Points/SpawnPointN"]
+[editable path="Points/SpawnPointNE"]
+[editable path="Points/SpawnPointE"]
+[editable path="Points/SpawnPointSE"]
+[editable path="Points/SpawnPointS"]
+[editable path="Points/SpawnPointSW"]
+[editable path="Points/SpawnPointW"]
+[editable path="Areas/SpawnAreaN"]
+[editable path="Areas/SpawnAreaE"]
+[editable path="Areas/SpawnAreaS"]
+[editable path="Areas/SpawnAreaW"]
