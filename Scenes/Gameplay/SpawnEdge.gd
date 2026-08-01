@@ -22,7 +22,9 @@ extends Node
 ## The parent node to add the spawned nodes to.
 ## If `null` and this node is a [CanvasLayer], the [CanvasLayer]'s parent is used.
 ## ALERT: This sets the [member Spawner.parentOverride] of ALL the [SpawnPoint]s & [SpawnArea]s.
-@export var parentOverride: Node
+@export var parentOverride:	Node
+
+@export var debugMode:		bool
 
 #endregion
 
@@ -80,6 +82,7 @@ func setSpawnerParents() -> void:
 		spawnParent = self.get_parent()
 
 	if not spawnParent: return
+	if debugMode: Debug.printDebug(str("setSpawnerParents(): ", spawnParent), self)
 
 	for spawner: Spawner in self.spawners:
 		spawner.parentOverride = spawner.get_path_to(spawnParent)
@@ -106,6 +109,10 @@ func setSpawnerPlacements() -> void:
 	%PointSW.position = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMax.y))
 	%PointW.position  = pointsContainer.make_canvas_position_local(Vector2(screenMin.x, screenMid.y))
 
+	if debugMode:
+		for point: SpawnPoint in pointsContainer.get_children():
+			Debug.printDebug(str("setSpawnerPlacements() ", point.name, " position: ", point.position), self)
+
 	# Spawn Areas
 	var northAreaSize:	Vector2	= Vector2(viewportRect.size.x + screenPadding.x * 2.0, self.areaThickness)
 	var eastAreaSize:	Vector2	= Vector2(self.areaThickness, viewportRect.size.y + screenPadding.y * 2.0)
@@ -116,6 +123,8 @@ func setSpawnerPlacements() -> void:
 	setAreaBounds(%AreaE, Vector2(screenMax.x, screenMin.y), eastAreaSize)
 	setAreaBounds(%AreaS, Vector2(screenMin.x, screenMax.y), southAreaSize)
 	setAreaBounds(%AreaW, Vector2(screenMin.x - westAreaSize.x, screenMin.y),  westAreaSize)
+
+	# setAreaBounds() will log debug info
 
 
 func setAreaBounds(spawnArea: SpawnArea, viewportPosition: Vector2, size: Vector2) -> void:
@@ -128,5 +137,10 @@ func setAreaBounds(spawnArea: SpawnArea, viewportPosition: Vector2, size: Vector
 	var rectangleShape: RectangleShape2D = spawnArea.spawnAreaShape.shape
 	rectangleShape.size = size
 	spawnArea.spawnAreaShape.position = size / 2.0
+
+	if debugMode:
+		Debug.printDebug(str("setAreaBounds() ", spawnArea.name, \
+			" @", spawnArea.position, \
+			" region: ", Rect2(spawnArea.position, spawnArea.spawnAreaShape.shape.size)), self)
 
 #endregion
