@@ -26,6 +26,7 @@ extends Node
 ## IMPORTANT: The spawned scene's root node must be a [Node2D] subclass; spawns are assumed to be positionable etc.
 @export_file("*.tscn") var sceneToSpawn: String: # PERFORMANCE: A [String] instead of [PackedScene] to avoid loading until needed
 	set(newValue):
+		if Engine.is_editor_hint(): sceneToSpawn = newValue; return
 		if newValue != sceneToSpawn:
 			if debugMode: Debug.printChange("sceneToSpawn", sceneToSpawn, newValue, true) # logAsTrace
 			sceneToSpawn = newValue
