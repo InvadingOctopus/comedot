@@ -44,12 +44,12 @@ func updateUI(animate: bool = self.shouldAnimate) -> void:
 	Tools.setNewStyleBoxColor(bar, barColor, &"fill", &"bg_color")
 	bar.min_value = stat.min
 	bar.max_value = stat.max
-	updateBar(animate)
+	updateBar(animate and shouldAnimateBar)
 
 
-func updateBar(animate: bool = self.shouldAnimate) -> void:
+func updateBar(animate: bool = self.shouldAnimate and self.shouldAnimateBar) -> void:
+	if tween: tween.kill() # End any ongoing Tweens anyway whether we're going to animate this update or not
 	if animate:
-		if tween: tween.kill()
 		tween = bar.create_tween()
 		tween.tween_property(bar, "value", stat.value, animationDuration)
 		# TODO: Find a way to animate the StyleBox color instead of using `modulate` which does not display red/green properly on certain bar colors like blue etc.

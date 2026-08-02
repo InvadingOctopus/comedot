@@ -9,23 +9,23 @@ extends StatUI
 #region Parameters
 
 ## The symbol to repeat for each unit in a [Stat]'s [member Stat.value], such as a heart for a player's remaining lives.
-@export var symbol: Texture2D
+@export var symbol:			Texture2D
 
 ## An optional symbol to repeat for each unit above a [Stat]'s [member Stat.value] up to its [member Stat.max], such as a hollow heart outline for the lives lost.
-@export var depletedSymbol: Texture2D
+@export var depletedSymbol:	Texture2D
 
 #endregion
 
 
 #region State
-@onready var pips: Container = $Pips
+@onready var pips:			Container	= $Pips
 @onready var availablePips: TextureRect = $Pips/AvailablePips
 @onready var depletedPips:  TextureRect = $Pips/DepletedPips
 
-var symbolWidth: float
+var symbolWidth:		 float
 var depletedSymbolWidth: float
 
-var tween: Tween
+var tween:				 Tween
 #endregion
 
 
@@ -37,8 +37,8 @@ func _ready() -> void:
 func arrangeControls() -> void:
 	if not shouldShowIconAfterText:
 		self.move_child(icon,  0)
-		self.move_child(pips,  1)
-		self.move_child(label, 2)
+		self.move_child(label, 1)
+		self.move_child(pips,  2)
 	else:
 		self.move_child(label, 0)
 		self.move_child(pips,  1)
@@ -79,24 +79,24 @@ func updatePips(animate: bool = self.shouldAnimate) -> void:
 	var value: int = stat.value
 
 	if symbol != null and value > 0:
-		var availablePipsNodeWidth: float   = symbolWidth * value
-		availablePips.custom_minimum_size.x = availablePipsNodeWidth
-		availablePips.visible = true
+		var availablePipsNodeWidth: float	= symbolWidth * value
+		availablePips.custom_minimum_size.x	= availablePipsNodeWidth
+		availablePips.visible				= true
 	else:
-		availablePips.custom_minimum_size.x = 0
-		availablePips.visible = false
+		availablePips.custom_minimum_size.x	= 0
+		availablePips.visible				= false
 
 	# The depleted pips
 
 	var depletedValue: int = (stat.max - value)
 
 	if depletedSymbol != null and depletedValue > 0:
-		var depletedPipsNodeWidth: float   = depletedSymbolWidth * depletedValue
-		depletedPips.custom_minimum_size.x = depletedPipsNodeWidth
-		depletedPips.visible = true
+		var depletedPipsNodeWidth: float	= depletedSymbolWidth * depletedValue
+		depletedPips.custom_minimum_size.x	= depletedPipsNodeWidth
+		depletedPips.visible				= true
 	else:
-		depletedPips.custom_minimum_size.x = 0
-		depletedPips.visible = false
+		depletedPips.custom_minimum_size.x	= 0
+		depletedPips.visible				= false
 
 	# Tooltip
 	pips.tooltip_text = str(stat.displayName, ": ", value) # TBD: Show Stat.max?

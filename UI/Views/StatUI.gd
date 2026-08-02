@@ -12,6 +12,7 @@ extends Container
 
 @export var shouldAnimate: bool = true
 
+
 @export_group("Text")
 
 @export var labelColor: Color = Color.WHITE
@@ -54,20 +55,20 @@ extends Container
 ## If greater than 1, then smaller values will be padded with leading 0s.
 @export_range(1, 10, 1) var minimumDigits: int = 2
 
-@export var shouldShowRemainingToMax: bool = false
+@export var shouldShowRemainingToMax:	bool
 
 
 @export_group("Icon")
 
-@export var shouldShowIcon: bool = true:
+@export var shouldShowIcon:				bool = true:
 	set(newValue):
 		if newValue != shouldShowIcon:
 			shouldShowIcon = newValue
-			if icon: icon.visible = shouldShowIcon
+			if icon: icon.visible = shouldShowIcon and icon.texture != null and not icon.texture.get_size().is_zero_approx() # Don't take up space if there's no texture
 
-@export var iconColor: Color = Color.WHITE
+@export var iconColor:					Color = Color.WHITE
 
-@export var shouldShowIconAfterText: bool = false:
+@export var shouldShowIconAfterText:	bool:
 	set(newValue):
 		if newValue != shouldShowIconAfterText:
 			shouldShowIconAfterText = newValue
@@ -77,24 +78,23 @@ extends Container
 
 
 #region State
-@onready var label: Label = $Label
-@onready var icon:  TextureRect = $Icon
+@onready var label: Label		= $Label
+@onready var icon:  TextureRect	= $Icon
 #endregion
 
 
 func _ready() -> void:
-	applyInitialFlags()
-
-	if stat:
-		updateUI(false) # Display the initial value, without animation
-		stat.changed.connect(self.onStat_changed)
+	if is_instance_valid(stat): # TBD: Crash on missing Stat?
+		applyInitialFlags()
+		updateUI(false) # Display the initial value without animation
+		if not stat.changed.is_connected(self.onStat_changed): stat.changed.connect(self.onStat_changed)
 	else:
 		Debug.printWarning("Missing stat", self)
 
 
 func applyInitialFlags() -> void:
 	if label: label.uppercase	= shouldUppercase
-	if icon:  icon.visible		= shouldShowIcon and stat.icon # NOTE: Don't let the TextureRect take up space if the Stat has no icon.
+	if icon:  icon.visible		= shouldShowIcon and stat.icon and icon.texture != null and not icon.texture.get_size().is_zero_approx() # Don't take up space if there's no texture
 	if shouldShowIconAfterText: arrangeControls()
 
 
@@ -109,6 +109,7 @@ func arrangeControls() -> void:
 
 func onStat_changed() -> void:
 	updateText()
+	# `Stat.icon` should be updated manually; icon assignment probably does not emit `Stat.changed` anyway
 
 
 func updateUI(animate: bool = self.shouldAnimate) -> void:
@@ -116,12 +117,17 @@ func updateUI(animate: bool = self.shouldAnimate) -> void:
 	icon.self_modulate = self.iconColor
 	updateText(animate)
 	updateIcon(animate)
-	self.tooltip_text = stat.description
+	self.tooltip_text  = stat.description
 
 
-## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value].
+## TIP: May be overridden in subclass to customize the icon, for example, show different icons or colors for different ranges of the [member Stat.value]
 func updateIcon(_animate: bool = self.shouldAnimate) -> void:
-	icon.texture = stat.icon
+	if not is_instance_valid(stat.icon):
+		self.icon.texture = null # Erase the texture not the TextureRect Control!
+		self.icon.visible = false
+		return
+	self.icon.texture = stat.icon
+	self.icon.visible = shouldShowIcon and self.icon.texture != null and not self.icon.texture.get_size().is_zero_approx() # Don't let the TextureRect take up space if the Stat has no icon or the icon has a blank texture
 
 
 func updateText(animate: bool = self.shouldAnimate) -> void:
