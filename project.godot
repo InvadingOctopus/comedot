@@ -16,7 +16,7 @@ config/name_localized={
 "ja_Kana_JP": "カムドット"
 }
 config/description="Components Framework for Godot"
-config/version="4.8.0.1.69"
+config/version="4.8.0.2.42"
 config/tags=PackedStringArray("components", "framework", "ecs", "plugin", "template")
 run/main_scene="uid://7hpq16neqhai"
 config/project_settings_override="res://Game/override.cfg"
@@ -85,8 +85,8 @@ folder_colors={
 "res://Components/": "blue",
 "res://Entities/": "green",
 "res://Game/": "pink",
-"res://Games/": "orange",
 "res://Lab/": "gray",
+"res://Notes/": "gray",
 "res://Resources/": "red",
 "res://Scenes/": "yellow",
 "res://Scripts/": "orange",
