@@ -12,7 +12,7 @@ class_name SpawnerStack extends SpawnerSequenceBase
 
 #region Parameters
 ## A stack of scene paths to spawn copies from, starting from the LAST index.
-## NOTE: Each path is permanently removed ONLY IF its spawn is successful.
+## NOTE: Each path is permanently removed ONLY IF its spawn is successful or if [member shouldSkipEmptyPaths]
 ## This ensures that enemy "waves" etc. are fully spawned in the correct order.
 # in SpawnerSequenceBase: @export_file("*.tscn") var scenesList: Array[String] # DESIGN: Not named "scenesStack" to keep compatibility and drop-in replacement with SpawnerList etc.
 #endregion
@@ -33,31 +33,29 @@ func setupSpawn() -> bool:
 	# TBD: Warn in case we forgot to re-enable?
 	# Debug.printDebug(str("spawn(): not isEnabled but scenesList has ", scenesList.size(), " items　・　Remember to re-enable manually after adding new scenes."), self)
 
-	# Pluck the next scene from the stack, NOTE: but don't remove it yet!
-	# Pop in onDidSpawn()
+	# Pluck the next scene from the stack # NOTE: but don't remove it yet!
 	sceneToSpawn = scenesList[scenesList.size() - 1]
+	if shouldSkipEmptyPaths and sceneToSpawn.is_empty(): return false
 
+	# Pop in selectNextScene()
 	return true
 
 
-func onDidSpawn(newSpawn: Node2D, _parent: Node) -> void:
-	# DESIGN: Pop entries ONLY IF the spawn was successful
-	# This ensures that waves like "normal monster → normal → normal → super monster" are preserved and spawned in order.
-	if not is_instance_valid(newSpawn): return
-
+## Pops the current path after a successful spawn or if [member shouldSkipEmptyPaths]
+func selectNextScene() -> void:
 	# Are we already empty?
-	if scenesList.is_empty():
+	if  scenesList.is_empty():
 		sceneToSpawn = "" # Avoid stale paths from confusing later validation
 		# NOTE: Do NOT emit `didPopFinalItem` here because the stack may have been emptied long ago!
 		return
 
 	# DESIGN: `scenesList` may have been modified by signal handlers or other hooks,
 	# but that's fine and allows for complex game-specific "hacks"
-	if debugMode:  Debug.printDebug(str("spawn() successful: ", newSpawn, " ・ Popping index ", scenesList.size() - 1, ": ", scenesList.back()), self)
+	if  debugMode: Debug.printDebug(str("selectNextScene() popping index ", scenesList.size() - 1, ": ", scenesList.back()), self)
 	var finalPath: String = scenesList.pop_back() # TBD: Pop the entry that actually spawned? Because signal handlers etc may have mutated the `scenesList` ..or should we allow that?
 
 	# Did we deplete ourselves?
-	if scenesList.is_empty():
+	if  scenesList.is_empty():
 		if debugMode: Debug.printDebug("spawn(): scenesList emptied", self)
 		sceneToSpawn = "" # Avoid stale paths from confusing later validation
 		didPopFinalPath.emit(finalPath)

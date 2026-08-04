@@ -16,7 +16,7 @@ class_name SpawnerList extends SpawnerSequenceBase
 
 #region State
 ## The index in [member scenesList] that will be used by the next [method spawn] call.
-## Incremented after successful spawns and wraps around to 0 after the last index.
+## Incremented after successful spawns or if [member shouldSkipEmptyPaths] and wraps around to 0 after the last index.
 @export_storage var currentSceneIndex: int:
 	set(newValue):
 		if newValue != currentSceneIndex:
@@ -44,24 +44,20 @@ func setupSpawn() -> bool:
 	# Pluck the next scene from the list
 	sceneToSpawn = scenesList[currentSceneIndex]
 	if debugMode: Debug.printDebug(str("setupSpawn() currentSceneIndex ", currentSceneIndex, ": ", sceneToSpawn), self)
+	if shouldSkipEmptyPaths and sceneToSpawn.is_empty(): return false
 
-	# NOTE: Do NOT increment the index if the spawn wasn't successful, to prevent indexes from being "eaten up"
-	# Increment in onDidSpawn()
-	
+	# Index will be incremented in selectNextScene()
 	return true
 
 
-func onDidSpawn(newSpawn: Node2D, _parent: Node) -> void:
-	# Increment the index only if the spawn was successful
-	# DESIGN: This ensures that waves like "normal monster → normal → normal → super monster" are preserved and spawned in order.
-	if not is_instance_valid(newSpawn): return
-	# DESIGN: `currentSceneIndex` may have been modified by signal handlers or other hooks,
-	# but that's fine and allows for complex game-specific "hacks"
-
+## Increments the [member currentSceneIndex] after a successful spawn or if [member shouldSkipEmptyPaths]
+func selectNextScene() -> void:
 	# Are we already empty?
-	if scenesList.is_empty():
+	if  scenesList.is_empty():
 		sceneToSpawn = "" # Avoid stale paths from confusing later validation
 		return
 
-	currentSceneIndex = wrapi(currentSceneIndex + 1, 0, scenesList.size())
+	# DESIGN: Don't verify `currentSceneIndex`: It may have been modified by signal handlers or other hooks,
+	# but that's fine and allows for complex game-specific "hacks"
 
+	currentSceneIndex = wrapi(currentSceneIndex + 1, 0, scenesList.size())
