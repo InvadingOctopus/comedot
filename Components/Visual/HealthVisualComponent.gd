@@ -90,6 +90,7 @@ func updateTint()-> void:
 
 
 func emitBubble(difference: int) -> void:
+	# TBD: Use [GameplayResourceBubble]?
 	var text: String = str(healthComponent.health.value) if shouldShowRemainingHealth else "%+d" % difference
 
 	var color: Color = Color(0, 1, 0) if difference > 0 else Color(1, 0.5, 0)
