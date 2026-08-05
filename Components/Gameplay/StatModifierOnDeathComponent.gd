@@ -38,9 +38,10 @@ func modifyStats() -> void:
 			# NOTE: Check the `Stat.previousChange` to see the actual difference in value instead of just the modifier we attempted to apply.
 			# NOTE: Spawn the Bubble in the Entity's parent, not as a child of the Entity itself, as we're about to die anyway :'(
 			# TBD:  Put a space between text & number?
-			GameplayResourceBubble.createForStatChange( \
+			var labelSettings: LabelSettings = GameplayResourceBubble.createForStatChange( \
 				stat, \
 				entity.get_parent(), \
 				Vector2(entity.position.x, entity.position.y + bubbleOffsetY), \
-				true, shouldColorBubble) # appendDisplayName, colorBubble
-			bubbleOffsetY -= 10 # Add some spacing between each Stat
+				true, shouldColorBubble) \
+					.ui.label.label_settings # appendDisplayName (the `true` above)
+			bubbleOffsetY -= labelSettings.font_size + 2 # Add some spacing between each bubble
