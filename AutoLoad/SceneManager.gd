@@ -27,6 +27,10 @@ var sceneTree: SceneTree:
 ## Stores the scene from any previous call to [method transitionToScene] to prevent bugs from multiple calls during animations etc.
 var ongoingTransitionScene: PackedScene # CHECK: PERFORMANCE: PackedScene is probably quicker to compare than String, right?
 
+## A [Dictionary] of [StringName]s associated with [Node]s, set by `RegisterGlobalNodeName.gd`
+## This may provide more convenient access to any node than `%` names.
+var globalNodeNames: Dictionary[StringName, Node]
+
 #endregion
 
 
