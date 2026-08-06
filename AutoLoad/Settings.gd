@@ -161,11 +161,12 @@ func loadProjectUserSettings() -> void:
 ## Dynamic properties
 func _get_property_list() -> Array[Dictionary]:
 	# TODO: Support implicit keys?
-	var propertyDictionaries: Array[Dictionary]
+	var propertyDictionaries:	Array[Dictionary]
+	var setting:				Setting
+	var propertyDictionary:		Dictionary[String, Variant]
 
 	for propertyName: StringName in settingsDictionary.keys():
-		var setting: Setting = settingsDictionary[propertyName]
-		var propertyDictionary: Dictionary[String, Variant]
+		setting = settingsDictionary[propertyName]
 		propertyDictionary["name"] = propertyName
 		propertyDictionary["type"] = setting.type # TBD: What to do if type is missing?
 		propertyDictionaries.append(propertyDictionary)
