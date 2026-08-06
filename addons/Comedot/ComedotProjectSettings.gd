@@ -31,16 +31,15 @@ const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings
 ## The path of the main scene of your game to launch when the player chooses "Start" on the Main Menu.
 ## If omitted, then [member Settings.mainGameScenePath] remains unmodified.
 ## This is not a [PackedScene] Resource to avoid circular references or load()ing before it is needed.
-@export_file("*.tscn") var mainGameScenePath: String
+@export_file("*.tscn") var mainGameScenePath:	String
 
-## Appends entries to [member GameState.globalData], a [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
-## ALERT: Entries with identical keys already in [member GameState.globalData] will be OVERWRITTEN!
-## TIP: [StringName] may be the optimal type to use for keys.
-@export var initialGlobalData: Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
+## The path of a [GlobalData] `.tres` [Resource] file to load into [member GameState.globalData]
+## If the path is empty or invalid, a new empty [member GameState.globalData] is created.
+@export_file("*.tres") var globalDataPath:		String = "res://Resources/GlobalData.tres"
 
 ## A list of scenes to add as child nodes of the [GameState].gd AutoLoad.
 ## @experimental
-@export_file_path("*.tscn") var gameStateNodes: PackedStringArray
+@export_file_path("*.tscn") var gameStateNodes:	PackedStringArray
 
 #endregion
 
@@ -49,16 +48,16 @@ const projectSettingsResourcePathDefault: String = "res://ComedotProjectSettings
 @export_category("Music")
 
 ## The path of the folder from which to load ".mp3" music files to build a playlist.
-@export_dir var musicFolder: String = "res://Assets/Music"
+@export_dir var musicFolder:					String = "res://Assets/Music"
 
 ## Overrides [member musicIndexToPlayOnStart]
 @export_file("*.mp3") var musicFileToPlayOnStart: String
 
 ## If [member musicFileToPlayOnStart] is unspecified, then a random song is played from the list of files found in [member musicFolder]
-@export var shouldPlayRandomMusicOnStart: bool = true
+@export var shouldPlayRandomMusicOnStart:		bool = true
 
 ## If [member musicFileToPlayOnStart] is unspecified and [member shouldPlayRandomMusicOnStart] is `false`, then this is the index of the first song from the list of files found in [member musicFolder]
-@export var musicIndexToPlayOnStart: int
+@export var musicIndexToPlayOnStart:			int
 
 #endregion
 

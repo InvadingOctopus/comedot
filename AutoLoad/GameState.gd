@@ -10,23 +10,16 @@ extends Node
 #region Game State
 # TBD: @export_storage?
 
-var projectSettings: ComedotProjectSettings = ComedotProjectSettings.loaded
+var projectSettings:	ComedotProjectSettings = ComedotProjectSettings.loaded
 
-## A [Dictionary] of values that may be accessed and modified by multiple nodes/scripts in the scene tree at any time.
-## TIP: When accessing a key for the first time, use [method Dictionary.get_or_add] with a default value.
-## EXAMPLE: `GameState.globalData.get_or_add(&"questItems", [])`
-## TIP: [StringName] may be the optimal type to use for keys.
-@export var globalData:	Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
+## A [GlobalData] [Resource] containing values that may be accessed and modified by any node/script at any time.
+## EXAMPLE: `GameState.globalData.difficultyScale = 42` or `GameState.globalData[&"questItems"]`
+@export var globalData:	GlobalData
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] to ensure that signals are emitted and proper cleanup is performerd.
 ## ALERT: To avoid an error or crash when there is no player, access players with [method getPlayer] NOT `players.front()` or `player[0]`
 var players:			Array[Entity] = [] # TBD: Should we use separate arrays for PlayerEntity and TurnBasedPlayerEntity? # But a generic Entity type also allows for game-specific custom subclasses.
-
-## A dictionary of stats and values to display in the HUD UI.
-## Changes to the dictionary should emit the `hudUpdated` signal which may be used by UI nodes to efficiently update themselves only when stats change.
-## [StringName] is the optimal type to use for keys.
-@export var hudStats:	Dictionary[Variant, Variant] = {} # TBD: Allow only StringName keys?
 
 ## A shared random number generator for gameplay-affecting randomness
 ## so seeds can be reused to roll the same numbers throughout the runtime, useful for debugging, saves, and replays etc.
@@ -78,9 +71,15 @@ func _enter_tree() -> void:
 
 ## @experimental
 func setupGameState() -> void:
-	# TODO: Handle excessive repeated merges & duplicates
-	self.globalData.merge(projectSettings.initialGlobalData, true) # overwrite
+	# Data
+	if not projectSettings.globalDataPath.is_empty():
+		self.globalData = load(projectSettings.globalDataPath) as GlobalData
+	if not self.globalData: # Shouldn't be a nested `if` so we can catch empty paths too
+		# Don't emit error/warning if the path was empty, as that may be intentional
+		if not projectSettings.globalDataPath.is_empty(): Debug.printError("Unable to find or load GlobalData Resource at ComedotProjectSettings.globalDataPath: " + projectSettings.globalDataPath, self)
+		self.globalData = GlobalData.new()
 
+	# Nodes
 	for path: String in projectSettings.gameStateNodes:
 		self.createNode(path)
 
