@@ -4,6 +4,8 @@
 class_name GlobalData
 extends Resource
 
+# TBD: @tool?
+
 
 #region Constants
 ## The prefix Godot uses when serializing [Object] metadata as properties.
