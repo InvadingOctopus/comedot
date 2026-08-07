@@ -386,7 +386,8 @@ func printVariables(values: Array[Variant], separator: String = "\t ", color: St
 ## Affected by [member shouldPrintDebugLogs]
 func printChange(variableName: String, previousValue: Variant, newValue: Variant, logAsTrace: bool = false) -> String:
 	# TODO: Optional charting? :)
-	if shouldPrintDebugLogs and previousValue != newValue:
+	if shouldPrintDebugLogs \
+	and (typeof(previousValue) != typeof(newValue) or previousValue != newValue): # Compare types first because some different Variant types can't be compared with `!=`
 		var difference: String
 		if (newValue is int or newValue is float) and (previousValue is int or previousValue is float):
 			difference = " (%+f" % (newValue - previousValue) + ")"
