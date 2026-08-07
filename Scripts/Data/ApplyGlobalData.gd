@@ -1,4 +1,4 @@
-## Applies values from the shared [member GameState.globalData] key-value store to the properties of this or any other [Node]s.
+## Creates bindings for values from the shared [member GameState.globalData] key-value store to the properties of this or any other [Node]s.
 ## NOTE: Automatically updates properties when [signal GlobalData.didChangeValue] is emitted for the mapped keys.
 ## Erasing a key leaves its last applied property value unchanged.
 
@@ -14,13 +14,13 @@ extends Node
 
 #region Parameters
 
-## A [Dictionary] where the keys are [StringName]s matching the keys of the [member GameState.globalData] [member GlobalData.dictionary]
+## A [Dictionary] of "bindings" where the keys are [StringName]s matching the keys of the [member GameState.globalData] [member GlobalData.dictionary]
 ## and the values are [NodePath]s pointing to properties of other [Node]s in the same scene.
-## NOTE: The paths must be relative to this node and end in properties to modify.
+## NOTE: The paths must be relative to this node and must include properties to modify.
 ## EXAMPLE: `&"monsterColor": ^"../Monster:modulate"`
 ## NOTE: Keys missing from [member GameState.globalData] are skipped until they are added via [method GlobalData.setValue]
 ## NOTE: If no Node is specified in the path, only a ":property" then this Node itself is used.
-@export var globalDataToApply: Dictionary[StringName, NodePath]
+@export var globalDataBindings: Dictionary[StringName, NodePath]
 
 @export var debugMode: bool
 
@@ -44,7 +44,7 @@ func _ready() -> void:
 
 
 func onGlobalData_didChangeValue(key: StringName, _previousValue: Variant, _newValue: Variant) -> void:
-	if self.globalDataToApply.has(key): self.applyKey(key)
+	if self.globalDataBindings.has(key): self.applyKey(key)
 
 
 func _exit_tree() -> void:
@@ -56,22 +56,22 @@ func _exit_tree() -> void:
 
 #region Set Properties
 
-## Attempts to apply every key from [member globalDataToApply]
+## Attempts to apply every key from [member globalDataBindings]
 func applyAllKeys() -> void:
-	for key: StringName in self.globalDataToApply:
+	for key: StringName in self.globalDataBindings:
 		self.applyKey(key)
 
 
-## Calls [method applyGlobalDataToProperty] for the [param key] and associated [NodePath] in [member globalDataToApply]
+## Calls [method applyGlobalDataToProperty] for the [param key] and associated [NodePath] in [member globalDataBindings]
 func applyKey(key: StringName) -> bool:
-	if self.globalDataToApply.has(key):
-		return self.applyGlobalDataToProperty(key, self.globalDataToApply[key]) # StringName, NodePath
+	if self.globalDataBindings.has(key):
+		return self.applyGlobalDataToProperty(key, self.globalDataBindings[key]) # StringName, NodePath
 	else:
-		if debugMode: Debug.printWarning("applyKey(): globalDataToApply missing key: " + key, self)
+		if debugMode: Debug.printWarning("applyKey(): globalDataBindings missing key: " + key, self)
 		return false
 
 
-## Applies the value for [param key] from [member GameState.globalData.dictionary] to the [Node] property [NodePath] associated with the same key in this script's [member globalDataToApply]
+## Applies the value for [param key] from [member GameState.globalData.dictionary] to the [Node] property [NodePath] associated with the same key in this script's [member globalDataBindings]
 ## if the target node path can be resolved.
 ## Skips keys that are missing from [member GameState.globalData.dictionary]
 ## Returns `true` if the target already contains the new value or the value was assigned.

@@ -1,5 +1,6 @@
 ## A shared [Resource] for game-specific global data that may be accessed and modified by any [Entity], [Component], node and script.
 ## EXAMPLE: `globalData.difficultyScale = 42` or `GameState.globalData[&"questItems"]`
+## TIP: Use `/Scripts/Data/ApplyGlobalData.gd` to create bindings from [member globalData] to node properties that get automatically updated at runtime.
 
 class_name GlobalData
 extends Resource

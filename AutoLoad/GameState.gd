@@ -14,7 +14,9 @@ var projectSettings:	ComedotProjectSettings = ComedotProjectSettings.loaded
 
 ## A [GlobalData] [Resource] containing values that may be accessed and modified by any node/script at any time.
 ## EXAMPLE: `GameState.globalData.difficultyScale = 42` or `GameState.globalData[&"questItems"]`
-@export var globalData:	GlobalData
+## TIP: Call [method GameState.getGlobalValue] & [method GameState.setGlobalValue] to avoid typing `.globalData.`
+## TIP: Use `/Scripts/Data/ApplyGlobalData.gd` to create bindings from [member globalData] to node properties that get automatically updated at runtime.
+var globalData:			GlobalData
 
 ## The list of active players, each represented by a [PlayerEntity] or [TurnBasedPlayerEntity].
 ## WARNING: Do NOT modify this property directly; use [method addPlayer] and [method removePlayer] to ensure that signals are emitted and proper cleanup is performerd.
@@ -178,6 +180,26 @@ func startMainScene() -> bool:
 func restart() -> void:
 	SceneManager.transitionToScene(load("res://Scenes/Launch/GameFrame.tscn"))
 
+
+#endregion
+
+
+#region Global Data
+# TBD: Make `static func`?
+
+## A shorthand wrapper for [method GlobalData.getValue] on [member globalData]
+func getGlobalValue(key: StringName, defaultValue: Variant = null) -> Variant:
+	return globalData.getValue(key, defaultValue)
+
+
+## A shorthand wrapper for [method GlobalData.setValue] on [member globalData]
+func setGlobalValue(key: StringName, newValue: Variant) -> bool:
+	return globalData.setValue(key, newValue)
+
+
+## A shorthand wrapper for [method GlobalData.eraseValue] on [member globalData]
+func eraseGlobalValue(key: StringName) -> bool:
+	return globalData.eraseValue(key)
 
 #endregion
 
