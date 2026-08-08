@@ -21,11 +21,13 @@ mono_crash.*.json
 .claude/
 Notes/AGENTS.override.md
 
-# Game-specific experiments
+# Temporary Experiments
 /Lab/*
-/Game/*
+/Temporary/
 override.cfg
 
-# etc.
+# Operating System junk
 .DS_Store
-/Temporary/
+[Dd]esktop.ini
+Thumbs.db
+*.lnk
