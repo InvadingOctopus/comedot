@@ -32,8 +32,10 @@ const debug:					Script		= preload("res://AutoLoad/Debug.gd") # To avoid Dumbdot
 		# but the setter is NOT called when keys are added/edited at runtime!
 		dictionary = newValue
 		if Engine.is_editor_hint():
-			debug.printEditorLog("dictionary updated, emitting signals for all keys…", self)
+			if debugMode: debug.printEditorResourceLog("dictionary updated, emitting signals for all keys…", self)
 			refreshAll()
+
+@export var debugMode: bool
 
 #endregion
 
@@ -127,6 +129,7 @@ func setValue(key: StringName, newValue: Variant) -> bool:
 			return true
 
 	# Update & Emit
+	if debugMode: debug.printEditorResourceLog(str("\"", key, "\": ", previousValue, " → ", newValue), self)
 	dictionary[key] = newValue
 
 	# TBD: Emit `changed` first or `didChangeValue`?
@@ -142,6 +145,7 @@ func eraseValue(key: StringName) -> bool:
 	if not dictionary.has(key): return false
 
 	var previousValue: Variant = dictionary[key]
+	if debugMode: debug.printEditorResourceLog(str("Erasing \"", key, "\": ", previousValue), self)
 	dictionary.erase(key)
 
 	# TBD: Emit `changed` first or `didEraseValue`?

@@ -504,6 +504,12 @@ static func printEditorLog(message: String = "", object: Variant = null, message
 	else: Debug.printLog(message, object, messageColor, objectColor)
 
 
+## [method printResourceLog] equivalent for `@tool` scripts running in the Godot Editor.
+static func printEditorResourceLog(message: String = "", object: Variant = null) -> void:
+	if Engine.is_editor_hint(): print_rich(str("[color=", Global.Colors.logResource, "]", object, "[/color] ", message))
+	else: Debug.printResourceLog(message, object)
+
+
 ## [method printWarning] equivalent for `@tool` scripts running in the Godot Editor.
 static func printEditorWarning(message: String = "", object: Variant = null, objectColor: String = "white") -> void:
 	if Engine.is_editor_hint():
