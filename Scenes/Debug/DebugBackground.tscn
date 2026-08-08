@@ -10,8 +10,8 @@ z_as_relative = false
 [node name="Parallax2D1" type="Parallax2D" parent="." unique_id=958660220]
 modulate = Color(1, 0.5, 0.5, 1)
 scroll_scale = Vector2(0.5, 0.5)
-repeat_size = Vector2(256, 256)
-repeat_times = 3
+repeat_size = Vector2(512, 512)
+repeat_times = 5
 script = ExtResource("1_ngbrm")
 hueModifier = 0.1
 
@@ -26,8 +26,8 @@ navigation_enabled = false
 [node name="Parallax2D2" type="Parallax2D" parent="." unique_id=1221721316]
 modulate = Color(1, 0.5, 0.5, 1)
 scroll_scale = Vector2(0.75, 0.75)
-repeat_size = Vector2(256, 256)
-repeat_times = 3
+repeat_size = Vector2(512, 512)
+repeat_times = 5
 script = ExtResource("1_ngbrm")
 
 [node name="TileMap2Checkered" type="TileMapLayer" parent="Parallax2D2" unique_id=339816259]
