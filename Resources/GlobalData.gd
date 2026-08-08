@@ -2,25 +2,39 @@
 ## EXAMPLE: `globalData.difficultyScale = 42` or `GameState.globalData[&"questItems"]`
 ## TIP: Use `/Scripts/Data/ApplyGlobalData.gd` to create bindings from [member globalData] to node properties that get automatically updated at runtime.
 
+@tool
 class_name GlobalData
 extends Resource
-
-# TBD: @tool?
 
 
 #region Constants
 ## The prefix Godot uses when serializing [Object] metadata as properties.
-const metadataPropertyPrefix: StringName = &"metadata/"
+const metadataPropertyPrefix:	StringName	= &"metadata/"
+const debug:					Script		= preload("res://AutoLoad/Debug.gd") # To avoid Dumbdot's annoying "static called on instance" warning
 #endregion
 
 
 #region Parameters
+
+## Updates  all applicable instances of `/Scripts/Data/ApplyGlobalData.gd` in the Godot Editor.
+## NOTE: Bindings are NOT updated if a key is erased.
+@export_tool_button("Refresh ApplyGlobalData Bindings", "Reload") var refreshButton: Callable = refreshAll 
+
 ## The actual [Dictionary] containing the [StringName] keys and associated [Variant] values.
 ## ALERT: Advanced scripts may modify this [Dictionary] directly, but manual changes will NOT emit signals such as [signal GlobalData.didChangeValue] or [signal Resource.changed] etc.
 ## TIP: When accessing a key for the first time, use [method Dictionary.get_or_add] with a default value.
 ## EXAMPLE: `dictionary.get_or_add(&"questItems", [])`
 ## IMPORTANT: Avoid using keys beginning with `metadata/` as such properties may be reserved for Godot's internal usage.
-@export var dictionary:	Dictionary[StringName, Variant]
+## TIP: Modifying keys/values in the Godot Editor automatically all bindings created via `/Scripts/Data/ApplyGlobalData.gd` NOTE: but NOT when keys are erased!
+@export var dictionary:	Dictionary[StringName, Variant]:
+	set(newValue):
+		# NOTE: Godot calls the setter of an Array/Dictionary when it's modified in the Editor,
+		# but the setter is NOT called when keys are added/edited at runtime!
+		dictionary = newValue
+		if Engine.is_editor_hint():
+			debug.printEditorLog("dictionary updated, emitting signals for all keys…", self)
+			refreshAll()
+
 #endregion
 
 
@@ -134,5 +148,27 @@ func eraseValue(key: StringName) -> bool:
 	emit_changed()
 	didEraseValue.emit(key, previousValue)
 	return true
+
+
+## Emits [signal Resource.changed] then [signal didChangeValue] for the specified key if it's present in [member dictionary]
+## NOTE: The `previousValue` and `newValue` arguments will BOTH be the SAME!
+## TIP: Use this to quickly update applicable `/Scripts/Data/ApplyGlobalData.gd` instances linked to this [GlobalData] `.tres` [Resource] in the Godot Editor at development-time.
+func refresh(key: StringName) -> void:
+	if not dictionary.has(key): return
+	var value: Variant = dictionary.get(key)
+	emit_changed()
+	didChangeValue.emit(key, value, value)
+
+
+## Emits [signal Resource.changed] once and then multiple [signal didChangeValue] for ALL keys in [member dictionary]
+## NOTE: The `previousValue` and `newValue` arguments will BOTH be the SAME!
+## NOTE: Bindings are NOT updated if a key is erased.
+## TIP: Use this to quickly update ALL `/Scripts/Data/ApplyGlobalData.gd` instances linked to this [GlobalData] `.tres` [Resource] in the Godot Editor at development-time.
+func refreshAll() -> void:
+	emit_changed()
+	var value:  Variant
+	for key: StringName in dictionary.keys(): # Use keys() to iterate over a "snapshot" in case of mutation during iteration.
+		value = self.dictionary.get(key)
+		didChangeValue.emit(key, value, value)
 
 #endregion
