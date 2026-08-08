@@ -1,38 +1,50 @@
-# Comedot: Components for [Godot][godot]
+# Comedot
 
 ![Godot+Comedot Logo][logo]
 
 [![Godot v4.8+][godot-badge]][godot-download] [![Comedot][release-badge]][comedot-releases]
 
-**The goal of this project is to make an all-in-one framework for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. where you build scenes by adding components to entities and tweaking their parameters.
+**Comedot is an opinionated as fuck framework & project template for [Godot][godot]** where you build games by smacking components into entities and tweaking their parameters.
 
-_"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other addons or architecture or fetish.
+_"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other architecture or fetish.
 
-<br/>
+**The goal is to make an all-in-one toolkit for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. This is the result of trying to make [future GotYs][itch] while learning which stuff is needed frequently in multiple genres & shoving it into a shared library.
+
+<sub>*(if you think "ECS" only means "data-oriented design" you need to get out more)*</sub>
+
+<br/> <br/>
 
 ![components-tree]
 
-* [120+ megatons](allComponents) of components for player movement, combat, collectibles, interactions, upgrades etc.
-* UI controls including stats HUDs and dynamic buttons for special skills, inventory etc.
+* [120+ megatons][allComponents] of components for player movement, combat, collectibles, interactions, upgrades etc.
 * Template scenes for Logo → Main Menu → Options, Input Remapping, Pause Overlay
-* [140+ neutron star spoonfuls](allScripts) of helper functions & debugging tools.
+* UI controls including stat HUDs & dynamic buttons for special skills, inventory etc.
+* [150+ neutron star spoonfuls][allScripts] of helper functions & debugging tools.
 * Free-to-use tilesets, fonts, shaders & other assets for quick prototyping.
-* Save/Load player preferences via a config file with just `Settings.anyName = 69`
-* Commented & documented code.
 * Snippets for VSCode/VSCodium.
+
+💜 *Organically grown with smooches & cooties〜*
+
+* Commented & documented code.
+* Save/Load player preferences via a config file with just `Settings.anyName = 69`
+* Bind global values with keys like `"monsterColor"` to Node properties like `modulate` & update them automatically when the values change.
+* Handy for game jams & rapid iteration, with paths open for more power & customizations.
 * Optimized for balancing ease of use + performance as much as GDScript will allow.
 * Meatcrafted components can be Lego'ed together by AI codeblins to reliably create various kinds of gameplay. *\*(Comedot itself has no AI-generated code.)*
 
-🌟 Some specially sprillific components go beyond basic implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
+🌟 Some specially sprillific components go beyond the bare implementation to make sure gameplay *feels* right, by handling tricky cases that all games run into sooner or later, like:
 
 * Health/ammo/etc. collectibles don't get picked up if your stat is at max. If the stat drops while still standing on the item, _then_ it gets picked up!
 * Climbing: Grabbing a ladder/rope while holding the climb input in mid-jump. Walking towards the ladder if not fully aligned. Horizontal movement on fences etc.
 
-<br/>
+> [!WARNING]
+> _This is still mostly a private personal project; the API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
 
-## Examples 
+<br/> <br/>
 
-⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` and `MouseRotationComponent` on any object and _It Just Works:_ [(imgur)][pew-pew-plants]  
+## Examples
+
+⭐️ The [composition architecture][composition-over-inheritance] lets you do cool shit like putting a `GunComponent` & `NodeFacingComponent` on any object and _It Just Works:_ [(imgur)][pew-pew-plants]  
 
 https://github.com/user-attachments/assets/43853546-159f-4184-a7a4-da857ba5e75c
 
@@ -50,7 +62,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 ![debug-charts]
 
-<br/>
+<br/> <br/>
 
 ## How To Use
 
@@ -87,18 +99,17 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 > [!TIP]
 > 📜 **Read [HowTo.md][howto] to see how to do basic tasks or fix common issues.**  
 > See [Conventions.md][conventions] for the style guide and design rules this project tries to follow.  
-> [Agents.md][agents] contains instructions for AI assistants that may also be helpful for meat-based coders.  
+> [AGENTS.md][agents] contains instructions for AI assistants that may also be helpful for meat-based coders.  
 >
-> 🤖 You can try AI agents to update your existing projects to the latest Comedot branch.
-
-> [!WARNING]
-> _This is still mostly a private personal project; it's what I'm using to make [future GotYs][itch] while learning Godot as I go. The API eschews cringe conventions like ugly underscores and shit may break frequently:_ **No backwards compatibility is guaranteed!**
+> 🤖 You can ask AI agents to update your existing projects to the latest Comedot branch.
 
 <br/>
 
 ----
 
 [Comedot][repository] © MMXXVI [ShinryakuTako@GitHub][github] • [Syntaks.io@Discord][discord] • [Syntaks@Mastodon][mastodon]
+
+[MIT License][license] Make games, sell games, mutate the framework into whatever beautiful monster you need.
 
 > ### 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
@@ -117,7 +128,6 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [howto]:		HowTo.md
 [conventions]:	Conventions.md
 [agents]:		AGENTS.md
-[thanks]:		Thanks.md
 [todo]:			ToDo.md
 [tools]:		Scripts/Tools/Tools.gd
 [allComponents]:Notes/Components%20Catalog.md
