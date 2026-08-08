@@ -18,9 +18,7 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 1. Create a new git branch for your game (say `game-of-the-year-2069`) in your local Comedot repository, and
 
-2. Make subfolders for your game in the existing folder structure like `/Scenes/YourGame/` or `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
-
-💡 _You could also use a single `/Comedot/Game/` subfolder for multiple game projects: Create a new git repository in the `/Game/` subfolder, and use multiple git branches for each game. This may help with experimenting on different ideas while keeping the Comedot framework separate, so that any updates or modifications to the framework can be easily shared between all your games._
+2. Keep your game-specific files in the existing folder structure like `/Scenes/` or use a "master" folder for your game like `/YourGame/etc/` to organize your own files separately from the framework and avoid accidental conflicts.
 
 ❗️ Configure `res://ComedotProjectSettings.tres` to setup the Comedot framework environment such as the main game scene, music options, turn-based mode, and debug flags.
 

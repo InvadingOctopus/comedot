@@ -1,16 +1,12 @@
 # AGENTS.md
 # Guidelines for the Comedot Project and Repository
 
-Search this file for section headers starting with `##` to quickly find instructions related to a specific category of tasks.
-
-Each section contains instructions or information starting with a `-` bullet list marker, with further related information as nested & indented bullets.
-
 
 ## Project Overview
 - This project is a template for the Godot game engine.
 - It's a component-based framework similar to ECS for making 2D games.
 - It's open-source and hosted at https://github.com/InvadingOctopus/comedot
-- For details, see `/README.md`
+- For more details, see `/README.md`
 
 
 ## Folder Structure & Module Organization
@@ -26,7 +22,7 @@ Each section contains instructions or information starting with a `-` bullet lis
 - `/Notes/`: Design documents, indexes/catalogs of entities/components/scripts, and other development notes. When looking for a component or script to use for a task, search these `*Catalog.md` files.
 - `/Temporary/`, `/Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If an untracked file in these folders prevents compilation/parsing/export, exclude that file or consider temporarily removing it.
 - `/Scripts/Tools/Tools.gd`, `*Tools.gd`: Files containing global static standalone helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
-- `/Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. Everything outside the `/Game/` subtree is part of the framework that is shared between multiple games. When generating code for a game, only the files in the `/Game/` subtree should be modified. `/Game/AGENTS.override.md` takes precedence for any activity inside the `/Game/` subtree.
+- `/Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. If the there is a `/Game/AGENTS.override.md` file, it takes precedence for any instructions related to the specific game.
 
 
 ## Subsystems
@@ -61,8 +57,7 @@ Each section contains instructions or information starting with a `-` bullet lis
 - Ignore the contents of `/Temporary/` and `/Lab/`
 - Functions and types marked with an `@experimental` comment are expected to have bugs and incomplete implementations. Findings involving experimental code should be a lower priority and not expected to be fixed, unless important non-experimental code depends on that experimental code.
 - Not all `null`-able references need to be guarded: In some cases, a crash is better than a warning or a silent failure/skip, specially if it's a core object which should never be missing at runtime under normal circumstances.
-- Ignore the contents of `/Game/` unless the prompt and context involves a specific game being made with the main framework project.
-- The contents of `/Game/` are subject to the instructions in `/Game/AGENTS.override.md`
+- Ignore the contents of `/Game/` unless the prompt and context involves a specific game being made with the framework.
 - If an inline source code renderer does not support syntax highlighting for GDScript, use Swift syntax highlighting for fenced GDScript code blocks, as it closely resembles GDScript highlighting.
 
 
@@ -114,7 +109,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 
 ## Commit & Pull Request Guidelines
 - Commit messages should have a title that is short and imperative like `Add TurnBasedLab` or `Fix TurnBasedStateUIComponent`, referencing the file/class/type/issue.
-- Do not mix parent framework and `/Game/` commits.
+- Do not mix shared framework and game-specific code/assets in the same commit.
 
 - A commit message is optional when the commit title alone is insufficient.
 - Commit messagecontent should be a bullet list using this notation:
