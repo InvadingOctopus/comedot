@@ -173,6 +173,8 @@ func _ready() -> void:
 		setupUI()
 
 
+# DESIGN: In addons, avoid dependence on other scripts such as Debug.gd for logging etc.
+
 static func printLog(message: String) -> void:
 	print(str("Comedock: ", message))
 

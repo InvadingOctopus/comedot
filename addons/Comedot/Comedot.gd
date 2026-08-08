@@ -26,6 +26,8 @@ const componentIcon		:= preload("res://Assets/Icons/Component.svg")
 #endregion
 
 
+#region Initialization
+
 func _enter_tree() -> void:
 	printLog("Plugin _enter_tree()")
 	addCustomTypes()
@@ -44,21 +46,7 @@ func _exit_tree() -> void:
 func _get_plugin_icon() -> Texture2D:
 	return componentIcon
 
-
-static func printLog(message: String) -> void:
-	print(str("Comedot:  ", message)) # Extra space to align with "Comedock: " :)
-
-
-static func printWarning(message: String) -> void:
-	var warningMessage: String = str("Comedot:  WARNING: ", message) 
-	print(warningMessage)
-	push_warning(warningMessage)
-
-
-static func printError(message: String) -> void:
-	var errorMessage: String = str("Comedot:  ERROR: ", message)
-	print(errorMessage)
-	push_error(errorMessage)
+#endregion
 
 
 #region Custom Types
@@ -241,5 +229,26 @@ static func verifyAllComponents(rootPath: String = "res://Components") -> bool:
 	if not hasIssues: printLog(str("verifyAllComponents(): ", count, " components checked. All OK."))
 	else: printWarning(str("verifyAllComponents(): ", count, " components checked. SOME TESTS FAILED!"))
 	return not hasIssues
+
+#endregion
+
+
+#region Logging
+# DESIGN: In addons, avoid dependence on other scripts such as Debug.gd for logging etc.
+
+static func printLog(message: String) -> void:
+	print(str("Comedot:  ", message)) # Extra space to align with "Comedock: " :)
+
+
+static func printWarning(message: String) -> void:
+	var warningMessage: String = str("Comedot:  WARNING: ", message) 
+	print(warningMessage)
+	push_warning(warningMessage)
+
+
+static func printError(message: String) -> void:
+	var errorMessage: String = str("Comedot:  ERROR: ", message)
+	print(errorMessage)
+	push_error(errorMessage)
 
 #endregion

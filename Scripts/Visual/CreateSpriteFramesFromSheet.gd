@@ -15,6 +15,7 @@ extends AnimatedSprite2D
 
 #region Parameters
 
+const debug: Script = preload("res://AutoLoad/Debug.gd") # To avoid Dumbdot's annoying "static called on instance" warning
 const defaultAnimationName := &"default"
 
 @export var spriteSheet:	Texture2D:
@@ -70,21 +71,21 @@ func _ready() -> void:
 
 func validateSheet() -> bool:
 	if not spriteSheet:
-		printError("validateSheet(): spriteSheet is missing")
+		debug.printEditorError("validateSheet(): spriteSheet is missing", self)
 		return false
 
 	var sheetSize: Vector2i = spriteSheet.get_size()
 
 	if  sheetSize.x <= 0 or sheetSize.y <= 0:
-		printError(str("validateSheet() sheetSize <= 0: ", sheetSize))
+		debug.printEditorError(str("validateSheet() sheetSize <= 0: ", sheetSize), self)
 		return false
 	
 	if  frameSize.x <= 0 or frameSize.y <= 0:
-		printError(str("validateSheet() frameSize <= 0: ", frameSize))
+		debug.printEditorError(str("validateSheet() frameSize <= 0: ", frameSize), self)
 		return false
 
 	if  sheetSize.x % frameSize.x != 0 or sheetSize.y % frameSize.y != 0:
-		printWarning(str("validateSheet(): spriteSheet size: ", sheetSize, " cannot divide evenly by frameSize: ", frameSize))
+		debug.printEditorWarning(str("validateSheet(): spriteSheet size: ", sheetSize, " cannot divide evenly by frameSize: ", frameSize), self)
 		return false
 	# else
 	return true
@@ -93,12 +94,12 @@ func validateSheet() -> bool:
 ## Verifies [member animationStartFrames] and checks each animation's starting and ending frame is within the total count defined by [member columns] * [member rows]
 func validateAnimations() -> bool:
 	if  animationStartFrames.is_empty():
-		printError("validateAnimations(): animationStartFrames is empty")
+		debug.printEditorError("validateAnimations(): animationStartFrames is empty", self)
 		return false
 
 	var totalFrames:int = columns * rows
 	if  totalFrames <= 0:
-		printError(str("validateAnimations(): totalFrames <= 0: ", columns, " × ", rows, " ・ Call calculateColumnsAndRows()"))
+		debug.printEditorError(str("validateAnimations(): totalFrames <= 0: ", columns, " × ", rows, " ・ Call calculateColumnsAndRows()"), self)
 		return false 
 		
 	var startFrame:	int
@@ -110,11 +111,11 @@ func validateAnimations() -> bool:
 		lastFrame  = startFrame + framesPerAnimation - 1
 
 		if startFrame < 0 or startFrame >= totalFrames or startFrame > lastFrame:
-			printWarning(str("createSpriteFrames(): ", animationName, " has invalid starting frame: ", startFrame, ", framesPerAnimation: ", framesPerAnimation, ", last frame: ", lastFrame, ", total columns * rows in sheet: ", totalFrames))
+			debug.printEditorWarning(str("createSpriteFrames(): ", animationName, " has invalid starting frame: ", startFrame, ", framesPerAnimation: ", framesPerAnimation, ", last frame: ", lastFrame, ", total columns * rows in sheet: ", totalFrames), self)
 			return false
 
 		if lastFrame >= totalFrames:
-			printWarning(str("createSpriteFrames(): ", animationName, " has invalid ending frame: ", lastFrame, ", start frame: ", startFrame, ", framesPerAnimation: ", framesPerAnimation, ", total columns * rows in sheet: ", totalFrames))
+			debug.printEditorWarning(str("createSpriteFrames(): ", animationName, " has invalid ending frame: ", lastFrame, ", start frame: ", startFrame, ", framesPerAnimation: ", framesPerAnimation, ", total columns * rows in sheet: ", totalFrames), self)
 			return false
 
 	return true
@@ -147,13 +148,13 @@ func createSpriteFrames(updateSelf: bool = true) -> SpriteFrames:
 	# Validate parameters
 
 	if columns <= 0 or rows <= 0:
-		printError(str("createSpriteFrames() columns/rows <= 0: ", columns, ",", rows, " ・ Call calculateColumnsAndRows()"))
+		debug.printEditorError(str("createSpriteFrames() columns/rows <= 0: ", columns, ",", rows, " ・ Call calculateColumnsAndRows()"), self)
 		return null
 
 	# Make sure the sheet can be divided evenly so that all frames are the same size
 	var sheetSize: Vector2i = spriteSheet.get_size()
 	if  sheetSize.x % columns != 0 or sheetSize.y % rows != 0:
-		printWarning(str("createSpriteFrames(): spriteSheet size ", sheetSize, " cannot divide evenly by grid ", Vector2i(columns, rows)))
+		debug.printEditorWarning(str("createSpriteFrames(): spriteSheet size ", sheetSize, " cannot divide evenly by grid ", Vector2i(columns, rows)), self)
 		return null
 
 	if not validateAnimations(): return null
@@ -203,7 +204,7 @@ func addFramesToAnimation(
 
 	# If there is already an animation with the same name, replace it
 	if  newSpriteFrames.has_animation(animationName):
-		printLog(str("addFramesToAnimation() replacing existing animation: ", animationName))
+		debug.printEditorLog(str("addFramesToAnimation() replacing existing animation: ", animationName), self)
 		if preserveExistingProperties:
 			newSpriteFrames.clear(animationName) # Keeps looping etc.
 		else:
@@ -237,7 +238,7 @@ func addFramesToAnimation(
 func createSpriteFramesInEditor() -> SpriteFrames:
 	if not Engine.is_editor_hint(): return null
 
-	printEditorLog(str("createSpriteFramesInEditor() spriteSheet: ", spriteSheet, ", frameSize: ", frameSize, ", framesPerAnimation: ", framesPerAnimation, "\nanimationStartFrames: ", animationStartFrames))
+	debug.printEditorLog(str("createSpriteFramesInEditor() spriteSheet: ", spriteSheet, ", frameSize: ", frameSize, ", framesPerAnimation: ", framesPerAnimation, "\nanimationStartFrames: ", animationStartFrames), self)
 	var previousAnimation:		StringName		= self.animation
 	var previousSpriteFrames:	SpriteFrames	= self.sprite_frames
 	var newSpriteFrames:		SpriteFrames	= createSpriteFrames(false) # not updateSelf
@@ -259,7 +260,7 @@ func createSpriteFramesInEditor() -> SpriteFrames:
 
 
 func createPlatformerTemplate() -> Dictionary[StringName, int]:
-	printEditorLog(str("createPlatformerTemplate()"))
+	debug.printEditorLog(str("createPlatformerTemplate()"), self)
 	var newAnimationFrames: Dictionary[StringName, int] = {
 		&"idle": framesPerAnimation * 0,
 		&"walk": framesPerAnimation * 1,
@@ -278,7 +279,7 @@ func createPlatformerTemplate() -> Dictionary[StringName, int]:
 ## IMPORTANT: [param maxDirectionCount] other than 8 (default; cardinal+ordinal) or 4 (cardinal-only) is NOT supported!
 ## @experimental
 func createOverheadTemplate(maxDirectionCount: int = 8) -> Dictionary[StringName, int]:
-	printEditorLog(str("createOverheadTemplate() maxDirectionCount: ", maxDirectionCount))
+	debug.printEditorLog(str("createOverheadTemplate() maxDirectionCount: ", maxDirectionCount), self)
 	
 	const idlePrefix := OverheadAnimationComponent.defaultIdlePrefix
 	const walkPrefix := OverheadAnimationComponent.defaultWalkPrefix
@@ -306,29 +307,5 @@ func createOverheadTemplate(maxDirectionCount: int = 8) -> Dictionary[StringName
 		undoManager.add_do_property(  self,	&"animationStartFrames",	newAnimationFrames)
 		undoManager.commit_action()
 	return self.animationStartFrames
-
-#endregion
-
-
-#region Debugging
-
-func printEditorLog(message: String) -> void:
-	if Engine.is_editor_hint():
-		print_rich(str("[color=white][b]", self, "[/b][color=lightgray]: ", message))
-
-
-func printLog(message: String) -> void:
-	if Engine.is_editor_hint(): print(str(self, ": ", message))
-	else: Debug.printLog(message, self)
-
-
-func printWarning(message: String) -> void:
-	if Engine.is_editor_hint(): push_warning(str(self, ": ", message))
-	else: Debug.printWarning(message, self)
-
-
-func printError(message: String) -> void:
-	if Engine.is_editor_hint(): push_error(str(self, ": ", message))
-	else: Debug.printError(message, self)
 
 #endregion
