@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_g6h31")
+dictionary = Dictionary[StringName, Variant]({
+&"testColor": Color(0.8353, 0.3843, 1, 1)
+})
 metadata/_custom_type_script = "uid://bqgn74wi2yvo5"

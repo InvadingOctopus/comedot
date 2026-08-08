@@ -23,7 +23,7 @@ extends Node
 ## EXAMPLE: `&"monsterColor": ^"../Monster:modulate"`
 ## NOTE: Keys missing from [member GameState.globalData] are skipped until they are added via [method GlobalData.setValue]
 ## NOTE: If no Node is specified in the path, only a ":property" then this Node itself is used.
-@export var globalDataBindings: Dictionary[StringName, NodePath]
+@export var globalDataBindings: Dictionary[StringName, NodePath] = { &"testColor": "..:modulate" } # TBD: Temporary usage example?
 
 @export var debugMode: bool
 
