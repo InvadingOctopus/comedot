@@ -496,6 +496,36 @@ static func updateLastFrameLogged() -> void:
 #endregion
 
 
+#region Logging in Editor for @tool Scripts
+
+## [method printLog] equivalent for `@tool` scripts running in the Godot Editor.
+static func printEditorLog(message: String = "", object: Variant = null, messageColor: String = "lightgray", objectColor: String = "white") -> void:
+	if Engine.is_editor_hint(): print_rich(str("[color=", objectColor, "]", object, "[/color] [color=", messageColor, "]", message))
+	else: Debug.printLog(message, object, messageColor, objectColor)
+
+
+## [method printWarning] equivalent for `@tool` scripts running in the Godot Editor.
+static func printEditorWarning(message: String = "", object: Variant = null, objectColor: String = "white") -> void:
+	if Engine.is_editor_hint():
+		var callerOfLogger: String = " ← " + getCaller(2)
+		push_warning(str("⚠️ ", object, " ", message, callerOfLogger))
+		print_rich(str("[indent]􀇿 [color=yellow]", object, " ", message, "[color=orange]", callerOfLogger))
+	else:
+		Debug.printWarning(message, object, objectColor)
+
+
+## [method printError] equivalent for `@tool` scripts running in the Godot Editor.
+static func printEditorError(message: String = "", object: Variant = null, objectColor: String = "white") -> void:
+	if Engine.is_editor_hint():
+		var plainText: String = str("❗️ ", object, " ", message, " ← ", getCaller(2))
+		push_error(plainText)
+		printerr(plainText)
+	else:
+		Debug.printError(message, object, objectColor)
+
+#endregion
+
+
 #region Custom Log UI
 
 class CustomLogKeys:
