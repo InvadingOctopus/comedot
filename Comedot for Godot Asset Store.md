@@ -18,6 +18,8 @@ Detailed Description:
 
 Build scenes by smacking components into entities and tweaking their exports. *"Entities"* and *"Components"* are just regular Godot Nodes but for gameplay mechanics, and you can edit the component scripts in any way, so you can mix this framework with your usual Godot workflow or any other addons or architecture.
 
+(if you think "ECS" only means "data-oriented design" you need to get out more)
+
 * [120+ megatons of components](https://github.com/InvadingOctopus/comedot/blob/develop/Notes/Components%20Catalog.md) for different kinds of movement, combat, interactions, inventory, abilities etc.
 * Support for turn-based gameplay that can be combined with real-time stuff.
 * Templates for Logo → Main Menu → Options, Input Remapping, Pause Overlay & simple game examples.
