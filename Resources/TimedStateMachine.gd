@@ -45,7 +45,10 @@ var isWaitingForTimer: bool
 
 
 #region Signals
-## Emitted after [member timer] starts for a transition delay.
+## Emitted BEFORE [member timer] starts for a transition if a delay specified.
+signal willStartDelay(outgoingState: StringName, incomingState: StringName, delay: float)
+
+## Emitted AFTER [member timer] starts for a transition if a delay specified.
 signal didStartDelay(outgoingState: StringName, incomingState: StringName, delay: float)
 #endregion
 
@@ -106,9 +109,12 @@ func transitionToState(nextState: StringName) -> bool:
 		didRejectTransition.emit(outgoingState, nextState)
 		return false
 
-	isWaitingForTimer = true # Don't accept any more transitions
+	isWaitingForTimer = true  # Don't let signal handlers etc start any more transitions
+	timer.wait_time   = delay # Update for any UI handlers etc
+	self.willStartDelay.emit(outgoingState, nextState, delay)
 	timer.start(delay)
-	didStartDelay.emit(outgoingState, nextState, delay)
+	self.didStartDelay.emit(outgoingState, nextState, delay)
+
 	await timer.timeout # TBD: `await` here or complete the transition in an `onTimer_timeout()` handler?
 	isWaitingForTimer = false
 
