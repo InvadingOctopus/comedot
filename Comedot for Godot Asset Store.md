@@ -14,9 +14,9 @@ Detailed Description:
 ```
 [![Godot v4.7+](https://img.shields.io/badge/Godot-v4.7%2B-478CBF)](https://godotengine.org/download/archive/ "Requires Godot 4.7+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
 
-**Comedot is an opinionated af framework & project template for 2D games** of any genre: Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc. This is the result of trying to make games while learning which stuff is needed frequently in multiple genres & shoving it into a shared library.
+**Comedot is an opinionated af framework & project template for 2D games** of any genre: Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc. I have 100 different game projects but still yet to finish 1, but at least I get to learn which stuff is needed frequently in multiple genres & shove it into this shared library :)
 
-Build scenes by smacking components into entities and tweaking their exports. *"Entities"* and *"Components"* are just regular Godot Nodes but for gameplay mechanics, and you can edit the component scripts in any way, so you can mix this framework with your usual Godot workflow or any other addons or architecture.
+Use this to build scenes by smacking components into entities and tweaking their exports. *"Entities"* and *"Components"* are just regular Godot Nodes but for gameplay mechanics, and you can edit the component scripts in any way, so you can mix this framework with your usual Godot workflow or any other addons or architecture.
 
 (if you think "ECS" only means "data-oriented design" you need to get out more)
 
@@ -52,7 +52,7 @@ Font: **Jayvee Enaguas (HarvettFox96)'s Pixel Operator** https://www.dafont.com/
 ```
 
 Tags:			ECS, Components, Template, Framework, 2D
-Type:			Project
+Type:			Full Project
 License:		MIT
 Source Code:	https://github.com/invadingoctopus/comedot
 
@@ -74,10 +74,10 @@ Version Name:	4.8.0.3.69
 
 Version changelog:
 ```
-Latest Commit: [9aaae1b](https://github.com/InvadingOctopus/comedot/commit/9aaae1b4057a246b6010783b21c558e896940878) on 2026-07-19
+Latest Commit: [ba2542d](https://github.com/InvadingOctopus/comedot/commit/ba2542d48790e56a7d912ad87c8e6d7153660d37) on 2026-08-08
 
 Compare tags/branches on GitHub:
-[4.7.0.100.777 → develop](https://github.com/InvadingOctopus/comedot/compare/4.7.0.100.777...develop)
+[4.7.0.100.777 → 4.8.0.3.69](https://github.com/InvadingOctopus/comedot/compare/4.7.0.100.777...4.8.0.3.69)
 
 ```
 
