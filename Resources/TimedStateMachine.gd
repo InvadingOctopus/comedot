@@ -81,7 +81,7 @@ func getDelayBetweenStates(outgoingState: StringName, incomingState: StringName)
 ## or call without `await` then do the rest of the processing in the signal handler for [signal didTransition] etc.
 ## NOTE: Transition requests are rejected while [member isWaitingForTimer] is `true`
 func transitionToState(nextState: StringName) -> bool:
-	if debugMode: Debug.printResourceLog(str("transitionToState() requested: &\"" + self.currentState + "\" → &\"" + nextState + "\" isEnabled: ", isEnabled), logName)
+	# NOTE: Don't log here; the superclass will.
 	if nextState == self.currentState: return true
 
 	if isWaitingForTimer:
