@@ -54,6 +54,7 @@ enum TreeItemButtons {
 # NOTE: Convert strings `.to_lower()` before comparing strings
 const componentsRootPath		:= "res://Components"
 const entitiesRootPath			:= "res://Entities"
+const globalDataDefaultPath		:= "res://Resources/GlobalData.tres"
 
 const acceptedFileExtension		:= ".tscn"
 const acceptedFileSuffix		:= "component.tscn"
@@ -83,7 +84,8 @@ const searchComponentsShortcut	:= preload("res://addons/Comedot/SearchComponents
 # Instead of: EditorInterface.get_editor_theme().get_icon()
 @onready var folderIcon: 	Texture2D = self.get_theme_icon(&"Folder",			&"EditorIcons")
 @onready var sceneIcon:  	Texture2D = self.get_theme_icon(&"InstanceOptions",	&"EditorIcons") # Clapboard 
-@onready var settingsIcon:	Texture2D = self.get_theme_icon(&"Tools",			&"EditorIcons") # Gear
+@onready var settingsIcon:	Texture2D = self.get_theme_icon(&"Tools",			&"EditorIcons")
+@onready var globalDataIcon:Texture2D = self.get_theme_icon(&"Dictionary",		&"EditorIcons")
 
 #endregion
 
@@ -189,6 +191,7 @@ func setupUI() -> void:
 	%DebugReloadButton.visible			= debugMode
 
 	%SettingsButton.icon				= self.settingsIcon
+	%GlobalDataButton.icon				= self.globalDataIcon
 	%HelpLabel.text						= defaultHelpLabelText
 
 	%AddEntityMenuButton.modulate		= createNewItemButtonColor
@@ -423,6 +426,26 @@ func onSettingsButton_pressed() -> void:
 		printError("Could not load the ComedotProjectSettings Resource from the custom or default path: " + ComedotProjectSettings.projectSettingsResourcePathDefault)
 		return
 	EditorInterface.edit_resource(projectSettings)
+
+
+## Loads and displays the [GlobalData]
+func onGlobalDataButton_pressed() -> void:
+	# Get the GlobalData path setting
+	var projectSettings: Resource = ComedotProjectSettings.loadSettingsResource()
+	if not projectSettings or projectSettings is not ComedotProjectSettings:
+		printError("Could not load the ComedotProjectSettings Resource from the custom or default path: " + ComedotProjectSettings.projectSettingsResourcePathDefault)
+		return
+
+	var path:		String   = projectSettings.globalDataPath
+	var globalData:	Resource = load(path)
+	if not globalData or globalData is not GlobalData:
+		# If the custom path is invalid, try the conventional default 
+		path		= self.globalDataDefaultPath
+		globalData	= load(path)
+		if not globalData or globalData is not GlobalData:
+			printError("Could not load the GlobalData Resource from the custom or default path: " + path)
+			return
+	EditorInterface.edit_resource(globalData)
 
 
 func onRefreshButton_pressed() -> void:
