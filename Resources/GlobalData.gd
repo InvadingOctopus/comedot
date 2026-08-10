@@ -10,15 +10,19 @@ extends Resource
 #region Constants
 ## The prefix Godot uses when serializing [Object] metadata as properties.
 const metadataPropertyPrefix:	StringName	= &"metadata/"
+const applyGlobalDataScript:	Script		= preload("res://Scripts/Data/ApplyGlobalData.gd")
 const debug:					Script		= preload("res://AutoLoad/Debug.gd") # To avoid Dumbdot's annoying "static called on instance" warning
 #endregion
 
 
 #region Parameters
 
-## Updates  all applicable instances of `/Scripts/Data/ApplyGlobalData.gd` in the Godot Editor.
+## Updates  all applicable instances of [ApplyGlobalData] `/Scripts/Data/ApplyGlobalData.gd` in the Godot Editor.
 ## NOTE: Bindings are NOT updated if a key is erased.
-@export_tool_button("Refresh ApplyGlobalData Bindings", "Reload") var refreshButton: Callable = refreshAll 
+@export_tool_button("Refresh Bindings",	"Reload") var refreshButton: Callable = refreshAll 
+
+## Attaches [ApplyGlobalData] `/Scripts/Data/ApplyGlobalData.gd` to the selected node in the Godot Editor.
+@export_tool_button("Attach Script",	"Script") var scriptButton:  Callable = attachScriptToSelectedNode
 
 ## The actual [Dictionary] containing the [StringName] keys and associated [Variant] values.
 ## ALERT: Advanced scripts may modify this [Dictionary] directly, but manual changes will NOT emit signals such as [signal GlobalData.didChangeValue] or [signal Resource.changed] etc.
@@ -174,5 +178,35 @@ func refreshAll() -> void:
 	for key: StringName in dictionary.keys(): # Use keys() to iterate over a "snapshot" in case of mutation during iteration.
 		value = self.dictionary.get(key)
 		didChangeValue.emit(key, value, value)
+
+#endregion
+
+
+#region Editor
+
+## Attaches [ApplyGlobalData] `/Scripts/Data/ApplyGlobalData.gd` to a single node selected in the Godot Editor.
+## NOTE: Does NOT replace any existing scripts.
+func attachScriptToSelectedNode() -> bool:
+	if not Engine.is_editor_hint(): return false
+
+	var selectedNodes: Array[Node] = EditorInterface.get_selection().get_selected_nodes()
+	if  selectedNodes.size() != 1:
+		debug.printEditorWarning("attachScriptToSelectedNode(): Must select only 1 node.", self)
+		return false
+
+	var selectedNode:	Node	= selectedNodes.front()
+	var existingScript:	Script	= selectedNode.get_script()
+	if  existingScript == applyGlobalDataScript: return true
+	if  existingScript:
+		debug.printEditorWarning(str("attachScriptToSelectedNode(): ", selectedNode.name, " already has a different script: ", existingScript), self)
+		return false
+
+	var undoManager: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
+	undoManager.create_action("Attach ApplyGlobalData script to " + selectedNode.name)
+	undoManager.add_do_method(selectedNode,		&"set_script", applyGlobalDataScript)
+	undoManager.add_undo_method(selectedNode,	&"set_script", existingScript)
+	undoManager.commit_action()
+	EditorTools.selectNode.call_deferred(selectedNode) # So the user doesn't have to deselect then reselect the node to be able to edit the bindings
+	return true
 
 #endregion
