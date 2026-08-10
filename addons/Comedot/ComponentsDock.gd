@@ -86,6 +86,7 @@ const searchComponentsShortcut	:= preload("res://addons/Comedot/SearchComponents
 @onready var sceneIcon:  	Texture2D = self.get_theme_icon(&"InstanceOptions",	&"EditorIcons") # Clapboard 
 @onready var settingsIcon:	Texture2D = self.get_theme_icon(&"Tools",			&"EditorIcons")
 @onready var globalDataIcon:Texture2D = self.get_theme_icon(&"Dictionary",		&"EditorIcons")
+@onready var refreshIcon:	Texture2D = self.get_theme_icon(&"Reload",			&"EditorIcons")
 
 #endregion
 
@@ -190,9 +191,13 @@ static func printError(message: String) -> void:
 func setupUI() -> void:
 	%DebugReloadButton.visible			= debugMode
 
-	%SettingsButton.icon				= self.settingsIcon
-	%GlobalDataButton.icon				= self.globalDataIcon
 	%HelpLabel.text						= defaultHelpLabelText
+	%SettingsButton.text				= ""
+	%SettingsButton.icon				= settingsIcon
+	%GlobalDataButton.text				= ""
+	%GlobalDataButton.icon				= globalDataIcon
+	%RefreshButton.text					= ""
+	%RefreshButton.icon					= refreshIcon
 
 	%AddEntityMenuButton.modulate		= createNewItemButtonColor
 	%AddEntityMenuButton.tooltip_text	= defaultAddEntityTip

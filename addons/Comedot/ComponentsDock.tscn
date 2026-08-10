@@ -63,13 +63,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_styles/separator = SubResource("StyleBoxEmpty_3crsp")
 
+[node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=1994493911]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "Rescan the `\\Components\\` folder+subfolders and verify all Components."
+focus_neighbor_right = NodePath("../GlobalDataButton")
+focus_next = NodePath(".")
+text = "Rescan"
+alignment = 2
+text_overrun_behavior = 2
+clip_text = true
+icon_alignment = 1
+
 [node name="GlobalDataButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=244649481]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Open the GlobalData Resource in the Inspector."
+focus_neighbor_left = NodePath("../RefreshButton")
 focus_neighbor_right = NodePath("../SettingsButton")
 focus_next = NodePath("../SettingsButton")
+focus_previous = NodePath("../RefreshButton")
+text = "Data"
 alignment = 2
 text_overrun_behavior = 2
 clip_text = true
@@ -81,24 +97,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "Open the Comedot-specific Project Settings in the Inspector."
 focus_neighbor_left = NodePath("../GlobalDataButton")
-focus_neighbor_right = NodePath("../RefreshButton")
-focus_next = NodePath("../RefreshButton")
-focus_previous = NodePath("../GlobalDataButton")
+focus_neighbor_right = NodePath("../AddEntityMenuButton")
+focus_next = NodePath("../AddEntityMenuButton")
+focus_previous = NodePath(".")
+text = "Settings"
 alignment = 2
 text_overrun_behavior = 2
 clip_text = true
 icon_alignment = 1
-
-[node name="RefreshButton" type="Button" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=1041019712]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "Scan the `\\Components\\` folder+subfolders for all Components and verify."
-focus_neighbor_left = NodePath("../SettingsButton")
-focus_neighbor_right = NodePath("../AddEntityMenuButton")
-focus_next = NodePath("../AddEntityMenuButton")
-focus_previous = NodePath("../SettingsButton")
-text = "Rescan"
-alignment = 2
 
 [node name="AddEntityMenuButton" type="MenuButton" parent="MainGridContainer/ToolbarContainer/ButtonsContainer1" unique_id=293150511]
 unique_name_in_owner = true
@@ -106,10 +112,8 @@ modulate = Color(0.486275, 0.988235, 0, 1)
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 tooltip_text = "Add a new Entity of the chosen base type to the currently selected node in the Scene Editor."
-focus_neighbor_left = NodePath("../RefreshButton")
 focus_neighbor_bottom = NodePath("../../../TreeSearchBox")
 focus_next = NodePath("../../../TreeSearchBox")
-focus_previous = NodePath("../RefreshButton")
 focus_mode = 2
 toggle_mode = false
 shortcut = ExtResource("3_6vyr6")
@@ -250,9 +254,9 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 placeholder_text = "NewComponent"
 
+[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/GlobalDataButton" to="." method="onGlobalDataButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/SettingsButton" to="." method="onSettingsButton_pressed"]
-[connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer1/RefreshButton" to="." method="onRefreshButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/DebugReloadButton" to="." method="onDebugReloadButton_pressed"]
 [connection signal="pressed" from="MainGridContainer/ToolbarContainer/ButtonsContainer2/EditComponentButton" to="." method="onEditComponentButton_pressed"]
 [connection signal="button_clicked" from="MainGridContainer/TreeScrollContainer/ComponentsTree" to="." method="onComponentsTree_buttonClicked"]
