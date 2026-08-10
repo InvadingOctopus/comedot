@@ -74,6 +74,23 @@ const turnBasedMinimumDelay: float = 0.05
 ## WARNING: If disabled, turn-based nodes and scripts may cause a crash.
 @export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var isTurnBasedGame: bool = false
 
+## Enables or disables [member turnBasedDelayBetweenEntities]
+## If [member turnBasedShouldWaitAfterLastEntity] is `true` then this delay applies even if there is only 1 entity.
+@export var turnBasedShouldWaitBetweenEntities: bool = true:
+	set(newValue):
+		if newValue != turnBasedShouldWaitBetweenEntities:
+			turnBasedShouldWaitBetweenEntities = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitBetweenEntities = newValue
+
+## If `true` then  [member turnBasedDelayBetweenEntities] seconds also occurs after the last entity in each Begin/Execute/End phase.
+## If there is only 1 entity, this ensures a delay between multiple moves of the same entity.
+## If `false` (default) the delay is skipped after the last entity or if there is only 1 entity.
+@export var turnBasedShouldWaitAfterLastEntity: bool:
+	set(newValue):
+		if newValue != turnBasedShouldWaitAfterLastEntity:
+			turnBasedShouldWaitAfterLastEntity = newValue
+			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitAfterLastEntity = newValue
+
 ## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Execute/End). May be used for aesthetics or debugging.
 ## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
 ## This ensures a delay between multiple moves of the same entity.
@@ -84,13 +101,13 @@ const turnBasedMinimumDelay: float = 0.05
 			if TurnBasedCoordinator: TurnBasedCoordinator.delayBetweenEntities = newValue
 
 ## Enables or disables [member turnBasedDelayBetweenStates]
-@export var shouldWaitBetweenTurnStates:  bool = true:
+@export var turnBasedShouldWaitBetweenTurnStates:  bool = true:
 	set(newValue):
-		if newValue != shouldWaitBetweenTurnStates:
-			shouldWaitBetweenTurnStates = newValue
+		if newValue != turnBasedShouldWaitBetweenTurnStates:
+			turnBasedShouldWaitBetweenTurnStates = newValue
 			if TurnBasedCoordinator: TurnBasedCoordinator.shouldWaitBetweenStates = newValue
 
-## The delay after each turn state if [member shouldWaitBetweenTurnStates]: Begin → Execute → End. May be used for aesthetics or debugging.
+## The delay after each turn state if [member turnBasedShouldWaitBetweenTurnStates]: Begin → Execute → End. May be used for aesthetics or debugging.
 ## NOTE: The delay will occur BEFORE [member TurnBasedCoordinator.stateMachine] transitions to the next state.
 ## NOTE: This delay also occurs even AFTER the "End" phase! This ensures a delay between the end of the previous turn and the beginning of the next turn.
 @export_range(turnBasedMinimumDelay, 10, 0.05) var turnBasedDelayBetweenStates: float = 0.25:

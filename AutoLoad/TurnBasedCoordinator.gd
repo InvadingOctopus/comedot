@@ -44,12 +44,12 @@ const minimumDelay: float = projectSettings.turnBasedMinimumDelay
 
 ## Enables or disables [member delayBetweenEntities]
 ## If [member shouldWaitAfterLastEntity] is `true` then this delay applies even if there is only 1 entity.
-@export var shouldWaitBetweenEntities: bool = true
+@export var shouldWaitBetweenEntities: bool = projectSettings.turnBasedShouldWaitBetweenEntities
 
 ## If `true` then  [member delayBetweenEntities] seconds also occurs after the last entity in each Begin/Execute/End phase.
 ## If there is only 1 entity, this ensures a delay between multiple moves of the same entity.
 ## If `false` (default) the delay is skipped after the last entity or if there is only 1 entity.
-@export var shouldWaitAfterLastEntity: bool
+@export var shouldWaitAfterLastEntity: bool = projectSettings.turnBasedShouldWaitAfterLastEntity
 
 ## The seconds for [member entityTimer] to wait for after processing each [TurnBasedEntity] per Begin/Execute/End phase if [member shouldWaitBetweenEntities]. May be used for aesthetics or debugging.
 ## NOTE: Ignored AFTER the LAST entity in the order if [member shouldWaitAfterLastEntity] is `false`
@@ -61,7 +61,7 @@ const minimumDelay: float = projectSettings.turnBasedMinimumDelay
 
 ## Enables or disables [member delayBetweenStates]
 ## NOTE: There is no delay between Ready → Begin
-@export var shouldWaitBetweenStates: bool = projectSettings.shouldWaitBetweenTurnStates:
+@export var shouldWaitBetweenStates: bool = projectSettings.turnBasedShouldWaitBetweenTurnStates:
 	set(newValue):
 		if newValue != shouldWaitBetweenStates:
 			shouldWaitBetweenStates = newValue
