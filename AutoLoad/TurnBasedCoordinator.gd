@@ -192,9 +192,6 @@ var nextEntityToProcess:		TurnBasedEntity:
 @onready var stateTimer:  Timer = $StateTimer
 @onready var entityTimer: Timer = $EntityTimer
 
-@export_storage var functionToCallOnStateTimer:  Callable ## @experimental
-@export_storage var functionToCallOnEntityTimer: Callable ## @experimental
-
 #endregion
 
 
@@ -253,7 +250,6 @@ func _ready() -> void:
 		Debug.printError("Missing stateMachine", self)
 		return
 
-	clearTimerFunctions()
 	showDebugInfo()
 
 	# Ready to Roll?
@@ -586,11 +582,6 @@ func processEntities(state: StringName) -> void:
 
 #region Timers
 
-func onStateTimer_timeout() -> void:
-	printDebug(str("onStateTimer_timeout() toCall: ", functionToCallOnStateTimer))
-	functionToCallOnStateTimer.call()
-	functionToCallOnStateTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
-
 
 func waitForEntityTimer() -> void:
 	if not is_zero_approx(delayBetweenEntities):
@@ -602,21 +593,13 @@ func waitForEntityTimer() -> void:
 		printDebug("[color=dimgray]waitForEntityTimer(): 0")
 
 
+## Called when [member entityTimer] times out. May be overridden by subclasses.
 func onEntityTimer_timeout() -> void:
-	printDebug(str("onEntityTimer_timeout() toCall: ", functionToCallOnEntityTimer))
-	functionToCallOnEntityTimer.call()
-	functionToCallOnEntityTimer = dummyTimerFunction # TBD: Reset this Callable on every timeout?
+	pass
 
-
-## @experimental
-func clearTimerFunctions() -> void:
-	functionToCallOnStateTimer  = dummyTimerFunction
-	functionToCallOnEntityTimer = dummyTimerFunction
-
-
-## @experimental
-func dummyTimerFunction() -> void:
-	return
+## Called when [member stateTimer] times out. May be overridden by subclasses.
+func onStateTimer_timeout() -> void:
+	pass
 
 #endregion
 
