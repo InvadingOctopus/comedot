@@ -203,8 +203,8 @@ func attachScriptToSelectedNode() -> bool:
 
 	var undoManager: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
 	undoManager.create_action("Attach ApplyGlobalData script to " + selectedNode.name)
-	undoManager.add_do_method(selectedNode,		&"set_script", applyGlobalDataScript)
-	undoManager.add_undo_method(selectedNode,	&"set_script", existingScript)
+	undoManager.add_do_method(selectedNode,	  &"set_script", applyGlobalDataScript)
+	undoManager.add_undo_method(selectedNode, &"set_script", existingScript)
 	undoManager.commit_action()
 	EditorTools.selectNode.call_deferred(selectedNode) # So the user doesn't have to deselect then reselect the node to be able to edit the bindings
 	return true
