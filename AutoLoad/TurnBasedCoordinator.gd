@@ -42,9 +42,17 @@ var projectSettings: ComedotProjectSettings = ComedotProjectSettings.loaded
 ## According to Godot documentation, it should be 0.05
 const minimumDelay: float = projectSettings.turnBasedMinimumDelay
 
-## The delay after processing each [TurnBasedEntity] PER PHASE (Begin/Execute/End). May be used for aesthetics or debugging.
-## NOTE: This delay also occurs even AFTER the LAST entity in the order, even if there is only 1 entity!
-## This ensures a delay between multiple moves of the same entity.
+## Enables or disables [member delayBetweenEntities]
+## If [member shouldWaitAfterLastEntity] is `true` then this delay applies even if there is only 1 entity.
+@export var shouldWaitBetweenEntities: bool = true
+
+## If `true` then  [member delayBetweenEntities] seconds also occurs after the last entity in each Begin/Execute/End phase.
+## If there is only 1 entity, this ensures a delay between multiple moves of the same entity.
+## If `false` (default) the delay is skipped after the last entity or if there is only 1 entity.
+@export var shouldWaitAfterLastEntity: bool
+
+## The seconds for [member entityTimer] to wait for after processing each [TurnBasedEntity] per Begin/Execute/End phase if [member shouldWaitBetweenEntities]. May be used for aesthetics or debugging.
+## NOTE: Ignored AFTER the LAST entity in the order if [member shouldWaitAfterLastEntity] is `false`
 @export_range(minimumDelay, 10, 0.05) var delayBetweenEntities: float = projectSettings.turnBasedDelayBetweenEntities:
 	set(newValue):
 		newValue					= maxf(newValue, minimumDelay)
@@ -313,7 +321,7 @@ func onStateMachine_willTransition(_outgoingState: StringName, _incomingState: S
 
 func onStateMachine_didTransition(_previousState: StringName, newState: StringName) -> void:
 	match newState:
-		TurnStates.ready:
+		TurnStates.ready: # Arrives here after the "End" phase or the game's initialization.
 			self.isReadyToStartTurn.emit()
 
 		TurnStates.begin, TurnStates.execute, TurnStates.end:
@@ -338,22 +346,31 @@ func onStateMachine_didTransition(_previousState: StringName, newState: StringNa
 #region Coordinator External Interface
 
 ## Begins the processing of 1 full turn, by transitioning the [member stateMachine] into [const TurnStates.begin] which then leads to cycling through each of the 3 states: Begin → Execute → End
-## May only be called while the current state is [const TurnStates.begin]
-## Called by the game-specific control system, such as player movement input or a "Next Turn" button.
+## May only be called while the current state is [const TurnStates.ready]
+## Must be called by the game-specific control system, such as player movement input or a "Next Turn" button.
+## Flow: [method startTurn] → [method TimedStateMachine.transitionToState] → [method onStateMachine_didTransition] → [method processState] → `processTurn…Signals()` → [method transitionToNextState] → repeat through [method processTurnEndSignals] → [signal didEndTurn] until finally "Ready" again.
 ## TIP: Call this method with `await` and set [param awaitForTurnEnd] to `true` to wait for the [signal didEndTurn] and ensure a full turn cycle.
-## TIP: Await for the [signal isReadyToStartTurn] signal to start the next turn.
+## TIP: `await` for [signal isReadyToStartTurn] to know when to start the next turn.
 func startTurn(awaitForTurnEnd: bool = false) -> bool:
 	if debugMode: printLog(str("[color=white][b]startTurn() currentTurn: ", currentTurn))
 
-	# Ensure that this function should only be called at start of a turn, during the `Begin` state.
-
+	# Ensure that this function should only be called at start of a turn, during the `Ready` state.
 	if not self.canStartTurn:
 		if debugMode: printWarning("startTurn() called when not canStartTurn") # Not an important warning
 		return false
 
+	# FIXES: Save the turn count before starting because a turn with no entity or state delays would finish immediately,
+	# before this function can `await didEndTurn`
+	var previousTurnsProcessed: int = turnsProcessed
+
 	# TBD: Should timers be reset here? How to handle game pauses during the timer?
+
+	# After the StateMachine enters the "Begin" phase, onStateMachine_didTransition() moves it on to the next phase.
 	if await stateMachine.transitionToState(TurnStates.begin):
-		if awaitForTurnEnd: await self.didEndTurn
+		# NOTE: `turnsProcessed` is incremented in processTurnEndSignals()
+		# so if the count has changed, it means `didEndTurn` already happened,
+		# so we shouldn't wait for it here
+		if awaitForTurnEnd and turnsProcessed == previousTurnsProcessed: await self.didEndTurn
 		return true
 	else:
 		printWarning("startTurn(): stateMachine.transitionToState() failed to transition to TurnStates.begin")
@@ -557,9 +574,9 @@ func processEntities(state: StringName) -> void:
 
 		self.didProcessEntity.emit(turnBasedEntity) # NOTE: Emit this signal BEFORE the delay BETWEEN entities.
 
-		# Start the delay between entities
-		# NOTE: Delay even if it's the last entity in the loop, because there should be a delay before the 1st entity of the NEXT turn too!
-		await waitForEntityTimer()
+		# Add the delay between entities?
+		if shouldWaitBetweenEntities and (shouldWaitAfterLastEntity or not (currentEntityIndex == turnBasedEntities.size() - 1)): # Is it the last entity?
+			await waitForEntityTimer()
 
 	currentEntityIndex = -1 # NOTE: Set an invalid index to specify that no entity is currently being processed.
 	self.isProcessingEntities = false
