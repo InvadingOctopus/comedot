@@ -45,17 +45,17 @@ extends Entity # + TurnBasedObjectBase
 ## Returns: [TurnBasedCoordinator.currentTurn]
 var currentTurn: int:
 	get: return TurnBasedCoordinator.currentTurn
-	set(newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	set(_newValue): printError("currentTurn should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [member TurnBasedCoordinator.stateMachine]'s current state.
 var currentTurnState: StringName:
 	get: return TurnBasedCoordinator.stateMachine.currentState
-	set(newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	set(_newValue): printError("currentTurnState should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## Returns: [TurnBasedCoordinator.turnsProcessed]
 var turnsProcessed: int:
 	get: return TurnBasedCoordinator.turnsProcessed
-	set(newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
+	set(_newValue): printError("turnsProcessed should not be set; use TurnBasedCoordinator") # TEMP: To catch bugs
 
 ## This entity may only play a turn when this value is 0,
 ## otherwise it skips [method processTurnBeginSignals], [method processTurnExecuteSignals], and [method processTurnEndSignals].
