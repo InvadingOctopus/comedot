@@ -61,7 +61,7 @@ const minimumDelay: float = projectSettings.turnBasedMinimumDelay
 
 ## Enables or disables [member delayBetweenStates]
 ## NOTE: There is no delay between Ready → Begin
-@export var shouldWaitBetweenStates: bool = projectSettings.turnBasedShouldWaitBetweenTurnStates:
+@export var shouldWaitBetweenStates: bool = projectSettings.turnBasedShouldWaitBetweenStates:
 	set(newValue):
 		if newValue != shouldWaitBetweenStates:
 			shouldWaitBetweenStates = newValue
