@@ -151,9 +151,6 @@ func _physics_process(delta: float) -> void: # TBD: _physics_process() instead o
 
 
 func showDebugInfo() -> void:
-	var  direction: Vector2
-	if   shouldOverrideDirection: direction = directionOverride
-	elif parent: direction = Vector2.from_angle(parent.rotation)
 	Debug.addCombinedWatchList(str(parent.name, ".", self.name), { # Support non-Entity parents
 		direction	= directionOverride if shouldOverrideDirection else Vector2.from_angle(parent.rotation),
 		speed		= speed,
