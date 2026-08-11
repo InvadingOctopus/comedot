@@ -104,7 +104,7 @@ func screenshot(titleSuffix: String = "") -> void:  # NOTE: Cannot be `static` b
 	
 	# Adding a frame count also disambiguates multiple screenshots taken within the same second
 	# DESIGN: BONUS: Also, multiple screenshots of the same frame should overwrite and be saved to only 1 file
-	var screenshotPath: String = str("user://", "Comedot Screenshot ", date, " ", time, " F", Engine.get_frames_drawn())
+	var screenshotPath: String = str("user://", ProjectSettings.get_setting("application/config/name", "Comedot"), " screenshot ", date, " ", time, " F", Engine.get_frames_drawn())
 	if not titleSuffix.is_empty(): screenshotPath += " " + titleSuffix
 	screenshotPath += ".jpeg"
 
