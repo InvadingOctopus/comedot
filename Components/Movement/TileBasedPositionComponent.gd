@@ -249,7 +249,7 @@ func checkCellVacancy(coordinates: Vector2i) -> bool:
 
 func applyInitialCoordinates() -> void:
 	# Get the entity's starting coordinates in the scene in relation to the [TileMapLayer],
-	# NOTE: BUT do NOT use updateCurrentCoordinates() because we don't want to  "occupy" the cell yet! 
+	# NOTE: BUT do NOT use setCurrentCoordinatesFromPosition() because we don't want to  "occupy" the cell yet!
 	# because the initial cell may be different than the entity's starting pixel position,
 	# so only that destination cell where the entity will end up in should be marked as "occupied"
 	currentCoordinates = getNearestCoordinates()
@@ -280,10 +280,25 @@ func getNearestCoordinates() -> Vector2i:
 
 
 ## Sets the cell coordinates corresponding to the entity's [member Node2D.global_position]
-## and sets the cell's occupancy to be "claimed" by the entity.
-func updateCurrentCoordinates() -> Vector2i:
-	self.currentCoordinates = tileMap.local_to_map(tileMap.to_local(entity.global_position))
-	occupyCell()
+## vacates the previous cell if any, and sets the cell's occupancy to be "claimed" by the entity.
+func setCurrentCoordinatesFromPosition(shouldOccupy: bool = true) -> Vector2i:
+	var previousCoordinates: Vector2i = currentCoordinates
+	var previousDestination: Vector2i = destinationCoordinates
+	var newCoordinates:		 Vector2i = tileMap.local_to_map(tileMap.to_local(entity.global_position))
+
+	# Vacate the previous and destination cells if any.
+	if isMovingToNewCell:
+		if previousDestination != previousCoordinates:
+			vacateCell(previousDestination)
+	elif newCoordinates != previousCoordinates:
+		vacateCell(previousCoordinates)
+
+	# Take over the new cell at the current screen position
+	currentCoordinates		= newCoordinates
+	destinationCoordinates	= newCoordinates
+	isMovingToNewCell		= false
+	if shouldOccupy: occupyCell()
+
 	return currentCoordinates
 
 

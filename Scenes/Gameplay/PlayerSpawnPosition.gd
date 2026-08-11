@@ -53,10 +53,11 @@ func setPlayerPosition() -> void:
 	if player:
 		if debugMode: Debug.printDebug(str("setPlayerPosition(): ", player.logName, " ", player.global_position, " → ", playerSpawnPosition.global_position), self)
 		player.global_position = playerSpawnPosition.global_position
-		
+
 		# Tile-based?
-		if  player.getComponent(TileBasedPositionComponent):
-			player.components.TileBasedPositionComponent.updateCurrentCoordinates()
+		var tileBasedPositionComponent: TileBasedPositionComponent = player.getComponent(TileBasedPositionComponent, true) # findSubclasses
+		if  tileBasedPositionComponent and tileBasedPositionComponent.tileMap:
+			tileBasedPositionComponent.setCurrentCoordinatesFromPosition()
 
 		player.reset_physics_interpolation() # Skip interpolation, just snap!
 		if shouldCreateCamera: setCamera()
