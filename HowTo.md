@@ -101,6 +101,26 @@ _Most components require their Scene file, not just the Script, because they may
 
 💡 _See also: `HealthVisualComponent` + `InvulnerabilityOnHitComponent` etc._
 
+### 🔫 Forge New Weapons
+
+When you need to create a new type of projectile weapon for the player or enemies:
+
+1. Make a duplicate copy of the entire `/Templates/Weapon/` folder, e.g. to `/Game/Weapons/Laser/`
+
+2. Replace the word `Template` in the new filenames with the weapon's name, e.g. `LaserGunComponent.tscn` etc.
+
+3. Set `LaserGunComponent.tscn` "Bullet Template" → `LaserBullet.tscn`
+
+4. Set `LaserGunComponent.tscn/CooldownTimer` "Cooldown Modifier" → `LaserGunCooldown.tres`
+
+5. Set `LaserBullet.tscn/DamageComponent` "Damage Modifier" → `LaserBulletDamage.tres`
+
+6. Customize the new `LaserBullet.tscn` to change its sprite, speed, hitbox, particles etc.
+
+7. Edit `LaserBulletDamage.tres` and `LaserGunCooldown.tres` to update the `Stat` names and values. Set "Local to Scene" or use "Make Unique" to disable global updates for Resource instances.
+
+❗️ Perform all file operations via the Godot FileSystem Dock to ensure UIDs and internal references are updated.
+
 
 # ⚡️ Customization
 

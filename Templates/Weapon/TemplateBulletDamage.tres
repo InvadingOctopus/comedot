@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Stat" format=3 uid="uid://drqkuta0docee"]
+
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="1_8ojqw"]
+
+[resource]
+script = ExtResource("1_8ojqw")
+max = 1000
+value = 1
+name = &"templateBulletDamage"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"

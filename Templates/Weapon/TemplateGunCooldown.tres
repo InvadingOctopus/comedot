@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Stat" format=3 uid="uid://5ja280dk66n3"]
+
+[ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="1_4e3c4"]
+
+[resource]
+script = ExtResource("1_4e3c4")
+max = 10000
+value = 500
+name = &"templateGunCooldown"
+metadata/_custom_type_script = "uid://dif3dj8k5ixfw"
