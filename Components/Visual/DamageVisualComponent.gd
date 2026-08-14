@@ -56,10 +56,11 @@ func animate(damageAmount: int) -> void:
 
 func emitBubble(damageAmount: int) -> void:
 	# Emit the bubble from the entity so it isn't affected by effects on `nodeToAnimate`
-	TextBubble.create(
+	var bubble: TextBubble = TextBubble.create(
 		str("-" if damageAmount > 0 else "", damageAmount),
 		entity if not detachedBubbles else entity.get_parent(),
-		Vector2(0, -16) if not detachedBubbles else entity.position) \
-			.label.label_settings.font_color = Color.ORANGE
+		Vector2(0, -16))
+	if detachedBubbles: bubble.global_position = entity.to_global(Vector2(0, -16)) # Apply offset separately for detached bubbles to preserve transforms etc.
+	bubble.label.label_settings.font_color = Color.ORANGE
 
 #endregion

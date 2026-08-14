@@ -90,19 +90,20 @@ func emitBubble(difference: int) -> void:
 
 	# Emit the bubble from the entity so it isn't affected by effects on `nodeToAnimate`
 	# not appendDisplayName, not colorBubble because we use our own colors
+	var bubble: GameplayResourceBubble
 	if shouldShowRemainingHealth:
-		GameplayResourceBubble.createForStat(
+		bubble = GameplayResourceBubble.createForStat(
 			healthComponent.health,
 			entity if not detachedBubbles else entity.get_parent(),
-			Vector2(0, -16) if not detachedBubbles else entity.position,
-			false, false) \
-				.ui.label.label_settings.font_color = color
+			Vector2(0, -16),
+			false, false)
 	else:
-		GameplayResourceBubble.createForStatChange(
+		bubble = GameplayResourceBubble.createForStatChange(
 			healthComponent.health,
 			entity if not detachedBubbles else entity.get_parent(),
-			Vector2(0, -16) if not detachedBubbles else entity.position,
-			false, false) \
-				.ui.label.label_settings.font_color = color
+			Vector2(0, -16),
+			false, false)
+	if detachedBubbles: bubble.global_position = entity.to_global(Vector2(0, -16)) # Apply offset separately for detached bubbles to preserve transforms etc.
+	bubble.ui.label.label_settings.font_color = color
 
 #endregion
