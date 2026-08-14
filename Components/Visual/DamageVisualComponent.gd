@@ -1,82 +1,65 @@
-## Display visual effecs when a [DamageReceivingComponent] receives damage.
-## TIP: To monitor a "Health" [Stat] and display healing effects, use [HealthVisualComponent].
-## Requirements: [DamageReceivingComponent], [HealthComponent]
-## @experimental
+## Display visual effects when a [DamageReceivingComponent] emits [signal DamageReceivingComponent.didReceiveDamage]
+## NOTE: This includes damage values even if the damage is absorbed by a [ShieldedHealthComponent] etc.
+## TIP: Use [HealthVisualComponent] to monitor a "Health" [Stat] via [HealthComponent] and include healing effects.
+## Requirements: [DamageReceivingComponent]
 
 class_name DamageVisualComponent
 extends Component
 
 
-# TODO: Better implementation
-# TODO: Reduce code duplication with [HealthVisualComponent]
-
-
 #region Parameters
 
-## If `true`, adds a red tint to the entity, increasing in intensity as the health decreases.
-## @experimental
-@export var shouldTint: bool = false:
-	set(newValue):
-		if newValue != shouldTint:
-			shouldTint = newValue
-			if shouldTint: updateTint()
-			else: entity.modulate = Color.WHITE
+## The node to display effects on, such as an [AnimatedSprite2D]
+## If omitted, the first [AnimatedSprite2D] or [Sprite2D] sibling is used, if any, otherwise the parent entity is used.
+@export var nodeToAnimate:	CanvasItem
 
+@export var blinkCount:		int    = 3	 ## The number of times to "blink" (hide then show) the [member nodeToAnimate]
 
-@export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the current health value or the difference.
-@export var shouldShowRemainingHealth: bool = false ## If `true`, the [TextBubble] shows the REMAINING health instead of the DIFFERENCE.
+@export var blinkDuration:	float  = 0.05 ## The speed of the "blinking" animation (repeatedly hide and show).
+
+@export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the amount of damage received.
+@export var detachedBubbles:  bool ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
 
 #endregion
 
 
 #region Dependencies
 @onready var damageReceivingComponent: DamageReceivingComponent = coComponents.DamageReceivingComponent
-
-var healthComponent: HealthComponent: ## May also accept [ShieldedHealthComponent].
-	get:
-		# Check for `entity` in case this getter was called by the `shouldTint` setter
-		if entity and not healthComponent: healthComponent = getCoComponent(HealthComponent, true) # findSubclasses
-		return healthComponent
 #endregion
 
 
+#region Events
+
 func _ready() -> void:
-	connectSignals()
+	if not nodeToAnimate: nodeToAnimate = entity.findFirstChildOfAnyTypes([AnimatedSprite2D, Sprite2D])
+	if debugMode: printDebug(str("nodeToAnimate: ", nodeToAnimate))
 
-
-func connectSignals() -> void:
 	damageReceivingComponent.didReceiveDamage.connect(self.onDamageReceivingComponent_didReceiveDamage)
 
 
 func onDamageReceivingComponent_didReceiveDamage(_damageComponent: DamageComponent, amount: int, _attackerFactions: int) -> void:
 	if amount >= 1:
-		animate(amount)
+		if amount > 0:		 animate(amount)
 		if shouldEmitBubble: emitBubble(amount)
 
-	updateTint() # Always update tint in case we just got healed.
+#endregion
 
 
-## @experimental
-func updateTint()-> void:
-	if self.shouldTint and healthComponent:
-		var health: Stat  = healthComponent.health
-		var red:	float = (1.0 - health.percentNormalized) * 5.0 # Increase redness as health gets lower
-		var targetModulate:  Color = entity.modulate
-		targetModulate.r = red
-		if debugMode: Debug.printVariables([health.logName, red, targetModulate])
-		Animations.tweenProperty(self.entity, ^"modulate", targetModulate, 0.1)
-
+#region Effects
 
 ## @experimental
+@warning_ignore("unused_parameter")
 func animate(damageAmount: int) -> void:
-	if damageAmount > 0:
-		Animations.blink(self.entity, 3)
+	if blinkCount > 0:
+		Animations.blink(nodeToAnimate, self.blinkCount, self.blinkDuration, true) # initialVisibility, to avoid ending up invisible after the animation finishes
 
 
 func emitBubble(damageAmount: int) -> void:
-	var text: String
-	if self.shouldShowRemainingHealth and healthComponent: text = str(healthComponent.health.value)
-	else: str("-," if damageAmount > 0 else "", damageAmount)
+	# Emit the bubble from the entity so it isn't affected by effects on `nodeToAnimate`
+	TextBubble.create(
+		str("-" if damageAmount > 0 else "", damageAmount),
+		entity if not detachedBubbles else entity.get_parent(),
+		Vector2(0, -16) if not detachedBubbles else entity.position) \
+			.label.label_settings.font_color = Color.ORANGE
 
-	var bubble: TextBubble = TextBubble.create(text, self.entity)
-	bubble.label.label_settings.font_color = Color.ORANGE
+#endregion
