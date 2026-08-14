@@ -31,11 +31,11 @@ extends Container
 			shouldUppercase = newValue
 			if label: label.uppercase = shouldUppercase
 
-@export var shouldShowIcon:  bool = true:
+@export var shouldShowIcon:  bool = true: ## NOTE: The icon texture & size is checked to avoid wasting space for empty icons.
 	set(newValue):
 		if newValue != shouldShowIcon:
 			shouldShowIcon = newValue
-			if icon: icon.visible = shouldShowIcon
+			if icon: icon.visible = shouldShowIcon and icon.texture != null and not icon.texture.get_size().is_zero_approx()
 
 @export var shouldShowIconAfterText: bool = false:
 	set(newValue):
@@ -59,7 +59,7 @@ func _ready() -> void:
 
 func applyInitialFlags() -> void:
 	if label: label.uppercase	= shouldUppercase
-	if icon:  icon.visible		= shouldShowIcon
+	if icon:  icon.visible		= shouldShowIcon and icon.texture != null and not icon.texture.get_size().is_zero_approx()
 	if shouldShowIconAfterText: arrangeControls()
 
 
@@ -78,6 +78,7 @@ func updateUI(animate: bool = self.shouldAnimate) -> void:
 	# Update the text first in case its length changes and affects the icon.
 	updateText(animate)
 	updateIcon(animate)
+	icon.visible = shouldShowIcon and icon.texture != null and not icon.texture.get_size().is_zero_approx()
 
 
 ## IMPORTANT: Abstract; MUST be overridden in subclass
