@@ -4,7 +4,7 @@
 ## TIP: For basic text "bubbles", use [TextBubble].
 
 class_name GameplayResourceBubble
-extends Node2D
+extends BubbleBase
 
 # TODO: Support fitting within the screen; i.e. when emitted from a node at the left/right edges of the screen, the text is outside the screen.
 
@@ -16,7 +16,6 @@ static var scenePath: String:
 		return scenePath
 
 @onready var ui: GameplayResourceUI = $GameplayResourceUI
-var tween: Tween ## The default animation [Tween] that starts on [method _ready]. May be modified or cancelled by custom scripts.
 #endregion
 
 
@@ -56,9 +55,3 @@ static func createForStatChange(stat: Stat, parentNode: Node = null, offset: Vec
 		if   stat.previousChange > 0: bubble.modulate = Color.GREEN
 		elif stat.previousChange < 0: bubble.modulate = Color.ORANGE
 	return bubble
-
-
-func _ready() -> void:
-	self.tween = Animations.bubble(self)
-	await tween.finished
-	self.queue_free()

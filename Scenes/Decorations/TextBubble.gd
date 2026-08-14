@@ -1,10 +1,10 @@
 ## A text [Label] that floats up and disappears.
 ## Call the static method [method TextBubble.create] to add a text bubble to a node.
 ## Useful for showing health values etc. over a sprite.
-## TIP: For "bubbles" for [Stat]s and other [GameplayResourceBase]-derived Resources, use [GameplayResourceBubble].
+## TIP: For "bubbles" for [Stat]s and other [GameplayResourceBase]-derived Resources, use [GameplayResourceBubble]
 
 class_name TextBubble
-extends Node2D
+extends BubbleBase
 
 # TODO: Support fitting within the screen; i.e. when emitted from a node at the left/right edges of the screen, the text is outside the screen.
 
@@ -15,8 +15,8 @@ static var scenePath: String:
 		if not scenePath: scenePath = SceneManager.getScenePathFromClass(TextBubble)
 		return scenePath
 
+## IMPORTANT: Use [method get_node] instead of this property to avoid a crash when accessing the [Label] before [method _ready]
 @onready var label: Label = $Label
-var tween: Tween ## The default animation [Tween] that starts on [method _ready]. May be modified or cancelled by custom scripts.
 #endregion
 
 
@@ -26,7 +26,7 @@ static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 
 	var newBubble: TextBubble = (load(scenePath) as PackedScene).instantiate()
 	newBubble.position += offset
 	if parentNode: parentNode.add_child(newBubble)
-	newBubble.get_node(^"Label").text = bubbleText # SOLVED: Use get_node() to avoid crash if there is no `parentNode` yet, therefore no @onready
+	newBubble.get_node(^"Label").text = bubbleText
 	# newBubble.owner = parentNode # TBD: No need for persistence across Save/Load, right?
 	return newBubble
 
@@ -36,22 +36,6 @@ static func create(bubbleText: String, parentNode: Node = null, offset: Vector2 
 static func createForStatChange(stat: Stat, textToApped: String, parentNode: Node = null, offset: Vector2 = Vector2(0, -16), colorBubble: bool = true) -> TextBubble:
 	var bubble: TextBubble = TextBubble.create(stat.displayName + textToApped, parentNode, offset)
 	if colorBubble:
-		if   stat.previousChange > 0: bubble.label.label_settings.font_color = Color.GREEN
-		elif stat.previousChange < 0: bubble.label.label_settings.font_color = Color.ORANGE
+		if   stat.previousChange > 0: bubble.get_node(^"Label").label_settings.font_color = Color.GREEN
+		elif stat.previousChange < 0: bubble.get_node(^"Label").label_settings.font_color = Color.ORANGE
 	return bubble
-
-
-func _ready() -> void:
-	if not tween: tween = Animations.bubble(self) # Check in case whatever created this bubble applied a different animation # TBD: Check is_running()?
-	tween.tween_callback(self.queue_free) # Always end in deletion, just in case
-
-
-## Overrides any ongoing [member tween] and appends [method Node.queue_free].
-## @experimental
-func applyNewAnimation(newTween: Tween) -> Tween:
-	# TODO: Accept callbacks so that they can be started AFTER aborting the previous animation
-	if self.tween: self.tween.kill()
-	self.cancel_free() # Just in case we were headed for deletion
-	self.tween = newTween
-	tween.tween_callback(self.queue_free)
-	return self.tween
