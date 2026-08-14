@@ -32,6 +32,7 @@ extends Component
 ## Shows a [GameplayResourceBubble] representing the current health value or the difference.
 ## The bubble is set as a child node of the entity, to avoid being affected by the effects on [nodeToAnimate].
 @export var shouldEmitBubble: bool = true
+@export var bubbleOffset:     Vector2 = Vector2(0, -16) ## The position relative to the entity from which bubbles are bobbled.
 @export var detachedBubbles:  bool ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
 
 ## If `true` (default) the [GameplayResourceBubble] shows the REMAINING health instead of the DIFFERENCE.
@@ -89,21 +90,21 @@ func emitBubble(difference: int) -> void:
 	color.b += [0, +0.1, +0.2, +0.3].pick_random() # Some variation for when there's a lot of bubbles
 
 	# Emit the bubble from the entity so it isn't affected by effects on `nodeToAnimate`
-	# not appendDisplayName, not colorBubble because we use our own colors
+	# not appendDisplayName, not colorBubble
 	var bubble: GameplayResourceBubble
 	if shouldShowRemainingHealth:
 		bubble = GameplayResourceBubble.createForStat(
 			healthComponent.health,
 			entity if not detachedBubbles else entity.get_parent(),
-			Vector2(0, -16),
+			self.bubbleOffset,
 			false, false)
 	else:
 		bubble = GameplayResourceBubble.createForStatChange(
 			healthComponent.health,
 			entity if not detachedBubbles else entity.get_parent(),
-			Vector2(0, -16),
+			self.bubbleOffset,
 			false, false)
-	if detachedBubbles: bubble.global_position = entity.to_global(Vector2(0, -16)) # Apply offset separately for detached bubbles to preserve transforms etc.
-	bubble.ui.label.label_settings.font_color = color
+	if detachedBubbles: bubble.global_position = entity.to_global(self.bubbleOffset) # Apply offset separately for detached bubbles to preserve transforms etc.
+	bubble.ui.label.label_settings.font_color  = color
 
 #endregion

@@ -18,6 +18,7 @@ extends Component
 @export var blinkDuration:	float  = 0.05 ## The speed of the "blinking" animation (repeatedly hide and show).
 
 @export var shouldEmitBubble: bool = true ## Shows a [TextBubble] representing the amount of damage received.
+@export var bubbleOffset:     Vector2 = Vector2(0, -16) ## The position relative to the entity from which bubbles are bobbled.
 @export var detachedBubbles:  bool ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
 
 #endregion
@@ -59,8 +60,8 @@ func emitBubble(damageAmount: int) -> void:
 	var bubble: TextBubble = TextBubble.create(
 		str("-" if damageAmount > 0 else "", damageAmount),
 		entity if not detachedBubbles else entity.get_parent(),
-		Vector2(0, -16))
-	if detachedBubbles: bubble.global_position = entity.to_global(Vector2(0, -16)) # Apply offset separately for detached bubbles to preserve transforms etc.
+		self.bubbleOffset)
+	if detachedBubbles: bubble.global_position = entity.to_global(self.bubbleOffset) # Apply offset separately for detached bubbles to preserve transforms etc.
 	bubble.label.label_settings.font_color = Color.ORANGE
 
 #endregion
