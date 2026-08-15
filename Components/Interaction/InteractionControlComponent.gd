@@ -38,7 +38,7 @@ var haveInteracionsInRange: bool:
 func setIsEnabled(newValue: bool) -> void:
 	super.setIsEnabled(newValue)
 	if self.is_node_ready():
-		# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+		# set_deferred() to avoid Godot error: "Function blocked during in/out signal"
 		# UNUSED: Done by AreaCollisionComponent: area.set_deferred(&"monitoring",  isEnabled)
 		area.set_deferred(&"monitorable", isEnabled) # Not done by AreaCollisionComponent
 		updateIndicator()

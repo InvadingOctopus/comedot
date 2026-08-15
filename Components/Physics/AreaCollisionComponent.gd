@@ -25,7 +25,7 @@ func setIsEnabled(newValue: bool) -> void:
 	if newValue != isEnabled:
 		isEnabled = newValue
 		if  area: # TBD: Only/also use selfAsArea?
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
+			# set_deferred() to avoid Godot error: "Function blocked during in/out signal"
 			area.set_deferred(&"monitorable", newValue)
 			# area.set_deferred(&"monitoring",  newValue) # Should be always enabled, to detect exits.
 

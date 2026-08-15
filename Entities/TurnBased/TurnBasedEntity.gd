@@ -206,7 +206,7 @@ func resetSkipCounter() -> void:
 #endregion
 
 
-#endregion Component Process Cycle
+#region Component Process Cycle
 
 # NOTE: Use `await` to allow any visual components to perform animations etc.
 # TBD: BUGRISK: Use turnBasedComponents.duplicate() and is_instance_valid() to avoid mutation-during-iteration etc. bugs?
