@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bunosf1onumch" path="res://Components/Combat/DamageRepeatingComponent.gd" id="2_l10pg"]
 
 [node name="DamageRepeatingComponent" type="Timer" unique_id=1370270861 groups=["components"]]
+editor_description = "Repeats a DamageComponent while a DamageReceivingComponent remains in contact."
 script = ExtResource("2_l10pg")
 
 [connection signal="timeout" from="." to="." method="onTimeout"]
