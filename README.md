@@ -4,11 +4,11 @@
 
 [![Godot v4.8+][godot-badge]][godot-download] [![Comedot][release-badge]][comedot-releases]
 
-**Comedot is an opinionated as fuck framework & project template for [Godot][godot]** where you build games by smacking components into entities and tweaking their parameters.
+**Comedot is an opinionated as fuck framework & project template for [Godot][godot] with the goal of being an all-in-one toolkit for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc.
 
-_"Entities"_ and _"Components"_ are just regular Godot Nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other architecture or fetish.
+This is either the most overenginered shit you've ever seen or the most awesome way of making games. I made this while [trying][itch] to make 100 different games and still yet to finish 1, but whenever I identify something that's needed frequently in multiple genres I shove it into this shared library.
 
-**The goal is to make an all-in-one toolkit for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc. This is the result of trying to make [future GotYs][itch] while learning which stuff is needed frequently in multiple genres & shoving it into a shared library.
+Comedot lets you build scenes by smacking components into entities and tweaking their parameters: _"Entities"_ and _"Components"_ are just regular Godot nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other architecture or fetish.
 
 <sub>*(if you think "ECS" only means "data-oriented design" you need to get out more)*</sub>
 
