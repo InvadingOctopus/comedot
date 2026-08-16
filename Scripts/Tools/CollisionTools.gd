@@ -1,5 +1,5 @@
 ## Helper functions to assist with common tasks involving [CollisionObject2D] and [CollisionShape2D]
-## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
+## In the future, these functions & types may be incorporated into Godot's builtin API as native code or via custom extensions.
 
 class_name CollisionTools
 extends GDScript # NOTE: DESIGN: We cannot `extends CollisionObject2D` because we want these functions to be global and also available for [CollisionShape2D] etc., not just for instances of a special subclass.
@@ -99,6 +99,81 @@ static func getAllShapeGlobalBounds(node: CollisionObject2D) -> Rect2:
 	var localBounds: Rect2 = getAllShapeBounds(node)
 	if not localBounds.has_area(): return RectTools.rect2Zero
 	return node.global_transform * localBounds.abs() # Apply all transforms including rotation/skew/etc.
+
+
+## Calls [method Area2D.get_overlapping_areas] on [param sourceArea]
+## then emits [signal Area2D.area_entered] from each overlapping area with the matching layers, masks & flags.
+## NOTE: Signals are NOT emitted for the [param sourceArea]
+## WARNING: Repeated calls may produce multiple enter signals without matching exit signals!
+## ALERT: This may NOT include the updated physics collision state for movement or property changes made during the same frame before physics processing.
+## @experimental
+static func emitSignalsFromOverlappingAreas(sourceArea: Area2D) -> void:
+	if not is_instance_valid(sourceArea) or not sourceArea.is_inside_tree() or not sourceArea.monitoring: return
+
+	for overlappingArea: Area2D in sourceArea.get_overlapping_areas():
+		if  is_instance_valid(overlappingArea) \
+		and overlappingArea.monitoring \
+		and sourceArea.monitorable \
+		and (overlappingArea.collision_mask & sourceArea.collision_layer) != 0:
+			overlappingArea.area_entered.emit(sourceArea)
+
+
+## Queries the [PhysicsDirectSpaceState2D] for matching collisions against a specified [param sourceObject] such as an [Area2D] or [CharacterBody2D]
+## TIP: Unlike [method Area2D.get_overlapping_areas] this method checks the current state of the physics space instead of [Area2D]'s cached list from a previous physics processing update.
+## NOTE: This may still not include transforms changed since the previous physics update.
+## [member Area2D.monitoring] and [member Area2D.monitorable] do not affect this query.
+## HACK: This is a workaround for Godot's lack of a "rcheck existing collisions" API.
+## ALERT: Not available when using multi-threaded physics which restricts Direct physics space access to [method Node._physics_process]
+## @experimental
+static func findIntersectingCollisionObjects(
+	sourceObject:		CollisionObject2D,
+	collideWithAreas:	bool = true,
+	collideWithBodies:	bool = true,
+	maximumResultsPerShape: int = 16) \
+	-> Array[CollisionObject2D]:
+
+	# Validate Parameters
+
+	if maximumResultsPerShape < 1 \
+	or (not collideWithBodies and not collideWithAreas) \
+	or not is_instance_valid(sourceObject) \
+	or not sourceObject.is_inside_tree():
+		return []
+
+	var spaceState:			 PhysicsDirectSpaceState2D	= sourceObject.get_world_2d().direct_space_state
+	var sourceCollisionMask: int						= sourceObject.collision_mask
+
+	if not spaceState or sourceCollisionMask == 0: return []
+
+	# Setup
+
+	var query: PhysicsShapeQueryParameters2D  = PhysicsShapeQueryParameters2D.new()
+	query.collision_mask	  = sourceCollisionMask
+	query.exclude			  = [sourceObject.get_rid()]
+	query.collide_with_areas  = collideWithAreas
+	query.collide_with_bodies = collideWithBodies
+
+	var sourceGlobalTransform: Transform2D = sourceObject.global_transform
+	var intersectingObjects:   Array[CollisionObject2D]
+
+	# Loop over all Shape2Ds
+	for shapeOwnerID: int in sourceObject.get_shape_owners():
+		if sourceObject.is_shape_owner_disabled(shapeOwnerID): continue
+
+		query.transform = sourceGlobalTransform * sourceObject.shape_owner_get_transform(shapeOwnerID)
+
+		for shapeID: int in sourceObject.shape_owner_get_shape_count(shapeOwnerID):
+			var sourceShape: Shape2D = sourceObject.shape_owner_get_shape(shapeOwnerID, shapeID)
+			if not sourceShape: continue
+			query.shape = sourceShape
+
+			# Get all intersections for the Shape2D
+			for intersection: Dictionary in spaceState.intersect_shape(query, maximumResultsPerShape):
+				var intersectingObject: CollisionObject2D = intersection.get("collider") as CollisionObject2D
+				if is_instance_valid(intersectingObject) and not intersectingObjects.has(intersectingObject):
+					intersectingObjects.append(intersectingObject)
+
+	return intersectingObjects
 
 #endregion
 
