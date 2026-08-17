@@ -7,8 +7,10 @@ resource_local_to_scene = true
 size = Vector2(16, 16)
 
 [node name="DamageReceivingComponent" type="Area2D" unique_id=1661512529 groups=["components"]]
+editor_description = "A component representing the \"hurtbox\" that receives damage from DamageComponents."
 collision_layer = 1024
 collision_mask = 1024
+monitoring = false
 script = ExtResource("1_lwsou")
 metadata/_edit_group_ = true
 

@@ -7,7 +7,7 @@
 class_name DamageReceivingComponent
 extends Component
 
-# DESIGN:	[DamageReceivingComponent] should NOT monitor the physics: It is the passive object in relation to the attacker's [DamageComponent] which is the "active" object that initiates the combat and calls the damage processing code.
+# DESIGN:	[DamageReceivingComponent] does NOT monitor physics by default: It's the passive counterpart to the attacker's [DamageComponent] which is the "active" object that initiates the combat and calls the damage processing code.
 # DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to cast an [Area2D] to a [DamageReceivingComponent].
 # This may REDUCE performance but it ensures a self-contained-components workflow.
 # NOTE:		Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
@@ -27,9 +27,10 @@ extends Component
 	set(newValue):
 		isEnabled = newValue
 		if  area:
-			# Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred(&"monitoring",  isEnabled)
-			area.set_deferred(&"monitorable", isEnabled)
+			# DISABLE_MODE_REMOVE removes this Area2D from physics while disabled, allowing existing contacts to report a new entry when restored.
+			# set_deferred() avoids the Godot error: "Function blocked during in/out signal".
+			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED)
+
 #endregion
 
 
@@ -41,7 +42,8 @@ extends Component
 ## ALERT: [param damageComponent] may be `null` in some cases, such as if [method processDamage] is called by a different component or script.
 signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int)
 
-## This signal is always raised when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
+## Emitted when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
+## IMPORTANT: PERFORMANCE: Requires [member Area2D.monitoring] to be `true` which is disabled by default.
 signal didCollideWithDamage(damageComponent: DamageComponent)
 
 signal willRemoveEntity ## Emitted if there is no [HealthComponent] and [member shouldRemoveEntityIfNoHealthComponent]
@@ -50,8 +52,12 @@ signal willRemoveEntity ## Emitted if there is no [HealthComponent] and [member 
 
 
 #region State
-var area: Area2D ## The [Area2D] "hurtbox" that this component represents, which may be this component's own node.
-var damageComponentsInContact: Array[DamageComponent] ## A list of [DamageComponent]s currently in collision contact.
+var area:						Area2D ## The [Area2D] "hurtbox" that this component represents, which may be this component's own node.
+var defaultProcessMode:			Node.ProcessMode
+
+## A list of [DamageComponent]s currently in collision contact.
+## IMPORTANT: PERFORMANCE: Requires [member Area2D.monitoring] to be `true` which is disabled by default.
+var damageComponentsInContact:	Array[DamageComponent]
 #endregion
 
 
@@ -63,9 +69,10 @@ var damageComponentsInContact: Array[DamageComponent] ## A list of [DamageCompon
 
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
-	if  area: # Apply setter because Godot doesn't on initialization
-		area.monitoring  = isEnabled
-		area.monitorable = isEnabled
+	self.defaultProcessMode = self.process_mode
+	if  area:
+		area.disable_mode = CollisionObject2D.DISABLE_MODE_REMOVE # Exclude from physics processing when disabled
+		area.process_mode = self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED
 	# UNUSED: Signals already connected in .tscn Scene
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
 	# Tools.connectSignal(area.area_exited,  self.onAreaExited)
@@ -79,7 +86,7 @@ func onAreaEntered(areaEntered: Area2D) -> void:
 	if debugMode: printDebug(str("onAreaEntered(): ", areaEntered, ", damageComponent: ", damageComponent.logNameWithEntity if damageComponent else "null"))
 
 	# If the Area2D is not a DamageComponent, there's nothing to do.
-	if damageComponent: # TBD: PERFORMANCE: BUGRISK: Check if area is already in array?
+	if  damageComponent: # TBD: PERFORMANCE: BUGRISK: Check if area is already in array?
 		damageComponentsInContact.append(damageComponent)
 		didCollideWithDamage.emit(damageComponent)
 
