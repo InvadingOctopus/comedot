@@ -1,5 +1,5 @@
 ## Helper functions to assist with common tasks involving files & folders.
-## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
+## In future Godot versions these functions & types may be incorporated into the builtin API as native code or via custom extensions.
 
 class_name FileSystemTools
 extends GDScript

@@ -1,5 +1,5 @@
 ## Helper functions to assist with common tasks involving [CollisionObject2D] and [CollisionShape2D]
-## In the future, these functions & types may be incorporated into Godot's builtin API as native code or via custom extensions.
+## In future Godot versions these functions & types may be incorporated into the builtin API as native code or via custom extensions.
 
 class_name CollisionTools
 extends GDScript # NOTE: DESIGN: We cannot `extends CollisionObject2D` because we want these functions to be global and also available for [CollisionShape2D] etc., not just for instances of a special subclass.

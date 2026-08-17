@@ -1,5 +1,5 @@
 ## Helper functions for interacting with the Godot Editor from addons/plugins & `@tool` scripts.
-## In the future, these functions & types may be incorporated into the builtin Godot API as native code or via custom extensions.
+## In future Godot versions these functions & types may be incorporated into the builtin API as native code or via custom extensions.
 
 @tool
 class_name EditorTools

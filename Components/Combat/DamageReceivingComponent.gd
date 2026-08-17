@@ -2,23 +2,24 @@
 ## If both entities have a [FactionComponent] then damage is dealt only if the entities do not share any faction. If a [FactionComponent] is missing then damage is always dealt.
 ## ALERT: Set the appropriate [member CollisionObject2D.collision_layer] & [member CollisionObject2D.collision_mask] on each [Area2D] or the combat system may behave unexpectedly!
 ## NOTE: The default for both properties is the `combat` physics layer, but for player entities the layer should be `players` and the mask should be `enemies`, and vice versa for monsters.
-## Requirements: This component must be an [Area2D] representing the "hurtbox", and the Entity must also have a [HealthComponent] (or subclass).
+## Requirements: This component must be an [Area2D] representing the "hurtbox", and an optional [HealthComponent] or subclass such as [ShieldedHealthComponent]
 
 class_name DamageReceivingComponent
 extends Component
 
 # DESIGN:	[DamageReceivingComponent] should NOT monitor the physics: It is the passive object in relation to the attacker's [DamageComponent] which is the "active" object that initiates the combat and calls the damage processing code.
-# DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to casts an [Area2D] to a [DamageReceivingComponent].
+# DESIGN: PERFORMANCE: This component cannot use a separate [Area2D] because the combat system needs to cast an [Area2D] to a [DamageReceivingComponent].
 # This may REDUCE performance but it ensures a self-contained-components workflow.
 # NOTE:		Do NOT modify the `healthComponent.health` directly; use `healthComponent.damage()` to ensure that subclasses such as [ShieldedHealthComponent] may be able to intercept and redirect the damage.
 # TBD:		Dynamically find co-components?
 
 
 #region Parameters
-@export var shouldRemoveEntityIfNoHealthComponent: bool = true ## Lets this component be usable without a [THealthComponent], as a single solution for basic gameplay and entities that don't need to have "health".
+
+@export var shouldRemoveEntityIfNoHealthComponent: bool = true ## TIP: Lets this component be usable without a [THealthComponent], as a single solution for basic gameplay with characters that don't need to have "health".
 
 ## If greater than 0, then the Entity may occasionally ignore damage.
-## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance].
+## The final chance of an attack to hit the target is calculated by [member DamageComponent.hitChance] minus [member DamageReceivingComponent.missChance]
 ## Used for e.g. highly agile characters or "ethereal" monsters such as ghosts etc.
 @export_range(0, 100, 1, "suffix:%") var missChance: int = 0
 
@@ -105,7 +106,7 @@ func getDamageComponent(collidingArea: Area2D) -> DamageComponent:
 
 	# Is it our own entity?
 	if self.entity and damageComponent.entity == self.entity:
-		if debugMode: printDebug(str("DamageComponent belongs to this DamageComponent's Entity: ", damageComponent.entity.logName))
+		if debugMode: printDebug(str("DamageComponent belongs to this DamageReceivingComponent's Entity: ", damageComponent.entity.logName))
 		return null
 
 	return damageComponent
@@ -154,7 +155,7 @@ func processDamage(damageComponent: DamageComponent, damageAmount: int, attacker
 	if debugMode: printDebug(str("processDamage() damageComponent: ", damageComponent, ", damageAmount: ", damageAmount, ", attackerFactions: ", attackerFactions, ", friendlyFire: ", friendlyFire, ", healthComponent: ", healthComponent))
 
 	# NOTE: missChance vs DamageComponent.hitChance is calculated in DamageComponent.causeCollisionDamage()
-	
+
 	# Even if there is no HealthComponent, we will still emit the signal.
 	if healthComponent: healthComponent.damage(damageAmount) # See header notes.
 
