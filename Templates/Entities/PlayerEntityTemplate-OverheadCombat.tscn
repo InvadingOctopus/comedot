@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://cnu5f0ycxgu8d" path="res://Components/Combat/HealthComponent.tscn" id="3_ywvyn"]
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="4_02hnx"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="5_1id7j"]
-[ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="5_qdfo0"]
 [ext_resource type="PackedScene" uid="uid://dusjndm5o8ehr" path="res://Components/Combat/GunComponent.tscn" id="6_qdfo0"]
+[ext_resource type="PackedScene" uid="uid://b1bqp8r4wjcg3" path="res://Components/Visual/DamageVisualComponent.tscn" id="7_cafj2"]
 [ext_resource type="PackedScene" uid="uid://qn8n4bqswnlr" path="res://Components/Control/MouseRotationComponent.tscn" id="7_ywvyn"]
 [ext_resource type="PackedScene" uid="uid://cdik3ejdf7c57" path="res://Components/Control/TurningControlComponent.tscn" id="9_qdfo0"]
 
@@ -40,11 +40,12 @@ stats = Array[ExtResource("4_02hnx")]([SubResource("Resource_vklec"), SubResourc
 [node name="HealthComponent" parent="." index="7" unique_id=2138955234 instance=ExtResource("3_ywvyn")]
 health = SubResource("Resource_vklec")
 
-[node name="HealthVisualComponent" parent="." index="8" unique_id=1120379009 instance=ExtResource("5_qdfo0")]
-
-[node name="DamageReceivingComponent" parent="." index="9" unique_id=1044778936 instance=ExtResource("5_1id7j")]
+[node name="DamageReceivingComponent" parent="." index="8" unique_id=1044778936 instance=ExtResource("5_1id7j")]
 collision_layer = 1028
 collision_mask = 1064
+
+[node name="DamageVisualComponent" parent="." index="9" unique_id=974188272 node_paths=PackedStringArray("nodeToAnimate") instance=ExtResource("7_cafj2")]
+nodeToAnimate = NodePath("../AnimatedSprite2D")
 
 [node name="GunComponent" parent="." index="10" unique_id=392950478 instance=ExtResource("6_qdfo0")]
 ammo = SubResource("Resource_0geu2")

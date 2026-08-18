@@ -8,12 +8,12 @@
 [ext_resource type="Script" uid="uid://dif3dj8k5ixfw" path="res://Resources/Stats/Stat.gd" id="4_5bs4y"]
 [ext_resource type="PackedScene" uid="uid://ylultcpjxp6" path="res://Components/Physics/CornerCollisionComponent.tscn" id="4_pvycy"]
 [ext_resource type="PackedScene" uid="uid://cwposw6wqg1mi" path="res://Components/Movement/PlatformerPatrolComponent.tscn" id="5_c8kjw"]
-[ext_resource type="PackedScene" uid="uid://bgfxxe60d72c0" path="res://Components/Visual/HealthVisualComponent.tscn" id="5_u488s"]
 [ext_resource type="PackedScene" uid="uid://ffkcrlcom1kx" path="res://Components/Combat/DamageReceivingComponent.tscn" id="6_p3b0u"]
 [ext_resource type="PackedScene" uid="uid://bv4nl55gi16vx" path="res://Components/Physics/PlatformerPhysicsComponent.tscn" id="6_w2yd5"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="7_aroie"]
 [ext_resource type="PackedScene" uid="uid://bx6cxxpnw2511" path="res://Components/Combat/KnockbackOnHitComponent.tscn" id="7_qjlrm"]
 [ext_resource type="PackedScene" uid="uid://cdq0dcwhcrm5p" path="res://Components/Control/InputComponent.tscn" id="14_0223s"]
+[ext_resource type="PackedScene" uid="uid://b1bqp8r4wjcg3" path="res://Components/Visual/DamageVisualComponent.tscn" id="15_n3xsw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpspd"]
 resource_local_to_scene = true
@@ -57,9 +57,6 @@ region_rect = Rect2(448, 96, 16, 16)
 [node name="HealthComponent" parent="." unique_id=1983200482 instance=ExtResource("3_wtegg")]
 health = SubResource("Resource_0223s")
 
-[node name="HealthVisualComponent" parent="." unique_id=1888399148 instance=ExtResource("5_u488s")]
-shouldShowRemainingHealth = true
-
 [node name="FactionComponent" parent="." unique_id=210162572 instance=ExtResource("2_a5njj")]
 factions = 8
 
@@ -93,6 +90,10 @@ body = NodePath("..")
 
 [node name="InputComponent" parent="." unique_id=555896481 instance=ExtResource("14_0223s")]
 isPlayerControlled = false
+
+[node name="DamageVisualComponent" parent="." unique_id=974188272 node_paths=PackedStringArray("nodeToAnimate") instance=ExtResource("15_n3xsw")]
+nodeToAnimate = NodePath("../Sprite2D")
+blinkCount = 1
 
 [editable path="DamageComponent"]
 [editable path="DamageReceivingComponent"]

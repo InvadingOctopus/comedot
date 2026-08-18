@@ -13,11 +13,12 @@
 [ext_resource type="Script" uid="uid://g6spk2uwn3kv" path="res://Resources/Parameters/OverheadMovementParameters.gd" id="10_cn3to"]
 [ext_resource type="PackedScene" uid="uid://dn7cpj4u7w1jy" path="res://Components/Physics/CharacterBodyComponent.tscn" id="11_kuh66"]
 [ext_resource type="Script" uid="uid://bth4n26ur8bvh" path="res://Components/Control/InputComponent.gd" id="13_m4oah"]
+[ext_resource type="PackedScene" uid="uid://b1bqp8r4wjcg3" path="res://Components/Visual/DamageVisualComponent.tscn" id="14_4wj0d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_icn6w"]
 size = Vector2(12, 14)
 
-[sub_resource type="Resource" id="Resource_m4oah"]
+[sub_resource type="Resource" id="Resource_swrev"]
 resource_local_to_scene = true
 resource_name = "monsterHealth"
 script = ExtResource("5_kedlw")
@@ -32,12 +33,14 @@ speed = 25.0
 acceleration = 100.0
 metadata/_custom_type_script = ExtResource("10_cn3to")
 
-[node name="Ghost" type="CharacterBody2D" unique_id=580323444]
+[node name="Ghost" type="CharacterBody2D" unique_id=580323444 node_paths=PackedStringArray("body", "sprite")]
 collision_layer = 10
 collision_mask = 88
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_cgfg7")
+body = NodePath(".")
+sprite = NodePath("Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1940599797]
 shape = SubResource("RectangleShape2D_icn6w")
@@ -53,10 +56,7 @@ region_rect = Rect2(416, 96, 16, 16)
 factions = 8
 
 [node name="HealthComponent" parent="." unique_id=1738575026 instance=ExtResource("4_vyhga")]
-health = SubResource("Resource_m4oah")
-
-[node name="HealthVisualComponent" parent="." unique_id=1177011862 instance=ExtResource("6_70ylv")]
-shouldShowRemainingHealth = true
+health = SubResource("Resource_swrev")
 
 [node name="DamageReceivingComponent" parent="." unique_id=616953459 instance=ExtResource("7_8kkjp")]
 
@@ -77,5 +77,14 @@ parameters = SubResource("Resource_u3ofw")
 [node name="InputComponent" type="Node" parent="." unique_id=770106944]
 script = ExtResource("13_m4oah")
 metadata/_custom_type_script = "uid://bth4n26ur8bvh"
+
+[node name="HealthVisualComponent" parent="." unique_id=1177011862 node_paths=PackedStringArray("nodeToAnimate") instance=ExtResource("6_70ylv")]
+nodeToAnimate = NodePath("../Sprite2D")
+shouldTint = true
+
+[node name="DamageVisualComponent" parent="." unique_id=974188272 node_paths=PackedStringArray("nodeToAnimate") instance=ExtResource("14_4wj0d")]
+nodeToAnimate = NodePath("../Sprite2D")
+blinkCount = 1
+shouldEmitBubble = false
 
 [editable path="DamageReceivingComponent"]
