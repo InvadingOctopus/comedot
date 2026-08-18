@@ -5,3 +5,4 @@
 [node name="HealthVisualComponent" type="Node2D" unique_id=184395656 groups=["components"]]
 editor_description = "Applies visual effects and animations to the Entity based on HealthComponent state and signals."
 script = ExtResource("1_p145s")
+metadata/_edit_group_ = true
