@@ -21,11 +21,19 @@ extends Component
 ## See [Payload] for explanation and available options.
 @export var payload: Payload
 
-@export var isEnabled: bool = true
+@export var isEnabled: bool = true:
+	set(newValue):
+		isEnabled = newValue
+		if  area:
+			# `DISABLE_MODE_REMOVE` excludes this Area2D from physics while not `isEnabled` and emits signals for existing contacts when re-enabled.
+			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED) # set_deferred() avoids the Godot error: "Function blocked during in/out signal"
 #endregion
 
 
 #region State
+var area: Area2D ## The [Area2D] which represents this collectible, which may be this component's own node.
+var defaultProcessMode: Node.ProcessMode
+
 ## Stores the most recent result, if any, of the [Payload]'s [method Payload.execute] method, to allow removal of the Entity representing the collectible item after it has been successfully collected.
 var previousPayloadResult: bool = false # TBD: Should this be a Variant to remember the result directly instead of a boolean flag?
 #endregion
@@ -40,11 +48,19 @@ signal willBeFreed
 #endregion
 
 
+func _ready() -> void:
+	if not area: area = self.get_node(^".") as Area2D
+	self.defaultProcessMode = self.process_mode
+	if  area:
+		area.disable_mode = CollisionObject2D.DISABLE_MODE_REMOVE # Exclude from physics processing when disabled
+		area.process_mode = self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED
+
+
 # DEBUG: UNUSED: May be used for subclasses.
-# func onAreaEntered(area: Area2D) -> void:
+# func onAreaEntered(areaEntered: Area2D) -> void:
 # 	if not isEnabled: return
 
-# 	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
+# 	var collectorComponent: CollectorComponent = areaEntered.get_node(^".") as CollectorComponent # HACK: Find better way to cast self?
 # 	if not collectorComponent: return
 
 # 	if debugMode: printDebug(str("onAreaEntered() CollectorComponent: ", collectorComponent))
@@ -86,7 +102,6 @@ func collect(collectorComponent: CollectorComponent) -> Variant:
 		self.requestDeletionOfEntity()
 
 	return previousPayloadResult
-
 
 #endregion
 

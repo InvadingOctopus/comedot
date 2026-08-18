@@ -6,6 +6,7 @@ extends CollectibleComponent
 # TBD: Inherit CollectibleComponent from AreaCollisionComponent to make rechecks easier?
 # TBD: Use StatModifierPayload?
 
+
 #region Parameters
 
 @export var stat: Stat:
@@ -42,6 +43,7 @@ extends CollectibleComponent
 
 
 func _ready() -> void:
+	super._ready()
 	# Override the Payload
 	self.payload = CallablePayload.new()
 	(self.payload as CallablePayload).payloadCallable = self.onCollectible_didCollect
@@ -103,13 +105,14 @@ func onstat_changed() -> void:
 
 ## Removes the [member previouslyDeniedCollector] to avoid re-collection if the [Stat] goes below its maximum value while the [CollectorComponent] is outside contact.
 ## IMPORTANT: The [CollectorComponent]'s physics [member CollisionObject2D.collision_layer] must match [CollectibleStatComponent]'s [member CollisionObject2D.collision_mask] to trigger the [signal Area2D.onAreaExited] signal and ensure correct behavior.
-func onAreaExited(area: Area2D) -> void:
+## IMPORTANT: [member Area2D.monitoring] must be enabled in the scene.
+func onAreaExited(areaExited: Area2D) -> void:
 	# PERFORMANCE: Remove the `previouslyDeniedCollector` on leaving contact, so we don't have to recheck collisions each time the Stat decreases.
 	# NOTE: Removals should NOT depend on `isEnabled`
 	if not previouslyDeniedCollector: return
 	
-	var collectorComponent: CollectorComponent = area.get_node(^".") as CollectorComponent # HACK: Find better way to cast?
-	if debugMode: printDebug(str("onAreaExited(): ", area, ", CollectorComponent: ", collectorComponent, ", previouslyDeniedCollector: ", previouslyDeniedCollector))
+	var collectorComponent: CollectorComponent = areaExited.get_node(^".") as CollectorComponent # HACK: Find better way to cast?
+	if debugMode: printDebug(str("onAreaExited(): ", areaExited, ", CollectorComponent: ", collectorComponent, ", previouslyDeniedCollector: ", previouslyDeniedCollector))
 	if previouslyDeniedCollector == collectorComponent: previouslyDeniedCollector = null
 
 #endregion

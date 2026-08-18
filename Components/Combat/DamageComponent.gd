@@ -69,8 +69,7 @@ extends Component
 		isEnabled = newValue
 		if  area:
 			# `DISABLE_MODE_REMOVE` excludes this Area2D from physics while not `isEnabled` and emits signals for existing contacts when re-enabled.
-			# set_deferred() avoids the Godot error: "Function blocked during in/out signal"
-			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED)
+			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED) # set_deferred() avoids the Godot error: "Function blocked during in/out signal"
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
 #endregion

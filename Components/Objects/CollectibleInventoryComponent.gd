@@ -19,6 +19,7 @@ extends CollectibleComponent
 
 
 func _ready() -> void:
+	super._ready()
 	# Override the Payload
 	self.payload = CallablePayload.new()
 	(self.payload as CallablePayload).payloadCallable = self.onCollectible_didCollect

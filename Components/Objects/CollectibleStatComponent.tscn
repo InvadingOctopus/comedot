@@ -9,6 +9,7 @@ size = Vector2(16, 16)
 
 [node name="CollectibleStatComponent" unique_id=1854699991 instance=ExtResource("1_m4051")]
 collision_mask = 2048
+monitoring = true
 script = ExtResource("1_1po3f")
 stat = null
 statModifierMinimum = 1

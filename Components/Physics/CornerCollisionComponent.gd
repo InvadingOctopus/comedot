@@ -16,7 +16,6 @@ extends Component
 @export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
-		# When this component is disabled, reset the collision flags only once, to avoid doing it every frame.
 		setCollisionEnabled(isEnabled)
 
 #endregion
@@ -45,6 +44,8 @@ var isCollidingOnLeft:		bool
 var isCollidingOnTop:		bool
 var isCollidingOnBottom:	bool
 
+var defaultAreasProcessMode: Node.ProcessMode
+
 #endregion
 
 
@@ -54,6 +55,11 @@ var isCollidingOnBottom:	bool
 
 
 func _ready() -> void:
+	self.defaultAreasProcessMode = areasContainer.process_mode
+	for area: Area2D in areasContainer.get_children():
+		# Exclude all child Area2Ds from physics processing when disabled
+		area.disable_mode = CollisionObject2D.DISABLE_MODE_REMOVE
+	areasContainer.process_mode = self.defaultAreasProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED
 	if fitAreasAutomatically: setAreaPositions()
 
 
@@ -72,14 +78,8 @@ func setAreaPositions() -> void:
 
 func setCollisionEnabled(enabled: bool) -> void:
 	if not areasContainer: return
-	for area: Area2D in areasContainer.get_children():
-		#if is_instance_of(area, Area2D):
-		area.monitoring  = enabled
-		area.monitorable = enabled
-
-	# TBD: Should the container node be toggled like this?
-	if not enabled: areasContainer.process_mode = Node.PROCESS_MODE_DISABLED
-	else: areasContainer.process_mode = Node.PROCESS_MODE_INHERIT
+	# DISABLE_MODE_REMOVE excludes the child Area2Ds from physics while disabled and emits signals for existing contacts when re-enabled.
+	areasContainer.set_deferred(&"process_mode", self.defaultAreasProcessMode if enabled else Node.PROCESS_MODE_DISABLED) # set_deferred() avoids the Godot error: "Function blocked during in/out signal"
 
 
 func onAreaEntered(_area: Area2D) -> void:

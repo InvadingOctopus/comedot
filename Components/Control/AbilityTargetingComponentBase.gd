@@ -20,6 +20,9 @@ extends Component
 			self.set_process(isEnabled)
 			self.set_process_input(isEnabled)
 			self.set_process_unhandled_input(isEnabled)
+			if  selfAsArea:
+				# `DISABLE_MODE_REMOVE` excludes this Area2D from physics while not `isEnabled` and emits signals for existing contacts when re-enabled.
+				selfAsArea.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED) # set_deferred() avoids the Godot error: "Function blocked during in/out signal"
 
 #endregion
 
@@ -27,6 +30,9 @@ extends Component
 #region State
 @onready var cursor: Node2D = self.get_node(^".") as Node2D
 var isChoosing: bool
+
+var selfAsArea: Area2D ## This component's node as an [Area2D], if applicable.
+var defaultProcessMode: Node.ProcessMode
 #endregion
 
 
@@ -44,6 +50,11 @@ signal didCancel
 func _ready() -> void:
 	if not ability: printWarning("No ability provided")
 	self.isChoosing = self.isEnabled
+	if not selfAsArea: selfAsArea = self.get_node(^".") as Area2D
+	self.defaultProcessMode = self.process_mode
+	if  selfAsArea:
+		selfAsArea.disable_mode = CollisionObject2D.DISABLE_MODE_REMOVE # Exclude from physics processing when disabled
+		selfAsArea.process_mode = self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED
 
 	# Apply setters because Godot doesn't on initialization
 	self.set_process(isEnabled)
