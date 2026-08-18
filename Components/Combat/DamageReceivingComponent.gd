@@ -27,8 +27,8 @@ extends Component
 	set(newValue):
 		isEnabled = newValue
 		if  area:
-			# DISABLE_MODE_REMOVE removes this Area2D from physics while disabled, allowing existing contacts to report a new entry when restored.
-			# set_deferred() avoids the Godot error: "Function blocked during in/out signal".
+			# `DISABLE_MODE_REMOVE` excludes this Area2D from physics while not `isEnabled` and emits signals for existing contacts when re-enabled.
+			# set_deferred() avoids the Godot error: "Function blocked during in/out signal"
 			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED)
 
 #endregion
@@ -43,7 +43,7 @@ extends Component
 signal didReceiveDamage(damageComponent: DamageComponent, amount: int, attackerFactions: int)
 
 ## Emitted when colliding with a [DamageComponent] even if the factions are friendly and no health is reduced.
-## IMPORTANT: PERFORMANCE: Requires [member Area2D.monitoring] to be `true` which is disabled by default.
+## IMPORTANT: PERFORMANCE: Disabled by default: Requires [DamageReceivingComponent].[member Area2D.monitoring] and [DamageComponent].[member Area2D.monitorable] to be both `true`
 signal didCollideWithDamage(damageComponent: DamageComponent)
 
 signal willRemoveEntity ## Emitted if there is no [HealthComponent] and [member shouldRemoveEntityIfNoHealthComponent]
@@ -56,7 +56,7 @@ var area:						Area2D ## The [Area2D] "hurtbox" that this component represents, 
 var defaultProcessMode:			Node.ProcessMode
 
 ## A list of [DamageComponent]s currently in collision contact.
-## IMPORTANT: PERFORMANCE: Requires [member Area2D.monitoring] to be `true` which is disabled by default.
+## IMPORTANT: PERFORMANCE: Disabled by default: Requires [DamageReceivingComponent].[member Area2D.monitoring] and [DamageComponent].[member Area2D.monitorable] to be both `true`
 var damageComponentsInContact:	Array[DamageComponent]
 #endregion
 
