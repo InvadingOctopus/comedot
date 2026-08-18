@@ -64,15 +64,13 @@ extends Component
 ## IMPORTANT: Do NOT set to `true` for persistent "hazards" like spikes or acid pools etc.
 @export var shouldRemoveEntityOnDamage: bool = false
 
-@export var isEnabled: bool = true: ## Also effects [member Area2D.monitorable] and [member Area2D.monitoring]
+@export var isEnabled: bool = true:
 	set(newValue):
 		isEnabled = newValue
-		# Toggle the area too, to ensure that [DamageComponent] can re-detect us,
-		# e.g. after an [InvulnerabilityOnHitComponent] ends.
 		if  area:
-			# NOTE: Cannot set flags directly because Godot error: "Function blocked during in/out signal"
-			area.set_deferred(&"monitoring",  isEnabled)
-			area.set_deferred(&"monitorable", isEnabled)
+			# `DISABLE_MODE_REMOVE` excludes this Area2D from physics while not `isEnabled` and emits signals for existing contacts when re-enabled.
+			# set_deferred() avoids the Godot error: "Function blocked during in/out signal"
+			area.set_deferred(&"process_mode", self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED)
 		self.set_physics_process(isEnabled) # For subclasses such as [DamageRayComponent]
 
 #endregion
@@ -100,6 +98,7 @@ var damageOnCollisionWithModifier: int:
 
 ## The [Area2D] "hitbox" that this component represents, which may be this component's own node.
 var area: Area2D
+var defaultProcessMode: Node.ProcessMode
 
 #endregion
 
@@ -125,11 +124,11 @@ signal didDamage(damageReceivingComponent:			DamageReceivingComponent, damage: i
 func _ready() -> void:
 	if not area: area = self.get_node(^".") as Area2D
 	if self.initiatorEntity == null: self.initiatorEntity = self.entity
-	# Apply setters because Godot doesn't on initialization
+	self.defaultProcessMode  = self.process_mode
 	self.set_physics_process(isEnabled)
 	if  area:
-		area.monitoring  = isEnabled
-		area.monitorable = isEnabled
+		area.disable_mode = CollisionObject2D.DISABLE_MODE_REMOVE # Exclude from physics processing when disabled
+		area.process_mode = self.defaultProcessMode if isEnabled else Node.PROCESS_MODE_DISABLED
 	# UNUSED: Signals already connected in .tscn Scene
 	# TBD: Connect here in case some subclass forgets to?
 	# Tools.connectSignal(area.area_entered, self.onAreaEntered)
