@@ -31,9 +31,11 @@ extends Component
 
 ## Shows a [GameplayResourceBubble] representing the current health value or the difference.
 ## The bubble is set as a child node of the entity, to avoid being affected by the effects on [nodeToAnimate].
-@export var shouldEmitBubble: bool = true
-@export var bubbleOffset:     Vector2 = Vector2(0, -16) ## The position relative to the entity from which bubbles are bobbled.
-@export var detachedBubbles:  bool ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
+@export var shouldEmitBubble:	bool	= true
+@export var bubbleColorPositive: Color	= Color.GREEN
+@export var bubbleColorNegative: Color	= Color.RED
+@export var bubbleOffset:		Vector2	= Vector2(0, -16) ## The position relative to the entity from which bubbles are bobbled.
+@export var detachedBubbles:	bool ## If `true` & [member shouldEmitBubble], text bubbles will not move together with the target entity's sprite.
 
 ## If `true` (default) the [GameplayResourceBubble] shows the REMAINING health instead of the DIFFERENCE.
 ## WARNING: If `false` then this will show the changes in the health [Stat], which may be the same as the damage amount shown by [DamageVisualComponent], causing duplicate bubbles.
@@ -86,9 +88,6 @@ func updateTint()-> void:
 
 
 func emitBubble(difference: int) -> void:
-	var color: Color = Color(0, 1, 0) if difference > 0 else Color(1, 0.5, 0)
-	color.b += [0, +0.1, +0.2, +0.3].pick_random() # Some variation for when there's a lot of bubbles
-
 	# Emit the bubble from the entity so it isn't affected by effects on `nodeToAnimate`
 	# not appendDisplayName, not colorBubble
 	var bubble: GameplayResourceBubble
@@ -105,6 +104,6 @@ func emitBubble(difference: int) -> void:
 			self.bubbleOffset,
 			false, false)
 	if detachedBubbles: bubble.global_position = entity.to_global(self.bubbleOffset) # Apply offset separately for detached bubbles to preserve transforms etc.
-	bubble.ui.label.label_settings.font_color  = color
+	bubble.ui.label.label_settings.font_color  = self.bubbleColorPositive if difference > 0 else self.bubbleColorNegative
 
 #endregion
