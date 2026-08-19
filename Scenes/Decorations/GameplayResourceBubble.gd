@@ -27,8 +27,8 @@ static func create(resource: GameplayResourceBase, text: String, parentNode: Nod
 	var newBubble:	GameplayResourceBubble	= (load(scenePath) as PackedScene).instantiate()
 	var bubbleUI:	GameplayResourceUI		= newBubble.get_node(^"GameplayResourceUI")
 
-	bubbleUI.get_node(^"Icon").texture	=  resource.icon
-	bubbleUI.get_node(^"Label").text	= (resource.displayName if appendDisplayName else "") + text # SOLVED: Use get_node() to avoid crash if there is no `parentNode` yet, therefore no @onready
+	bubbleUI.get_node(^"Icon").texture		=  resource.icon
+	bubbleUI.get_node(^"Label").text		= (resource.displayName if appendDisplayName else "") + text # SOLVED: Use get_node() to avoid crash if there is no `parentNode` yet, therefore no @onready
 	newBubble.position += offset
 
 	if parentNode: parentNode.add_child(newBubble)
@@ -53,5 +53,5 @@ static func createForStatChange(stat: Stat, parentNode: Node = null, offset: Vec
 	var bubble: GameplayResourceBubble = GameplayResourceBubble.create(stat, "%+d" % stat.previousChange, parentNode, offset, appendDisplayName)
 	if colorBubble: # Tint the icon along with the label
 		if   stat.previousChange > 0: bubble.modulate = Color.GREEN
-		elif stat.previousChange < 0: bubble.modulate = Color.ORANGE
+		elif stat.previousChange < 0: bubble.modulate = Color.RED
 	return bubble

@@ -11,6 +11,7 @@ extends Component
 @export var statsToModify:		Dictionary[Stat, int] ## A [Dictionary] where the keys are [Stat] Resources and the values are the positive or negative modifier to apply to that respective Stat.
 @export var shouldEmitBubble:	bool = true ## Spawns a visual [TextBubble] saying the Stat's name and change in value that floats up from the Entity.
 @export var shouldColorBubble:	bool = true
+@export var spaceBetweenBubbles: int = 2
 @export var isEnabled:			bool = true
 #endregion
 
@@ -44,4 +45,4 @@ func modifyStats() -> void:
 				Vector2(entity.position.x, entity.position.y + bubbleOffsetY), \
 				true, shouldColorBubble) \
 					.ui.label.label_settings # appendDisplayName (the `true` above)
-			bubbleOffsetY -= labelSettings.font_size + 2 # Add some spacing between each bubble
+			bubbleOffsetY -= labelSettings.font_size + spaceBetweenBubbles # Add some spacing between each bubble
