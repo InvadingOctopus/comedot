@@ -430,7 +430,7 @@ static func validateArrayIndex(array: Array, index: int) -> bool:
 ## Returns 0 if the array is empty, which will be an invalid index.
 ## NOTE: Packed arrays such as [PackedStringArray] etc. are accepted even though [param array] is typed as [Array]
 static func wrapArrayIndex(array: Array, index: int, increment: int) -> int:
-	if not array.is_empty(): return wrapi(0, index + increment, array.size()) # max is exclusive
+	if not array.is_empty(): return wrapi(index + increment, 0, array.size()) # max is exclusive
 	else: return 0
 
 
