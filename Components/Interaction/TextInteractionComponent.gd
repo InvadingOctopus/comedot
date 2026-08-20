@@ -64,7 +64,8 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 
 ## Executes the [member payload] and cycles through the [member textSequence]
-## Returns: The updated label text, or the [Payload] result if the [Payload] FAILED.
+## Returns: The updated label text on success, or the current text on failure.
+## The [Payload] result is emitted through [signal didPerformInteraction]
 ## @experimental
 @warning_ignore("unused_parameter")
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> String:
@@ -75,6 +76,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 
 	if not payload and not allowNoPayload:
 		printWarning("performInteraction(): No payload and not allowNoPayload")
+		if shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
 		return labelControl.text if labelControl else self.text
 
 	self.willPerformInteraction.emit(interactorEntity)
@@ -84,9 +86,9 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		var payloadResult: Variant = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
 		# If the Payload failed, do not advance the text
 		if not Tools.checkResult(payloadResult):
-			# TBD: Return payloadResult on failure or text as always?
 			self.didPerformInteraction.emit(interactorEntity, payloadResult)
-			return payloadResult
+			if shouldCooldownOnFailure: startCooldown(cooldownOnFailure)
+			return self.text # Always return a String
 
 	# Carry on with the text stuff
 
@@ -156,13 +158,18 @@ func repeatPreviousInteraction() -> Variant:
 func displayNextText(animate: bool = self.shouldAnimate) -> void:
 	# NOTE:   If the current `text` is not the current TextSequence string, re-display the current TextSequence string.
 	# FIXED:  This lets the first message be visible and animated instead of being skipped immediately if `isAutomatic`
-	if self.text == textSequence.getCurrentString():
-		textSequence.incrementIndex()
+	if self.text == textSequence.getCurrentString(): textSequence.incrementIndex()
 	applyText(animate)
 	# updateIndicator() called by property setter
 
 
 func applyText(animate: bool = self.shouldAnimate) -> void:
+	# Clear any previous animation, whether we're going to animate the next string or not
+	if  currentAnimation:
+		Tools.disconnectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
+		currentAnimation.kill()
+		currentAnimation = null
+
 	# Apply the color first
 	if labelControl:
 		# DESIGN: Animating the color looks jank
@@ -174,11 +181,6 @@ func applyText(animate: bool = self.shouldAnimate) -> void:
 		return
 
 	var currentString: String = textSequence.getCurrentString()
-
-	# Clear any previous animation, whether we're going to animate the next string or not
-	if currentAnimation:
-		currentAnimation.kill()
-		Tools.disconnectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
 
 	# Display the string
 	if animate:
