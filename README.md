@@ -2,7 +2,7 @@
 
 ![Godot+Comedot Logo][logo]
 
-[![Godot v4.8+][godot-badge]][godot-download] [![Comedot][release-badge]][comedot-releases]
+[![MIT License][license-badge]][license] [![Comedot][comedot-badge]][comedot-download] [![Godot v4.8+][godot-badge]][godot-download]
 
 **Comedot is an opinionated as fuck framework & project template for [Godot][godot] with the goal of being an all-in-one toolkit for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc.
 
@@ -137,10 +137,11 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 [composition-over-inheritance]: https://en.wikipedia.org/wiki/Composition_over_inheritance
 [entity–component–system]: https://en.wikipedia.org/wiki/Entity_component_system
 
-[godot-badge]:		https://img.shields.io/badge/Godot-v4.8%2B-478CBF
+[license-badge]:	https://img.shields.io/badge/License-MIT-FF0076
+[comedot-badge]:	https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000
+[comedot-download]:	https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release"
+[godot-badge]:		https://img.shields.io/badge/Godot-v4.8%2B-0097FF
 [godot-download]:	https://godotengine.org/download/archive/ "Requires Godot 4.8+"
-[release-badge]:	https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000
-[comedot-releases]:	https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release"
 
 [logo]: Assets/Logos/ComedotExtraLogo.png "Godot+Comedot Logo"
 [components-tree]: https://raw.githubusercontent.com/InvadingOctopus/comedot-media/refs/heads/main/Screenshots/Components%20Tree.png "🌳 Example Components Tree for a Player Entity"

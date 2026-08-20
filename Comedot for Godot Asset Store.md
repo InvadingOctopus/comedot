@@ -12,7 +12,7 @@ All-in-one project template & component framework for 2D games with Entities, Co
 
 Detailed Description:
 ```
-[![Godot v4.8+](https://img.shields.io/badge/Godot-v4.8%2B-478CBF)](https://godotengine.org/download/archive/ "Requires Godot 4.8+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
+[![MIT License](https://img.shields.io/badge/License-MIT-FF0076)](https://github.com/InvadingOctopus/comedot/blob/develop/LICENSE.txt "MIT License") [![Godot v4.8+](https://img.shields.io/badge/Godot-v4.8%2B-0097FF)](https://godotengine.org/download/archive/ "Requires Godot 4.8+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
 
 **Comedot is a project template & components framework for 2D games** of any genre: Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc. 
 
