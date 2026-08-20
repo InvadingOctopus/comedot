@@ -22,7 +22,7 @@ var currentColorIndex:	int
 ## NOTE: If [member colors] is of a different size than [member strings], the colors may drift, which may be an intentional effect or not.
 func incrementIndex(step: int = 1) -> void:
 	super.incrementIndex(step)
-	currentColorIndex = Tools.wrapArrayIndex(colors, currentColorIndex, absi(step)) # Wrap to 0 + remainder
+	currentColorIndex = wrapi(currentColorIndex + absi(step), 0, colors.size()) if not colors.is_empty() else 0 # Wrap to 0 + remainder
 
 
 ## Resets the indices
