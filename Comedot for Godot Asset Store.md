@@ -14,9 +14,9 @@ Detailed Description:
 ```
 [![MIT License](https://img.shields.io/badge/License-MIT-FF0076)](https://github.com/InvadingOctopus/comedot/blob/develop/LICENSE.txt "MIT License") [![Godot v4.8+](https://img.shields.io/badge/Godot-v4.8%2B-0097FF)](https://godotengine.org/download/archive/ "Requires Godot 4.8+") [![Comedot](https://img.shields.io/github/v/release/InvadingOctopus/comedot?include_prereleases&label=Comedot&color=20A000)](https://github.com/InvadingOctopus/comedot/releases "Latest Comedot Release")
 
-**Comedot is a project template & components framework for 2D games** of any genre: Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc. 
+**An opinionated project template & components framework for 2D games** of any genre: Platformer, shmup, RPG, strategy, puzzle, turn-based, tile-based etc. 
 
-It's either the most overenginered shit you've ever seen or the most awesome way of making games ever.
+This is either the most overenginered shit you've ever seen or the most awesome way of making games ever.
 I made this while trying to make 100 different games at once, still yet to finish 1, but at least I get to learn which stuff is needed frequently in multiple genres & shove it into this shared library 🥲
 
 Use this to build scenes by smacking components into entities and tweaking their exports. *"Entities"* and *"Components"* are just regular Godot Nodes but for gameplay mechanics, and you can edit the component scripts in any way, so you can mix this framework with your usual Godot workflow or any other addons or architecture.
@@ -44,7 +44,7 @@ Use this to build scenes by smacking components into entities and tweaking their
 
 **This is a work in constant progress!** For delicious details & the latest version, gaze upon the glorious GitHub repository: [https://github.com/InvadingOctopus/comedot/tree/develop](https://github.com/InvadingOctopus/comedot/tree/develop)
 
-🕹️ *To see some games & demos made with Comedot:* [syntaks.itch.io](https://syntaks.itch.io)
+🕹️ *To see some games & demos made with Comedot:* [syntaks.itch.io](https://syntaks.itch.io) or [@syntaks on Mastodon](https://mastodon.gamedev.place/@syntaks)
 
 
 ----
@@ -77,10 +77,10 @@ Version Name:	4.8.0.3.666
 
 Version changelog:
 ```
-Latest Commit: [ba2542d](https://github.com/InvadingOctopus/comedot/commit/ba2542d48790e56a7d912ad87c8e6d7153660d37) on 2026-08-08
+Latest Commit: [5110a67](https://github.com/InvadingOctopus/comedot/commit/5110a67c8e1601fa7cee7bb4c18506e79bf53355) on 2026-08-20
 
 Compare tags/branches on GitHub:
-[4.7.0.100.777 → 4.8.0.3.69](https://github.com/InvadingOctopus/comedot/compare/4.7.0.100.777...4.8.0.3.69)
+[4.8.0.3.69 → 4.8.0.3.666](https://github.com/InvadingOctopus/comedot/compare/4.8.0.3.69...4.8.0.3.666)
 
 ```
 
