@@ -1,15 +1,11 @@
 ## Allows the player to interact with an [InteractionComponent].
 ## "Interactions" are similar to "Collectibles"; the difference is that an interaction occurs on a button input instead of automatically on a collision.
 ## NOTE: To edit the [CooldownTimer], enable "Editable Children" 
-## TIP: To perform interactions with the mouse, use [InteractionMouseControlComponent].
+## TIP: To perform interactions with the mouse, use [InteractionMouseControlComponent]
 ## Requirements: This component's node must be an [Area2D]
 
 class_name InteractionControlComponent
 extends AreaContactComponent
-
-# TODO: Inherit from AreaContactComponent
-# TODO: Update indicator only on collision events.
-# TBD:  Check interaction success?
 
 
 #region Parameters
@@ -18,12 +14,17 @@ extends AreaContactComponent
 ## ALERT: A low limit may cause behavior that seems like bugs in case of nultiple [InteractionComponent]s with overlapping [Area2D]s.
 @export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
-@export var inputEventName: StringName = GlobalInput.Actions.interact
+@export var inputEventName:			StringName = GlobalInput.Actions.interact
 
-@export var shouldCooldownOnFailure: bool = true ## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
+## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
+## NOTE: DESIGN: This may start EVEN if the interaction is NOT successful, as this represents the "rest" between "attempts" e.g. pulling a lever to open a door.
+@export var shouldCooldownOnFailure:				 bool  = true
 @export_range(0.0, 60.0, 0.1) var cooldownOnFailure: float = 0.5
 
-@export var interactionIndicator: CanvasItem ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent].
+## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent]
+## NOTE: This is the indicator for the character that performs the interaction! This may display messages such as "Push Y to Talk" etc.
+## [InteractionComponent]s have their own [InteractionComponent.interactionIndicator] to display messages such as "! Quest Available" etc.
+@export var interactorIndicator:	CanvasItem
 
 #endregion
 
@@ -62,7 +63,7 @@ func _ready() -> void:
 		if not self.groupToInclude.is_empty() and self.groupToInclude != Global.Groups.interactions: # Ignore empty strings
 			printWarning(str("groupToInclude: ", groupToInclude, " ∉ Global.Groups.interactions: \"", Global.Groups.interactions, "\" ・ Ignore if intendend"))
 
-	if interactionIndicator: interactionIndicator.visible = false # Set the initial state of the indicator
+	if interactorIndicator: interactorIndicator.visible = false # Set the initial state of the indicator
 		# updateIndicator() will be called by resetContactLists()
 
 	super._ready()
@@ -70,7 +71,7 @@ func _ready() -> void:
 
 func resetContactLists() -> void:
 	super.resetContactLists()
-	if interactionIndicator: updateIndicator()
+	if interactorIndicator: updateIndicator()
 
 
 #region Area Collision Events
@@ -111,8 +112,8 @@ func onExit(exitingNode: Node2D) -> void:
 
 
 func updateIndicator() -> void:
-	if  interactionIndicator:
-		interactionIndicator.visible = isEnabled and haveInteracionsInRange
+	if  interactorIndicator:
+		interactorIndicator.visible = isEnabled and haveInteracionsInRange
 
 #endregion
 
@@ -163,8 +164,8 @@ func interactAll(continueOnFailure: bool = true) -> int:
 			if Tools.checkResult(result): # TODO: Add shouldSucceedIfNoPayload for "reactions" or whatever
 				successes += 1
 				if not interactionComponent.shouldSkipInteractorCooldown: cooldowns += 1
-			elif not interactionComponent.shouldSkipInteractorCooldown: # Did we fail and the interaction allows cooldown? Then it's a `cooldownOnFailure`
-				failureCooldowns += 1
+			else:
+				if not interactionComponent.shouldSkipInteractorCooldown: failureCooldowns += 1 # Did we fail and the interaction allows cooldown? Then it's a `cooldownOnFailure`
 				if not continueOnFailure: break
 
 			if count >= maximumSimultaneousInteractions:
@@ -201,19 +202,19 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 	if interactionComponent.requestToInteract(self.entity, self):
 		self.willPerformInteraction.emit(interactionComponent.entity, interactionComponent)
 		var result: Variant = interactionComponent.performInteraction(self.entity, self)
-		if debugMode: printLog(str("Result: ", result, ", cooldown: ", cooldownTimer.cooldownSeconds if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
 
 		# Start the regular cooldown or the failure cooldown or neither?
 		if not interactionComponent.shouldSkipInteractorCooldown:
 			if Tools.checkResult(result): cooldownTimer.startCooldown()
 			elif shouldCooldownOnFailure: cooldownTimer.startCooldown(cooldownOnFailure)
 
+		if debugMode: printLog(str("Result: ", result, ", cooldown: ", cooldownTimer.time_left))
 		self.didPerformInteraction.emit(result)
 		return result
 
 	else:
-		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.entity.logName, ", cooldown: ", self.cooldownOnFailure if not interactionComponent.shouldSkipInteractorCooldown else 0.0))
 		if self.shouldCooldownOnFailure and not interactionComponent.shouldSkipInteractorCooldown: cooldownTimer.startCooldown(cooldownOnFailure)
+		printLog(str("InteractionComponent: ", interactionComponent, " denied interaction with ", self.entity.logName, ", cooldown: ", cooldownTimer.time_left))
 
 	return null
 
@@ -222,14 +223,14 @@ func interact(interactionComponent: InteractionComponent, ignoreRange: bool = fa
 
 #region Cooldown
 
-## Called by [method CooldownTimer.startCooldown] and updates the [member interactionIndicator]
+## Called by [method CooldownTimer.startCooldown] and updates the [member interactorIndicator]
 func onCooldownTimer_didStartCooldown(_time: float) -> void:
-	if interactionIndicator: interactionIndicator.modulate.a = 0.1 # Fade while unusable
+	if interactorIndicator: interactorIndicator.modulate.a = 0.1 # Fade while unusable
 
 
-## Called by [method CooldownTimer.finishCooldown] and updates the [member interactionIndicator]
+## Called by [method CooldownTimer.finishCooldown] and updates the [member interactorIndicator]
 func onCooldownTimer_didFinishCooldown() -> void:
-	if interactionIndicator: interactionIndicator.modulate.a = 1.0 # Fade in # TBD: Remember previous un-faded opacity?
+	if interactorIndicator: interactorIndicator.modulate.a = 1.0 # Fade in # TBD: Remember previous un-faded opacity?
 
 #endregion
 

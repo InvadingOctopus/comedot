@@ -35,8 +35,10 @@ extends AreaContactComponent
 
 @export_group("UI")
 
-## A [Node2D] or [Control] such as [Label] to display when this [InteractionComponent] is in collision contact with an [InteractionControlComponent].
-# ALERT: If multiple InteractionComponents use the same indicator, the most recent component to run [method updateIndicator] will modify this label.
+## A [Node2D] or [Control] such as [Label] to display when this [InteractionComponent] is in collision contact with an [InteractionControlComponent]
+## ALERT: If multiple InteractionComponents use the same indicator, the most recent component to run [method updateIndicator] will modify this label.
+## NOTE: This is the indicator for the entity that will be interacted with, such as a door or an NPC. This may display messages such as "Locked" or "! Quest available" etc.
+## [InteractionControlComponent]s have their own [InteractionControlComponent.interactorIndicator] to display messages such as "Push Y to Talk" etc.
 @export var interactionIndicator: CanvasItem
 
 @export var shouldAlwaysShowIndicator:  bool ## Always show the indicator even when there is no [InteractionControlComponent] in collision.
@@ -93,11 +95,11 @@ func _ready() -> void:
 
 	# Set the initial state of the indicator
 	# NOTE: Update content even if not `isEnabled` and hidden, just in case
-	if interactionIndicator:
+	if  interactionIndicator:
 		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
 		interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0) # Start invisible if false
 
-		if interactionIndicator is Label:
+		if  interactionIndicator is Label:
 			# NOTE: If our `text` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
 			if self.text.is_empty(): self.text = interactionIndicator.text
 			else: updateIndicator() # Otherwise set the UI to our string
@@ -167,8 +169,7 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 	if not isEnabled: return false
 
 	var isInteractionApproved: bool = checkInteractionConditions(interactorEntity, interactionControlComponent)
-
-	if isInteractionApproved:
+	if  isInteractionApproved:
 		return true
 	else:
 		didDenyInteraction.emit(interactorEntity)
