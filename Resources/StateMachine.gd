@@ -54,6 +54,15 @@ extends Resource
 
 			shouldSkipNextValidationForStateSetter = false
 
+## A [Dictionary] where the key is the [StringName] of a state,
+## and the value is a [Callable] function to call AFTER this state machine enters the specified state.
+## IMPORTANT: The [Callable] must NOT be `async` and callable without arguments; use [method Callable.bind] to permanently assign arguments.
+## NOTE: Called AFTER [signal didTransition]
+## WARNING: This only allows 1 Callable per state: Use [method Dictionary.has] to check existing values before overwriting!
+## TIP: For multiple callbacks per state, use [signal didTransition]
+## ALERT: This property is RUNTIME-ONLY and NOT saved in the [Resource] `.tres` file on persistent storage.
+var functionsToCallAfterTransition: Dictionary[StringName, Callable] # TBD: ALlow multiple callbacks per state?
+
 ## Skips the call to [method validateTransition] when modifying [member currentState]
 ## PERFORMANCE: Used by [method transitionToState] to avoid a second redundant call.
 ## ALERT: FOR INTERNAL USE ONLY!
@@ -68,9 +77,8 @@ var logName: String:
 #region Signals
 signal didRejectTransition(sourceState:	 StringName, rejectedState:	StringName)
 signal willTransition(outgoingState:	 StringName, incomingState:	StringName)
-signal didTransition(previousState:		 StringName, newState:		StringName)
+signal didTransition(previousState:		 StringName, newState:		StringName) ## NOTE: This signal is emitted BEFORE [member functionsToCallAfterTransition]
 #endregion
-
 
 
 #region Interface
@@ -153,7 +161,38 @@ func transitionToState(nextState: StringName) -> bool:
 	shouldSkipNextValidationForStateSetter = false # JIC: `currentState` setter resets it, but let's do it again to be sure :')
 
 	didTransition.emit(previousState, self.currentState)
+
+	# ALERT: ALLOWED: `currentState` may have been mutated by `didTransition` handlers for complex game-specific behavior or "hacks"; that's OK.
+	if self.currentState != nextState:
+		if debugMode: Debug.printResourceLog("transitionToState() currentState: &\"" + currentState + "\" != nextState argument: &\"" + nextState + "\" ・ Modified by `didTransition` handlers? Skipping `functionsToCallAfterTransition` for &\"" + nextState + "\"", logName)
+		# IMPORTANT: But do NOT callFunctionsAfterTransition() for a state that is not the `currentState`!
+		return true # DESIGN: The original transition request was a success even if the state changed later
+
+	if self.functionsToCallAfterTransition.has(self.currentState):
+		callFunctionsAfterTransition(self.currentState)
+
 	return true
+
+
+## Calls the [Callable] in [member functionsToCallAfterTransition] if that [Dictionary] contains a key matching the [param state] name.
+## Returns the value returned from the [Callable]
+## ALERT: Returns `null` if the call fails, which may be indistinguishable from a valid [Callable] returning null; use [method Dictionary.has] & [method Callable.is_valid] etc. to check validity.
+func callFunctionsAfterTransition(state: StringName, cancelIfNotCurrentState: bool = true) -> Variant:
+	if not functionsToCallAfterTransition.has(state): return null
+	
+	if cancelIfNotCurrentState and self.currentState != state:
+		if debugMode: Debug.printResourceLog(str("callFunctionsAfterTransition() cancelIfNotCurrentState: currentState: &\"" + currentState + "\" != state argument: &\"" + state + "\""), logName)
+		return null
+
+	var functionToCall:	Callable = functionsToCallAfterTransition[state]
+	var returnValue:	Variant  = null
+	
+	if functionToCall is Callable and functionToCall.is_valid():
+		if debugMode: Debug.printResourceLog(str("callFunctionsAfterTransition() &\"" + state + "\" calling: ", functionToCall), logName)
+		returnValue = functionToCall.call()
+		if debugMode: Debug.printResourceLog(str("callFunctionsAfterTransition(): ", functionToCall, " → ", returnValue), logName)
+
+	return returnValue
 
 #endregion
 
