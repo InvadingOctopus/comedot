@@ -34,5 +34,6 @@ func reset() -> void:
 ## WARNING: Modifying the font/color/etc. of a [LabelSettings] will affect ALL [Label]s that use the same [LabelSettings] unless that [Resource] is set "Local to Scene"
 func formatLabel(label: Control) -> void:
 	if  label is Label:
-		label.label_settings.font_color = colors[currentColorIndex] if not colors.is_empty() else Color.WHITE
+		if label.label_settings: label.label_settings.font_color = colors[currentColorIndex] if not colors.is_empty() else Color.WHITE
+		else: label.add_theme_color_override(&"font_color", colors[currentColorIndex] if not colors.is_empty() else Color.WHITE) # Handle Label that have no LabelSettings
 	# TODO: RichTextLabel
