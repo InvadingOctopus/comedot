@@ -6,7 +6,7 @@
 
 **Comedot is an opinionated as fuck framework & project template for [Godot][godot] with the goal of being an all-in-one toolkit for 2D games of any genre:** Platformers, shoot-em-ups, RPGs, strategy, puzzle, turn-based, tile-based etc.
 
-This is either the most overenginered shit you've ever seen or the most awesome way of making games. I made this while [trying][itch] to make 100 different games and still yet to finish 1, but whenever I identify something that's needed frequently in multiple genres I shove it into this shared library.
+This is either the most overenginered shit you've ever seen or the most awesome way of making games. I made this while [trying][itch] to make 100 different games and still yet to finish 1 :') but whenever I identify something that's frequently needed in multiple genres I shove it into this shared library.
 
 Comedot lets you build scenes by smacking components into entities and tweaking their parameters: _"Entities"_ and _"Components"_ are just regular Godot nodes but for gameplay mechanics, so you can mix this framework with your usual Godot workflow or any other architecture or fetish.
 
@@ -66,9 +66,6 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 
 ## How To Use
 
-> [!IMPORTANT]  
-> _Requires **Godot 4.8** 〜embrace the future ✨_
-
 > [!TIP]
 > 🚀 **Quickstart:** To try right away, run `/Templates/Scenes/PlatformerSceneTemplate.tscn`
 >
@@ -114,6 +111,7 @@ https://github.com/user-attachments/assets/061cf16a-04e9-477d-8f59-e2fa0fa523b7
 > ### 💕 THANKS:  
 > * Tilesets:	https://kenney.nl/assets/1-bit-pack  
 > * Font:		Jayvee Enaguas (HarvettFox96) https://www.dafont.com/pixel-operator.font
+
 
 [repository]: https://github.com/invadingoctopus/comedot
 [website]: https://invadingoctopus.io
