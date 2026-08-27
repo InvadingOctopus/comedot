@@ -69,7 +69,7 @@ https://github.com/InvadingOctopus/comedot-media
 
 ## Versions
 
-Version Name:	4.8.0.3.666
+Version Name:	4.8.0.4.42
 	First 3 numbers: Godot version
 	4th: Godot Dev/Beta/RC where <10 = Beta, 10-90 = RC, 100 = release
 	5th: The Comedot release during that Godot version, in jumps of cool numbers like 42 → 69 → 420 → 666 etc.
