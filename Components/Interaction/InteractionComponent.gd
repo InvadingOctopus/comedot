@@ -24,7 +24,7 @@ extends AreaContactComponent
 
 ## Initiate an interaction automatically as soon as any [InteractionControlComponent] comes in contact.
 ## Calls [method InteractionControlComponent.interact] on an [Area2D] collision event.
-## Example: Portals or traps etc.
+## TIP: May be used for portals or traps etc.
 ## ALERT: [InteractionControlComponent] may skip if on cooldown; Does not repeat interaction attempt after the cooldown resets.
 @export var isAutomatic:	bool = false
 

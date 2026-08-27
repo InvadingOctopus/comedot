@@ -13,10 +13,11 @@ extends InteractionComponent
 @export_range(0.0, 60.0, 0.01) var cooldownOnFailure: float = 0.5
 
 ## If `true` then [method InteractionControlComponent.interact] is called again on [member previousInteractor] after the cooldown [Timer] finishes.
+## TIP: Use [member isAutomatic] to automatically initiate the FIRST interaction on contact.
 ## TIP: May be useful for auto-advancing a [TextInteractionComponent] for simple NPC dialogue etc.
 ## TIP: Set [member shouldSkipInteractorCooldown] to ensure that the [InteractionControlComponent] is not in cooldown when this [InteractionWithCooldownComponent] comes out of cooldown.
 ## ALERT: Even failed/rejected interaction may be repeated!
-@export var shouldRepeatInteractionAfterCooldown: bool = false
+@export var shouldRepeatInteractionAfterCooldown: bool
 @export var shouldModifyIndicatorInCooldown:	  bool = true  ## If `true` then the [member interactionIndicator] is dimmed and modified during a cooldown.
 
 #endregion
@@ -67,7 +68,7 @@ func updateIndicator() -> void:
 	if interactionIndicator is Label:
 		# Are we off cooldown?
 		if shouldModifyIndicatorInCooldown and not is_zero_approx(cooldownTimer.time_left):
-			interactionIndicator.text = "COOLDOWN"
+			interactionIndicator.text = "COOLDOWN" # TBD: Should this be optional?
 		else:
 			interactionIndicator.text = self.text # TBD: Allow empty strings?
 
@@ -104,7 +105,8 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 		return false
 
 
-## Calls [method InteractionControlComponent.interact] is called again on [member previousInteractor]
+## Calls [method InteractionControlComponent.interact] again on [member previousInteractor]
+## Called from [method onCooldownTimer_didFinishCooldown] if [member shouldRepeatInteractionAfterCooldown]
 ## May be overridden by subclasses such as [TextInteractionComponent] to add further checks on whether to repeat or not.
 func repeatPreviousInteraction() -> Variant:
 	if debugMode: printLog(str("repeatPreviousInteraction() with: ", previousInteractor))

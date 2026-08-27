@@ -34,7 +34,7 @@ extends Component
 @export var shouldRepeatOnHeldInput:bool = true
 
 @export var isEnabled: bool = true:
-	set = setIsEnabled # Use a separate function for the property setter so that subclasses may override it.
+	set = setIsEnabled # Use a separate function for the setter to let subclasses override it
 
 func setIsEnabled(newValue: bool) -> void:
 	if newValue != isEnabled:

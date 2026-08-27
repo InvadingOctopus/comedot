@@ -1,4 +1,7 @@
 ## The Invading Octopus Logo~
+## Transitions to `/Scenes/Launch/GameFrame.tscn`
+## which then launches the [member ComedotProjectSettings.mainGameScenePath] in `ComedotProjectSettings.tres`
+## TIP: Replace this with your company & game-specific logos.
 
 class_name LogoSceneIO
 extends Node2D

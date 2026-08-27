@@ -1,4 +1,5 @@
 ## Comedot Project Settings
+## By default saved as `ComedotProjectSettings.tres` in the Godot project's root folder.
 ## IMPORTANT: These are NOT Godot's project settings like [ProjectSettings],
 ## and generally not exposed to the player or modifiable during gameplay runtime.
 ## INFO: These settings are set at DEVELOPMENT-TIME and  apply to Comedot AutoLoads, the Components Dock, Debugging/Logging,

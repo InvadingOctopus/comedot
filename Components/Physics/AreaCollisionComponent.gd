@@ -17,7 +17,7 @@ extends AreaComponentBase
 ## Also effects [member Area2D.monitorable] but NOT [member Area2D.monitoring]
 ## NOTE: Does NOT affect the EXIT signals or REMOVAL of areas/bodies which leave contact with this component.
 @export var isEnabled: bool = true: # TBD: Move to AreaComponentBase?
-	set = setIsEnabled # Use a separate function for the property setter so that subclasses may override it.
+	set = setIsEnabled # Use a separate function for the setter to let subclasses override it
 
 ## Property setter for [member isEnabled] as a separate function to let subclasses override it.
 ## IMPORTANT: Subclasses MUST call super.setIsEnabled(newValue)
