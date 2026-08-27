@@ -85,6 +85,7 @@ func skipCurrentAnimation() -> bool:
 	# UNUSED: currentAnimation.custom_step(self.animationDurationForCurrentString - currentAnimation.get_total_elapsed_time())
 	Tools.disconnectSignal(currentAnimation.finished, self.onCurrentAnimation_finished)
 	currentAnimation.kill() # TBD: kill() or fast-forward remaining time?
+	currentAnimation = null
 	if textSequence: self.text = textSequence.getCurrentString()
 	return true
 
