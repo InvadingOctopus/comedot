@@ -32,6 +32,8 @@ I come from Swift and I love it so this framework attempts to mimic the Swift AP
 	- This is what the default Godot script templates start with.
 	- Adds more clear visual separation between distinct sections.
 
+* Feel free to insert spaces or tabs within a line for prettier alignment and other OCDs.
+
 
 ## Case
 
@@ -131,7 +133,7 @@ func onTimeout() # in the script of a Timer node
 
 ## Comments
 
-* Comments don't use BBCode. It's ugly and just dumb in 2025. Waiting for Godot to just implement Markdown already.
+* Comments don't use BBCode. It's dumb and ugly. Waiting for Godot to just implement Markdown already.
 
 * Comments may begin with tags for marking stuff to watch out for. Most such as TODO & FIXME are self-explanatory.
 	- TBD: (To Be Decided) or CHECK: Something that is an uncertain solution, may not be the ideal and could change in the future, but works for now.
@@ -141,6 +143,8 @@ func onTimeout() # in the script of a Timer node
 	- WORKAROUND: Code that temporarily solves a bug in Godot etc. and may be removed after the bug has been eradicated.
 	- CREDIT: For people/sources who created certain code or resources, such as other open-source projects/contributors or third-party asset providers.
 	- THANKS: For people/sources who suggested or were the inspiration behind an idea or solution.
+
+* Trailing punctuation such as periods may be omitted for short single-line phrases, and for comments that end in a [TypeName] etc. to avoid confusing for a `.` property access operator.
 
 
 ## Order

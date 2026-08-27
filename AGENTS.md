@@ -63,7 +63,7 @@
 
 ## Coding Style & Naming Conventions
 Follow the guidelines in `/Conventions.md`, which includes these key rules:
-- Tabs, not spaces; GDScript is indentation-sensitive.
+- Use tabs for indentation, not spaces.
 - Prefer camelCase for everything, including constants; avoid underscores except in rare cases.
 - Types (class names, enums) are Capitalized.
 - Two empty lines between major code sections or different "categories" (functions, properties, signals, regions).
@@ -71,6 +71,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Function/method names should be imperative verbs wherever it makes grammatical sense: `doSomething()`, `checkRequirements()`
 - Signal handlers should be named as `on[Emitter]_[signal]`
 - Prefer strong static typing: Write out explicit types, e.g. `var number: int = 42` instead of `var number := 42`, but `:=` may be used where the type isn't certain at coding time.
+- Omit periods for short comments or comments ending with names of types/functions/etc.
 - If instructions conflict or drift, `/Conventions.md` takes precedence and includes exceptions for some rules. In case of ambiguity, match existing patterns.
 - There is no automated formatter configured; match existing style manually.
 
@@ -119,7 +120,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 	! An exclamation sign for high impact fixes or the most important changes in the commit.
 	? A question mark for some comments such as possible bugs, uncertain behavior, "TBD" (To Be Decided) remarks, etc.
 	! TODO: An exclamation sign + `TODO:` etc. for updating dependents etc. affected by this commit, to be included in the following next commits, especially if this commit leaves the project in a broken state.
-	& An ampersand for additional "side effects" related to the main commit topic, such as updating dependents etc.
+	& An ampersand for additional "side effects" related to the main commit topic, such as updating dependents and tests etc.
 
 For PRs:
 - The submitter should describe the gameplay impact and affected components/scenes.
