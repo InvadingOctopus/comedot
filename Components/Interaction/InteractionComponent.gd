@@ -47,10 +47,7 @@ extends AreaContactComponent
 ## Example: "Open Door" or "Chop Tree".
 ## Used by [method updateIndicator] to automatically update the [member interactionIndicator] if it's a [Label].
 @export var text: String:
-	set(newValue):
-		if newValue != text:
-			text = newValue
-			if self.is_node_ready() and interactionIndicator is Label: updateIndicator()
+	set = setText # Use a separate function for the setter to let subclasses override it
 
 ## An optional detailed description of the interaction to display in the UI.
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
@@ -81,10 +78,19 @@ signal didPerformInteraction	(interactorEntity: Entity, result: Variant) ## Cont
 
 
 #region Property Get/Set
+
 func setIsEnabled(newValue: bool) -> void:
 	# TBD: Toggle `Area2D.monitoring`?
 	super.setIsEnabled(newValue)
 	updateIndicator()
+
+## Sets [member text] and updates the [member interactionIndicator] if this component is ready.
+## May be overridden by subclasses to customize how their text is displayed.
+func setText(newValue: String) -> void:
+	if newValue != text:
+		text = newValue
+		if self.is_node_ready() and interactionIndicator is Label: updateIndicator()
+
 #endregion
 
 
