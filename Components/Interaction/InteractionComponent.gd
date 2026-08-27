@@ -96,33 +96,8 @@ func setText(newValue: String) -> void:
 
 func _ready() -> void:
 	self.shouldMonitorBodies = false # TBD: Just let it be customizable from the scene?
-
-	super._ready() # Prep the AreaContactComponent stuff
-
-	# Set the initial state of the indicator
-	# NOTE: Update content even if not `isEnabled` and hidden, just in case
-	if  interactionIndicator:
-		if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
-		interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0) # Start invisible if false
-
-		if  interactionIndicator is Label:
-			# NOTE: If our `text` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
-			if self.text.is_empty(): self.text = interactionIndicator.text
-			else: updateIndicator() # Otherwise set the UI to our string
-
-
-## IMPORTANT: Subclasses that override this method to add extra functionality MUST also update the visibility or call super
-func updateIndicator() -> void:
-	# TBD: Check if any InteractionControlComponent is in contact before showing the indicator? but get_overlapping_areas() may be too expensive..
-	if not interactionIndicator: return
-
-	interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0)
-
-	## If the [interactionIndicator] is a [Label], display our [member text]
-	## NOTE: Do not check text.is_empty() so an empty string may be used to clear the UI
-	## IMPORTANT: Update the text whether it's visible or not, in case it's needed elsewhere
-	if  interactionIndicator is Label:
-		interactionIndicator.text = self.text
+	super._ready() # Prep the [AreaContactComponent] stuff
+	initializeIndicator()
 
 
 #region Area Collision Events
@@ -217,6 +192,40 @@ func performAutomaticInteraction(interactionControlComponent: InteractionControl
 	# then the InteractionControlComponent will not have this component in `areasInContact` yet
 	# so we must set `ignoreRange` when calling interact()
 	interactionControlComponent.interact(self, true) # ignoreRange # Interact only with me senpai!
+
+#endregion
+
+
+#region Indicator
+
+## Sets the initial state & content of the [member interactionIndicator]
+## May be customized by subclasses.
+## IMPORTANT: Overrides MUST call `super.initializeIndicator()`
+func initializeIndicator() -> void:
+	if not interactionIndicator: return
+
+	# NOTE: Update content even if not `isEnabled` and hidden, just in case
+	if interactionIndicator is Control: interactionIndicator.tooltip_text = self.description
+	interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0) # Start invisible if false
+
+	if  interactionIndicator is Label:
+		# NOTE: If our `text` property is empty, save any existing text as the default, so we can restore it after any temporary modifications such as by [InteractionWithCooldownComponent] etc.
+		if self.text.is_empty(): self.text = interactionIndicator.text
+		else: updateIndicator() # Otherwise set the UI to our string
+
+
+## IMPORTANT: Subclasses that override this method to add extra functionality MUST also update the visibility or call super
+func updateIndicator() -> void:
+	# TBD: Check if any InteractionControlComponent is in contact before showing the indicator? but get_overlapping_areas() may be too expensive..
+	if not interactionIndicator: return
+
+	interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0)
+
+	## If the [interactionIndicator] is a [Label], display our [member text]
+	## NOTE: Do not check text.is_empty() so an empty string may be used to clear the UI
+	## IMPORTANT: Update the text whether it's visible or not, in case it's needed elsewhere
+	if  interactionIndicator is Label:
+		interactionIndicator.text = self.text
 
 #endregion
 
