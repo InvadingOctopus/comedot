@@ -36,14 +36,14 @@ signal didFinishAnimation ## Emitted only when an animation completes normally, 
 ## NOTE: [method TextSequence.incrementIndex] is NOT called if our [member text] is not the same as the [method TextSequence.getCurrentString]
 ## This allows an initial label string to be displayed before advancing the [member textSequence]
 ## TIP: This function may be called by a [Timer] or other scripts to automate the text display.
-func displayNextText(animate: bool = self.shouldAnimate) -> void:
+func displayNextText(animate: bool = self.shouldAnimate) -> String:
 	# NOTE:   If our current `text` is not the current TextSequence string, re-display the current TextSequence string.
 	# FIXED:  This lets the first sequence message be visible and animated instead of being skipped immediately.
 	if textSequence and self.text == textSequence.getCurrentString(): textSequence.incrementIndex()
-	applyText(animate)
+	return applyText(animate)
 
 
-func applyText(animate: bool = self.shouldAnimate) -> void:
+func applyText(animate: bool = self.shouldAnimate) -> String:
 	# Clear any previous animation, whether we're going to animate the next string or not
 	if  currentAnimation:
 		Tools.disconnectSignal(currentAnimation.finished, self.onCurrentAnimation_finished) # Don't trigger any false signals
@@ -53,7 +53,7 @@ func applyText(animate: bool = self.shouldAnimate) -> void:
 	# If there's no text, there's nothing to do
 	if not textSequence or textSequence.strings.is_empty():
 		self.text = ""
-		return
+		return ""
 
 	# Apply the color first
 	if textSequence:
@@ -75,6 +75,8 @@ func applyText(animate: bool = self.shouldAnimate) -> void:
 	didDisplayString.emit(textSequence.currentStringIndex, currentAnimation)
 	if textSequence.currentStringIndex == textSequence.getSize() - 1: # Did we i
 		didDisplayFinalString.emit(currentAnimation)
+
+	return self.text
 
 
 ## Skips the current animation and displays the full string from [method TextSequence.getCurrentString]
