@@ -17,4 +17,4 @@ editor_description = "A Timer specialized for cooldowns."
 script = ExtResource("1_qoqq8")
 cooldownMilliseconds = SubResource("Resource_28hxu")
 
-[connection signal="timeout" from="." to="." method="finishCooldown"]
+[connection signal="timeout" from="." to="." method="onTimeout"]
