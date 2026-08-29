@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdg8ix4bwyiij" path="res://Components/Interaction/InteractionComponent.gd" id="1_bx3kd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ieqsb"]
+resource_local_to_scene = true
 radius = 16.0
 
 [node name="InteractionComponent" type="Area2D" unique_id=1045420162 groups=["components", "interactions"]]

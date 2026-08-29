@@ -6,14 +6,13 @@
 class_name InteractionComponent
 extends AreaContactComponent
 
-# TODO: Add shouldSucceedIfNoPayload
 # TBD: Inherit scene from AreaContactComponent.tscn too?
 # CHECK: PERFORMANCE: Will too many inheritance levels impact performance?
 
 
 #region Parameters
 
-## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`.
+## The effect of the interaction, where this [InteractionComponent] is passed as the `source` for [method Payload.execute], and the [InteractionControlComponent]'s parent [Entity] is the `target`
 ## See [Payload] for explanation and available options.
 ## TIP: Interactions may succeed if [member allowNoPayload] even if there is no Payload; for example [TextInteractionComponent] performs its effects by itself.
 @export var payload: Payload
@@ -28,8 +27,9 @@ extends AreaContactComponent
 ## ALERT: [InteractionControlComponent] may skip if on cooldown; Does not repeat interaction attempt after the cooldown resets.
 @export var isAutomatic:	bool = false
 
-## Allows [method performInteraction] to return `true` if [member payload] is missing.
-## This allows components like [TextInteractionComponent] be their own payload.
+## Allows [method performInteraction] to continue and return `true` even if [member payload] is missing.
+## This allows components like [TextInteractionComponent] to be their own payload.
+## Other subclasses may still require a valid [Payload] or ignore this flag.
 @export var allowNoPayload:	bool
 
 
@@ -37,7 +37,7 @@ extends AreaContactComponent
 
 ## A [Node2D] or [Control] such as [Label] to display when this [InteractionComponent] is in collision contact with an [InteractionControlComponent]
 ## ALERT: If multiple InteractionComponents use the same indicator, the most recent component to run [method updateIndicator] will modify this label.
-## NOTE: This is the indicator for the entity that will be interacted with, such as a door or an NPC. This may display messages such as "Locked" or "! Quest available" etc.
+## NOTE:  This is the indicator for the entity that will be interacted with, such as a door or an NPC. This may display messages such as "Locked" or "! Quest available" etc.
 ## [InteractionControlComponent]s have their own [InteractionControlComponent.interactorIndicator] to display messages such as "Push Y to Talk" etc.
 @export var interactionIndicator: CanvasItem
 
@@ -45,13 +45,14 @@ extends AreaContactComponent
 
 ## An optional short label, name or phrase to display in the UI for this interaction.
 ## Example: "Open Door" or "Chop Tree".
-## Used by [method updateIndicator] to automatically update the [member interactionIndicator] if it's a [Label].
+## Used by [method updateIndicator] to automatically update the [member interactionIndicator] if it's a [Label]
+## TIP: For more detailed instructions, use [member description]
 @export var text: String:
 	set = setText # Use a separate function for the setter to let subclasses override it
 
-## An optional detailed description of the interaction to display in the UI.
+## An optional detailed description of the interaction to display in the UI, different from the [member text]
 ## Example: "Chopping a tree requires an Axe and grants 2 Wood"
-## If the [member interactionIndicator] is a [Control] then it's [member Control.tooltip_text] is also set to this string.
+## If the [member interactionIndicator] is a [Control] then its [member Control.tooltip_text] is also set to this string.
 @export var description: String:
 	set(newValue):
 		if newValue != description:
@@ -73,7 +74,11 @@ signal didEnterInteractionArea	(entity: Entity, interactionControlComponent: Int
 signal didExitInteractionArea	(entity: Entity, interactionControlComponent: InteractionControlComponent)
 signal didDenyInteraction		(interactorEntity: Entity)
 signal willPerformInteraction	(interactorEntity: Entity)
-signal didPerformInteraction	(interactorEntity: Entity, result: Variant) ## Contains the result of the [Payload] or `null` if no Payload.
+
+## Emitted by [method performInteraction] containing the result of [method executePayload]
+## NOTE: NOT emitted if not [member isEnabled] or if [member payload] is missing and not [member allowNoPayload]
+## TIP: Connect to [signal Payload.didExecute] etc. to monitor the [member payload]
+signal didPerformInteraction	(interactorEntity: Entity, result: Variant)
 #endregion
 
 
@@ -142,10 +147,11 @@ func onExit(exitingNode: Node2D) -> void:
 
 #region Interaction Interface
 
-## Called by an [InteractionControlComponent].
+## Called by an [InteractionControlComponent]
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
-## Then this [InteractionComponent] checks its own conditions (such as whether the player has key to open a door, or an axe to chop a tree).
-## NOTE: If not [member isEnabled] then `false` is returned BUT [signal didDenyInteraction] is NOT emitted; the component is basically dead.
+## Then this [InteractionComponent] calls [method checkInteractionConditions] to check its own conditions,
+## such as whether the player has key to open a door, or an axe to chop a tree.
+## NOTE: If not [member isEnabled] then `false` is returned BUT [signal didDenyInteraction] is NOT emitted; a disabled component is basically dead.
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	if not isEnabled: return false
 
@@ -157,38 +163,44 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 		return false
 
 
-## Executes the [member payload], passing this [InteractionComponent] as the `source` parameter of the [Payload], and the [param interactorEntity] as the `target`.
-## May be overridden by a subclass to perform custom actions.
-## NOTE: The return value of this method may be different than the "raw" result of the Payload included in [signal didPerformInteraction]
-## Returns: The result of [method Payload.execute] or `null` if the [member payload] is missing, or `true` if no Payload but [member allowNoPayload] is enabled.
+## Calls and returns the result of [method executePayload], passing this [InteractionComponent] as the `source` argument for the [Payload], and the [param interactorEntity] as the `target`
+## Returns `null` if there is no [member payload] and [member allowNoPayload] is `false`
+## Returns `false` if not [member isEnabled]
+## ALERT: This should generally NOT be overridden by subclasses;
+## TIP: Override [method executePayload] to perform custom actions.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
-	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", payload: ", (payload.logName if payload else "null"), ", isEnabled: ", isEnabled, ", allowNoPayload: ", allowNoPayload))
+	if debugMode:
+		printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", payload: ", (payload.logName if payload else "null"), ", isEnabled: ", isEnabled, ", allowNoPayload: ", allowNoPayload))
+		if interactionControlComponent.entity != interactorEntity: printWarning(str("interactorEntity: ", interactorEntity, " != interactionControlComponent.entity: ", interactionControlComponent.entity))
 	if not isEnabled: return false
+	if not payload and not allowNoPayload: return null
 
-	# DESIGN: The value in the signal and this function's return value are not the same thing;
-	# the signal contains the "raw" result of the Payload;
-	# but this function may be the result, `true` if missing & `allowNoPayload`, or `null`
-	var payloadResult: Variant = null
+	self.willPerformInteraction.emit(interactorEntity)
+	var  result: Variant = self.executePayload(interactorEntity, interactionControlComponent)
+	self.didPerformInteraction.emit(interactorEntity, result)
 
-	if payload or allowNoPayload: # TBD: Emit signals even if no `payload` & no `allowNoPayload`?
-		self.willPerformInteraction.emit(interactorEntity)
-		# TBD: Add an executePayload() hook here for subclasses?
-		payloadResult = payload.execute(self, interactorEntity) if payload else null # NOTE: Keep `null` and NOT `true`; the `true` is for the function result if `allowNoPayload`
-		self.didPerformInteraction.emit(interactorEntity, payloadResult) # TBD: Make it the same as the function result, i.e. `true` if missing & `allowNoPayload`?
-
-	# DESIGN: Return `true` if missing & allowNoPayload, to let components like [TextInteractionComponent] be their own payload.
-	if   payload:		 return payloadResult
-	elif allowNoPayload: return true
-	else:				 return null # TBD: Return `false` if missing? `null` makes more sense; non-existence or "not-even-wrong"
+	return result
 
 
-## Called by [method onArea_entered] if [member isAutomatic].
-## Implemented as a separate method so that subclasses mat override it.
+## Executes the [member payload], passing this [InteractionComponent] as the `source` parameter of the [Payload], and the [param interactorEntity] as the `target`
+## Returns the result of [method Payload.execute] if there is a [member payload],
+## or returns `true` if there is no [member payload] but [member allowNoPayload] is set, to allow for custom/signal-driven interactions etc.
+## otherwise returns `false`
+## TIP: May be overridden by a subclass to perform custom actions.
+## NOTE: The return value of this method may be different than the "raw" result of the [member payload]
+@warning_ignore("unused_parameter")
+func executePayload(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
+	# DESIGN: Return `true` if missing & `allowNoPayload`
+	# to let components like [TextInteractionComponent] be their own payload.
+	return payload.execute(self, interactorEntity) if payload else allowNoPayload
+
+
+## Called by [method onCollide] if [member isAutomatic]
+## Implemented as a separate method so that subclasses may override it.
 ## NOTE: Does NOT check [member isAutomatic]; must be checked by caller.
-## NOTE: HEADSUP: Remember to set [member previousInteractor] = [member interactionControlComponent] if using [method startCooldown].
 func performAutomaticInteraction(interactionControlComponent: InteractionControlComponent) -> void:
 	# TODO: Handle InteractionControlComponent cooldown
-	# NOTE: If InteractionComponent.onArea_entered() runs before InteractionControlComponent's collision events,
+	# NOTE: If InteractionComponent.onCollide() runs before InteractionControlComponent's collision events,
 	# then the InteractionControlComponent will not have this component in `areasInContact` yet
 	# so we must set `ignoreRange` when calling interact()
 	interactionControlComponent.interact(self, true) # ignoreRange # Interact only with me senpai!
@@ -216,9 +228,9 @@ func initializeIndicator() -> void:
 
 ## IMPORTANT: Subclasses that override this method to add extra functionality MUST also update the visibility or call super
 func updateIndicator() -> void:
-	# TBD: Check if any InteractionControlComponent is in contact before showing the indicator? but get_overlapping_areas() may be too expensive..
 	if not interactionIndicator: return
 
+	# Check if any [InteractionControlComponent] is in contact before showing the indicator
 	interactionIndicator.visible = isEnabled and (shouldAlwaysShowIndicator or controllersInContactCount > 0)
 
 	## If the [interactionIndicator] is a [Label], display our [member text]
@@ -233,10 +245,9 @@ func updateIndicator() -> void:
 #region Virtual Methods
 
 ## May be overridden in a subclass to approve or deny an interaction.
-## NOTE: Remember to check [member isEnabled] in the subclass implementation!
-## Default: `true`
+## Returns: [member isEnabled] by default.
 func checkInteractionConditions(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
-	# CHECK: Maybe a better name? :p
+	# TBD: Maybe a better name? :p
 	if debugMode: printDebug(str("checkInteractionConditions() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent))
 	return isEnabled
 
