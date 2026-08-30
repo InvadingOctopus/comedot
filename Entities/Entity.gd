@@ -285,7 +285,7 @@ func installComponent(component: Component) -> bool:
 
 	# DESIGN: TRIED: Do NOT register the superclass of the component, such as &"HealthComponent" for [ShieldedHealthComponent].
 	# REASON: This is too complicated to implement elegantly/reliably,
-	# because many components share common base classes such as `Component`, `CharacterBodyDependentComponentBase`, `CooldownComponent` etc.
+	# because many components share common base classes such as `Component`, `CharacterBodyDependentComponentBase` etc.
 	# WORKAROUND: Use findFirstComponentSubclass() or getComponent() with `findSubclasses`
 
 	self.components[className] = component

@@ -1,5 +1,5 @@
 ## Adds common "cooldown" functionality to a [Timer] for any actions a player may not perform too quickly, such as firing a gun or mining resources.
-## Used by [CooldownComponent], [InteractionWithCooldownComponent] etc.
+## Used by [GunComponent], [BulletlessGunComponent], [InteractionWithCooldownComponent] etc.
 ## IMPORTANT: ALWAYS use [method startCooldown]: Do NOT use the standard [method Timer.start] because the default Godot [Timer] is not aware of [member cooldownMilliseconds] or [member minimumCooldown] etc.
 ## WARNING: Calling [method Timer.stop] will NOT emit [signal Timer.timeout] or [signal CooldownTimer.didFinishCooldown] — Call [method cancelCooldown] to manually cancel a cooldown.
 

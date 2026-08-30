@@ -9,10 +9,9 @@
 ## Requirements: [InputComponent]
 
 class_name GunComponent
-extends CooldownComponent
+extends Component
 
 # TODO: PERFORMANCE: Allow non-Entity bullets
-# NOTE: The .tscn Scene file cannot inherit from CooldownComponent because CooldownComponent is a Node, but GunComponent needs to be a Node2D for positioning :')
 
 
 #region Parameters
@@ -87,6 +86,7 @@ signal ammoInsufficient ## Emitted when attempt to fire the gun while [member am
 
 #region State
 
+@onready var cooldownTimer:			CooldownTimer = $CooldownTimer
 @onready var selfAsNode2D:			Node2D = self.get_node(^".") as Node2D
 @onready var internalBulletEmitter:	Node2D = self.get_node_or_null(^"%BulletEmitter") as Node2D # For crash-safety, to make it optional so that the node may be deleted from the scene if it's not needed
 
@@ -123,7 +123,6 @@ func getRequiredComponents() -> Array[Script]:
 
 
 func _ready() -> void:
-	super._ready()
 	Tools.connectSignal(inputComponent.didUpdateInputActionsList,	self.onInputComponent_didUpdateInputActionsList)
 	Tools.connectSignal(inputComponent.didResyncAllInputs,			self.resyncInput)
 	Tools.connectSignal(inputComponent.didClearAllInputs,			self.resyncInput)
@@ -168,7 +167,7 @@ func _process(_delta: float) -> void:
 			isFireActionPressed = false
 			wasFireActionJustPressed = false
 
-	if autoFire and not isOnCooldown:
+	if autoFire and not cooldownTimer.isOnCooldown:
 		fire()
 	elif not shouldPressAgainToShoot and isFireActionPressed:
 		fire()
@@ -184,7 +183,7 @@ func _process(_delta: float) -> void:
 ## Returns the bullet that was fired.
 func fire(emitter: Node2D = self.bulletEmitter, ignoreCooldown: bool = false) -> Entity:
 	if not isEnabled: return null
-	if isOnCooldown and not ignoreCooldown: return null
+	if cooldownTimer.isOnCooldown and not ignoreCooldown: return null
 
 	if not bulletTemplate:
 		printWarning("No bulletTemplate specified!")
@@ -219,7 +218,7 @@ func fire(emitter: Node2D = self.bulletEmitter, ignoreCooldown: bool = false) ->
 	newBullet.owner = bulletParent # For persistence to a [PackedScene] for save/load. CHECK: Is this necessary or will it reduce performance?
 
 	didFire.emit(newBullet)
-	startCooldown() # Start the cooldown Timer
+	cooldownTimer.startCooldown()
 
 	return newBullet
 

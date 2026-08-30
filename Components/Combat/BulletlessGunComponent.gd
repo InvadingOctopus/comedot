@@ -9,7 +9,7 @@
 ## @experimental
 
 class_name BulletlessGunComponent
-extends CooldownComponent
+extends Component
 
 
 #region Parameters
@@ -42,6 +42,8 @@ extends CooldownComponent
 
 
 #region State
+@onready var cooldownTimer: CooldownTimer = $CooldownTimer
+
 var isFiring: bool = false:
 	set(newValue):
 		if newValue != isFiring:
@@ -51,7 +53,7 @@ var isFiring: bool = false:
 			isFiring = newValue
 			# UNUSED: damageComponent.isEnabled = self.isFiring # Don't disable Area2D events
 			if isFiring and cooldownTimer.is_stopped() and not is_zero_approx(cooldownTimer.time_left):
-				cooldownTimer.start()
+				cooldownTimer.startCooldown()
 #endregion
 
 
@@ -84,7 +86,7 @@ func _ready() -> void:
 	damageComponent.shouldDamageOnCollision = false # Damage only when isFiring
 
 	if isFiring and cooldownTimer.is_stopped():
-		cooldownTimer.start()
+		cooldownTimer.startCooldown()
 
 	self.set_physics_process(isEnabled and is_instance_valid(targetingNode))
 
@@ -101,7 +103,7 @@ func onInputComponent_didUpdateInputActionsList(event: InputEvent) -> void:
 
 	resyncInput()
 	# Fire the initial shot only from a real fire-press event.
-	if self.isFiring and event.is_action_pressed(GlobalInput.Actions.fire) and not self.isOnCooldown: fire()
+	if self.isFiring and event.is_action_pressed(GlobalInput.Actions.fire) and not cooldownTimer.isOnCooldown: fire()
 
 
 ## Resets input on [signal InputComponent.didClearAllInputs] & [signal InputComponent.didResyncAllInputs]
@@ -121,12 +123,12 @@ func _physics_process(_delta: float) -> void:
 #region Boom Boom
 
 func onDamageComponent_didCollideReceiver(_damageReceivingComponent: DamageReceivingComponent) -> void:
-	if not self.isEnabled or not self.isFiring or isOnCooldown: return
+	if not self.isEnabled or not self.isFiring or cooldownTimer.isOnCooldown: return
 	fire()
 
 
 func fire() -> bool:
-	if isOnCooldown \
+	if cooldownTimer.isOnCooldown \
 	or (dontShootIfNoTargets and damageComponent.damageReceivingComponentsInContact.is_empty()):
 		return false
 
@@ -134,7 +136,7 @@ func fire() -> bool:
 		if debugMode: emitDebugBubble(str("HIT ", damageComponent.damageReceivingComponentsInContact.size()))
 		damageComponent.causeDamageToAllReceivers()
 		self.didFire.emit(damageComponent.damageReceivingComponentsInContact)
-		self.startCooldown()
+		cooldownTimer.startCooldown()
 		return true
 	else:
 		if debugMode: emitDebugBubble("LOW AMMO", damageComponent.damageReceivingComponentsInContact.size())
@@ -168,10 +170,10 @@ func useAmmo() -> bool:
 	return true
 
 
-func finishCooldown() -> void:
-	super.finishCooldown()
+## Called by [signal CooldownTimer.didFinishCooldown]
+func onCooldownTimer_didFinishCooldown() -> void:
 	if not self.isEnabled or not self.isFiring: return
 	fire()
-	if cooldownTimer.one_shot: cooldownTimer.start() # Keep firing
+	if cooldownTimer.one_shot: cooldownTimer.startCooldown() # Keep firing
 
 #endregion

@@ -28,3 +28,5 @@ use_parent_material = true
 texture = ExtResource("3_e355o")
 region_enabled = true
 region_rect = Rect2(688, 144, 16, 16)
+
+[connection signal="didFinishCooldown" from="CooldownTimer" to="." method="onCooldownTimer_didFinishCooldown"]
