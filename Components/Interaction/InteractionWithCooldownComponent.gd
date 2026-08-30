@@ -1,4 +1,5 @@
-## A subclass of [InteractionComponent] with a [CooldownTimer].
+## A subclass of [InteractionComponent] with a [CooldownTimer]
+## Rejects interactions and emits [signal didDenyInteraction] when on cooldown.
 ## To change the cooldown, enable "Editable Children"
 
 class_name InteractionWithCooldownComponent
@@ -77,11 +78,12 @@ func updateIndicator() -> void:
 #region Interaction Interface
 
 ## Extends [method InteractionComponent.requestToInteract] to include a cooldown [Timer] check.
-## NOTE: Does NOT emit [signal didDenyInteraction] when on cooldown.
+## Rejects interaction and emits [signal didDenyInteraction] when on cooldown.
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
-	# TBD: Emit `didDenyInteraction` when on cooldown?
-	if  not isEnabled \
-	or (not canSkipCurrentCooldown and not is_zero_approx(cooldownTimer.time_left)):
+	if not isEnabled: return false # DESIGN: Don't emit `didDenyInteraction` because a disabled component should effectively behave as non-existent
+	if not canSkipCurrentCooldown and not is_zero_approx(cooldownTimer.time_left):
+		# ALERT: BUGRISK: Callers & signal handlers should avoid assuming 2 failures from a `false` retunred by requestToInteract() + `didDenyInteraction`
+		didDenyInteraction.emit(interactorEntity)
 		return false
 	return super.requestToInteract(interactorEntity, interactionControlComponent)
 
