@@ -147,16 +147,17 @@ func onExit(exitingNode: Node2D) -> void:
 
 #region Interaction Interface
 
-## Called by an [InteractionControlComponent]
-## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
-## Then this [InteractionComponent] calls [method checkInteractionConditions] to check its own conditions,
-## such as whether the player has key to open a door, or an axe to chop a tree.
-## NOTE: If not [member isEnabled] then `false` is returned BUT [signal didDenyInteraction] is NOT emitted; a disabled component is basically dead.
+## Called by an [InteractionControlComponent] before calling [method performInteraction]
+## When the player presses the Interact button, the [InteractionControlComponent] checks its own conditions then calls this method on the [InteractionComponent](s) in range.
+## Then this [InteractionComponent] calls [method checkInteractionConditions] to check the interaction's conditions,
+## such as whether the player has a key to open a door, or an axe to chop a tree.
+## NOTE: Returns `false` if not [member isEnabled] BUT [signal didDenyInteraction] is NOT emitted; a disabled component is basically treated as non-existent.
+## ALERT: BUGRISK: [signal didDenyInteraction] + a `false` return report the SAME rejection; callers & signal handlers must not count them as 2 separate failures.
+## ALERT: This method should generally NOT be overridden by subclasses;
+## TIP: Override [method checkInteractionConditions] to add subclass-specific conditions.
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:
 	if not isEnabled: return false
-
-	var isInteractionApproved: bool = checkInteractionConditions(interactorEntity, interactionControlComponent)
-	if  isInteractionApproved:
+	if checkInteractionConditions(interactorEntity, interactionControlComponent):
 		return true
 	else:
 		didDenyInteraction.emit(interactorEntity)
@@ -164,9 +165,10 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 
 ## Calls and returns the result of [method executePayload], passing this [InteractionComponent] as the `source` argument for the [Payload], and the [param interactorEntity] as the `target`
-## Returns `null` if there is no [member payload] and [member allowNoPayload] is `false`
 ## Returns `false` if not [member isEnabled]
-## ALERT: This should generally NOT be overridden by subclasses;
+## Returns `null` if there is no [member payload] & not [member allowNoPayload]
+## DESIGN: [method performInteraction] does NOT recheck all the game-specific conditions verified by [method requestToInteract] & [method checkInteractionConditions]; only [member isEnabled] and [Payload] validation is done here.
+## ALERT: This method should generally NOT be overridden by game-specific subclasses;
 ## TIP: Override [method executePayload] to perform custom actions.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	if debugMode:

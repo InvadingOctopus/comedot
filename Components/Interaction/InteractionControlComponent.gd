@@ -14,7 +14,7 @@ extends AreaContactComponent
 ## ALERT: A low limit may cause behavior that seems like bugs in case of nultiple [InteractionComponent]s with overlapping [Area2D]s.
 @export_range(1, 100, 1) var maximumSimultaneousInteractions: int = 1
 
-@export var inputEventName:			StringName = GlobalInput.Actions.interact
+@export var inputEventName: StringName = GlobalInput.Actions.interact
 
 ## If `true` then there is a short delay in case of a failed interaction, to prevent UI/network spamming etc.
 ## NOTE: DESIGN: This may start EVEN if the interaction is NOT successful, as this represents the "rest" between "attempts" e.g. pulling a lever to open a door.
@@ -24,7 +24,7 @@ extends AreaContactComponent
 ## A [Node2D] or [Control] to display when this [InteractionControlComponent] is within the range of an [InteractionComponent]
 ## NOTE: This is the indicator for the character that performs the interaction! This may display messages such as "Push Y to Talk" etc.
 ## [InteractionComponent]s have their own [InteractionComponent.interactionIndicator] to display messages such as "! Quest Available" etc.
-@export var interactorIndicator:	CanvasItem
+@export var interactorIndicator: CanvasItem
 
 #endregion
 
@@ -143,9 +143,9 @@ func interactAll(continueOnFailure: bool = true) -> int:
 
 	if not isEnabled or cooldownTimer.isOnCooldown: return 0
 
-	var count:		int = 0
-	var successes:	int = 0
-	var cooldowns:	int = 0 # The number of InteractionComponent with `shouldSkipInteractorCooldown`
+	var count:			  int = 0
+	var successes:		  int = 0
+	var cooldowns:		  int = 0 # The number of InteractionComponent with `shouldSkipInteractorCooldown`
 	var failureCooldowns: int = 0
 
 	for interactionComponent in self.areasInContact: # TBD: Keep updating `areasInContact` after each interaction in case an interaction moves the entity, like PortalInteractionComponent?
@@ -156,6 +156,9 @@ func interactAll(continueOnFailure: bool = true) -> int:
 			if debugMode: printDebug(str("interact() ", count + 1, " of ", maximumSimultaneousInteractions))
 
 			self.willPerformInteraction.emit(interactionComponent.entity, interactionComponent)
+			# ALERT: BUGRISK: Signal handlers may modify the InteractionComponent to invalidate the conditions previously verified by requestToInteract()
+			# such as disabling `interactionComponent.isEnabled` to veto the interaction;
+			# that's OK: game-specific hacks are allowed.
 			var result: Variant = interactionComponent.performInteraction(self.entity, self)
 
 			count += 1 # TBD: Increase counter at start or end?
