@@ -47,7 +47,7 @@ var cooldownSeconds: float:
 var isOnCooldown: bool: 
 	get: return not is_zero_approx(self.time_left) # Apparently `not is_zero_approx()` is better than checking > 0
 
-## Allows [method startCooldown] to ignore the cooldown ONCE; the function will return without starting the [Timer].
+## Allows [method startCooldown] to ignore the cooldown ONCE; the function will return without starting the [Timer]
 ## IMPORTANT: This flag is always reset in [method startCooldown], so it must be set AFTER starting a cooldown.
 @export_storage var shouldSkipNextCooldown:		 bool
 

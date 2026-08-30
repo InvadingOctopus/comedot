@@ -228,7 +228,7 @@ func onCooldownTimer_didStartCooldown(_time: float) -> void:
 	if interactorIndicator: interactorIndicator.modulate.a = 0.1 # Fade while unusable
 
 
-## Called by [method CooldownTimer.finishCooldown] and updates the [member interactorIndicator]
+## Called by [method CooldownTimer.onTimeout] and updates the [member interactorIndicator]
 func onCooldownTimer_didFinishCooldown() -> void:
 	if interactorIndicator: interactorIndicator.modulate.a = 1.0 # Fade in # TBD: Remember previous un-faded opacity?
 

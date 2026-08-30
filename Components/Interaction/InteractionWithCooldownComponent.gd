@@ -29,6 +29,7 @@ extends InteractionComponent
 
 ## Updated on a successful [method performInteraction] and used for [member shouldRepeatInteractionAfterCooldown].
 ## IMPORTANT: MUST be updated by subclasses that override [method performInteraction].
+## NOTE: HEADSUP: Remember to set [member previousInteractor] = [InteractionControlComponent] before calling [method startCooldown]
 @export_storage var previousInteractor: InteractionControlComponent
 
 ## Allows [method requestToInteract] & [method performInteraction] to ignore an ONGOING cooldown ONCE.
@@ -50,7 +51,7 @@ signal didFinishCooldown
 #endregion
 
 
-# TBD: Tools.connectSignal(cooldownTimer.timeout, self.finishCooldown) # In case the scene file forgets to wire signals?
+# TBD: Tools.connectSignal(cooldownTimer.didFinishCooldown, self.onCooldownTimer_didFinishCooldown) # In case the scene file forgets to wire signals?
 
 
 func updateIndicator() -> void:
@@ -118,19 +119,25 @@ func repeatPreviousInteraction() -> Variant:
 
 #region Cooldown
 
-## Resets [member canSkipCurrentCooldown] and calls [method CooldownTimer.startCooldown]
-func startCooldown(overrideTime: float = cooldownTimer.cooldownSeconds, restartIfOnCooldown: bool = false) -> void:
+## Clears [member canSkipCurrentCooldown] and calls [method CooldownTimer.startCooldown]
+func startCooldown(overrideTime: float = cooldownTimer.cooldownSeconds, restartIfOnCooldown: bool = false) -> float:
 	self.canSkipCurrentCooldown = false # TBD: Should this be in onCooldownTimer_didStartCooldown()?
-	cooldownTimer.startCooldown(overrideTime, restartIfOnCooldown)
+	return cooldownTimer.startCooldown(overrideTime, restartIfOnCooldown)
 
 
-## Calls [method CooldownTimer.finishCooldown]
-func finishCooldown() -> void:
+## Calls [method CooldownTimer.cancelCooldown] and [method updateIndicator]
+func cancelCooldown() -> void:
+	cooldownTimer.cancelCooldown()
+	updateIndicator()
+
+
+## Calls [method CooldownTimer.onTimeout]
+func onTimeout() -> void:
 	# TBD: Check `canSkipCurrentCooldown` on finish?
-	cooldownTimer.finishCooldown()
+	cooldownTimer.onTimeout()
 
 
-## Calls [method updateIndicator] if [member shouldModifyIndicatorInCooldown]
+## Calls [method updateIndicator] if [member shouldModifyIndicatorInCooldown] and emits [signal InteractionWithCooldownComponent.didStartCooldown]
 func onCooldownTimer_didStartCooldown(time: float) -> void:
 	if shouldModifyIndicatorInCooldown: updateIndicator()
 	self.didStartCooldown.emit(time)
