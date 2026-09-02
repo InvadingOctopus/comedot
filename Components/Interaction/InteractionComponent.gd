@@ -165,17 +165,19 @@ func requestToInteract(interactorEntity: Entity, interactionControlComponent: In
 
 
 ## Calls and returns the result of [method executePayload], passing this [InteractionComponent] as the `source` argument for the [Payload], and the [param interactorEntity] as the `target`
-## Returns `false` if not [member isEnabled]
-## Returns `null` if there is no [member payload] & not [member allowNoPayload]
+## Returns: `null` if not [member isEnabled] or if there is no [member payload] & not [member allowNoPayload]
 ## DESIGN: [method performInteraction] does NOT recheck all the game-specific conditions verified by [method requestToInteract] & [method checkInteractionConditions]; only [member isEnabled] and [Payload] validation is done here.
+## Does NOT emit [signal didDenyInteraction] because a failed interaction is not the same as a "denial" so that signal is emitted by [method requestToInteract]
 ## ALERT: This method should generally NOT be overridden by game-specific subclasses;
 ## TIP: Override [method executePayload] to perform custom actions.
 func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
 	if debugMode:
 		printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", payload: ", (payload.logName if payload else "null"), ", isEnabled: ", isEnabled, ", allowNoPayload: ", allowNoPayload))
 		if interactionControlComponent.entity != interactorEntity: printWarning(str("interactorEntity: ", interactorEntity, " != interactionControlComponent.entity: ", interactionControlComponent.entity))
-	if not isEnabled: return false
-	if not payload and not allowNoPayload: return null
+	if not isEnabled: return null
+	if not payload and not allowNoPayload:
+		printWarning("performInteraction(): No payload and not allowNoPayload")
+		return null
 
 	self.willPerformInteraction.emit(interactorEntity)
 	var  result: Variant = self.executePayload(interactorEntity, interactionControlComponent)
@@ -191,7 +193,7 @@ func performInteraction(interactorEntity: Entity, interactionControlComponent: I
 ## TIP: May be overridden by a subclass to perform custom actions.
 ## NOTE: The return value of this method may be different than the "raw" result of the [member payload]
 @warning_ignore("unused_parameter")
-func executePayload(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
+func executePayload(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent = null) -> Variant:
 	# DESIGN: Return `true` if missing & `allowNoPayload`
 	# to let components like [TextInteractionComponent] be their own payload.
 	return payload.execute(self, interactorEntity) if payload else allowNoPayload

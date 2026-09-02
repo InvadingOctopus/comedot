@@ -86,10 +86,13 @@ func checkInteractionConditions(interactorEntity: Entity, interactionControlComp
 
 ## Extends [method performInteraction] to start a cooldown [Timer] after an interaction.
 ## DESIGN: Allows "forced" execution: Does NOT verify cooldown or [method checkInteractionConditions]; callers should check [method requestToInteract] for validation.
-func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> Variant:
+## Does NOT start a failure cooldown if disabled or on invalid [member payload] state as that's a "request rejection"; not an attempted and failed interaction.
+func performInteraction(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent = null) -> Variant:
 	if debugMode: printDebug(str("performInteraction() interactorEntity: ", interactorEntity, "interactionControlComponent: ", interactionControlComponent, ", isEnabled: ", isEnabled, ", cooldown: ", cooldownTimer.time_left, ", canSkipCurrentCooldown: ", canSkipCurrentCooldown))
-	if not isEnabled: return false
-	if not payload and not allowNoPayload: return null
+	if not isEnabled: return null
+	if not payload and not allowNoPayload:
+		printWarning("performInteraction(): No payload and not allowNoPayload")
+		return null
 
 	# NOTE: Clear the skip flag here too and not just on startCooldown()
 	# FIXED: because if the interaction fails but there is no `shouldCooldownOnFailure` then the NEXT interaction will also be skippable!
