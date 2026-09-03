@@ -1,6 +1,6 @@
 ## A subclass of [InteractionWithCooldownComponent] with a [Stat] cost.
 ## NOTE: To edit the [CooldownTimer], enable "Editable Children" 
-## TIP: To display text bubbles for [Stat] deduction, use [StatsVisualComponent].
+## TIP: To display text bubbles for [Stat] deduction, use [StatsVisualComponent]
 
 class_name InteractionWithCostComponent
 extends InteractionWithCooldownComponent
@@ -15,7 +15,7 @@ extends InteractionWithCooldownComponent
 
 #region Interaction Interface
 
-## Overrides [InteractionControlComponent].
+## Overrides [InteractionControlComponent]
 ## When the player presses the Interact button, the [InteractionControlComponent] checks its conditions then calls this method on the [InteractionComponent](s) in range.
 ## Then this [InteractionWithCostComponent] checks its own conditions (such as whether the player has key to open a door, or the energy to chop a tree).
 func requestToInteract(interactorEntity: Entity, interactionControlComponent: InteractionControlComponent) -> bool:

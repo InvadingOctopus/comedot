@@ -122,7 +122,7 @@ func startCooldown(overrideTime: float = self.cooldownSeconds, restartIfOnCooldo
 ## Stops this [Timer] and disables [member shouldEmitDidFinishCooldown]
 ## NOTE: Does NOT emit [signal Timer.timeout] or [signal didFinishCooldown]
 func cancelCooldown() -> void:
-	if  debugMode: Debug.printDebug(str("cancelCooldown() time_left: ", time_left), self)
+	if debugMode: Debug.printDebug(str("cancelCooldown() time_left: ", time_left), self)
 	stop() # GODOT: Calling stop() does not emit the `timeout` signal
 	shouldEmitDidFinishCooldown = false
 
