@@ -22,7 +22,7 @@
 - `/Notes/`: Design documents, indexes/catalogs of entities/components/scripts, and other development notes. When looking for a component or script to use for a task, search these `*Catalog.md` files.
 - `/Temporary/`, `/Lab/`: Transient experiments. All files in these folders should always be ignored. Disregard any errors or warnings in files in those folders. If an untracked file in these folders prevents compilation/parsing/export, exclude that file or consider temporarily removing it.
 - `/Scripts/Tools/Tools.gd`, `*Tools.gd`: Files containing global static standalone helper functions for builtin Godot nodes & types. This is a workaround for the inability to extend builtin Godot types with custom methods without using subclasses.
-- `/Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. If the there is a `/Game/AGENTS.override.md` file, it takes precedence for any instructions related to the specific game.
+- `/Game/`: Game-specific files that are NOT part of the Comedot framework itself. These files should be ignored when referring to the framework, and only accessed when considering an actual game being made with Comedot. If there is a `/Game/AGENTS.override.md` file, it takes precedence for any instructions related to the specific game.
 
 
 ## Subsystems
@@ -61,7 +61,7 @@
 - If an inline source code renderer does not support syntax highlighting for GDScript, use Swift syntax highlighting for fenced GDScript code blocks, as it closely resembles GDScript highlighting.
 
 
-## Coding Style & Naming Conventions
+## Coding Style & Conventions
 Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Use tabs for indentation, not spaces.
 - Prefer camelCase for everything, including constants; avoid underscores except in rare cases.
@@ -71,6 +71,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Function/method names should be imperative verbs wherever it makes grammatical sense: `doSomething()`, `checkRequirements()`
 - Signal handlers should be named as `on[Emitter]_[signal]`
 - Prefer strong static typing: Write out explicit types, e.g. `var number: int = 42` instead of `var number := 42`, but `:=` may be used where the type isn't certain at coding time.
+- Documentation comments don't need to be overly verbose or cover every detail; the exact code is always available for inspection so comments only have to succinctly mention the general behavior of a class or function etc. along with any exceptional gotchas.
 - Omit periods for short comments or comments ending with names of types/functions/etc.
 - If instructions conflict or drift, `/Conventions.md` takes precedence and includes exceptions for some rules. In case of ambiguity, match existing patterns.
 - There is no automated formatter configured; match existing style manually.
@@ -113,7 +114,7 @@ Follow the guidelines in `/Conventions.md`, which includes these key rules:
 - Do not mix shared framework and game-specific code/assets in the same commit.
 
 - A commit message is optional when the commit title alone is insufficient.
-- Commit messagecontent should be a bullet list using this notation:
+- Commit message content should be a bullet list using this notation:
 	* Asterisk for changes that are not explicit additions of new features or removals of previous features, such as renames.
 	+ A plus sign for additions of new properties/methods added to a class/type/file.
 	- A minus sign for removal of properties/methods deleted from a class/type/file.

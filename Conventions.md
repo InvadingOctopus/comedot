@@ -114,7 +114,7 @@ func onTimeout() # in the script of a Timer node
 
 ### Files
 
-* Filenames should be clear and precise. 
+* Filenames should be clear and precise.
 * Add suffixes like `Entity` and `Component` to assist referencing and searching etc.: `MonsterEntity.gd`, `MonsterAttackComponent.gd` etc.
 	- There may be exceptions for brevity for certain resources such as `Health.gd` instead of `HealthStat.gd` unless there is ambiguity.
 * Filenames should be _concise_ but they don't have to be _short:_ e.g. `TurnBasedTileBasedPlatformerControlComponent` :')
@@ -187,7 +187,7 @@ func onTimeout() # in the script of a Timer node
 
 * "Oversimplifying" components is NOT a goal: Each component should stick to a well-defined task, and subclasses should be used to add distinct layers of extra functionality, such as `InteractionComponent` → `InteractionWithCooldownComponent`, *but* they DON'T HAVE to always minimize the number of features, parameters or functions: Each component in the shared library should be powerful and usable in different games, and be easy to wire with each other via signals.
 
-* Premature Optimization is Poo / "Correctness" before Performance: Don't try to simplify validation checks by skipping on ifs/guards etc.: Bugs may be harder to track down and fix than performance issues! 
+* Premature Optimization is Poo / "Correctness" before Performance: Don't try to simplify validation checks by skipping on ifs/guards etc.: Bugs may be harder to track down and fix than performance issues!
 
 * Try not to add too many new features before stabilizing the existing stuff!
 

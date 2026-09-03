@@ -71,7 +71,7 @@ Create a separate copy of the entire Comedot project folder for each of your gam
 
 3. Add `/Components/Physics/CharacterBodyComponent.tscn` after the above components in the Entity's tree. This component takes the velocity updates from other components and applies them to the Entity's `CharacterBody2D`
 
-4. Add `/Components/Control/InputComponent.tscn`, which processes player/AI input and shares it with other components. The order of this component must be below other components, because input events propogate upwards through the scene tree.
+4. Add `/Components/Control/InputComponent.tscn`, which processes player/AI input and shares it with other components. The order of this component must be below other components, because input events propagate upwards through the scene tree.
 
 
 # 🧩 Add Components to Entities
