@@ -36,6 +36,7 @@ signal didFinishAnimation ## Emitted only when an animation completes normally, 
 ## NOTE: [method TextSequence.incrementIndex] is NOT called if our [member text] is not the same as the [method TextSequence.getCurrentString]
 ## This allows an initial label string to be displayed before advancing the [member textSequence]
 ## TIP: This function may be called by a [Timer] or other scripts to automate the text display.
+## Returns: The [member TextSequence.currentString] unless the [TextSequence] is empty.
 func displayNextText(animate: bool = self.shouldAnimate) -> String:
 	# NOTE:   If our current `text` is not the current TextSequence string, re-display the current TextSequence string.
 	# FIXED:  This lets the first sequence message be visible and animated instead of being skipped immediately.
@@ -43,6 +44,8 @@ func displayNextText(animate: bool = self.shouldAnimate) -> String:
 	return applyText(animate)
 
 
+## Sets the [member Label.text] to the [member TextSequence.currentString] with an optional animation.
+## Returns: The [member TextSequence.currentString] unless the [TextSequence] is empty.
 func applyText(animate: bool = self.shouldAnimate) -> String:
 	# Clear any previous animation, whether we're going to animate the next string or not
 	if  currentAnimation:
@@ -73,10 +76,10 @@ func applyText(animate: bool = self.shouldAnimate) -> String:
 
 	# Signals
 	didDisplayString.emit(textSequence.currentStringIndex, currentAnimation)
-	if textSequence.currentStringIndex == textSequence.getSize() - 1: # Did we i
+	if textSequence.currentStringIndex == textSequence.getSize() - 1: # Did we reach the last string?
 		didDisplayFinalString.emit(currentAnimation)
 
-	return self.text
+	return currentString # IMPORTANT: Return the full `currentString` from [TextSequence] instead of `Label.text` because the [Label] might be empty, incomplete or garbled if there is an ongoing animation!
 
 
 ## Skips the current animation and displays the full string from [method TextSequence.getCurrentString]
