@@ -2,7 +2,7 @@
 ## Supports [ColoredTextSequence] formatting and optional animation per character.
 ## Used by [TextInteractionComponent]
 
-class_name CycleLabelTextSequence
+class_name TextSequenceLabel
 extends Label
 
 
@@ -80,6 +80,16 @@ func applyText(animate: bool = self.shouldAnimate) -> String:
 		didDisplayFinalString.emit(currentAnimation)
 
 	return currentString # IMPORTANT: Return the full `currentString` from [TextSequence] instead of `Label.text` because the [Label] might be empty, incomplete or garbled if there is an ongoing animation!
+
+
+func resetText() -> void:
+	self.skipCurrentAnimation() # Prevent any Tweens from replacing our reset
+	if  textSequence:
+		textSequence.reset()
+		textSequence.formatLabel(self)
+		self.text = textSequence.getCurrentString()
+	else:
+		self.text = ""
 
 
 ## Skips the current animation and displays the full string from [method TextSequence.getCurrentString]
