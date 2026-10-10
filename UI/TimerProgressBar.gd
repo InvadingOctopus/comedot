@@ -36,7 +36,7 @@ func applyNewTimer() -> void:
 	self.value				= timer.time_left
 	self.process_mode		= timer.process_mode
 	self.process_priority	= timer.process_priority # NOTSURE: Does doing this improve anything?	Tools.toggleSignal(timer.timeout, self.onTimer_timeout, self.shouldHideWhenZero)
-	if shouldSetStyle: self.step = self.size.x / self.max_value # Try to make 1 step = 1 pixel
+	if shouldSetStyle: self.step = self.max_value / self.size.x # Try to make 1 step = 1 pixel
 
 
 func _process(_delta: float) -> void:
