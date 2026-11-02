@@ -77,8 +77,9 @@ func chooseTargetsUnderCursor() -> Array[AbilityTargetableComponent]:
 			chosenTargets.append(target)
 		# TODO: break if number of targets > optional limit
 
-	# TBD: Keep selecting if all targets refused AbilityTargetableComponent.requestToChoose()?
-	if chosenTargets.is_empty(): self.isChoosing = true # UNDECIDED: or super.cancelTargetSelection(); one is required
+	# IMPORTANT: If every target under the cursor refuses AbilityTargetableComponent.requestToChoose()
+	# stay in the selecting state instead of leaving the component stuck (couldn't select or cancel).
+	if chosenTargets.is_empty(): self.isChoosing = true # TBD: FEEL: Should we super.cancelTargetSelection() instead? What would be the more intuitive UI
 
 	if not chosenTargets.is_empty(): # TBD: CHECK: Perform cleanup only if there is a chosen target?
 		self.isChoosing = false

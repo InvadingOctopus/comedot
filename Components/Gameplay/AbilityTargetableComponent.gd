@@ -18,11 +18,11 @@ extends AreaComponentBase
 ## Also effects [member Area2D.monitorable]
 @export var isEnabled: bool = true:
 	set(newValue):
-		if newValue != isEnabled:
+		if newValue  != isEnabled:
 			isEnabled = newValue
-			if area:
-				# set_deferred() to avoid Godot error: "Function blocked during in/out signal"
-				area.set_deferred(&"monitorable", newValue)
+			if  area:
+				# Disable highlighting etc.
+				area.set_deferred(&"monitorable", newValue) # set_deferred() to avoid Godot error: "Function blocked during in/out signal"
 #endregion
 
 
