@@ -15,7 +15,14 @@ extends AreaComponentBase
 			shouldAlwaysHighlightOnMouseHover = newValue
 			updateMouseHover()
 
-@export var isEnabled: bool = true
+## Also effects [member Area2D.monitorable]
+@export var isEnabled: bool = true:
+	set(newValue):
+		if newValue != isEnabled:
+			isEnabled = newValue
+			if area:
+				# set_deferred() to avoid Godot error: "Function blocked during in/out signal"
+				area.set_deferred(&"monitorable", newValue)
 #endregion
 
 
@@ -30,6 +37,7 @@ func _ready() -> void:
 		printWarning("Component is not Node2D")
 
 	selfAsArea.monitoring = false # This [Area2D] does not need to monitor any other areas; it only needs to be `monitorable`
+	if area: area.monitorable = isEnabled # Apply setter because Godot doesn't on initialization
 
 	self.add_to_group(Global.Groups.targetables)
 	entity.add_to_group(Global.Groups.targetables)

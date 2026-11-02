@@ -78,7 +78,7 @@ func chooseTargetsUnderCursor() -> Array[AbilityTargetableComponent]:
 		# TODO: break if number of targets > optional limit
 
 	# TBD: Keep selecting if all targets refused AbilityTargetableComponent.requestToChoose()?
-	# UNDECIDED: if chosenTargets.is_empty(): return []
+	if chosenTargets.is_empty(): self.isChoosing = true # UNDECIDED: or super.cancelTargetSelection(); one is required
 
 	if not chosenTargets.is_empty(): # TBD: CHECK: Perform cleanup only if there is a chosen target?
 		self.isChoosing = false
